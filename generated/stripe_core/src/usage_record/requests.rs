@@ -62,8 +62,7 @@ impl<'a> CreateUsageRecord<'a> {
 /// When using `increment` the specified `quantity` will be added to the usage at the specified timestamp.
 /// The `set` action will overwrite the usage quantity at that timestamp.
 /// If the subscription has [billing thresholds](https://stripe.com/docs/api/subscriptions/object#subscription_object-billing_thresholds), `increment` is the only allowed value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateUsageRecordAction {
     Increment,
     Set,
@@ -78,6 +77,18 @@ impl CreateUsageRecordAction {
     }
 }
 
+impl std::str::FromStr for CreateUsageRecordAction {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "increment" => Ok(Self::Increment),
+            "set" => Ok(Self::Set),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateUsageRecordAction {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -87,6 +98,14 @@ impl AsRef<str> for CreateUsageRecordAction {
 impl std::fmt::Display for CreateUsageRecordAction {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateUsageRecordAction {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The timestamp for the usage event.

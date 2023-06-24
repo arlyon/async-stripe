@@ -106,10 +106,7 @@ impl miniserde::Deserialize for PaymentMethod {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentMethodObject {
     PaymentMethod,
 }
@@ -118,6 +115,17 @@ impl PaymentMethodObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::PaymentMethod => "payment_method",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "payment_method" => Ok(Self::PaymentMethod),
+
+            _ => Err(()),
         }
     }
 }
@@ -133,14 +141,43 @@ impl std::fmt::Display for PaymentMethodObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentMethodObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentMethodObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentMethodObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentMethodObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentMethodType {
     AcssDebit,
     Affirm,
@@ -211,6 +248,46 @@ impl PaymentMethodType {
     }
 }
 
+impl std::str::FromStr for PaymentMethodType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "card" => Ok(Self::Card),
+            "card_present" => Ok(Self::CardPresent),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "interac_present" => Ok(Self::InteracPresent),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PaymentMethodType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -220,6 +297,38 @@ impl AsRef<str> for PaymentMethodType {
 impl std::fmt::Display for PaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PaymentMethodType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentMethodType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentMethodType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentMethodType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for PaymentMethod {

@@ -140,444 +140,225 @@ impl<'a> CreateWebhookEndpoint<'a> {
 /// The list of events to enable for this endpoint.
 ///
 /// You may specify `['*']` to enable all events, except those that require explicit selection.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateWebhookEndpointEnabledEvents {
-    #[serde(rename = "*")]
     All,
-    #[serde(rename = "account.application.authorized")]
     AccountApplicationAuthorized,
-    #[serde(rename = "account.application.deauthorized")]
     AccountApplicationDeauthorized,
-    #[serde(rename = "account.external_account.created")]
     AccountExternalAccountCreated,
-    #[serde(rename = "account.external_account.deleted")]
     AccountExternalAccountDeleted,
-    #[serde(rename = "account.external_account.updated")]
     AccountExternalAccountUpdated,
-    #[serde(rename = "account.updated")]
     AccountUpdated,
-    #[serde(rename = "application_fee.created")]
     ApplicationFeeCreated,
-    #[serde(rename = "application_fee.refund.updated")]
     ApplicationFeeRefundUpdated,
-    #[serde(rename = "application_fee.refunded")]
     ApplicationFeeRefunded,
-    #[serde(rename = "balance.available")]
     BalanceAvailable,
-    #[serde(rename = "billing_portal.configuration.created")]
     BillingPortalConfigurationCreated,
-    #[serde(rename = "billing_portal.configuration.updated")]
     BillingPortalConfigurationUpdated,
-    #[serde(rename = "billing_portal.session.created")]
     BillingPortalSessionCreated,
-    #[serde(rename = "capability.updated")]
     CapabilityUpdated,
-    #[serde(rename = "cash_balance.funds_available")]
     CashBalanceFundsAvailable,
-    #[serde(rename = "charge.captured")]
     ChargeCaptured,
-    #[serde(rename = "charge.dispute.closed")]
     ChargeDisputeClosed,
-    #[serde(rename = "charge.dispute.created")]
     ChargeDisputeCreated,
-    #[serde(rename = "charge.dispute.funds_reinstated")]
     ChargeDisputeFundsReinstated,
-    #[serde(rename = "charge.dispute.funds_withdrawn")]
     ChargeDisputeFundsWithdrawn,
-    #[serde(rename = "charge.dispute.updated")]
     ChargeDisputeUpdated,
-    #[serde(rename = "charge.expired")]
     ChargeExpired,
-    #[serde(rename = "charge.failed")]
     ChargeFailed,
-    #[serde(rename = "charge.pending")]
     ChargePending,
-    #[serde(rename = "charge.refund.updated")]
     ChargeRefundUpdated,
-    #[serde(rename = "charge.refunded")]
     ChargeRefunded,
-    #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
-    #[serde(rename = "charge.updated")]
     ChargeUpdated,
-    #[serde(rename = "checkout.session.async_payment_failed")]
     CheckoutSessionAsyncPaymentFailed,
-    #[serde(rename = "checkout.session.async_payment_succeeded")]
     CheckoutSessionAsyncPaymentSucceeded,
-    #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
-    #[serde(rename = "checkout.session.expired")]
     CheckoutSessionExpired,
-    #[serde(rename = "coupon.created")]
     CouponCreated,
-    #[serde(rename = "coupon.deleted")]
     CouponDeleted,
-    #[serde(rename = "coupon.updated")]
     CouponUpdated,
-    #[serde(rename = "credit_note.created")]
     CreditNoteCreated,
-    #[serde(rename = "credit_note.updated")]
     CreditNoteUpdated,
-    #[serde(rename = "credit_note.voided")]
     CreditNoteVoided,
-    #[serde(rename = "customer.created")]
     CustomerCreated,
-    #[serde(rename = "customer.deleted")]
     CustomerDeleted,
-    #[serde(rename = "customer.discount.created")]
     CustomerDiscountCreated,
-    #[serde(rename = "customer.discount.deleted")]
     CustomerDiscountDeleted,
-    #[serde(rename = "customer.discount.updated")]
     CustomerDiscountUpdated,
-    #[serde(rename = "customer.source.created")]
     CustomerSourceCreated,
-    #[serde(rename = "customer.source.deleted")]
     CustomerSourceDeleted,
-    #[serde(rename = "customer.source.expiring")]
     CustomerSourceExpiring,
-    #[serde(rename = "customer.source.updated")]
     CustomerSourceUpdated,
-    #[serde(rename = "customer.subscription.created")]
     CustomerSubscriptionCreated,
-    #[serde(rename = "customer.subscription.deleted")]
     CustomerSubscriptionDeleted,
-    #[serde(rename = "customer.subscription.pending_update_applied")]
     CustomerSubscriptionPendingUpdateApplied,
-    #[serde(rename = "customer.subscription.pending_update_expired")]
     CustomerSubscriptionPendingUpdateExpired,
-    #[serde(rename = "customer.subscription.trial_will_end")]
     CustomerSubscriptionTrialWillEnd,
-    #[serde(rename = "customer.subscription.updated")]
     CustomerSubscriptionUpdated,
-    #[serde(rename = "customer.tax_id.created")]
     CustomerTaxIdCreated,
-    #[serde(rename = "customer.tax_id.deleted")]
     CustomerTaxIdDeleted,
-    #[serde(rename = "customer.tax_id.updated")]
     CustomerTaxIdUpdated,
-    #[serde(rename = "customer.updated")]
     CustomerUpdated,
-    #[serde(rename = "customer_cash_balance_transaction.created")]
     CustomerCashBalanceTransactionCreated,
-    #[serde(rename = "file.created")]
     FileCreated,
-    #[serde(rename = "financial_connections.account.created")]
     FinancialConnectionsAccountCreated,
-    #[serde(rename = "financial_connections.account.deactivated")]
     FinancialConnectionsAccountDeactivated,
-    #[serde(rename = "financial_connections.account.disconnected")]
     FinancialConnectionsAccountDisconnected,
-    #[serde(rename = "financial_connections.account.reactivated")]
     FinancialConnectionsAccountReactivated,
-    #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
-    #[serde(rename = "identity.verification_session.canceled")]
     IdentityVerificationSessionCanceled,
-    #[serde(rename = "identity.verification_session.created")]
     IdentityVerificationSessionCreated,
-    #[serde(rename = "identity.verification_session.processing")]
     IdentityVerificationSessionProcessing,
-    #[serde(rename = "identity.verification_session.redacted")]
     IdentityVerificationSessionRedacted,
-    #[serde(rename = "identity.verification_session.requires_input")]
     IdentityVerificationSessionRequiresInput,
-    #[serde(rename = "identity.verification_session.verified")]
     IdentityVerificationSessionVerified,
-    #[serde(rename = "invoice.created")]
     InvoiceCreated,
-    #[serde(rename = "invoice.deleted")]
     InvoiceDeleted,
-    #[serde(rename = "invoice.finalization_failed")]
     InvoiceFinalizationFailed,
-    #[serde(rename = "invoice.finalized")]
     InvoiceFinalized,
-    #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
-    #[serde(rename = "invoice.paid")]
     InvoicePaid,
-    #[serde(rename = "invoice.payment_action_required")]
     InvoicePaymentActionRequired,
-    #[serde(rename = "invoice.payment_failed")]
     InvoicePaymentFailed,
-    #[serde(rename = "invoice.payment_succeeded")]
     InvoicePaymentSucceeded,
-    #[serde(rename = "invoice.sent")]
     InvoiceSent,
-    #[serde(rename = "invoice.upcoming")]
     InvoiceUpcoming,
-    #[serde(rename = "invoice.updated")]
     InvoiceUpdated,
-    #[serde(rename = "invoice.voided")]
     InvoiceVoided,
-    #[serde(rename = "invoiceitem.created")]
     InvoiceitemCreated,
-    #[serde(rename = "invoiceitem.deleted")]
     InvoiceitemDeleted,
-    #[serde(rename = "invoiceitem.updated")]
     InvoiceitemUpdated,
-    #[serde(rename = "issuing_authorization.created")]
     IssuingAuthorizationCreated,
-    #[serde(rename = "issuing_authorization.request")]
     IssuingAuthorizationRequest,
-    #[serde(rename = "issuing_authorization.updated")]
     IssuingAuthorizationUpdated,
-    #[serde(rename = "issuing_card.created")]
     IssuingCardCreated,
-    #[serde(rename = "issuing_card.updated")]
     IssuingCardUpdated,
-    #[serde(rename = "issuing_cardholder.created")]
     IssuingCardholderCreated,
-    #[serde(rename = "issuing_cardholder.updated")]
     IssuingCardholderUpdated,
-    #[serde(rename = "issuing_dispute.closed")]
     IssuingDisputeClosed,
-    #[serde(rename = "issuing_dispute.created")]
     IssuingDisputeCreated,
-    #[serde(rename = "issuing_dispute.funds_reinstated")]
     IssuingDisputeFundsReinstated,
-    #[serde(rename = "issuing_dispute.submitted")]
     IssuingDisputeSubmitted,
-    #[serde(rename = "issuing_dispute.updated")]
     IssuingDisputeUpdated,
-    #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
-    #[serde(rename = "issuing_transaction.updated")]
     IssuingTransactionUpdated,
-    #[serde(rename = "mandate.updated")]
     MandateUpdated,
-    #[serde(rename = "order.created")]
     OrderCreated,
-    #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
-    #[serde(rename = "payment_intent.canceled")]
     PaymentIntentCanceled,
-    #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
-    #[serde(rename = "payment_intent.partially_funded")]
     PaymentIntentPartiallyFunded,
-    #[serde(rename = "payment_intent.payment_failed")]
     PaymentIntentPaymentFailed,
-    #[serde(rename = "payment_intent.processing")]
     PaymentIntentProcessing,
-    #[serde(rename = "payment_intent.requires_action")]
     PaymentIntentRequiresAction,
-    #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
-    #[serde(rename = "payment_link.created")]
     PaymentLinkCreated,
-    #[serde(rename = "payment_link.updated")]
     PaymentLinkUpdated,
-    #[serde(rename = "payment_method.attached")]
     PaymentMethodAttached,
-    #[serde(rename = "payment_method.automatically_updated")]
     PaymentMethodAutomaticallyUpdated,
-    #[serde(rename = "payment_method.detached")]
     PaymentMethodDetached,
-    #[serde(rename = "payment_method.updated")]
     PaymentMethodUpdated,
-    #[serde(rename = "payout.canceled")]
     PayoutCanceled,
-    #[serde(rename = "payout.created")]
     PayoutCreated,
-    #[serde(rename = "payout.failed")]
     PayoutFailed,
-    #[serde(rename = "payout.paid")]
     PayoutPaid,
-    #[serde(rename = "payout.updated")]
     PayoutUpdated,
-    #[serde(rename = "person.created")]
     PersonCreated,
-    #[serde(rename = "person.deleted")]
     PersonDeleted,
-    #[serde(rename = "person.updated")]
     PersonUpdated,
-    #[serde(rename = "plan.created")]
     PlanCreated,
-    #[serde(rename = "plan.deleted")]
     PlanDeleted,
-    #[serde(rename = "plan.updated")]
     PlanUpdated,
-    #[serde(rename = "price.created")]
     PriceCreated,
-    #[serde(rename = "price.deleted")]
     PriceDeleted,
-    #[serde(rename = "price.updated")]
     PriceUpdated,
-    #[serde(rename = "product.created")]
     ProductCreated,
-    #[serde(rename = "product.deleted")]
     ProductDeleted,
-    #[serde(rename = "product.updated")]
     ProductUpdated,
-    #[serde(rename = "promotion_code.created")]
     PromotionCodeCreated,
-    #[serde(rename = "promotion_code.updated")]
     PromotionCodeUpdated,
-    #[serde(rename = "quote.accepted")]
     QuoteAccepted,
-    #[serde(rename = "quote.canceled")]
     QuoteCanceled,
-    #[serde(rename = "quote.created")]
     QuoteCreated,
-    #[serde(rename = "quote.finalized")]
     QuoteFinalized,
-    #[serde(rename = "radar.early_fraud_warning.created")]
     RadarEarlyFraudWarningCreated,
-    #[serde(rename = "radar.early_fraud_warning.updated")]
     RadarEarlyFraudWarningUpdated,
-    #[serde(rename = "recipient.created")]
     RecipientCreated,
-    #[serde(rename = "recipient.deleted")]
     RecipientDeleted,
-    #[serde(rename = "recipient.updated")]
     RecipientUpdated,
-    #[serde(rename = "reporting.report_run.failed")]
     ReportingReportRunFailed,
-    #[serde(rename = "reporting.report_run.succeeded")]
     ReportingReportRunSucceeded,
-    #[serde(rename = "reporting.report_type.updated")]
     ReportingReportTypeUpdated,
-    #[serde(rename = "review.closed")]
     ReviewClosed,
-    #[serde(rename = "review.opened")]
     ReviewOpened,
-    #[serde(rename = "setup_intent.canceled")]
     SetupIntentCanceled,
-    #[serde(rename = "setup_intent.created")]
     SetupIntentCreated,
-    #[serde(rename = "setup_intent.requires_action")]
     SetupIntentRequiresAction,
-    #[serde(rename = "setup_intent.setup_failed")]
     SetupIntentSetupFailed,
-    #[serde(rename = "setup_intent.succeeded")]
     SetupIntentSucceeded,
-    #[serde(rename = "sigma.scheduled_query_run.created")]
     SigmaScheduledQueryRunCreated,
-    #[serde(rename = "sku.created")]
     SkuCreated,
-    #[serde(rename = "sku.deleted")]
     SkuDeleted,
-    #[serde(rename = "sku.updated")]
     SkuUpdated,
-    #[serde(rename = "source.canceled")]
     SourceCanceled,
-    #[serde(rename = "source.chargeable")]
     SourceChargeable,
-    #[serde(rename = "source.failed")]
     SourceFailed,
-    #[serde(rename = "source.mandate_notification")]
     SourceMandateNotification,
-    #[serde(rename = "source.refund_attributes_required")]
     SourceRefundAttributesRequired,
-    #[serde(rename = "source.transaction.created")]
     SourceTransactionCreated,
-    #[serde(rename = "source.transaction.updated")]
     SourceTransactionUpdated,
-    #[serde(rename = "subscription_schedule.aborted")]
     SubscriptionScheduleAborted,
-    #[serde(rename = "subscription_schedule.canceled")]
     SubscriptionScheduleCanceled,
-    #[serde(rename = "subscription_schedule.completed")]
     SubscriptionScheduleCompleted,
-    #[serde(rename = "subscription_schedule.created")]
     SubscriptionScheduleCreated,
-    #[serde(rename = "subscription_schedule.expiring")]
     SubscriptionScheduleExpiring,
-    #[serde(rename = "subscription_schedule.released")]
     SubscriptionScheduleReleased,
-    #[serde(rename = "subscription_schedule.updated")]
     SubscriptionScheduleUpdated,
-    #[serde(rename = "tax_rate.created")]
     TaxRateCreated,
-    #[serde(rename = "tax_rate.updated")]
     TaxRateUpdated,
-    #[serde(rename = "terminal.reader.action_failed")]
     TerminalReaderActionFailed,
-    #[serde(rename = "terminal.reader.action_succeeded")]
     TerminalReaderActionSucceeded,
-    #[serde(rename = "test_helpers.test_clock.advancing")]
     TestHelpersTestClockAdvancing,
-    #[serde(rename = "test_helpers.test_clock.created")]
     TestHelpersTestClockCreated,
-    #[serde(rename = "test_helpers.test_clock.deleted")]
     TestHelpersTestClockDeleted,
-    #[serde(rename = "test_helpers.test_clock.internal_failure")]
     TestHelpersTestClockInternalFailure,
-    #[serde(rename = "test_helpers.test_clock.ready")]
     TestHelpersTestClockReady,
-    #[serde(rename = "topup.canceled")]
     TopupCanceled,
-    #[serde(rename = "topup.created")]
     TopupCreated,
-    #[serde(rename = "topup.failed")]
     TopupFailed,
-    #[serde(rename = "topup.reversed")]
     TopupReversed,
-    #[serde(rename = "topup.succeeded")]
     TopupSucceeded,
-    #[serde(rename = "transfer.created")]
     TransferCreated,
-    #[serde(rename = "transfer.reversed")]
     TransferReversed,
-    #[serde(rename = "transfer.updated")]
     TransferUpdated,
-    #[serde(rename = "treasury.credit_reversal.created")]
     TreasuryCreditReversalCreated,
-    #[serde(rename = "treasury.credit_reversal.posted")]
     TreasuryCreditReversalPosted,
-    #[serde(rename = "treasury.debit_reversal.completed")]
     TreasuryDebitReversalCompleted,
-    #[serde(rename = "treasury.debit_reversal.created")]
     TreasuryDebitReversalCreated,
-    #[serde(rename = "treasury.debit_reversal.initial_credit_granted")]
     TreasuryDebitReversalInitialCreditGranted,
-    #[serde(rename = "treasury.financial_account.closed")]
     TreasuryFinancialAccountClosed,
-    #[serde(rename = "treasury.financial_account.created")]
     TreasuryFinancialAccountCreated,
-    #[serde(rename = "treasury.financial_account.features_status_updated")]
     TreasuryFinancialAccountFeaturesStatusUpdated,
-    #[serde(rename = "treasury.inbound_transfer.canceled")]
     TreasuryInboundTransferCanceled,
-    #[serde(rename = "treasury.inbound_transfer.created")]
     TreasuryInboundTransferCreated,
-    #[serde(rename = "treasury.inbound_transfer.failed")]
     TreasuryInboundTransferFailed,
-    #[serde(rename = "treasury.inbound_transfer.succeeded")]
     TreasuryInboundTransferSucceeded,
-    #[serde(rename = "treasury.outbound_payment.canceled")]
     TreasuryOutboundPaymentCanceled,
-    #[serde(rename = "treasury.outbound_payment.created")]
     TreasuryOutboundPaymentCreated,
-    #[serde(rename = "treasury.outbound_payment.expected_arrival_date_updated")]
     TreasuryOutboundPaymentExpectedArrivalDateUpdated,
-    #[serde(rename = "treasury.outbound_payment.failed")]
     TreasuryOutboundPaymentFailed,
-    #[serde(rename = "treasury.outbound_payment.posted")]
     TreasuryOutboundPaymentPosted,
-    #[serde(rename = "treasury.outbound_payment.returned")]
     TreasuryOutboundPaymentReturned,
-    #[serde(rename = "treasury.outbound_transfer.canceled")]
     TreasuryOutboundTransferCanceled,
-    #[serde(rename = "treasury.outbound_transfer.created")]
     TreasuryOutboundTransferCreated,
-    #[serde(rename = "treasury.outbound_transfer.expected_arrival_date_updated")]
     TreasuryOutboundTransferExpectedArrivalDateUpdated,
-    #[serde(rename = "treasury.outbound_transfer.failed")]
     TreasuryOutboundTransferFailed,
-    #[serde(rename = "treasury.outbound_transfer.posted")]
     TreasuryOutboundTransferPosted,
-    #[serde(rename = "treasury.outbound_transfer.returned")]
     TreasuryOutboundTransferReturned,
-    #[serde(rename = "treasury.received_credit.created")]
     TreasuryReceivedCreditCreated,
-    #[serde(rename = "treasury.received_credit.failed")]
     TreasuryReceivedCreditFailed,
-    #[serde(rename = "treasury.received_credit.succeeded")]
     TreasuryReceivedCreditSucceeded,
-    #[serde(rename = "treasury.received_debit.created")]
     TreasuryReceivedDebitCreated,
 }
 
@@ -836,6 +617,272 @@ impl CreateWebhookEndpointEnabledEvents {
     }
 }
 
+impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "*" => Ok(Self::All),
+            "account.application.authorized" => Ok(Self::AccountApplicationAuthorized),
+            "account.application.deauthorized" => Ok(Self::AccountApplicationDeauthorized),
+            "account.external_account.created" => Ok(Self::AccountExternalAccountCreated),
+            "account.external_account.deleted" => Ok(Self::AccountExternalAccountDeleted),
+            "account.external_account.updated" => Ok(Self::AccountExternalAccountUpdated),
+            "account.updated" => Ok(Self::AccountUpdated),
+            "application_fee.created" => Ok(Self::ApplicationFeeCreated),
+            "application_fee.refund.updated" => Ok(Self::ApplicationFeeRefundUpdated),
+            "application_fee.refunded" => Ok(Self::ApplicationFeeRefunded),
+            "balance.available" => Ok(Self::BalanceAvailable),
+            "billing_portal.configuration.created" => Ok(Self::BillingPortalConfigurationCreated),
+            "billing_portal.configuration.updated" => Ok(Self::BillingPortalConfigurationUpdated),
+            "billing_portal.session.created" => Ok(Self::BillingPortalSessionCreated),
+            "capability.updated" => Ok(Self::CapabilityUpdated),
+            "cash_balance.funds_available" => Ok(Self::CashBalanceFundsAvailable),
+            "charge.captured" => Ok(Self::ChargeCaptured),
+            "charge.dispute.closed" => Ok(Self::ChargeDisputeClosed),
+            "charge.dispute.created" => Ok(Self::ChargeDisputeCreated),
+            "charge.dispute.funds_reinstated" => Ok(Self::ChargeDisputeFundsReinstated),
+            "charge.dispute.funds_withdrawn" => Ok(Self::ChargeDisputeFundsWithdrawn),
+            "charge.dispute.updated" => Ok(Self::ChargeDisputeUpdated),
+            "charge.expired" => Ok(Self::ChargeExpired),
+            "charge.failed" => Ok(Self::ChargeFailed),
+            "charge.pending" => Ok(Self::ChargePending),
+            "charge.refund.updated" => Ok(Self::ChargeRefundUpdated),
+            "charge.refunded" => Ok(Self::ChargeRefunded),
+            "charge.succeeded" => Ok(Self::ChargeSucceeded),
+            "charge.updated" => Ok(Self::ChargeUpdated),
+            "checkout.session.async_payment_failed" => Ok(Self::CheckoutSessionAsyncPaymentFailed),
+            "checkout.session.async_payment_succeeded" => {
+                Ok(Self::CheckoutSessionAsyncPaymentSucceeded)
+            }
+            "checkout.session.completed" => Ok(Self::CheckoutSessionCompleted),
+            "checkout.session.expired" => Ok(Self::CheckoutSessionExpired),
+            "coupon.created" => Ok(Self::CouponCreated),
+            "coupon.deleted" => Ok(Self::CouponDeleted),
+            "coupon.updated" => Ok(Self::CouponUpdated),
+            "credit_note.created" => Ok(Self::CreditNoteCreated),
+            "credit_note.updated" => Ok(Self::CreditNoteUpdated),
+            "credit_note.voided" => Ok(Self::CreditNoteVoided),
+            "customer.created" => Ok(Self::CustomerCreated),
+            "customer.deleted" => Ok(Self::CustomerDeleted),
+            "customer.discount.created" => Ok(Self::CustomerDiscountCreated),
+            "customer.discount.deleted" => Ok(Self::CustomerDiscountDeleted),
+            "customer.discount.updated" => Ok(Self::CustomerDiscountUpdated),
+            "customer.source.created" => Ok(Self::CustomerSourceCreated),
+            "customer.source.deleted" => Ok(Self::CustomerSourceDeleted),
+            "customer.source.expiring" => Ok(Self::CustomerSourceExpiring),
+            "customer.source.updated" => Ok(Self::CustomerSourceUpdated),
+            "customer.subscription.created" => Ok(Self::CustomerSubscriptionCreated),
+            "customer.subscription.deleted" => Ok(Self::CustomerSubscriptionDeleted),
+            "customer.subscription.pending_update_applied" => {
+                Ok(Self::CustomerSubscriptionPendingUpdateApplied)
+            }
+            "customer.subscription.pending_update_expired" => {
+                Ok(Self::CustomerSubscriptionPendingUpdateExpired)
+            }
+            "customer.subscription.trial_will_end" => Ok(Self::CustomerSubscriptionTrialWillEnd),
+            "customer.subscription.updated" => Ok(Self::CustomerSubscriptionUpdated),
+            "customer.tax_id.created" => Ok(Self::CustomerTaxIdCreated),
+            "customer.tax_id.deleted" => Ok(Self::CustomerTaxIdDeleted),
+            "customer.tax_id.updated" => Ok(Self::CustomerTaxIdUpdated),
+            "customer.updated" => Ok(Self::CustomerUpdated),
+            "customer_cash_balance_transaction.created" => {
+                Ok(Self::CustomerCashBalanceTransactionCreated)
+            }
+            "file.created" => Ok(Self::FileCreated),
+            "financial_connections.account.created" => Ok(Self::FinancialConnectionsAccountCreated),
+            "financial_connections.account.deactivated" => {
+                Ok(Self::FinancialConnectionsAccountDeactivated)
+            }
+            "financial_connections.account.disconnected" => {
+                Ok(Self::FinancialConnectionsAccountDisconnected)
+            }
+            "financial_connections.account.reactivated" => {
+                Ok(Self::FinancialConnectionsAccountReactivated)
+            }
+            "financial_connections.account.refreshed_balance" => {
+                Ok(Self::FinancialConnectionsAccountRefreshedBalance)
+            }
+            "identity.verification_session.canceled" => {
+                Ok(Self::IdentityVerificationSessionCanceled)
+            }
+            "identity.verification_session.created" => Ok(Self::IdentityVerificationSessionCreated),
+            "identity.verification_session.processing" => {
+                Ok(Self::IdentityVerificationSessionProcessing)
+            }
+            "identity.verification_session.redacted" => {
+                Ok(Self::IdentityVerificationSessionRedacted)
+            }
+            "identity.verification_session.requires_input" => {
+                Ok(Self::IdentityVerificationSessionRequiresInput)
+            }
+            "identity.verification_session.verified" => {
+                Ok(Self::IdentityVerificationSessionVerified)
+            }
+            "invoice.created" => Ok(Self::InvoiceCreated),
+            "invoice.deleted" => Ok(Self::InvoiceDeleted),
+            "invoice.finalization_failed" => Ok(Self::InvoiceFinalizationFailed),
+            "invoice.finalized" => Ok(Self::InvoiceFinalized),
+            "invoice.marked_uncollectible" => Ok(Self::InvoiceMarkedUncollectible),
+            "invoice.paid" => Ok(Self::InvoicePaid),
+            "invoice.payment_action_required" => Ok(Self::InvoicePaymentActionRequired),
+            "invoice.payment_failed" => Ok(Self::InvoicePaymentFailed),
+            "invoice.payment_succeeded" => Ok(Self::InvoicePaymentSucceeded),
+            "invoice.sent" => Ok(Self::InvoiceSent),
+            "invoice.upcoming" => Ok(Self::InvoiceUpcoming),
+            "invoice.updated" => Ok(Self::InvoiceUpdated),
+            "invoice.voided" => Ok(Self::InvoiceVoided),
+            "invoiceitem.created" => Ok(Self::InvoiceitemCreated),
+            "invoiceitem.deleted" => Ok(Self::InvoiceitemDeleted),
+            "invoiceitem.updated" => Ok(Self::InvoiceitemUpdated),
+            "issuing_authorization.created" => Ok(Self::IssuingAuthorizationCreated),
+            "issuing_authorization.request" => Ok(Self::IssuingAuthorizationRequest),
+            "issuing_authorization.updated" => Ok(Self::IssuingAuthorizationUpdated),
+            "issuing_card.created" => Ok(Self::IssuingCardCreated),
+            "issuing_card.updated" => Ok(Self::IssuingCardUpdated),
+            "issuing_cardholder.created" => Ok(Self::IssuingCardholderCreated),
+            "issuing_cardholder.updated" => Ok(Self::IssuingCardholderUpdated),
+            "issuing_dispute.closed" => Ok(Self::IssuingDisputeClosed),
+            "issuing_dispute.created" => Ok(Self::IssuingDisputeCreated),
+            "issuing_dispute.funds_reinstated" => Ok(Self::IssuingDisputeFundsReinstated),
+            "issuing_dispute.submitted" => Ok(Self::IssuingDisputeSubmitted),
+            "issuing_dispute.updated" => Ok(Self::IssuingDisputeUpdated),
+            "issuing_transaction.created" => Ok(Self::IssuingTransactionCreated),
+            "issuing_transaction.updated" => Ok(Self::IssuingTransactionUpdated),
+            "mandate.updated" => Ok(Self::MandateUpdated),
+            "order.created" => Ok(Self::OrderCreated),
+            "payment_intent.amount_capturable_updated" => {
+                Ok(Self::PaymentIntentAmountCapturableUpdated)
+            }
+            "payment_intent.canceled" => Ok(Self::PaymentIntentCanceled),
+            "payment_intent.created" => Ok(Self::PaymentIntentCreated),
+            "payment_intent.partially_funded" => Ok(Self::PaymentIntentPartiallyFunded),
+            "payment_intent.payment_failed" => Ok(Self::PaymentIntentPaymentFailed),
+            "payment_intent.processing" => Ok(Self::PaymentIntentProcessing),
+            "payment_intent.requires_action" => Ok(Self::PaymentIntentRequiresAction),
+            "payment_intent.succeeded" => Ok(Self::PaymentIntentSucceeded),
+            "payment_link.created" => Ok(Self::PaymentLinkCreated),
+            "payment_link.updated" => Ok(Self::PaymentLinkUpdated),
+            "payment_method.attached" => Ok(Self::PaymentMethodAttached),
+            "payment_method.automatically_updated" => Ok(Self::PaymentMethodAutomaticallyUpdated),
+            "payment_method.detached" => Ok(Self::PaymentMethodDetached),
+            "payment_method.updated" => Ok(Self::PaymentMethodUpdated),
+            "payout.canceled" => Ok(Self::PayoutCanceled),
+            "payout.created" => Ok(Self::PayoutCreated),
+            "payout.failed" => Ok(Self::PayoutFailed),
+            "payout.paid" => Ok(Self::PayoutPaid),
+            "payout.updated" => Ok(Self::PayoutUpdated),
+            "person.created" => Ok(Self::PersonCreated),
+            "person.deleted" => Ok(Self::PersonDeleted),
+            "person.updated" => Ok(Self::PersonUpdated),
+            "plan.created" => Ok(Self::PlanCreated),
+            "plan.deleted" => Ok(Self::PlanDeleted),
+            "plan.updated" => Ok(Self::PlanUpdated),
+            "price.created" => Ok(Self::PriceCreated),
+            "price.deleted" => Ok(Self::PriceDeleted),
+            "price.updated" => Ok(Self::PriceUpdated),
+            "product.created" => Ok(Self::ProductCreated),
+            "product.deleted" => Ok(Self::ProductDeleted),
+            "product.updated" => Ok(Self::ProductUpdated),
+            "promotion_code.created" => Ok(Self::PromotionCodeCreated),
+            "promotion_code.updated" => Ok(Self::PromotionCodeUpdated),
+            "quote.accepted" => Ok(Self::QuoteAccepted),
+            "quote.canceled" => Ok(Self::QuoteCanceled),
+            "quote.created" => Ok(Self::QuoteCreated),
+            "quote.finalized" => Ok(Self::QuoteFinalized),
+            "radar.early_fraud_warning.created" => Ok(Self::RadarEarlyFraudWarningCreated),
+            "radar.early_fraud_warning.updated" => Ok(Self::RadarEarlyFraudWarningUpdated),
+            "recipient.created" => Ok(Self::RecipientCreated),
+            "recipient.deleted" => Ok(Self::RecipientDeleted),
+            "recipient.updated" => Ok(Self::RecipientUpdated),
+            "reporting.report_run.failed" => Ok(Self::ReportingReportRunFailed),
+            "reporting.report_run.succeeded" => Ok(Self::ReportingReportRunSucceeded),
+            "reporting.report_type.updated" => Ok(Self::ReportingReportTypeUpdated),
+            "review.closed" => Ok(Self::ReviewClosed),
+            "review.opened" => Ok(Self::ReviewOpened),
+            "setup_intent.canceled" => Ok(Self::SetupIntentCanceled),
+            "setup_intent.created" => Ok(Self::SetupIntentCreated),
+            "setup_intent.requires_action" => Ok(Self::SetupIntentRequiresAction),
+            "setup_intent.setup_failed" => Ok(Self::SetupIntentSetupFailed),
+            "setup_intent.succeeded" => Ok(Self::SetupIntentSucceeded),
+            "sigma.scheduled_query_run.created" => Ok(Self::SigmaScheduledQueryRunCreated),
+            "sku.created" => Ok(Self::SkuCreated),
+            "sku.deleted" => Ok(Self::SkuDeleted),
+            "sku.updated" => Ok(Self::SkuUpdated),
+            "source.canceled" => Ok(Self::SourceCanceled),
+            "source.chargeable" => Ok(Self::SourceChargeable),
+            "source.failed" => Ok(Self::SourceFailed),
+            "source.mandate_notification" => Ok(Self::SourceMandateNotification),
+            "source.refund_attributes_required" => Ok(Self::SourceRefundAttributesRequired),
+            "source.transaction.created" => Ok(Self::SourceTransactionCreated),
+            "source.transaction.updated" => Ok(Self::SourceTransactionUpdated),
+            "subscription_schedule.aborted" => Ok(Self::SubscriptionScheduleAborted),
+            "subscription_schedule.canceled" => Ok(Self::SubscriptionScheduleCanceled),
+            "subscription_schedule.completed" => Ok(Self::SubscriptionScheduleCompleted),
+            "subscription_schedule.created" => Ok(Self::SubscriptionScheduleCreated),
+            "subscription_schedule.expiring" => Ok(Self::SubscriptionScheduleExpiring),
+            "subscription_schedule.released" => Ok(Self::SubscriptionScheduleReleased),
+            "subscription_schedule.updated" => Ok(Self::SubscriptionScheduleUpdated),
+            "tax_rate.created" => Ok(Self::TaxRateCreated),
+            "tax_rate.updated" => Ok(Self::TaxRateUpdated),
+            "terminal.reader.action_failed" => Ok(Self::TerminalReaderActionFailed),
+            "terminal.reader.action_succeeded" => Ok(Self::TerminalReaderActionSucceeded),
+            "test_helpers.test_clock.advancing" => Ok(Self::TestHelpersTestClockAdvancing),
+            "test_helpers.test_clock.created" => Ok(Self::TestHelpersTestClockCreated),
+            "test_helpers.test_clock.deleted" => Ok(Self::TestHelpersTestClockDeleted),
+            "test_helpers.test_clock.internal_failure" => {
+                Ok(Self::TestHelpersTestClockInternalFailure)
+            }
+            "test_helpers.test_clock.ready" => Ok(Self::TestHelpersTestClockReady),
+            "topup.canceled" => Ok(Self::TopupCanceled),
+            "topup.created" => Ok(Self::TopupCreated),
+            "topup.failed" => Ok(Self::TopupFailed),
+            "topup.reversed" => Ok(Self::TopupReversed),
+            "topup.succeeded" => Ok(Self::TopupSucceeded),
+            "transfer.created" => Ok(Self::TransferCreated),
+            "transfer.reversed" => Ok(Self::TransferReversed),
+            "transfer.updated" => Ok(Self::TransferUpdated),
+            "treasury.credit_reversal.created" => Ok(Self::TreasuryCreditReversalCreated),
+            "treasury.credit_reversal.posted" => Ok(Self::TreasuryCreditReversalPosted),
+            "treasury.debit_reversal.completed" => Ok(Self::TreasuryDebitReversalCompleted),
+            "treasury.debit_reversal.created" => Ok(Self::TreasuryDebitReversalCreated),
+            "treasury.debit_reversal.initial_credit_granted" => {
+                Ok(Self::TreasuryDebitReversalInitialCreditGranted)
+            }
+            "treasury.financial_account.closed" => Ok(Self::TreasuryFinancialAccountClosed),
+            "treasury.financial_account.created" => Ok(Self::TreasuryFinancialAccountCreated),
+            "treasury.financial_account.features_status_updated" => {
+                Ok(Self::TreasuryFinancialAccountFeaturesStatusUpdated)
+            }
+            "treasury.inbound_transfer.canceled" => Ok(Self::TreasuryInboundTransferCanceled),
+            "treasury.inbound_transfer.created" => Ok(Self::TreasuryInboundTransferCreated),
+            "treasury.inbound_transfer.failed" => Ok(Self::TreasuryInboundTransferFailed),
+            "treasury.inbound_transfer.succeeded" => Ok(Self::TreasuryInboundTransferSucceeded),
+            "treasury.outbound_payment.canceled" => Ok(Self::TreasuryOutboundPaymentCanceled),
+            "treasury.outbound_payment.created" => Ok(Self::TreasuryOutboundPaymentCreated),
+            "treasury.outbound_payment.expected_arrival_date_updated" => {
+                Ok(Self::TreasuryOutboundPaymentExpectedArrivalDateUpdated)
+            }
+            "treasury.outbound_payment.failed" => Ok(Self::TreasuryOutboundPaymentFailed),
+            "treasury.outbound_payment.posted" => Ok(Self::TreasuryOutboundPaymentPosted),
+            "treasury.outbound_payment.returned" => Ok(Self::TreasuryOutboundPaymentReturned),
+            "treasury.outbound_transfer.canceled" => Ok(Self::TreasuryOutboundTransferCanceled),
+            "treasury.outbound_transfer.created" => Ok(Self::TreasuryOutboundTransferCreated),
+            "treasury.outbound_transfer.expected_arrival_date_updated" => {
+                Ok(Self::TreasuryOutboundTransferExpectedArrivalDateUpdated)
+            }
+            "treasury.outbound_transfer.failed" => Ok(Self::TreasuryOutboundTransferFailed),
+            "treasury.outbound_transfer.posted" => Ok(Self::TreasuryOutboundTransferPosted),
+            "treasury.outbound_transfer.returned" => Ok(Self::TreasuryOutboundTransferReturned),
+            "treasury.received_credit.created" => Ok(Self::TreasuryReceivedCreditCreated),
+            "treasury.received_credit.failed" => Ok(Self::TreasuryReceivedCreditFailed),
+            "treasury.received_credit.succeeded" => Ok(Self::TreasuryReceivedCreditSucceeded),
+            "treasury.received_debit.created" => Ok(Self::TreasuryReceivedDebitCreated),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateWebhookEndpointEnabledEvents {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -845,6 +892,14 @@ impl AsRef<str> for CreateWebhookEndpointEnabledEvents {
 impl std::fmt::Display for CreateWebhookEndpointEnabledEvents {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateWebhookEndpointEnabledEvents {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -882,444 +937,225 @@ impl<'a> UpdateWebhookEndpoint<'a> {
 /// The list of events to enable for this endpoint.
 ///
 /// You may specify `['*']` to enable all events, except those that require explicit selection.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateWebhookEndpointEnabledEvents {
-    #[serde(rename = "*")]
     All,
-    #[serde(rename = "account.application.authorized")]
     AccountApplicationAuthorized,
-    #[serde(rename = "account.application.deauthorized")]
     AccountApplicationDeauthorized,
-    #[serde(rename = "account.external_account.created")]
     AccountExternalAccountCreated,
-    #[serde(rename = "account.external_account.deleted")]
     AccountExternalAccountDeleted,
-    #[serde(rename = "account.external_account.updated")]
     AccountExternalAccountUpdated,
-    #[serde(rename = "account.updated")]
     AccountUpdated,
-    #[serde(rename = "application_fee.created")]
     ApplicationFeeCreated,
-    #[serde(rename = "application_fee.refund.updated")]
     ApplicationFeeRefundUpdated,
-    #[serde(rename = "application_fee.refunded")]
     ApplicationFeeRefunded,
-    #[serde(rename = "balance.available")]
     BalanceAvailable,
-    #[serde(rename = "billing_portal.configuration.created")]
     BillingPortalConfigurationCreated,
-    #[serde(rename = "billing_portal.configuration.updated")]
     BillingPortalConfigurationUpdated,
-    #[serde(rename = "billing_portal.session.created")]
     BillingPortalSessionCreated,
-    #[serde(rename = "capability.updated")]
     CapabilityUpdated,
-    #[serde(rename = "cash_balance.funds_available")]
     CashBalanceFundsAvailable,
-    #[serde(rename = "charge.captured")]
     ChargeCaptured,
-    #[serde(rename = "charge.dispute.closed")]
     ChargeDisputeClosed,
-    #[serde(rename = "charge.dispute.created")]
     ChargeDisputeCreated,
-    #[serde(rename = "charge.dispute.funds_reinstated")]
     ChargeDisputeFundsReinstated,
-    #[serde(rename = "charge.dispute.funds_withdrawn")]
     ChargeDisputeFundsWithdrawn,
-    #[serde(rename = "charge.dispute.updated")]
     ChargeDisputeUpdated,
-    #[serde(rename = "charge.expired")]
     ChargeExpired,
-    #[serde(rename = "charge.failed")]
     ChargeFailed,
-    #[serde(rename = "charge.pending")]
     ChargePending,
-    #[serde(rename = "charge.refund.updated")]
     ChargeRefundUpdated,
-    #[serde(rename = "charge.refunded")]
     ChargeRefunded,
-    #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
-    #[serde(rename = "charge.updated")]
     ChargeUpdated,
-    #[serde(rename = "checkout.session.async_payment_failed")]
     CheckoutSessionAsyncPaymentFailed,
-    #[serde(rename = "checkout.session.async_payment_succeeded")]
     CheckoutSessionAsyncPaymentSucceeded,
-    #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
-    #[serde(rename = "checkout.session.expired")]
     CheckoutSessionExpired,
-    #[serde(rename = "coupon.created")]
     CouponCreated,
-    #[serde(rename = "coupon.deleted")]
     CouponDeleted,
-    #[serde(rename = "coupon.updated")]
     CouponUpdated,
-    #[serde(rename = "credit_note.created")]
     CreditNoteCreated,
-    #[serde(rename = "credit_note.updated")]
     CreditNoteUpdated,
-    #[serde(rename = "credit_note.voided")]
     CreditNoteVoided,
-    #[serde(rename = "customer.created")]
     CustomerCreated,
-    #[serde(rename = "customer.deleted")]
     CustomerDeleted,
-    #[serde(rename = "customer.discount.created")]
     CustomerDiscountCreated,
-    #[serde(rename = "customer.discount.deleted")]
     CustomerDiscountDeleted,
-    #[serde(rename = "customer.discount.updated")]
     CustomerDiscountUpdated,
-    #[serde(rename = "customer.source.created")]
     CustomerSourceCreated,
-    #[serde(rename = "customer.source.deleted")]
     CustomerSourceDeleted,
-    #[serde(rename = "customer.source.expiring")]
     CustomerSourceExpiring,
-    #[serde(rename = "customer.source.updated")]
     CustomerSourceUpdated,
-    #[serde(rename = "customer.subscription.created")]
     CustomerSubscriptionCreated,
-    #[serde(rename = "customer.subscription.deleted")]
     CustomerSubscriptionDeleted,
-    #[serde(rename = "customer.subscription.pending_update_applied")]
     CustomerSubscriptionPendingUpdateApplied,
-    #[serde(rename = "customer.subscription.pending_update_expired")]
     CustomerSubscriptionPendingUpdateExpired,
-    #[serde(rename = "customer.subscription.trial_will_end")]
     CustomerSubscriptionTrialWillEnd,
-    #[serde(rename = "customer.subscription.updated")]
     CustomerSubscriptionUpdated,
-    #[serde(rename = "customer.tax_id.created")]
     CustomerTaxIdCreated,
-    #[serde(rename = "customer.tax_id.deleted")]
     CustomerTaxIdDeleted,
-    #[serde(rename = "customer.tax_id.updated")]
     CustomerTaxIdUpdated,
-    #[serde(rename = "customer.updated")]
     CustomerUpdated,
-    #[serde(rename = "customer_cash_balance_transaction.created")]
     CustomerCashBalanceTransactionCreated,
-    #[serde(rename = "file.created")]
     FileCreated,
-    #[serde(rename = "financial_connections.account.created")]
     FinancialConnectionsAccountCreated,
-    #[serde(rename = "financial_connections.account.deactivated")]
     FinancialConnectionsAccountDeactivated,
-    #[serde(rename = "financial_connections.account.disconnected")]
     FinancialConnectionsAccountDisconnected,
-    #[serde(rename = "financial_connections.account.reactivated")]
     FinancialConnectionsAccountReactivated,
-    #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
-    #[serde(rename = "identity.verification_session.canceled")]
     IdentityVerificationSessionCanceled,
-    #[serde(rename = "identity.verification_session.created")]
     IdentityVerificationSessionCreated,
-    #[serde(rename = "identity.verification_session.processing")]
     IdentityVerificationSessionProcessing,
-    #[serde(rename = "identity.verification_session.redacted")]
     IdentityVerificationSessionRedacted,
-    #[serde(rename = "identity.verification_session.requires_input")]
     IdentityVerificationSessionRequiresInput,
-    #[serde(rename = "identity.verification_session.verified")]
     IdentityVerificationSessionVerified,
-    #[serde(rename = "invoice.created")]
     InvoiceCreated,
-    #[serde(rename = "invoice.deleted")]
     InvoiceDeleted,
-    #[serde(rename = "invoice.finalization_failed")]
     InvoiceFinalizationFailed,
-    #[serde(rename = "invoice.finalized")]
     InvoiceFinalized,
-    #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
-    #[serde(rename = "invoice.paid")]
     InvoicePaid,
-    #[serde(rename = "invoice.payment_action_required")]
     InvoicePaymentActionRequired,
-    #[serde(rename = "invoice.payment_failed")]
     InvoicePaymentFailed,
-    #[serde(rename = "invoice.payment_succeeded")]
     InvoicePaymentSucceeded,
-    #[serde(rename = "invoice.sent")]
     InvoiceSent,
-    #[serde(rename = "invoice.upcoming")]
     InvoiceUpcoming,
-    #[serde(rename = "invoice.updated")]
     InvoiceUpdated,
-    #[serde(rename = "invoice.voided")]
     InvoiceVoided,
-    #[serde(rename = "invoiceitem.created")]
     InvoiceitemCreated,
-    #[serde(rename = "invoiceitem.deleted")]
     InvoiceitemDeleted,
-    #[serde(rename = "invoiceitem.updated")]
     InvoiceitemUpdated,
-    #[serde(rename = "issuing_authorization.created")]
     IssuingAuthorizationCreated,
-    #[serde(rename = "issuing_authorization.request")]
     IssuingAuthorizationRequest,
-    #[serde(rename = "issuing_authorization.updated")]
     IssuingAuthorizationUpdated,
-    #[serde(rename = "issuing_card.created")]
     IssuingCardCreated,
-    #[serde(rename = "issuing_card.updated")]
     IssuingCardUpdated,
-    #[serde(rename = "issuing_cardholder.created")]
     IssuingCardholderCreated,
-    #[serde(rename = "issuing_cardholder.updated")]
     IssuingCardholderUpdated,
-    #[serde(rename = "issuing_dispute.closed")]
     IssuingDisputeClosed,
-    #[serde(rename = "issuing_dispute.created")]
     IssuingDisputeCreated,
-    #[serde(rename = "issuing_dispute.funds_reinstated")]
     IssuingDisputeFundsReinstated,
-    #[serde(rename = "issuing_dispute.submitted")]
     IssuingDisputeSubmitted,
-    #[serde(rename = "issuing_dispute.updated")]
     IssuingDisputeUpdated,
-    #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
-    #[serde(rename = "issuing_transaction.updated")]
     IssuingTransactionUpdated,
-    #[serde(rename = "mandate.updated")]
     MandateUpdated,
-    #[serde(rename = "order.created")]
     OrderCreated,
-    #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
-    #[serde(rename = "payment_intent.canceled")]
     PaymentIntentCanceled,
-    #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
-    #[serde(rename = "payment_intent.partially_funded")]
     PaymentIntentPartiallyFunded,
-    #[serde(rename = "payment_intent.payment_failed")]
     PaymentIntentPaymentFailed,
-    #[serde(rename = "payment_intent.processing")]
     PaymentIntentProcessing,
-    #[serde(rename = "payment_intent.requires_action")]
     PaymentIntentRequiresAction,
-    #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
-    #[serde(rename = "payment_link.created")]
     PaymentLinkCreated,
-    #[serde(rename = "payment_link.updated")]
     PaymentLinkUpdated,
-    #[serde(rename = "payment_method.attached")]
     PaymentMethodAttached,
-    #[serde(rename = "payment_method.automatically_updated")]
     PaymentMethodAutomaticallyUpdated,
-    #[serde(rename = "payment_method.detached")]
     PaymentMethodDetached,
-    #[serde(rename = "payment_method.updated")]
     PaymentMethodUpdated,
-    #[serde(rename = "payout.canceled")]
     PayoutCanceled,
-    #[serde(rename = "payout.created")]
     PayoutCreated,
-    #[serde(rename = "payout.failed")]
     PayoutFailed,
-    #[serde(rename = "payout.paid")]
     PayoutPaid,
-    #[serde(rename = "payout.updated")]
     PayoutUpdated,
-    #[serde(rename = "person.created")]
     PersonCreated,
-    #[serde(rename = "person.deleted")]
     PersonDeleted,
-    #[serde(rename = "person.updated")]
     PersonUpdated,
-    #[serde(rename = "plan.created")]
     PlanCreated,
-    #[serde(rename = "plan.deleted")]
     PlanDeleted,
-    #[serde(rename = "plan.updated")]
     PlanUpdated,
-    #[serde(rename = "price.created")]
     PriceCreated,
-    #[serde(rename = "price.deleted")]
     PriceDeleted,
-    #[serde(rename = "price.updated")]
     PriceUpdated,
-    #[serde(rename = "product.created")]
     ProductCreated,
-    #[serde(rename = "product.deleted")]
     ProductDeleted,
-    #[serde(rename = "product.updated")]
     ProductUpdated,
-    #[serde(rename = "promotion_code.created")]
     PromotionCodeCreated,
-    #[serde(rename = "promotion_code.updated")]
     PromotionCodeUpdated,
-    #[serde(rename = "quote.accepted")]
     QuoteAccepted,
-    #[serde(rename = "quote.canceled")]
     QuoteCanceled,
-    #[serde(rename = "quote.created")]
     QuoteCreated,
-    #[serde(rename = "quote.finalized")]
     QuoteFinalized,
-    #[serde(rename = "radar.early_fraud_warning.created")]
     RadarEarlyFraudWarningCreated,
-    #[serde(rename = "radar.early_fraud_warning.updated")]
     RadarEarlyFraudWarningUpdated,
-    #[serde(rename = "recipient.created")]
     RecipientCreated,
-    #[serde(rename = "recipient.deleted")]
     RecipientDeleted,
-    #[serde(rename = "recipient.updated")]
     RecipientUpdated,
-    #[serde(rename = "reporting.report_run.failed")]
     ReportingReportRunFailed,
-    #[serde(rename = "reporting.report_run.succeeded")]
     ReportingReportRunSucceeded,
-    #[serde(rename = "reporting.report_type.updated")]
     ReportingReportTypeUpdated,
-    #[serde(rename = "review.closed")]
     ReviewClosed,
-    #[serde(rename = "review.opened")]
     ReviewOpened,
-    #[serde(rename = "setup_intent.canceled")]
     SetupIntentCanceled,
-    #[serde(rename = "setup_intent.created")]
     SetupIntentCreated,
-    #[serde(rename = "setup_intent.requires_action")]
     SetupIntentRequiresAction,
-    #[serde(rename = "setup_intent.setup_failed")]
     SetupIntentSetupFailed,
-    #[serde(rename = "setup_intent.succeeded")]
     SetupIntentSucceeded,
-    #[serde(rename = "sigma.scheduled_query_run.created")]
     SigmaScheduledQueryRunCreated,
-    #[serde(rename = "sku.created")]
     SkuCreated,
-    #[serde(rename = "sku.deleted")]
     SkuDeleted,
-    #[serde(rename = "sku.updated")]
     SkuUpdated,
-    #[serde(rename = "source.canceled")]
     SourceCanceled,
-    #[serde(rename = "source.chargeable")]
     SourceChargeable,
-    #[serde(rename = "source.failed")]
     SourceFailed,
-    #[serde(rename = "source.mandate_notification")]
     SourceMandateNotification,
-    #[serde(rename = "source.refund_attributes_required")]
     SourceRefundAttributesRequired,
-    #[serde(rename = "source.transaction.created")]
     SourceTransactionCreated,
-    #[serde(rename = "source.transaction.updated")]
     SourceTransactionUpdated,
-    #[serde(rename = "subscription_schedule.aborted")]
     SubscriptionScheduleAborted,
-    #[serde(rename = "subscription_schedule.canceled")]
     SubscriptionScheduleCanceled,
-    #[serde(rename = "subscription_schedule.completed")]
     SubscriptionScheduleCompleted,
-    #[serde(rename = "subscription_schedule.created")]
     SubscriptionScheduleCreated,
-    #[serde(rename = "subscription_schedule.expiring")]
     SubscriptionScheduleExpiring,
-    #[serde(rename = "subscription_schedule.released")]
     SubscriptionScheduleReleased,
-    #[serde(rename = "subscription_schedule.updated")]
     SubscriptionScheduleUpdated,
-    #[serde(rename = "tax_rate.created")]
     TaxRateCreated,
-    #[serde(rename = "tax_rate.updated")]
     TaxRateUpdated,
-    #[serde(rename = "terminal.reader.action_failed")]
     TerminalReaderActionFailed,
-    #[serde(rename = "terminal.reader.action_succeeded")]
     TerminalReaderActionSucceeded,
-    #[serde(rename = "test_helpers.test_clock.advancing")]
     TestHelpersTestClockAdvancing,
-    #[serde(rename = "test_helpers.test_clock.created")]
     TestHelpersTestClockCreated,
-    #[serde(rename = "test_helpers.test_clock.deleted")]
     TestHelpersTestClockDeleted,
-    #[serde(rename = "test_helpers.test_clock.internal_failure")]
     TestHelpersTestClockInternalFailure,
-    #[serde(rename = "test_helpers.test_clock.ready")]
     TestHelpersTestClockReady,
-    #[serde(rename = "topup.canceled")]
     TopupCanceled,
-    #[serde(rename = "topup.created")]
     TopupCreated,
-    #[serde(rename = "topup.failed")]
     TopupFailed,
-    #[serde(rename = "topup.reversed")]
     TopupReversed,
-    #[serde(rename = "topup.succeeded")]
     TopupSucceeded,
-    #[serde(rename = "transfer.created")]
     TransferCreated,
-    #[serde(rename = "transfer.reversed")]
     TransferReversed,
-    #[serde(rename = "transfer.updated")]
     TransferUpdated,
-    #[serde(rename = "treasury.credit_reversal.created")]
     TreasuryCreditReversalCreated,
-    #[serde(rename = "treasury.credit_reversal.posted")]
     TreasuryCreditReversalPosted,
-    #[serde(rename = "treasury.debit_reversal.completed")]
     TreasuryDebitReversalCompleted,
-    #[serde(rename = "treasury.debit_reversal.created")]
     TreasuryDebitReversalCreated,
-    #[serde(rename = "treasury.debit_reversal.initial_credit_granted")]
     TreasuryDebitReversalInitialCreditGranted,
-    #[serde(rename = "treasury.financial_account.closed")]
     TreasuryFinancialAccountClosed,
-    #[serde(rename = "treasury.financial_account.created")]
     TreasuryFinancialAccountCreated,
-    #[serde(rename = "treasury.financial_account.features_status_updated")]
     TreasuryFinancialAccountFeaturesStatusUpdated,
-    #[serde(rename = "treasury.inbound_transfer.canceled")]
     TreasuryInboundTransferCanceled,
-    #[serde(rename = "treasury.inbound_transfer.created")]
     TreasuryInboundTransferCreated,
-    #[serde(rename = "treasury.inbound_transfer.failed")]
     TreasuryInboundTransferFailed,
-    #[serde(rename = "treasury.inbound_transfer.succeeded")]
     TreasuryInboundTransferSucceeded,
-    #[serde(rename = "treasury.outbound_payment.canceled")]
     TreasuryOutboundPaymentCanceled,
-    #[serde(rename = "treasury.outbound_payment.created")]
     TreasuryOutboundPaymentCreated,
-    #[serde(rename = "treasury.outbound_payment.expected_arrival_date_updated")]
     TreasuryOutboundPaymentExpectedArrivalDateUpdated,
-    #[serde(rename = "treasury.outbound_payment.failed")]
     TreasuryOutboundPaymentFailed,
-    #[serde(rename = "treasury.outbound_payment.posted")]
     TreasuryOutboundPaymentPosted,
-    #[serde(rename = "treasury.outbound_payment.returned")]
     TreasuryOutboundPaymentReturned,
-    #[serde(rename = "treasury.outbound_transfer.canceled")]
     TreasuryOutboundTransferCanceled,
-    #[serde(rename = "treasury.outbound_transfer.created")]
     TreasuryOutboundTransferCreated,
-    #[serde(rename = "treasury.outbound_transfer.expected_arrival_date_updated")]
     TreasuryOutboundTransferExpectedArrivalDateUpdated,
-    #[serde(rename = "treasury.outbound_transfer.failed")]
     TreasuryOutboundTransferFailed,
-    #[serde(rename = "treasury.outbound_transfer.posted")]
     TreasuryOutboundTransferPosted,
-    #[serde(rename = "treasury.outbound_transfer.returned")]
     TreasuryOutboundTransferReturned,
-    #[serde(rename = "treasury.received_credit.created")]
     TreasuryReceivedCreditCreated,
-    #[serde(rename = "treasury.received_credit.failed")]
     TreasuryReceivedCreditFailed,
-    #[serde(rename = "treasury.received_credit.succeeded")]
     TreasuryReceivedCreditSucceeded,
-    #[serde(rename = "treasury.received_debit.created")]
     TreasuryReceivedDebitCreated,
 }
 
@@ -1578,6 +1414,272 @@ impl UpdateWebhookEndpointEnabledEvents {
     }
 }
 
+impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "*" => Ok(Self::All),
+            "account.application.authorized" => Ok(Self::AccountApplicationAuthorized),
+            "account.application.deauthorized" => Ok(Self::AccountApplicationDeauthorized),
+            "account.external_account.created" => Ok(Self::AccountExternalAccountCreated),
+            "account.external_account.deleted" => Ok(Self::AccountExternalAccountDeleted),
+            "account.external_account.updated" => Ok(Self::AccountExternalAccountUpdated),
+            "account.updated" => Ok(Self::AccountUpdated),
+            "application_fee.created" => Ok(Self::ApplicationFeeCreated),
+            "application_fee.refund.updated" => Ok(Self::ApplicationFeeRefundUpdated),
+            "application_fee.refunded" => Ok(Self::ApplicationFeeRefunded),
+            "balance.available" => Ok(Self::BalanceAvailable),
+            "billing_portal.configuration.created" => Ok(Self::BillingPortalConfigurationCreated),
+            "billing_portal.configuration.updated" => Ok(Self::BillingPortalConfigurationUpdated),
+            "billing_portal.session.created" => Ok(Self::BillingPortalSessionCreated),
+            "capability.updated" => Ok(Self::CapabilityUpdated),
+            "cash_balance.funds_available" => Ok(Self::CashBalanceFundsAvailable),
+            "charge.captured" => Ok(Self::ChargeCaptured),
+            "charge.dispute.closed" => Ok(Self::ChargeDisputeClosed),
+            "charge.dispute.created" => Ok(Self::ChargeDisputeCreated),
+            "charge.dispute.funds_reinstated" => Ok(Self::ChargeDisputeFundsReinstated),
+            "charge.dispute.funds_withdrawn" => Ok(Self::ChargeDisputeFundsWithdrawn),
+            "charge.dispute.updated" => Ok(Self::ChargeDisputeUpdated),
+            "charge.expired" => Ok(Self::ChargeExpired),
+            "charge.failed" => Ok(Self::ChargeFailed),
+            "charge.pending" => Ok(Self::ChargePending),
+            "charge.refund.updated" => Ok(Self::ChargeRefundUpdated),
+            "charge.refunded" => Ok(Self::ChargeRefunded),
+            "charge.succeeded" => Ok(Self::ChargeSucceeded),
+            "charge.updated" => Ok(Self::ChargeUpdated),
+            "checkout.session.async_payment_failed" => Ok(Self::CheckoutSessionAsyncPaymentFailed),
+            "checkout.session.async_payment_succeeded" => {
+                Ok(Self::CheckoutSessionAsyncPaymentSucceeded)
+            }
+            "checkout.session.completed" => Ok(Self::CheckoutSessionCompleted),
+            "checkout.session.expired" => Ok(Self::CheckoutSessionExpired),
+            "coupon.created" => Ok(Self::CouponCreated),
+            "coupon.deleted" => Ok(Self::CouponDeleted),
+            "coupon.updated" => Ok(Self::CouponUpdated),
+            "credit_note.created" => Ok(Self::CreditNoteCreated),
+            "credit_note.updated" => Ok(Self::CreditNoteUpdated),
+            "credit_note.voided" => Ok(Self::CreditNoteVoided),
+            "customer.created" => Ok(Self::CustomerCreated),
+            "customer.deleted" => Ok(Self::CustomerDeleted),
+            "customer.discount.created" => Ok(Self::CustomerDiscountCreated),
+            "customer.discount.deleted" => Ok(Self::CustomerDiscountDeleted),
+            "customer.discount.updated" => Ok(Self::CustomerDiscountUpdated),
+            "customer.source.created" => Ok(Self::CustomerSourceCreated),
+            "customer.source.deleted" => Ok(Self::CustomerSourceDeleted),
+            "customer.source.expiring" => Ok(Self::CustomerSourceExpiring),
+            "customer.source.updated" => Ok(Self::CustomerSourceUpdated),
+            "customer.subscription.created" => Ok(Self::CustomerSubscriptionCreated),
+            "customer.subscription.deleted" => Ok(Self::CustomerSubscriptionDeleted),
+            "customer.subscription.pending_update_applied" => {
+                Ok(Self::CustomerSubscriptionPendingUpdateApplied)
+            }
+            "customer.subscription.pending_update_expired" => {
+                Ok(Self::CustomerSubscriptionPendingUpdateExpired)
+            }
+            "customer.subscription.trial_will_end" => Ok(Self::CustomerSubscriptionTrialWillEnd),
+            "customer.subscription.updated" => Ok(Self::CustomerSubscriptionUpdated),
+            "customer.tax_id.created" => Ok(Self::CustomerTaxIdCreated),
+            "customer.tax_id.deleted" => Ok(Self::CustomerTaxIdDeleted),
+            "customer.tax_id.updated" => Ok(Self::CustomerTaxIdUpdated),
+            "customer.updated" => Ok(Self::CustomerUpdated),
+            "customer_cash_balance_transaction.created" => {
+                Ok(Self::CustomerCashBalanceTransactionCreated)
+            }
+            "file.created" => Ok(Self::FileCreated),
+            "financial_connections.account.created" => Ok(Self::FinancialConnectionsAccountCreated),
+            "financial_connections.account.deactivated" => {
+                Ok(Self::FinancialConnectionsAccountDeactivated)
+            }
+            "financial_connections.account.disconnected" => {
+                Ok(Self::FinancialConnectionsAccountDisconnected)
+            }
+            "financial_connections.account.reactivated" => {
+                Ok(Self::FinancialConnectionsAccountReactivated)
+            }
+            "financial_connections.account.refreshed_balance" => {
+                Ok(Self::FinancialConnectionsAccountRefreshedBalance)
+            }
+            "identity.verification_session.canceled" => {
+                Ok(Self::IdentityVerificationSessionCanceled)
+            }
+            "identity.verification_session.created" => Ok(Self::IdentityVerificationSessionCreated),
+            "identity.verification_session.processing" => {
+                Ok(Self::IdentityVerificationSessionProcessing)
+            }
+            "identity.verification_session.redacted" => {
+                Ok(Self::IdentityVerificationSessionRedacted)
+            }
+            "identity.verification_session.requires_input" => {
+                Ok(Self::IdentityVerificationSessionRequiresInput)
+            }
+            "identity.verification_session.verified" => {
+                Ok(Self::IdentityVerificationSessionVerified)
+            }
+            "invoice.created" => Ok(Self::InvoiceCreated),
+            "invoice.deleted" => Ok(Self::InvoiceDeleted),
+            "invoice.finalization_failed" => Ok(Self::InvoiceFinalizationFailed),
+            "invoice.finalized" => Ok(Self::InvoiceFinalized),
+            "invoice.marked_uncollectible" => Ok(Self::InvoiceMarkedUncollectible),
+            "invoice.paid" => Ok(Self::InvoicePaid),
+            "invoice.payment_action_required" => Ok(Self::InvoicePaymentActionRequired),
+            "invoice.payment_failed" => Ok(Self::InvoicePaymentFailed),
+            "invoice.payment_succeeded" => Ok(Self::InvoicePaymentSucceeded),
+            "invoice.sent" => Ok(Self::InvoiceSent),
+            "invoice.upcoming" => Ok(Self::InvoiceUpcoming),
+            "invoice.updated" => Ok(Self::InvoiceUpdated),
+            "invoice.voided" => Ok(Self::InvoiceVoided),
+            "invoiceitem.created" => Ok(Self::InvoiceitemCreated),
+            "invoiceitem.deleted" => Ok(Self::InvoiceitemDeleted),
+            "invoiceitem.updated" => Ok(Self::InvoiceitemUpdated),
+            "issuing_authorization.created" => Ok(Self::IssuingAuthorizationCreated),
+            "issuing_authorization.request" => Ok(Self::IssuingAuthorizationRequest),
+            "issuing_authorization.updated" => Ok(Self::IssuingAuthorizationUpdated),
+            "issuing_card.created" => Ok(Self::IssuingCardCreated),
+            "issuing_card.updated" => Ok(Self::IssuingCardUpdated),
+            "issuing_cardholder.created" => Ok(Self::IssuingCardholderCreated),
+            "issuing_cardholder.updated" => Ok(Self::IssuingCardholderUpdated),
+            "issuing_dispute.closed" => Ok(Self::IssuingDisputeClosed),
+            "issuing_dispute.created" => Ok(Self::IssuingDisputeCreated),
+            "issuing_dispute.funds_reinstated" => Ok(Self::IssuingDisputeFundsReinstated),
+            "issuing_dispute.submitted" => Ok(Self::IssuingDisputeSubmitted),
+            "issuing_dispute.updated" => Ok(Self::IssuingDisputeUpdated),
+            "issuing_transaction.created" => Ok(Self::IssuingTransactionCreated),
+            "issuing_transaction.updated" => Ok(Self::IssuingTransactionUpdated),
+            "mandate.updated" => Ok(Self::MandateUpdated),
+            "order.created" => Ok(Self::OrderCreated),
+            "payment_intent.amount_capturable_updated" => {
+                Ok(Self::PaymentIntentAmountCapturableUpdated)
+            }
+            "payment_intent.canceled" => Ok(Self::PaymentIntentCanceled),
+            "payment_intent.created" => Ok(Self::PaymentIntentCreated),
+            "payment_intent.partially_funded" => Ok(Self::PaymentIntentPartiallyFunded),
+            "payment_intent.payment_failed" => Ok(Self::PaymentIntentPaymentFailed),
+            "payment_intent.processing" => Ok(Self::PaymentIntentProcessing),
+            "payment_intent.requires_action" => Ok(Self::PaymentIntentRequiresAction),
+            "payment_intent.succeeded" => Ok(Self::PaymentIntentSucceeded),
+            "payment_link.created" => Ok(Self::PaymentLinkCreated),
+            "payment_link.updated" => Ok(Self::PaymentLinkUpdated),
+            "payment_method.attached" => Ok(Self::PaymentMethodAttached),
+            "payment_method.automatically_updated" => Ok(Self::PaymentMethodAutomaticallyUpdated),
+            "payment_method.detached" => Ok(Self::PaymentMethodDetached),
+            "payment_method.updated" => Ok(Self::PaymentMethodUpdated),
+            "payout.canceled" => Ok(Self::PayoutCanceled),
+            "payout.created" => Ok(Self::PayoutCreated),
+            "payout.failed" => Ok(Self::PayoutFailed),
+            "payout.paid" => Ok(Self::PayoutPaid),
+            "payout.updated" => Ok(Self::PayoutUpdated),
+            "person.created" => Ok(Self::PersonCreated),
+            "person.deleted" => Ok(Self::PersonDeleted),
+            "person.updated" => Ok(Self::PersonUpdated),
+            "plan.created" => Ok(Self::PlanCreated),
+            "plan.deleted" => Ok(Self::PlanDeleted),
+            "plan.updated" => Ok(Self::PlanUpdated),
+            "price.created" => Ok(Self::PriceCreated),
+            "price.deleted" => Ok(Self::PriceDeleted),
+            "price.updated" => Ok(Self::PriceUpdated),
+            "product.created" => Ok(Self::ProductCreated),
+            "product.deleted" => Ok(Self::ProductDeleted),
+            "product.updated" => Ok(Self::ProductUpdated),
+            "promotion_code.created" => Ok(Self::PromotionCodeCreated),
+            "promotion_code.updated" => Ok(Self::PromotionCodeUpdated),
+            "quote.accepted" => Ok(Self::QuoteAccepted),
+            "quote.canceled" => Ok(Self::QuoteCanceled),
+            "quote.created" => Ok(Self::QuoteCreated),
+            "quote.finalized" => Ok(Self::QuoteFinalized),
+            "radar.early_fraud_warning.created" => Ok(Self::RadarEarlyFraudWarningCreated),
+            "radar.early_fraud_warning.updated" => Ok(Self::RadarEarlyFraudWarningUpdated),
+            "recipient.created" => Ok(Self::RecipientCreated),
+            "recipient.deleted" => Ok(Self::RecipientDeleted),
+            "recipient.updated" => Ok(Self::RecipientUpdated),
+            "reporting.report_run.failed" => Ok(Self::ReportingReportRunFailed),
+            "reporting.report_run.succeeded" => Ok(Self::ReportingReportRunSucceeded),
+            "reporting.report_type.updated" => Ok(Self::ReportingReportTypeUpdated),
+            "review.closed" => Ok(Self::ReviewClosed),
+            "review.opened" => Ok(Self::ReviewOpened),
+            "setup_intent.canceled" => Ok(Self::SetupIntentCanceled),
+            "setup_intent.created" => Ok(Self::SetupIntentCreated),
+            "setup_intent.requires_action" => Ok(Self::SetupIntentRequiresAction),
+            "setup_intent.setup_failed" => Ok(Self::SetupIntentSetupFailed),
+            "setup_intent.succeeded" => Ok(Self::SetupIntentSucceeded),
+            "sigma.scheduled_query_run.created" => Ok(Self::SigmaScheduledQueryRunCreated),
+            "sku.created" => Ok(Self::SkuCreated),
+            "sku.deleted" => Ok(Self::SkuDeleted),
+            "sku.updated" => Ok(Self::SkuUpdated),
+            "source.canceled" => Ok(Self::SourceCanceled),
+            "source.chargeable" => Ok(Self::SourceChargeable),
+            "source.failed" => Ok(Self::SourceFailed),
+            "source.mandate_notification" => Ok(Self::SourceMandateNotification),
+            "source.refund_attributes_required" => Ok(Self::SourceRefundAttributesRequired),
+            "source.transaction.created" => Ok(Self::SourceTransactionCreated),
+            "source.transaction.updated" => Ok(Self::SourceTransactionUpdated),
+            "subscription_schedule.aborted" => Ok(Self::SubscriptionScheduleAborted),
+            "subscription_schedule.canceled" => Ok(Self::SubscriptionScheduleCanceled),
+            "subscription_schedule.completed" => Ok(Self::SubscriptionScheduleCompleted),
+            "subscription_schedule.created" => Ok(Self::SubscriptionScheduleCreated),
+            "subscription_schedule.expiring" => Ok(Self::SubscriptionScheduleExpiring),
+            "subscription_schedule.released" => Ok(Self::SubscriptionScheduleReleased),
+            "subscription_schedule.updated" => Ok(Self::SubscriptionScheduleUpdated),
+            "tax_rate.created" => Ok(Self::TaxRateCreated),
+            "tax_rate.updated" => Ok(Self::TaxRateUpdated),
+            "terminal.reader.action_failed" => Ok(Self::TerminalReaderActionFailed),
+            "terminal.reader.action_succeeded" => Ok(Self::TerminalReaderActionSucceeded),
+            "test_helpers.test_clock.advancing" => Ok(Self::TestHelpersTestClockAdvancing),
+            "test_helpers.test_clock.created" => Ok(Self::TestHelpersTestClockCreated),
+            "test_helpers.test_clock.deleted" => Ok(Self::TestHelpersTestClockDeleted),
+            "test_helpers.test_clock.internal_failure" => {
+                Ok(Self::TestHelpersTestClockInternalFailure)
+            }
+            "test_helpers.test_clock.ready" => Ok(Self::TestHelpersTestClockReady),
+            "topup.canceled" => Ok(Self::TopupCanceled),
+            "topup.created" => Ok(Self::TopupCreated),
+            "topup.failed" => Ok(Self::TopupFailed),
+            "topup.reversed" => Ok(Self::TopupReversed),
+            "topup.succeeded" => Ok(Self::TopupSucceeded),
+            "transfer.created" => Ok(Self::TransferCreated),
+            "transfer.reversed" => Ok(Self::TransferReversed),
+            "transfer.updated" => Ok(Self::TransferUpdated),
+            "treasury.credit_reversal.created" => Ok(Self::TreasuryCreditReversalCreated),
+            "treasury.credit_reversal.posted" => Ok(Self::TreasuryCreditReversalPosted),
+            "treasury.debit_reversal.completed" => Ok(Self::TreasuryDebitReversalCompleted),
+            "treasury.debit_reversal.created" => Ok(Self::TreasuryDebitReversalCreated),
+            "treasury.debit_reversal.initial_credit_granted" => {
+                Ok(Self::TreasuryDebitReversalInitialCreditGranted)
+            }
+            "treasury.financial_account.closed" => Ok(Self::TreasuryFinancialAccountClosed),
+            "treasury.financial_account.created" => Ok(Self::TreasuryFinancialAccountCreated),
+            "treasury.financial_account.features_status_updated" => {
+                Ok(Self::TreasuryFinancialAccountFeaturesStatusUpdated)
+            }
+            "treasury.inbound_transfer.canceled" => Ok(Self::TreasuryInboundTransferCanceled),
+            "treasury.inbound_transfer.created" => Ok(Self::TreasuryInboundTransferCreated),
+            "treasury.inbound_transfer.failed" => Ok(Self::TreasuryInboundTransferFailed),
+            "treasury.inbound_transfer.succeeded" => Ok(Self::TreasuryInboundTransferSucceeded),
+            "treasury.outbound_payment.canceled" => Ok(Self::TreasuryOutboundPaymentCanceled),
+            "treasury.outbound_payment.created" => Ok(Self::TreasuryOutboundPaymentCreated),
+            "treasury.outbound_payment.expected_arrival_date_updated" => {
+                Ok(Self::TreasuryOutboundPaymentExpectedArrivalDateUpdated)
+            }
+            "treasury.outbound_payment.failed" => Ok(Self::TreasuryOutboundPaymentFailed),
+            "treasury.outbound_payment.posted" => Ok(Self::TreasuryOutboundPaymentPosted),
+            "treasury.outbound_payment.returned" => Ok(Self::TreasuryOutboundPaymentReturned),
+            "treasury.outbound_transfer.canceled" => Ok(Self::TreasuryOutboundTransferCanceled),
+            "treasury.outbound_transfer.created" => Ok(Self::TreasuryOutboundTransferCreated),
+            "treasury.outbound_transfer.expected_arrival_date_updated" => {
+                Ok(Self::TreasuryOutboundTransferExpectedArrivalDateUpdated)
+            }
+            "treasury.outbound_transfer.failed" => Ok(Self::TreasuryOutboundTransferFailed),
+            "treasury.outbound_transfer.posted" => Ok(Self::TreasuryOutboundTransferPosted),
+            "treasury.outbound_transfer.returned" => Ok(Self::TreasuryOutboundTransferReturned),
+            "treasury.received_credit.created" => Ok(Self::TreasuryReceivedCreditCreated),
+            "treasury.received_credit.failed" => Ok(Self::TreasuryReceivedCreditFailed),
+            "treasury.received_credit.succeeded" => Ok(Self::TreasuryReceivedCreditSucceeded),
+            "treasury.received_debit.created" => Ok(Self::TreasuryReceivedDebitCreated),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateWebhookEndpointEnabledEvents {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1587,5 +1689,13 @@ impl AsRef<str> for UpdateWebhookEndpointEnabledEvents {
 impl std::fmt::Display for UpdateWebhookEndpointEnabledEvents {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateWebhookEndpointEnabledEvents {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

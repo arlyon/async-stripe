@@ -41,10 +41,7 @@ impl miniserde::Deserialize for TaxId {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TaxIdObject {
     TaxId,
 }
@@ -53,6 +50,17 @@ impl TaxIdObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TaxId => "tax_id",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxIdObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "tax_id" => Ok(Self::TaxId),
+
+            _ => Err(()),
         }
     }
 }
@@ -68,13 +76,41 @@ impl std::fmt::Display for TaxIdObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for TaxIdObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TaxIdObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TaxIdObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TaxIdObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxIdObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
 ///
 /// Note that some legacy tax IDs have type `unknown`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TaxIdType {
     AeTrn,
     AuAbn,
@@ -189,6 +225,68 @@ impl TaxIdType {
     }
 }
 
+impl std::str::FromStr for TaxIdType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ae_trn" => Ok(Self::AeTrn),
+            "au_abn" => Ok(Self::AuAbn),
+            "au_arn" => Ok(Self::AuArn),
+            "bg_uic" => Ok(Self::BgUic),
+            "br_cnpj" => Ok(Self::BrCnpj),
+            "br_cpf" => Ok(Self::BrCpf),
+            "ca_bn" => Ok(Self::CaBn),
+            "ca_gst_hst" => Ok(Self::CaGstHst),
+            "ca_pst_bc" => Ok(Self::CaPstBc),
+            "ca_pst_mb" => Ok(Self::CaPstMb),
+            "ca_pst_sk" => Ok(Self::CaPstSk),
+            "ca_qst" => Ok(Self::CaQst),
+            "ch_vat" => Ok(Self::ChVat),
+            "cl_tin" => Ok(Self::ClTin),
+            "eg_tin" => Ok(Self::EgTin),
+            "es_cif" => Ok(Self::EsCif),
+            "eu_oss_vat" => Ok(Self::EuOssVat),
+            "eu_vat" => Ok(Self::EuVat),
+            "gb_vat" => Ok(Self::GbVat),
+            "ge_vat" => Ok(Self::GeVat),
+            "hk_br" => Ok(Self::HkBr),
+            "hu_tin" => Ok(Self::HuTin),
+            "id_npwp" => Ok(Self::IdNpwp),
+            "il_vat" => Ok(Self::IlVat),
+            "in_gst" => Ok(Self::InGst),
+            "is_vat" => Ok(Self::IsVat),
+            "jp_cn" => Ok(Self::JpCn),
+            "jp_rn" => Ok(Self::JpRn),
+            "jp_trn" => Ok(Self::JpTrn),
+            "ke_pin" => Ok(Self::KePin),
+            "kr_brn" => Ok(Self::KrBrn),
+            "li_uid" => Ok(Self::LiUid),
+            "mx_rfc" => Ok(Self::MxRfc),
+            "my_frp" => Ok(Self::MyFrp),
+            "my_itn" => Ok(Self::MyItn),
+            "my_sst" => Ok(Self::MySst),
+            "no_vat" => Ok(Self::NoVat),
+            "nz_gst" => Ok(Self::NzGst),
+            "ph_tin" => Ok(Self::PhTin),
+            "ru_inn" => Ok(Self::RuInn),
+            "ru_kpp" => Ok(Self::RuKpp),
+            "sa_vat" => Ok(Self::SaVat),
+            "sg_gst" => Ok(Self::SgGst),
+            "sg_uen" => Ok(Self::SgUen),
+            "si_tin" => Ok(Self::SiTin),
+            "th_vat" => Ok(Self::ThVat),
+            "tr_tin" => Ok(Self::TrTin),
+            "tw_vat" => Ok(Self::TwVat),
+            "ua_vat" => Ok(Self::UaVat),
+            "unknown" => Ok(Self::Unknown),
+            "us_ein" => Ok(Self::UsEin),
+            "za_vat" => Ok(Self::ZaVat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for TaxIdType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -198,6 +296,37 @@ impl AsRef<str> for TaxIdType {
 impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxIdType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TaxIdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TaxIdType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TaxIdType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxIdType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for TaxId {

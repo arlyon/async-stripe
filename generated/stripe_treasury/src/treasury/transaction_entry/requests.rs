@@ -84,8 +84,7 @@ impl<'a> ListTransactionEntry<'a> {
 /// The results are in reverse chronological order by `created` or `effective_at`.
 ///
 /// The default is `created`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListTransactionEntryOrderBy {
     Created,
     EffectiveAt,
@@ -100,6 +99,18 @@ impl ListTransactionEntryOrderBy {
     }
 }
 
+impl std::str::FromStr for ListTransactionEntryOrderBy {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "created" => Ok(Self::Created),
+            "effective_at" => Ok(Self::EffectiveAt),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListTransactionEntryOrderBy {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -109,5 +120,13 @@ impl AsRef<str> for ListTransactionEntryOrderBy {
 impl std::fmt::Display for ListTransactionEntryOrderBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListTransactionEntryOrderBy {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

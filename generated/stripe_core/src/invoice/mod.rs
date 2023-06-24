@@ -304,10 +304,7 @@ impl miniserde::Deserialize for Invoice {
 /// `manual` is set for all invoices unrelated to a subscription (for example: created via the invoice editor).
 /// The `upcoming` value is reserved for simulated invoices per the upcoming invoice endpoint.
 /// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceBillingReason {
     AutomaticPendingInvoiceItemInvoice,
     Manual,
@@ -336,6 +333,27 @@ impl InvoiceBillingReason {
     }
 }
 
+impl std::str::FromStr for InvoiceBillingReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic_pending_invoice_item_invoice" => {
+                Ok(Self::AutomaticPendingInvoiceItemInvoice)
+            }
+            "manual" => Ok(Self::Manual),
+            "quote_accept" => Ok(Self::QuoteAccept),
+            "subscription" => Ok(Self::Subscription),
+            "subscription_create" => Ok(Self::SubscriptionCreate),
+            "subscription_cycle" => Ok(Self::SubscriptionCycle),
+            "subscription_threshold" => Ok(Self::SubscriptionThreshold),
+            "subscription_update" => Ok(Self::SubscriptionUpdate),
+            "upcoming" => Ok(Self::Upcoming),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for InvoiceBillingReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -347,14 +365,43 @@ impl std::fmt::Display for InvoiceBillingReason {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for InvoiceBillingReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceBillingReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceBillingReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceBillingReason::from_str(s)?);
+        Ok(())
+    }
+}
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
 /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -365,6 +412,18 @@ impl InvoiceCollectionMethod {
         match self {
             Self::ChargeAutomatically => "charge_automatically",
             Self::SendInvoice => "send_invoice",
+        }
+    }
+}
+
+impl std::str::FromStr for InvoiceCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
         }
     }
 }
@@ -380,14 +439,43 @@ impl std::fmt::Display for InvoiceCollectionMethod {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for InvoiceCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceCollectionMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceCollectionMethod::from_str(s)?);
+        Ok(())
+    }
+}
 /// The customer's tax exempt status.
 ///
 /// Until the invoice is finalized, this field will equal `customer.tax_exempt`.
 /// Once the invoice is finalized, this field will no longer be updated.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceCustomerTaxExempt {
     Exempt,
     None,
@@ -404,6 +492,19 @@ impl InvoiceCustomerTaxExempt {
     }
 }
 
+impl std::str::FromStr for InvoiceCustomerTaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for InvoiceCustomerTaxExempt {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -415,13 +516,42 @@ impl std::fmt::Display for InvoiceCustomerTaxExempt {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for InvoiceCustomerTaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceCustomerTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceCustomerTaxExempt> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceCustomerTaxExempt::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceObject {
     Invoice,
 }
@@ -430,6 +560,17 @@ impl InvoiceObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Invoice => "invoice",
+        }
+    }
+}
+
+impl std::str::FromStr for InvoiceObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "invoice" => Ok(Self::Invoice),
+
+            _ => Err(()),
         }
     }
 }
@@ -445,13 +586,41 @@ impl std::fmt::Display for InvoiceObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for InvoiceObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
 ///
 /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceStatus {
     Deleted,
     Draft,
@@ -474,6 +643,22 @@ impl InvoiceStatus {
     }
 }
 
+impl std::str::FromStr for InvoiceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "deleted" => Ok(Self::Deleted),
+            "draft" => Ok(Self::Draft),
+            "open" => Ok(Self::Open),
+            "paid" => Ok(Self::Paid),
+            "uncollectible" => Ok(Self::Uncollectible),
+            "void" => Ok(Self::Void),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for InvoiceStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -483,6 +668,37 @@ impl AsRef<str> for InvoiceStatus {
 impl std::fmt::Display for InvoiceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for InvoiceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Invoice {

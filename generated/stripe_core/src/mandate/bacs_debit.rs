@@ -20,10 +20,7 @@ impl miniserde::Deserialize for BacsDebit {
 /// The status of the mandate on the Bacs network.
 ///
 /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BacsDebitNetworkStatus {
     Accepted,
     Pending,
@@ -42,6 +39,20 @@ impl BacsDebitNetworkStatus {
     }
 }
 
+impl std::str::FromStr for BacsDebitNetworkStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "accepted" => Ok(Self::Accepted),
+            "pending" => Ok(Self::Pending),
+            "refused" => Ok(Self::Refused),
+            "revoked" => Ok(Self::Revoked),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for BacsDebitNetworkStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -51,5 +62,37 @@ impl AsRef<str> for BacsDebitNetworkStatus {
 impl std::fmt::Display for BacsDebitNetworkStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for BacsDebitNetworkStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for BacsDebitNetworkStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for BacsDebitNetworkStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for BacsDebitNetworkStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<BacsDebitNetworkStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(BacsDebitNetworkStatus::from_str(s)?);
+        Ok(())
     }
 }

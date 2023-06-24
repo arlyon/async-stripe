@@ -124,10 +124,7 @@ impl miniserde::Deserialize for Source {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SourceObject {
     Source,
 }
@@ -136,6 +133,17 @@ impl SourceObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Source => "source",
+        }
+    }
+}
+
+impl std::str::FromStr for SourceObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "source" => Ok(Self::Source),
+
+            _ => Err(()),
         }
     }
 }
@@ -151,15 +159,43 @@ impl std::fmt::Display for SourceObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SourceObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SourceObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SourceObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SourceObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SourceObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The `type` of the source.
 ///
 /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
 /// An additional hash is included on the source with a name matching this value.
 /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SourceType {
     AchCreditTransfer,
     AchDebit,
@@ -208,6 +244,35 @@ impl SourceType {
     }
 }
 
+impl std::str::FromStr for SourceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach_credit_transfer" => Ok(Self::AchCreditTransfer),
+            "ach_debit" => Ok(Self::AchDebit),
+            "acss_debit" => Ok(Self::AcssDebit),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "card" => Ok(Self::Card),
+            "card_present" => Ok(Self::CardPresent),
+            "eps" => Ok(Self::Eps),
+            "giropay" => Ok(Self::Giropay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "multibanco" => Ok(Self::Multibanco),
+            "p24" => Ok(Self::P24),
+            "sepa_credit_transfer" => Ok(Self::SepaCreditTransfer),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "three_d_secure" => Ok(Self::ThreeDSecure),
+            "wechat" => Ok(Self::Wechat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SourceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -217,6 +282,37 @@ impl AsRef<str> for SourceType {
 impl std::fmt::Display for SourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SourceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SourceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SourceType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SourceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SourceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Source {

@@ -146,8 +146,7 @@ impl<'a> CreateRefund<'a> {
     }
 }
 /// Origin of the refund.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateRefundOrigin {
     CustomerBalance,
 }
@@ -156,6 +155,17 @@ impl CreateRefundOrigin {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::CustomerBalance => "customer_balance",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateRefundOrigin {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "customer_balance" => Ok(Self::CustomerBalance),
+
+            _ => Err(()),
         }
     }
 }
@@ -171,8 +181,15 @@ impl std::fmt::Display for CreateRefundOrigin {
         self.as_str().fmt(f)
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+impl serde::Serialize for CreateRefundOrigin {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateRefundReason {
     Duplicate,
     Fraudulent,
@@ -189,6 +206,19 @@ impl CreateRefundReason {
     }
 }
 
+impl std::str::FromStr for CreateRefundReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "requested_by_customer" => Ok(Self::RequestedByCustomer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateRefundReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -198,6 +228,14 @@ impl AsRef<str> for CreateRefundReason {
 impl std::fmt::Display for CreateRefundReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateRefundReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -50,10 +50,7 @@ impl miniserde::Deserialize for CreditReversal {
 }
 
 /// The rails used to reverse the funds.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreditReversalNetwork {
     Ach,
     Stripe,
@@ -64,6 +61,18 @@ impl CreditReversalNetwork {
         match self {
             Self::Ach => "ach",
             Self::Stripe => "stripe",
+        }
+    }
+}
+
+impl std::str::FromStr for CreditReversalNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "stripe" => Ok(Self::Stripe),
+
+            _ => Err(()),
         }
     }
 }
@@ -79,15 +88,43 @@ impl std::fmt::Display for CreditReversalNetwork {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreditReversalNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CreditReversalNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalNetwork"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CreditReversalNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CreditReversalNetwork> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CreditReversalNetwork::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreditReversalObject {
-    #[serde(rename = "treasury.credit_reversal")]
     TreasuryCreditReversal,
 }
 
@@ -95,6 +132,17 @@ impl CreditReversalObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryCreditReversal => "treasury.credit_reversal",
+        }
+    }
+}
+
+impl std::str::FromStr for CreditReversalObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.credit_reversal" => Ok(Self::TreasuryCreditReversal),
+
+            _ => Err(()),
         }
     }
 }
@@ -110,11 +158,40 @@ impl std::fmt::Display for CreditReversalObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreditReversalObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CreditReversalObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CreditReversalObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CreditReversalObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CreditReversalObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Status of the CreditReversal.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreditReversalStatus {
     Canceled,
     Posted,
@@ -131,6 +208,19 @@ impl CreditReversalStatus {
     }
 }
 
+impl std::str::FromStr for CreditReversalStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "posted" => Ok(Self::Posted),
+            "processing" => Ok(Self::Processing),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreditReversalStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -140,6 +230,38 @@ impl AsRef<str> for CreditReversalStatus {
 impl std::fmt::Display for CreditReversalStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreditReversalStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CreditReversalStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CreditReversalStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CreditReversalStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CreditReversalStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for CreditReversal {

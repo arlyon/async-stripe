@@ -82,8 +82,7 @@ impl<'a> ListTransaction<'a> {
 /// Only return transactions that have the given type.
 ///
 /// One of `capture` or `refund`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListTransactionType {
     Capture,
     Refund,
@@ -98,6 +97,18 @@ impl ListTransactionType {
     }
 }
 
+impl std::str::FromStr for ListTransactionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "capture" => Ok(Self::Capture),
+            "refund" => Ok(Self::Refund),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListTransactionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -107,6 +118,14 @@ impl AsRef<str> for ListTransactionType {
 impl std::fmt::Display for ListTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListTransactionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

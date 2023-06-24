@@ -39,10 +39,7 @@ impl miniserde::Deserialize for RequestHistory {
 }
 
 /// The reason for the approval or decline.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RequestHistoryReason {
     AccountDisabled,
     CardActive,
@@ -81,6 +78,30 @@ impl RequestHistoryReason {
     }
 }
 
+impl std::str::FromStr for RequestHistoryReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_disabled" => Ok(Self::AccountDisabled),
+            "card_active" => Ok(Self::CardActive),
+            "card_inactive" => Ok(Self::CardInactive),
+            "cardholder_inactive" => Ok(Self::CardholderInactive),
+            "cardholder_verification_required" => Ok(Self::CardholderVerificationRequired),
+            "insufficient_funds" => Ok(Self::InsufficientFunds),
+            "not_allowed" => Ok(Self::NotAllowed),
+            "spending_controls" => Ok(Self::SpendingControls),
+            "suspected_fraud" => Ok(Self::SuspectedFraud),
+            "verification_failed" => Ok(Self::VerificationFailed),
+            "webhook_approved" => Ok(Self::WebhookApproved),
+            "webhook_declined" => Ok(Self::WebhookDeclined),
+            "webhook_error" => Ok(Self::WebhookError),
+            "webhook_timeout" => Ok(Self::WebhookTimeout),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for RequestHistoryReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -90,5 +111,37 @@ impl AsRef<str> for RequestHistoryReason {
 impl std::fmt::Display for RequestHistoryReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for RequestHistoryReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for RequestHistoryReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for RequestHistoryReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for RequestHistoryReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<RequestHistoryReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(RequestHistoryReason::from_str(s)?);
+        Ok(())
     }
 }

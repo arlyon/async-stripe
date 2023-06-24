@@ -27,10 +27,7 @@ impl miniserde::Deserialize for ReaderAction {
 }
 
 /// Status of the action performed by the reader.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReaderActionStatus {
     Failed,
     InProgress,
@@ -47,6 +44,19 @@ impl ReaderActionStatus {
     }
 }
 
+impl std::str::FromStr for ReaderActionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "failed" => Ok(Self::Failed),
+            "in_progress" => Ok(Self::InProgress),
+            "succeeded" => Ok(Self::Succeeded),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReaderActionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -58,11 +68,40 @@ impl std::fmt::Display for ReaderActionStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReaderActionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReaderActionStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReaderActionStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReaderActionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReaderActionStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReaderActionStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// Type of action performed by the reader.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReaderActionType {
     ProcessPaymentIntent,
     ProcessSetupIntent,
@@ -79,6 +118,19 @@ impl ReaderActionType {
     }
 }
 
+impl std::str::FromStr for ReaderActionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "process_payment_intent" => Ok(Self::ProcessPaymentIntent),
+            "process_setup_intent" => Ok(Self::ProcessSetupIntent),
+            "set_reader_display" => Ok(Self::SetReaderDisplay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReaderActionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -88,6 +140,38 @@ impl AsRef<str> for ReaderActionType {
 impl std::fmt::Display for ReaderActionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReaderActionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReaderActionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReaderActionType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReaderActionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReaderActionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReaderActionType::from_str(s)?);
+        Ok(())
     }
 }
 pub mod process_payment_intent_action;

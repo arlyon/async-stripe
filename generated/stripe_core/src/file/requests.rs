@@ -60,8 +60,7 @@ impl<'a> ListFile<'a> {
 /// The file purpose to filter queries by.
 ///
 /// If none is provided, files will not be filtered by purpose.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListFilePurpose {
     AccountRequirement,
     AdditionalVerification,
@@ -102,6 +101,31 @@ impl ListFilePurpose {
     }
 }
 
+impl std::str::FromStr for ListFilePurpose {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_requirement" => Ok(Self::AccountRequirement),
+            "additional_verification" => Ok(Self::AdditionalVerification),
+            "business_icon" => Ok(Self::BusinessIcon),
+            "business_logo" => Ok(Self::BusinessLogo),
+            "customer_signature" => Ok(Self::CustomerSignature),
+            "dispute_evidence" => Ok(Self::DisputeEvidence),
+            "document_provider_identity_document" => Ok(Self::DocumentProviderIdentityDocument),
+            "finance_report_run" => Ok(Self::FinanceReportRun),
+            "identity_document" => Ok(Self::IdentityDocument),
+            "identity_document_downloadable" => Ok(Self::IdentityDocumentDownloadable),
+            "pci_document" => Ok(Self::PciDocument),
+            "selfie" => Ok(Self::Selfie),
+            "sigma_scheduled_query" => Ok(Self::SigmaScheduledQuery),
+            "tax_document_user_upload" => Ok(Self::TaxDocumentUserUpload),
+            "terminal_reader_splashscreen" => Ok(Self::TerminalReaderSplashscreen),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListFilePurpose {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -111,6 +135,14 @@ impl AsRef<str> for ListFilePurpose {
 impl std::fmt::Display for ListFilePurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListFilePurpose {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

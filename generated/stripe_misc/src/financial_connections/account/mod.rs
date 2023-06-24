@@ -75,10 +75,7 @@ impl miniserde::Deserialize for Account {
 /// The type of the account.
 ///
 /// Account category is further divided in `subcategory`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountCategory {
     Cash,
     Credit,
@@ -97,6 +94,20 @@ impl AccountCategory {
     }
 }
 
+impl std::str::FromStr for AccountCategory {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cash" => Ok(Self::Cash),
+            "credit" => Ok(Self::Credit),
+            "investment" => Ok(Self::Investment),
+            "other" => Ok(Self::Other),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountCategory {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -108,15 +119,43 @@ impl std::fmt::Display for AccountCategory {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountCategory {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountCategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountCategory"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountCategory {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountCategory> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountCategory::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountObject {
-    #[serde(rename = "financial_connections.account")]
     FinancialConnectionsAccount,
 }
 
@@ -124,6 +163,17 @@ impl AccountObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::FinancialConnectionsAccount => "financial_connections.account",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "financial_connections.account" => Ok(Self::FinancialConnectionsAccount),
+
+            _ => Err(()),
         }
     }
 }
@@ -139,11 +189,39 @@ impl std::fmt::Display for AccountObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The list of permissions granted by this account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountPermissions {
     Balances,
     Ownership,
@@ -162,6 +240,20 @@ impl AccountPermissions {
     }
 }
 
+impl std::str::FromStr for AccountPermissions {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balances" => Ok(Self::Balances),
+            "ownership" => Ok(Self::Ownership),
+            "payment_method" => Ok(Self::PaymentMethod),
+            "transactions" => Ok(Self::Transactions),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountPermissions {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -173,11 +265,40 @@ impl std::fmt::Display for AccountPermissions {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountPermissions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountPermissions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountPermissions"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountPermissions {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountPermissions> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountPermissions::from_str(s)?);
+        Ok(())
+    }
+}
 /// The status of the link to the account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountStatus {
     Active,
     Disconnected,
@@ -194,6 +315,19 @@ impl AccountStatus {
     }
 }
 
+impl std::str::FromStr for AccountStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "disconnected" => Ok(Self::Disconnected),
+            "inactive" => Ok(Self::Inactive),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -203,6 +337,37 @@ impl AsRef<str> for AccountStatus {
 impl std::fmt::Display for AccountStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AccountStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountStatus::from_str(s)?);
+        Ok(())
     }
 }
 /// If `category` is `cash`, one of:
@@ -219,10 +384,7 @@ impl std::fmt::Display for AccountStatus {
 ///  - `other`
 ///
 /// If `category` is `investment` or `other`, this will be `other`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountSubcategory {
     Checking,
     CreditCard,
@@ -245,6 +407,22 @@ impl AccountSubcategory {
     }
 }
 
+impl std::str::FromStr for AccountSubcategory {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "credit_card" => Ok(Self::CreditCard),
+            "line_of_credit" => Ok(Self::LineOfCredit),
+            "mortgage" => Ok(Self::Mortgage),
+            "other" => Ok(Self::Other),
+            "savings" => Ok(Self::Savings),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountSubcategory {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -256,11 +434,40 @@ impl std::fmt::Display for AccountSubcategory {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountSubcategory {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountSubcategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountSubcategory"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountSubcategory {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountSubcategory> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountSubcategory::from_str(s)?);
+        Ok(())
+    }
+}
 /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountSupportedPaymentMethodTypes {
     Link,
     UsBankAccount,
@@ -275,6 +482,18 @@ impl AccountSupportedPaymentMethodTypes {
     }
 }
 
+impl std::str::FromStr for AccountSupportedPaymentMethodTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "link" => Ok(Self::Link),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountSupportedPaymentMethodTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -284,6 +503,39 @@ impl AsRef<str> for AccountSupportedPaymentMethodTypes {
 impl std::fmt::Display for AccountSupportedPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AccountSupportedPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountSupportedPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for AccountSupportedPaymentMethodTypes")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountSupportedPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountSupportedPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountSupportedPaymentMethodTypes::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Account {

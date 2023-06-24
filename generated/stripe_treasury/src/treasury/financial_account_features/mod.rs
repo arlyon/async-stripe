@@ -33,12 +33,8 @@ impl miniserde::Deserialize for FinancialAccountFeatures {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountFeaturesObject {
-    #[serde(rename = "treasury.financial_account_features")]
     TreasuryFinancialAccountFeatures,
 }
 
@@ -46,6 +42,17 @@ impl FinancialAccountFeaturesObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryFinancialAccountFeatures => "treasury.financial_account_features",
+        }
+    }
+}
+
+impl std::str::FromStr for FinancialAccountFeaturesObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.financial_account_features" => Ok(Self::TreasuryFinancialAccountFeatures),
+
+            _ => Err(()),
         }
     }
 }
@@ -59,6 +66,39 @@ impl AsRef<str> for FinancialAccountFeaturesObject {
 impl std::fmt::Display for FinancialAccountFeaturesObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for FinancialAccountFeaturesObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountFeaturesObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinancialAccountFeaturesObject")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountFeaturesObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountFeaturesObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountFeaturesObject::from_str(s)?);
+        Ok(())
     }
 }
 pub mod financial_addresses;

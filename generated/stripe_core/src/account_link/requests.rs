@@ -53,8 +53,7 @@ impl<'a> CreateAccountLink<'a> {
 ///
 /// One of `currently_due` or `eventually_due`.
 /// Default is `currently_due`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountLinkCollect {
     CurrentlyDue,
     EventuallyDue,
@@ -65,6 +64,18 @@ impl CreateAccountLinkCollect {
         match self {
             Self::CurrentlyDue => "currently_due",
             Self::EventuallyDue => "eventually_due",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateAccountLinkCollect {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "currently_due" => Ok(Self::CurrentlyDue),
+            "eventually_due" => Ok(Self::EventuallyDue),
+
+            _ => Err(()),
         }
     }
 }
@@ -80,11 +91,18 @@ impl std::fmt::Display for CreateAccountLinkCollect {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateAccountLinkCollect {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of account link the user is requesting.
 ///
 /// Possible values are `account_onboarding` or `account_update`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountLinkType {
     AccountOnboarding,
     AccountUpdate,
@@ -103,6 +121,20 @@ impl CreateAccountLinkType {
     }
 }
 
+impl std::str::FromStr for CreateAccountLinkType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_onboarding" => Ok(Self::AccountOnboarding),
+            "account_update" => Ok(Self::AccountUpdate),
+            "custom_account_update" => Ok(Self::CustomAccountUpdate),
+            "custom_account_verification" => Ok(Self::CustomAccountVerification),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountLinkType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -112,5 +144,13 @@ impl AsRef<str> for CreateAccountLinkType {
 impl std::fmt::Display for CreateAccountLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountLinkType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

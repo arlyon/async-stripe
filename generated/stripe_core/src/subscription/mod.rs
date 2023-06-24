@@ -162,10 +162,7 @@ impl miniserde::Deserialize for Subscription {
 ///
 /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -176,6 +173,18 @@ impl SubscriptionCollectionMethod {
         match self {
             Self::ChargeAutomatically => "charge_automatically",
             Self::SendInvoice => "send_invoice",
+        }
+    }
+}
+
+impl std::str::FromStr for SubscriptionCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
         }
     }
 }
@@ -191,13 +200,42 @@ impl std::fmt::Display for SubscriptionCollectionMethod {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SubscriptionCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionCollectionMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionCollectionMethod::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionObject {
     Subscription,
 }
@@ -206,6 +244,17 @@ impl SubscriptionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Subscription => "subscription",
+        }
+    }
+}
+
+impl std::str::FromStr for SubscriptionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "subscription" => Ok(Self::Subscription),
+
+            _ => Err(()),
         }
     }
 }
@@ -221,6 +270,38 @@ impl std::fmt::Display for SubscriptionObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SubscriptionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
 ///
 /// For `collection_method=charge_automatically` a subscription moves into `incomplete` if the initial payment attempt fails.
@@ -233,10 +314,7 @@ impl std::fmt::Display for SubscriptionObject {
 /// If subscription `collection_method=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
 /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
 /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionStatus {
     Active,
     Canceled,
@@ -261,6 +339,23 @@ impl SubscriptionStatus {
     }
 }
 
+impl std::str::FromStr for SubscriptionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "canceled" => Ok(Self::Canceled),
+            "incomplete" => Ok(Self::Incomplete),
+            "incomplete_expired" => Ok(Self::IncompleteExpired),
+            "past_due" => Ok(Self::PastDue),
+            "trialing" => Ok(Self::Trialing),
+            "unpaid" => Ok(Self::Unpaid),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SubscriptionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -270,6 +365,38 @@ impl AsRef<str> for SubscriptionStatus {
 impl std::fmt::Display for SubscriptionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SubscriptionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Subscription {

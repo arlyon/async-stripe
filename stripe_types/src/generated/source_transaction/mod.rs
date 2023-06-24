@@ -56,10 +56,7 @@ impl miniserde::Deserialize for SourceTransaction {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SourceTransactionObject {
     SourceTransaction,
 }
@@ -68,6 +65,17 @@ impl SourceTransactionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SourceTransaction => "source_transaction",
+        }
+    }
+}
+
+impl std::str::FromStr for SourceTransactionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "source_transaction" => Ok(Self::SourceTransaction),
+
+            _ => Err(()),
         }
     }
 }
@@ -83,11 +91,40 @@ impl std::fmt::Display for SourceTransactionObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SourceTransactionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SourceTransactionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SourceTransactionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SourceTransactionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceTransactionObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The type of source this transaction is attached to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SourceTransactionType {
     AchCreditTransfer,
     AchDebit,
@@ -130,6 +167,32 @@ impl SourceTransactionType {
     }
 }
 
+impl std::str::FromStr for SourceTransactionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach_credit_transfer" => Ok(Self::AchCreditTransfer),
+            "ach_debit" => Ok(Self::AchDebit),
+            "alipay" => Ok(Self::Alipay),
+            "bancontact" => Ok(Self::Bancontact),
+            "card" => Ok(Self::Card),
+            "card_present" => Ok(Self::CardPresent),
+            "eps" => Ok(Self::Eps),
+            "giropay" => Ok(Self::Giropay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "multibanco" => Ok(Self::Multibanco),
+            "p24" => Ok(Self::P24),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "three_d_secure" => Ok(Self::ThreeDSecure),
+            "wechat" => Ok(Self::Wechat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SourceTransactionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -139,6 +202,38 @@ impl AsRef<str> for SourceTransactionType {
 impl std::fmt::Display for SourceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SourceTransactionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SourceTransactionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SourceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SourceTransactionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceTransactionType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for SourceTransaction {

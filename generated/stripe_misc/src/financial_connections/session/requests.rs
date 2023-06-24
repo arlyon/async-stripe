@@ -79,8 +79,7 @@ impl<'a> CreateSessionAccountHolder<'a> {
     }
 }
 /// Type of account holder to collect accounts for.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSessionAccountHolderType {
     Account,
     Customer,
@@ -95,6 +94,18 @@ impl CreateSessionAccountHolderType {
     }
 }
 
+impl std::str::FromStr for CreateSessionAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+            "customer" => Ok(Self::Customer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSessionAccountHolderType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -104,6 +115,14 @@ impl AsRef<str> for CreateSessionAccountHolderType {
 impl std::fmt::Display for CreateSessionAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSessionAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
@@ -120,8 +139,7 @@ impl<'a> CreateSessionFilters<'a> {
 /// List of data features that you would like to request access to.
 ///
 /// Possible values are `balances`, `transactions`, `ownership`, and `payment_method`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSessionPermissions {
     Balances,
     Ownership,
@@ -140,6 +158,20 @@ impl CreateSessionPermissions {
     }
 }
 
+impl std::str::FromStr for CreateSessionPermissions {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balances" => Ok(Self::Balances),
+            "ownership" => Ok(Self::Ownership),
+            "payment_method" => Ok(Self::PaymentMethod),
+            "transactions" => Ok(Self::Transactions),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSessionPermissions {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -149,6 +181,14 @@ impl AsRef<str> for CreateSessionPermissions {
 impl std::fmt::Display for CreateSessionPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSessionPermissions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

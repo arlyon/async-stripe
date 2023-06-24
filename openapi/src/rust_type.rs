@@ -281,8 +281,8 @@ impl SimpleType {
     }
 
     pub const fn import_from(self) -> Option<&'static str> {
-        if let Self::Ext(ext) = self {
-            Some(ext.import_from())
+        if matches!(self, Self::Ext(_)) {
+            Some("stripe_types")
         } else {
             None
         }
@@ -328,12 +328,6 @@ pub enum ExtType {
 }
 
 impl ExtType {
-    pub const fn import_from(self) -> &'static str {
-        match self {
-            Self::RangeQueryTs | Self::Timestamp | Self::Currency => "stripe_types",
-        }
-    }
-
     pub const fn ident(self) -> &'static str {
         match self {
             Self::Currency => "Currency",

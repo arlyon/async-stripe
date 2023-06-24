@@ -36,12 +36,8 @@ impl miniserde::Deserialize for TestClock {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TestClockObject {
-    #[serde(rename = "test_helpers.test_clock")]
     TestHelpersTestClock,
 }
 
@@ -49,6 +45,17 @@ impl TestClockObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TestHelpersTestClock => "test_helpers.test_clock",
+        }
+    }
+}
+
+impl std::str::FromStr for TestClockObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "test_helpers.test_clock" => Ok(Self::TestHelpersTestClock),
+
+            _ => Err(()),
         }
     }
 }
@@ -64,11 +71,40 @@ impl std::fmt::Display for TestClockObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for TestClockObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TestClockObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TestClockObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TestClockObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TestClockObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TestClockObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The status of the Test Clock.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TestClockStatus {
     Advancing,
     InternalFailure,
@@ -85,6 +121,19 @@ impl TestClockStatus {
     }
 }
 
+impl std::str::FromStr for TestClockStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "advancing" => Ok(Self::Advancing),
+            "internal_failure" => Ok(Self::InternalFailure),
+            "ready" => Ok(Self::Ready),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for TestClockStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -94,6 +143,38 @@ impl AsRef<str> for TestClockStatus {
 impl std::fmt::Display for TestClockStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TestClockStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TestClockStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TestClockStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TestClockStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TestClockStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TestClockStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for TestClock {

@@ -98,8 +98,7 @@ impl<'a> ListDispute<'a> {
     }
 }
 /// Select Issuing disputes with the given status.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListDisputeStatus {
     Expired,
     Lost,
@@ -120,6 +119,21 @@ impl ListDisputeStatus {
     }
 }
 
+impl std::str::FromStr for ListDisputeStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "expired" => Ok(Self::Expired),
+            "lost" => Ok(Self::Lost),
+            "submitted" => Ok(Self::Submitted),
+            "unsubmitted" => Ok(Self::Unsubmitted),
+            "won" => Ok(Self::Won),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListDisputeStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -129,6 +143,14 @@ impl AsRef<str> for ListDisputeStatus {
 impl std::fmt::Display for ListDisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListDisputeStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -240,8 +262,7 @@ impl<'a> CreateDisputeEvidenceCanceled<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceCanceledProductType {
     Merchandise,
     Service,
@@ -252,6 +273,18 @@ impl CreateDisputeEvidenceCanceledProductType {
         match self {
             Self::Merchandise => "merchandise",
             Self::Service => "service",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateDisputeEvidenceCanceledProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
         }
     }
 }
@@ -267,9 +300,16 @@ impl std::fmt::Display for CreateDisputeEvidenceCanceledProductType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateDisputeEvidenceCanceledProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceCanceledReturnStatus {
     MerchantRejected,
     Successful,
@@ -284,6 +324,18 @@ impl CreateDisputeEvidenceCanceledReturnStatus {
     }
 }
 
+impl std::str::FromStr for CreateDisputeEvidenceCanceledReturnStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchant_rejected" => Ok(Self::MerchantRejected),
+            "successful" => Ok(Self::Successful),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateDisputeEvidenceCanceledReturnStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -293,6 +345,14 @@ impl AsRef<str> for CreateDisputeEvidenceCanceledReturnStatus {
 impl std::fmt::Display for CreateDisputeEvidenceCanceledReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateDisputeEvidenceCanceledReturnStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'duplicate'.
@@ -367,8 +427,7 @@ impl<'a> CreateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     MerchantRejected,
     Successful,
@@ -383,6 +442,18 @@ impl CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     }
 }
 
+impl std::str::FromStr for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchant_rejected" => Ok(Self::MerchantRejected),
+            "successful" => Ok(Self::Successful),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -392,6 +463,14 @@ impl AsRef<str> for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
 impl std::fmt::Display for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
@@ -419,8 +498,7 @@ impl<'a> CreateDisputeEvidenceNotReceived<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceNotReceivedProductType {
     Merchandise,
     Service,
@@ -435,6 +513,18 @@ impl CreateDisputeEvidenceNotReceivedProductType {
     }
 }
 
+impl std::str::FromStr for CreateDisputeEvidenceNotReceivedProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateDisputeEvidenceNotReceivedProductType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -444,6 +534,14 @@ impl AsRef<str> for CreateDisputeEvidenceNotReceivedProductType {
 impl std::fmt::Display for CreateDisputeEvidenceNotReceivedProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateDisputeEvidenceNotReceivedProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -468,8 +566,7 @@ impl<'a> CreateDisputeEvidenceOther<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceOtherProductType {
     Merchandise,
     Service,
@@ -480,6 +577,18 @@ impl CreateDisputeEvidenceOtherProductType {
         match self {
             Self::Merchandise => "merchandise",
             Self::Service => "service",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateDisputeEvidenceOtherProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
         }
     }
 }
@@ -495,11 +604,18 @@ impl std::fmt::Display for CreateDisputeEvidenceOtherProductType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateDisputeEvidenceOtherProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The reason for filing the dispute.
 ///
 /// The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateDisputeEvidenceReason {
     Canceled,
     Duplicate,
@@ -524,6 +640,23 @@ impl CreateDisputeEvidenceReason {
     }
 }
 
+impl std::str::FromStr for CreateDisputeEvidenceReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
+            "not_received" => Ok(Self::NotReceived),
+            "other" => Ok(Self::Other),
+            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateDisputeEvidenceReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -533,6 +666,14 @@ impl AsRef<str> for CreateDisputeEvidenceReason {
 impl std::fmt::Display for CreateDisputeEvidenceReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateDisputeEvidenceReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'service_not_as_described'.
@@ -669,8 +810,7 @@ impl<'a> UpdateDisputeEvidenceCanceled<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceCanceledProductType {
     Merchandise,
     Service,
@@ -681,6 +821,18 @@ impl UpdateDisputeEvidenceCanceledProductType {
         match self {
             Self::Merchandise => "merchandise",
             Self::Service => "service",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateDisputeEvidenceCanceledProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
         }
     }
 }
@@ -696,9 +848,16 @@ impl std::fmt::Display for UpdateDisputeEvidenceCanceledProductType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateDisputeEvidenceCanceledProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceCanceledReturnStatus {
     MerchantRejected,
     Successful,
@@ -713,6 +872,18 @@ impl UpdateDisputeEvidenceCanceledReturnStatus {
     }
 }
 
+impl std::str::FromStr for UpdateDisputeEvidenceCanceledReturnStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchant_rejected" => Ok(Self::MerchantRejected),
+            "successful" => Ok(Self::Successful),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateDisputeEvidenceCanceledReturnStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -722,6 +893,14 @@ impl AsRef<str> for UpdateDisputeEvidenceCanceledReturnStatus {
 impl std::fmt::Display for UpdateDisputeEvidenceCanceledReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateDisputeEvidenceCanceledReturnStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'duplicate'.
@@ -796,8 +975,7 @@ impl<'a> UpdateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     MerchantRejected,
     Successful,
@@ -812,6 +990,18 @@ impl UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     }
 }
 
+impl std::str::FromStr for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchant_rejected" => Ok(Self::MerchantRejected),
+            "successful" => Ok(Self::Successful),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -821,6 +1011,14 @@ impl AsRef<str> for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
 impl std::fmt::Display for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
@@ -848,8 +1046,7 @@ impl<'a> UpdateDisputeEvidenceNotReceived<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceNotReceivedProductType {
     Merchandise,
     Service,
@@ -864,6 +1061,18 @@ impl UpdateDisputeEvidenceNotReceivedProductType {
     }
 }
 
+impl std::str::FromStr for UpdateDisputeEvidenceNotReceivedProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateDisputeEvidenceNotReceivedProductType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -873,6 +1082,14 @@ impl AsRef<str> for UpdateDisputeEvidenceNotReceivedProductType {
 impl std::fmt::Display for UpdateDisputeEvidenceNotReceivedProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateDisputeEvidenceNotReceivedProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -897,8 +1114,7 @@ impl<'a> UpdateDisputeEvidenceOther<'a> {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceOtherProductType {
     Merchandise,
     Service,
@@ -909,6 +1125,18 @@ impl UpdateDisputeEvidenceOtherProductType {
         match self {
             Self::Merchandise => "merchandise",
             Self::Service => "service",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateDisputeEvidenceOtherProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
         }
     }
 }
@@ -924,11 +1152,18 @@ impl std::fmt::Display for UpdateDisputeEvidenceOtherProductType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateDisputeEvidenceOtherProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The reason for filing the dispute.
 ///
 /// The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateDisputeEvidenceReason {
     Canceled,
     Duplicate,
@@ -953,6 +1188,23 @@ impl UpdateDisputeEvidenceReason {
     }
 }
 
+impl std::str::FromStr for UpdateDisputeEvidenceReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
+            "not_received" => Ok(Self::NotReceived),
+            "other" => Ok(Self::Other),
+            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateDisputeEvidenceReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -962,6 +1214,14 @@ impl AsRef<str> for UpdateDisputeEvidenceReason {
 impl std::fmt::Display for UpdateDisputeEvidenceReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateDisputeEvidenceReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Evidence provided when `reason` is 'service_not_as_described'.

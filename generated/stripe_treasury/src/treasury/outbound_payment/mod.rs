@@ -76,12 +76,8 @@ impl miniserde::Deserialize for OutboundPayment {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OutboundPaymentObject {
-    #[serde(rename = "treasury.outbound_payment")]
     TreasuryOutboundPayment,
 }
 
@@ -89,6 +85,17 @@ impl OutboundPaymentObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryOutboundPayment => "treasury.outbound_payment",
+        }
+    }
+}
+
+impl std::str::FromStr for OutboundPaymentObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.outbound_payment" => Ok(Self::TreasuryOutboundPayment),
+
+            _ => Err(()),
         }
     }
 }
@@ -104,15 +111,44 @@ impl std::fmt::Display for OutboundPaymentObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for OutboundPaymentObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for OutboundPaymentObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for OutboundPaymentObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for OutboundPaymentObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<OutboundPaymentObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(OutboundPaymentObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Current status of the OutboundPayment: `processing`, `failed`, `posted`, `returned`, `canceled`.
 ///
 /// An OutboundPayment is `processing` if it has been created and is pending.
 /// The status changes to `posted` once the OutboundPayment has been "confirmed" and funds have left the account, or to `failed` or `canceled`.
 /// If an OutboundPayment fails to arrive at its destination, its status will change to `returned`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OutboundPaymentStatus {
     Canceled,
     Failed,
@@ -133,6 +169,21 @@ impl OutboundPaymentStatus {
     }
 }
 
+impl std::str::FromStr for OutboundPaymentStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "failed" => Ok(Self::Failed),
+            "posted" => Ok(Self::Posted),
+            "processing" => Ok(Self::Processing),
+            "returned" => Ok(Self::Returned),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for OutboundPaymentStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -142,6 +193,38 @@ impl AsRef<str> for OutboundPaymentStatus {
 impl std::fmt::Display for OutboundPaymentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for OutboundPaymentStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for OutboundPaymentStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for OutboundPaymentStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for OutboundPaymentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<OutboundPaymentStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(OutboundPaymentStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for OutboundPayment {

@@ -224,8 +224,7 @@ impl CreateQuoteAutomaticTax {
 /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or at invoice finalization using the default payment method attached to the subscription or customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateQuoteCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -240,6 +239,18 @@ impl CreateQuoteCollectionMethod {
     }
 }
 
+impl std::str::FromStr for CreateQuoteCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateQuoteCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -249,6 +260,14 @@ impl AsRef<str> for CreateQuoteCollectionMethod {
 impl std::fmt::Display for CreateQuoteCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateQuoteCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The discounts applied to the quote.
@@ -391,8 +410,7 @@ impl CreateQuoteLineItemsPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateQuoteLineItemsPriceDataRecurringInterval {
     Day,
     Month,
@@ -411,6 +429,20 @@ impl CreateQuoteLineItemsPriceDataRecurringInterval {
     }
 }
 
+impl std::str::FromStr for CreateQuoteLineItemsPriceDataRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateQuoteLineItemsPriceDataRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -422,12 +454,19 @@ impl std::fmt::Display for CreateQuoteLineItemsPriceDataRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateQuoteLineItemsPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateQuoteLineItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -444,6 +483,19 @@ impl CreateQuoteLineItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateQuoteLineItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateQuoteLineItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -453,6 +505,14 @@ impl AsRef<str> for CreateQuoteLineItemsPriceDataTaxBehavior {
 impl std::fmt::Display for CreateQuoteLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateQuoteLineItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
@@ -620,8 +680,7 @@ impl UpdateQuoteAutomaticTax {
 /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or at invoice finalization using the default payment method attached to the subscription or customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateQuoteCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -636,6 +695,18 @@ impl UpdateQuoteCollectionMethod {
     }
 }
 
+impl std::str::FromStr for UpdateQuoteCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateQuoteCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -645,6 +716,14 @@ impl AsRef<str> for UpdateQuoteCollectionMethod {
 impl std::fmt::Display for UpdateQuoteCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateQuoteCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The discounts applied to the quote.
@@ -773,8 +852,7 @@ impl UpdateQuoteLineItemsPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateQuoteLineItemsPriceDataRecurringInterval {
     Day,
     Month,
@@ -793,6 +871,20 @@ impl UpdateQuoteLineItemsPriceDataRecurringInterval {
     }
 }
 
+impl std::str::FromStr for UpdateQuoteLineItemsPriceDataRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateQuoteLineItemsPriceDataRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -804,12 +896,19 @@ impl std::fmt::Display for UpdateQuoteLineItemsPriceDataRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateQuoteLineItemsPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateQuoteLineItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -826,6 +925,19 @@ impl UpdateQuoteLineItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateQuoteLineItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateQuoteLineItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -835,6 +947,14 @@ impl AsRef<str> for UpdateQuoteLineItemsPriceDataTaxBehavior {
 impl std::fmt::Display for UpdateQuoteLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateQuoteLineItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
@@ -977,8 +1097,7 @@ impl<'a> ListQuote<'a> {
     }
 }
 /// The status of the quote.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListQuoteStatus {
     Accepted,
     Canceled,
@@ -997,6 +1116,20 @@ impl ListQuoteStatus {
     }
 }
 
+impl std::str::FromStr for ListQuoteStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "accepted" => Ok(Self::Accepted),
+            "canceled" => Ok(Self::Canceled),
+            "draft" => Ok(Self::Draft),
+            "open" => Ok(Self::Open),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListQuoteStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1006,6 +1139,14 @@ impl AsRef<str> for ListQuoteStatus {
 impl std::fmt::Display for ListQuoteStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListQuoteStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]

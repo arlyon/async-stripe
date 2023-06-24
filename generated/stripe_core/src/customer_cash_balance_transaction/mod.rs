@@ -59,10 +59,7 @@ impl miniserde::Deserialize for CustomerCashBalanceTransaction {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CustomerCashBalanceTransactionObject {
     CustomerCashBalanceTransaction,
 }
@@ -71,6 +68,17 @@ impl CustomerCashBalanceTransactionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::CustomerCashBalanceTransaction => "customer_cash_balance_transaction",
+        }
+    }
+}
+
+impl std::str::FromStr for CustomerCashBalanceTransactionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "customer_cash_balance_transaction" => Ok(Self::CustomerCashBalanceTransaction),
+
+            _ => Err(()),
         }
     }
 }
@@ -86,15 +94,45 @@ impl std::fmt::Display for CustomerCashBalanceTransactionObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CustomerCashBalanceTransactionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionObject")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerCashBalanceTransactionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CustomerCashBalanceTransactionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerCashBalanceTransactionObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The type of the cash balance transaction.
 ///
 /// One of `applied_to_payment`, `unapplied_from_payment`, `refunded_from_payment`, `funded`, `return_initiated`, or `return_canceled`.
 /// New types may be added in future.
 /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CustomerCashBalanceTransactionType {
     AppliedToPayment,
     Funded,
@@ -117,6 +155,22 @@ impl CustomerCashBalanceTransactionType {
     }
 }
 
+impl std::str::FromStr for CustomerCashBalanceTransactionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "applied_to_payment" => Ok(Self::AppliedToPayment),
+            "funded" => Ok(Self::Funded),
+            "refunded_from_payment" => Ok(Self::RefundedFromPayment),
+            "return_canceled" => Ok(Self::ReturnCanceled),
+            "return_initiated" => Ok(Self::ReturnInitiated),
+            "unapplied_from_payment" => Ok(Self::UnappliedFromPayment),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CustomerCashBalanceTransactionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -126,6 +180,39 @@ impl AsRef<str> for CustomerCashBalanceTransactionType {
 impl std::fmt::Display for CustomerCashBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CustomerCashBalanceTransactionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionType")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerCashBalanceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerCashBalanceTransactionType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for CustomerCashBalanceTransaction {

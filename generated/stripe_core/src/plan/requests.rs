@@ -202,8 +202,7 @@ impl<'a> CreatePlan<'a> {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -222,6 +221,20 @@ impl CreatePlanAggregateUsage {
     }
 }
 
+impl std::str::FromStr for CreatePlanAggregateUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "last_during_period" => Ok(Self::LastDuringPeriod),
+            "last_ever" => Ok(Self::LastEver),
+            "max" => Ok(Self::Max),
+            "sum" => Ok(Self::Sum),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePlanAggregateUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -233,13 +246,20 @@ impl std::fmt::Display for CreatePlanAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePlanAggregateUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Describes how to compute the price per period.
 ///
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanBillingScheme {
     PerUnit,
     Tiered,
@@ -250,6 +270,18 @@ impl CreatePlanBillingScheme {
         match self {
             Self::PerUnit => "per_unit",
             Self::Tiered => "tiered",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePlanBillingScheme {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "per_unit" => Ok(Self::PerUnit),
+            "tiered" => Ok(Self::Tiered),
+
+            _ => Err(()),
         }
     }
 }
@@ -265,11 +297,18 @@ impl std::fmt::Display for CreatePlanBillingScheme {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePlanBillingScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanInterval {
     Day,
     Month,
@@ -288,6 +327,20 @@ impl CreatePlanInterval {
     }
 }
 
+impl std::str::FromStr for CreatePlanInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePlanInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -297,6 +350,14 @@ impl AsRef<str> for CreatePlanInterval {
 impl std::fmt::Display for CreatePlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -408,8 +469,7 @@ pub enum CreatePlanTiersUpTo {
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanTiersMode {
     Graduated,
     Volume,
@@ -424,6 +484,18 @@ impl CreatePlanTiersMode {
     }
 }
 
+impl std::str::FromStr for CreatePlanTiersMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "graduated" => Ok(Self::Graduated),
+            "volume" => Ok(Self::Volume),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePlanTiersMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -433,6 +505,14 @@ impl AsRef<str> for CreatePlanTiersMode {
 impl std::fmt::Display for CreatePlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePlanTiersMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
@@ -451,8 +531,7 @@ impl CreatePlanTransformUsage {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanTransformUsageRound {
     Down,
     Up,
@@ -463,6 +542,18 @@ impl CreatePlanTransformUsageRound {
         match self {
             Self::Down => "down",
             Self::Up => "up",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePlanTransformUsageRound {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "down" => Ok(Self::Down),
+            "up" => Ok(Self::Up),
+
+            _ => Err(()),
         }
     }
 }
@@ -478,14 +569,21 @@ impl std::fmt::Display for CreatePlanTransformUsageRound {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePlanTransformUsageRound {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Configures how the quantity per period should be determined.
 ///
 /// Can be either `metered` or `licensed`.
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePlanUsageType {
     Licensed,
     Metered,
@@ -500,6 +598,18 @@ impl CreatePlanUsageType {
     }
 }
 
+impl std::str::FromStr for CreatePlanUsageType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "licensed" => Ok(Self::Licensed),
+            "metered" => Ok(Self::Metered),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePlanUsageType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -509,6 +619,14 @@ impl AsRef<str> for CreatePlanUsageType {
 impl std::fmt::Display for CreatePlanUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePlanUsageType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

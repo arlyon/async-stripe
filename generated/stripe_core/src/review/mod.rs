@@ -58,10 +58,7 @@ impl miniserde::Deserialize for Review {
 /// The reason the review was closed, or null if it has not yet been closed.
 ///
 /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReviewClosedReason {
     Approved,
     Disputed,
@@ -82,6 +79,21 @@ impl ReviewClosedReason {
     }
 }
 
+impl std::str::FromStr for ReviewClosedReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "approved" => Ok(Self::Approved),
+            "disputed" => Ok(Self::Disputed),
+            "redacted" => Ok(Self::Redacted),
+            "refunded" => Ok(Self::Refunded),
+            "refunded_as_fraud" => Ok(Self::RefundedAsFraud),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReviewClosedReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -93,13 +105,42 @@ impl std::fmt::Display for ReviewClosedReason {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReviewClosedReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReviewClosedReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReviewClosedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReviewClosedReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReviewClosedReason::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReviewObject {
     Review,
 }
@@ -108,6 +149,17 @@ impl ReviewObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Review => "review",
+        }
+    }
+}
+
+impl std::str::FromStr for ReviewObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "review" => Ok(Self::Review),
+
+            _ => Err(()),
         }
     }
 }
@@ -123,13 +175,41 @@ impl std::fmt::Display for ReviewObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReviewObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReviewObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReviewObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReviewObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReviewObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReviewObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The reason the review was opened.
 ///
 /// One of `rule` or `manual`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReviewOpenedReason {
     Manual,
     Rule,
@@ -144,6 +224,18 @@ impl ReviewOpenedReason {
     }
 }
 
+impl std::str::FromStr for ReviewOpenedReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+            "rule" => Ok(Self::Rule),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReviewOpenedReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -153,6 +245,38 @@ impl AsRef<str> for ReviewOpenedReason {
 impl std::fmt::Display for ReviewOpenedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReviewOpenedReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReviewOpenedReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReviewOpenedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReviewOpenedReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReviewOpenedReason::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Review {

@@ -40,10 +40,7 @@ impl miniserde::Deserialize for Shipping {
 }
 
 /// The delivery company that shipped a card.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingCarrier {
     Dhl,
     Fedex,
@@ -62,6 +59,20 @@ impl ShippingCarrier {
     }
 }
 
+impl std::str::FromStr for ShippingCarrier {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "dhl" => Ok(Self::Dhl),
+            "fedex" => Ok(Self::Fedex),
+            "royal_mail" => Ok(Self::RoyalMail),
+            "usps" => Ok(Self::Usps),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingCarrier {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -73,11 +84,40 @@ impl std::fmt::Display for ShippingCarrier {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ShippingCarrier {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingCarrier {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingCarrier"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingCarrier {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingCarrier> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingCarrier::from_str(s)?);
+        Ok(())
+    }
+}
 /// Shipment service, such as `standard` or `express`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingService {
     Express,
     Priority,
@@ -94,6 +134,19 @@ impl ShippingService {
     }
 }
 
+impl std::str::FromStr for ShippingService {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "express" => Ok(Self::Express),
+            "priority" => Ok(Self::Priority),
+            "standard" => Ok(Self::Standard),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingService {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -105,11 +158,40 @@ impl std::fmt::Display for ShippingService {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ShippingService {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingService {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingService"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingService {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingService> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingService::from_str(s)?);
+        Ok(())
+    }
+}
 /// The delivery status of the card.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingStatus {
     Canceled,
     Delivered,
@@ -132,6 +214,22 @@ impl ShippingStatus {
     }
 }
 
+impl std::str::FromStr for ShippingStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "delivered" => Ok(Self::Delivered),
+            "failure" => Ok(Self::Failure),
+            "pending" => Ok(Self::Pending),
+            "returned" => Ok(Self::Returned),
+            "shipped" => Ok(Self::Shipped),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -143,11 +241,39 @@ impl std::fmt::Display for ShippingStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ShippingStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// Packaging options.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingType {
     Bulk,
     Individual,
@@ -162,6 +288,18 @@ impl ShippingType {
     }
 }
 
+impl std::str::FromStr for ShippingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bulk" => Ok(Self::Bulk),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -171,6 +309,37 @@ impl AsRef<str> for ShippingType {
 impl std::fmt::Display for ShippingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ShippingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingType::from_str(s)?);
+        Ok(())
     }
 }
 pub mod customs;

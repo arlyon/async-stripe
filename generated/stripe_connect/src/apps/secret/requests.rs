@@ -67,8 +67,7 @@ impl<'a> FindSecretScope<'a> {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FindSecretScopeType {
     Account,
     User,
@@ -83,6 +82,18 @@ impl FindSecretScopeType {
     }
 }
 
+impl std::str::FromStr for FindSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+            "user" => Ok(Self::User),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FindSecretScopeType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -92,6 +103,14 @@ impl AsRef<str> for FindSecretScopeType {
 impl std::fmt::Display for FindSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for FindSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -136,8 +155,7 @@ impl<'a> CreateSecretScope<'a> {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSecretScopeType {
     Account,
     User,
@@ -152,6 +170,18 @@ impl CreateSecretScopeType {
     }
 }
 
+impl std::str::FromStr for CreateSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+            "user" => Ok(Self::User),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSecretScopeType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -161,6 +191,14 @@ impl AsRef<str> for CreateSecretScopeType {
 impl std::fmt::Display for CreateSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -200,8 +238,7 @@ impl<'a> DeleteWhereSecretScope<'a> {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DeleteWhereSecretScopeType {
     Account,
     User,
@@ -216,6 +253,18 @@ impl DeleteWhereSecretScopeType {
     }
 }
 
+impl std::str::FromStr for DeleteWhereSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+            "user" => Ok(Self::User),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for DeleteWhereSecretScopeType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -225,6 +274,14 @@ impl AsRef<str> for DeleteWhereSecretScopeType {
 impl std::fmt::Display for DeleteWhereSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for DeleteWhereSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -285,8 +342,7 @@ impl<'a> ListSecretScope<'a> {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListSecretScopeType {
     Account,
     User,
@@ -301,6 +357,18 @@ impl ListSecretScopeType {
     }
 }
 
+impl std::str::FromStr for ListSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+            "user" => Ok(Self::User),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListSecretScopeType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -310,5 +378,13 @@ impl AsRef<str> for ListSecretScopeType {
 impl std::fmt::Display for ListSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

@@ -150,8 +150,7 @@ impl<'a> CreateTaxRate<'a> {
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTaxRateTaxType {
     Gst,
     Hst,
@@ -178,6 +177,24 @@ impl CreateTaxRateTaxType {
     }
 }
 
+impl std::str::FromStr for CreateTaxRateTaxType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "gst" => Ok(Self::Gst),
+            "hst" => Ok(Self::Hst),
+            "jct" => Ok(Self::Jct),
+            "pst" => Ok(Self::Pst),
+            "qst" => Ok(Self::Qst),
+            "rst" => Ok(Self::Rst),
+            "sales_tax" => Ok(Self::SalesTax),
+            "vat" => Ok(Self::Vat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateTaxRateTaxType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -187,6 +204,14 @@ impl AsRef<str> for CreateTaxRateTaxType {
 impl std::fmt::Display for CreateTaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateTaxRateTaxType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -238,8 +263,7 @@ impl<'a> UpdateTaxRate<'a> {
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateTaxRateTaxType {
     Gst,
     Hst,
@@ -266,6 +290,24 @@ impl UpdateTaxRateTaxType {
     }
 }
 
+impl std::str::FromStr for UpdateTaxRateTaxType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "gst" => Ok(Self::Gst),
+            "hst" => Ok(Self::Hst),
+            "jct" => Ok(Self::Jct),
+            "pst" => Ok(Self::Pst),
+            "qst" => Ok(Self::Qst),
+            "rst" => Ok(Self::Rst),
+            "sales_tax" => Ok(Self::SalesTax),
+            "vat" => Ok(Self::Vat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateTaxRateTaxType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -275,5 +317,13 @@ impl AsRef<str> for UpdateTaxRateTaxType {
 impl std::fmt::Display for UpdateTaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateTaxRateTaxType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

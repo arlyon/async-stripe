@@ -122,10 +122,7 @@ impl miniserde::Deserialize for Customer {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CustomerObject {
     Customer,
 }
@@ -134,6 +131,17 @@ impl CustomerObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Customer => "customer",
+        }
+    }
+}
+
+impl std::str::FromStr for CustomerObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "customer" => Ok(Self::Customer),
+
+            _ => Err(()),
         }
     }
 }
@@ -149,14 +157,42 @@ impl std::fmt::Display for CustomerObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CustomerObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CustomerObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Describes the customer's tax exemption status.
 ///
 /// One of `none`, `exempt`, or `reverse`.
 /// When set to `reverse`, invoice and receipt PDFs include the text **"Reverse charge"**.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CustomerTaxExempt {
     Exempt,
     None,
@@ -173,6 +209,19 @@ impl CustomerTaxExempt {
     }
 }
 
+impl std::str::FromStr for CustomerTaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CustomerTaxExempt {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -182,6 +231,38 @@ impl AsRef<str> for CustomerTaxExempt {
 impl std::fmt::Display for CustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CustomerTaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CustomerTaxExempt> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerTaxExempt::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Customer {

@@ -53,10 +53,7 @@ impl miniserde::Deserialize for DefaultSettings {
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
 /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DefaultSettingsBillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -67,6 +64,18 @@ impl DefaultSettingsBillingCycleAnchor {
         match self {
             Self::Automatic => "automatic",
             Self::PhaseStart => "phase_start",
+        }
+    }
+}
+
+impl std::str::FromStr for DefaultSettingsBillingCycleAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "phase_start" => Ok(Self::PhaseStart),
+
+            _ => Err(()),
         }
     }
 }
@@ -82,14 +91,44 @@ impl std::fmt::Display for DefaultSettingsBillingCycleAnchor {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for DefaultSettingsBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DefaultSettingsBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for DefaultSettingsBillingCycleAnchor")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DefaultSettingsBillingCycleAnchor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DefaultSettingsBillingCycleAnchor> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DefaultSettingsBillingCycleAnchor::from_str(s)?);
+        Ok(())
+    }
+}
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DefaultSettingsCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -104,6 +143,18 @@ impl DefaultSettingsCollectionMethod {
     }
 }
 
+impl std::str::FromStr for DefaultSettingsCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for DefaultSettingsCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -113,6 +164,39 @@ impl AsRef<str> for DefaultSettingsCollectionMethod {
 impl std::fmt::Display for DefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for DefaultSettingsCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DefaultSettingsCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for DefaultSettingsCollectionMethod")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DefaultSettingsCollectionMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DefaultSettingsCollectionMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DefaultSettingsCollectionMethod::from_str(s)?);
+        Ok(())
     }
 }
 pub mod automatic_tax;

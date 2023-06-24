@@ -83,10 +83,7 @@ impl miniserde::Deserialize for PaymentLink {
 }
 
 /// Configuration for collecting the customer's billing address.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkBillingAddressCollection {
     Auto,
     Required,
@@ -97,6 +94,18 @@ impl PaymentLinkBillingAddressCollection {
         match self {
             Self::Auto => "auto",
             Self::Required => "required",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentLinkBillingAddressCollection {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "required" => Ok(Self::Required),
+
+            _ => Err(()),
         }
     }
 }
@@ -112,11 +121,41 @@ impl std::fmt::Display for PaymentLinkBillingAddressCollection {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentLinkBillingAddressCollection {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkBillingAddressCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkBillingAddressCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkBillingAddressCollection::from_str(s)?);
+        Ok(())
+    }
+}
 /// Configuration for Customer creation during checkout.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkCustomerCreation {
     Always,
     IfRequired,
@@ -127,6 +166,18 @@ impl PaymentLinkCustomerCreation {
         match self {
             Self::Always => "always",
             Self::IfRequired => "if_required",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentLinkCustomerCreation {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always" => Ok(Self::Always),
+            "if_required" => Ok(Self::IfRequired),
+
+            _ => Err(()),
         }
     }
 }
@@ -142,13 +193,42 @@ impl std::fmt::Display for PaymentLinkCustomerCreation {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentLinkCustomerCreation {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkCustomerCreation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkCustomerCreation> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkCustomerCreation::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkObject {
     PaymentLink,
 }
@@ -157,6 +237,17 @@ impl PaymentLinkObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::PaymentLink => "payment_link",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentLinkObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "payment_link" => Ok(Self::PaymentLink),
+
+            _ => Err(()),
         }
     }
 }
@@ -172,11 +263,40 @@ impl std::fmt::Display for PaymentLinkObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentLinkObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Configuration for collecting a payment method during checkout.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkPaymentMethodCollection {
     Always,
     IfRequired,
@@ -187,6 +307,18 @@ impl PaymentLinkPaymentMethodCollection {
         match self {
             Self::Always => "always",
             Self::IfRequired => "if_required",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always" => Ok(Self::Always),
+            "if_required" => Ok(Self::IfRequired),
+
+            _ => Err(()),
         }
     }
 }
@@ -202,13 +334,43 @@ impl std::fmt::Display for PaymentLinkPaymentMethodCollection {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentLinkPaymentMethodCollection {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkPaymentMethodCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkPaymentMethodCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkPaymentMethodCollection::from_str(s)?);
+        Ok(())
+    }
+}
 /// The list of payment method types that customers can use.
 ///
 /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkPaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
@@ -269,6 +431,41 @@ impl PaymentLinkPaymentMethodTypes {
     }
 }
 
+impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "card" => Ok(Self::Card),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PaymentLinkPaymentMethodTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -280,11 +477,41 @@ impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PaymentLinkPaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s)?);
+        Ok(())
+    }
+}
 /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentLinkSubmitType {
     Auto,
     Book,
@@ -303,6 +530,20 @@ impl PaymentLinkSubmitType {
     }
 }
 
+impl std::str::FromStr for PaymentLinkSubmitType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "book" => Ok(Self::Book),
+            "donate" => Ok(Self::Donate),
+            "pay" => Ok(Self::Pay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PaymentLinkSubmitType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -312,6 +553,38 @@ impl AsRef<str> for PaymentLinkSubmitType {
 impl std::fmt::Display for PaymentLinkSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PaymentLinkSubmitType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentLinkSubmitType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PaymentLinkSubmitType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentLinkSubmitType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for PaymentLink {

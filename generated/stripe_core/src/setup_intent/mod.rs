@@ -113,10 +113,7 @@ impl miniserde::Deserialize for SetupIntent {
 }
 
 /// Reason for cancellation of this SetupIntent, one of `abandoned`, `requested_by_customer`, or `duplicate`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupIntentCancellationReason {
     Abandoned,
     Duplicate,
@@ -133,6 +130,19 @@ impl SetupIntentCancellationReason {
     }
 }
 
+impl std::str::FromStr for SetupIntentCancellationReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abandoned" => Ok(Self::Abandoned),
+            "duplicate" => Ok(Self::Duplicate),
+            "requested_by_customer" => Ok(Self::RequestedByCustomer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SetupIntentCancellationReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -144,16 +154,46 @@ impl std::fmt::Display for SetupIntentCancellationReason {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SetupIntentCancellationReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupIntentCancellationReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentCancellationReason::from_str(s)?);
+        Ok(())
+    }
+}
 /// Indicates the directions of money movement for which this payment method is intended to be used.
 ///
 /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
 ///
 /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
 /// You can include both if you intend to use the payment method for both purposes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupIntentFlowDirections {
     Inbound,
     Outbound,
@@ -164,6 +204,18 @@ impl SetupIntentFlowDirections {
         match self {
             Self::Inbound => "inbound",
             Self::Outbound => "outbound",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupIntentFlowDirections {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "inbound" => Ok(Self::Inbound),
+            "outbound" => Ok(Self::Outbound),
+
+            _ => Err(()),
         }
     }
 }
@@ -179,13 +231,42 @@ impl std::fmt::Display for SetupIntentFlowDirections {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SetupIntentFlowDirections {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentFlowDirections"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentFlowDirections {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupIntentFlowDirections> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentFlowDirections::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupIntentObject {
     SetupIntent,
 }
@@ -194,6 +275,17 @@ impl SetupIntentObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SetupIntent => "setup_intent",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupIntentObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "setup_intent" => Ok(Self::SetupIntent),
+
+            _ => Err(()),
         }
     }
 }
@@ -209,11 +301,40 @@ impl std::fmt::Display for SetupIntentObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SetupIntentObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupIntentObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupIntentObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// [Status](https://stripe.com/docs/payments/intents#intent-statuses) of this SetupIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `canceled`, or `succeeded`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupIntentStatus {
     Canceled,
     Processing,
@@ -236,6 +357,22 @@ impl SetupIntentStatus {
     }
 }
 
+impl std::str::FromStr for SetupIntentStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "processing" => Ok(Self::Processing),
+            "requires_action" => Ok(Self::RequiresAction),
+            "requires_confirmation" => Ok(Self::RequiresConfirmation),
+            "requires_payment_method" => Ok(Self::RequiresPaymentMethod),
+            "succeeded" => Ok(Self::Succeeded),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SetupIntentStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -245,6 +382,38 @@ impl AsRef<str> for SetupIntentStatus {
 impl std::fmt::Display for SetupIntentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SetupIntentStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupIntentStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for SetupIntent {

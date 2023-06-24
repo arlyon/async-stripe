@@ -86,8 +86,7 @@ impl<'a> ListTransaction<'a> {
 /// The results are in reverse chronological order by `created` or `posted_at`.
 ///
 /// The default is `created`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListTransactionOrderBy {
     Created,
     PostedAt,
@@ -98,6 +97,18 @@ impl ListTransactionOrderBy {
         match self {
             Self::Created => "created",
             Self::PostedAt => "posted_at",
+        }
+    }
+}
+
+impl std::str::FromStr for ListTransactionOrderBy {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "created" => Ok(Self::Created),
+            "posted_at" => Ok(Self::PostedAt),
+
+            _ => Err(()),
         }
     }
 }
@@ -113,9 +124,16 @@ impl std::fmt::Display for ListTransactionOrderBy {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListTransactionOrderBy {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Only return Transactions that have the given status: `open`, `posted`, or `void`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListTransactionStatus {
     Open,
     Posted,
@@ -132,6 +150,19 @@ impl ListTransactionStatus {
     }
 }
 
+impl std::str::FromStr for ListTransactionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "open" => Ok(Self::Open),
+            "posted" => Ok(Self::Posted),
+            "void" => Ok(Self::Void),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListTransactionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -141,6 +172,14 @@ impl AsRef<str> for ListTransactionStatus {
 impl std::fmt::Display for ListTransactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListTransactionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// A filter for the `status_transitions.posted_at` timestamp.

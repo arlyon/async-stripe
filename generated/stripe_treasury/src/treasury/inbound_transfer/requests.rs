@@ -197,8 +197,7 @@ impl<'a> ListInboundTransfer<'a> {
     }
 }
 /// Only return InboundTransfers that have the given status: `processing`, `succeeded`, `failed` or `canceled`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListInboundTransferStatus {
     Canceled,
     Failed,
@@ -217,6 +216,20 @@ impl ListInboundTransferStatus {
     }
 }
 
+impl std::str::FromStr for ListInboundTransferStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "failed" => Ok(Self::Failed),
+            "processing" => Ok(Self::Processing),
+            "succeeded" => Ok(Self::Succeeded),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListInboundTransferStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -226,6 +239,14 @@ impl AsRef<str> for ListInboundTransferStatus {
 impl std::fmt::Display for ListInboundTransferStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListInboundTransferStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -266,8 +287,7 @@ impl FailInboundTransferFailureDetails {
     }
 }
 /// Reason for the failure.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FailInboundTransferFailureDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -304,6 +324,29 @@ impl FailInboundTransferFailureDetailsCode {
     }
 }
 
+impl std::str::FromStr for FailInboundTransferFailureDetailsCode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_closed" => Ok(Self::AccountClosed),
+            "account_frozen" => Ok(Self::AccountFrozen),
+            "bank_account_restricted" => Ok(Self::BankAccountRestricted),
+            "bank_ownership_changed" => Ok(Self::BankOwnershipChanged),
+            "debit_not_authorized" => Ok(Self::DebitNotAuthorized),
+            "incorrect_account_holder_address" => Ok(Self::IncorrectAccountHolderAddress),
+            "incorrect_account_holder_name" => Ok(Self::IncorrectAccountHolderName),
+            "incorrect_account_holder_tax_id" => Ok(Self::IncorrectAccountHolderTaxId),
+            "insufficient_funds" => Ok(Self::InsufficientFunds),
+            "invalid_account_number" => Ok(Self::InvalidAccountNumber),
+            "invalid_currency" => Ok(Self::InvalidCurrency),
+            "no_account" => Ok(Self::NoAccount),
+            "other" => Ok(Self::Other),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FailInboundTransferFailureDetailsCode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -313,6 +356,14 @@ impl AsRef<str> for FailInboundTransferFailureDetailsCode {
 impl std::fmt::Display for FailInboundTransferFailureDetailsCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for FailInboundTransferFailureDetailsCode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

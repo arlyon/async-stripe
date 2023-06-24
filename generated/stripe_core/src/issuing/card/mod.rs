@@ -73,10 +73,7 @@ impl miniserde::Deserialize for Card {
 }
 
 /// The reason why the card was canceled.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardCancellationReason {
     DesignRejected,
     Lost,
@@ -93,6 +90,19 @@ impl CardCancellationReason {
     }
 }
 
+impl std::str::FromStr for CardCancellationReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "design_rejected" => Ok(Self::DesignRejected),
+            "lost" => Ok(Self::Lost),
+            "stolen" => Ok(Self::Stolen),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CardCancellationReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -104,15 +114,43 @@ impl std::fmt::Display for CardCancellationReason {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CardCancellationReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardCancellationReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardCancellationReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardCancellationReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardCancellationReason::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardObject {
-    #[serde(rename = "issuing.card")]
     IssuingCard,
 }
 
@@ -120,6 +158,17 @@ impl CardObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::IssuingCard => "issuing.card",
+        }
+    }
+}
+
+impl std::str::FromStr for CardObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "issuing.card" => Ok(Self::IssuingCard),
+
+            _ => Err(()),
         }
     }
 }
@@ -135,11 +184,39 @@ impl std::fmt::Display for CardObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CardObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The reason why the previous card needed to be replaced.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardReplacementReason {
     Damaged,
     Expired,
@@ -158,6 +235,20 @@ impl CardReplacementReason {
     }
 }
 
+impl std::str::FromStr for CardReplacementReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "damaged" => Ok(Self::Damaged),
+            "expired" => Ok(Self::Expired),
+            "lost" => Ok(Self::Lost),
+            "stolen" => Ok(Self::Stolen),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CardReplacementReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -169,11 +260,40 @@ impl std::fmt::Display for CardReplacementReason {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CardReplacementReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardReplacementReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardReplacementReason"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardReplacementReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardReplacementReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardReplacementReason::from_str(s)?);
+        Ok(())
+    }
+}
 /// Whether authorizations can be approved on this card.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardStatus {
     Active,
     Canceled,
@@ -190,6 +310,19 @@ impl CardStatus {
     }
 }
 
+impl std::str::FromStr for CardStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "canceled" => Ok(Self::Canceled),
+            "inactive" => Ok(Self::Inactive),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CardStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -201,11 +334,39 @@ impl std::fmt::Display for CardStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CardStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// The type of the card.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardType {
     Physical,
     Virtual,
@@ -220,6 +381,18 @@ impl CardType {
     }
 }
 
+impl std::str::FromStr for CardType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "physical" => Ok(Self::Physical),
+            "virtual" => Ok(Self::Virtual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CardType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -229,6 +402,37 @@ impl AsRef<str> for CardType {
 impl std::fmt::Display for CardType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CardType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Card {

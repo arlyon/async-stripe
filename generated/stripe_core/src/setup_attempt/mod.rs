@@ -63,10 +63,7 @@ impl miniserde::Deserialize for SetupAttempt {
 ///
 /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
 /// You can include both if you intend to use the payment method for both purposes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupAttemptFlowDirections {
     Inbound,
     Outbound,
@@ -77,6 +74,18 @@ impl SetupAttemptFlowDirections {
         match self {
             Self::Inbound => "inbound",
             Self::Outbound => "outbound",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupAttemptFlowDirections {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "inbound" => Ok(Self::Inbound),
+            "outbound" => Ok(Self::Outbound),
+
+            _ => Err(()),
         }
     }
 }
@@ -92,13 +101,42 @@ impl std::fmt::Display for SetupAttemptFlowDirections {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SetupAttemptFlowDirections {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptFlowDirections"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupAttemptFlowDirections {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupAttemptFlowDirections> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupAttemptFlowDirections::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupAttemptObject {
     SetupAttempt,
 }
@@ -107,6 +145,17 @@ impl SetupAttemptObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SetupAttempt => "setup_attempt",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupAttemptObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "setup_attempt" => Ok(Self::SetupAttempt),
+
+            _ => Err(()),
         }
     }
 }
@@ -120,6 +169,38 @@ impl AsRef<str> for SetupAttemptObject {
 impl std::fmt::Display for SetupAttemptObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SetupAttemptObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SetupAttemptObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupAttemptObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SetupAttemptObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupAttemptObject::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for SetupAttempt {

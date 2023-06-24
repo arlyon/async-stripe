@@ -197,8 +197,7 @@ impl<'a> CreateSource<'a> {
 ///
 /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
 /// It is generally inferred unless a type supports multiple flows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceFlow {
     CodeVerification,
     None,
@@ -217,6 +216,20 @@ impl CreateSourceFlow {
     }
 }
 
+impl std::str::FromStr for CreateSourceFlow {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "code_verification" => Ok(Self::CodeVerification),
+            "none" => Ok(Self::None),
+            "receiver" => Ok(Self::Receiver),
+            "redirect" => Ok(Self::Redirect),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceFlow {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -226,6 +239,14 @@ impl AsRef<str> for CreateSourceFlow {
 impl std::fmt::Display for CreateSourceFlow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSourceFlow {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
@@ -342,8 +363,7 @@ impl<'a> CreateSourceMandateAcceptanceOnline<'a> {
 /// The status of the mandate acceptance.
 ///
 /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceMandateAcceptanceStatus {
     Accepted,
     Pending,
@@ -362,6 +382,20 @@ impl CreateSourceMandateAcceptanceStatus {
     }
 }
 
+impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "accepted" => Ok(Self::Accepted),
+            "pending" => Ok(Self::Pending),
+            "refused" => Ok(Self::Refused),
+            "revoked" => Ok(Self::Revoked),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceMandateAcceptanceStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -373,11 +407,18 @@ impl std::fmt::Display for CreateSourceMandateAcceptanceStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSourceMandateAcceptanceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of acceptance information included with the mandate.
 ///
 /// Either `online` or `offline`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceMandateAcceptanceType {
     Offline,
     Online,
@@ -388,6 +429,18 @@ impl CreateSourceMandateAcceptanceType {
         match self {
             Self::Offline => "offline",
             Self::Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSourceMandateAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(Self::Offline),
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
         }
     }
 }
@@ -403,11 +456,18 @@ impl std::fmt::Display for CreateSourceMandateAcceptanceType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSourceMandateAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The interval of debits permitted by the mandate.
 ///
 /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceMandateInterval {
     OneTime,
     Scheduled,
@@ -424,6 +484,19 @@ impl CreateSourceMandateInterval {
     }
 }
 
+impl std::str::FromStr for CreateSourceMandateInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "one_time" => Ok(Self::OneTime),
+            "scheduled" => Ok(Self::Scheduled),
+            "variable" => Ok(Self::Variable),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceMandateInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -435,11 +508,18 @@ impl std::fmt::Display for CreateSourceMandateInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSourceMandateInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
 ///
 /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceMandateNotificationMethod {
     DeprecatedNone,
     Email,
@@ -460,6 +540,21 @@ impl CreateSourceMandateNotificationMethod {
     }
 }
 
+impl std::str::FromStr for CreateSourceMandateNotificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "deprecated_none" => Ok(Self::DeprecatedNone),
+            "email" => Ok(Self::Email),
+            "manual" => Ok(Self::Manual),
+            "none" => Ok(Self::None),
+            "stripe_email" => Ok(Self::StripeEmail),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceMandateNotificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -469,6 +564,14 @@ impl AsRef<str> for CreateSourceMandateNotificationMethod {
 impl std::fmt::Display for CreateSourceMandateNotificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSourceMandateNotificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about the owner of the payment instrument that may be used or required by particular source types.
@@ -540,8 +643,7 @@ impl CreateSourceReceiver {
 ///
 /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
 /// Refer to each payment method's documentation to learn which refund attributes may be required.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceReceiverRefundAttributesMethod {
     Email,
     Manual,
@@ -558,6 +660,19 @@ impl CreateSourceReceiverRefundAttributesMethod {
     }
 }
 
+impl std::str::FromStr for CreateSourceReceiverRefundAttributesMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "email" => Ok(Self::Email),
+            "manual" => Ok(Self::Manual),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceReceiverRefundAttributesMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -567,6 +682,14 @@ impl AsRef<str> for CreateSourceReceiverRefundAttributesMethod {
 impl std::fmt::Display for CreateSourceReceiverRefundAttributesMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSourceReceiverRefundAttributesMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Parameters required for the redirect flow.
@@ -629,8 +752,7 @@ impl<'a> CreateSourceSourceOrderItems<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceSourceOrderItemsType {
     Discount,
     Shipping,
@@ -649,6 +771,20 @@ impl CreateSourceSourceOrderItemsType {
     }
 }
 
+impl std::str::FromStr for CreateSourceSourceOrderItemsType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "discount" => Ok(Self::Discount),
+            "shipping" => Ok(Self::Shipping),
+            "sku" => Ok(Self::Sku),
+            "tax" => Ok(Self::Tax),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceSourceOrderItemsType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -658,6 +794,14 @@ impl AsRef<str> for CreateSourceSourceOrderItemsType {
 impl std::fmt::Display for CreateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSourceSourceOrderItemsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping address for the order.
@@ -726,8 +870,7 @@ impl<'a> CreateSourceSourceOrderShippingAddress<'a> {
         }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSourceUsage {
     Reusable,
     SingleUse,
@@ -742,6 +885,18 @@ impl CreateSourceUsage {
     }
 }
 
+impl std::str::FromStr for CreateSourceUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "reusable" => Ok(Self::Reusable),
+            "single_use" => Ok(Self::SingleUse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSourceUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -751,6 +906,14 @@ impl AsRef<str> for CreateSourceUsage {
 impl std::fmt::Display for CreateSourceUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSourceUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -899,8 +1062,7 @@ impl<'a> UpdateSourceMandateAcceptanceOnline<'a> {
 /// The status of the mandate acceptance.
 ///
 /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSourceMandateAcceptanceStatus {
     Accepted,
     Pending,
@@ -919,6 +1081,20 @@ impl UpdateSourceMandateAcceptanceStatus {
     }
 }
 
+impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "accepted" => Ok(Self::Accepted),
+            "pending" => Ok(Self::Pending),
+            "refused" => Ok(Self::Refused),
+            "revoked" => Ok(Self::Revoked),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSourceMandateAcceptanceStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -930,11 +1106,18 @@ impl std::fmt::Display for UpdateSourceMandateAcceptanceStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSourceMandateAcceptanceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of acceptance information included with the mandate.
 ///
 /// Either `online` or `offline`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSourceMandateAcceptanceType {
     Offline,
     Online,
@@ -945,6 +1128,18 @@ impl UpdateSourceMandateAcceptanceType {
         match self {
             Self::Offline => "offline",
             Self::Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(Self::Offline),
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
         }
     }
 }
@@ -960,11 +1155,18 @@ impl std::fmt::Display for UpdateSourceMandateAcceptanceType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSourceMandateAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The interval of debits permitted by the mandate.
 ///
 /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSourceMandateInterval {
     OneTime,
     Scheduled,
@@ -981,6 +1183,19 @@ impl UpdateSourceMandateInterval {
     }
 }
 
+impl std::str::FromStr for UpdateSourceMandateInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "one_time" => Ok(Self::OneTime),
+            "scheduled" => Ok(Self::Scheduled),
+            "variable" => Ok(Self::Variable),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSourceMandateInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -992,11 +1207,18 @@ impl std::fmt::Display for UpdateSourceMandateInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSourceMandateInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
 ///
 /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSourceMandateNotificationMethod {
     DeprecatedNone,
     Email,
@@ -1017,6 +1239,21 @@ impl UpdateSourceMandateNotificationMethod {
     }
 }
 
+impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "deprecated_none" => Ok(Self::DeprecatedNone),
+            "email" => Ok(Self::Email),
+            "manual" => Ok(Self::Manual),
+            "none" => Ok(Self::None),
+            "stripe_email" => Ok(Self::StripeEmail),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSourceMandateNotificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1026,6 +1263,14 @@ impl AsRef<str> for UpdateSourceMandateNotificationMethod {
 impl std::fmt::Display for UpdateSourceMandateNotificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSourceMandateNotificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about the owner of the payment instrument that may be used or required by particular source types.
@@ -1121,8 +1366,7 @@ impl<'a> UpdateSourceSourceOrderItems<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSourceSourceOrderItemsType {
     Discount,
     Shipping,
@@ -1141,6 +1385,20 @@ impl UpdateSourceSourceOrderItemsType {
     }
 }
 
+impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "discount" => Ok(Self::Discount),
+            "shipping" => Ok(Self::Shipping),
+            "sku" => Ok(Self::Sku),
+            "tax" => Ok(Self::Tax),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSourceSourceOrderItemsType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1150,6 +1408,14 @@ impl AsRef<str> for UpdateSourceSourceOrderItemsType {
 impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSourceSourceOrderItemsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping address for the order.

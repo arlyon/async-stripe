@@ -86,10 +86,7 @@ impl miniserde::Deserialize for Account {
 }
 
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountBusinessType {
     Company,
     GovernmentEntity,
@@ -108,6 +105,20 @@ impl AccountBusinessType {
     }
 }
 
+impl std::str::FromStr for AccountBusinessType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "government_entity" => Ok(Self::GovernmentEntity),
+            "individual" => Ok(Self::Individual),
+            "non_profit" => Ok(Self::NonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountBusinessType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -119,13 +130,42 @@ impl std::fmt::Display for AccountBusinessType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountBusinessType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountBusinessType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountBusinessType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountBusinessType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountBusinessType::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountObject {
     Account,
 }
@@ -134,6 +174,17 @@ impl AccountObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Account => "account",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account" => Ok(Self::Account),
+
+            _ => Err(()),
         }
     }
 }
@@ -149,13 +200,41 @@ impl std::fmt::Display for AccountObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AccountObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The Stripe account type.
 ///
 /// Can be `standard`, `express`, or `custom`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountType {
     Custom,
     Express,
@@ -172,6 +251,19 @@ impl AccountType {
     }
 }
 
+impl std::str::FromStr for AccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "custom" => Ok(Self::Custom),
+            "express" => Ok(Self::Express),
+            "standard" => Ok(Self::Standard),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -181,6 +273,37 @@ impl AsRef<str> for AccountType {
 impl std::fmt::Display for AccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AccountType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Account {

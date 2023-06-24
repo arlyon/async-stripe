@@ -69,10 +69,7 @@ impl miniserde::Deserialize for Company {
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -123,6 +120,36 @@ impl CompanyStructure {
     }
 }
 
+impl std::str::FromStr for CompanyStructure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "free_zone_establishment" => Ok(Self::FreeZoneEstablishment),
+            "free_zone_llc" => Ok(Self::FreeZoneLlc),
+            "government_instrumentality" => Ok(Self::GovernmentInstrumentality),
+            "governmental_unit" => Ok(Self::GovernmentalUnit),
+            "incorporated_non_profit" => Ok(Self::IncorporatedNonProfit),
+            "limited_liability_partnership" => Ok(Self::LimitedLiabilityPartnership),
+            "llc" => Ok(Self::Llc),
+            "multi_member_llc" => Ok(Self::MultiMemberLlc),
+            "private_company" => Ok(Self::PrivateCompany),
+            "private_corporation" => Ok(Self::PrivateCorporation),
+            "private_partnership" => Ok(Self::PrivatePartnership),
+            "public_company" => Ok(Self::PublicCompany),
+            "public_corporation" => Ok(Self::PublicCorporation),
+            "public_partnership" => Ok(Self::PublicPartnership),
+            "single_member_llc" => Ok(Self::SingleMemberLlc),
+            "sole_establishment" => Ok(Self::SoleEstablishment),
+            "sole_proprietorship" => Ok(Self::SoleProprietorship),
+            "tax_exempt_government_instrumentality" => Ok(Self::TaxExemptGovernmentInstrumentality),
+            "unincorporated_association" => Ok(Self::UnincorporatedAssociation),
+            "unincorporated_non_profit" => Ok(Self::UnincorporatedNonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CompanyStructure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -132,6 +159,38 @@ impl AsRef<str> for CompanyStructure {
 impl std::fmt::Display for CompanyStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CompanyStructure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CompanyStructure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CompanyStructure"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CompanyStructure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CompanyStructure> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CompanyStructure::from_str(s)?);
+        Ok(())
     }
 }
 pub mod verification;

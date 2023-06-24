@@ -238,8 +238,7 @@ impl CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
 ///
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -254,6 +253,18 @@ impl CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "phase_start" => Ok(Self::PhaseStart),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -263,6 +274,14 @@ impl AsRef<str> for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor 
 impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -289,8 +308,7 @@ impl CreateSubscriptionScheduleDefaultSettingsBillingThresholds {
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically` on creation.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -305,6 +323,18 @@ impl CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -314,6 +344,14 @@ impl AsRef<str> for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
 impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -351,8 +389,7 @@ impl<'a> CreateSubscriptionScheduleDefaultSettingsTransferData<'a> {
 ///
 /// Possible values are `release` or `cancel` with the default being `release`.
 /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionScheduleEndBehavior {
     Cancel,
     None,
@@ -371,6 +408,20 @@ impl CreateSubscriptionScheduleEndBehavior {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionScheduleEndBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cancel" => Ok(Self::Cancel),
+            "none" => Ok(Self::None),
+            "release" => Ok(Self::Release),
+            "renew" => Ok(Self::Renew),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionScheduleEndBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -380,6 +431,14 @@ impl AsRef<str> for CreateSubscriptionScheduleEndBehavior {
 impl std::fmt::Display for CreateSubscriptionScheduleEndBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionScheduleEndBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// List representing phases of the subscription schedule.
@@ -581,8 +640,7 @@ impl<'a> CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData<'a> {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -599,6 +657,19 @@ impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -608,6 +679,14 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxB
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Automatic tax settings for this phase.
@@ -625,8 +704,7 @@ impl CreateSubscriptionSchedulePhasesAutomaticTax {
 ///
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -641,6 +719,18 @@ impl CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "phase_start" => Ok(Self::PhaseStart),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -650,6 +740,14 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -676,8 +774,7 @@ impl CreateSubscriptionSchedulePhasesBillingThresholds {
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically` on creation.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -692,6 +789,18 @@ impl CreateSubscriptionSchedulePhasesCollectionMethod {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -701,6 +810,14 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesCollectionMethod {
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -830,8 +947,7 @@ impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     Day,
     Month,
@@ -850,6 +966,20 @@ impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -861,12 +991,19 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataRecurri
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -883,6 +1020,19 @@ impl CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -894,11 +1044,18 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
 ///
 /// The default value is `create_prorations`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSubscriptionSchedulePhasesProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -915,6 +1072,19 @@ impl CreateSubscriptionSchedulePhasesProrationBehavior {
     }
 }
 
+impl std::str::FromStr for CreateSubscriptionSchedulePhasesProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSubscriptionSchedulePhasesProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -924,6 +1094,14 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesProrationBehavior {
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSubscriptionSchedulePhasesProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
@@ -1075,8 +1253,7 @@ impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
 ///
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -1091,6 +1268,18 @@ impl UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "phase_start" => Ok(Self::PhaseStart),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1100,6 +1289,14 @@ impl AsRef<str> for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor 
 impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -1126,8 +1323,7 @@ impl UpdateSubscriptionScheduleDefaultSettingsBillingThresholds {
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically` on creation.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -1142,6 +1338,18 @@ impl UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1151,6 +1359,14 @@ impl AsRef<str> for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
 impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -1188,8 +1404,7 @@ impl<'a> UpdateSubscriptionScheduleDefaultSettingsTransferData<'a> {
 ///
 /// Possible values are `release` or `cancel` with the default being `release`.
 /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionScheduleEndBehavior {
     Cancel,
     None,
@@ -1208,6 +1423,20 @@ impl UpdateSubscriptionScheduleEndBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionScheduleEndBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cancel" => Ok(Self::Cancel),
+            "none" => Ok(Self::None),
+            "release" => Ok(Self::Release),
+            "renew" => Ok(Self::Renew),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionScheduleEndBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1217,6 +1446,14 @@ impl AsRef<str> for UpdateSubscriptionScheduleEndBehavior {
 impl std::fmt::Display for UpdateSubscriptionScheduleEndBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionScheduleEndBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// List representing phases of the subscription schedule.
@@ -1425,8 +1662,7 @@ impl<'a> UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData<'a> {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -1443,6 +1679,19 @@ impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1452,6 +1701,14 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxB
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Automatic tax settings for this phase.
@@ -1469,8 +1726,7 @@ impl UpdateSubscriptionSchedulePhasesAutomaticTax {
 ///
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -1485,6 +1741,18 @@ impl UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "phase_start" => Ok(Self::PhaseStart),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1494,6 +1762,14 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -1520,8 +1796,7 @@ impl UpdateSubscriptionSchedulePhasesBillingThresholds {
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
 /// Defaults to `charge_automatically` on creation.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -1536,6 +1811,18 @@ impl UpdateSubscriptionSchedulePhasesCollectionMethod {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesCollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_automatically" => Ok(Self::ChargeAutomatically),
+            "send_invoice" => Ok(Self::SendInvoice),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesCollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1545,6 +1832,14 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesCollectionMethod {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesCollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The date at which this phase of the subscription schedule ends.
@@ -1683,8 +1978,7 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     Day,
     Month,
@@ -1703,6 +1997,20 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1714,12 +2022,19 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurri
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -1736,6 +2051,19 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1747,11 +2075,18 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
 ///
 /// The default value is `create_prorations`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionSchedulePhasesProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -1768,6 +2103,19 @@ impl UpdateSubscriptionSchedulePhasesProrationBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionSchedulePhasesProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionSchedulePhasesProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1777,6 +2125,14 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesProrationBehavior {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionSchedulePhasesProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The date at which this phase of the subscription schedule starts or `now`.
@@ -1817,8 +2173,7 @@ pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
 /// If the update changes the current phase, indicates whether the changes should be prorated.
 ///
 /// The default value is `create_prorations`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSubscriptionScheduleProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -1835,6 +2190,19 @@ impl UpdateSubscriptionScheduleProrationBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateSubscriptionScheduleProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSubscriptionScheduleProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1844,6 +2212,14 @@ impl AsRef<str> for UpdateSubscriptionScheduleProrationBehavior {
 impl std::fmt::Display for UpdateSubscriptionScheduleProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSubscriptionScheduleProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

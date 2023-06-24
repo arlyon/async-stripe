@@ -58,10 +58,7 @@ impl miniserde::Deserialize for ShippingRate {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingRateObject {
     ShippingRate,
 }
@@ -70,6 +67,17 @@ impl ShippingRateObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::ShippingRate => "shipping_rate",
+        }
+    }
+}
+
+impl std::str::FromStr for ShippingRateObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "shipping_rate" => Ok(Self::ShippingRate),
+
+            _ => Err(()),
         }
     }
 }
@@ -85,13 +93,42 @@ impl std::fmt::Display for ShippingRateObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ShippingRateObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingRateObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingRateObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingRateObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingRateObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingRateTaxBehavior {
     Exclusive,
     Inclusive,
@@ -108,6 +145,19 @@ impl ShippingRateTaxBehavior {
     }
 }
 
+impl std::str::FromStr for ShippingRateTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingRateTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -119,13 +169,42 @@ impl std::fmt::Display for ShippingRateTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ShippingRateTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateTaxBehavior"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingRateTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingRateTaxBehavior> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingRateTaxBehavior::from_str(s)?);
+        Ok(())
+    }
+}
 /// The type of calculation to use on the shipping rate.
 ///
 /// Can only be `fixed_amount` for now.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingRateType {
     FixedAmount,
 }
@@ -134,6 +213,17 @@ impl ShippingRateType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::FixedAmount => "fixed_amount",
+        }
+    }
+}
+
+impl std::str::FromStr for ShippingRateType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed_amount" => Ok(Self::FixedAmount),
+
+            _ => Err(()),
         }
     }
 }
@@ -147,6 +237,38 @@ impl AsRef<str> for ShippingRateType {
 impl std::fmt::Display for ShippingRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ShippingRateType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingRateType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingRateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingRateType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingRateType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for ShippingRate {

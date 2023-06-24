@@ -95,10 +95,7 @@ impl miniserde::Deserialize for Plan {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -117,6 +114,20 @@ impl PlanAggregateUsage {
     }
 }
 
+impl std::str::FromStr for PlanAggregateUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "last_during_period" => Ok(Self::LastDuringPeriod),
+            "last_ever" => Ok(Self::LastEver),
+            "max" => Ok(Self::Max),
+            "sum" => Ok(Self::Sum),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PlanAggregateUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -128,15 +139,44 @@ impl std::fmt::Display for PlanAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PlanAggregateUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanAggregateUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanAggregateUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanAggregateUsage::from_str(s)?);
+        Ok(())
+    }
+}
 /// Describes how to compute the price per period.
 ///
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanBillingScheme {
     PerUnit,
     Tiered,
@@ -147,6 +187,18 @@ impl PlanBillingScheme {
         match self {
             Self::PerUnit => "per_unit",
             Self::Tiered => "tiered",
+        }
+    }
+}
+
+impl std::str::FromStr for PlanBillingScheme {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "per_unit" => Ok(Self::PerUnit),
+            "tiered" => Ok(Self::Tiered),
+
+            _ => Err(()),
         }
     }
 }
@@ -162,13 +214,42 @@ impl std::fmt::Display for PlanBillingScheme {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PlanBillingScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanBillingScheme {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanBillingScheme> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanBillingScheme::from_str(s)?);
+        Ok(())
+    }
+}
 /// The frequency at which a subscription is billed.
 ///
 /// One of `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanInterval {
     Day,
     Month,
@@ -187,6 +268,20 @@ impl PlanInterval {
     }
 }
 
+impl std::str::FromStr for PlanInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PlanInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -198,13 +293,41 @@ impl std::fmt::Display for PlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanInterval> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanInterval::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanObject {
     Plan,
 }
@@ -213,6 +336,17 @@ impl PlanObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Plan => "plan",
+        }
+    }
+}
+
+impl std::str::FromStr for PlanObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "plan" => Ok(Self::Plan),
+
+            _ => Err(()),
         }
     }
 }
@@ -228,14 +362,42 @@ impl std::fmt::Display for PlanObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PlanObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
 /// In `graduated` tiering, pricing can change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanTiersMode {
     Graduated,
     Volume,
@@ -246,6 +408,18 @@ impl PlanTiersMode {
         match self {
             Self::Graduated => "graduated",
             Self::Volume => "volume",
+        }
+    }
+}
+
+impl std::str::FromStr for PlanTiersMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "graduated" => Ok(Self::Graduated),
+            "volume" => Ok(Self::Volume),
+
+            _ => Err(()),
         }
     }
 }
@@ -261,16 +435,44 @@ impl std::fmt::Display for PlanTiersMode {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for PlanTiersMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanTiersMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanTiersMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanTiersMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanTiersMode::from_str(s)?);
+        Ok(())
+    }
+}
 /// Configures how the quantity per period should be determined.
 ///
 /// Can be either `metered` or `licensed`.
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanUsageType {
     Licensed,
     Metered,
@@ -285,6 +487,18 @@ impl PlanUsageType {
     }
 }
 
+impl std::str::FromStr for PlanUsageType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "licensed" => Ok(Self::Licensed),
+            "metered" => Ok(Self::Metered),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for PlanUsageType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -294,6 +508,37 @@ impl AsRef<str> for PlanUsageType {
 impl std::fmt::Display for PlanUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PlanUsageType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PlanUsageType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanUsageType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<PlanUsageType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanUsageType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Plan {

@@ -139,8 +139,7 @@ impl<'a> CreateValueList<'a> {
 ///
 /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
 /// Use `string` if the item type is unknown or mixed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateValueListItemType {
     CardBin,
     CardFingerprint,
@@ -167,6 +166,24 @@ impl CreateValueListItemType {
     }
 }
 
+impl std::str::FromStr for CreateValueListItemType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "card_bin" => Ok(Self::CardBin),
+            "card_fingerprint" => Ok(Self::CardFingerprint),
+            "case_sensitive_string" => Ok(Self::CaseSensitiveString),
+            "country" => Ok(Self::Country),
+            "customer_id" => Ok(Self::CustomerId),
+            "email" => Ok(Self::Email),
+            "ip_address" => Ok(Self::IpAddress),
+            "string" => Ok(Self::String),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateValueListItemType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -176,6 +193,14 @@ impl AsRef<str> for CreateValueListItemType {
 impl std::fmt::Display for CreateValueListItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateValueListItemType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

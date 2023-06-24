@@ -27,10 +27,7 @@ impl miniserde::Deserialize for CustomerDetails {
 }
 
 /// The customer’s tax exempt status after a completed Checkout Session.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CustomerDetailsTaxExempt {
     Exempt,
     None,
@@ -47,6 +44,19 @@ impl CustomerDetailsTaxExempt {
     }
 }
 
+impl std::str::FromStr for CustomerDetailsTaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CustomerDetailsTaxExempt {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -56,6 +66,38 @@ impl AsRef<str> for CustomerDetailsTaxExempt {
 impl std::fmt::Display for CustomerDetailsTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CustomerDetailsTaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerDetailsTaxExempt {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerDetailsTaxExempt"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerDetailsTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CustomerDetailsTaxExempt> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerDetailsTaxExempt::from_str(s)?);
+        Ok(())
     }
 }
 pub mod tax_id;

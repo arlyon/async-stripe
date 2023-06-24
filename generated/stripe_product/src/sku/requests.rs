@@ -199,8 +199,7 @@ impl UpdateSkuInventory {
 /// Inventory type.
 ///
 /// Possible values are `finite`, `bucket` (not quantified), and `infinite`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSkuInventoryType {
     Bucket,
     Finite,
@@ -217,6 +216,19 @@ impl UpdateSkuInventoryType {
     }
 }
 
+impl std::str::FromStr for UpdateSkuInventoryType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bucket" => Ok(Self::Bucket),
+            "finite" => Ok(Self::Finite),
+            "infinite" => Ok(Self::Infinite),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSkuInventoryType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -228,12 +240,19 @@ impl std::fmt::Display for UpdateSkuInventoryType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateSkuInventoryType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// An indicator of the inventory available.
 ///
 /// Possible values are `in_stock`, `limited`, and `out_of_stock`.
 /// Will be present if and only if `type` is `bucket`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateSkuInventoryValue {
     InStock,
     Limited,
@@ -250,6 +269,19 @@ impl UpdateSkuInventoryValue {
     }
 }
 
+impl std::str::FromStr for UpdateSkuInventoryValue {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "in_stock" => Ok(Self::InStock),
+            "limited" => Ok(Self::Limited),
+            "out_of_stock" => Ok(Self::OutOfStock),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateSkuInventoryValue {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -259,6 +291,14 @@ impl AsRef<str> for UpdateSkuInventoryValue {
 impl std::fmt::Display for UpdateSkuInventoryValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateSkuInventoryValue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The dimensions of this SKU for shipping purposes.
@@ -383,8 +423,7 @@ impl CreateSkuInventory {
 /// Inventory type.
 ///
 /// Possible values are `finite`, `bucket` (not quantified), and `infinite`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSkuInventoryType {
     Bucket,
     Finite,
@@ -401,6 +440,19 @@ impl CreateSkuInventoryType {
     }
 }
 
+impl std::str::FromStr for CreateSkuInventoryType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bucket" => Ok(Self::Bucket),
+            "finite" => Ok(Self::Finite),
+            "infinite" => Ok(Self::Infinite),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSkuInventoryType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -412,12 +464,19 @@ impl std::fmt::Display for CreateSkuInventoryType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateSkuInventoryType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// An indicator of the inventory available.
 ///
 /// Possible values are `in_stock`, `limited`, and `out_of_stock`.
 /// Will be present if and only if `type` is `bucket`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSkuInventoryValue {
     InStock,
     Limited,
@@ -434,6 +493,19 @@ impl CreateSkuInventoryValue {
     }
 }
 
+impl std::str::FromStr for CreateSkuInventoryValue {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "in_stock" => Ok(Self::InStock),
+            "limited" => Ok(Self::Limited),
+            "out_of_stock" => Ok(Self::OutOfStock),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateSkuInventoryValue {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -443,6 +515,14 @@ impl AsRef<str> for CreateSkuInventoryValue {
 impl std::fmt::Display for CreateSkuInventoryValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSkuInventoryValue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The dimensions of this SKU for shipping purposes.

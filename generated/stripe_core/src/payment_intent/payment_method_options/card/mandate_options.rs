@@ -47,10 +47,7 @@ impl miniserde::Deserialize for MandateOptions {
 ///
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MandateOptionsAmountType {
     Fixed,
     Maximum,
@@ -61,6 +58,18 @@ impl MandateOptionsAmountType {
         match self {
             Self::Fixed => "fixed",
             Self::Maximum => "maximum",
+        }
+    }
+}
+
+impl std::str::FromStr for MandateOptionsAmountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed" => Ok(Self::Fixed),
+            "maximum" => Ok(Self::Maximum),
+
+            _ => Err(()),
         }
     }
 }
@@ -76,13 +85,42 @@ impl std::fmt::Display for MandateOptionsAmountType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for MandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for MandateOptionsAmountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for MandateOptionsAmountType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for MandateOptionsAmountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<MandateOptionsAmountType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(MandateOptionsAmountType::from_str(s)?);
+        Ok(())
+    }
+}
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MandateOptionsInterval {
     Day,
     Month,
@@ -103,6 +141,21 @@ impl MandateOptionsInterval {
     }
 }
 
+impl std::str::FromStr for MandateOptionsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "sporadic" => Ok(Self::Sporadic),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for MandateOptionsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -114,13 +167,42 @@ impl std::fmt::Display for MandateOptionsInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for MandateOptionsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for MandateOptionsInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for MandateOptionsInterval"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for MandateOptionsInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<MandateOptionsInterval> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(MandateOptionsInterval::from_str(s)?);
+        Ok(())
+    }
+}
 /// Specifies the type of mandates supported.
 ///
 /// Possible values are `india`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MandateOptionsSupportedTypes {
     India,
 }
@@ -129,6 +211,17 @@ impl MandateOptionsSupportedTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::India => "india",
+        }
+    }
+}
+
+impl std::str::FromStr for MandateOptionsSupportedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "india" => Ok(Self::India),
+
+            _ => Err(()),
         }
     }
 }
@@ -142,5 +235,37 @@ impl AsRef<str> for MandateOptionsSupportedTypes {
 impl std::fmt::Display for MandateOptionsSupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for MandateOptionsSupportedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for MandateOptionsSupportedTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for MandateOptionsSupportedTypes"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for MandateOptionsSupportedTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<MandateOptionsSupportedTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(MandateOptionsSupportedTypes::from_str(s)?);
+        Ok(())
     }
 }

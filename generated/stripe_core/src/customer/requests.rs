@@ -170,10 +170,7 @@ impl miniserde::Deserialize for SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -182,6 +179,17 @@ impl SearchReturnedObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SearchResult => "search_result",
+        }
+    }
+}
+
+impl std::str::FromStr for SearchReturnedObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "search_result" => Ok(Self::SearchResult),
+
+            _ => Err(()),
         }
     }
 }
@@ -195,6 +203,38 @@ impl AsRef<str> for SearchReturnedObject {
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SearchReturnedObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SearchReturnedObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SearchReturnedObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SearchReturnedObject::from_str(s)?);
+        Ok(())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -423,8 +463,7 @@ impl CreateCustomerCashBalanceSettings {
 ///
 /// Valid options are `automatic` or `manual`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
@@ -439,6 +478,18 @@ impl CreateCustomerCashBalanceSettingsReconciliationMode {
     }
 }
 
+impl std::str::FromStr for CreateCustomerCashBalanceSettingsReconciliationMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCustomerCashBalanceSettingsReconciliationMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -448,6 +499,14 @@ impl AsRef<str> for CreateCustomerCashBalanceSettingsReconciliationMode {
 impl std::fmt::Display for CreateCustomerCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Default invoice settings for this customer.
@@ -513,8 +572,7 @@ impl CreateCustomerInvoiceSettingsRenderingOptions {
 /// One of `exclude_tax` or `include_inclusive_tax`.
 /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
 /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
@@ -529,6 +587,18 @@ impl CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     }
 }
 
+impl std::str::FromStr for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclude_tax" => Ok(Self::ExcludeTax),
+            "include_inclusive_tax" => Ok(Self::IncludeInclusiveTax),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -538,6 +608,14 @@ impl AsRef<str> for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDispla
 impl std::fmt::Display for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The customer's shipping information.
@@ -603,8 +681,7 @@ impl<'a> CreateCustomerTax<'a> {
 /// The customer's tax exemption.
 ///
 /// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCustomerTaxExempt {
     Exempt,
     None,
@@ -621,6 +698,19 @@ impl CreateCustomerTaxExempt {
     }
 }
 
+impl std::str::FromStr for CreateCustomerTaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCustomerTaxExempt {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -630,6 +720,14 @@ impl AsRef<str> for CreateCustomerTaxExempt {
 impl std::fmt::Display for CreateCustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCustomerTaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The customer's tax IDs.
@@ -647,8 +745,7 @@ impl<'a> CreateCustomerTaxIdData<'a> {
     }
 }
 /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCustomerTaxIdDataType {
     AeTrn,
     AuAbn,
@@ -761,6 +858,67 @@ impl CreateCustomerTaxIdDataType {
     }
 }
 
+impl std::str::FromStr for CreateCustomerTaxIdDataType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ae_trn" => Ok(Self::AeTrn),
+            "au_abn" => Ok(Self::AuAbn),
+            "au_arn" => Ok(Self::AuArn),
+            "bg_uic" => Ok(Self::BgUic),
+            "br_cnpj" => Ok(Self::BrCnpj),
+            "br_cpf" => Ok(Self::BrCpf),
+            "ca_bn" => Ok(Self::CaBn),
+            "ca_gst_hst" => Ok(Self::CaGstHst),
+            "ca_pst_bc" => Ok(Self::CaPstBc),
+            "ca_pst_mb" => Ok(Self::CaPstMb),
+            "ca_pst_sk" => Ok(Self::CaPstSk),
+            "ca_qst" => Ok(Self::CaQst),
+            "ch_vat" => Ok(Self::ChVat),
+            "cl_tin" => Ok(Self::ClTin),
+            "eg_tin" => Ok(Self::EgTin),
+            "es_cif" => Ok(Self::EsCif),
+            "eu_oss_vat" => Ok(Self::EuOssVat),
+            "eu_vat" => Ok(Self::EuVat),
+            "gb_vat" => Ok(Self::GbVat),
+            "ge_vat" => Ok(Self::GeVat),
+            "hk_br" => Ok(Self::HkBr),
+            "hu_tin" => Ok(Self::HuTin),
+            "id_npwp" => Ok(Self::IdNpwp),
+            "il_vat" => Ok(Self::IlVat),
+            "in_gst" => Ok(Self::InGst),
+            "is_vat" => Ok(Self::IsVat),
+            "jp_cn" => Ok(Self::JpCn),
+            "jp_rn" => Ok(Self::JpRn),
+            "jp_trn" => Ok(Self::JpTrn),
+            "ke_pin" => Ok(Self::KePin),
+            "kr_brn" => Ok(Self::KrBrn),
+            "li_uid" => Ok(Self::LiUid),
+            "mx_rfc" => Ok(Self::MxRfc),
+            "my_frp" => Ok(Self::MyFrp),
+            "my_itn" => Ok(Self::MyItn),
+            "my_sst" => Ok(Self::MySst),
+            "no_vat" => Ok(Self::NoVat),
+            "nz_gst" => Ok(Self::NzGst),
+            "ph_tin" => Ok(Self::PhTin),
+            "ru_inn" => Ok(Self::RuInn),
+            "ru_kpp" => Ok(Self::RuKpp),
+            "sa_vat" => Ok(Self::SaVat),
+            "sg_gst" => Ok(Self::SgGst),
+            "sg_uen" => Ok(Self::SgUen),
+            "si_tin" => Ok(Self::SiTin),
+            "th_vat" => Ok(Self::ThVat),
+            "tr_tin" => Ok(Self::TrTin),
+            "tw_vat" => Ok(Self::TwVat),
+            "ua_vat" => Ok(Self::UaVat),
+            "us_ein" => Ok(Self::UsEin),
+            "za_vat" => Ok(Self::ZaVat),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCustomerTaxIdDataType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -770,6 +928,14 @@ impl AsRef<str> for CreateCustomerTaxIdDataType {
 impl std::fmt::Display for CreateCustomerTaxIdDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCustomerTaxIdDataType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -960,8 +1126,7 @@ impl UpdateCustomerCashBalanceSettings {
 ///
 /// Valid options are `automatic` or `manual`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
@@ -976,6 +1141,18 @@ impl UpdateCustomerCashBalanceSettingsReconciliationMode {
     }
 }
 
+impl std::str::FromStr for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCustomerCashBalanceSettingsReconciliationMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -985,6 +1162,14 @@ impl AsRef<str> for UpdateCustomerCashBalanceSettingsReconciliationMode {
 impl std::fmt::Display for UpdateCustomerCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Default invoice settings for this customer.
@@ -1050,8 +1235,7 @@ impl UpdateCustomerInvoiceSettingsRenderingOptions {
 /// One of `exclude_tax` or `include_inclusive_tax`.
 /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
 /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
@@ -1066,6 +1250,18 @@ impl UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     }
 }
 
+impl std::str::FromStr for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclude_tax" => Ok(Self::ExcludeTax),
+            "include_inclusive_tax" => Ok(Self::IncludeInclusiveTax),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1075,6 +1271,14 @@ impl AsRef<str> for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDispla
 impl std::fmt::Display for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The customer's shipping information.
@@ -1140,8 +1344,7 @@ impl<'a> UpdateCustomerTax<'a> {
 /// The customer's tax exemption.
 ///
 /// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCustomerTaxExempt {
     Exempt,
     None,
@@ -1158,6 +1361,19 @@ impl UpdateCustomerTaxExempt {
     }
 }
 
+impl std::str::FromStr for UpdateCustomerTaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCustomerTaxExempt {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1167,6 +1383,14 @@ impl AsRef<str> for UpdateCustomerTaxExempt {
 impl std::fmt::Display for UpdateCustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCustomerTaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -1207,8 +1431,7 @@ impl<'a> ListPaymentMethodsCustomer<'a> {
     }
 }
 /// A required filter on the list, based on the object `type` field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListPaymentMethodsCustomerType {
     AcssDebit,
     Affirm,
@@ -1277,6 +1500,45 @@ impl ListPaymentMethodsCustomerType {
     }
 }
 
+impl std::str::FromStr for ListPaymentMethodsCustomerType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "card" => Ok(Self::Card),
+            "card_present" => Ok(Self::CardPresent),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListPaymentMethodsCustomerType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1286,6 +1548,14 @@ impl AsRef<str> for ListPaymentMethodsCustomerType {
 impl std::fmt::Display for ListPaymentMethodsCustomerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListPaymentMethodsCustomerType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1416,8 +1686,7 @@ impl<'a> CreateFundingInstructionsCustomerBankTransferEuBankTransfer<'a> {
 /// List of address types that should be returned in the financial_addresses response.
 ///
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     Iban,
     SortCode,
@@ -1436,6 +1705,20 @@ impl CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     }
 }
 
+impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "iban" => Ok(Self::Iban),
+            "sort_code" => Ok(Self::SortCode),
+            "spei" => Ok(Self::Spei),
+            "zengin" => Ok(Self::Zengin),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1447,9 +1730,16 @@ impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferRequeste
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of the `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -1468,6 +1758,20 @@ impl CreateFundingInstructionsCustomerBankTransferType {
     }
 }
 
+impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateFundingInstructionsCustomerBankTransferType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1479,9 +1783,16 @@ impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The `funding_type` to get the instructions for.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerFundingType {
     BankTransfer,
 }
@@ -1490,6 +1801,17 @@ impl CreateFundingInstructionsCustomerFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateFundingInstructionsCustomerFundingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_transfer" => Ok(Self::BankTransfer),
+
+            _ => Err(()),
         }
     }
 }
@@ -1503,5 +1825,13 @@ impl AsRef<str> for CreateFundingInstructionsCustomerFundingType {
 impl std::fmt::Display for CreateFundingInstructionsCustomerFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateFundingInstructionsCustomerFundingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

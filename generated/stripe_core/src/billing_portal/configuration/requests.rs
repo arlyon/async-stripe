@@ -186,8 +186,7 @@ impl<'a> CreateConfigurationFeaturesCustomerUpdate<'a> {
 /// The types of customer updates that are supported.
 ///
 /// When empty, customers are not updateable.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     Address,
     Email,
@@ -208,6 +207,21 @@ impl CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     }
 }
 
+impl std::str::FromStr for CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "address" => Ok(Self::Address),
+            "email" => Ok(Self::Email),
+            "phone" => Ok(Self::Phone),
+            "shipping" => Ok(Self::Shipping),
+            "tax_id" => Ok(Self::TaxId),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -217,6 +231,14 @@ impl AsRef<str> for CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
 impl std::fmt::Display for CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about showing the billing history in the portal.
@@ -287,8 +309,7 @@ impl<'a> CreateConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
     }
 }
 /// Which cancellation reasons will be given as options to the customer.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     CustomerService,
     LowQuality,
@@ -315,6 +336,24 @@ impl CreateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     }
 }
 
+impl std::str::FromStr for CreateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "customer_service" => Ok(Self::CustomerService),
+            "low_quality" => Ok(Self::LowQuality),
+            "missing_features" => Ok(Self::MissingFeatures),
+            "other" => Ok(Self::Other),
+            "switched_service" => Ok(Self::SwitchedService),
+            "too_complex" => Ok(Self::TooComplex),
+            "too_expensive" => Ok(Self::TooExpensive),
+            "unused" => Ok(Self::Unused),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -326,9 +365,16 @@ impl std::fmt::Display for CreateConfigurationFeaturesSubscriptionCancelCancella
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesSubscriptionCancelMode {
     AtPeriodEnd,
     Immediately,
@@ -339,6 +385,18 @@ impl CreateConfigurationFeaturesSubscriptionCancelMode {
         match self {
             Self::AtPeriodEnd => "at_period_end",
             Self::Immediately => "immediately",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateConfigurationFeaturesSubscriptionCancelMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "at_period_end" => Ok(Self::AtPeriodEnd),
+            "immediately" => Ok(Self::Immediately),
+
+            _ => Err(()),
         }
     }
 }
@@ -354,12 +412,19 @@ impl std::fmt::Display for CreateConfigurationFeaturesSubscriptionCancelMode {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateConfigurationFeaturesSubscriptionCancelMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether to create prorations when canceling subscriptions.
 ///
 /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
 /// No prorations are generated when canceling a subscription at the end of its natural billing period.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -376,6 +441,19 @@ impl CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     }
 }
 
+impl std::str::FromStr for CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -385,6 +463,14 @@ impl AsRef<str> for CreateConfigurationFeaturesSubscriptionCancelProrationBehavi
 impl std::fmt::Display for CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about pausing subscriptions in the portal.
@@ -429,8 +515,7 @@ impl<'a> CreateConfigurationFeaturesSubscriptionUpdate<'a> {
 /// The types of subscription updates that are supported.
 ///
 /// When empty, subscriptions are not updateable.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     Price,
     PromotionCode,
@@ -447,6 +532,19 @@ impl CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     }
 }
 
+impl std::str::FromStr for CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "price" => Ok(Self::Price),
+            "promotion_code" => Ok(Self::PromotionCode),
+            "quantity" => Ok(Self::Quantity),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -456,6 +554,14 @@ impl AsRef<str> for CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedU
 impl std::fmt::Display for CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The list of products that support subscription updates.
@@ -474,8 +580,7 @@ impl<'a> CreateConfigurationFeaturesSubscriptionUpdateProducts<'a> {
 /// Determines how to handle prorations resulting from subscription updates.
 ///
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -492,6 +597,19 @@ impl CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     }
 }
 
+impl std::str::FromStr for CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -501,6 +619,14 @@ impl AsRef<str> for CreateConfigurationFeaturesSubscriptionUpdateProrationBehavi
 impl std::fmt::Display for CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The hosted login page for this configuration.
@@ -618,8 +744,7 @@ impl<'a> UpdateConfigurationFeaturesCustomerUpdate<'a> {
 /// The types of customer updates that are supported.
 ///
 /// When empty, customers are not updateable.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     Address,
     Email,
@@ -640,6 +765,21 @@ impl UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     }
 }
 
+impl std::str::FromStr for UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "address" => Ok(Self::Address),
+            "email" => Ok(Self::Email),
+            "phone" => Ok(Self::Phone),
+            "shipping" => Ok(Self::Shipping),
+            "tax_id" => Ok(Self::TaxId),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -649,6 +789,14 @@ impl AsRef<str> for UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
 impl std::fmt::Display for UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about showing the billing history in the portal.
@@ -714,8 +862,7 @@ impl<'a> UpdateConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
     }
 }
 /// Which cancellation reasons will be given as options to the customer.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     CustomerService,
     LowQuality,
@@ -742,6 +889,24 @@ impl UpdateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     }
 }
 
+impl std::str::FromStr for UpdateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "customer_service" => Ok(Self::CustomerService),
+            "low_quality" => Ok(Self::LowQuality),
+            "missing_features" => Ok(Self::MissingFeatures),
+            "other" => Ok(Self::Other),
+            "switched_service" => Ok(Self::SwitchedService),
+            "too_complex" => Ok(Self::TooComplex),
+            "too_expensive" => Ok(Self::TooExpensive),
+            "unused" => Ok(Self::Unused),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -753,9 +918,16 @@ impl std::fmt::Display for UpdateConfigurationFeaturesSubscriptionCancelCancella
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesSubscriptionCancelMode {
     AtPeriodEnd,
     Immediately,
@@ -766,6 +938,18 @@ impl UpdateConfigurationFeaturesSubscriptionCancelMode {
         match self {
             Self::AtPeriodEnd => "at_period_end",
             Self::Immediately => "immediately",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateConfigurationFeaturesSubscriptionCancelMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "at_period_end" => Ok(Self::AtPeriodEnd),
+            "immediately" => Ok(Self::Immediately),
+
+            _ => Err(()),
         }
     }
 }
@@ -781,12 +965,19 @@ impl std::fmt::Display for UpdateConfigurationFeaturesSubscriptionCancelMode {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateConfigurationFeaturesSubscriptionCancelMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether to create prorations when canceling subscriptions.
 ///
 /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
 /// No prorations are generated when canceling a subscription at the end of its natural billing period.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -803,6 +994,19 @@ impl UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -812,6 +1016,14 @@ impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionCancelProrationBehavi
 impl std::fmt::Display for UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about pausing subscriptions in the portal.
@@ -855,8 +1067,7 @@ impl<'a> UpdateConfigurationFeaturesSubscriptionUpdate<'a> {
 /// The types of subscription updates that are supported.
 ///
 /// When empty, subscriptions are not updateable.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     Price,
     PromotionCode,
@@ -873,6 +1084,19 @@ impl UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     }
 }
 
+impl std::str::FromStr for UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "price" => Ok(Self::Price),
+            "promotion_code" => Ok(Self::PromotionCode),
+            "quantity" => Ok(Self::Quantity),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -882,6 +1106,14 @@ impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedU
 impl std::fmt::Display for UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The list of products that support subscription updates.
@@ -900,8 +1132,7 @@ impl<'a> UpdateConfigurationFeaturesSubscriptionUpdateProducts<'a> {
 /// Determines how to handle prorations resulting from subscription updates.
 ///
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -918,6 +1149,19 @@ impl UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -927,6 +1171,14 @@ impl AsRef<str> for UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavi
 impl std::fmt::Display for UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The hosted login page for this configuration.

@@ -30,10 +30,7 @@ impl miniserde::Deserialize for NextActionDisplayBankTransferInstructions {
 }
 
 /// Type of bank transfer.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum NextActionDisplayBankTransferInstructionsType {
     EuBankTransfer,
     GbBankTransfer,
@@ -52,6 +49,20 @@ impl NextActionDisplayBankTransferInstructionsType {
     }
 }
 
+impl std::str::FromStr for NextActionDisplayBankTransferInstructionsType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for NextActionDisplayBankTransferInstructionsType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -61,5 +72,40 @@ impl AsRef<str> for NextActionDisplayBankTransferInstructionsType {
 impl std::fmt::Display for NextActionDisplayBankTransferInstructionsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for NextActionDisplayBankTransferInstructionsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for NextActionDisplayBankTransferInstructionsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for NextActionDisplayBankTransferInstructionsType",
+            )
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for NextActionDisplayBankTransferInstructionsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<NextActionDisplayBankTransferInstructionsType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(NextActionDisplayBankTransferInstructionsType::from_str(s)?);
+        Ok(())
     }
 }

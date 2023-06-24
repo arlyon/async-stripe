@@ -55,10 +55,7 @@ impl miniserde::Deserialize for ApiErrors {
 /// The type of error returned.
 ///
 /// One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ApiErrorsType {
     ApiError,
     CardError,
@@ -77,6 +74,20 @@ impl ApiErrorsType {
     }
 }
 
+impl std::str::FromStr for ApiErrorsType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "api_error" => Ok(Self::ApiError),
+            "card_error" => Ok(Self::CardError),
+            "idempotency_error" => Ok(Self::IdempotencyError),
+            "invalid_request_error" => Ok(Self::InvalidRequestError),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ApiErrorsType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -86,5 +97,36 @@ impl AsRef<str> for ApiErrorsType {
 impl std::fmt::Display for ApiErrorsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ApiErrorsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ApiErrorsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ApiErrorsType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ApiErrorsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ApiErrorsType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ApiErrorsType::from_str(s)?);
+        Ok(())
     }
 }

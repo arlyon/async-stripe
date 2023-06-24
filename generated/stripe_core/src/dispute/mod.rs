@@ -66,10 +66,7 @@ impl miniserde::Deserialize for Dispute {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DisputeObject {
     Dispute,
 }
@@ -78,6 +75,17 @@ impl DisputeObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Dispute => "dispute",
+        }
+    }
+}
+
+impl std::str::FromStr for DisputeObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "dispute" => Ok(Self::Dispute),
+
+            _ => Err(()),
         }
     }
 }
@@ -93,13 +101,41 @@ impl std::fmt::Display for DisputeObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for DisputeObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DisputeObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DisputeObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DisputeObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DisputeObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Current status of dispute.
 ///
 /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DisputeStatus {
     ChargeRefunded,
     Lost,
@@ -126,6 +162,24 @@ impl DisputeStatus {
     }
 }
 
+impl std::str::FromStr for DisputeStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "charge_refunded" => Ok(Self::ChargeRefunded),
+            "lost" => Ok(Self::Lost),
+            "needs_response" => Ok(Self::NeedsResponse),
+            "under_review" => Ok(Self::UnderReview),
+            "warning_closed" => Ok(Self::WarningClosed),
+            "warning_needs_response" => Ok(Self::WarningNeedsResponse),
+            "warning_under_review" => Ok(Self::WarningUnderReview),
+            "won" => Ok(Self::Won),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for DisputeStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -135,6 +189,37 @@ impl AsRef<str> for DisputeStatus {
 impl std::fmt::Display for DisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for DisputeStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DisputeStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DisputeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DisputeStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DisputeStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Dispute {

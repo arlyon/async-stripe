@@ -193,8 +193,7 @@ impl<'a> UpdateExternalAccount<'a> {
 /// The type of entity that holds the account.
 ///
 /// This can be either `individual` or `company`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateExternalAccountAccountHolderType {
     Company,
     Individual,
@@ -205,6 +204,18 @@ impl UpdateExternalAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateExternalAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -220,12 +231,19 @@ impl std::fmt::Display for UpdateExternalAccountAccountHolderType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateExternalAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The bank account type.
 ///
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateExternalAccountAccountType {
     Checking,
     Futsu,
@@ -244,6 +262,20 @@ impl UpdateExternalAccountAccountType {
     }
 }
 
+impl std::str::FromStr for UpdateExternalAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "futsu" => Ok(Self::Futsu),
+            "savings" => Ok(Self::Savings),
+            "toza" => Ok(Self::Toza),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateExternalAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -253,5 +285,13 @@ impl AsRef<str> for UpdateExternalAccountAccountType {
 impl std::fmt::Display for UpdateExternalAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateExternalAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

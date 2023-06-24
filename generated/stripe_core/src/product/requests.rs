@@ -79,10 +79,7 @@ impl miniserde::Deserialize for SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -91,6 +88,17 @@ impl SearchReturnedObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SearchResult => "search_result",
+        }
+    }
+}
+
+impl std::str::FromStr for SearchReturnedObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "search_result" => Ok(Self::SearchResult),
+
+            _ => Err(()),
         }
     }
 }
@@ -104,6 +112,38 @@ impl AsRef<str> for SearchReturnedObject {
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SearchReturnedObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SearchReturnedObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SearchReturnedObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SearchReturnedObject::from_str(s)?);
+        Ok(())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -362,8 +402,7 @@ impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
     Exclusive,
     Inclusive,
@@ -380,6 +419,19 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -389,6 +441,14 @@ impl AsRef<str> for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
 impl std::fmt::Display for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each element represents a pricing tier.
@@ -462,8 +522,7 @@ impl CreateProductDefaultPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateProductDefaultPriceDataRecurringInterval {
     Day,
     Month,
@@ -482,6 +541,20 @@ impl CreateProductDefaultPriceDataRecurringInterval {
     }
 }
 
+impl std::str::FromStr for CreateProductDefaultPriceDataRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateProductDefaultPriceDataRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -493,12 +566,19 @@ impl std::fmt::Display for CreateProductDefaultPriceDataRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateProductDefaultPriceDataRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateProductDefaultPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -515,6 +595,19 @@ impl CreateProductDefaultPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateProductDefaultPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateProductDefaultPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -524,6 +617,14 @@ impl AsRef<str> for CreateProductDefaultPriceDataTaxBehavior {
 impl std::fmt::Display for CreateProductDefaultPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateProductDefaultPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The dimensions of this product for shipping purposes.
@@ -556,8 +657,7 @@ impl CreateProductPackageDimensions {
 /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
 /// Set this parameter to `good` to use this product with Orders and SKUs.
 /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateProductType {
     Good,
     Service,
@@ -572,6 +672,18 @@ impl CreateProductType {
     }
 }
 
+impl std::str::FromStr for CreateProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "good" => Ok(Self::Good),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateProductType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -581,6 +693,14 @@ impl AsRef<str> for CreateProductType {
 impl std::fmt::Display for CreateProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -746,8 +866,7 @@ impl<'a> ListProduct<'a> {
     }
 }
 /// Only return products of this type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListProductType {
     Good,
     Service,
@@ -762,6 +881,18 @@ impl ListProductType {
     }
 }
 
+impl std::str::FromStr for ListProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "good" => Ok(Self::Good),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListProductType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -771,5 +902,13 @@ impl AsRef<str> for ListProductType {
 impl std::fmt::Display for ListProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

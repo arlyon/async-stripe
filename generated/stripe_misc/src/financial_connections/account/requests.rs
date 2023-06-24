@@ -173,8 +173,7 @@ impl<'a> RefreshAccount<'a> {
     }
 }
 /// The list of account features that you would like to refresh.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RefreshAccountFeatures {
     Balance,
     Ownership,
@@ -189,6 +188,18 @@ impl RefreshAccountFeatures {
     }
 }
 
+impl std::str::FromStr for RefreshAccountFeatures {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balance" => Ok(Self::Balance),
+            "ownership" => Ok(Self::Ownership),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for RefreshAccountFeatures {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -198,6 +209,14 @@ impl AsRef<str> for RefreshAccountFeatures {
 impl std::fmt::Display for RefreshAccountFeatures {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for RefreshAccountFeatures {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

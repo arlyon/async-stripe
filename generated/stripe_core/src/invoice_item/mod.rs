@@ -85,10 +85,7 @@ impl miniserde::Deserialize for InvoiceItem {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceItemObject {
     Invoiceitem,
 }
@@ -97,6 +94,17 @@ impl InvoiceItemObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Invoiceitem => "invoiceitem",
+        }
+    }
+}
+
+impl std::str::FromStr for InvoiceItemObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "invoiceitem" => Ok(Self::Invoiceitem),
+
+            _ => Err(()),
         }
     }
 }
@@ -110,6 +118,38 @@ impl AsRef<str> for InvoiceItemObject {
 impl std::fmt::Display for InvoiceItemObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for InvoiceItemObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceItemObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceItemObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceItemObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<InvoiceItemObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceItemObject::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for InvoiceItem {

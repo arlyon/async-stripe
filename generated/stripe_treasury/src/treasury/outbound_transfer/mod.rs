@@ -70,12 +70,8 @@ impl miniserde::Deserialize for OutboundTransfer {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OutboundTransferObject {
-    #[serde(rename = "treasury.outbound_transfer")]
     TreasuryOutboundTransfer,
 }
 
@@ -83,6 +79,17 @@ impl OutboundTransferObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryOutboundTransfer => "treasury.outbound_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for OutboundTransferObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.outbound_transfer" => Ok(Self::TreasuryOutboundTransfer),
+
+            _ => Err(()),
         }
     }
 }
@@ -98,15 +105,44 @@ impl std::fmt::Display for OutboundTransferObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for OutboundTransferObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for OutboundTransferObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for OutboundTransferObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<OutboundTransferObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(OutboundTransferObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Current status of the OutboundTransfer: `processing`, `failed`, `canceled`, `posted`, `returned`.
 ///
 /// An OutboundTransfer is `processing` if it has been created and is pending.
 /// The status changes to `posted` once the OutboundTransfer has been "confirmed" and funds have left the account, or to `failed` or `canceled`.
 /// If an OutboundTransfer fails to arrive at its destination, its status will change to `returned`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OutboundTransferStatus {
     Canceled,
     Failed,
@@ -127,6 +163,21 @@ impl OutboundTransferStatus {
     }
 }
 
+impl std::str::FromStr for OutboundTransferStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "failed" => Ok(Self::Failed),
+            "posted" => Ok(Self::Posted),
+            "processing" => Ok(Self::Processing),
+            "returned" => Ok(Self::Returned),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for OutboundTransferStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -136,6 +187,38 @@ impl AsRef<str> for OutboundTransferStatus {
 impl std::fmt::Display for OutboundTransferStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for OutboundTransferStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for OutboundTransferStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for OutboundTransferStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<OutboundTransferStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(OutboundTransferStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for OutboundTransfer {

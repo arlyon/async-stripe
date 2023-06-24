@@ -427,8 +427,7 @@ impl CreatePaymentMethodEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -495,6 +494,50 @@ impl CreatePaymentMethodEpsBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodEpsBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "arzte_und_apotheker_bank" => Ok(Self::ArzteUndApothekerBank),
+            "austrian_anadi_bank_ag" => Ok(Self::AustrianAnadiBankAg),
+            "bank_austria" => Ok(Self::BankAustria),
+            "bankhaus_carl_spangler" => Ok(Self::BankhausCarlSpangler),
+            "bankhaus_schelhammer_und_schattera_ag" => Ok(Self::BankhausSchelhammerUndSchatteraAg),
+            "bawag_psk_ag" => Ok(Self::BawagPskAg),
+            "bks_bank_ag" => Ok(Self::BksBankAg),
+            "brull_kallmus_bank_ag" => Ok(Self::BrullKallmusBankAg),
+            "btv_vier_lander_bank" => Ok(Self::BtvVierLanderBank),
+            "capital_bank_grawe_gruppe_ag" => Ok(Self::CapitalBankGraweGruppeAg),
+            "deutsche_bank_ag" => Ok(Self::DeutscheBankAg),
+            "dolomitenbank" => Ok(Self::Dolomitenbank),
+            "easybank_ag" => Ok(Self::EasybankAg),
+            "erste_bank_und_sparkassen" => Ok(Self::ErsteBankUndSparkassen),
+            "hypo_alpeadriabank_international_ag" => Ok(Self::HypoAlpeadriabankInternationalAg),
+            "hypo_bank_burgenland_aktiengesellschaft" => {
+                Ok(Self::HypoBankBurgenlandAktiengesellschaft)
+            }
+            "hypo_noe_lb_fur_niederosterreich_u_wien" => {
+                Ok(Self::HypoNoeLbFurNiederosterreichUWien)
+            }
+            "hypo_oberosterreich_salzburg_steiermark" => {
+                Ok(Self::HypoOberosterreichSalzburgSteiermark)
+            }
+            "hypo_tirol_bank_ag" => Ok(Self::HypoTirolBankAg),
+            "hypo_vorarlberg_bank_ag" => Ok(Self::HypoVorarlbergBankAg),
+            "marchfelder_bank" => Ok(Self::MarchfelderBank),
+            "oberbank_ag" => Ok(Self::OberbankAg),
+            "raiffeisen_bankengruppe_osterreich" => Ok(Self::RaiffeisenBankengruppeOsterreich),
+            "schoellerbank_ag" => Ok(Self::SchoellerbankAg),
+            "sparda_bank_wien" => Ok(Self::SpardaBankWien),
+            "volksbank_gruppe" => Ok(Self::VolksbankGruppe),
+            "volkskreditbank_ag" => Ok(Self::VolkskreditbankAg),
+            "vr_bank_braunau" => Ok(Self::VrBankBraunau),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodEpsBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -504,6 +547,14 @@ impl AsRef<str> for CreatePaymentMethodEpsBank {
 impl std::fmt::Display for CreatePaymentMethodEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodEpsBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -521,8 +572,7 @@ impl CreatePaymentMethodFpx {
     }
 }
 /// Account holder type for FPX transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodFpxAccountHolderType {
     Company,
     Individual,
@@ -533,6 +583,18 @@ impl CreatePaymentMethodFpxAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodFpxAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -548,9 +610,16 @@ impl std::fmt::Display for CreatePaymentMethodFpxAccountHolderType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentMethodFpxAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
     Agrobank,
@@ -605,6 +674,38 @@ impl CreatePaymentMethodFpxBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodFpxBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "affin_bank" => Ok(Self::AffinBank),
+            "agrobank" => Ok(Self::Agrobank),
+            "alliance_bank" => Ok(Self::AllianceBank),
+            "ambank" => Ok(Self::Ambank),
+            "bank_islam" => Ok(Self::BankIslam),
+            "bank_muamalat" => Ok(Self::BankMuamalat),
+            "bank_of_china" => Ok(Self::BankOfChina),
+            "bank_rakyat" => Ok(Self::BankRakyat),
+            "bsn" => Ok(Self::Bsn),
+            "cimb" => Ok(Self::Cimb),
+            "deutsche_bank" => Ok(Self::DeutscheBank),
+            "hong_leong_bank" => Ok(Self::HongLeongBank),
+            "hsbc" => Ok(Self::Hsbc),
+            "kfh" => Ok(Self::Kfh),
+            "maybank2e" => Ok(Self::Maybank2e),
+            "maybank2u" => Ok(Self::Maybank2u),
+            "ocbc" => Ok(Self::Ocbc),
+            "pb_enterprise" => Ok(Self::PbEnterprise),
+            "public_bank" => Ok(Self::PublicBank),
+            "rhb" => Ok(Self::Rhb),
+            "standard_chartered" => Ok(Self::StandardChartered),
+            "uob" => Ok(Self::Uob),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodFpxBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -614,6 +715,14 @@ impl AsRef<str> for CreatePaymentMethodFpxBank {
 impl std::fmt::Display for CreatePaymentMethodFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodFpxBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
@@ -645,8 +754,7 @@ impl CreatePaymentMethodIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodIdealBank {
     AbnAmro,
     AsnBank,
@@ -683,6 +791,29 @@ impl CreatePaymentMethodIdealBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodIdealBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abn_amro" => Ok(Self::AbnAmro),
+            "asn_bank" => Ok(Self::AsnBank),
+            "bunq" => Ok(Self::Bunq),
+            "handelsbanken" => Ok(Self::Handelsbanken),
+            "ing" => Ok(Self::Ing),
+            "knab" => Ok(Self::Knab),
+            "moneyou" => Ok(Self::Moneyou),
+            "rabobank" => Ok(Self::Rabobank),
+            "regiobank" => Ok(Self::Regiobank),
+            "revolut" => Ok(Self::Revolut),
+            "sns_bank" => Ok(Self::SnsBank),
+            "triodos_bank" => Ok(Self::TriodosBank),
+            "van_lanschot" => Ok(Self::VanLanschot),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodIdealBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -692,6 +823,14 @@ impl AsRef<str> for CreatePaymentMethodIdealBank {
 impl std::fmt::Display for CreatePaymentMethodIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodIdealBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
@@ -766,8 +905,7 @@ impl CreatePaymentMethodP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodP24Bank {
     AliorBank,
     BankMillennium,
@@ -828,6 +966,41 @@ impl CreatePaymentMethodP24Bank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodP24Bank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "alior_bank" => Ok(Self::AliorBank),
+            "bank_millennium" => Ok(Self::BankMillennium),
+            "bank_nowy_bfg_sa" => Ok(Self::BankNowyBfgSa),
+            "bank_pekao_sa" => Ok(Self::BankPekaoSa),
+            "banki_spbdzielcze" => Ok(Self::BankiSpbdzielcze),
+            "blik" => Ok(Self::Blik),
+            "bnp_paribas" => Ok(Self::BnpParibas),
+            "boz" => Ok(Self::Boz),
+            "citi_handlowy" => Ok(Self::CitiHandlowy),
+            "credit_agricole" => Ok(Self::CreditAgricole),
+            "envelobank" => Ok(Self::Envelobank),
+            "etransfer_pocztowy24" => Ok(Self::EtransferPocztowy24),
+            "getin_bank" => Ok(Self::GetinBank),
+            "ideabank" => Ok(Self::Ideabank),
+            "ing" => Ok(Self::Ing),
+            "inteligo" => Ok(Self::Inteligo),
+            "mbank_mtransfer" => Ok(Self::MbankMtransfer),
+            "nest_przelew" => Ok(Self::NestPrzelew),
+            "noble_pay" => Ok(Self::NoblePay),
+            "pbac_z_ipko" => Ok(Self::PbacZIpko),
+            "plus_bank" => Ok(Self::PlusBank),
+            "santander_przelew24" => Ok(Self::SantanderPrzelew24),
+            "tmobile_usbugi_bankowe" => Ok(Self::TmobileUsbugiBankowe),
+            "toyota_bank" => Ok(Self::ToyotaBank),
+            "volkswagen_bank" => Ok(Self::VolkswagenBank),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodP24Bank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -837,6 +1010,14 @@ impl AsRef<str> for CreatePaymentMethodP24Bank {
 impl std::fmt::Display for CreatePaymentMethodP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodP24Bank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
@@ -900,20 +1081,13 @@ impl CreatePaymentMethodSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodSofortCountry {
-    #[serde(rename = "AT")]
     At,
-    #[serde(rename = "BE")]
     Be,
-    #[serde(rename = "DE")]
     De,
-    #[serde(rename = "ES")]
     Es,
-    #[serde(rename = "IT")]
     It,
-    #[serde(rename = "NL")]
     Nl,
 }
 
@@ -930,6 +1104,22 @@ impl CreatePaymentMethodSofortCountry {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodSofortCountry {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "AT" => Ok(Self::At),
+            "BE" => Ok(Self::Be),
+            "DE" => Ok(Self::De),
+            "ES" => Ok(Self::Es),
+            "IT" => Ok(Self::It),
+            "NL" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodSofortCountry {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -941,12 +1131,19 @@ impl std::fmt::Display for CreatePaymentMethodSofortCountry {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentMethodSofortCountry {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1013,6 +1210,44 @@ impl CreatePaymentMethodType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "card" => Ok(Self::Card),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1022,6 +1257,14 @@ impl AsRef<str> for CreatePaymentMethodType {
 impl std::fmt::Display for CreatePaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -1051,8 +1294,7 @@ impl<'a> CreatePaymentMethodUsBankAccount<'a> {
     }
 }
 /// Account holder type: individual or company.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodUsBankAccountAccountHolderType {
     Company,
     Individual,
@@ -1063,6 +1305,18 @@ impl CreatePaymentMethodUsBankAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -1078,11 +1332,18 @@ impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountHolderType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Account type: checkings or savings.
 ///
 /// Defaults to checking if omitted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentMethodUsBankAccountAccountType {
     Checking,
     Savings,
@@ -1097,6 +1358,18 @@ impl CreatePaymentMethodUsBankAccountAccountType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "savings" => Ok(Self::Savings),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1106,6 +1379,14 @@ impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountType {
 impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
@@ -1331,8 +1612,7 @@ impl UpdatePaymentMethodUsBankAccount {
     }
 }
 /// Bank account type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentMethodUsBankAccountAccountHolderType {
     Company,
     Individual,
@@ -1347,6 +1627,18 @@ impl UpdatePaymentMethodUsBankAccountAccountHolderType {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentMethodUsBankAccountAccountHolderType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1356,6 +1648,14 @@ impl AsRef<str> for UpdatePaymentMethodUsBankAccountAccountHolderType {
 impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -1400,8 +1700,7 @@ impl<'a> ListPaymentMethod<'a> {
     }
 }
 /// A required filter on the list, based on the object `type` field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListPaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1470,6 +1769,45 @@ impl ListPaymentMethodType {
     }
 }
 
+impl std::str::FromStr for ListPaymentMethodType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "card" => Ok(Self::Card),
+            "card_present" => Ok(Self::CardPresent),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListPaymentMethodType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1479,6 +1817,14 @@ impl AsRef<str> for ListPaymentMethodType {
 impl std::fmt::Display for ListPaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListPaymentMethodType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -85,10 +85,7 @@ impl miniserde::Deserialize for Authorization {
 }
 
 /// How the card details were provided.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AuthorizationAuthorizationMethod {
     Chip,
     Contactless,
@@ -109,6 +106,21 @@ impl AuthorizationAuthorizationMethod {
     }
 }
 
+impl std::str::FromStr for AuthorizationAuthorizationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "chip" => Ok(Self::Chip),
+            "contactless" => Ok(Self::Contactless),
+            "keyed_in" => Ok(Self::KeyedIn),
+            "online" => Ok(Self::Online),
+            "swipe" => Ok(Self::Swipe),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AuthorizationAuthorizationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -120,15 +132,44 @@ impl std::fmt::Display for AuthorizationAuthorizationMethod {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AuthorizationAuthorizationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AuthorizationAuthorizationMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for AuthorizationAuthorizationMethod")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AuthorizationAuthorizationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AuthorizationAuthorizationMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AuthorizationAuthorizationMethod::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AuthorizationObject {
-    #[serde(rename = "issuing.authorization")]
     IssuingAuthorization,
 }
 
@@ -136,6 +177,17 @@ impl AuthorizationObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::IssuingAuthorization => "issuing.authorization",
+        }
+    }
+}
+
+impl std::str::FromStr for AuthorizationObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "issuing.authorization" => Ok(Self::IssuingAuthorization),
+
+            _ => Err(()),
         }
     }
 }
@@ -151,11 +203,40 @@ impl std::fmt::Display for AuthorizationObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for AuthorizationObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AuthorizationObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AuthorizationObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AuthorizationObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AuthorizationObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The current status of the authorization in its lifecycle.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AuthorizationStatus {
     Closed,
     Pending,
@@ -172,6 +253,19 @@ impl AuthorizationStatus {
     }
 }
 
+impl std::str::FromStr for AuthorizationStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "closed" => Ok(Self::Closed),
+            "pending" => Ok(Self::Pending),
+            "reversed" => Ok(Self::Reversed),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for AuthorizationStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -181,6 +275,38 @@ impl AsRef<str> for AuthorizationStatus {
 impl std::fmt::Display for AuthorizationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AuthorizationStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AuthorizationStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AuthorizationStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<AuthorizationStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AuthorizationStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Authorization {

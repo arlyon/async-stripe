@@ -108,8 +108,7 @@ impl<'a> ListDebitReversal<'a> {
     }
 }
 /// Only return DebitReversals for a given resolution.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListDebitReversalResolution {
     Lost,
     Won,
@@ -120,6 +119,18 @@ impl ListDebitReversalResolution {
         match self {
             Self::Lost => "lost",
             Self::Won => "won",
+        }
+    }
+}
+
+impl std::str::FromStr for ListDebitReversalResolution {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "lost" => Ok(Self::Lost),
+            "won" => Ok(Self::Won),
+
+            _ => Err(()),
         }
     }
 }
@@ -135,9 +146,16 @@ impl std::fmt::Display for ListDebitReversalResolution {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListDebitReversalResolution {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Only return DebitReversals for a given status.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListDebitReversalStatus {
     Canceled,
     Completed,
@@ -154,6 +172,19 @@ impl ListDebitReversalStatus {
     }
 }
 
+impl std::str::FromStr for ListDebitReversalStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "completed" => Ok(Self::Completed),
+            "processing" => Ok(Self::Processing),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListDebitReversalStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -163,5 +194,13 @@ impl AsRef<str> for ListDebitReversalStatus {
 impl std::fmt::Display for ListDebitReversalStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListDebitReversalStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

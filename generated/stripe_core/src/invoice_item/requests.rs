@@ -288,8 +288,7 @@ impl<'a> CreateInvoiceItemPriceData<'a> {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateInvoiceItemPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -306,6 +305,19 @@ impl CreateInvoiceItemPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateInvoiceItemPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateInvoiceItemPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -317,12 +329,19 @@ impl std::fmt::Display for CreateInvoiceItemPriceDataTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateInvoiceItemPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateInvoiceItemTaxBehavior {
     Exclusive,
     Inclusive,
@@ -339,6 +358,19 @@ impl CreateInvoiceItemTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreateInvoiceItemTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateInvoiceItemTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -348,6 +380,14 @@ impl AsRef<str> for CreateInvoiceItemTaxBehavior {
 impl std::fmt::Display for CreateInvoiceItemTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateInvoiceItemTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -515,8 +555,7 @@ impl<'a> UpdateInvoiceItemPriceData<'a> {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateInvoiceItemPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
@@ -533,6 +572,19 @@ impl UpdateInvoiceItemPriceDataTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateInvoiceItemPriceDataTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateInvoiceItemPriceDataTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -544,12 +596,19 @@ impl std::fmt::Display for UpdateInvoiceItemPriceDataTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateInvoiceItemPriceDataTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateInvoiceItemTaxBehavior {
     Exclusive,
     Inclusive,
@@ -566,6 +625,19 @@ impl UpdateInvoiceItemTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdateInvoiceItemTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateInvoiceItemTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -575,5 +647,13 @@ impl AsRef<str> for UpdateInvoiceItemTaxBehavior {
 impl std::fmt::Display for UpdateInvoiceItemTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateInvoiceItemTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

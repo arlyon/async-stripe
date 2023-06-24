@@ -257,8 +257,7 @@ impl<'a> UpdateAccountBusinessProfileSupportAddress<'a> {
     }
 }
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateAccountBusinessType {
     Company,
     GovernmentEntity,
@@ -277,6 +276,20 @@ impl UpdateAccountBusinessType {
     }
 }
 
+impl std::str::FromStr for UpdateAccountBusinessType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "government_entity" => Ok(Self::GovernmentEntity),
+            "individual" => Ok(Self::Individual),
+            "non_profit" => Ok(Self::NonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateAccountBusinessType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -286,6 +299,14 @@ impl AsRef<str> for UpdateAccountBusinessType {
 impl std::fmt::Display for UpdateAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateAccountBusinessType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
@@ -1078,8 +1099,7 @@ impl<'a> UpdateAccountCompanyOwnershipDeclaration<'a> {
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateAccountCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -1130,6 +1150,36 @@ impl UpdateAccountCompanyStructure {
     }
 }
 
+impl std::str::FromStr for UpdateAccountCompanyStructure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "free_zone_establishment" => Ok(Self::FreeZoneEstablishment),
+            "free_zone_llc" => Ok(Self::FreeZoneLlc),
+            "government_instrumentality" => Ok(Self::GovernmentInstrumentality),
+            "governmental_unit" => Ok(Self::GovernmentalUnit),
+            "incorporated_non_profit" => Ok(Self::IncorporatedNonProfit),
+            "limited_liability_partnership" => Ok(Self::LimitedLiabilityPartnership),
+            "llc" => Ok(Self::Llc),
+            "multi_member_llc" => Ok(Self::MultiMemberLlc),
+            "private_company" => Ok(Self::PrivateCompany),
+            "private_corporation" => Ok(Self::PrivateCorporation),
+            "private_partnership" => Ok(Self::PrivatePartnership),
+            "public_company" => Ok(Self::PublicCompany),
+            "public_corporation" => Ok(Self::PublicCorporation),
+            "public_partnership" => Ok(Self::PublicPartnership),
+            "single_member_llc" => Ok(Self::SingleMemberLlc),
+            "sole_establishment" => Ok(Self::SoleEstablishment),
+            "sole_proprietorship" => Ok(Self::SoleProprietorship),
+            "tax_exempt_government_instrumentality" => Ok(Self::TaxExemptGovernmentInstrumentality),
+            "unincorporated_association" => Ok(Self::UnincorporatedAssociation),
+            "unincorporated_non_profit" => Ok(Self::UnincorporatedNonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateAccountCompanyStructure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1139,6 +1189,14 @@ impl AsRef<str> for UpdateAccountCompanyStructure {
 impl std::fmt::Display for UpdateAccountCompanyStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateAccountCompanyStructure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information on the verification state of the company.
@@ -1485,8 +1543,7 @@ impl UpdateAccountIndividualDob {
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateAccountIndividualPoliticalExposure {
     Existing,
     None,
@@ -1501,6 +1558,18 @@ impl UpdateAccountIndividualPoliticalExposure {
     }
 }
 
+impl std::str::FromStr for UpdateAccountIndividualPoliticalExposure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "existing" => Ok(Self::Existing),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateAccountIndividualPoliticalExposure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1510,6 +1579,14 @@ impl AsRef<str> for UpdateAccountIndividualPoliticalExposure {
 impl std::fmt::Display for UpdateAccountIndividualPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateAccountIndividualPoliticalExposure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The individual's registered address.
@@ -1817,8 +1894,7 @@ pub enum UpdateAccountSettingsPayoutsScheduleDelayDays {
 ///
 /// One of: `daily`, `manual`, `weekly`, or `monthly`.
 /// Default is `daily`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateAccountSettingsPayoutsScheduleInterval {
     Daily,
     Manual,
@@ -1837,6 +1913,20 @@ impl UpdateAccountSettingsPayoutsScheduleInterval {
     }
 }
 
+impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "daily" => Ok(Self::Daily),
+            "manual" => Ok(Self::Manual),
+            "monthly" => Ok(Self::Monthly),
+            "weekly" => Ok(Self::Weekly),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateAccountSettingsPayoutsScheduleInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1848,11 +1938,18 @@ impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
 ///
 /// (required and applicable only if `interval` is `weekly`.).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
     Friday,
     Monday,
@@ -1877,6 +1974,23 @@ impl UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
     }
 }
 
+impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "friday" => Ok(Self::Friday),
+            "monday" => Ok(Self::Monday),
+            "saturday" => Ok(Self::Saturday),
+            "sunday" => Ok(Self::Sunday),
+            "thursday" => Ok(Self::Thursday),
+            "tuesday" => Ok(Self::Tuesday),
+            "wednesday" => Ok(Self::Wednesday),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1886,6 +2000,14 @@ impl AsRef<str> for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
 impl std::fmt::Display for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Settings specific to the account's Treasury FinancialAccounts.
@@ -2118,8 +2240,7 @@ impl<'a> CreateAccountBusinessProfileSupportAddress<'a> {
     }
 }
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountBusinessType {
     Company,
     GovernmentEntity,
@@ -2138,6 +2259,20 @@ impl CreateAccountBusinessType {
     }
 }
 
+impl std::str::FromStr for CreateAccountBusinessType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "government_entity" => Ok(Self::GovernmentEntity),
+            "individual" => Ok(Self::Individual),
+            "non_profit" => Ok(Self::NonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountBusinessType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2147,6 +2282,14 @@ impl AsRef<str> for CreateAccountBusinessType {
 impl std::fmt::Display for CreateAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountBusinessType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
@@ -2939,8 +3082,7 @@ impl<'a> CreateAccountCompanyOwnershipDeclaration<'a> {
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -2991,6 +3133,36 @@ impl CreateAccountCompanyStructure {
     }
 }
 
+impl std::str::FromStr for CreateAccountCompanyStructure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "free_zone_establishment" => Ok(Self::FreeZoneEstablishment),
+            "free_zone_llc" => Ok(Self::FreeZoneLlc),
+            "government_instrumentality" => Ok(Self::GovernmentInstrumentality),
+            "governmental_unit" => Ok(Self::GovernmentalUnit),
+            "incorporated_non_profit" => Ok(Self::IncorporatedNonProfit),
+            "limited_liability_partnership" => Ok(Self::LimitedLiabilityPartnership),
+            "llc" => Ok(Self::Llc),
+            "multi_member_llc" => Ok(Self::MultiMemberLlc),
+            "private_company" => Ok(Self::PrivateCompany),
+            "private_corporation" => Ok(Self::PrivateCorporation),
+            "private_partnership" => Ok(Self::PrivatePartnership),
+            "public_company" => Ok(Self::PublicCompany),
+            "public_corporation" => Ok(Self::PublicCorporation),
+            "public_partnership" => Ok(Self::PublicPartnership),
+            "single_member_llc" => Ok(Self::SingleMemberLlc),
+            "sole_establishment" => Ok(Self::SoleEstablishment),
+            "sole_proprietorship" => Ok(Self::SoleProprietorship),
+            "tax_exempt_government_instrumentality" => Ok(Self::TaxExemptGovernmentInstrumentality),
+            "unincorporated_association" => Ok(Self::UnincorporatedAssociation),
+            "unincorporated_non_profit" => Ok(Self::UnincorporatedNonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountCompanyStructure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3000,6 +3172,14 @@ impl AsRef<str> for CreateAccountCompanyStructure {
 impl std::fmt::Display for CreateAccountCompanyStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountCompanyStructure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information on the verification state of the company.
@@ -3346,8 +3526,7 @@ impl CreateAccountIndividualDob {
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountIndividualPoliticalExposure {
     Existing,
     None,
@@ -3362,6 +3541,18 @@ impl CreateAccountIndividualPoliticalExposure {
     }
 }
 
+impl std::str::FromStr for CreateAccountIndividualPoliticalExposure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "existing" => Ok(Self::Existing),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountIndividualPoliticalExposure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3371,6 +3562,14 @@ impl AsRef<str> for CreateAccountIndividualPoliticalExposure {
 impl std::fmt::Display for CreateAccountIndividualPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountIndividualPoliticalExposure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The individual's registered address.
@@ -3678,8 +3877,7 @@ pub enum CreateAccountSettingsPayoutsScheduleDelayDays {
 ///
 /// One of: `daily`, `manual`, `weekly`, or `monthly`.
 /// Default is `daily`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountSettingsPayoutsScheduleInterval {
     Daily,
     Manual,
@@ -3698,6 +3896,20 @@ impl CreateAccountSettingsPayoutsScheduleInterval {
     }
 }
 
+impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "daily" => Ok(Self::Daily),
+            "manual" => Ok(Self::Manual),
+            "monthly" => Ok(Self::Monthly),
+            "weekly" => Ok(Self::Weekly),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountSettingsPayoutsScheduleInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3709,11 +3921,18 @@ impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateAccountSettingsPayoutsScheduleInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
 ///
 /// (required and applicable only if `interval` is `weekly`.).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
     Friday,
     Monday,
@@ -3738,6 +3957,23 @@ impl CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
     }
 }
 
+impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "friday" => Ok(Self::Friday),
+            "monday" => Ok(Self::Monday),
+            "saturday" => Ok(Self::Saturday),
+            "sunday" => Ok(Self::Sunday),
+            "thursday" => Ok(Self::Thursday),
+            "tuesday" => Ok(Self::Tuesday),
+            "wednesday" => Ok(Self::Wednesday),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3747,6 +3983,14 @@ impl AsRef<str> for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
 impl std::fmt::Display for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Settings specific to the account's Treasury FinancialAccounts.
@@ -3803,8 +4047,7 @@ impl<'a> CreateAccountTosAcceptance<'a> {
 /// The type of Stripe account to create.
 ///
 /// May be one of `custom`, `express` or `standard`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateAccountType {
     Custom,
     Express,
@@ -3821,6 +4064,19 @@ impl CreateAccountType {
     }
 }
 
+impl std::str::FromStr for CreateAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "custom" => Ok(Self::Custom),
+            "express" => Ok(Self::Express),
+            "standard" => Ok(Self::Standard),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3830,6 +4086,14 @@ impl AsRef<str> for CreateAccountType {
 impl std::fmt::Display for CreateAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

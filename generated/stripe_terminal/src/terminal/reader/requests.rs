@@ -259,15 +259,13 @@ impl<'a> ListReader<'a> {
     }
 }
 /// Filters readers by device type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
     SimulatedWiseposE,
     StripeM2,
-    #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
 
@@ -284,6 +282,22 @@ impl ListReaderDeviceType {
     }
 }
 
+impl std::str::FromStr for ListReaderDeviceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bbpos_chipper2x" => Ok(Self::BbposChipper2x),
+            "bbpos_wisepad3" => Ok(Self::BbposWisepad3),
+            "bbpos_wisepos_e" => Ok(Self::BbposWiseposE),
+            "simulated_wisepos_e" => Ok(Self::SimulatedWiseposE),
+            "stripe_m2" => Ok(Self::StripeM2),
+            "verifone_P400" => Ok(Self::VerifoneP400),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListReaderDeviceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -295,9 +309,16 @@ impl std::fmt::Display for ListReaderDeviceType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListReaderDeviceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// A status filter to filter readers to only offline or online readers.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListReaderStatus {
     Offline,
     Online,
@@ -312,6 +333,18 @@ impl ListReaderStatus {
     }
 }
 
+impl std::str::FromStr for ListReaderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(Self::Offline),
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListReaderStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -321,6 +354,14 @@ impl AsRef<str> for ListReaderStatus {
 impl std::fmt::Display for ListReaderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListReaderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -451,8 +492,7 @@ impl<'a> SetReaderDisplayReaderCartLineItems<'a> {
     }
 }
 /// Type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetReaderDisplayReaderType {
     Cart,
 }
@@ -461,6 +501,17 @@ impl SetReaderDisplayReaderType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Cart => "cart",
+        }
+    }
+}
+
+impl std::str::FromStr for SetReaderDisplayReaderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cart" => Ok(Self::Cart),
+
+            _ => Err(()),
         }
     }
 }
@@ -474,6 +525,14 @@ impl AsRef<str> for SetReaderDisplayReaderType {
 impl std::fmt::Display for SetReaderDisplayReaderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SetReaderDisplayReaderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -507,8 +566,7 @@ impl<'a> PresentPaymentMethodReaderCardPresent<'a> {
     }
 }
 /// Simulated payment type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PresentPaymentMethodReaderType {
     CardPresent,
 }
@@ -517,6 +575,17 @@ impl PresentPaymentMethodReaderType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::CardPresent => "card_present",
+        }
+    }
+}
+
+impl std::str::FromStr for PresentPaymentMethodReaderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "card_present" => Ok(Self::CardPresent),
+
+            _ => Err(()),
         }
     }
 }
@@ -530,5 +599,13 @@ impl AsRef<str> for PresentPaymentMethodReaderType {
 impl std::fmt::Display for PresentPaymentMethodReaderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PresentPaymentMethodReaderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

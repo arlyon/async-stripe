@@ -18,10 +18,7 @@ impl miniserde::Deserialize for Ideal {
 /// The customer's bank, if provided.
 ///
 /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum IdealBank {
     AbnAmro,
     AsnBank,
@@ -58,6 +55,29 @@ impl IdealBank {
     }
 }
 
+impl std::str::FromStr for IdealBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abn_amro" => Ok(Self::AbnAmro),
+            "asn_bank" => Ok(Self::AsnBank),
+            "bunq" => Ok(Self::Bunq),
+            "handelsbanken" => Ok(Self::Handelsbanken),
+            "ing" => Ok(Self::Ing),
+            "knab" => Ok(Self::Knab),
+            "moneyou" => Ok(Self::Moneyou),
+            "rabobank" => Ok(Self::Rabobank),
+            "regiobank" => Ok(Self::Regiobank),
+            "revolut" => Ok(Self::Revolut),
+            "sns_bank" => Ok(Self::SnsBank),
+            "triodos_bank" => Ok(Self::TriodosBank),
+            "van_lanschot" => Ok(Self::VanLanschot),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for IdealBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -69,37 +89,52 @@ impl std::fmt::Display for IdealBank {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for IdealBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for IdealBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IdealBank"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IdealBank {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<IdealBank> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IdealBank::from_str(s)?);
+        Ok(())
+    }
+}
 /// The Bank Identifier Code of the customer's bank, if the bank was provided.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum IdealBic {
-    #[serde(rename = "ABNANL2A")]
     Abnanl2a,
-    #[serde(rename = "ASNBNL21")]
     Asnbnl21,
-    #[serde(rename = "BUNQNL2A")]
     Bunqnl2a,
-    #[serde(rename = "FVLBNL22")]
     Fvlbnl22,
-    #[serde(rename = "HANDNL2A")]
     Handnl2a,
-    #[serde(rename = "INGBNL2A")]
     Ingbnl2a,
-    #[serde(rename = "KNABNL2H")]
     Knabnl2h,
-    #[serde(rename = "MOYONL21")]
     Moyonl21,
-    #[serde(rename = "RABONL2U")]
     Rabonl2u,
-    #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
-    #[serde(rename = "REVOLT21")]
     Revolt21,
-    #[serde(rename = "SNSBNL2A")]
     Snsbnl2a,
-    #[serde(rename = "TRIONL2U")]
     Trionl2u,
 }
 
@@ -123,6 +158,29 @@ impl IdealBic {
     }
 }
 
+impl std::str::FromStr for IdealBic {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ABNANL2A" => Ok(Self::Abnanl2a),
+            "ASNBNL21" => Ok(Self::Asnbnl21),
+            "BUNQNL2A" => Ok(Self::Bunqnl2a),
+            "FVLBNL22" => Ok(Self::Fvlbnl22),
+            "HANDNL2A" => Ok(Self::Handnl2a),
+            "INGBNL2A" => Ok(Self::Ingbnl2a),
+            "KNABNL2H" => Ok(Self::Knabnl2h),
+            "MOYONL21" => Ok(Self::Moyonl21),
+            "RABONL2U" => Ok(Self::Rabonl2u),
+            "RBRBNL21" => Ok(Self::Rbrbnl21),
+            "REVOLT21" => Ok(Self::Revolt21),
+            "SNSBNL2A" => Ok(Self::Snsbnl2a),
+            "TRIONL2U" => Ok(Self::Trionl2u),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for IdealBic {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -132,5 +190,36 @@ impl AsRef<str> for IdealBic {
 impl std::fmt::Display for IdealBic {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for IdealBic {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for IdealBic {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IdealBic"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IdealBic {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<IdealBic> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IdealBic::from_str(s)?);
+        Ok(())
     }
 }

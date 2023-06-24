@@ -38,10 +38,7 @@ impl miniserde::Deserialize for Capability {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CapabilityObject {
     Capability,
 }
@@ -50,6 +47,17 @@ impl CapabilityObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Capability => "capability",
+        }
+    }
+}
+
+impl std::str::FromStr for CapabilityObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "capability" => Ok(Self::Capability),
+
+            _ => Err(()),
         }
     }
 }
@@ -65,13 +73,42 @@ impl std::fmt::Display for CapabilityObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CapabilityObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CapabilityObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CapabilityObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CapabilityObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CapabilityObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CapabilityObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The status of the capability.
 ///
 /// Can be `active`, `inactive`, `pending`, or `unrequested`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CapabilityStatus {
     Active,
     Disabled,
@@ -92,6 +129,21 @@ impl CapabilityStatus {
     }
 }
 
+impl std::str::FromStr for CapabilityStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "disabled" => Ok(Self::Disabled),
+            "inactive" => Ok(Self::Inactive),
+            "pending" => Ok(Self::Pending),
+            "unrequested" => Ok(Self::Unrequested),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CapabilityStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -101,6 +153,38 @@ impl AsRef<str> for CapabilityStatus {
 impl std::fmt::Display for CapabilityStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CapabilityStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CapabilityStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CapabilityStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CapabilityStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CapabilityStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CapabilityStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Capability {

@@ -18,484 +18,244 @@ impl miniserde::Deserialize for ShippingAddressCollection {
 /// shipping locations.
 ///
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingAddressCollectionAllowedCountries {
-    #[serde(rename = "AC")]
     Ac,
-    #[serde(rename = "AD")]
     Ad,
-    #[serde(rename = "AE")]
     Ae,
-    #[serde(rename = "AF")]
     Af,
-    #[serde(rename = "AG")]
     Ag,
-    #[serde(rename = "AI")]
     Ai,
-    #[serde(rename = "AL")]
     Al,
-    #[serde(rename = "AM")]
     Am,
-    #[serde(rename = "AO")]
     Ao,
-    #[serde(rename = "AQ")]
     Aq,
-    #[serde(rename = "AR")]
     Ar,
-    #[serde(rename = "AT")]
     At,
-    #[serde(rename = "AU")]
     Au,
-    #[serde(rename = "AW")]
     Aw,
-    #[serde(rename = "AX")]
     Ax,
-    #[serde(rename = "AZ")]
     Az,
-    #[serde(rename = "BA")]
     Ba,
-    #[serde(rename = "BB")]
     Bb,
-    #[serde(rename = "BD")]
     Bd,
-    #[serde(rename = "BE")]
     Be,
-    #[serde(rename = "BF")]
     Bf,
-    #[serde(rename = "BG")]
     Bg,
-    #[serde(rename = "BH")]
     Bh,
-    #[serde(rename = "BI")]
     Bi,
-    #[serde(rename = "BJ")]
     Bj,
-    #[serde(rename = "BL")]
     Bl,
-    #[serde(rename = "BM")]
     Bm,
-    #[serde(rename = "BN")]
     Bn,
-    #[serde(rename = "BO")]
     Bo,
-    #[serde(rename = "BQ")]
     Bq,
-    #[serde(rename = "BR")]
     Br,
-    #[serde(rename = "BS")]
     Bs,
-    #[serde(rename = "BT")]
     Bt,
-    #[serde(rename = "BV")]
     Bv,
-    #[serde(rename = "BW")]
     Bw,
-    #[serde(rename = "BY")]
     By,
-    #[serde(rename = "BZ")]
     Bz,
-    #[serde(rename = "CA")]
     Ca,
-    #[serde(rename = "CD")]
     Cd,
-    #[serde(rename = "CF")]
     Cf,
-    #[serde(rename = "CG")]
     Cg,
-    #[serde(rename = "CH")]
     Ch,
-    #[serde(rename = "CI")]
     Ci,
-    #[serde(rename = "CK")]
     Ck,
-    #[serde(rename = "CL")]
     Cl,
-    #[serde(rename = "CM")]
     Cm,
-    #[serde(rename = "CN")]
     Cn,
-    #[serde(rename = "CO")]
     Co,
-    #[serde(rename = "CR")]
     Cr,
-    #[serde(rename = "CV")]
     Cv,
-    #[serde(rename = "CW")]
     Cw,
-    #[serde(rename = "CY")]
     Cy,
-    #[serde(rename = "CZ")]
     Cz,
-    #[serde(rename = "DE")]
     De,
-    #[serde(rename = "DJ")]
     Dj,
-    #[serde(rename = "DK")]
     Dk,
-    #[serde(rename = "DM")]
     Dm,
-    #[serde(rename = "DO")]
     Do,
-    #[serde(rename = "DZ")]
     Dz,
-    #[serde(rename = "EC")]
     Ec,
-    #[serde(rename = "EE")]
     Ee,
-    #[serde(rename = "EG")]
     Eg,
-    #[serde(rename = "EH")]
     Eh,
-    #[serde(rename = "ER")]
     Er,
-    #[serde(rename = "ES")]
     Es,
-    #[serde(rename = "ET")]
     Et,
-    #[serde(rename = "FI")]
     Fi,
-    #[serde(rename = "FJ")]
     Fj,
-    #[serde(rename = "FK")]
     Fk,
-    #[serde(rename = "FO")]
     Fo,
-    #[serde(rename = "FR")]
     Fr,
-    #[serde(rename = "GA")]
     Ga,
-    #[serde(rename = "GB")]
     Gb,
-    #[serde(rename = "GD")]
     Gd,
-    #[serde(rename = "GE")]
     Ge,
-    #[serde(rename = "GF")]
     Gf,
-    #[serde(rename = "GG")]
     Gg,
-    #[serde(rename = "GH")]
     Gh,
-    #[serde(rename = "GI")]
     Gi,
-    #[serde(rename = "GL")]
     Gl,
-    #[serde(rename = "GM")]
     Gm,
-    #[serde(rename = "GN")]
     Gn,
-    #[serde(rename = "GP")]
     Gp,
-    #[serde(rename = "GQ")]
     Gq,
-    #[serde(rename = "GR")]
     Gr,
-    #[serde(rename = "GS")]
     Gs,
-    #[serde(rename = "GT")]
     Gt,
-    #[serde(rename = "GU")]
     Gu,
-    #[serde(rename = "GW")]
     Gw,
-    #[serde(rename = "GY")]
     Gy,
-    #[serde(rename = "HK")]
     Hk,
-    #[serde(rename = "HN")]
     Hn,
-    #[serde(rename = "HR")]
     Hr,
-    #[serde(rename = "HT")]
     Ht,
-    #[serde(rename = "HU")]
     Hu,
-    #[serde(rename = "ID")]
     Id,
-    #[serde(rename = "IE")]
     Ie,
-    #[serde(rename = "IL")]
     Il,
-    #[serde(rename = "IM")]
     Im,
-    #[serde(rename = "IN")]
     In,
-    #[serde(rename = "IO")]
     Io,
-    #[serde(rename = "IQ")]
     Iq,
-    #[serde(rename = "IS")]
     Is,
-    #[serde(rename = "IT")]
     It,
-    #[serde(rename = "JE")]
     Je,
-    #[serde(rename = "JM")]
     Jm,
-    #[serde(rename = "JO")]
     Jo,
-    #[serde(rename = "JP")]
     Jp,
-    #[serde(rename = "KE")]
     Ke,
-    #[serde(rename = "KG")]
     Kg,
-    #[serde(rename = "KH")]
     Kh,
-    #[serde(rename = "KI")]
     Ki,
-    #[serde(rename = "KM")]
     Km,
-    #[serde(rename = "KN")]
     Kn,
-    #[serde(rename = "KR")]
     Kr,
-    #[serde(rename = "KW")]
     Kw,
-    #[serde(rename = "KY")]
     Ky,
-    #[serde(rename = "KZ")]
     Kz,
-    #[serde(rename = "LA")]
     La,
-    #[serde(rename = "LB")]
     Lb,
-    #[serde(rename = "LC")]
     Lc,
-    #[serde(rename = "LI")]
     Li,
-    #[serde(rename = "LK")]
     Lk,
-    #[serde(rename = "LR")]
     Lr,
-    #[serde(rename = "LS")]
     Ls,
-    #[serde(rename = "LT")]
     Lt,
-    #[serde(rename = "LU")]
     Lu,
-    #[serde(rename = "LV")]
     Lv,
-    #[serde(rename = "LY")]
     Ly,
-    #[serde(rename = "MA")]
     Ma,
-    #[serde(rename = "MC")]
     Mc,
-    #[serde(rename = "MD")]
     Md,
-    #[serde(rename = "ME")]
     Me,
-    #[serde(rename = "MF")]
     Mf,
-    #[serde(rename = "MG")]
     Mg,
-    #[serde(rename = "MK")]
     Mk,
-    #[serde(rename = "ML")]
     Ml,
-    #[serde(rename = "MM")]
     Mm,
-    #[serde(rename = "MN")]
     Mn,
-    #[serde(rename = "MO")]
     Mo,
-    #[serde(rename = "MQ")]
     Mq,
-    #[serde(rename = "MR")]
     Mr,
-    #[serde(rename = "MS")]
     Ms,
-    #[serde(rename = "MT")]
     Mt,
-    #[serde(rename = "MU")]
     Mu,
-    #[serde(rename = "MV")]
     Mv,
-    #[serde(rename = "MW")]
     Mw,
-    #[serde(rename = "MX")]
     Mx,
-    #[serde(rename = "MY")]
     My,
-    #[serde(rename = "MZ")]
     Mz,
-    #[serde(rename = "NA")]
     Na,
-    #[serde(rename = "NC")]
     Nc,
-    #[serde(rename = "NE")]
     Ne,
-    #[serde(rename = "NG")]
     Ng,
-    #[serde(rename = "NI")]
     Ni,
-    #[serde(rename = "NL")]
     Nl,
-    #[serde(rename = "NO")]
     No,
-    #[serde(rename = "NP")]
     Np,
-    #[serde(rename = "NR")]
     Nr,
-    #[serde(rename = "NU")]
     Nu,
-    #[serde(rename = "NZ")]
     Nz,
-    #[serde(rename = "OM")]
     Om,
-    #[serde(rename = "PA")]
     Pa,
-    #[serde(rename = "PE")]
     Pe,
-    #[serde(rename = "PF")]
     Pf,
-    #[serde(rename = "PG")]
     Pg,
-    #[serde(rename = "PH")]
     Ph,
-    #[serde(rename = "PK")]
     Pk,
-    #[serde(rename = "PL")]
     Pl,
-    #[serde(rename = "PM")]
     Pm,
-    #[serde(rename = "PN")]
     Pn,
-    #[serde(rename = "PR")]
     Pr,
-    #[serde(rename = "PS")]
     Ps,
-    #[serde(rename = "PT")]
     Pt,
-    #[serde(rename = "PY")]
     Py,
-    #[serde(rename = "QA")]
     Qa,
-    #[serde(rename = "RE")]
     Re,
-    #[serde(rename = "RO")]
     Ro,
-    #[serde(rename = "RS")]
     Rs,
-    #[serde(rename = "RU")]
     Ru,
-    #[serde(rename = "RW")]
     Rw,
-    #[serde(rename = "SA")]
     Sa,
-    #[serde(rename = "SB")]
     Sb,
-    #[serde(rename = "SC")]
     Sc,
-    #[serde(rename = "SE")]
     Se,
-    #[serde(rename = "SG")]
     Sg,
-    #[serde(rename = "SH")]
     Sh,
-    #[serde(rename = "SI")]
     Si,
-    #[serde(rename = "SJ")]
     Sj,
-    #[serde(rename = "SK")]
     Sk,
-    #[serde(rename = "SL")]
     Sl,
-    #[serde(rename = "SM")]
     Sm,
-    #[serde(rename = "SN")]
     Sn,
-    #[serde(rename = "SO")]
     So,
-    #[serde(rename = "SR")]
     Sr,
-    #[serde(rename = "SS")]
     Ss,
-    #[serde(rename = "ST")]
     St,
-    #[serde(rename = "SV")]
     Sv,
-    #[serde(rename = "SX")]
     Sx,
-    #[serde(rename = "SZ")]
     Sz,
-    #[serde(rename = "TA")]
     Ta,
-    #[serde(rename = "TC")]
     Tc,
-    #[serde(rename = "TD")]
     Td,
-    #[serde(rename = "TF")]
     Tf,
-    #[serde(rename = "TG")]
     Tg,
-    #[serde(rename = "TH")]
     Th,
-    #[serde(rename = "TJ")]
     Tj,
-    #[serde(rename = "TK")]
     Tk,
-    #[serde(rename = "TL")]
     Tl,
-    #[serde(rename = "TM")]
     Tm,
-    #[serde(rename = "TN")]
     Tn,
-    #[serde(rename = "TO")]
     To,
-    #[serde(rename = "TR")]
     Tr,
-    #[serde(rename = "TT")]
     Tt,
-    #[serde(rename = "TV")]
     Tv,
-    #[serde(rename = "TW")]
     Tw,
-    #[serde(rename = "TZ")]
     Tz,
-    #[serde(rename = "UA")]
     Ua,
-    #[serde(rename = "UG")]
     Ug,
-    #[serde(rename = "US")]
     Us,
-    #[serde(rename = "UY")]
     Uy,
-    #[serde(rename = "UZ")]
     Uz,
-    #[serde(rename = "VA")]
     Va,
-    #[serde(rename = "VC")]
     Vc,
-    #[serde(rename = "VE")]
     Ve,
-    #[serde(rename = "VG")]
     Vg,
-    #[serde(rename = "VN")]
     Vn,
-    #[serde(rename = "VU")]
     Vu,
-    #[serde(rename = "WF")]
     Wf,
-    #[serde(rename = "WS")]
     Ws,
-    #[serde(rename = "XK")]
     Xk,
-    #[serde(rename = "YE")]
     Ye,
-    #[serde(rename = "YT")]
     Yt,
-    #[serde(rename = "ZA")]
     Za,
-    #[serde(rename = "ZM")]
     Zm,
-    #[serde(rename = "ZW")]
     Zw,
-    #[serde(rename = "ZZ")]
     Zz,
 }
 
@@ -743,6 +503,253 @@ impl ShippingAddressCollectionAllowedCountries {
     }
 }
 
+impl std::str::FromStr for ShippingAddressCollectionAllowedCountries {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "AC" => Ok(Self::Ac),
+            "AD" => Ok(Self::Ad),
+            "AE" => Ok(Self::Ae),
+            "AF" => Ok(Self::Af),
+            "AG" => Ok(Self::Ag),
+            "AI" => Ok(Self::Ai),
+            "AL" => Ok(Self::Al),
+            "AM" => Ok(Self::Am),
+            "AO" => Ok(Self::Ao),
+            "AQ" => Ok(Self::Aq),
+            "AR" => Ok(Self::Ar),
+            "AT" => Ok(Self::At),
+            "AU" => Ok(Self::Au),
+            "AW" => Ok(Self::Aw),
+            "AX" => Ok(Self::Ax),
+            "AZ" => Ok(Self::Az),
+            "BA" => Ok(Self::Ba),
+            "BB" => Ok(Self::Bb),
+            "BD" => Ok(Self::Bd),
+            "BE" => Ok(Self::Be),
+            "BF" => Ok(Self::Bf),
+            "BG" => Ok(Self::Bg),
+            "BH" => Ok(Self::Bh),
+            "BI" => Ok(Self::Bi),
+            "BJ" => Ok(Self::Bj),
+            "BL" => Ok(Self::Bl),
+            "BM" => Ok(Self::Bm),
+            "BN" => Ok(Self::Bn),
+            "BO" => Ok(Self::Bo),
+            "BQ" => Ok(Self::Bq),
+            "BR" => Ok(Self::Br),
+            "BS" => Ok(Self::Bs),
+            "BT" => Ok(Self::Bt),
+            "BV" => Ok(Self::Bv),
+            "BW" => Ok(Self::Bw),
+            "BY" => Ok(Self::By),
+            "BZ" => Ok(Self::Bz),
+            "CA" => Ok(Self::Ca),
+            "CD" => Ok(Self::Cd),
+            "CF" => Ok(Self::Cf),
+            "CG" => Ok(Self::Cg),
+            "CH" => Ok(Self::Ch),
+            "CI" => Ok(Self::Ci),
+            "CK" => Ok(Self::Ck),
+            "CL" => Ok(Self::Cl),
+            "CM" => Ok(Self::Cm),
+            "CN" => Ok(Self::Cn),
+            "CO" => Ok(Self::Co),
+            "CR" => Ok(Self::Cr),
+            "CV" => Ok(Self::Cv),
+            "CW" => Ok(Self::Cw),
+            "CY" => Ok(Self::Cy),
+            "CZ" => Ok(Self::Cz),
+            "DE" => Ok(Self::De),
+            "DJ" => Ok(Self::Dj),
+            "DK" => Ok(Self::Dk),
+            "DM" => Ok(Self::Dm),
+            "DO" => Ok(Self::Do),
+            "DZ" => Ok(Self::Dz),
+            "EC" => Ok(Self::Ec),
+            "EE" => Ok(Self::Ee),
+            "EG" => Ok(Self::Eg),
+            "EH" => Ok(Self::Eh),
+            "ER" => Ok(Self::Er),
+            "ES" => Ok(Self::Es),
+            "ET" => Ok(Self::Et),
+            "FI" => Ok(Self::Fi),
+            "FJ" => Ok(Self::Fj),
+            "FK" => Ok(Self::Fk),
+            "FO" => Ok(Self::Fo),
+            "FR" => Ok(Self::Fr),
+            "GA" => Ok(Self::Ga),
+            "GB" => Ok(Self::Gb),
+            "GD" => Ok(Self::Gd),
+            "GE" => Ok(Self::Ge),
+            "GF" => Ok(Self::Gf),
+            "GG" => Ok(Self::Gg),
+            "GH" => Ok(Self::Gh),
+            "GI" => Ok(Self::Gi),
+            "GL" => Ok(Self::Gl),
+            "GM" => Ok(Self::Gm),
+            "GN" => Ok(Self::Gn),
+            "GP" => Ok(Self::Gp),
+            "GQ" => Ok(Self::Gq),
+            "GR" => Ok(Self::Gr),
+            "GS" => Ok(Self::Gs),
+            "GT" => Ok(Self::Gt),
+            "GU" => Ok(Self::Gu),
+            "GW" => Ok(Self::Gw),
+            "GY" => Ok(Self::Gy),
+            "HK" => Ok(Self::Hk),
+            "HN" => Ok(Self::Hn),
+            "HR" => Ok(Self::Hr),
+            "HT" => Ok(Self::Ht),
+            "HU" => Ok(Self::Hu),
+            "ID" => Ok(Self::Id),
+            "IE" => Ok(Self::Ie),
+            "IL" => Ok(Self::Il),
+            "IM" => Ok(Self::Im),
+            "IN" => Ok(Self::In),
+            "IO" => Ok(Self::Io),
+            "IQ" => Ok(Self::Iq),
+            "IS" => Ok(Self::Is),
+            "IT" => Ok(Self::It),
+            "JE" => Ok(Self::Je),
+            "JM" => Ok(Self::Jm),
+            "JO" => Ok(Self::Jo),
+            "JP" => Ok(Self::Jp),
+            "KE" => Ok(Self::Ke),
+            "KG" => Ok(Self::Kg),
+            "KH" => Ok(Self::Kh),
+            "KI" => Ok(Self::Ki),
+            "KM" => Ok(Self::Km),
+            "KN" => Ok(Self::Kn),
+            "KR" => Ok(Self::Kr),
+            "KW" => Ok(Self::Kw),
+            "KY" => Ok(Self::Ky),
+            "KZ" => Ok(Self::Kz),
+            "LA" => Ok(Self::La),
+            "LB" => Ok(Self::Lb),
+            "LC" => Ok(Self::Lc),
+            "LI" => Ok(Self::Li),
+            "LK" => Ok(Self::Lk),
+            "LR" => Ok(Self::Lr),
+            "LS" => Ok(Self::Ls),
+            "LT" => Ok(Self::Lt),
+            "LU" => Ok(Self::Lu),
+            "LV" => Ok(Self::Lv),
+            "LY" => Ok(Self::Ly),
+            "MA" => Ok(Self::Ma),
+            "MC" => Ok(Self::Mc),
+            "MD" => Ok(Self::Md),
+            "ME" => Ok(Self::Me),
+            "MF" => Ok(Self::Mf),
+            "MG" => Ok(Self::Mg),
+            "MK" => Ok(Self::Mk),
+            "ML" => Ok(Self::Ml),
+            "MM" => Ok(Self::Mm),
+            "MN" => Ok(Self::Mn),
+            "MO" => Ok(Self::Mo),
+            "MQ" => Ok(Self::Mq),
+            "MR" => Ok(Self::Mr),
+            "MS" => Ok(Self::Ms),
+            "MT" => Ok(Self::Mt),
+            "MU" => Ok(Self::Mu),
+            "MV" => Ok(Self::Mv),
+            "MW" => Ok(Self::Mw),
+            "MX" => Ok(Self::Mx),
+            "MY" => Ok(Self::My),
+            "MZ" => Ok(Self::Mz),
+            "NA" => Ok(Self::Na),
+            "NC" => Ok(Self::Nc),
+            "NE" => Ok(Self::Ne),
+            "NG" => Ok(Self::Ng),
+            "NI" => Ok(Self::Ni),
+            "NL" => Ok(Self::Nl),
+            "NO" => Ok(Self::No),
+            "NP" => Ok(Self::Np),
+            "NR" => Ok(Self::Nr),
+            "NU" => Ok(Self::Nu),
+            "NZ" => Ok(Self::Nz),
+            "OM" => Ok(Self::Om),
+            "PA" => Ok(Self::Pa),
+            "PE" => Ok(Self::Pe),
+            "PF" => Ok(Self::Pf),
+            "PG" => Ok(Self::Pg),
+            "PH" => Ok(Self::Ph),
+            "PK" => Ok(Self::Pk),
+            "PL" => Ok(Self::Pl),
+            "PM" => Ok(Self::Pm),
+            "PN" => Ok(Self::Pn),
+            "PR" => Ok(Self::Pr),
+            "PS" => Ok(Self::Ps),
+            "PT" => Ok(Self::Pt),
+            "PY" => Ok(Self::Py),
+            "QA" => Ok(Self::Qa),
+            "RE" => Ok(Self::Re),
+            "RO" => Ok(Self::Ro),
+            "RS" => Ok(Self::Rs),
+            "RU" => Ok(Self::Ru),
+            "RW" => Ok(Self::Rw),
+            "SA" => Ok(Self::Sa),
+            "SB" => Ok(Self::Sb),
+            "SC" => Ok(Self::Sc),
+            "SE" => Ok(Self::Se),
+            "SG" => Ok(Self::Sg),
+            "SH" => Ok(Self::Sh),
+            "SI" => Ok(Self::Si),
+            "SJ" => Ok(Self::Sj),
+            "SK" => Ok(Self::Sk),
+            "SL" => Ok(Self::Sl),
+            "SM" => Ok(Self::Sm),
+            "SN" => Ok(Self::Sn),
+            "SO" => Ok(Self::So),
+            "SR" => Ok(Self::Sr),
+            "SS" => Ok(Self::Ss),
+            "ST" => Ok(Self::St),
+            "SV" => Ok(Self::Sv),
+            "SX" => Ok(Self::Sx),
+            "SZ" => Ok(Self::Sz),
+            "TA" => Ok(Self::Ta),
+            "TC" => Ok(Self::Tc),
+            "TD" => Ok(Self::Td),
+            "TF" => Ok(Self::Tf),
+            "TG" => Ok(Self::Tg),
+            "TH" => Ok(Self::Th),
+            "TJ" => Ok(Self::Tj),
+            "TK" => Ok(Self::Tk),
+            "TL" => Ok(Self::Tl),
+            "TM" => Ok(Self::Tm),
+            "TN" => Ok(Self::Tn),
+            "TO" => Ok(Self::To),
+            "TR" => Ok(Self::Tr),
+            "TT" => Ok(Self::Tt),
+            "TV" => Ok(Self::Tv),
+            "TW" => Ok(Self::Tw),
+            "TZ" => Ok(Self::Tz),
+            "UA" => Ok(Self::Ua),
+            "UG" => Ok(Self::Ug),
+            "US" => Ok(Self::Us),
+            "UY" => Ok(Self::Uy),
+            "UZ" => Ok(Self::Uz),
+            "VA" => Ok(Self::Va),
+            "VC" => Ok(Self::Vc),
+            "VE" => Ok(Self::Ve),
+            "VG" => Ok(Self::Vg),
+            "VN" => Ok(Self::Vn),
+            "VU" => Ok(Self::Vu),
+            "WF" => Ok(Self::Wf),
+            "WS" => Ok(Self::Ws),
+            "XK" => Ok(Self::Xk),
+            "YE" => Ok(Self::Ye),
+            "YT" => Ok(Self::Yt),
+            "ZA" => Ok(Self::Za),
+            "ZM" => Ok(Self::Zm),
+            "ZW" => Ok(Self::Zw),
+            "ZZ" => Ok(Self::Zz),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ShippingAddressCollectionAllowedCountries {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -752,5 +759,38 @@ impl AsRef<str> for ShippingAddressCollectionAllowedCountries {
 impl std::fmt::Display for ShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ShippingAddressCollectionAllowedCountries {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ShippingAddressCollectionAllowedCountries {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ShippingAddressCollectionAllowedCountries")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ShippingAddressCollectionAllowedCountries {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ShippingAddressCollectionAllowedCountries> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingAddressCollectionAllowedCountries::from_str(s)?);
+        Ok(())
     }
 }

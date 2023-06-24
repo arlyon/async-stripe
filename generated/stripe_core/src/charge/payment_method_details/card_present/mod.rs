@@ -82,10 +82,7 @@ impl miniserde::Deserialize for CardPresent {
 }
 
 /// How card details were read in this transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardPresentReadMethod {
     ContactEmv,
     ContactlessEmv,
@@ -106,6 +103,21 @@ impl CardPresentReadMethod {
     }
 }
 
+impl std::str::FromStr for CardPresentReadMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "contact_emv" => Ok(Self::ContactEmv),
+            "contactless_emv" => Ok(Self::ContactlessEmv),
+            "contactless_magstripe_mode" => Ok(Self::ContactlessMagstripeMode),
+            "magnetic_stripe_fallback" => Ok(Self::MagneticStripeFallback),
+            "magnetic_stripe_track2" => Ok(Self::MagneticStripeTrack2),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CardPresentReadMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -115,6 +127,38 @@ impl AsRef<str> for CardPresentReadMethod {
 impl std::fmt::Display for CardPresentReadMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CardPresentReadMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardPresentReadMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardPresentReadMethod"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardPresentReadMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<CardPresentReadMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardPresentReadMethod::from_str(s)?);
+        Ok(())
     }
 }
 pub mod receipt;

@@ -39,10 +39,7 @@ impl miniserde::Deserialize for Document {
 }
 
 /// Status of this `document` check.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DocumentStatus {
     Unverified,
     Verified,
@@ -53,6 +50,18 @@ impl DocumentStatus {
         match self {
             Self::Unverified => "unverified",
             Self::Verified => "verified",
+        }
+    }
+}
+
+impl std::str::FromStr for DocumentStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "unverified" => Ok(Self::Unverified),
+            "verified" => Ok(Self::Verified),
+
+            _ => Err(()),
         }
     }
 }
@@ -68,11 +77,39 @@ impl std::fmt::Display for DocumentStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for DocumentStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DocumentStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DocumentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DocumentStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DocumentStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// Type of the document.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DocumentType {
     DrivingLicense,
     IdCard,
@@ -89,6 +126,19 @@ impl DocumentType {
     }
 }
 
+impl std::str::FromStr for DocumentType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "driving_license" => Ok(Self::DrivingLicense),
+            "id_card" => Ok(Self::IdCard),
+            "passport" => Ok(Self::Passport),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for DocumentType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -98,6 +148,37 @@ impl AsRef<str> for DocumentType {
 impl std::fmt::Display for DocumentType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for DocumentType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for DocumentType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for DocumentType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<DocumentType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(DocumentType::from_str(s)?);
+        Ok(())
     }
 }
 pub mod date_of_birth;

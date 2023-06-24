@@ -94,8 +94,7 @@ impl<'a> ListCardholder<'a> {
 /// Only return cardholders that have the given status.
 ///
 /// One of `active`, `inactive`, or `blocked`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListCardholderStatus {
     Active,
     Blocked,
@@ -112,6 +111,19 @@ impl ListCardholderStatus {
     }
 }
 
+impl std::str::FromStr for ListCardholderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "blocked" => Ok(Self::Blocked),
+            "inactive" => Ok(Self::Inactive),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListCardholderStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -123,11 +135,18 @@ impl std::fmt::Display for ListCardholderStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListCardholderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Only return cardholders that have the given type.
 ///
 /// One of `individual` or `company`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListCardholderType {
     Company,
     Individual,
@@ -142,6 +161,18 @@ impl ListCardholderType {
     }
 }
 
+impl std::str::FromStr for ListCardholderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListCardholderType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -151,6 +182,14 @@ impl AsRef<str> for ListCardholderType {
 impl std::fmt::Display for ListCardholderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListCardholderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -377,8 +416,7 @@ impl<'a> CreateCardholderSpendingControls<'a> {
 ///
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderSpendingControlsAllowedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -523,7 +561,6 @@ pub enum CreateCardholderSpendingControlsAllowedCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -651,7 +688,6 @@ pub enum CreateCardholderSpendingControlsAllowedCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -1013,6 +1049,368 @@ impl CreateCardholderSpendingControlsAllowedCategories {
     }
 }
 
+impl std::str::FromStr for CreateCardholderSpendingControlsAllowedCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCardholderSpendingControlsAllowedCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1024,12 +1422,19 @@ impl std::fmt::Display for CreateCardholderSpendingControlsAllowedCategories {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateCardholderSpendingControlsAllowedCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 ///
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderSpendingControlsBlockedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -1174,7 +1579,6 @@ pub enum CreateCardholderSpendingControlsBlockedCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -1302,7 +1706,6 @@ pub enum CreateCardholderSpendingControlsBlockedCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -1664,6 +2067,368 @@ impl CreateCardholderSpendingControlsBlockedCategories {
     }
 }
 
+impl std::str::FromStr for CreateCardholderSpendingControlsBlockedCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCardholderSpendingControlsBlockedCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1673,6 +2438,14 @@ impl AsRef<str> for CreateCardholderSpendingControlsBlockedCategories {
 impl std::fmt::Display for CreateCardholderSpendingControlsBlockedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCardholderSpendingControlsBlockedCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -1699,8 +2472,7 @@ impl<'a> CreateCardholderSpendingControlsSpendingLimits<'a> {
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 ///
 /// Omitting this field will apply the limit to all categories.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderSpendingControlsSpendingLimitsCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -1845,7 +2617,6 @@ pub enum CreateCardholderSpendingControlsSpendingLimitsCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -1973,7 +2744,6 @@ pub enum CreateCardholderSpendingControlsSpendingLimitsCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -2335,6 +3105,368 @@ impl CreateCardholderSpendingControlsSpendingLimitsCategories {
     }
 }
 
+impl std::str::FromStr for CreateCardholderSpendingControlsSpendingLimitsCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCardholderSpendingControlsSpendingLimitsCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2346,9 +3478,16 @@ impl std::fmt::Display for CreateCardholderSpendingControlsSpendingLimitsCategor
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateCardholderSpendingControlsSpendingLimitsCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Interval (or event) to which the amount applies.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderSpendingControlsSpendingLimitsInterval {
     AllTime,
     Daily,
@@ -2371,6 +3510,22 @@ impl CreateCardholderSpendingControlsSpendingLimitsInterval {
     }
 }
 
+impl std::str::FromStr for CreateCardholderSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "all_time" => Ok(Self::AllTime),
+            "daily" => Ok(Self::Daily),
+            "monthly" => Ok(Self::Monthly),
+            "per_authorization" => Ok(Self::PerAuthorization),
+            "weekly" => Ok(Self::Weekly),
+            "yearly" => Ok(Self::Yearly),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCardholderSpendingControlsSpendingLimitsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2382,11 +3537,18 @@ impl std::fmt::Display for CreateCardholderSpendingControlsSpendingLimitsInterva
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateCardholderSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether to permit authorizations on this cardholder's cards.
 ///
 /// Defaults to `active`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderStatus {
     Active,
     Inactive,
@@ -2397,6 +3559,18 @@ impl CreateCardholderStatus {
         match self {
             Self::Active => "active",
             Self::Inactive => "inactive",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCardholderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "inactive" => Ok(Self::Inactive),
+
+            _ => Err(()),
         }
     }
 }
@@ -2412,9 +3586,16 @@ impl std::fmt::Display for CreateCardholderStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateCardholderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// One of `individual` or `company`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCardholderType {
     Company,
     Individual,
@@ -2429,6 +3610,18 @@ impl CreateCardholderType {
     }
 }
 
+impl std::str::FromStr for CreateCardholderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateCardholderType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2438,6 +3631,14 @@ impl AsRef<str> for CreateCardholderType {
 impl std::fmt::Display for CreateCardholderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateCardholderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2648,8 +3849,7 @@ impl<'a> UpdateCardholderSpendingControls<'a> {
 ///
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCardholderSpendingControlsAllowedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -2794,7 +3994,6 @@ pub enum UpdateCardholderSpendingControlsAllowedCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -2922,7 +4121,6 @@ pub enum UpdateCardholderSpendingControlsAllowedCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -3284,6 +4482,368 @@ impl UpdateCardholderSpendingControlsAllowedCategories {
     }
 }
 
+impl std::str::FromStr for UpdateCardholderSpendingControlsAllowedCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCardholderSpendingControlsAllowedCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3295,12 +4855,19 @@ impl std::fmt::Display for UpdateCardholderSpendingControlsAllowedCategories {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateCardholderSpendingControlsAllowedCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 ///
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCardholderSpendingControlsBlockedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -3445,7 +5012,6 @@ pub enum UpdateCardholderSpendingControlsBlockedCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -3573,7 +5139,6 @@ pub enum UpdateCardholderSpendingControlsBlockedCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -3935,6 +5500,368 @@ impl UpdateCardholderSpendingControlsBlockedCategories {
     }
 }
 
+impl std::str::FromStr for UpdateCardholderSpendingControlsBlockedCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCardholderSpendingControlsBlockedCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3944,6 +5871,14 @@ impl AsRef<str> for UpdateCardholderSpendingControlsBlockedCategories {
 impl std::fmt::Display for UpdateCardholderSpendingControlsBlockedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCardholderSpendingControlsBlockedCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -3970,8 +5905,7 @@ impl<'a> UpdateCardholderSpendingControlsSpendingLimits<'a> {
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 ///
 /// Omitting this field will apply the limit to all categories.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCardholderSpendingControlsSpendingLimitsCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -4116,7 +6050,6 @@ pub enum UpdateCardholderSpendingControlsSpendingLimitsCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -4244,7 +6177,6 @@ pub enum UpdateCardholderSpendingControlsSpendingLimitsCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,
@@ -4606,6 +6538,368 @@ impl UpdateCardholderSpendingControlsSpendingLimitsCategories {
     }
 }
 
+impl std::str::FromStr for UpdateCardholderSpendingControlsSpendingLimitsCategories {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ac_refrigeration_repair" => Ok(Self::AcRefrigerationRepair),
+            "accounting_bookkeeping_services" => Ok(Self::AccountingBookkeepingServices),
+            "advertising_services" => Ok(Self::AdvertisingServices),
+            "agricultural_cooperative" => Ok(Self::AgriculturalCooperative),
+            "airlines_air_carriers" => Ok(Self::AirlinesAirCarriers),
+            "airports_flying_fields" => Ok(Self::AirportsFlyingFields),
+            "ambulance_services" => Ok(Self::AmbulanceServices),
+            "amusement_parks_carnivals" => Ok(Self::AmusementParksCarnivals),
+            "antique_reproductions" => Ok(Self::AntiqueReproductions),
+            "antique_shops" => Ok(Self::AntiqueShops),
+            "aquariums" => Ok(Self::Aquariums),
+            "architectural_surveying_services" => Ok(Self::ArchitecturalSurveyingServices),
+            "art_dealers_and_galleries" => Ok(Self::ArtDealersAndGalleries),
+            "artists_supply_and_craft_shops" => Ok(Self::ArtistsSupplyAndCraftShops),
+            "auto_and_home_supply_stores" => Ok(Self::AutoAndHomeSupplyStores),
+            "auto_body_repair_shops" => Ok(Self::AutoBodyRepairShops),
+            "auto_paint_shops" => Ok(Self::AutoPaintShops),
+            "auto_service_shops" => Ok(Self::AutoServiceShops),
+            "automated_cash_disburse" => Ok(Self::AutomatedCashDisburse),
+            "automated_fuel_dispensers" => Ok(Self::AutomatedFuelDispensers),
+            "automobile_associations" => Ok(Self::AutomobileAssociations),
+            "automotive_parts_and_accessories_stores" => {
+                Ok(Self::AutomotivePartsAndAccessoriesStores)
+            }
+            "automotive_tire_stores" => Ok(Self::AutomotiveTireStores),
+            "bail_and_bond_payments" => Ok(Self::BailAndBondPayments),
+            "bakeries" => Ok(Self::Bakeries),
+            "bands_orchestras" => Ok(Self::BandsOrchestras),
+            "barber_and_beauty_shops" => Ok(Self::BarberAndBeautyShops),
+            "betting_casino_gambling" => Ok(Self::BettingCasinoGambling),
+            "bicycle_shops" => Ok(Self::BicycleShops),
+            "billiard_pool_establishments" => Ok(Self::BilliardPoolEstablishments),
+            "boat_dealers" => Ok(Self::BoatDealers),
+            "boat_rentals_and_leases" => Ok(Self::BoatRentalsAndLeases),
+            "book_stores" => Ok(Self::BookStores),
+            "books_periodicals_and_newspapers" => Ok(Self::BooksPeriodicalsAndNewspapers),
+            "bowling_alleys" => Ok(Self::BowlingAlleys),
+            "bus_lines" => Ok(Self::BusLines),
+            "business_secretarial_schools" => Ok(Self::BusinessSecretarialSchools),
+            "buying_shopping_services" => Ok(Self::BuyingShoppingServices),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(Self::CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
+            "camera_and_photographic_supply_stores" => Ok(Self::CameraAndPhotographicSupplyStores),
+            "candy_nut_and_confectionery_stores" => Ok(Self::CandyNutAndConfectioneryStores),
+            "car_and_truck_dealers_new_used" => Ok(Self::CarAndTruckDealersNewUsed),
+            "car_and_truck_dealers_used_only" => Ok(Self::CarAndTruckDealersUsedOnly),
+            "car_rental_agencies" => Ok(Self::CarRentalAgencies),
+            "car_washes" => Ok(Self::CarWashes),
+            "carpentry_services" => Ok(Self::CarpentryServices),
+            "carpet_upholstery_cleaning" => Ok(Self::CarpetUpholsteryCleaning),
+            "caterers" => Ok(Self::Caterers),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(Self::CharitableAndSocialServiceOrganizationsFundraising)
+            }
+            "chemicals_and_allied_products" => Ok(Self::ChemicalsAndAlliedProducts),
+            "child_care_services" => Ok(Self::ChildCareServices),
+            "childrens_and_infants_wear_stores" => Ok(Self::ChildrensAndInfantsWearStores),
+            "chiropodists_podiatrists" => Ok(Self::ChiropodistsPodiatrists),
+            "chiropractors" => Ok(Self::Chiropractors),
+            "cigar_stores_and_stands" => Ok(Self::CigarStoresAndStands),
+            "civic_social_fraternal_associations" => Ok(Self::CivicSocialFraternalAssociations),
+            "cleaning_and_maintenance" => Ok(Self::CleaningAndMaintenance),
+            "clothing_rental" => Ok(Self::ClothingRental),
+            "colleges_universities" => Ok(Self::CollegesUniversities),
+            "commercial_equipment" => Ok(Self::CommercialEquipment),
+            "commercial_footwear" => Ok(Self::CommercialFootwear),
+            "commercial_photography_art_and_graphics" => {
+                Ok(Self::CommercialPhotographyArtAndGraphics)
+            }
+            "commuter_transport_and_ferries" => Ok(Self::CommuterTransportAndFerries),
+            "computer_network_services" => Ok(Self::ComputerNetworkServices),
+            "computer_programming" => Ok(Self::ComputerProgramming),
+            "computer_repair" => Ok(Self::ComputerRepair),
+            "computer_software_stores" => Ok(Self::ComputerSoftwareStores),
+            "computers_peripherals_and_software" => Ok(Self::ComputersPeripheralsAndSoftware),
+            "concrete_work_services" => Ok(Self::ConcreteWorkServices),
+            "construction_materials" => Ok(Self::ConstructionMaterials),
+            "consulting_public_relations" => Ok(Self::ConsultingPublicRelations),
+            "correspondence_schools" => Ok(Self::CorrespondenceSchools),
+            "cosmetic_stores" => Ok(Self::CosmeticStores),
+            "counseling_services" => Ok(Self::CounselingServices),
+            "country_clubs" => Ok(Self::CountryClubs),
+            "courier_services" => Ok(Self::CourierServices),
+            "court_costs" => Ok(Self::CourtCosts),
+            "credit_reporting_agencies" => Ok(Self::CreditReportingAgencies),
+            "cruise_lines" => Ok(Self::CruiseLines),
+            "dairy_products_stores" => Ok(Self::DairyProductsStores),
+            "dance_hall_studios_schools" => Ok(Self::DanceHallStudiosSchools),
+            "dating_escort_services" => Ok(Self::DatingEscortServices),
+            "dentists_orthodontists" => Ok(Self::DentistsOrthodontists),
+            "department_stores" => Ok(Self::DepartmentStores),
+            "detective_agencies" => Ok(Self::DetectiveAgencies),
+            "digital_goods_applications" => Ok(Self::DigitalGoodsApplications),
+            "digital_goods_games" => Ok(Self::DigitalGoodsGames),
+            "digital_goods_large_volume" => Ok(Self::DigitalGoodsLargeVolume),
+            "digital_goods_media" => Ok(Self::DigitalGoodsMedia),
+            "direct_marketing_catalog_merchant" => Ok(Self::DirectMarketingCatalogMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(Self::DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
+            "direct_marketing_inbound_telemarketing" => {
+                Ok(Self::DirectMarketingInboundTelemarketing)
+            }
+            "direct_marketing_insurance_services" => Ok(Self::DirectMarketingInsuranceServices),
+            "direct_marketing_other" => Ok(Self::DirectMarketingOther),
+            "direct_marketing_outbound_telemarketing" => {
+                Ok(Self::DirectMarketingOutboundTelemarketing)
+            }
+            "direct_marketing_subscription" => Ok(Self::DirectMarketingSubscription),
+            "direct_marketing_travel" => Ok(Self::DirectMarketingTravel),
+            "discount_stores" => Ok(Self::DiscountStores),
+            "doctors" => Ok(Self::Doctors),
+            "door_to_door_sales" => Ok(Self::DoorToDoorSales),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(Self::DraperyWindowCoveringAndUpholsteryStores)
+            }
+            "drinking_places" => Ok(Self::DrinkingPlaces),
+            "drug_stores_and_pharmacies" => Ok(Self::DrugStoresAndPharmacies),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(Self::DrugsDrugProprietariesAndDruggistSundries)
+            }
+            "dry_cleaners" => Ok(Self::DryCleaners),
+            "durable_goods" => Ok(Self::DurableGoods),
+            "duty_free_stores" => Ok(Self::DutyFreeStores),
+            "eating_places_restaurants" => Ok(Self::EatingPlacesRestaurants),
+            "educational_services" => Ok(Self::EducationalServices),
+            "electric_razor_stores" => Ok(Self::ElectricRazorStores),
+            "electrical_parts_and_equipment" => Ok(Self::ElectricalPartsAndEquipment),
+            "electrical_services" => Ok(Self::ElectricalServices),
+            "electronics_repair_shops" => Ok(Self::ElectronicsRepairShops),
+            "electronics_stores" => Ok(Self::ElectronicsStores),
+            "elementary_secondary_schools" => Ok(Self::ElementarySecondarySchools),
+            "employment_temp_agencies" => Ok(Self::EmploymentTempAgencies),
+            "equipment_rental" => Ok(Self::EquipmentRental),
+            "exterminating_services" => Ok(Self::ExterminatingServices),
+            "family_clothing_stores" => Ok(Self::FamilyClothingStores),
+            "fast_food_restaurants" => Ok(Self::FastFoodRestaurants),
+            "financial_institutions" => Ok(Self::FinancialInstitutions),
+            "fines_government_administrative_entities" => {
+                Ok(Self::FinesGovernmentAdministrativeEntities)
+            }
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(Self::FireplaceFireplaceScreensAndAccessoriesStores)
+            }
+            "floor_covering_stores" => Ok(Self::FloorCoveringStores),
+            "florists" => Ok(Self::Florists),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(Self::FloristsSuppliesNurseryStockAndFlowers)
+            }
+            "freezer_and_locker_meat_provisioners" => Ok(Self::FreezerAndLockerMeatProvisioners),
+            "fuel_dealers_non_automotive" => Ok(Self::FuelDealersNonAutomotive),
+            "funeral_services_crematories" => Ok(Self::FuneralServicesCrematories),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(Self::FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
+            "furniture_repair_refinishing" => Ok(Self::FurnitureRepairRefinishing),
+            "furriers_and_fur_shops" => Ok(Self::FurriersAndFurShops),
+            "general_services" => Ok(Self::GeneralServices),
+            "gift_card_novelty_and_souvenir_shops" => Ok(Self::GiftCardNoveltyAndSouvenirShops),
+            "glass_paint_and_wallpaper_stores" => Ok(Self::GlassPaintAndWallpaperStores),
+            "glassware_crystal_stores" => Ok(Self::GlasswareCrystalStores),
+            "golf_courses_public" => Ok(Self::GolfCoursesPublic),
+            "government_services" => Ok(Self::GovernmentServices),
+            "grocery_stores_supermarkets" => Ok(Self::GroceryStoresSupermarkets),
+            "hardware_equipment_and_supplies" => Ok(Self::HardwareEquipmentAndSupplies),
+            "hardware_stores" => Ok(Self::HardwareStores),
+            "health_and_beauty_spas" => Ok(Self::HealthAndBeautySpas),
+            "hearing_aids_sales_and_supplies" => Ok(Self::HearingAidsSalesAndSupplies),
+            "heating_plumbing_a_c" => Ok(Self::HeatingPlumbingAC),
+            "hobby_toy_and_game_shops" => Ok(Self::HobbyToyAndGameShops),
+            "home_supply_warehouse_stores" => Ok(Self::HomeSupplyWarehouseStores),
+            "hospitals" => Ok(Self::Hospitals),
+            "hotels_motels_and_resorts" => Ok(Self::HotelsMotelsAndResorts),
+            "household_appliance_stores" => Ok(Self::HouseholdApplianceStores),
+            "industrial_supplies" => Ok(Self::IndustrialSupplies),
+            "information_retrieval_services" => Ok(Self::InformationRetrievalServices),
+            "insurance_default" => Ok(Self::InsuranceDefault),
+            "insurance_underwriting_premiums" => Ok(Self::InsuranceUnderwritingPremiums),
+            "intra_company_purchases" => Ok(Self::IntraCompanyPurchases),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(Self::JewelryStoresWatchesClocksAndSilverwareStores)
+            }
+            "landscaping_services" => Ok(Self::LandscapingServices),
+            "laundries" => Ok(Self::Laundries),
+            "laundry_cleaning_services" => Ok(Self::LaundryCleaningServices),
+            "legal_services_attorneys" => Ok(Self::LegalServicesAttorneys),
+            "luggage_and_leather_goods_stores" => Ok(Self::LuggageAndLeatherGoodsStores),
+            "lumber_building_materials_stores" => Ok(Self::LumberBuildingMaterialsStores),
+            "manual_cash_disburse" => Ok(Self::ManualCashDisburse),
+            "marinas_service_and_supplies" => Ok(Self::MarinasServiceAndSupplies),
+            "masonry_stonework_and_plaster" => Ok(Self::MasonryStoneworkAndPlaster),
+            "massage_parlors" => Ok(Self::MassageParlors),
+            "medical_and_dental_labs" => Ok(Self::MedicalAndDentalLabs),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(Self::MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
+            "medical_services" => Ok(Self::MedicalServices),
+            "membership_organizations" => Ok(Self::MembershipOrganizations),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(Self::MensAndBoysClothingAndAccessoriesStores)
+            }
+            "mens_womens_clothing_stores" => Ok(Self::MensWomensClothingStores),
+            "metal_service_centers" => Ok(Self::MetalServiceCenters),
+            "miscellaneous" => Ok(Self::Miscellaneous),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(Self::MiscellaneousApparelAndAccessoryShops)
+            }
+            "miscellaneous_auto_dealers" => Ok(Self::MiscellaneousAutoDealers),
+            "miscellaneous_business_services" => Ok(Self::MiscellaneousBusinessServices),
+            "miscellaneous_food_stores" => Ok(Self::MiscellaneousFoodStores),
+            "miscellaneous_general_merchandise" => Ok(Self::MiscellaneousGeneralMerchandise),
+            "miscellaneous_general_services" => Ok(Self::MiscellaneousGeneralServices),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(Self::MiscellaneousHomeFurnishingSpecialtyStores)
+            }
+            "miscellaneous_publishing_and_printing" => Ok(Self::MiscellaneousPublishingAndPrinting),
+            "miscellaneous_recreation_services" => Ok(Self::MiscellaneousRecreationServices),
+            "miscellaneous_repair_shops" => Ok(Self::MiscellaneousRepairShops),
+            "miscellaneous_specialty_retail" => Ok(Self::MiscellaneousSpecialtyRetail),
+            "mobile_home_dealers" => Ok(Self::MobileHomeDealers),
+            "motion_picture_theaters" => Ok(Self::MotionPictureTheaters),
+            "motor_freight_carriers_and_trucking" => Ok(Self::MotorFreightCarriersAndTrucking),
+            "motor_homes_dealers" => Ok(Self::MotorHomesDealers),
+            "motor_vehicle_supplies_and_new_parts" => Ok(Self::MotorVehicleSuppliesAndNewParts),
+            "motorcycle_shops_and_dealers" => Ok(Self::MotorcycleShopsAndDealers),
+            "motorcycle_shops_dealers" => Ok(Self::MotorcycleShopsDealers),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(Self::MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
+            "news_dealers_and_newsstands" => Ok(Self::NewsDealersAndNewsstands),
+            "non_fi_money_orders" => Ok(Self::NonFiMoneyOrders),
+            "non_fi_stored_value_card_purchase_load" => Ok(Self::NonFiStoredValueCardPurchaseLoad),
+            "nondurable_goods" => Ok(Self::NondurableGoods),
+            "nurseries_lawn_and_garden_supply_stores" => {
+                Ok(Self::NurseriesLawnAndGardenSupplyStores)
+            }
+            "nursing_personal_care" => Ok(Self::NursingPersonalCare),
+            "office_and_commercial_furniture" => Ok(Self::OfficeAndCommercialFurniture),
+            "opticians_eyeglasses" => Ok(Self::OpticiansEyeglasses),
+            "optometrists_ophthalmologist" => Ok(Self::OptometristsOphthalmologist),
+            "orthopedic_goods_prosthetic_devices" => Ok(Self::OrthopedicGoodsProstheticDevices),
+            "osteopaths" => Ok(Self::Osteopaths),
+            "package_stores_beer_wine_and_liquor" => Ok(Self::PackageStoresBeerWineAndLiquor),
+            "paints_varnishes_and_supplies" => Ok(Self::PaintsVarnishesAndSupplies),
+            "parking_lots_garages" => Ok(Self::ParkingLotsGarages),
+            "passenger_railways" => Ok(Self::PassengerRailways),
+            "pawn_shops" => Ok(Self::PawnShops),
+            "pet_shops_pet_food_and_supplies" => Ok(Self::PetShopsPetFoodAndSupplies),
+            "petroleum_and_petroleum_products" => Ok(Self::PetroleumAndPetroleumProducts),
+            "photo_developing" => Ok(Self::PhotoDeveloping),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(Self::PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
+            "photographic_studios" => Ok(Self::PhotographicStudios),
+            "picture_video_production" => Ok(Self::PictureVideoProduction),
+            "piece_goods_notions_and_other_dry_goods" => {
+                Ok(Self::PieceGoodsNotionsAndOtherDryGoods)
+            }
+            "plumbing_heating_equipment_and_supplies" => {
+                Ok(Self::PlumbingHeatingEquipmentAndSupplies)
+            }
+            "political_organizations" => Ok(Self::PoliticalOrganizations),
+            "postal_services_government_only" => Ok(Self::PostalServicesGovernmentOnly),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(Self::PreciousStonesAndMetalsWatchesAndJewelry)
+            }
+            "professional_services" => Ok(Self::ProfessionalServices),
+            "public_warehousing_and_storage" => Ok(Self::PublicWarehousingAndStorage),
+            "quick_copy_repro_and_blueprint" => Ok(Self::QuickCopyReproAndBlueprint),
+            "railroads" => Ok(Self::Railroads),
+            "real_estate_agents_and_managers_rentals" => {
+                Ok(Self::RealEstateAgentsAndManagersRentals)
+            }
+            "record_stores" => Ok(Self::RecordStores),
+            "recreational_vehicle_rentals" => Ok(Self::RecreationalVehicleRentals),
+            "religious_goods_stores" => Ok(Self::ReligiousGoodsStores),
+            "religious_organizations" => Ok(Self::ReligiousOrganizations),
+            "roofing_siding_sheet_metal" => Ok(Self::RoofingSidingSheetMetal),
+            "secretarial_support_services" => Ok(Self::SecretarialSupportServices),
+            "security_brokers_dealers" => Ok(Self::SecurityBrokersDealers),
+            "service_stations" => Ok(Self::ServiceStations),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(Self::SewingNeedleworkFabricAndPieceGoodsStores)
+            }
+            "shoe_repair_hat_cleaning" => Ok(Self::ShoeRepairHatCleaning),
+            "shoe_stores" => Ok(Self::ShoeStores),
+            "small_appliance_repair" => Ok(Self::SmallApplianceRepair),
+            "snowmobile_dealers" => Ok(Self::SnowmobileDealers),
+            "special_trade_services" => Ok(Self::SpecialTradeServices),
+            "specialty_cleaning" => Ok(Self::SpecialtyCleaning),
+            "sporting_goods_stores" => Ok(Self::SportingGoodsStores),
+            "sporting_recreation_camps" => Ok(Self::SportingRecreationCamps),
+            "sports_and_riding_apparel_stores" => Ok(Self::SportsAndRidingApparelStores),
+            "sports_clubs_fields" => Ok(Self::SportsClubsFields),
+            "stamp_and_coin_stores" => Ok(Self::StampAndCoinStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(Self::StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(Self::StationeryStoresOfficeAndSchoolSupplyStores)
+            }
+            "swimming_pools_sales" => Ok(Self::SwimmingPoolsSales),
+            "t_ui_travel_germany" => Ok(Self::TUiTravelGermany),
+            "tailors_alterations" => Ok(Self::TailorsAlterations),
+            "tax_payments_government_agencies" => Ok(Self::TaxPaymentsGovernmentAgencies),
+            "tax_preparation_services" => Ok(Self::TaxPreparationServices),
+            "taxicabs_limousines" => Ok(Self::TaxicabsLimousines),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(Self::TelecommunicationEquipmentAndTelephoneSales)
+            }
+            "telecommunication_services" => Ok(Self::TelecommunicationServices),
+            "telegraph_services" => Ok(Self::TelegraphServices),
+            "tent_and_awning_shops" => Ok(Self::TentAndAwningShops),
+            "testing_laboratories" => Ok(Self::TestingLaboratories),
+            "theatrical_ticket_agencies" => Ok(Self::TheatricalTicketAgencies),
+            "timeshares" => Ok(Self::Timeshares),
+            "tire_retreading_and_repair" => Ok(Self::TireRetreadingAndRepair),
+            "tolls_bridge_fees" => Ok(Self::TollsBridgeFees),
+            "tourist_attractions_and_exhibits" => Ok(Self::TouristAttractionsAndExhibits),
+            "towing_services" => Ok(Self::TowingServices),
+            "trailer_parks_campgrounds" => Ok(Self::TrailerParksCampgrounds),
+            "transportation_services" => Ok(Self::TransportationServices),
+            "travel_agencies_tour_operators" => Ok(Self::TravelAgenciesTourOperators),
+            "truck_stop_iteration" => Ok(Self::TruckStopIteration),
+            "truck_utility_trailer_rentals" => Ok(Self::TruckUtilityTrailerRentals),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(Self::TypesettingPlateMakingAndRelatedServices)
+            }
+            "typewriter_stores" => Ok(Self::TypewriterStores),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(Self::USFederalGovernmentAgenciesOrDepartments)
+            }
+            "uniforms_commercial_clothing" => Ok(Self::UniformsCommercialClothing),
+            "used_merchandise_and_secondhand_stores" => {
+                Ok(Self::UsedMerchandiseAndSecondhandStores)
+            }
+            "utilities" => Ok(Self::Utilities),
+            "variety_stores" => Ok(Self::VarietyStores),
+            "veterinary_services" => Ok(Self::VeterinaryServices),
+            "video_amusement_game_supplies" => Ok(Self::VideoAmusementGameSupplies),
+            "video_game_arcades" => Ok(Self::VideoGameArcades),
+            "video_tape_rental_stores" => Ok(Self::VideoTapeRentalStores),
+            "vocational_trade_schools" => Ok(Self::VocationalTradeSchools),
+            "watch_jewelry_repair" => Ok(Self::WatchJewelryRepair),
+            "welding_repair" => Ok(Self::WeldingRepair),
+            "wholesale_clubs" => Ok(Self::WholesaleClubs),
+            "wig_and_toupee_stores" => Ok(Self::WigAndToupeeStores),
+            "wires_money_orders" => Ok(Self::WiresMoneyOrders),
+            "womens_accessory_and_specialty_shops" => Ok(Self::WomensAccessoryAndSpecialtyShops),
+            "womens_ready_to_wear_stores" => Ok(Self::WomensReadyToWearStores),
+            "wrecking_and_salvage_yards" => Ok(Self::WreckingAndSalvageYards),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCardholderSpendingControlsSpendingLimitsCategories {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4617,9 +6911,16 @@ impl std::fmt::Display for UpdateCardholderSpendingControlsSpendingLimitsCategor
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateCardholderSpendingControlsSpendingLimitsCategories {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Interval (or event) to which the amount applies.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCardholderSpendingControlsSpendingLimitsInterval {
     AllTime,
     Daily,
@@ -4642,6 +6943,22 @@ impl UpdateCardholderSpendingControlsSpendingLimitsInterval {
     }
 }
 
+impl std::str::FromStr for UpdateCardholderSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "all_time" => Ok(Self::AllTime),
+            "daily" => Ok(Self::Daily),
+            "monthly" => Ok(Self::Monthly),
+            "per_authorization" => Ok(Self::PerAuthorization),
+            "weekly" => Ok(Self::Weekly),
+            "yearly" => Ok(Self::Yearly),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCardholderSpendingControlsSpendingLimitsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4653,9 +6970,16 @@ impl std::fmt::Display for UpdateCardholderSpendingControlsSpendingLimitsInterva
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateCardholderSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether to permit authorizations on this cardholder's cards.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCardholderStatus {
     Active,
     Inactive,
@@ -4670,6 +6994,18 @@ impl UpdateCardholderStatus {
     }
 }
 
+impl std::str::FromStr for UpdateCardholderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "inactive" => Ok(Self::Inactive),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCardholderStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4679,5 +7015,13 @@ impl AsRef<str> for UpdateCardholderStatus {
 impl std::fmt::Display for UpdateCardholderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCardholderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

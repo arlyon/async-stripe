@@ -22,10 +22,7 @@ impl miniserde::Deserialize for Link {
 }
 
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum LinkCaptureMethod {
     Manual,
 }
@@ -34,6 +31,17 @@ impl LinkCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for LinkCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -49,15 +57,44 @@ impl std::fmt::Display for LinkCaptureMethod {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for LinkCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for LinkCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for LinkCaptureMethod"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for LinkCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<LinkCaptureMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(LinkCaptureMethod::from_str(s)?);
+        Ok(())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum LinkSetupFutureUsage {
     None,
     OffSession,
@@ -72,6 +109,18 @@ impl LinkSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for LinkSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for LinkSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -81,5 +130,37 @@ impl AsRef<str> for LinkSetupFutureUsage {
 impl std::fmt::Display for LinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for LinkSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for LinkSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for LinkSetupFutureUsage"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for LinkSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<LinkSetupFutureUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(LinkSetupFutureUsage::from_str(s)?);
+        Ok(())
     }
 }

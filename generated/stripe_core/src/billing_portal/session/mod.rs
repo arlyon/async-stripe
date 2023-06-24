@@ -54,10 +54,7 @@ impl miniserde::Deserialize for Session {
 /// The IETF language tag of the locale Customer Portal is displayed in.
 ///
 /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionLocale {
     Auto,
     Bg,
@@ -66,28 +63,19 @@ pub enum SessionLocale {
     De,
     El,
     En,
-    #[serde(rename = "en-AU")]
     EnMinusAu,
-    #[serde(rename = "en-CA")]
     EnMinusCa,
-    #[serde(rename = "en-GB")]
     EnMinusGb,
-    #[serde(rename = "en-IE")]
     EnMinusIe,
-    #[serde(rename = "en-IN")]
     EnMinusIn,
-    #[serde(rename = "en-NZ")]
     EnMinusNz,
-    #[serde(rename = "en-SG")]
     EnMinusSg,
     Es,
-    #[serde(rename = "es-419")]
     EsMinus419,
     Et,
     Fi,
     Fil,
     Fr,
-    #[serde(rename = "fr-CA")]
     FrMinusCa,
     Hr,
     Hu,
@@ -103,7 +91,6 @@ pub enum SessionLocale {
     Nl,
     Pl,
     Pt,
-    #[serde(rename = "pt-BR")]
     PtMinusBr,
     Ro,
     Ru,
@@ -114,9 +101,7 @@ pub enum SessionLocale {
     Tr,
     Vi,
     Zh,
-    #[serde(rename = "zh-HK")]
     ZhMinusHk,
-    #[serde(rename = "zh-TW")]
     ZhMinusTw,
 }
 
@@ -174,6 +159,63 @@ impl SessionLocale {
     }
 }
 
+impl std::str::FromStr for SessionLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "bg" => Ok(Self::Bg),
+            "cs" => Ok(Self::Cs),
+            "da" => Ok(Self::Da),
+            "de" => Ok(Self::De),
+            "el" => Ok(Self::El),
+            "en" => Ok(Self::En),
+            "en-AU" => Ok(Self::EnMinusAu),
+            "en-CA" => Ok(Self::EnMinusCa),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "en-IE" => Ok(Self::EnMinusIe),
+            "en-IN" => Ok(Self::EnMinusIn),
+            "en-NZ" => Ok(Self::EnMinusNz),
+            "en-SG" => Ok(Self::EnMinusSg),
+            "es" => Ok(Self::Es),
+            "es-419" => Ok(Self::EsMinus419),
+            "et" => Ok(Self::Et),
+            "fi" => Ok(Self::Fi),
+            "fil" => Ok(Self::Fil),
+            "fr" => Ok(Self::Fr),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "hr" => Ok(Self::Hr),
+            "hu" => Ok(Self::Hu),
+            "id" => Ok(Self::Id),
+            "it" => Ok(Self::It),
+            "ja" => Ok(Self::Ja),
+            "ko" => Ok(Self::Ko),
+            "lt" => Ok(Self::Lt),
+            "lv" => Ok(Self::Lv),
+            "ms" => Ok(Self::Ms),
+            "mt" => Ok(Self::Mt),
+            "nb" => Ok(Self::Nb),
+            "nl" => Ok(Self::Nl),
+            "pl" => Ok(Self::Pl),
+            "pt" => Ok(Self::Pt),
+            "pt-BR" => Ok(Self::PtMinusBr),
+            "ro" => Ok(Self::Ro),
+            "ru" => Ok(Self::Ru),
+            "sk" => Ok(Self::Sk),
+            "sl" => Ok(Self::Sl),
+            "sv" => Ok(Self::Sv),
+            "th" => Ok(Self::Th),
+            "tr" => Ok(Self::Tr),
+            "vi" => Ok(Self::Vi),
+            "zh" => Ok(Self::Zh),
+            "zh-HK" => Ok(Self::ZhMinusHk),
+            "zh-TW" => Ok(Self::ZhMinusTw),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionLocale {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -185,15 +227,42 @@ impl std::fmt::Display for SessionLocale {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionLocale {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionLocale> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionLocale::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionObject {
-    #[serde(rename = "billing_portal.session")]
     BillingPortalSession,
 }
 
@@ -201,6 +270,17 @@ impl SessionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::BillingPortalSession => "billing_portal.session",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "billing_portal.session" => Ok(Self::BillingPortalSession),
+
+            _ => Err(()),
         }
     }
 }
@@ -214,6 +294,37 @@ impl AsRef<str> for SessionObject {
 impl std::fmt::Display for SessionObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SessionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionObject::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Session {

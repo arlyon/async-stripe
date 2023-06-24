@@ -67,8 +67,7 @@ impl UpdateCashBalanceSettings {
 ///
 /// Valid options are `automatic` or `manual`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
@@ -83,6 +82,18 @@ impl UpdateCashBalanceSettingsReconciliationMode {
     }
 }
 
+impl std::str::FromStr for UpdateCashBalanceSettingsReconciliationMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateCashBalanceSettingsReconciliationMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -92,5 +103,13 @@ impl AsRef<str> for UpdateCashBalanceSettingsReconciliationMode {
 impl std::fmt::Display for UpdateCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

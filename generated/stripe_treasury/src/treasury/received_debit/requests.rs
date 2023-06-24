@@ -68,8 +68,7 @@ impl<'a> ListReceivedDebit<'a> {
     }
 }
 /// Only return ReceivedDebits that have the given status: `succeeded` or `failed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListReceivedDebitStatus {
     Failed,
     Succeeded,
@@ -84,6 +83,18 @@ impl ListReceivedDebitStatus {
     }
 }
 
+impl std::str::FromStr for ListReceivedDebitStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "failed" => Ok(Self::Failed),
+            "succeeded" => Ok(Self::Succeeded),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListReceivedDebitStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -93,6 +104,14 @@ impl AsRef<str> for ListReceivedDebitStatus {
 impl std::fmt::Display for ListReceivedDebitStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListReceivedDebitStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -165,8 +184,7 @@ impl<'a> CreateReceivedDebitInitiatingPaymentMethodDetails<'a> {
     }
 }
 /// The source type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateReceivedDebitInitiatingPaymentMethodDetailsType {
     UsBankAccount,
 }
@@ -175,6 +193,17 @@ impl CreateReceivedDebitInitiatingPaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::UsBankAccount => "us_bank_account",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateReceivedDebitInitiatingPaymentMethodDetailsType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "us_bank_account" => Ok(Self::UsBankAccount),
+
+            _ => Err(()),
         }
     }
 }
@@ -188,6 +217,14 @@ impl AsRef<str> for CreateReceivedDebitInitiatingPaymentMethodDetailsType {
 impl std::fmt::Display for CreateReceivedDebitInitiatingPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateReceivedDebitInitiatingPaymentMethodDetailsType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Optional fields for `us_bank_account`.
@@ -209,8 +246,7 @@ impl<'a> CreateReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a> {
     }
 }
 /// The rails used for the object.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateReceivedDebitNetwork {
     Ach,
 }
@@ -219,6 +255,17 @@ impl CreateReceivedDebitNetwork {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Ach => "ach",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateReceivedDebitNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+
+            _ => Err(()),
         }
     }
 }
@@ -232,5 +279,13 @@ impl AsRef<str> for CreateReceivedDebitNetwork {
 impl std::fmt::Display for CreateReceivedDebitNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateReceivedDebitNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

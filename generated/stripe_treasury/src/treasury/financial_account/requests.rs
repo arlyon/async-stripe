@@ -318,8 +318,7 @@ impl CreateFinancialAccountPlatformRestrictions {
     }
 }
 /// Restricts all inbound money movement.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateFinancialAccountPlatformRestrictionsInboundFlows {
     Restricted,
     Unrestricted,
@@ -330,6 +329,18 @@ impl CreateFinancialAccountPlatformRestrictionsInboundFlows {
         match self {
             Self::Restricted => "restricted",
             Self::Unrestricted => "unrestricted",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateFinancialAccountPlatformRestrictionsInboundFlows {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "restricted" => Ok(Self::Restricted),
+            "unrestricted" => Ok(Self::Unrestricted),
+
+            _ => Err(()),
         }
     }
 }
@@ -345,9 +356,16 @@ impl std::fmt::Display for CreateFinancialAccountPlatformRestrictionsInboundFlow
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateFinancialAccountPlatformRestrictionsInboundFlows {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Restricts all outbound money movement.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateFinancialAccountPlatformRestrictionsOutboundFlows {
     Restricted,
     Unrestricted,
@@ -362,6 +380,18 @@ impl CreateFinancialAccountPlatformRestrictionsOutboundFlows {
     }
 }
 
+impl std::str::FromStr for CreateFinancialAccountPlatformRestrictionsOutboundFlows {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "restricted" => Ok(Self::Restricted),
+            "unrestricted" => Ok(Self::Unrestricted),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateFinancialAccountPlatformRestrictionsOutboundFlows {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -371,6 +401,14 @@ impl AsRef<str> for CreateFinancialAccountPlatformRestrictionsOutboundFlows {
 impl std::fmt::Display for CreateFinancialAccountPlatformRestrictionsOutboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateFinancialAccountPlatformRestrictionsOutboundFlows {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -604,8 +642,7 @@ impl UpdateFinancialAccountPlatformRestrictions {
     }
 }
 /// Restricts all inbound money movement.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateFinancialAccountPlatformRestrictionsInboundFlows {
     Restricted,
     Unrestricted,
@@ -616,6 +653,18 @@ impl UpdateFinancialAccountPlatformRestrictionsInboundFlows {
         match self {
             Self::Restricted => "restricted",
             Self::Unrestricted => "unrestricted",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateFinancialAccountPlatformRestrictionsInboundFlows {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "restricted" => Ok(Self::Restricted),
+            "unrestricted" => Ok(Self::Unrestricted),
+
+            _ => Err(()),
         }
     }
 }
@@ -631,9 +680,16 @@ impl std::fmt::Display for UpdateFinancialAccountPlatformRestrictionsInboundFlow
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateFinancialAccountPlatformRestrictionsInboundFlows {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Restricts all outbound money movement.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
     Restricted,
     Unrestricted,
@@ -648,6 +704,18 @@ impl UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
     }
 }
 
+impl std::str::FromStr for UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "restricted" => Ok(Self::Restricted),
+            "unrestricted" => Ok(Self::Unrestricted),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -657,6 +725,14 @@ impl AsRef<str> for UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
 impl std::fmt::Display for UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateFinancialAccountPlatformRestrictionsOutboundFlows {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

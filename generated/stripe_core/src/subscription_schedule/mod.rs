@@ -68,10 +68,7 @@ impl miniserde::Deserialize for SubscriptionSchedule {
 /// Behavior of the subscription schedule and underlying subscription when it ends.
 ///
 /// Possible values are `release` and `cancel`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionScheduleEndBehavior {
     Cancel,
     None,
@@ -90,6 +87,20 @@ impl SubscriptionScheduleEndBehavior {
     }
 }
 
+impl std::str::FromStr for SubscriptionScheduleEndBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cancel" => Ok(Self::Cancel),
+            "none" => Ok(Self::None),
+            "release" => Ok(Self::Release),
+            "renew" => Ok(Self::Renew),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SubscriptionScheduleEndBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -101,13 +112,43 @@ impl std::fmt::Display for SubscriptionScheduleEndBehavior {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SubscriptionScheduleEndBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SubscriptionScheduleEndBehavior")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionScheduleEndBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionScheduleEndBehavior::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionScheduleObject {
     SubscriptionSchedule,
 }
@@ -116,6 +157,17 @@ impl SubscriptionScheduleObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SubscriptionSchedule => "subscription_schedule",
+        }
+    }
+}
+
+impl std::str::FromStr for SubscriptionScheduleObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "subscription_schedule" => Ok(Self::SubscriptionSchedule),
+
+            _ => Err(()),
         }
     }
 }
@@ -131,14 +183,43 @@ impl std::fmt::Display for SubscriptionScheduleObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SubscriptionScheduleObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionScheduleObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionScheduleObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionScheduleObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionScheduleObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The present status of the subscription schedule.
 ///
 /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
 /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionScheduleStatus {
     Active,
     Canceled,
@@ -159,6 +240,21 @@ impl SubscriptionScheduleStatus {
     }
 }
 
+impl std::str::FromStr for SubscriptionScheduleStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "active" => Ok(Self::Active),
+            "canceled" => Ok(Self::Canceled),
+            "completed" => Ok(Self::Completed),
+            "not_started" => Ok(Self::NotStarted),
+            "released" => Ok(Self::Released),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SubscriptionScheduleStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -168,6 +264,38 @@ impl AsRef<str> for SubscriptionScheduleStatus {
 impl std::fmt::Display for SubscriptionScheduleStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SubscriptionScheduleStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SubscriptionScheduleStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SubscriptionScheduleStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SubscriptionScheduleStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for SubscriptionSchedule {

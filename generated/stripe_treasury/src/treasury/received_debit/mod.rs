@@ -60,10 +60,7 @@ impl miniserde::Deserialize for ReceivedDebit {
 /// Reason for the failure.
 ///
 /// A ReceivedDebit might fail because the FinancialAccount doesn't have sufficient funds, is closed, or is frozen.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReceivedDebitFailureCode {
     AccountClosed,
     AccountFrozen,
@@ -82,6 +79,20 @@ impl ReceivedDebitFailureCode {
     }
 }
 
+impl std::str::FromStr for ReceivedDebitFailureCode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_closed" => Ok(Self::AccountClosed),
+            "account_frozen" => Ok(Self::AccountFrozen),
+            "insufficient_funds" => Ok(Self::InsufficientFunds),
+            "other" => Ok(Self::Other),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReceivedDebitFailureCode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -93,11 +104,40 @@ impl std::fmt::Display for ReceivedDebitFailureCode {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReceivedDebitFailureCode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReceivedDebitFailureCode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedDebitFailureCode"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReceivedDebitFailureCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReceivedDebitFailureCode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReceivedDebitFailureCode::from_str(s)?);
+        Ok(())
+    }
+}
 /// The network used for the ReceivedDebit.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReceivedDebitNetwork {
     Ach,
     Card,
@@ -114,6 +154,19 @@ impl ReceivedDebitNetwork {
     }
 }
 
+impl std::str::FromStr for ReceivedDebitNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "card" => Ok(Self::Card),
+            "stripe" => Ok(Self::Stripe),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReceivedDebitNetwork {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -125,15 +178,43 @@ impl std::fmt::Display for ReceivedDebitNetwork {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReceivedDebitNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReceivedDebitNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedDebitNetwork"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReceivedDebitNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReceivedDebitNetwork> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReceivedDebitNetwork::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReceivedDebitObject {
-    #[serde(rename = "treasury.received_debit")]
     TreasuryReceivedDebit,
 }
 
@@ -141,6 +222,17 @@ impl ReceivedDebitObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryReceivedDebit => "treasury.received_debit",
+        }
+    }
+}
+
+impl std::str::FromStr for ReceivedDebitObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.received_debit" => Ok(Self::TreasuryReceivedDebit),
+
+            _ => Err(()),
         }
     }
 }
@@ -156,14 +248,43 @@ impl std::fmt::Display for ReceivedDebitObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReceivedDebitObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReceivedDebitObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedDebitObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReceivedDebitObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReceivedDebitObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReceivedDebitObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Status of the ReceivedDebit.
 ///
 /// ReceivedDebits are created with a status of either `succeeded` (approved) or `failed` (declined).
 /// The failure reason can be found under the `failure_code`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReceivedDebitStatus {
     Failed,
     Succeeded,
@@ -178,6 +299,18 @@ impl ReceivedDebitStatus {
     }
 }
 
+impl std::str::FromStr for ReceivedDebitStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "failed" => Ok(Self::Failed),
+            "succeeded" => Ok(Self::Succeeded),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReceivedDebitStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -187,6 +320,38 @@ impl AsRef<str> for ReceivedDebitStatus {
 impl std::fmt::Display for ReceivedDebitStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReceivedDebitStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReceivedDebitStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedDebitStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReceivedDebitStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReceivedDebitStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReceivedDebitStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for ReceivedDebit {

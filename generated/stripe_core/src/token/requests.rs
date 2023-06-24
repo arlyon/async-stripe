@@ -86,8 +86,7 @@ impl<'a> CreateTokenAccount<'a> {
     }
 }
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTokenAccountBusinessType {
     Company,
     GovernmentEntity,
@@ -106,6 +105,20 @@ impl CreateTokenAccountBusinessType {
     }
 }
 
+impl std::str::FromStr for CreateTokenAccountBusinessType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "government_entity" => Ok(Self::GovernmentEntity),
+            "individual" => Ok(Self::Individual),
+            "non_profit" => Ok(Self::NonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateTokenAccountBusinessType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -115,6 +128,14 @@ impl AsRef<str> for CreateTokenAccountBusinessType {
 impl std::fmt::Display for CreateTokenAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateTokenAccountBusinessType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about the company or business.
@@ -301,8 +322,7 @@ impl<'a> CreateTokenAccountCompanyOwnershipDeclaration<'a> {
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTokenAccountCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -353,6 +373,36 @@ impl CreateTokenAccountCompanyStructure {
     }
 }
 
+impl std::str::FromStr for CreateTokenAccountCompanyStructure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "free_zone_establishment" => Ok(Self::FreeZoneEstablishment),
+            "free_zone_llc" => Ok(Self::FreeZoneLlc),
+            "government_instrumentality" => Ok(Self::GovernmentInstrumentality),
+            "governmental_unit" => Ok(Self::GovernmentalUnit),
+            "incorporated_non_profit" => Ok(Self::IncorporatedNonProfit),
+            "limited_liability_partnership" => Ok(Self::LimitedLiabilityPartnership),
+            "llc" => Ok(Self::Llc),
+            "multi_member_llc" => Ok(Self::MultiMemberLlc),
+            "private_company" => Ok(Self::PrivateCompany),
+            "private_corporation" => Ok(Self::PrivateCorporation),
+            "private_partnership" => Ok(Self::PrivatePartnership),
+            "public_company" => Ok(Self::PublicCompany),
+            "public_corporation" => Ok(Self::PublicCorporation),
+            "public_partnership" => Ok(Self::PublicPartnership),
+            "single_member_llc" => Ok(Self::SingleMemberLlc),
+            "sole_establishment" => Ok(Self::SoleEstablishment),
+            "sole_proprietorship" => Ok(Self::SoleProprietorship),
+            "tax_exempt_government_instrumentality" => Ok(Self::TaxExemptGovernmentInstrumentality),
+            "unincorporated_association" => Ok(Self::UnincorporatedAssociation),
+            "unincorporated_non_profit" => Ok(Self::UnincorporatedNonProfit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateTokenAccountCompanyStructure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -362,6 +412,14 @@ impl AsRef<str> for CreateTokenAccountCompanyStructure {
 impl std::fmt::Display for CreateTokenAccountCompanyStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateTokenAccountCompanyStructure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information on the verification state of the company.
@@ -585,8 +643,7 @@ impl CreateTokenAccountIndividualDob {
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTokenAccountIndividualPoliticalExposure {
     Existing,
     None,
@@ -601,6 +658,18 @@ impl CreateTokenAccountIndividualPoliticalExposure {
     }
 }
 
+impl std::str::FromStr for CreateTokenAccountIndividualPoliticalExposure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "existing" => Ok(Self::Existing),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateTokenAccountIndividualPoliticalExposure {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -610,6 +679,14 @@ impl AsRef<str> for CreateTokenAccountIndividualPoliticalExposure {
 impl std::fmt::Display for CreateTokenAccountIndividualPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The individual's registered address.
@@ -745,8 +822,7 @@ impl<'a> CreateTokenBankAccount<'a> {
 ///
 /// It can be `company` or `individual`.
 /// This field is required when attaching the bank account to a `Customer` object.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTokenBankAccountAccountHolderType {
     Company,
     Individual,
@@ -757,6 +833,18 @@ impl CreateTokenBankAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTokenBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -772,12 +860,19 @@ impl std::fmt::Display for CreateTokenBankAccountAccountHolderType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateTokenBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The bank account type.
 ///
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateTokenBankAccountAccountType {
     Checking,
     Futsu,
@@ -796,6 +891,20 @@ impl CreateTokenBankAccountAccountType {
     }
 }
 
+impl std::str::FromStr for CreateTokenBankAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "futsu" => Ok(Self::Futsu),
+            "savings" => Ok(Self::Savings),
+            "toza" => Ok(Self::Toza),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateTokenBankAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -805,6 +914,14 @@ impl AsRef<str> for CreateTokenBankAccountAccountType {
 impl std::fmt::Display for CreateTokenBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateTokenBankAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

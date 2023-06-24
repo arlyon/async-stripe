@@ -180,10 +180,7 @@ impl miniserde::Deserialize for SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -192,6 +189,17 @@ impl SearchReturnedObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SearchResult => "search_result",
+        }
+    }
+}
+
+impl std::str::FromStr for SearchReturnedObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "search_result" => Ok(Self::SearchResult),
+
+            _ => Err(()),
         }
     }
 }
@@ -205,6 +213,38 @@ impl AsRef<str> for SearchReturnedObject {
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SearchReturnedObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SearchReturnedObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SearchReturnedObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SearchReturnedObject::from_str(s)?);
+        Ok(())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -439,8 +479,7 @@ impl CreatePaymentIntentAutomaticPaymentMethods {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentCaptureMethod {
     Automatic,
     Manual,
@@ -451,6 +490,18 @@ impl CreatePaymentIntentCaptureMethod {
         match self {
             Self::Automatic => "automatic",
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -466,8 +517,15 @@ impl std::fmt::Display for CreatePaymentIntentCaptureMethod {
         self.as_str().fmt(f)
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+impl serde::Serialize for CreatePaymentIntentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentConfirmationMethod {
     Automatic,
     Manual,
@@ -482,6 +540,18 @@ impl CreatePaymentIntentConfirmationMethod {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentConfirmationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentConfirmationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -491,6 +561,14 @@ impl AsRef<str> for CreatePaymentIntentConfirmationMethod {
 impl std::fmt::Display for CreatePaymentIntentConfirmationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentConfirmationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// This hash contains details about the Mandate to create.
@@ -558,8 +636,7 @@ impl<'a> CreatePaymentIntentMandateDataCustomerAcceptanceOnline<'a> {
 /// The type of customer acceptance information included with the Mandate.
 ///
 /// One of `online` or `offline`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentMandateDataCustomerAcceptanceType {
     Offline,
     Online,
@@ -574,6 +651,18 @@ impl CreatePaymentIntentMandateDataCustomerAcceptanceType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentMandateDataCustomerAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(Self::Offline),
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentMandateDataCustomerAcceptanceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -583,6 +672,14 @@ impl AsRef<str> for CreatePaymentIntentMandateDataCustomerAcceptanceType {
 impl std::fmt::Display for CreatePaymentIntentMandateDataCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentMandateDataCustomerAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Set to `true` to indicate that the customer is not in your checkout flow during this payment attempt, and therefore is unable to authenticate.
@@ -914,8 +1011,7 @@ impl CreatePaymentIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -982,6 +1078,50 @@ impl CreatePaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataEpsBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "arzte_und_apotheker_bank" => Ok(Self::ArzteUndApothekerBank),
+            "austrian_anadi_bank_ag" => Ok(Self::AustrianAnadiBankAg),
+            "bank_austria" => Ok(Self::BankAustria),
+            "bankhaus_carl_spangler" => Ok(Self::BankhausCarlSpangler),
+            "bankhaus_schelhammer_und_schattera_ag" => Ok(Self::BankhausSchelhammerUndSchatteraAg),
+            "bawag_psk_ag" => Ok(Self::BawagPskAg),
+            "bks_bank_ag" => Ok(Self::BksBankAg),
+            "brull_kallmus_bank_ag" => Ok(Self::BrullKallmusBankAg),
+            "btv_vier_lander_bank" => Ok(Self::BtvVierLanderBank),
+            "capital_bank_grawe_gruppe_ag" => Ok(Self::CapitalBankGraweGruppeAg),
+            "deutsche_bank_ag" => Ok(Self::DeutscheBankAg),
+            "dolomitenbank" => Ok(Self::Dolomitenbank),
+            "easybank_ag" => Ok(Self::EasybankAg),
+            "erste_bank_und_sparkassen" => Ok(Self::ErsteBankUndSparkassen),
+            "hypo_alpeadriabank_international_ag" => Ok(Self::HypoAlpeadriabankInternationalAg),
+            "hypo_bank_burgenland_aktiengesellschaft" => {
+                Ok(Self::HypoBankBurgenlandAktiengesellschaft)
+            }
+            "hypo_noe_lb_fur_niederosterreich_u_wien" => {
+                Ok(Self::HypoNoeLbFurNiederosterreichUWien)
+            }
+            "hypo_oberosterreich_salzburg_steiermark" => {
+                Ok(Self::HypoOberosterreichSalzburgSteiermark)
+            }
+            "hypo_tirol_bank_ag" => Ok(Self::HypoTirolBankAg),
+            "hypo_vorarlberg_bank_ag" => Ok(Self::HypoVorarlbergBankAg),
+            "marchfelder_bank" => Ok(Self::MarchfelderBank),
+            "oberbank_ag" => Ok(Self::OberbankAg),
+            "raiffeisen_bankengruppe_osterreich" => Ok(Self::RaiffeisenBankengruppeOsterreich),
+            "schoellerbank_ag" => Ok(Self::SchoellerbankAg),
+            "sparda_bank_wien" => Ok(Self::SpardaBankWien),
+            "volksbank_gruppe" => Ok(Self::VolksbankGruppe),
+            "volkskreditbank_ag" => Ok(Self::VolkskreditbankAg),
+            "vr_bank_braunau" => Ok(Self::VrBankBraunau),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataEpsBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -991,6 +1131,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataEpsBank {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataEpsBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -1008,8 +1156,7 @@ impl CreatePaymentIntentPaymentMethodDataFpx {
     }
 }
 /// Account holder type for FPX transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
     Company,
     Individual,
@@ -1020,6 +1167,18 @@ impl CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -1035,9 +1194,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataFpxAccountHolderT
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -1092,6 +1258,38 @@ impl CreatePaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataFpxBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "affin_bank" => Ok(Self::AffinBank),
+            "agrobank" => Ok(Self::Agrobank),
+            "alliance_bank" => Ok(Self::AllianceBank),
+            "ambank" => Ok(Self::Ambank),
+            "bank_islam" => Ok(Self::BankIslam),
+            "bank_muamalat" => Ok(Self::BankMuamalat),
+            "bank_of_china" => Ok(Self::BankOfChina),
+            "bank_rakyat" => Ok(Self::BankRakyat),
+            "bsn" => Ok(Self::Bsn),
+            "cimb" => Ok(Self::Cimb),
+            "deutsche_bank" => Ok(Self::DeutscheBank),
+            "hong_leong_bank" => Ok(Self::HongLeongBank),
+            "hsbc" => Ok(Self::Hsbc),
+            "kfh" => Ok(Self::Kfh),
+            "maybank2e" => Ok(Self::Maybank2e),
+            "maybank2u" => Ok(Self::Maybank2u),
+            "ocbc" => Ok(Self::Ocbc),
+            "pb_enterprise" => Ok(Self::PbEnterprise),
+            "public_bank" => Ok(Self::PublicBank),
+            "rhb" => Ok(Self::Rhb),
+            "standard_chartered" => Ok(Self::StandardChartered),
+            "uob" => Ok(Self::Uob),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataFpxBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1101,6 +1299,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataFpxBank {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
@@ -1132,8 +1338,7 @@ impl CreatePaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -1170,6 +1375,29 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abn_amro" => Ok(Self::AbnAmro),
+            "asn_bank" => Ok(Self::AsnBank),
+            "bunq" => Ok(Self::Bunq),
+            "handelsbanken" => Ok(Self::Handelsbanken),
+            "ing" => Ok(Self::Ing),
+            "knab" => Ok(Self::Knab),
+            "moneyou" => Ok(Self::Moneyou),
+            "rabobank" => Ok(Self::Rabobank),
+            "regiobank" => Ok(Self::Regiobank),
+            "revolut" => Ok(Self::Revolut),
+            "sns_bank" => Ok(Self::SnsBank),
+            "triodos_bank" => Ok(Self::TriodosBank),
+            "van_lanschot" => Ok(Self::VanLanschot),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataIdealBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1179,6 +1407,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataIdealBank {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataIdealBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
@@ -1253,8 +1489,7 @@ impl CreatePaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -1315,6 +1550,41 @@ impl CreatePaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataP24Bank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "alior_bank" => Ok(Self::AliorBank),
+            "bank_millennium" => Ok(Self::BankMillennium),
+            "bank_nowy_bfg_sa" => Ok(Self::BankNowyBfgSa),
+            "bank_pekao_sa" => Ok(Self::BankPekaoSa),
+            "banki_spbdzielcze" => Ok(Self::BankiSpbdzielcze),
+            "blik" => Ok(Self::Blik),
+            "bnp_paribas" => Ok(Self::BnpParibas),
+            "boz" => Ok(Self::Boz),
+            "citi_handlowy" => Ok(Self::CitiHandlowy),
+            "credit_agricole" => Ok(Self::CreditAgricole),
+            "envelobank" => Ok(Self::Envelobank),
+            "etransfer_pocztowy24" => Ok(Self::EtransferPocztowy24),
+            "getin_bank" => Ok(Self::GetinBank),
+            "ideabank" => Ok(Self::Ideabank),
+            "ing" => Ok(Self::Ing),
+            "inteligo" => Ok(Self::Inteligo),
+            "mbank_mtransfer" => Ok(Self::MbankMtransfer),
+            "nest_przelew" => Ok(Self::NestPrzelew),
+            "noble_pay" => Ok(Self::NoblePay),
+            "pbac_z_ipko" => Ok(Self::PbacZIpko),
+            "plus_bank" => Ok(Self::PlusBank),
+            "santander_przelew24" => Ok(Self::SantanderPrzelew24),
+            "tmobile_usbugi_bankowe" => Ok(Self::TmobileUsbugiBankowe),
+            "toyota_bank" => Ok(Self::ToyotaBank),
+            "volkswagen_bank" => Ok(Self::VolkswagenBank),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataP24Bank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1324,6 +1594,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataP24Bank {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataP24Bank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
@@ -1387,20 +1665,13 @@ impl CreatePaymentIntentPaymentMethodDataSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataSofortCountry {
-    #[serde(rename = "AT")]
     At,
-    #[serde(rename = "BE")]
     Be,
-    #[serde(rename = "DE")]
     De,
-    #[serde(rename = "ES")]
     Es,
-    #[serde(rename = "IT")]
     It,
-    #[serde(rename = "NL")]
     Nl,
 }
 
@@ -1417,6 +1688,22 @@ impl CreatePaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataSofortCountry {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "AT" => Ok(Self::At),
+            "BE" => Ok(Self::Be),
+            "DE" => Ok(Self::De),
+            "ES" => Ok(Self::Es),
+            "IT" => Ok(Self::It),
+            "NL" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataSofortCountry {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1428,12 +1715,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataSofortCountry {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataSofortCountry {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -1498,6 +1792,43 @@ impl CreatePaymentIntentPaymentMethodDataType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1507,6 +1838,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataType {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -1537,8 +1876,7 @@ impl<'a> CreatePaymentIntentPaymentMethodDataUsBankAccount<'a> {
     }
 }
 /// Account holder type: individual or company.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     Company,
     Individual,
@@ -1549,6 +1887,18 @@ impl CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -1564,11 +1914,18 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUsBankAccountAcco
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Account type: checkings or savings.
 ///
 /// Defaults to checking if omitted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     Checking,
     Savings,
@@ -1583,6 +1940,18 @@ impl CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "savings" => Ok(Self::Savings),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1592,6 +1961,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
@@ -1753,8 +2130,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     }
 }
 /// Payment schedule for the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     Combined,
     Interval,
@@ -1767,6 +2143,21 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedu
             Self::Combined => "combined",
             Self::Interval => "interval",
             Self::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "combined" => Ok(Self::Combined),
+            "interval" => Ok(Self::Interval),
+            "sporadic" => Ok(Self::Sporadic),
+
+            _ => Err(()),
         }
     }
 }
@@ -1784,9 +2175,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     Business,
     Personal,
@@ -1797,6 +2197,20 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionTy
         match self {
             Self::Business => "business",
             Self::Personal => "personal",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business" => Ok(Self::Business),
+            "personal" => Ok(Self::Personal),
+
+            _ => Err(()),
         }
     }
 }
@@ -1814,13 +2228,22 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     None,
     OffSession,
@@ -1837,6 +2260,19 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1848,9 +2284,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetup
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
     Instant,
@@ -1867,6 +2310,19 @@ impl CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1876,6 +2332,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerification
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -1906,8 +2370,7 @@ impl CreatePaymentIntentPaymentMethodOptionsAffirm {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -1916,6 +2379,17 @@ impl CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -1931,13 +2405,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureM
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -1946,6 +2427,17 @@ impl CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -1959,6 +2451,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -1997,8 +2497,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -2007,6 +2506,17 @@ impl CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -2022,13 +2532,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearp
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -2037,6 +2554,17 @@ impl CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -2050,6 +2578,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetup
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -2073,8 +2609,7 @@ impl CreatePaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -2089,6 +2624,18 @@ impl CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2098,6 +2645,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -2122,8 +2677,7 @@ impl CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -2140,6 +2694,19 @@ impl CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2149,6 +2716,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutur
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -2173,8 +2748,7 @@ impl CreatePaymentIntentPaymentMethodOptionsBacsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -2191,6 +2765,19 @@ impl CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2200,6 +2787,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureU
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -2224,8 +2819,7 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontact {
     }
 }
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
@@ -2244,6 +2838,20 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "fr" => Ok(Self::Fr),
+            "nl" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2255,13 +2863,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBancontactPref
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -2276,6 +2891,18 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2285,6 +2912,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFuture
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -2327,8 +2962,7 @@ impl CreatePaymentIntentPaymentMethodOptionsBoleto {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     None,
     OffSession,
@@ -2345,6 +2979,19 @@ impl CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2354,6 +3001,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -2433,8 +3088,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -2443,6 +3097,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -2456,6 +3121,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
@@ -2502,8 +3175,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 }
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
 /// One of `month`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     Month,
 }
@@ -2512,6 +3184,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Month => "month",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "month" => Ok(Self::Month),
+
+            _ => Err(()),
         }
     }
 }
@@ -2527,9 +3210,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -2538,6 +3228,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::FixedCount => "fixed_count",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed_count" => Ok(Self::FixedCount),
+
+            _ => Err(()),
         }
     }
 }
@@ -2551,6 +3252,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanT
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -2621,8 +3330,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
 ///
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
@@ -2633,6 +3341,18 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
         match self {
             Self::Fixed => "fixed",
             Self::Maximum => "maximum",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed" => Ok(Self::Fixed),
+            "maximum" => Ok(Self::Maximum),
+
+            _ => Err(()),
         }
     }
 }
@@ -2648,11 +3368,18 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -2673,6 +3400,21 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "sporadic" => Ok(Self::Sporadic),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2684,11 +3426,18 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies the type of mandates supported.
 ///
 /// Possible values are `india`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     India,
 }
@@ -2697,6 +3446,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::India => "india",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "india" => Ok(Self::India),
+
+            _ => Err(()),
         }
     }
 }
@@ -2712,12 +3472,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Selected network to process this PaymentIntent on.
 ///
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -2748,6 +3515,26 @@ impl CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "amex" => Ok(Self::Amex),
+            "cartes_bancaires" => Ok(Self::CartesBancaires),
+            "diners" => Ok(Self::Diners),
+            "discover" => Ok(Self::Discover),
+            "interac" => Ok(Self::Interac),
+            "jcb" => Ok(Self::Jcb),
+            "mastercard" => Ok(Self::Mastercard),
+            "unionpay" => Ok(Self::Unionpay),
+            "unknown" => Ok(Self::Unknown),
+            "visa" => Ok(Self::Visa),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2759,14 +3546,21 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 ///
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Permitted values include: `automatic` or `any`.
 /// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
@@ -2777,6 +3571,18 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Self::Any => "any",
             Self::Automatic => "automatic",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "any" => Ok(Self::Any),
+            "automatic" => Ok(Self::Automatic),
+
+            _ => Err(()),
         }
     }
 }
@@ -2792,13 +3598,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardRequestThr
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     None,
     OffSession,
@@ -2815,6 +3628,19 @@ impl CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2824,6 +3650,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -2910,8 +3744,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBan
 /// List of address types that should be returned in the financial_addresses response.
 ///
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     Iban,
     Sepa,
@@ -2932,6 +3765,23 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequested
     }
 }
 
+impl std::str::FromStr
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "iban" => Ok(Self::Iban),
+            "sepa" => Ok(Self::Sepa),
+            "sort_code" => Ok(Self::SortCode),
+            "spei" => Ok(Self::Spei),
+            "zengin" => Ok(Self::Zengin),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str>
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
@@ -2947,9 +3797,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -2968,6 +3827,20 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2979,11 +3852,18 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 ///
 /// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     BankTransfer,
 }
@@ -2992,6 +3872,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_transfer" => Ok(Self::BankTransfer),
+
+            _ => Err(()),
         }
     }
 }
@@ -3007,13 +3898,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -3022,6 +3920,17 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3035,6 +3944,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupF
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -3058,8 +3975,7 @@ impl CreatePaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -3068,6 +3984,17 @@ impl CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3081,6 +4008,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -3104,8 +4039,7 @@ impl CreatePaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -3114,6 +4048,17 @@ impl CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3127,6 +4072,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -3150,8 +4103,7 @@ impl CreatePaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -3160,6 +4112,17 @@ impl CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3173,6 +4136,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsa
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -3196,8 +4167,7 @@ impl CreatePaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -3206,6 +4176,17 @@ impl CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3219,6 +4200,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsa
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -3242,8 +4231,7 @@ impl CreatePaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -3258,6 +4246,18 @@ impl CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3267,6 +4267,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -3308,8 +4316,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -3318,6 +4325,17 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -3333,89 +4351,56 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Preferred language of the Klarna authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    #[serde(rename = "da-DK")]
     DaMinusDk,
-    #[serde(rename = "de-AT")]
     DeMinusAt,
-    #[serde(rename = "de-CH")]
     DeMinusCh,
-    #[serde(rename = "de-DE")]
     DeMinusDe,
-    #[serde(rename = "en-AT")]
     EnMinusAt,
-    #[serde(rename = "en-AU")]
     EnMinusAu,
-    #[serde(rename = "en-BE")]
     EnMinusBe,
-    #[serde(rename = "en-CA")]
     EnMinusCa,
-    #[serde(rename = "en-CH")]
     EnMinusCh,
-    #[serde(rename = "en-DE")]
     EnMinusDe,
-    #[serde(rename = "en-DK")]
     EnMinusDk,
-    #[serde(rename = "en-ES")]
     EnMinusEs,
-    #[serde(rename = "en-FI")]
     EnMinusFi,
-    #[serde(rename = "en-FR")]
     EnMinusFr,
-    #[serde(rename = "en-GB")]
     EnMinusGb,
-    #[serde(rename = "en-IE")]
     EnMinusIe,
-    #[serde(rename = "en-IT")]
     EnMinusIt,
-    #[serde(rename = "en-NL")]
     EnMinusNl,
-    #[serde(rename = "en-NO")]
     EnMinusNo,
-    #[serde(rename = "en-NZ")]
     EnMinusNz,
-    #[serde(rename = "en-PL")]
     EnMinusPl,
-    #[serde(rename = "en-PT")]
     EnMinusPt,
-    #[serde(rename = "en-SE")]
     EnMinusSe,
-    #[serde(rename = "en-US")]
     EnMinusUs,
-    #[serde(rename = "es-ES")]
     EsMinusEs,
-    #[serde(rename = "es-US")]
     EsMinusUs,
-    #[serde(rename = "fi-FI")]
     FiMinusFi,
-    #[serde(rename = "fr-BE")]
     FrMinusBe,
-    #[serde(rename = "fr-CA")]
     FrMinusCa,
-    #[serde(rename = "fr-CH")]
     FrMinusCh,
-    #[serde(rename = "fr-FR")]
     FrMinusFr,
-    #[serde(rename = "it-CH")]
     ItMinusCh,
-    #[serde(rename = "it-IT")]
     ItMinusIt,
-    #[serde(rename = "nb-NO")]
     NbMinusNo,
-    #[serde(rename = "nl-BE")]
     NlMinusBe,
-    #[serde(rename = "nl-NL")]
     NlMinusNl,
-    #[serde(rename = "pl-PL")]
     PlMinusPl,
-    #[serde(rename = "pt-PT")]
     PtMinusPt,
-    #[serde(rename = "sv-FI")]
     SvMinusFi,
-    #[serde(rename = "sv-SE")]
     SvMinusSe,
 }
 
@@ -3466,6 +4451,56 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "da-DK" => Ok(Self::DaMinusDk),
+            "de-AT" => Ok(Self::DeMinusAt),
+            "de-CH" => Ok(Self::DeMinusCh),
+            "de-DE" => Ok(Self::DeMinusDe),
+            "en-AT" => Ok(Self::EnMinusAt),
+            "en-AU" => Ok(Self::EnMinusAu),
+            "en-BE" => Ok(Self::EnMinusBe),
+            "en-CA" => Ok(Self::EnMinusCa),
+            "en-CH" => Ok(Self::EnMinusCh),
+            "en-DE" => Ok(Self::EnMinusDe),
+            "en-DK" => Ok(Self::EnMinusDk),
+            "en-ES" => Ok(Self::EnMinusEs),
+            "en-FI" => Ok(Self::EnMinusFi),
+            "en-FR" => Ok(Self::EnMinusFr),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "en-IE" => Ok(Self::EnMinusIe),
+            "en-IT" => Ok(Self::EnMinusIt),
+            "en-NL" => Ok(Self::EnMinusNl),
+            "en-NO" => Ok(Self::EnMinusNo),
+            "en-NZ" => Ok(Self::EnMinusNz),
+            "en-PL" => Ok(Self::EnMinusPl),
+            "en-PT" => Ok(Self::EnMinusPt),
+            "en-SE" => Ok(Self::EnMinusSe),
+            "en-US" => Ok(Self::EnMinusUs),
+            "es-ES" => Ok(Self::EsMinusEs),
+            "es-US" => Ok(Self::EsMinusUs),
+            "fi-FI" => Ok(Self::FiMinusFi),
+            "fr-BE" => Ok(Self::FrMinusBe),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "fr-CH" => Ok(Self::FrMinusCh),
+            "fr-FR" => Ok(Self::FrMinusFr),
+            "it-CH" => Ok(Self::ItMinusCh),
+            "it-IT" => Ok(Self::ItMinusIt),
+            "nb-NO" => Ok(Self::NbMinusNo),
+            "nl-BE" => Ok(Self::NlMinusBe),
+            "nl-NL" => Ok(Self::NlMinusNl),
+            "pl-PL" => Ok(Self::PlMinusPl),
+            "pt-PT" => Ok(Self::PtMinusPt),
+            "sv-FI" => Ok(Self::SvMinusFi),
+            "sv-SE" => Ok(Self::SvMinusSe),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3477,13 +4512,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferre
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -3492,6 +4534,17 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3505,6 +4558,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -3548,8 +4609,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -3558,6 +4618,17 @@ impl CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3571,6 +4642,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsa
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
@@ -3604,8 +4683,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -3614,6 +4692,17 @@ impl CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -3629,13 +4718,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMet
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -3650,6 +4746,18 @@ impl CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3659,6 +4767,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -3687,8 +4803,7 @@ impl CreatePaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -3697,6 +4812,17 @@ impl CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3710,6 +4836,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -3736,8 +4870,7 @@ impl CreatePaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -3746,6 +4879,17 @@ impl CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3759,6 +4903,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -3782,8 +4934,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -3792,6 +4943,17 @@ impl CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3805,6 +4967,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -3838,8 +5008,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -3848,6 +5017,17 @@ impl CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3861,6 +5041,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -3885,8 +5073,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -3895,6 +5082,17 @@ impl CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -3908,6 +5106,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureU
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -3943,8 +5149,7 @@ impl CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     None,
     OffSession,
@@ -3961,6 +5166,19 @@ impl CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -3970,6 +5188,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureU
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -3992,8 +5218,7 @@ impl CreatePaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -4018,6 +5243,23 @@ impl CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "es" => Ok(Self::Es),
+            "fr" => Ok(Self::Fr),
+            "it" => Ok(Self::It),
+            "nl" => Ok(Self::Nl),
+            "pl" => Ok(Self::Pl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4029,13 +5271,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortPreferre
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -4050,6 +5299,18 @@ impl CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4059,6 +5320,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsag
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -4115,8 +5384,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 ///
 /// If this parameter is passed, the `payment_method` permission must be included.
 /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     Balances,
     Ownership,
@@ -4131,6 +5399,22 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPer
             Self::Ownership => "ownership",
             Self::PaymentMethod => "payment_method",
             Self::Transactions => "transactions",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balances" => Ok(Self::Balances),
+            "ownership" => Ok(Self::Ownership),
+            "payment_method" => Ok(Self::PaymentMethod),
+            "transactions" => Ok(Self::Transactions),
+
+            _ => Err(()),
         }
     }
 }
@@ -4150,6 +5434,16 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Additional fields for network related functions.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -4164,8 +5458,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     }
 }
 /// Triggers validations to run across the selected networks.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     Ach,
     UsDomesticWire,
@@ -4176,6 +5469,18 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
         match self {
             Self::Ach => "ach",
             Self::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "us_domestic_wire" => Ok(Self::UsDomesticWire),
+
+            _ => Err(()),
         }
     }
 }
@@ -4191,13 +5496,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountN
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     None,
     OffSession,
@@ -4214,6 +5526,19 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4225,9 +5550,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountS
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
@@ -4244,6 +5576,19 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4253,6 +5598,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerifica
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -4280,8 +5633,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     }
 }
 /// The client type that the end customer will pay from.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
     Android,
     Ios,
@@ -4298,6 +5650,19 @@ impl CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "android" => Ok(Self::Android),
+            "ios" => Ok(Self::Ios),
+            "web" => Ok(Self::Web),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4309,13 +5674,20 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPayClien
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -4324,6 +5696,17 @@ impl CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -4337,6 +5720,14 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureU
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Options to configure Radar.
@@ -4358,8 +5749,7 @@ impl<'a> CreatePaymentIntentRadarOptions<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -4374,6 +5764,18 @@ impl CreatePaymentIntentSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for CreatePaymentIntentSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePaymentIntentSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4383,6 +5785,14 @@ impl AsRef<str> for CreatePaymentIntentSetupFutureUsage {
 impl std::fmt::Display for CreatePaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -4625,8 +6035,7 @@ impl<'a> UpdatePaymentIntent<'a> {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentCaptureMethod {
     Automatic,
     Manual,
@@ -4641,6 +6050,18 @@ impl UpdatePaymentIntentCaptureMethod {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentCaptureMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -4650,6 +6071,14 @@ impl AsRef<str> for UpdatePaymentIntentCaptureMethod {
 impl std::fmt::Display for UpdatePaymentIntentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If provided, this hash will be used to create a PaymentMethod.
@@ -4970,8 +6399,7 @@ impl UpdatePaymentIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -5038,6 +6466,50 @@ impl UpdatePaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataEpsBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "arzte_und_apotheker_bank" => Ok(Self::ArzteUndApothekerBank),
+            "austrian_anadi_bank_ag" => Ok(Self::AustrianAnadiBankAg),
+            "bank_austria" => Ok(Self::BankAustria),
+            "bankhaus_carl_spangler" => Ok(Self::BankhausCarlSpangler),
+            "bankhaus_schelhammer_und_schattera_ag" => Ok(Self::BankhausSchelhammerUndSchatteraAg),
+            "bawag_psk_ag" => Ok(Self::BawagPskAg),
+            "bks_bank_ag" => Ok(Self::BksBankAg),
+            "brull_kallmus_bank_ag" => Ok(Self::BrullKallmusBankAg),
+            "btv_vier_lander_bank" => Ok(Self::BtvVierLanderBank),
+            "capital_bank_grawe_gruppe_ag" => Ok(Self::CapitalBankGraweGruppeAg),
+            "deutsche_bank_ag" => Ok(Self::DeutscheBankAg),
+            "dolomitenbank" => Ok(Self::Dolomitenbank),
+            "easybank_ag" => Ok(Self::EasybankAg),
+            "erste_bank_und_sparkassen" => Ok(Self::ErsteBankUndSparkassen),
+            "hypo_alpeadriabank_international_ag" => Ok(Self::HypoAlpeadriabankInternationalAg),
+            "hypo_bank_burgenland_aktiengesellschaft" => {
+                Ok(Self::HypoBankBurgenlandAktiengesellschaft)
+            }
+            "hypo_noe_lb_fur_niederosterreich_u_wien" => {
+                Ok(Self::HypoNoeLbFurNiederosterreichUWien)
+            }
+            "hypo_oberosterreich_salzburg_steiermark" => {
+                Ok(Self::HypoOberosterreichSalzburgSteiermark)
+            }
+            "hypo_tirol_bank_ag" => Ok(Self::HypoTirolBankAg),
+            "hypo_vorarlberg_bank_ag" => Ok(Self::HypoVorarlbergBankAg),
+            "marchfelder_bank" => Ok(Self::MarchfelderBank),
+            "oberbank_ag" => Ok(Self::OberbankAg),
+            "raiffeisen_bankengruppe_osterreich" => Ok(Self::RaiffeisenBankengruppeOsterreich),
+            "schoellerbank_ag" => Ok(Self::SchoellerbankAg),
+            "sparda_bank_wien" => Ok(Self::SpardaBankWien),
+            "volksbank_gruppe" => Ok(Self::VolksbankGruppe),
+            "volkskreditbank_ag" => Ok(Self::VolkskreditbankAg),
+            "vr_bank_braunau" => Ok(Self::VrBankBraunau),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataEpsBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5047,6 +6519,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataEpsBank {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataEpsBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -5064,8 +6544,7 @@ impl UpdatePaymentIntentPaymentMethodDataFpx {
     }
 }
 /// Account holder type for FPX transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
     Company,
     Individual,
@@ -5076,6 +6555,18 @@ impl UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -5091,9 +6582,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderT
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -5148,6 +6646,38 @@ impl UpdatePaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataFpxBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "affin_bank" => Ok(Self::AffinBank),
+            "agrobank" => Ok(Self::Agrobank),
+            "alliance_bank" => Ok(Self::AllianceBank),
+            "ambank" => Ok(Self::Ambank),
+            "bank_islam" => Ok(Self::BankIslam),
+            "bank_muamalat" => Ok(Self::BankMuamalat),
+            "bank_of_china" => Ok(Self::BankOfChina),
+            "bank_rakyat" => Ok(Self::BankRakyat),
+            "bsn" => Ok(Self::Bsn),
+            "cimb" => Ok(Self::Cimb),
+            "deutsche_bank" => Ok(Self::DeutscheBank),
+            "hong_leong_bank" => Ok(Self::HongLeongBank),
+            "hsbc" => Ok(Self::Hsbc),
+            "kfh" => Ok(Self::Kfh),
+            "maybank2e" => Ok(Self::Maybank2e),
+            "maybank2u" => Ok(Self::Maybank2u),
+            "ocbc" => Ok(Self::Ocbc),
+            "pb_enterprise" => Ok(Self::PbEnterprise),
+            "public_bank" => Ok(Self::PublicBank),
+            "rhb" => Ok(Self::Rhb),
+            "standard_chartered" => Ok(Self::StandardChartered),
+            "uob" => Ok(Self::Uob),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataFpxBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5157,6 +6687,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataFpxBank {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
@@ -5188,8 +6726,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -5226,6 +6763,29 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abn_amro" => Ok(Self::AbnAmro),
+            "asn_bank" => Ok(Self::AsnBank),
+            "bunq" => Ok(Self::Bunq),
+            "handelsbanken" => Ok(Self::Handelsbanken),
+            "ing" => Ok(Self::Ing),
+            "knab" => Ok(Self::Knab),
+            "moneyou" => Ok(Self::Moneyou),
+            "rabobank" => Ok(Self::Rabobank),
+            "regiobank" => Ok(Self::Regiobank),
+            "revolut" => Ok(Self::Revolut),
+            "sns_bank" => Ok(Self::SnsBank),
+            "triodos_bank" => Ok(Self::TriodosBank),
+            "van_lanschot" => Ok(Self::VanLanschot),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataIdealBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5235,6 +6795,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataIdealBank {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataIdealBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
@@ -5309,8 +6877,7 @@ impl UpdatePaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -5371,6 +6938,41 @@ impl UpdatePaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataP24Bank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "alior_bank" => Ok(Self::AliorBank),
+            "bank_millennium" => Ok(Self::BankMillennium),
+            "bank_nowy_bfg_sa" => Ok(Self::BankNowyBfgSa),
+            "bank_pekao_sa" => Ok(Self::BankPekaoSa),
+            "banki_spbdzielcze" => Ok(Self::BankiSpbdzielcze),
+            "blik" => Ok(Self::Blik),
+            "bnp_paribas" => Ok(Self::BnpParibas),
+            "boz" => Ok(Self::Boz),
+            "citi_handlowy" => Ok(Self::CitiHandlowy),
+            "credit_agricole" => Ok(Self::CreditAgricole),
+            "envelobank" => Ok(Self::Envelobank),
+            "etransfer_pocztowy24" => Ok(Self::EtransferPocztowy24),
+            "getin_bank" => Ok(Self::GetinBank),
+            "ideabank" => Ok(Self::Ideabank),
+            "ing" => Ok(Self::Ing),
+            "inteligo" => Ok(Self::Inteligo),
+            "mbank_mtransfer" => Ok(Self::MbankMtransfer),
+            "nest_przelew" => Ok(Self::NestPrzelew),
+            "noble_pay" => Ok(Self::NoblePay),
+            "pbac_z_ipko" => Ok(Self::PbacZIpko),
+            "plus_bank" => Ok(Self::PlusBank),
+            "santander_przelew24" => Ok(Self::SantanderPrzelew24),
+            "tmobile_usbugi_bankowe" => Ok(Self::TmobileUsbugiBankowe),
+            "toyota_bank" => Ok(Self::ToyotaBank),
+            "volkswagen_bank" => Ok(Self::VolkswagenBank),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataP24Bank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5380,6 +6982,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataP24Bank {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataP24Bank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
@@ -5443,20 +7053,13 @@ impl UpdatePaymentIntentPaymentMethodDataSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataSofortCountry {
-    #[serde(rename = "AT")]
     At,
-    #[serde(rename = "BE")]
     Be,
-    #[serde(rename = "DE")]
     De,
-    #[serde(rename = "ES")]
     Es,
-    #[serde(rename = "IT")]
     It,
-    #[serde(rename = "NL")]
     Nl,
 }
 
@@ -5473,6 +7076,22 @@ impl UpdatePaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataSofortCountry {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "AT" => Ok(Self::At),
+            "BE" => Ok(Self::Be),
+            "DE" => Ok(Self::De),
+            "ES" => Ok(Self::Es),
+            "IT" => Ok(Self::It),
+            "NL" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataSofortCountry {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5484,12 +7103,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataSofortCountry {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataSofortCountry {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -5554,6 +7180,43 @@ impl UpdatePaymentIntentPaymentMethodDataType {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5563,6 +7226,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataType {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -5593,8 +7264,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodDataUsBankAccount<'a> {
     }
 }
 /// Account holder type: individual or company.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     Company,
     Individual,
@@ -5605,6 +7275,18 @@ impl UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -5620,11 +7302,18 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUsBankAccountAcco
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Account type: checkings or savings.
 ///
 /// Defaults to checking if omitted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     Checking,
     Savings,
@@ -5639,6 +7328,18 @@ impl UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "savings" => Ok(Self::Savings),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5648,6 +7349,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
@@ -5809,8 +7518,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     }
 }
 /// Payment schedule for the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     Combined,
     Interval,
@@ -5823,6 +7531,21 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedu
             Self::Combined => "combined",
             Self::Interval => "interval",
             Self::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "combined" => Ok(Self::Combined),
+            "interval" => Ok(Self::Interval),
+            "sporadic" => Ok(Self::Sporadic),
+
+            _ => Err(()),
         }
     }
 }
@@ -5840,9 +7563,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     Business,
     Personal,
@@ -5853,6 +7585,20 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionTy
         match self {
             Self::Business => "business",
             Self::Personal => "personal",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business" => Ok(Self::Business),
+            "personal" => Ok(Self::Personal),
+
+            _ => Err(()),
         }
     }
 }
@@ -5870,13 +7616,22 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     None,
     OffSession,
@@ -5893,6 +7648,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5904,9 +7672,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetup
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
     Instant,
@@ -5923,6 +7698,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -5932,6 +7720,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerification
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -5962,8 +7758,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsAffirm {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -5972,6 +7767,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -5987,13 +7793,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureM
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -6002,6 +7815,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -6015,6 +7839,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -6053,8 +7885,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -6063,6 +7894,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -6078,13 +7920,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearp
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -6093,6 +7942,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -6106,6 +7966,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetup
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -6129,8 +7997,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -6145,6 +8012,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6154,6 +8033,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -6178,8 +8065,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -6196,6 +8082,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6205,6 +8104,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutur
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -6229,8 +8136,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -6247,6 +8153,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6256,6 +8175,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureU
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -6280,8 +8207,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontact {
     }
 }
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
@@ -6300,6 +8226,20 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "fr" => Ok(Self::Fr),
+            "nl" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6311,13 +8251,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBancontactPref
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -6332,6 +8279,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6341,6 +8300,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFuture
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -6383,8 +8350,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsBoleto {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     None,
     OffSession,
@@ -6401,6 +8367,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6410,6 +8389,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -6489,8 +8476,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -6499,6 +8485,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -6512,6 +8509,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
@@ -6558,8 +8563,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 }
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
 /// One of `month`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     Month,
 }
@@ -6568,6 +8572,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Month => "month",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "month" => Ok(Self::Month),
+
+            _ => Err(()),
         }
     }
 }
@@ -6583,9 +8598,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -6594,6 +8616,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::FixedCount => "fixed_count",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed_count" => Ok(Self::FixedCount),
+
+            _ => Err(()),
         }
     }
 }
@@ -6607,6 +8640,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanT
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -6677,8 +8718,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
 ///
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
@@ -6689,6 +8729,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
         match self {
             Self::Fixed => "fixed",
             Self::Maximum => "maximum",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed" => Ok(Self::Fixed),
+            "maximum" => Ok(Self::Maximum),
+
+            _ => Err(()),
         }
     }
 }
@@ -6704,11 +8756,18 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -6729,6 +8788,21 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "sporadic" => Ok(Self::Sporadic),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6740,11 +8814,18 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies the type of mandates supported.
 ///
 /// Possible values are `india`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     India,
 }
@@ -6753,6 +8834,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::India => "india",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "india" => Ok(Self::India),
+
+            _ => Err(()),
         }
     }
 }
@@ -6768,12 +8860,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Selected network to process this PaymentIntent on.
 ///
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -6804,6 +8903,26 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "amex" => Ok(Self::Amex),
+            "cartes_bancaires" => Ok(Self::CartesBancaires),
+            "diners" => Ok(Self::Diners),
+            "discover" => Ok(Self::Discover),
+            "interac" => Ok(Self::Interac),
+            "jcb" => Ok(Self::Jcb),
+            "mastercard" => Ok(Self::Mastercard),
+            "unionpay" => Ok(Self::Unionpay),
+            "unknown" => Ok(Self::Unknown),
+            "visa" => Ok(Self::Visa),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6815,14 +8934,21 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 ///
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Permitted values include: `automatic` or `any`.
 /// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
@@ -6833,6 +8959,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Self::Any => "any",
             Self::Automatic => "automatic",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "any" => Ok(Self::Any),
+            "automatic" => Ok(Self::Automatic),
+
+            _ => Err(()),
         }
     }
 }
@@ -6848,13 +8986,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardRequestThr
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     None,
     OffSession,
@@ -6871,6 +9016,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -6880,6 +9038,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -6966,8 +9132,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBan
 /// List of address types that should be returned in the financial_addresses response.
 ///
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     Iban,
     Sepa,
@@ -6988,6 +9153,23 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequested
     }
 }
 
+impl std::str::FromStr
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "iban" => Ok(Self::Iban),
+            "sepa" => Ok(Self::Sepa),
+            "sort_code" => Ok(Self::SortCode),
+            "spei" => Ok(Self::Spei),
+            "zengin" => Ok(Self::Zengin),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str>
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
@@ -7003,9 +9185,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -7024,6 +9215,20 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -7035,11 +9240,18 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 ///
 /// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     BankTransfer,
 }
@@ -7048,6 +9260,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_transfer" => Ok(Self::BankTransfer),
+
+            _ => Err(()),
         }
     }
 }
@@ -7063,13 +9286,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -7078,6 +9308,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7091,6 +9332,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupF
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -7114,8 +9363,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -7124,6 +9372,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7137,6 +9396,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -7160,8 +9427,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -7170,6 +9436,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7183,6 +9460,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -7206,8 +9491,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -7216,6 +9500,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7229,6 +9524,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsa
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -7252,8 +9555,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -7262,6 +9564,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7275,6 +9588,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsa
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -7298,8 +9619,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -7314,6 +9634,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -7323,6 +9655,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -7364,8 +9704,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -7374,6 +9713,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -7389,89 +9739,56 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Preferred language of the Klarna authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    #[serde(rename = "da-DK")]
     DaMinusDk,
-    #[serde(rename = "de-AT")]
     DeMinusAt,
-    #[serde(rename = "de-CH")]
     DeMinusCh,
-    #[serde(rename = "de-DE")]
     DeMinusDe,
-    #[serde(rename = "en-AT")]
     EnMinusAt,
-    #[serde(rename = "en-AU")]
     EnMinusAu,
-    #[serde(rename = "en-BE")]
     EnMinusBe,
-    #[serde(rename = "en-CA")]
     EnMinusCa,
-    #[serde(rename = "en-CH")]
     EnMinusCh,
-    #[serde(rename = "en-DE")]
     EnMinusDe,
-    #[serde(rename = "en-DK")]
     EnMinusDk,
-    #[serde(rename = "en-ES")]
     EnMinusEs,
-    #[serde(rename = "en-FI")]
     EnMinusFi,
-    #[serde(rename = "en-FR")]
     EnMinusFr,
-    #[serde(rename = "en-GB")]
     EnMinusGb,
-    #[serde(rename = "en-IE")]
     EnMinusIe,
-    #[serde(rename = "en-IT")]
     EnMinusIt,
-    #[serde(rename = "en-NL")]
     EnMinusNl,
-    #[serde(rename = "en-NO")]
     EnMinusNo,
-    #[serde(rename = "en-NZ")]
     EnMinusNz,
-    #[serde(rename = "en-PL")]
     EnMinusPl,
-    #[serde(rename = "en-PT")]
     EnMinusPt,
-    #[serde(rename = "en-SE")]
     EnMinusSe,
-    #[serde(rename = "en-US")]
     EnMinusUs,
-    #[serde(rename = "es-ES")]
     EsMinusEs,
-    #[serde(rename = "es-US")]
     EsMinusUs,
-    #[serde(rename = "fi-FI")]
     FiMinusFi,
-    #[serde(rename = "fr-BE")]
     FrMinusBe,
-    #[serde(rename = "fr-CA")]
     FrMinusCa,
-    #[serde(rename = "fr-CH")]
     FrMinusCh,
-    #[serde(rename = "fr-FR")]
     FrMinusFr,
-    #[serde(rename = "it-CH")]
     ItMinusCh,
-    #[serde(rename = "it-IT")]
     ItMinusIt,
-    #[serde(rename = "nb-NO")]
     NbMinusNo,
-    #[serde(rename = "nl-BE")]
     NlMinusBe,
-    #[serde(rename = "nl-NL")]
     NlMinusNl,
-    #[serde(rename = "pl-PL")]
     PlMinusPl,
-    #[serde(rename = "pt-PT")]
     PtMinusPt,
-    #[serde(rename = "sv-FI")]
     SvMinusFi,
-    #[serde(rename = "sv-SE")]
     SvMinusSe,
 }
 
@@ -7522,6 +9839,56 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "da-DK" => Ok(Self::DaMinusDk),
+            "de-AT" => Ok(Self::DeMinusAt),
+            "de-CH" => Ok(Self::DeMinusCh),
+            "de-DE" => Ok(Self::DeMinusDe),
+            "en-AT" => Ok(Self::EnMinusAt),
+            "en-AU" => Ok(Self::EnMinusAu),
+            "en-BE" => Ok(Self::EnMinusBe),
+            "en-CA" => Ok(Self::EnMinusCa),
+            "en-CH" => Ok(Self::EnMinusCh),
+            "en-DE" => Ok(Self::EnMinusDe),
+            "en-DK" => Ok(Self::EnMinusDk),
+            "en-ES" => Ok(Self::EnMinusEs),
+            "en-FI" => Ok(Self::EnMinusFi),
+            "en-FR" => Ok(Self::EnMinusFr),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "en-IE" => Ok(Self::EnMinusIe),
+            "en-IT" => Ok(Self::EnMinusIt),
+            "en-NL" => Ok(Self::EnMinusNl),
+            "en-NO" => Ok(Self::EnMinusNo),
+            "en-NZ" => Ok(Self::EnMinusNz),
+            "en-PL" => Ok(Self::EnMinusPl),
+            "en-PT" => Ok(Self::EnMinusPt),
+            "en-SE" => Ok(Self::EnMinusSe),
+            "en-US" => Ok(Self::EnMinusUs),
+            "es-ES" => Ok(Self::EsMinusEs),
+            "es-US" => Ok(Self::EsMinusUs),
+            "fi-FI" => Ok(Self::FiMinusFi),
+            "fr-BE" => Ok(Self::FrMinusBe),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "fr-CH" => Ok(Self::FrMinusCh),
+            "fr-FR" => Ok(Self::FrMinusFr),
+            "it-CH" => Ok(Self::ItMinusCh),
+            "it-IT" => Ok(Self::ItMinusIt),
+            "nb-NO" => Ok(Self::NbMinusNo),
+            "nl-BE" => Ok(Self::NlMinusBe),
+            "nl-NL" => Ok(Self::NlMinusNl),
+            "pl-PL" => Ok(Self::PlMinusPl),
+            "pt-PT" => Ok(Self::PtMinusPt),
+            "sv-FI" => Ok(Self::SvMinusFi),
+            "sv-SE" => Ok(Self::SvMinusSe),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -7533,13 +9900,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferre
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -7548,6 +9922,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7561,6 +9946,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -7604,8 +9997,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -7614,6 +10006,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7627,6 +10030,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsa
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
@@ -7660,8 +10071,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -7670,6 +10080,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -7685,13 +10106,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMet
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -7706,6 +10134,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -7715,6 +10155,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -7743,8 +10191,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -7753,6 +10200,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7766,6 +10224,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -7792,8 +10258,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -7802,6 +10267,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7815,6 +10291,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -7838,8 +10322,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -7848,6 +10331,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7861,6 +10355,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -7894,8 +10396,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -7904,6 +10405,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7917,6 +10429,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -7941,8 +10461,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -7951,6 +10470,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -7964,6 +10494,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureU
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -7999,8 +10537,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     None,
     OffSession,
@@ -8017,6 +10554,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8026,6 +10576,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureU
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -8048,8 +10606,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -8074,6 +10631,23 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "es" => Ok(Self::Es),
+            "fr" => Ok(Self::Fr),
+            "it" => Ok(Self::It),
+            "nl" => Ok(Self::Nl),
+            "pl" => Ok(Self::Pl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8085,13 +10659,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortPreferre
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -8106,6 +10687,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8115,6 +10708,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsag
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -8171,8 +10772,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 ///
 /// If this parameter is passed, the `payment_method` permission must be included.
 /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     Balances,
     Ownership,
@@ -8187,6 +10787,22 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPer
             Self::Ownership => "ownership",
             Self::PaymentMethod => "payment_method",
             Self::Transactions => "transactions",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balances" => Ok(Self::Balances),
+            "ownership" => Ok(Self::Ownership),
+            "payment_method" => Ok(Self::PaymentMethod),
+            "transactions" => Ok(Self::Transactions),
+
+            _ => Err(()),
         }
     }
 }
@@ -8206,6 +10822,16 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Additional fields for network related functions.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -8220,8 +10846,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     }
 }
 /// Triggers validations to run across the selected networks.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     Ach,
     UsDomesticWire,
@@ -8232,6 +10857,18 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
         match self {
             Self::Ach => "ach",
             Self::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "us_domestic_wire" => Ok(Self::UsDomesticWire),
+
+            _ => Err(()),
         }
     }
 }
@@ -8247,13 +10884,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountN
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     None,
     OffSession,
@@ -8270,6 +10914,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8281,9 +10938,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountS
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
@@ -8300,6 +10964,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8309,6 +10986,14 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerifica
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -8336,8 +11021,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     }
 }
 /// The client type that the end customer will pay from.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     Android,
     Ios,
@@ -8354,6 +11038,19 @@ impl UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "android" => Ok(Self::Android),
+            "ios" => Ok(Self::Ios),
+            "web" => Ok(Self::Web),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8365,13 +11062,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPayClien
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -8380,6 +11084,17 @@ impl UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -8395,13 +11110,20 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetup
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -8416,6 +11138,18 @@ impl UpdatePaymentIntentSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for UpdatePaymentIntentSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePaymentIntentSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8425,6 +11159,14 @@ impl AsRef<str> for UpdatePaymentIntentSetupFutureUsage {
 impl std::fmt::Display for UpdatePaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -8568,8 +11310,7 @@ impl<'a> ConfirmPaymentIntent<'a> {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentCaptureMethod {
     Automatic,
     Manual,
@@ -8584,6 +11325,18 @@ impl ConfirmPaymentIntentCaptureMethod {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentCaptureMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8593,6 +11346,14 @@ impl AsRef<str> for ConfirmPaymentIntentCaptureMethod {
 impl std::fmt::Display for ConfirmPaymentIntentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// This hash contains details about the Mandate to create.
@@ -8667,8 +11428,7 @@ impl<'a> ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceOnline<'a> {
 /// The type of customer acceptance information included with the Mandate.
 ///
 /// One of `online` or `offline`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
     Offline,
     Online,
@@ -8683,6 +11443,18 @@ impl ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(Self::Offline),
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -8692,6 +11464,14 @@ impl AsRef<str> for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
 impl std::fmt::Display for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// This hash contains details about the Mandate to create.
@@ -8740,8 +11520,7 @@ impl<'a> ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a> {
     }
 }
 /// The type of customer acceptance information included with the Mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     Online,
 }
@@ -8750,6 +11529,17 @@ impl ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "online" => Ok(Self::Online),
+
+            _ => Err(()),
         }
     }
 }
@@ -8763,6 +11553,14 @@ impl AsRef<str> for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
 impl std::fmt::Display for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Set to `true` to indicate that the customer is not in your checkout flow during this payment attempt, and therefore is unable to authenticate.
@@ -9093,8 +11891,7 @@ impl ConfirmPaymentIntentPaymentMethodDataEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -9161,6 +11958,50 @@ impl ConfirmPaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataEpsBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "arzte_und_apotheker_bank" => Ok(Self::ArzteUndApothekerBank),
+            "austrian_anadi_bank_ag" => Ok(Self::AustrianAnadiBankAg),
+            "bank_austria" => Ok(Self::BankAustria),
+            "bankhaus_carl_spangler" => Ok(Self::BankhausCarlSpangler),
+            "bankhaus_schelhammer_und_schattera_ag" => Ok(Self::BankhausSchelhammerUndSchatteraAg),
+            "bawag_psk_ag" => Ok(Self::BawagPskAg),
+            "bks_bank_ag" => Ok(Self::BksBankAg),
+            "brull_kallmus_bank_ag" => Ok(Self::BrullKallmusBankAg),
+            "btv_vier_lander_bank" => Ok(Self::BtvVierLanderBank),
+            "capital_bank_grawe_gruppe_ag" => Ok(Self::CapitalBankGraweGruppeAg),
+            "deutsche_bank_ag" => Ok(Self::DeutscheBankAg),
+            "dolomitenbank" => Ok(Self::Dolomitenbank),
+            "easybank_ag" => Ok(Self::EasybankAg),
+            "erste_bank_und_sparkassen" => Ok(Self::ErsteBankUndSparkassen),
+            "hypo_alpeadriabank_international_ag" => Ok(Self::HypoAlpeadriabankInternationalAg),
+            "hypo_bank_burgenland_aktiengesellschaft" => {
+                Ok(Self::HypoBankBurgenlandAktiengesellschaft)
+            }
+            "hypo_noe_lb_fur_niederosterreich_u_wien" => {
+                Ok(Self::HypoNoeLbFurNiederosterreichUWien)
+            }
+            "hypo_oberosterreich_salzburg_steiermark" => {
+                Ok(Self::HypoOberosterreichSalzburgSteiermark)
+            }
+            "hypo_tirol_bank_ag" => Ok(Self::HypoTirolBankAg),
+            "hypo_vorarlberg_bank_ag" => Ok(Self::HypoVorarlbergBankAg),
+            "marchfelder_bank" => Ok(Self::MarchfelderBank),
+            "oberbank_ag" => Ok(Self::OberbankAg),
+            "raiffeisen_bankengruppe_osterreich" => Ok(Self::RaiffeisenBankengruppeOsterreich),
+            "schoellerbank_ag" => Ok(Self::SchoellerbankAg),
+            "sparda_bank_wien" => Ok(Self::SpardaBankWien),
+            "volksbank_gruppe" => Ok(Self::VolksbankGruppe),
+            "volkskreditbank_ag" => Ok(Self::VolkskreditbankAg),
+            "vr_bank_braunau" => Ok(Self::VrBankBraunau),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataEpsBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9170,6 +12011,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataEpsBank {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataEpsBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -9187,8 +12036,7 @@ impl ConfirmPaymentIntentPaymentMethodDataFpx {
     }
 }
 /// Account holder type for FPX transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
     Company,
     Individual,
@@ -9199,6 +12047,18 @@ impl ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -9214,9 +12074,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolder
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -9271,6 +12138,38 @@ impl ConfirmPaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataFpxBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "affin_bank" => Ok(Self::AffinBank),
+            "agrobank" => Ok(Self::Agrobank),
+            "alliance_bank" => Ok(Self::AllianceBank),
+            "ambank" => Ok(Self::Ambank),
+            "bank_islam" => Ok(Self::BankIslam),
+            "bank_muamalat" => Ok(Self::BankMuamalat),
+            "bank_of_china" => Ok(Self::BankOfChina),
+            "bank_rakyat" => Ok(Self::BankRakyat),
+            "bsn" => Ok(Self::Bsn),
+            "cimb" => Ok(Self::Cimb),
+            "deutsche_bank" => Ok(Self::DeutscheBank),
+            "hong_leong_bank" => Ok(Self::HongLeongBank),
+            "hsbc" => Ok(Self::Hsbc),
+            "kfh" => Ok(Self::Kfh),
+            "maybank2e" => Ok(Self::Maybank2e),
+            "maybank2u" => Ok(Self::Maybank2u),
+            "ocbc" => Ok(Self::Ocbc),
+            "pb_enterprise" => Ok(Self::PbEnterprise),
+            "public_bank" => Ok(Self::PublicBank),
+            "rhb" => Ok(Self::Rhb),
+            "standard_chartered" => Ok(Self::StandardChartered),
+            "uob" => Ok(Self::Uob),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataFpxBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9280,6 +12179,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataFpxBank {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
@@ -9311,8 +12218,7 @@ impl ConfirmPaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -9349,6 +12255,29 @@ impl ConfirmPaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abn_amro" => Ok(Self::AbnAmro),
+            "asn_bank" => Ok(Self::AsnBank),
+            "bunq" => Ok(Self::Bunq),
+            "handelsbanken" => Ok(Self::Handelsbanken),
+            "ing" => Ok(Self::Ing),
+            "knab" => Ok(Self::Knab),
+            "moneyou" => Ok(Self::Moneyou),
+            "rabobank" => Ok(Self::Rabobank),
+            "regiobank" => Ok(Self::Regiobank),
+            "revolut" => Ok(Self::Revolut),
+            "sns_bank" => Ok(Self::SnsBank),
+            "triodos_bank" => Ok(Self::TriodosBank),
+            "van_lanschot" => Ok(Self::VanLanschot),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataIdealBank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9358,6 +12287,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataIdealBank {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataIdealBank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
@@ -9432,8 +12369,7 @@ impl ConfirmPaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -9494,6 +12430,41 @@ impl ConfirmPaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataP24Bank {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "alior_bank" => Ok(Self::AliorBank),
+            "bank_millennium" => Ok(Self::BankMillennium),
+            "bank_nowy_bfg_sa" => Ok(Self::BankNowyBfgSa),
+            "bank_pekao_sa" => Ok(Self::BankPekaoSa),
+            "banki_spbdzielcze" => Ok(Self::BankiSpbdzielcze),
+            "blik" => Ok(Self::Blik),
+            "bnp_paribas" => Ok(Self::BnpParibas),
+            "boz" => Ok(Self::Boz),
+            "citi_handlowy" => Ok(Self::CitiHandlowy),
+            "credit_agricole" => Ok(Self::CreditAgricole),
+            "envelobank" => Ok(Self::Envelobank),
+            "etransfer_pocztowy24" => Ok(Self::EtransferPocztowy24),
+            "getin_bank" => Ok(Self::GetinBank),
+            "ideabank" => Ok(Self::Ideabank),
+            "ing" => Ok(Self::Ing),
+            "inteligo" => Ok(Self::Inteligo),
+            "mbank_mtransfer" => Ok(Self::MbankMtransfer),
+            "nest_przelew" => Ok(Self::NestPrzelew),
+            "noble_pay" => Ok(Self::NoblePay),
+            "pbac_z_ipko" => Ok(Self::PbacZIpko),
+            "plus_bank" => Ok(Self::PlusBank),
+            "santander_przelew24" => Ok(Self::SantanderPrzelew24),
+            "tmobile_usbugi_bankowe" => Ok(Self::TmobileUsbugiBankowe),
+            "toyota_bank" => Ok(Self::ToyotaBank),
+            "volkswagen_bank" => Ok(Self::VolkswagenBank),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataP24Bank {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9503,6 +12474,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataP24Bank {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataP24Bank {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
@@ -9566,20 +12545,13 @@ impl ConfirmPaymentIntentPaymentMethodDataSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataSofortCountry {
-    #[serde(rename = "AT")]
     At,
-    #[serde(rename = "BE")]
     Be,
-    #[serde(rename = "DE")]
     De,
-    #[serde(rename = "ES")]
     Es,
-    #[serde(rename = "IT")]
     It,
-    #[serde(rename = "NL")]
     Nl,
 }
 
@@ -9596,6 +12568,22 @@ impl ConfirmPaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "AT" => Ok(Self::At),
+            "BE" => Ok(Self::Be),
+            "DE" => Ok(Self::De),
+            "ES" => Ok(Self::Es),
+            "IT" => Ok(Self::It),
+            "NL" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9607,12 +12595,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -9677,6 +12672,43 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "affirm" => Ok(Self::Affirm),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "blik" => Ok(Self::Blik),
+            "boleto" => Ok(Self::Boleto),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "konbini" => Ok(Self::Konbini),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "paynow" => Ok(Self::Paynow),
+            "pix" => Ok(Self::Pix),
+            "promptpay" => Ok(Self::Promptpay),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "us_bank_account" => Ok(Self::UsBankAccount),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9686,6 +12718,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataType {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -9716,8 +12756,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodDataUsBankAccount<'a> {
     }
 }
 /// Account holder type: individual or company.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     Company,
     Individual,
@@ -9728,6 +12767,18 @@ impl ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
         match self {
             Self::Company => "company",
             Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
         }
     }
 }
@@ -9743,11 +12794,18 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcc
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Account type: checkings or savings.
 ///
 /// Defaults to checking if omitted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
     Checking,
     Savings,
@@ -9762,6 +12820,18 @@ impl ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checking" => Ok(Self::Checking),
+            "savings" => Ok(Self::Savings),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -9771,6 +12841,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountTyp
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
@@ -9933,8 +13011,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     }
 }
 /// Payment schedule for the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     Combined,
     Interval,
@@ -9947,6 +13024,21 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSched
             Self::Combined => "combined",
             Self::Interval => "interval",
             Self::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "combined" => Ok(Self::Combined),
+            "interval" => Ok(Self::Interval),
+            "sporadic" => Ok(Self::Sporadic),
+
+            _ => Err(()),
         }
     }
 }
@@ -9964,9 +13056,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     Business,
     Personal,
@@ -9977,6 +13078,20 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionT
         match self {
             Self::Business => "business",
             Self::Personal => "personal",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business" => Ok(Self::Business),
+            "personal" => Ok(Self::Personal),
+
+            _ => Err(()),
         }
     }
 }
@@ -9994,13 +13109,22 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     None,
     OffSession,
@@ -10017,6 +13141,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10028,9 +13165,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetu
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
     Instant,
@@ -10047,6 +13191,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10056,6 +13213,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificatio
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -10086,8 +13251,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAffirm {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -10096,6 +13260,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -10111,13 +13286,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmCapture
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -10126,6 +13308,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -10139,6 +13332,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -10177,8 +13378,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -10187,6 +13387,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -10202,13 +13413,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClear
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -10217,6 +13435,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -10232,6 +13463,14 @@ impl std::fmt::Display
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -10255,8 +13494,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -10271,6 +13509,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10280,6 +13530,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -10304,8 +13562,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -10322,6 +13579,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10331,6 +13601,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutu
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
@@ -10355,8 +13633,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     None,
     OffSession,
@@ -10373,6 +13650,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10382,6 +13672,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFuture
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -10406,8 +13704,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     }
 }
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
@@ -10426,6 +13723,20 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "fr" => Ok(Self::Fr),
+            "nl" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10437,13 +13748,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBancontactPre
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -10458,6 +13776,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10467,6 +13797,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutur
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -10509,8 +13847,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBoleto {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     None,
     OffSession,
@@ -10527,6 +13864,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10536,6 +13886,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -10615,8 +13973,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -10625,6 +13982,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -10638,6 +14006,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
@@ -10684,8 +14060,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 }
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
 /// One of `month`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     Month,
 }
@@ -10694,6 +14069,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Month => "month",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "month" => Ok(Self::Month),
+
+            _ => Err(()),
         }
     }
 }
@@ -10709,9 +14095,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardInstallme
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -10720,6 +14113,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::FixedCount => "fixed_count",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed_count" => Ok(Self::FixedCount),
+
+            _ => Err(()),
         }
     }
 }
@@ -10733,6 +14137,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -10803,8 +14215,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
 ///
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
@@ -10815,6 +14226,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
         match self {
             Self::Fixed => "fixed",
             Self::Maximum => "maximum",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fixed" => Ok(Self::Fixed),
+            "maximum" => Ok(Self::Maximum),
+
+            _ => Err(()),
         }
     }
 }
@@ -10830,11 +14253,18 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -10855,6 +14285,21 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "sporadic" => Ok(Self::Sporadic),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10866,11 +14311,18 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies the type of mandates supported.
 ///
 /// Possible values are `india`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     India,
 }
@@ -10879,6 +14331,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::India => "india",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "india" => Ok(Self::India),
+
+            _ => Err(()),
         }
     }
 }
@@ -10896,12 +14361,19 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Selected network to process this PaymentIntent on.
 ///
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -10932,6 +14404,26 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "amex" => Ok(Self::Amex),
+            "cartes_bancaires" => Ok(Self::CartesBancaires),
+            "diners" => Ok(Self::Diners),
+            "discover" => Ok(Self::Discover),
+            "interac" => Ok(Self::Interac),
+            "jcb" => Ok(Self::Jcb),
+            "mastercard" => Ok(Self::Mastercard),
+            "unionpay" => Ok(Self::Unionpay),
+            "unknown" => Ok(Self::Unknown),
+            "visa" => Ok(Self::Visa),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -10943,14 +14435,21 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 ///
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Permitted values include: `automatic` or `any`.
 /// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
@@ -10961,6 +14460,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Self::Any => "any",
             Self::Automatic => "automatic",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "any" => Ok(Self::Any),
+            "automatic" => Ok(Self::Automatic),
+
+            _ => Err(()),
         }
     }
 }
@@ -10976,13 +14487,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardRequestTh
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     None,
     OffSession,
@@ -10999,6 +14517,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -11008,6 +14539,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -11094,8 +14633,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBa
 /// List of address types that should be returned in the financial_addresses response.
 ///
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     Iban,
     Sepa,
@@ -11116,6 +14654,23 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequeste
     }
 }
 
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "iban" => Ok(Self::Iban),
+            "sepa" => Ok(Self::Sepa),
+            "sort_code" => Ok(Self::SortCode),
+            "spei" => Ok(Self::Spei),
+            "zengin" => Ok(Self::Zengin),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str>
     for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
@@ -11131,9 +14686,18 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -11152,6 +14716,20 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -11163,11 +14741,18 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 ///
 /// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     BankTransfer,
 }
@@ -11176,6 +14761,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_transfer" => Ok(Self::BankTransfer),
+
+            _ => Err(()),
         }
     }
 }
@@ -11191,13 +14787,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -11206,6 +14809,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11219,6 +14833,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetup
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -11242,8 +14864,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -11252,6 +14873,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11265,6 +14897,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
@@ -11288,8 +14928,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -11298,6 +14937,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11311,6 +14961,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -11334,8 +14992,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -11344,6 +15001,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11357,6 +15025,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUs
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
@@ -11380,8 +15056,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -11390,6 +15065,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11403,6 +15089,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUs
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -11426,8 +15120,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -11442,6 +15135,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -11451,6 +15156,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsag
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
@@ -11492,8 +15205,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -11502,6 +15214,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -11517,89 +15240,56 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCapture
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Preferred language of the Klarna authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
-    #[serde(rename = "da-DK")]
     DaMinusDk,
-    #[serde(rename = "de-AT")]
     DeMinusAt,
-    #[serde(rename = "de-CH")]
     DeMinusCh,
-    #[serde(rename = "de-DE")]
     DeMinusDe,
-    #[serde(rename = "en-AT")]
     EnMinusAt,
-    #[serde(rename = "en-AU")]
     EnMinusAu,
-    #[serde(rename = "en-BE")]
     EnMinusBe,
-    #[serde(rename = "en-CA")]
     EnMinusCa,
-    #[serde(rename = "en-CH")]
     EnMinusCh,
-    #[serde(rename = "en-DE")]
     EnMinusDe,
-    #[serde(rename = "en-DK")]
     EnMinusDk,
-    #[serde(rename = "en-ES")]
     EnMinusEs,
-    #[serde(rename = "en-FI")]
     EnMinusFi,
-    #[serde(rename = "en-FR")]
     EnMinusFr,
-    #[serde(rename = "en-GB")]
     EnMinusGb,
-    #[serde(rename = "en-IE")]
     EnMinusIe,
-    #[serde(rename = "en-IT")]
     EnMinusIt,
-    #[serde(rename = "en-NL")]
     EnMinusNl,
-    #[serde(rename = "en-NO")]
     EnMinusNo,
-    #[serde(rename = "en-NZ")]
     EnMinusNz,
-    #[serde(rename = "en-PL")]
     EnMinusPl,
-    #[serde(rename = "en-PT")]
     EnMinusPt,
-    #[serde(rename = "en-SE")]
     EnMinusSe,
-    #[serde(rename = "en-US")]
     EnMinusUs,
-    #[serde(rename = "es-ES")]
     EsMinusEs,
-    #[serde(rename = "es-US")]
     EsMinusUs,
-    #[serde(rename = "fi-FI")]
     FiMinusFi,
-    #[serde(rename = "fr-BE")]
     FrMinusBe,
-    #[serde(rename = "fr-CA")]
     FrMinusCa,
-    #[serde(rename = "fr-CH")]
     FrMinusCh,
-    #[serde(rename = "fr-FR")]
     FrMinusFr,
-    #[serde(rename = "it-CH")]
     ItMinusCh,
-    #[serde(rename = "it-IT")]
     ItMinusIt,
-    #[serde(rename = "nb-NO")]
     NbMinusNo,
-    #[serde(rename = "nl-BE")]
     NlMinusBe,
-    #[serde(rename = "nl-NL")]
     NlMinusNl,
-    #[serde(rename = "pl-PL")]
     PlMinusPl,
-    #[serde(rename = "pt-PT")]
     PtMinusPt,
-    #[serde(rename = "sv-FI")]
     SvMinusFi,
-    #[serde(rename = "sv-SE")]
     SvMinusSe,
 }
 
@@ -11650,6 +15340,56 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "da-DK" => Ok(Self::DaMinusDk),
+            "de-AT" => Ok(Self::DeMinusAt),
+            "de-CH" => Ok(Self::DeMinusCh),
+            "de-DE" => Ok(Self::DeMinusDe),
+            "en-AT" => Ok(Self::EnMinusAt),
+            "en-AU" => Ok(Self::EnMinusAu),
+            "en-BE" => Ok(Self::EnMinusBe),
+            "en-CA" => Ok(Self::EnMinusCa),
+            "en-CH" => Ok(Self::EnMinusCh),
+            "en-DE" => Ok(Self::EnMinusDe),
+            "en-DK" => Ok(Self::EnMinusDk),
+            "en-ES" => Ok(Self::EnMinusEs),
+            "en-FI" => Ok(Self::EnMinusFi),
+            "en-FR" => Ok(Self::EnMinusFr),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "en-IE" => Ok(Self::EnMinusIe),
+            "en-IT" => Ok(Self::EnMinusIt),
+            "en-NL" => Ok(Self::EnMinusNl),
+            "en-NO" => Ok(Self::EnMinusNo),
+            "en-NZ" => Ok(Self::EnMinusNz),
+            "en-PL" => Ok(Self::EnMinusPl),
+            "en-PT" => Ok(Self::EnMinusPt),
+            "en-SE" => Ok(Self::EnMinusSe),
+            "en-US" => Ok(Self::EnMinusUs),
+            "es-ES" => Ok(Self::EsMinusEs),
+            "es-US" => Ok(Self::EsMinusUs),
+            "fi-FI" => Ok(Self::FiMinusFi),
+            "fr-BE" => Ok(Self::FrMinusBe),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "fr-CH" => Ok(Self::FrMinusCh),
+            "fr-FR" => Ok(Self::FrMinusFr),
+            "it-CH" => Ok(Self::ItMinusCh),
+            "it-IT" => Ok(Self::ItMinusIt),
+            "nb-NO" => Ok(Self::NbMinusNo),
+            "nl-BE" => Ok(Self::NlMinusBe),
+            "nl-NL" => Ok(Self::NlMinusNl),
+            "pl-PL" => Ok(Self::PlMinusPl),
+            "pt-PT" => Ok(Self::PtMinusPt),
+            "sv-FI" => Ok(Self::SvMinusFi),
+            "sv-SE" => Ok(Self::SvMinusSe),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -11661,13 +15401,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferr
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -11676,6 +15423,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11689,6 +15447,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -11732,8 +15498,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -11742,6 +15507,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11755,6 +15531,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUs
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
@@ -11788,8 +15572,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -11798,6 +15581,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
         }
     }
 }
@@ -11813,13 +15607,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMe
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -11834,6 +15635,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -11843,6 +15656,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -11871,8 +15692,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -11881,6 +15701,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11894,6 +15725,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
@@ -11920,8 +15759,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -11930,6 +15768,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11943,6 +15792,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
@@ -11966,8 +15823,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -11976,6 +15832,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -11989,6 +15856,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -12022,8 +15897,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -12032,6 +15906,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -12045,6 +15930,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
@@ -12069,8 +15962,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -12079,6 +15971,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -12092,6 +15995,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFuture
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
@@ -12127,8 +16038,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     None,
     OffSession,
@@ -12145,6 +16055,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12154,6 +16077,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFuture
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -12176,8 +16107,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -12202,6 +16132,23 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "es" => Ok(Self::Es),
+            "fr" => Ok(Self::Fr),
+            "it" => Ok(Self::It),
+            "nl" => Ok(Self::Nl),
+            "pl" => Ok(Self::Pl),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12213,13 +16160,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferr
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -12234,6 +16188,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12243,6 +16209,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsa
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -12298,8 +16272,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectio
 ///
 /// If this parameter is passed, the `payment_method` permission must be included.
 /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     Balances,
     Ownership,
@@ -12314,6 +16287,22 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPe
             Self::Ownership => "ownership",
             Self::PaymentMethod => "payment_method",
             Self::Transactions => "transactions",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "balances" => Ok(Self::Balances),
+            "ownership" => Ok(Self::Ownership),
+            "payment_method" => Ok(Self::PaymentMethod),
+            "transactions" => Ok(Self::Transactions),
+
+            _ => Err(()),
         }
     }
 }
@@ -12333,6 +16322,16 @@ impl std::fmt::Display
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Additional fields for network related functions.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -12347,8 +16346,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     }
 }
 /// Triggers validations to run across the selected networks.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     Ach,
     UsDomesticWire,
@@ -12359,6 +16357,18 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
         match self {
             Self::Ach => "ach",
             Self::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "us_domestic_wire" => Ok(Self::UsDomesticWire),
+
+            _ => Err(()),
         }
     }
 }
@@ -12374,13 +16384,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     None,
     OffSession,
@@ -12397,6 +16414,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12408,9 +16438,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
@@ -12427,6 +16464,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12436,6 +16486,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerific
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -12463,8 +16521,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
     }
 }
 /// The client type that the end customer will pay from.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
     Android,
     Ios,
@@ -12481,6 +16538,19 @@ impl ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "android" => Ok(Self::Android),
+            "ios" => Ok(Self::Ios),
+            "web" => Ok(Self::Web),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12492,13 +16562,20 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClie
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -12507,6 +16584,17 @@ impl ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
         }
     }
 }
@@ -12520,6 +16608,14 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFuture
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Options to configure Radar.
@@ -12541,8 +16637,7 @@ impl<'a> ConfirmPaymentIntentRadarOptions<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -12557,6 +16652,18 @@ impl ConfirmPaymentIntentSetupFutureUsage {
     }
 }
 
+impl std::str::FromStr for ConfirmPaymentIntentSetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ConfirmPaymentIntentSetupFutureUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12566,6 +16673,14 @@ impl AsRef<str> for ConfirmPaymentIntentSetupFutureUsage {
 impl std::fmt::Display for ConfirmPaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -12644,8 +16759,7 @@ impl<'a> CancelPaymentIntent<'a> {
 /// Reason for canceling this PaymentIntent.
 ///
 /// Possible values are `duplicate`, `fraudulent`, `requested_by_customer`, or `abandoned`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CancelPaymentIntentCancellationReason {
     Abandoned,
     Duplicate,
@@ -12664,6 +16778,20 @@ impl CancelPaymentIntentCancellationReason {
     }
 }
 
+impl std::str::FromStr for CancelPaymentIntentCancellationReason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abandoned" => Ok(Self::Abandoned),
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "requested_by_customer" => Ok(Self::RequestedByCustomer),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CancelPaymentIntentCancellationReason {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -12673,6 +16801,14 @@ impl AsRef<str> for CancelPaymentIntentCancellationReason {
 impl std::fmt::Display for CancelPaymentIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CancelPaymentIntentCancellationReason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

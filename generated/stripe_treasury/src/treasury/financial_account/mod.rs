@@ -55,25 +55,16 @@ impl miniserde::Deserialize for FinancialAccount {
 }
 
 /// The array of paths to active Features in the Features hash.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountActiveFeatures {
     CardIssuing,
     DepositInsurance,
-    #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
-    #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
-    #[serde(rename = "outbound_payments.ach")]
     OutboundPaymentsAch,
-    #[serde(rename = "outbound_payments.us_domestic_wire")]
     OutboundPaymentsUsDomesticWire,
-    #[serde(rename = "outbound_transfers.ach")]
     OutboundTransfersAch,
-    #[serde(rename = "outbound_transfers.us_domestic_wire")]
     OutboundTransfersUsDomesticWire,
     RemoteDepositCapture,
 }
@@ -95,6 +86,26 @@ impl FinancialAccountActiveFeatures {
     }
 }
 
+impl std::str::FromStr for FinancialAccountActiveFeatures {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "card_issuing" => Ok(Self::CardIssuing),
+            "deposit_insurance" => Ok(Self::DepositInsurance),
+            "financial_addresses.aba" => Ok(Self::FinancialAddressesAba),
+            "inbound_transfers.ach" => Ok(Self::InboundTransfersAch),
+            "intra_stripe_flows" => Ok(Self::IntraStripeFlows),
+            "outbound_payments.ach" => Ok(Self::OutboundPaymentsAch),
+            "outbound_payments.us_domestic_wire" => Ok(Self::OutboundPaymentsUsDomesticWire),
+            "outbound_transfers.ach" => Ok(Self::OutboundTransfersAch),
+            "outbound_transfers.us_domestic_wire" => Ok(Self::OutboundTransfersUsDomesticWire),
+            "remote_deposit_capture" => Ok(Self::RemoteDepositCapture),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FinancialAccountActiveFeatures {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -106,15 +117,44 @@ impl std::fmt::Display for FinancialAccountActiveFeatures {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for FinancialAccountActiveFeatures {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountActiveFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinancialAccountActiveFeatures")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountActiveFeatures {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountActiveFeatures> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountActiveFeatures::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountObject {
-    #[serde(rename = "treasury.financial_account")]
     TreasuryFinancialAccount,
 }
 
@@ -122,6 +162,17 @@ impl FinancialAccountObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryFinancialAccount => "treasury.financial_account",
+        }
+    }
+}
+
+impl std::str::FromStr for FinancialAccountObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.financial_account" => Ok(Self::TreasuryFinancialAccount),
+
+            _ => Err(()),
         }
     }
 }
@@ -137,26 +188,49 @@ impl std::fmt::Display for FinancialAccountObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for FinancialAccountObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAccountObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// The array of paths to pending Features in the Features hash.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountPendingFeatures {
     CardIssuing,
     DepositInsurance,
-    #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
-    #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
-    #[serde(rename = "outbound_payments.ach")]
     OutboundPaymentsAch,
-    #[serde(rename = "outbound_payments.us_domestic_wire")]
     OutboundPaymentsUsDomesticWire,
-    #[serde(rename = "outbound_transfers.ach")]
     OutboundTransfersAch,
-    #[serde(rename = "outbound_transfers.us_domestic_wire")]
     OutboundTransfersUsDomesticWire,
     RemoteDepositCapture,
 }
@@ -178,6 +252,26 @@ impl FinancialAccountPendingFeatures {
     }
 }
 
+impl std::str::FromStr for FinancialAccountPendingFeatures {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "card_issuing" => Ok(Self::CardIssuing),
+            "deposit_insurance" => Ok(Self::DepositInsurance),
+            "financial_addresses.aba" => Ok(Self::FinancialAddressesAba),
+            "inbound_transfers.ach" => Ok(Self::InboundTransfersAch),
+            "intra_stripe_flows" => Ok(Self::IntraStripeFlows),
+            "outbound_payments.ach" => Ok(Self::OutboundPaymentsAch),
+            "outbound_payments.us_domestic_wire" => Ok(Self::OutboundPaymentsUsDomesticWire),
+            "outbound_transfers.ach" => Ok(Self::OutboundTransfersAch),
+            "outbound_transfers.us_domestic_wire" => Ok(Self::OutboundTransfersUsDomesticWire),
+            "remote_deposit_capture" => Ok(Self::RemoteDepositCapture),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FinancialAccountPendingFeatures {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -189,26 +283,50 @@ impl std::fmt::Display for FinancialAccountPendingFeatures {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for FinancialAccountPendingFeatures {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountPendingFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinancialAccountPendingFeatures")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountPendingFeatures {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountPendingFeatures> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountPendingFeatures::from_str(s)?);
+        Ok(())
+    }
+}
 /// The array of paths to restricted Features in the Features hash.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountRestrictedFeatures {
     CardIssuing,
     DepositInsurance,
-    #[serde(rename = "financial_addresses.aba")]
     FinancialAddressesAba,
-    #[serde(rename = "inbound_transfers.ach")]
     InboundTransfersAch,
     IntraStripeFlows,
-    #[serde(rename = "outbound_payments.ach")]
     OutboundPaymentsAch,
-    #[serde(rename = "outbound_payments.us_domestic_wire")]
     OutboundPaymentsUsDomesticWire,
-    #[serde(rename = "outbound_transfers.ach")]
     OutboundTransfersAch,
-    #[serde(rename = "outbound_transfers.us_domestic_wire")]
     OutboundTransfersUsDomesticWire,
     RemoteDepositCapture,
 }
@@ -230,6 +348,26 @@ impl FinancialAccountRestrictedFeatures {
     }
 }
 
+impl std::str::FromStr for FinancialAccountRestrictedFeatures {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "card_issuing" => Ok(Self::CardIssuing),
+            "deposit_insurance" => Ok(Self::DepositInsurance),
+            "financial_addresses.aba" => Ok(Self::FinancialAddressesAba),
+            "inbound_transfers.ach" => Ok(Self::InboundTransfersAch),
+            "intra_stripe_flows" => Ok(Self::IntraStripeFlows),
+            "outbound_payments.ach" => Ok(Self::OutboundPaymentsAch),
+            "outbound_payments.us_domestic_wire" => Ok(Self::OutboundPaymentsUsDomesticWire),
+            "outbound_transfers.ach" => Ok(Self::OutboundTransfersAch),
+            "outbound_transfers.us_domestic_wire" => Ok(Self::OutboundTransfersUsDomesticWire),
+            "remote_deposit_capture" => Ok(Self::RemoteDepositCapture),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FinancialAccountRestrictedFeatures {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -241,11 +379,41 @@ impl std::fmt::Display for FinancialAccountRestrictedFeatures {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for FinancialAccountRestrictedFeatures {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountRestrictedFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for FinancialAccountRestrictedFeatures")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountRestrictedFeatures {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountRestrictedFeatures> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountRestrictedFeatures::from_str(s)?);
+        Ok(())
+    }
+}
 /// The enum specifying what state the account is in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountStatus {
     Closed,
     Open,
@@ -260,6 +428,18 @@ impl FinancialAccountStatus {
     }
 }
 
+impl std::str::FromStr for FinancialAccountStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "closed" => Ok(Self::Closed),
+            "open" => Ok(Self::Open),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for FinancialAccountStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -269,6 +449,38 @@ impl AsRef<str> for FinancialAccountStatus {
 impl std::fmt::Display for FinancialAccountStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for FinancialAccountStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for FinancialAccountStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAccountStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FinancialAccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<FinancialAccountStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FinancialAccountStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for FinancialAccount {

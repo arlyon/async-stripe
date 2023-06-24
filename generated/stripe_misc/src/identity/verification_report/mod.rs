@@ -42,12 +42,8 @@ impl miniserde::Deserialize for VerificationReport {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationReportObject {
-    #[serde(rename = "identity.verification_report")]
     IdentityVerificationReport,
 }
 
@@ -55,6 +51,17 @@ impl VerificationReportObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::IdentityVerificationReport => "identity.verification_report",
+        }
+    }
+}
+
+impl std::str::FromStr for VerificationReportObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "identity.verification_report" => Ok(Self::IdentityVerificationReport),
+
+            _ => Err(()),
         }
     }
 }
@@ -70,11 +77,40 @@ impl std::fmt::Display for VerificationReportObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for VerificationReportObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for VerificationReportObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for VerificationReportObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for VerificationReportObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<VerificationReportObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(VerificationReportObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Type of report.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationReportType {
     Document,
     IdNumber,
@@ -89,6 +125,18 @@ impl VerificationReportType {
     }
 }
 
+impl std::str::FromStr for VerificationReportType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "document" => Ok(Self::Document),
+            "id_number" => Ok(Self::IdNumber),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for VerificationReportType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -98,6 +146,38 @@ impl AsRef<str> for VerificationReportType {
 impl std::fmt::Display for VerificationReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for VerificationReportType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for VerificationReportType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for VerificationReportType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for VerificationReportType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<VerificationReportType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(VerificationReportType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for VerificationReport {

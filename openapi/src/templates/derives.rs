@@ -53,6 +53,11 @@ impl Derives {
         self
     }
 
+    pub fn deserialize(mut self, deserialize: bool) -> Self {
+        self.deserialize = deserialize;
+        self
+    }
+
     pub fn miniserde_deserialize(mut self, miniserde_deserialize: bool) -> Self {
         self.miniserde_deserialize = miniserde_deserialize;
         self
@@ -60,6 +65,10 @@ impl Derives {
 
     pub fn derives_deserialize(&self) -> bool {
         self.deserialize
+    }
+
+    pub fn derives_serialize(&self) -> bool {
+        self.serialize
     }
 
     pub fn derives_default(&self) -> bool {

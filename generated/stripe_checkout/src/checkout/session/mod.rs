@@ -148,10 +148,7 @@ impl miniserde::Deserialize for Session {
 }
 
 /// Describes whether Checkout should collect the customer's billing address.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionBillingAddressCollection {
     Auto,
     Required,
@@ -162,6 +159,18 @@ impl SessionBillingAddressCollection {
         match self {
             Self::Auto => "auto",
             Self::Required => "required",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionBillingAddressCollection {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "required" => Ok(Self::Required),
+
+            _ => Err(()),
         }
     }
 }
@@ -177,11 +186,41 @@ impl std::fmt::Display for SessionBillingAddressCollection {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionBillingAddressCollection {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionBillingAddressCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SessionBillingAddressCollection")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionBillingAddressCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionBillingAddressCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionBillingAddressCollection::from_str(s)?);
+        Ok(())
+    }
+}
 /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionCustomerCreation {
     Always,
     IfRequired,
@@ -192,6 +231,18 @@ impl SessionCustomerCreation {
         match self {
             Self::Always => "always",
             Self::IfRequired => "if_required",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionCustomerCreation {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always" => Ok(Self::Always),
+            "if_required" => Ok(Self::IfRequired),
+
+            _ => Err(()),
         }
     }
 }
@@ -207,13 +258,42 @@ impl std::fmt::Display for SessionCustomerCreation {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionCustomerCreation {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionCustomerCreation"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionCustomerCreation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionCustomerCreation> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionCustomerCreation::from_str(s)?);
+        Ok(())
+    }
+}
 /// The IETF language tag of the locale Checkout is displayed in.
 ///
 /// If blank or `auto`, the browser's locale is used.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionLocale {
     Auto,
     Bg,
@@ -222,16 +302,13 @@ pub enum SessionLocale {
     De,
     El,
     En,
-    #[serde(rename = "en-GB")]
     EnMinusGb,
     Es,
-    #[serde(rename = "es-419")]
     EsMinus419,
     Et,
     Fi,
     Fil,
     Fr,
-    #[serde(rename = "fr-CA")]
     FrMinusCa,
     Hr,
     Hu,
@@ -247,7 +324,6 @@ pub enum SessionLocale {
     Nl,
     Pl,
     Pt,
-    #[serde(rename = "pt-BR")]
     PtMinusBr,
     Ro,
     Ru,
@@ -258,9 +334,7 @@ pub enum SessionLocale {
     Tr,
     Vi,
     Zh,
-    #[serde(rename = "zh-HK")]
     ZhMinusHk,
-    #[serde(rename = "zh-TW")]
     ZhMinusTw,
 }
 
@@ -312,6 +386,57 @@ impl SessionLocale {
     }
 }
 
+impl std::str::FromStr for SessionLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "bg" => Ok(Self::Bg),
+            "cs" => Ok(Self::Cs),
+            "da" => Ok(Self::Da),
+            "de" => Ok(Self::De),
+            "el" => Ok(Self::El),
+            "en" => Ok(Self::En),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "es" => Ok(Self::Es),
+            "es-419" => Ok(Self::EsMinus419),
+            "et" => Ok(Self::Et),
+            "fi" => Ok(Self::Fi),
+            "fil" => Ok(Self::Fil),
+            "fr" => Ok(Self::Fr),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "hr" => Ok(Self::Hr),
+            "hu" => Ok(Self::Hu),
+            "id" => Ok(Self::Id),
+            "it" => Ok(Self::It),
+            "ja" => Ok(Self::Ja),
+            "ko" => Ok(Self::Ko),
+            "lt" => Ok(Self::Lt),
+            "lv" => Ok(Self::Lv),
+            "ms" => Ok(Self::Ms),
+            "mt" => Ok(Self::Mt),
+            "nb" => Ok(Self::Nb),
+            "nl" => Ok(Self::Nl),
+            "pl" => Ok(Self::Pl),
+            "pt" => Ok(Self::Pt),
+            "pt-BR" => Ok(Self::PtMinusBr),
+            "ro" => Ok(Self::Ro),
+            "ru" => Ok(Self::Ru),
+            "sk" => Ok(Self::Sk),
+            "sl" => Ok(Self::Sl),
+            "sv" => Ok(Self::Sv),
+            "th" => Ok(Self::Th),
+            "tr" => Ok(Self::Tr),
+            "vi" => Ok(Self::Vi),
+            "zh" => Ok(Self::Zh),
+            "zh-HK" => Ok(Self::ZhMinusHk),
+            "zh-TW" => Ok(Self::ZhMinusTw),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionLocale {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -323,11 +448,39 @@ impl std::fmt::Display for SessionLocale {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionLocale {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionLocale> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionLocale::from_str(s)?);
+        Ok(())
+    }
+}
 /// The mode of the Checkout Session.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionMode {
     Payment,
     Setup,
@@ -344,6 +497,19 @@ impl SessionMode {
     }
 }
 
+impl std::str::FromStr for SessionMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "payment" => Ok(Self::Payment),
+            "setup" => Ok(Self::Setup),
+            "subscription" => Ok(Self::Subscription),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -355,15 +521,42 @@ impl std::fmt::Display for SessionMode {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionMode::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionObject {
-    #[serde(rename = "checkout.session")]
     CheckoutSession,
 }
 
@@ -371,6 +564,17 @@ impl SessionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::CheckoutSession => "checkout.session",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "checkout.session" => Ok(Self::CheckoutSession),
+
+            _ => Err(()),
         }
     }
 }
@@ -386,11 +590,39 @@ impl std::fmt::Display for SessionObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Configure whether a Checkout Session should collect a payment method.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionPaymentMethodCollection {
     Always,
     IfRequired,
@@ -401,6 +633,18 @@ impl SessionPaymentMethodCollection {
         match self {
             Self::Always => "always",
             Self::IfRequired => "if_required",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionPaymentMethodCollection {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always" => Ok(Self::Always),
+            "if_required" => Ok(Self::IfRequired),
+
+            _ => Err(()),
         }
     }
 }
@@ -416,12 +660,42 @@ impl std::fmt::Display for SessionPaymentMethodCollection {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionPaymentMethodCollection {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SessionPaymentMethodCollection")
+        })
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionPaymentMethodCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionPaymentMethodCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionPaymentMethodCollection::from_str(s)?);
+        Ok(())
+    }
+}
 /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
 /// You can use this value to decide when to fulfill your customer's order.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionPaymentStatus {
     NoPaymentRequired,
     Paid,
@@ -438,6 +712,19 @@ impl SessionPaymentStatus {
     }
 }
 
+impl std::str::FromStr for SessionPaymentStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "no_payment_required" => Ok(Self::NoPaymentRequired),
+            "paid" => Ok(Self::Paid),
+            "unpaid" => Ok(Self::Unpaid),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionPaymentStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -449,11 +736,40 @@ impl std::fmt::Display for SessionPaymentStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionPaymentStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionPaymentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionPaymentStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionPaymentStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionStatus {
     Complete,
     Expired,
@@ -470,6 +786,19 @@ impl SessionStatus {
     }
 }
 
+impl std::str::FromStr for SessionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "complete" => Ok(Self::Complete),
+            "expired" => Ok(Self::Expired),
+            "open" => Ok(Self::Open),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -481,14 +810,42 @@ impl std::fmt::Display for SessionStatus {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for SessionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionStatus::from_str(s)?);
+        Ok(())
+    }
+}
 /// Describes the type of transaction being performed by Checkout in order to customize
 /// relevant text on the page, such as the submit button.
 ///
 /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SessionSubmitType {
     Auto,
     Book,
@@ -507,6 +864,20 @@ impl SessionSubmitType {
     }
 }
 
+impl std::str::FromStr for SessionSubmitType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Self::Auto),
+            "book" => Ok(Self::Book),
+            "donate" => Ok(Self::Donate),
+            "pay" => Ok(Self::Pay),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for SessionSubmitType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -516,6 +887,38 @@ impl AsRef<str> for SessionSubmitType {
 impl std::fmt::Display for SessionSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SessionSubmitType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionSubmitType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SessionSubmitType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SessionSubmitType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SessionSubmitType::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Session {

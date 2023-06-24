@@ -41,17 +41,13 @@ impl miniserde::Deserialize for Reader {
 }
 
 /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
     SimulatedWiseposE,
     StripeM2,
-    #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
 
@@ -68,6 +64,22 @@ impl ReaderDeviceType {
     }
 }
 
+impl std::str::FromStr for ReaderDeviceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bbpos_chipper2x" => Ok(Self::BbposChipper2x),
+            "bbpos_wisepad3" => Ok(Self::BbposWisepad3),
+            "bbpos_wisepos_e" => Ok(Self::BbposWiseposE),
+            "simulated_wisepos_e" => Ok(Self::SimulatedWiseposE),
+            "stripe_m2" => Ok(Self::StripeM2),
+            "verifone_P400" => Ok(Self::VerifoneP400),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReaderDeviceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -79,15 +91,43 @@ impl std::fmt::Display for ReaderDeviceType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ReaderDeviceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReaderDeviceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ReaderDeviceType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReaderDeviceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReaderDeviceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReaderDeviceType::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReaderObject {
-    #[serde(rename = "terminal.reader")]
     TerminalReader,
 }
 
@@ -95,6 +135,17 @@ impl ReaderObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TerminalReader => "terminal.reader",
+        }
+    }
+}
+
+impl std::str::FromStr for ReaderObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "terminal.reader" => Ok(Self::TerminalReader),
+
+            _ => Err(()),
         }
     }
 }
@@ -108,6 +159,37 @@ impl AsRef<str> for ReaderObject {
 impl std::fmt::Display for ReaderObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReaderObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for ReaderObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReaderObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ReaderObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<ReaderObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ReaderObject::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Reader {

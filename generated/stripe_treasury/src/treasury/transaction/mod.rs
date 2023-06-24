@@ -50,10 +50,7 @@ impl miniserde::Deserialize for Transaction {
 }
 
 /// Type of the flow that created the Transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TransactionFlowType {
     CreditReversal,
     DebitReversal,
@@ -82,6 +79,25 @@ impl TransactionFlowType {
     }
 }
 
+impl std::str::FromStr for TransactionFlowType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "credit_reversal" => Ok(Self::CreditReversal),
+            "debit_reversal" => Ok(Self::DebitReversal),
+            "inbound_transfer" => Ok(Self::InboundTransfer),
+            "issuing_authorization" => Ok(Self::IssuingAuthorization),
+            "other" => Ok(Self::Other),
+            "outbound_payment" => Ok(Self::OutboundPayment),
+            "outbound_transfer" => Ok(Self::OutboundTransfer),
+            "received_credit" => Ok(Self::ReceivedCredit),
+            "received_debit" => Ok(Self::ReceivedDebit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for TransactionFlowType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -93,15 +109,43 @@ impl std::fmt::Display for TransactionFlowType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for TransactionFlowType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TransactionFlowType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TransactionFlowType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TransactionFlowType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TransactionFlowType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TransactionFlowType::from_str(s)?);
+        Ok(())
+    }
+}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TransactionObject {
-    #[serde(rename = "treasury.transaction")]
     TreasuryTransaction,
 }
 
@@ -109,6 +153,17 @@ impl TransactionObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::TreasuryTransaction => "treasury.transaction",
+        }
+    }
+}
+
+impl std::str::FromStr for TransactionObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "treasury.transaction" => Ok(Self::TreasuryTransaction),
+
+            _ => Err(()),
         }
     }
 }
@@ -124,11 +179,40 @@ impl std::fmt::Display for TransactionObject {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for TransactionObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TransactionObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TransactionObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TransactionObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TransactionObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TransactionObject::from_str(s)?);
+        Ok(())
+    }
+}
 /// Status of the Transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TransactionStatus {
     Open,
     Posted,
@@ -145,6 +229,19 @@ impl TransactionStatus {
     }
 }
 
+impl std::str::FromStr for TransactionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "open" => Ok(Self::Open),
+            "posted" => Ok(Self::Posted),
+            "void" => Ok(Self::Void),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for TransactionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -154,6 +251,38 @@ impl AsRef<str> for TransactionStatus {
 impl std::fmt::Display for TransactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TransactionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TransactionStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TransactionStatus"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TransactionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<TransactionStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TransactionStatus::from_str(s)?);
+        Ok(())
     }
 }
 impl stripe_types::Object for Transaction {

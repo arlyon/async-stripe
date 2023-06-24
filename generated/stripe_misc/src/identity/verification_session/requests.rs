@@ -162,8 +162,7 @@ impl<'a> CreateVerificationSessionOptionsDocument<'a> {
 /// Array of strings of allowed identity document types.
 ///
 /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateVerificationSessionOptionsDocumentAllowedTypes {
     DrivingLicense,
     IdCard,
@@ -180,6 +179,19 @@ impl CreateVerificationSessionOptionsDocumentAllowedTypes {
     }
 }
 
+impl std::str::FromStr for CreateVerificationSessionOptionsDocumentAllowedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "driving_license" => Ok(Self::DrivingLicense),
+            "id_card" => Ok(Self::IdCard),
+            "passport" => Ok(Self::Passport),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateVerificationSessionOptionsDocumentAllowedTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -191,9 +203,16 @@ impl std::fmt::Display for CreateVerificationSessionOptionsDocumentAllowedTypes 
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateVerificationSessionOptionsDocumentAllowedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateVerificationSessionType {
     Document,
     IdNumber,
@@ -208,6 +227,18 @@ impl CreateVerificationSessionType {
     }
 }
 
+impl std::str::FromStr for CreateVerificationSessionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "document" => Ok(Self::Document),
+            "id_number" => Ok(Self::IdNumber),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateVerificationSessionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -217,6 +248,14 @@ impl AsRef<str> for CreateVerificationSessionType {
 impl std::fmt::Display for CreateVerificationSessionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateVerificationSessionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -268,8 +307,7 @@ impl<'a> ListVerificationSession<'a> {
 /// Only return VerificationSessions with this status.
 ///
 /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListVerificationSessionStatus {
     Canceled,
     Processing,
@@ -288,6 +326,20 @@ impl ListVerificationSessionStatus {
     }
 }
 
+impl std::str::FromStr for ListVerificationSessionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "processing" => Ok(Self::Processing),
+            "requires_input" => Ok(Self::RequiresInput),
+            "verified" => Ok(Self::Verified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListVerificationSessionStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -297,6 +349,14 @@ impl AsRef<str> for ListVerificationSessionStatus {
 impl std::fmt::Display for ListVerificationSessionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListVerificationSessionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -386,8 +446,7 @@ impl<'a> UpdateVerificationSessionOptionsDocument<'a> {
 /// Array of strings of allowed identity document types.
 ///
 /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateVerificationSessionOptionsDocumentAllowedTypes {
     DrivingLicense,
     IdCard,
@@ -404,6 +463,19 @@ impl UpdateVerificationSessionOptionsDocumentAllowedTypes {
     }
 }
 
+impl std::str::FromStr for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "driving_license" => Ok(Self::DrivingLicense),
+            "id_card" => Ok(Self::IdCard),
+            "passport" => Ok(Self::Passport),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateVerificationSessionOptionsDocumentAllowedTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -415,9 +487,16 @@ impl std::fmt::Display for UpdateVerificationSessionOptionsDocumentAllowedTypes 
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdateVerificationSessionType {
     Document,
     IdNumber,
@@ -432,6 +511,18 @@ impl UpdateVerificationSessionType {
     }
 }
 
+impl std::str::FromStr for UpdateVerificationSessionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "document" => Ok(Self::Document),
+            "id_number" => Ok(Self::IdNumber),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdateVerificationSessionType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -441,5 +532,13 @@ impl AsRef<str> for UpdateVerificationSessionType {
 impl std::fmt::Display for UpdateVerificationSessionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdateVerificationSessionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

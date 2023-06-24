@@ -36,10 +36,7 @@ impl miniserde::Deserialize for Balance {
 /// The `type` of the balance.
 ///
 /// An additional hash is included on the balance with a name matching this value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BalanceType {
     Cash,
     Credit,
@@ -54,6 +51,18 @@ impl BalanceType {
     }
 }
 
+impl std::str::FromStr for BalanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cash" => Ok(Self::Cash),
+            "credit" => Ok(Self::Credit),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for BalanceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -63,6 +72,37 @@ impl AsRef<str> for BalanceType {
 impl std::fmt::Display for BalanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for BalanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for BalanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceType"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for BalanceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<BalanceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(BalanceType::from_str(s)?);
+        Ok(())
     }
 }
 pub mod cash_balance;

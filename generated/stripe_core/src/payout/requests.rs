@@ -191,8 +191,7 @@ impl<'a> CreatePayout<'a> {
 ///
 /// `instant` is only supported for payouts to debit cards.
 /// (See [Instant payouts for marketplaces for more information](https://stripe.com/blog/instant-payouts-for-marketplaces).).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePayoutMethod {
     Instant,
     Standard,
@@ -203,6 +202,18 @@ impl CreatePayoutMethod {
         match self {
             Self::Instant => "instant",
             Self::Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePayoutMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "instant" => Ok(Self::Instant),
+            "standard" => Ok(Self::Standard),
+
+            _ => Err(()),
         }
     }
 }
@@ -218,13 +229,20 @@ impl std::fmt::Display for CreatePayoutMethod {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePayoutMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// The balance type of your Stripe balance to draw this payout from.
 ///
 /// Balances for different payment sources are kept separately.
 /// You can find the amounts with the balances API.
 /// One of `bank_account`, `card`, or `fpx`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePayoutSourceType {
     BankAccount,
     Card,
@@ -241,6 +259,19 @@ impl CreatePayoutSourceType {
     }
 }
 
+impl std::str::FromStr for CreatePayoutSourceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_account" => Ok(Self::BankAccount),
+            "card" => Ok(Self::Card),
+            "fpx" => Ok(Self::Fpx),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePayoutSourceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -250,6 +281,14 @@ impl AsRef<str> for CreatePayoutSourceType {
 impl std::fmt::Display for CreatePayoutSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePayoutSourceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

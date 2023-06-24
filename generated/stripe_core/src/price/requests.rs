@@ -71,10 +71,7 @@ impl miniserde::Deserialize for SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -83,6 +80,17 @@ impl SearchReturnedObject {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::SearchResult => "search_result",
+        }
+    }
+}
+
+impl std::str::FromStr for SearchReturnedObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "search_result" => Ok(Self::SearchResult),
+
+            _ => Err(()),
         }
     }
 }
@@ -96,6 +104,38 @@ impl AsRef<str> for SearchReturnedObject {
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SearchReturnedObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SearchReturnedObject {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
+        Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::Visitor for crate::Place<SearchReturnedObject> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SearchReturnedObject::from_str(s)?);
+        Ok(())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -203,8 +243,7 @@ impl ListPriceRecurring {
 /// Filter by billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListPriceRecurringInterval {
     Day,
     Month,
@@ -223,6 +262,20 @@ impl ListPriceRecurringInterval {
     }
 }
 
+impl std::str::FromStr for ListPriceRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListPriceRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -234,11 +287,18 @@ impl std::fmt::Display for ListPriceRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListPriceRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Filter by the usage type for this price.
 ///
 /// Can be either `metered` or `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListPriceRecurringUsageType {
     Licensed,
     Metered,
@@ -249,6 +309,18 @@ impl ListPriceRecurringUsageType {
         match self {
             Self::Licensed => "licensed",
             Self::Metered => "metered",
+        }
+    }
+}
+
+impl std::str::FromStr for ListPriceRecurringUsageType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "licensed" => Ok(Self::Licensed),
+            "metered" => Ok(Self::Metered),
+
+            _ => Err(()),
         }
     }
 }
@@ -264,9 +336,16 @@ impl std::fmt::Display for ListPriceRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for ListPriceRecurringUsageType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Only return prices of type `recurring` or `one_time`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListPriceType {
     OneTime,
     Recurring,
@@ -281,6 +360,18 @@ impl ListPriceType {
     }
 }
 
+impl std::str::FromStr for ListPriceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "one_time" => Ok(Self::OneTime),
+            "recurring" => Ok(Self::Recurring),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListPriceType {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -290,6 +381,14 @@ impl AsRef<str> for ListPriceType {
 impl std::fmt::Display for ListPriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListPriceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -412,8 +511,7 @@ impl<'a> CreatePrice<'a> {
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceBillingScheme {
     PerUnit,
     Tiered,
@@ -428,6 +526,18 @@ impl CreatePriceBillingScheme {
     }
 }
 
+impl std::str::FromStr for CreatePriceBillingScheme {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "per_unit" => Ok(Self::PerUnit),
+            "tiered" => Ok(Self::Tiered),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceBillingScheme {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -437,6 +547,14 @@ impl AsRef<str> for CreatePriceBillingScheme {
 impl std::fmt::Display for CreatePriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePriceBillingScheme {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Prices defined in each available currency option.
@@ -504,8 +622,7 @@ impl CreatePriceCurrencyOptionsCustomUnitAmount {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceCurrencyOptionsTaxBehavior {
     Exclusive,
     Inclusive,
@@ -522,6 +639,19 @@ impl CreatePriceCurrencyOptionsTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreatePriceCurrencyOptionsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceCurrencyOptionsTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -531,6 +661,14 @@ impl AsRef<str> for CreatePriceCurrencyOptionsTaxBehavior {
 impl std::fmt::Display for CreatePriceCurrencyOptionsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePriceCurrencyOptionsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each element represents a pricing tier.
@@ -707,8 +845,7 @@ impl CreatePriceRecurring {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceRecurringAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -727,6 +864,20 @@ impl CreatePriceRecurringAggregateUsage {
     }
 }
 
+impl std::str::FromStr for CreatePriceRecurringAggregateUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "last_during_period" => Ok(Self::LastDuringPeriod),
+            "last_ever" => Ok(Self::LastEver),
+            "max" => Ok(Self::Max),
+            "sum" => Ok(Self::Sum),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceRecurringAggregateUsage {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -738,11 +889,18 @@ impl std::fmt::Display for CreatePriceRecurringAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePriceRecurringAggregateUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceRecurringInterval {
     Day,
     Month,
@@ -761,6 +919,20 @@ impl CreatePriceRecurringInterval {
     }
 }
 
+impl std::str::FromStr for CreatePriceRecurringInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceRecurringInterval {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -772,14 +944,21 @@ impl std::fmt::Display for CreatePriceRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePriceRecurringInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Configures how the quantity per period should be determined.
 ///
 /// Can be either `metered` or `licensed`.
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceRecurringUsageType {
     Licensed,
     Metered,
@@ -790,6 +969,18 @@ impl CreatePriceRecurringUsageType {
         match self {
             Self::Licensed => "licensed",
             Self::Metered => "metered",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePriceRecurringUsageType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "licensed" => Ok(Self::Licensed),
+            "metered" => Ok(Self::Metered),
+
+            _ => Err(()),
         }
     }
 }
@@ -805,12 +996,19 @@ impl std::fmt::Display for CreatePriceRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreatePriceRecurringUsageType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceTaxBehavior {
     Exclusive,
     Inclusive,
@@ -827,6 +1025,19 @@ impl CreatePriceTaxBehavior {
     }
 }
 
+impl std::str::FromStr for CreatePriceTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -836,6 +1047,14 @@ impl AsRef<str> for CreatePriceTaxBehavior {
 impl std::fmt::Display for CreatePriceTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePriceTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each element represents a pricing tier.
@@ -890,8 +1109,7 @@ pub enum CreatePriceTiersUpTo {
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceTiersMode {
     Graduated,
     Volume,
@@ -906,6 +1124,18 @@ impl CreatePriceTiersMode {
     }
 }
 
+impl std::str::FromStr for CreatePriceTiersMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "graduated" => Ok(Self::Graduated),
+            "volume" => Ok(Self::Volume),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceTiersMode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -915,6 +1145,14 @@ impl AsRef<str> for CreatePriceTiersMode {
 impl std::fmt::Display for CreatePriceTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePriceTiersMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
@@ -933,8 +1171,7 @@ impl CreatePriceTransformQuantity {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePriceTransformQuantityRound {
     Down,
     Up,
@@ -949,6 +1186,18 @@ impl CreatePriceTransformQuantityRound {
     }
 }
 
+impl std::str::FromStr for CreatePriceTransformQuantityRound {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "down" => Ok(Self::Down),
+            "up" => Ok(Self::Up),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreatePriceTransformQuantityRound {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -958,6 +1207,14 @@ impl AsRef<str> for CreatePriceTransformQuantityRound {
 impl std::fmt::Display for CreatePriceTransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePriceTransformQuantityRound {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1085,8 +1342,7 @@ impl UpdatePriceCurrencyOptionsCustomUnitAmount {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePriceCurrencyOptionsTaxBehavior {
     Exclusive,
     Inclusive,
@@ -1103,6 +1359,19 @@ impl UpdatePriceCurrencyOptionsTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdatePriceCurrencyOptionsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePriceCurrencyOptionsTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1112,6 +1381,14 @@ impl AsRef<str> for UpdatePriceCurrencyOptionsTaxBehavior {
 impl std::fmt::Display for UpdatePriceCurrencyOptionsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePriceCurrencyOptionsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Each element represents a pricing tier.
@@ -1179,8 +1456,7 @@ impl UpdatePriceRecurring {
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePriceTaxBehavior {
     Exclusive,
     Inclusive,
@@ -1197,6 +1473,19 @@ impl UpdatePriceTaxBehavior {
     }
 }
 
+impl std::str::FromStr for UpdatePriceTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for UpdatePriceTaxBehavior {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -1206,5 +1495,13 @@ impl AsRef<str> for UpdatePriceTaxBehavior {
 impl std::fmt::Display for UpdatePriceTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for UpdatePriceTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

@@ -176,8 +176,7 @@ impl CreateOutboundTransferDestinationPaymentMethodOptionsUsBankAccount {
     }
 }
 /// Designate the OutboundTransfer as using a US bank account network configuration.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork {
     Ach,
     UsDomesticWire,
@@ -188,6 +187,20 @@ impl CreateOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork {
         match self {
             Self::Ach => "ach",
             Self::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ach" => Ok(Self::Ach),
+            "us_domestic_wire" => Ok(Self::UsDomesticWire),
+
+            _ => Err(()),
         }
     }
 }
@@ -203,6 +216,16 @@ impl std::fmt::Display
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize
+    for CreateOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -257,8 +280,7 @@ impl<'a> ListOutboundTransfer<'a> {
     }
 }
 /// Only return OutboundTransfers that have the given status: `processing`, `canceled`, `failed`, `posted`, or `returned`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ListOutboundTransferStatus {
     Canceled,
     Failed,
@@ -279,6 +301,21 @@ impl ListOutboundTransferStatus {
     }
 }
 
+impl std::str::FromStr for ListOutboundTransferStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "failed" => Ok(Self::Failed),
+            "posted" => Ok(Self::Posted),
+            "processing" => Ok(Self::Processing),
+            "returned" => Ok(Self::Returned),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ListOutboundTransferStatus {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -288,6 +325,14 @@ impl AsRef<str> for ListOutboundTransferStatus {
 impl std::fmt::Display for ListOutboundTransferStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListOutboundTransferStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -350,8 +395,7 @@ impl ReturnOutboundTransferOutboundTransferReturnedDetails {
     }
 }
 /// Reason for the return.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -382,6 +426,26 @@ impl ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
     }
 }
 
+impl std::str::FromStr for ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "account_closed" => Ok(Self::AccountClosed),
+            "account_frozen" => Ok(Self::AccountFrozen),
+            "bank_account_restricted" => Ok(Self::BankAccountRestricted),
+            "bank_ownership_changed" => Ok(Self::BankOwnershipChanged),
+            "declined" => Ok(Self::Declined),
+            "incorrect_account_holder_name" => Ok(Self::IncorrectAccountHolderName),
+            "invalid_account_number" => Ok(Self::InvalidAccountNumber),
+            "invalid_currency" => Ok(Self::InvalidCurrency),
+            "no_account" => Ok(Self::NoAccount),
+            "other" => Ok(Self::Other),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -391,5 +455,13 @@ impl AsRef<str> for ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
 impl std::fmt::Display for ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReturnOutboundTransferOutboundTransferReturnedDetailsCode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }

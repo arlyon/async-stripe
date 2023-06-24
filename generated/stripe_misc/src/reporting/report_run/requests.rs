@@ -100,8 +100,7 @@ impl<'a> CreateReportRunParameters<'a> {
     }
 }
 /// Category of balance transactions to be included in the report run.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateReportRunParametersReportingCategory {
     Advance,
     AdvanceFunding,
@@ -180,6 +179,50 @@ impl CreateReportRunParametersReportingCategory {
     }
 }
 
+impl std::str::FromStr for CreateReportRunParametersReportingCategory {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "advance" => Ok(Self::Advance),
+            "advance_funding" => Ok(Self::AdvanceFunding),
+            "anticipation_repayment" => Ok(Self::AnticipationRepayment),
+            "charge" => Ok(Self::Charge),
+            "charge_failure" => Ok(Self::ChargeFailure),
+            "connect_collection_transfer" => Ok(Self::ConnectCollectionTransfer),
+            "connect_reserved_funds" => Ok(Self::ConnectReservedFunds),
+            "contribution" => Ok(Self::Contribution),
+            "dispute" => Ok(Self::Dispute),
+            "dispute_reversal" => Ok(Self::DisputeReversal),
+            "fee" => Ok(Self::Fee),
+            "financing_paydown" => Ok(Self::FinancingPaydown),
+            "financing_paydown_reversal" => Ok(Self::FinancingPaydownReversal),
+            "financing_payout" => Ok(Self::FinancingPayout),
+            "financing_payout_reversal" => Ok(Self::FinancingPayoutReversal),
+            "issuing_authorization_hold" => Ok(Self::IssuingAuthorizationHold),
+            "issuing_authorization_release" => Ok(Self::IssuingAuthorizationRelease),
+            "issuing_dispute" => Ok(Self::IssuingDispute),
+            "issuing_transaction" => Ok(Self::IssuingTransaction),
+            "network_cost" => Ok(Self::NetworkCost),
+            "other_adjustment" => Ok(Self::OtherAdjustment),
+            "partial_capture_reversal" => Ok(Self::PartialCaptureReversal),
+            "payout" => Ok(Self::Payout),
+            "payout_reversal" => Ok(Self::PayoutReversal),
+            "platform_earning" => Ok(Self::PlatformEarning),
+            "platform_earning_refund" => Ok(Self::PlatformEarningRefund),
+            "refund" => Ok(Self::Refund),
+            "refund_failure" => Ok(Self::RefundFailure),
+            "risk_reserved_funds" => Ok(Self::RiskReservedFunds),
+            "tax" => Ok(Self::Tax),
+            "topup" => Ok(Self::Topup),
+            "topup_reversal" => Ok(Self::TopupReversal),
+            "transfer" => Ok(Self::Transfer),
+            "transfer_reversal" => Ok(Self::TransferReversal),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateReportRunParametersReportingCategory {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -191,1207 +234,617 @@ impl std::fmt::Display for CreateReportRunParametersReportingCategory {
         self.as_str().fmt(f)
     }
 }
+impl serde::Serialize for CreateReportRunParametersReportingCategory {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Defaults to `Etc/UTC`.
 ///
 /// The output timezone for all timestamps in the report.
 /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
 /// Has no effect on `interval_start` or `interval_end`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateReportRunParametersTimezone {
-    #[serde(rename = "Africa/Abidjan")]
     AfricaAbidjan,
-    #[serde(rename = "Africa/Accra")]
     AfricaAccra,
-    #[serde(rename = "Africa/Addis_Ababa")]
     AfricaAddisAbaba,
-    #[serde(rename = "Africa/Algiers")]
     AfricaAlgiers,
-    #[serde(rename = "Africa/Asmara")]
     AfricaAsmara,
-    #[serde(rename = "Africa/Asmera")]
     AfricaAsmera,
-    #[serde(rename = "Africa/Bamako")]
     AfricaBamako,
-    #[serde(rename = "Africa/Bangui")]
     AfricaBangui,
-    #[serde(rename = "Africa/Banjul")]
     AfricaBanjul,
-    #[serde(rename = "Africa/Bissau")]
     AfricaBissau,
-    #[serde(rename = "Africa/Blantyre")]
     AfricaBlantyre,
-    #[serde(rename = "Africa/Brazzaville")]
     AfricaBrazzaville,
-    #[serde(rename = "Africa/Bujumbura")]
     AfricaBujumbura,
-    #[serde(rename = "Africa/Cairo")]
     AfricaCairo,
-    #[serde(rename = "Africa/Casablanca")]
     AfricaCasablanca,
-    #[serde(rename = "Africa/Ceuta")]
     AfricaCeuta,
-    #[serde(rename = "Africa/Conakry")]
     AfricaConakry,
-    #[serde(rename = "Africa/Dakar")]
     AfricaDakar,
-    #[serde(rename = "Africa/Dar_es_Salaam")]
     AfricaDarEsSalaam,
-    #[serde(rename = "Africa/Djibouti")]
     AfricaDjibouti,
-    #[serde(rename = "Africa/Douala")]
     AfricaDouala,
-    #[serde(rename = "Africa/El_Aaiun")]
     AfricaElAaiun,
-    #[serde(rename = "Africa/Freetown")]
     AfricaFreetown,
-    #[serde(rename = "Africa/Gaborone")]
     AfricaGaborone,
-    #[serde(rename = "Africa/Harare")]
     AfricaHarare,
-    #[serde(rename = "Africa/Johannesburg")]
     AfricaJohannesburg,
-    #[serde(rename = "Africa/Juba")]
     AfricaJuba,
-    #[serde(rename = "Africa/Kampala")]
     AfricaKampala,
-    #[serde(rename = "Africa/Khartoum")]
     AfricaKhartoum,
-    #[serde(rename = "Africa/Kigali")]
     AfricaKigali,
-    #[serde(rename = "Africa/Kinshasa")]
     AfricaKinshasa,
-    #[serde(rename = "Africa/Lagos")]
     AfricaLagos,
-    #[serde(rename = "Africa/Libreville")]
     AfricaLibreville,
-    #[serde(rename = "Africa/Lome")]
     AfricaLome,
-    #[serde(rename = "Africa/Luanda")]
     AfricaLuanda,
-    #[serde(rename = "Africa/Lubumbashi")]
     AfricaLubumbashi,
-    #[serde(rename = "Africa/Lusaka")]
     AfricaLusaka,
-    #[serde(rename = "Africa/Malabo")]
     AfricaMalabo,
-    #[serde(rename = "Africa/Maputo")]
     AfricaMaputo,
-    #[serde(rename = "Africa/Maseru")]
     AfricaMaseru,
-    #[serde(rename = "Africa/Mbabane")]
     AfricaMbabane,
-    #[serde(rename = "Africa/Mogadishu")]
     AfricaMogadishu,
-    #[serde(rename = "Africa/Monrovia")]
     AfricaMonrovia,
-    #[serde(rename = "Africa/Nairobi")]
     AfricaNairobi,
-    #[serde(rename = "Africa/Ndjamena")]
     AfricaNdjamena,
-    #[serde(rename = "Africa/Niamey")]
     AfricaNiamey,
-    #[serde(rename = "Africa/Nouakchott")]
     AfricaNouakchott,
-    #[serde(rename = "Africa/Ouagadougou")]
     AfricaOuagadougou,
-    #[serde(rename = "Africa/Porto-Novo")]
     AfricaPortoMinusNovo,
-    #[serde(rename = "Africa/Sao_Tome")]
     AfricaSaoTome,
-    #[serde(rename = "Africa/Timbuktu")]
     AfricaTimbuktu,
-    #[serde(rename = "Africa/Tripoli")]
     AfricaTripoli,
-    #[serde(rename = "Africa/Tunis")]
     AfricaTunis,
-    #[serde(rename = "Africa/Windhoek")]
     AfricaWindhoek,
-    #[serde(rename = "America/Adak")]
     AmericaAdak,
-    #[serde(rename = "America/Anchorage")]
     AmericaAnchorage,
-    #[serde(rename = "America/Anguilla")]
     AmericaAnguilla,
-    #[serde(rename = "America/Antigua")]
     AmericaAntigua,
-    #[serde(rename = "America/Araguaina")]
     AmericaAraguaina,
-    #[serde(rename = "America/Argentina/Buenos_Aires")]
     AmericaArgentinaBuenosAires,
-    #[serde(rename = "America/Argentina/Catamarca")]
     AmericaArgentinaCatamarca,
-    #[serde(rename = "America/Argentina/ComodRivadavia")]
     AmericaArgentinaComodRivadavia,
-    #[serde(rename = "America/Argentina/Cordoba")]
     AmericaArgentinaCordoba,
-    #[serde(rename = "America/Argentina/Jujuy")]
     AmericaArgentinaJujuy,
-    #[serde(rename = "America/Argentina/La_Rioja")]
     AmericaArgentinaLaRioja,
-    #[serde(rename = "America/Argentina/Mendoza")]
     AmericaArgentinaMendoza,
-    #[serde(rename = "America/Argentina/Rio_Gallegos")]
     AmericaArgentinaRioGallegos,
-    #[serde(rename = "America/Argentina/Salta")]
     AmericaArgentinaSalta,
-    #[serde(rename = "America/Argentina/San_Juan")]
     AmericaArgentinaSanJuan,
-    #[serde(rename = "America/Argentina/San_Luis")]
     AmericaArgentinaSanLuis,
-    #[serde(rename = "America/Argentina/Tucuman")]
     AmericaArgentinaTucuman,
-    #[serde(rename = "America/Argentina/Ushuaia")]
     AmericaArgentinaUshuaia,
-    #[serde(rename = "America/Aruba")]
     AmericaAruba,
-    #[serde(rename = "America/Asuncion")]
     AmericaAsuncion,
-    #[serde(rename = "America/Atikokan")]
     AmericaAtikokan,
-    #[serde(rename = "America/Atka")]
     AmericaAtka,
-    #[serde(rename = "America/Bahia")]
     AmericaBahia,
-    #[serde(rename = "America/Bahia_Banderas")]
     AmericaBahiaBanderas,
-    #[serde(rename = "America/Barbados")]
     AmericaBarbados,
-    #[serde(rename = "America/Belem")]
     AmericaBelem,
-    #[serde(rename = "America/Belize")]
     AmericaBelize,
-    #[serde(rename = "America/Blanc-Sablon")]
     AmericaBlancMinusSablon,
-    #[serde(rename = "America/Boa_Vista")]
     AmericaBoaVista,
-    #[serde(rename = "America/Bogota")]
     AmericaBogota,
-    #[serde(rename = "America/Boise")]
     AmericaBoise,
-    #[serde(rename = "America/Buenos_Aires")]
     AmericaBuenosAires,
-    #[serde(rename = "America/Cambridge_Bay")]
     AmericaCambridgeBay,
-    #[serde(rename = "America/Campo_Grande")]
     AmericaCampoGrande,
-    #[serde(rename = "America/Cancun")]
     AmericaCancun,
-    #[serde(rename = "America/Caracas")]
     AmericaCaracas,
-    #[serde(rename = "America/Catamarca")]
     AmericaCatamarca,
-    #[serde(rename = "America/Cayenne")]
     AmericaCayenne,
-    #[serde(rename = "America/Cayman")]
     AmericaCayman,
-    #[serde(rename = "America/Chicago")]
     AmericaChicago,
-    #[serde(rename = "America/Chihuahua")]
     AmericaChihuahua,
-    #[serde(rename = "America/Coral_Harbour")]
     AmericaCoralHarbour,
-    #[serde(rename = "America/Cordoba")]
     AmericaCordoba,
-    #[serde(rename = "America/Costa_Rica")]
     AmericaCostaRica,
-    #[serde(rename = "America/Creston")]
     AmericaCreston,
-    #[serde(rename = "America/Cuiaba")]
     AmericaCuiaba,
-    #[serde(rename = "America/Curacao")]
     AmericaCuracao,
-    #[serde(rename = "America/Danmarkshavn")]
     AmericaDanmarkshavn,
-    #[serde(rename = "America/Dawson")]
     AmericaDawson,
-    #[serde(rename = "America/Dawson_Creek")]
     AmericaDawsonCreek,
-    #[serde(rename = "America/Denver")]
     AmericaDenver,
-    #[serde(rename = "America/Detroit")]
     AmericaDetroit,
-    #[serde(rename = "America/Dominica")]
     AmericaDominica,
-    #[serde(rename = "America/Edmonton")]
     AmericaEdmonton,
-    #[serde(rename = "America/Eirunepe")]
     AmericaEirunepe,
-    #[serde(rename = "America/El_Salvador")]
     AmericaElSalvador,
-    #[serde(rename = "America/Ensenada")]
     AmericaEnsenada,
-    #[serde(rename = "America/Fort_Nelson")]
     AmericaFortNelson,
-    #[serde(rename = "America/Fort_Wayne")]
     AmericaFortWayne,
-    #[serde(rename = "America/Fortaleza")]
     AmericaFortaleza,
-    #[serde(rename = "America/Glace_Bay")]
     AmericaGlaceBay,
-    #[serde(rename = "America/Godthab")]
     AmericaGodthab,
-    #[serde(rename = "America/Goose_Bay")]
     AmericaGooseBay,
-    #[serde(rename = "America/Grand_Turk")]
     AmericaGrandTurk,
-    #[serde(rename = "America/Grenada")]
     AmericaGrenada,
-    #[serde(rename = "America/Guadeloupe")]
     AmericaGuadeloupe,
-    #[serde(rename = "America/Guatemala")]
     AmericaGuatemala,
-    #[serde(rename = "America/Guayaquil")]
     AmericaGuayaquil,
-    #[serde(rename = "America/Guyana")]
     AmericaGuyana,
-    #[serde(rename = "America/Halifax")]
     AmericaHalifax,
-    #[serde(rename = "America/Havana")]
     AmericaHavana,
-    #[serde(rename = "America/Hermosillo")]
     AmericaHermosillo,
-    #[serde(rename = "America/Indiana/Indianapolis")]
     AmericaIndianaIndianapolis,
-    #[serde(rename = "America/Indiana/Knox")]
     AmericaIndianaKnox,
-    #[serde(rename = "America/Indiana/Marengo")]
     AmericaIndianaMarengo,
-    #[serde(rename = "America/Indiana/Petersburg")]
     AmericaIndianaPetersburg,
-    #[serde(rename = "America/Indiana/Tell_City")]
     AmericaIndianaTellCity,
-    #[serde(rename = "America/Indiana/Vevay")]
     AmericaIndianaVevay,
-    #[serde(rename = "America/Indiana/Vincennes")]
     AmericaIndianaVincennes,
-    #[serde(rename = "America/Indiana/Winamac")]
     AmericaIndianaWinamac,
-    #[serde(rename = "America/Indianapolis")]
     AmericaIndianapolis,
-    #[serde(rename = "America/Inuvik")]
     AmericaInuvik,
-    #[serde(rename = "America/Iqaluit")]
     AmericaIqaluit,
-    #[serde(rename = "America/Jamaica")]
     AmericaJamaica,
-    #[serde(rename = "America/Jujuy")]
     AmericaJujuy,
-    #[serde(rename = "America/Juneau")]
     AmericaJuneau,
-    #[serde(rename = "America/Kentucky/Louisville")]
     AmericaKentuckyLouisville,
-    #[serde(rename = "America/Kentucky/Monticello")]
     AmericaKentuckyMonticello,
-    #[serde(rename = "America/Knox_IN")]
     AmericaKnoxIn,
-    #[serde(rename = "America/Kralendijk")]
     AmericaKralendijk,
-    #[serde(rename = "America/La_Paz")]
     AmericaLaPaz,
-    #[serde(rename = "America/Lima")]
     AmericaLima,
-    #[serde(rename = "America/Los_Angeles")]
     AmericaLosAngeles,
-    #[serde(rename = "America/Louisville")]
     AmericaLouisville,
-    #[serde(rename = "America/Lower_Princes")]
     AmericaLowerPrinces,
-    #[serde(rename = "America/Maceio")]
     AmericaMaceio,
-    #[serde(rename = "America/Managua")]
     AmericaManagua,
-    #[serde(rename = "America/Manaus")]
     AmericaManaus,
-    #[serde(rename = "America/Marigot")]
     AmericaMarigot,
-    #[serde(rename = "America/Martinique")]
     AmericaMartinique,
-    #[serde(rename = "America/Matamoros")]
     AmericaMatamoros,
-    #[serde(rename = "America/Mazatlan")]
     AmericaMazatlan,
-    #[serde(rename = "America/Mendoza")]
     AmericaMendoza,
-    #[serde(rename = "America/Menominee")]
     AmericaMenominee,
-    #[serde(rename = "America/Merida")]
     AmericaMerida,
-    #[serde(rename = "America/Metlakatla")]
     AmericaMetlakatla,
-    #[serde(rename = "America/Mexico_City")]
     AmericaMexicoCity,
-    #[serde(rename = "America/Miquelon")]
     AmericaMiquelon,
-    #[serde(rename = "America/Moncton")]
     AmericaMoncton,
-    #[serde(rename = "America/Monterrey")]
     AmericaMonterrey,
-    #[serde(rename = "America/Montevideo")]
     AmericaMontevideo,
-    #[serde(rename = "America/Montreal")]
     AmericaMontreal,
-    #[serde(rename = "America/Montserrat")]
     AmericaMontserrat,
-    #[serde(rename = "America/Nassau")]
     AmericaNassau,
-    #[serde(rename = "America/New_York")]
     AmericaNewYork,
-    #[serde(rename = "America/Nipigon")]
     AmericaNipigon,
-    #[serde(rename = "America/Nome")]
     AmericaNome,
-    #[serde(rename = "America/Noronha")]
     AmericaNoronha,
-    #[serde(rename = "America/North_Dakota/Beulah")]
     AmericaNorthDakotaBeulah,
-    #[serde(rename = "America/North_Dakota/Center")]
     AmericaNorthDakotaCenter,
-    #[serde(rename = "America/North_Dakota/New_Salem")]
     AmericaNorthDakotaNewSalem,
-    #[serde(rename = "America/Nuuk")]
     AmericaNuuk,
-    #[serde(rename = "America/Ojinaga")]
     AmericaOjinaga,
-    #[serde(rename = "America/Panama")]
     AmericaPanama,
-    #[serde(rename = "America/Pangnirtung")]
     AmericaPangnirtung,
-    #[serde(rename = "America/Paramaribo")]
     AmericaParamaribo,
-    #[serde(rename = "America/Phoenix")]
     AmericaPhoenix,
-    #[serde(rename = "America/Port-au-Prince")]
     AmericaPortMinusauMinusPrince,
-    #[serde(rename = "America/Port_of_Spain")]
     AmericaPortOfSpain,
-    #[serde(rename = "America/Porto_Acre")]
     AmericaPortoAcre,
-    #[serde(rename = "America/Porto_Velho")]
     AmericaPortoVelho,
-    #[serde(rename = "America/Puerto_Rico")]
     AmericaPuertoRico,
-    #[serde(rename = "America/Punta_Arenas")]
     AmericaPuntaArenas,
-    #[serde(rename = "America/Rainy_River")]
     AmericaRainyRiver,
-    #[serde(rename = "America/Rankin_Inlet")]
     AmericaRankinInlet,
-    #[serde(rename = "America/Recife")]
     AmericaRecife,
-    #[serde(rename = "America/Regina")]
     AmericaRegina,
-    #[serde(rename = "America/Resolute")]
     AmericaResolute,
-    #[serde(rename = "America/Rio_Branco")]
     AmericaRioBranco,
-    #[serde(rename = "America/Rosario")]
     AmericaRosario,
-    #[serde(rename = "America/Santa_Isabel")]
     AmericaSantaIsabel,
-    #[serde(rename = "America/Santarem")]
     AmericaSantarem,
-    #[serde(rename = "America/Santiago")]
     AmericaSantiago,
-    #[serde(rename = "America/Santo_Domingo")]
     AmericaSantoDomingo,
-    #[serde(rename = "America/Sao_Paulo")]
     AmericaSaoPaulo,
-    #[serde(rename = "America/Scoresbysund")]
     AmericaScoresbysund,
-    #[serde(rename = "America/Shiprock")]
     AmericaShiprock,
-    #[serde(rename = "America/Sitka")]
     AmericaSitka,
-    #[serde(rename = "America/St_Barthelemy")]
     AmericaStBarthelemy,
-    #[serde(rename = "America/St_Johns")]
     AmericaStJohns,
-    #[serde(rename = "America/St_Kitts")]
     AmericaStKitts,
-    #[serde(rename = "America/St_Lucia")]
     AmericaStLucia,
-    #[serde(rename = "America/St_Thomas")]
     AmericaStThomas,
-    #[serde(rename = "America/St_Vincent")]
     AmericaStVincent,
-    #[serde(rename = "America/Swift_Current")]
     AmericaSwiftCurrent,
-    #[serde(rename = "America/Tegucigalpa")]
     AmericaTegucigalpa,
-    #[serde(rename = "America/Thule")]
     AmericaThule,
-    #[serde(rename = "America/Thunder_Bay")]
     AmericaThunderBay,
-    #[serde(rename = "America/Tijuana")]
     AmericaTijuana,
-    #[serde(rename = "America/Toronto")]
     AmericaToronto,
-    #[serde(rename = "America/Tortola")]
     AmericaTortola,
-    #[serde(rename = "America/Vancouver")]
     AmericaVancouver,
-    #[serde(rename = "America/Virgin")]
     AmericaVirgin,
-    #[serde(rename = "America/Whitehorse")]
     AmericaWhitehorse,
-    #[serde(rename = "America/Winnipeg")]
     AmericaWinnipeg,
-    #[serde(rename = "America/Yakutat")]
     AmericaYakutat,
-    #[serde(rename = "America/Yellowknife")]
     AmericaYellowknife,
-    #[serde(rename = "Antarctica/Casey")]
     AntarcticaCasey,
-    #[serde(rename = "Antarctica/Davis")]
     AntarcticaDavis,
-    #[serde(rename = "Antarctica/DumontDUrville")]
     AntarcticaDumontDUrville,
-    #[serde(rename = "Antarctica/Macquarie")]
     AntarcticaMacquarie,
-    #[serde(rename = "Antarctica/Mawson")]
     AntarcticaMawson,
-    #[serde(rename = "Antarctica/McMurdo")]
     AntarcticaMcMurdo,
-    #[serde(rename = "Antarctica/Palmer")]
     AntarcticaPalmer,
-    #[serde(rename = "Antarctica/Rothera")]
     AntarcticaRothera,
-    #[serde(rename = "Antarctica/South_Pole")]
     AntarcticaSouthPole,
-    #[serde(rename = "Antarctica/Syowa")]
     AntarcticaSyowa,
-    #[serde(rename = "Antarctica/Troll")]
     AntarcticaTroll,
-    #[serde(rename = "Antarctica/Vostok")]
     AntarcticaVostok,
-    #[serde(rename = "Arctic/Longyearbyen")]
     ArcticLongyearbyen,
-    #[serde(rename = "Asia/Aden")]
     AsiaAden,
-    #[serde(rename = "Asia/Almaty")]
     AsiaAlmaty,
-    #[serde(rename = "Asia/Amman")]
     AsiaAmman,
-    #[serde(rename = "Asia/Anadyr")]
     AsiaAnadyr,
-    #[serde(rename = "Asia/Aqtau")]
     AsiaAqtau,
-    #[serde(rename = "Asia/Aqtobe")]
     AsiaAqtobe,
-    #[serde(rename = "Asia/Ashgabat")]
     AsiaAshgabat,
-    #[serde(rename = "Asia/Ashkhabad")]
     AsiaAshkhabad,
-    #[serde(rename = "Asia/Atyrau")]
     AsiaAtyrau,
-    #[serde(rename = "Asia/Baghdad")]
     AsiaBaghdad,
-    #[serde(rename = "Asia/Bahrain")]
     AsiaBahrain,
-    #[serde(rename = "Asia/Baku")]
     AsiaBaku,
-    #[serde(rename = "Asia/Bangkok")]
     AsiaBangkok,
-    #[serde(rename = "Asia/Barnaul")]
     AsiaBarnaul,
-    #[serde(rename = "Asia/Beirut")]
     AsiaBeirut,
-    #[serde(rename = "Asia/Bishkek")]
     AsiaBishkek,
-    #[serde(rename = "Asia/Brunei")]
     AsiaBrunei,
-    #[serde(rename = "Asia/Calcutta")]
     AsiaCalcutta,
-    #[serde(rename = "Asia/Chita")]
     AsiaChita,
-    #[serde(rename = "Asia/Choibalsan")]
     AsiaChoibalsan,
-    #[serde(rename = "Asia/Chongqing")]
     AsiaChongqing,
-    #[serde(rename = "Asia/Chungking")]
     AsiaChungking,
-    #[serde(rename = "Asia/Colombo")]
     AsiaColombo,
-    #[serde(rename = "Asia/Dacca")]
     AsiaDacca,
-    #[serde(rename = "Asia/Damascus")]
     AsiaDamascus,
-    #[serde(rename = "Asia/Dhaka")]
     AsiaDhaka,
-    #[serde(rename = "Asia/Dili")]
     AsiaDili,
-    #[serde(rename = "Asia/Dubai")]
     AsiaDubai,
-    #[serde(rename = "Asia/Dushanbe")]
     AsiaDushanbe,
-    #[serde(rename = "Asia/Famagusta")]
     AsiaFamagusta,
-    #[serde(rename = "Asia/Gaza")]
     AsiaGaza,
-    #[serde(rename = "Asia/Harbin")]
     AsiaHarbin,
-    #[serde(rename = "Asia/Hebron")]
     AsiaHebron,
-    #[serde(rename = "Asia/Ho_Chi_Minh")]
     AsiaHoChiMinh,
-    #[serde(rename = "Asia/Hong_Kong")]
     AsiaHongKong,
-    #[serde(rename = "Asia/Hovd")]
     AsiaHovd,
-    #[serde(rename = "Asia/Irkutsk")]
     AsiaIrkutsk,
-    #[serde(rename = "Asia/Istanbul")]
     AsiaIstanbul,
-    #[serde(rename = "Asia/Jakarta")]
     AsiaJakarta,
-    #[serde(rename = "Asia/Jayapura")]
     AsiaJayapura,
-    #[serde(rename = "Asia/Jerusalem")]
     AsiaJerusalem,
-    #[serde(rename = "Asia/Kabul")]
     AsiaKabul,
-    #[serde(rename = "Asia/Kamchatka")]
     AsiaKamchatka,
-    #[serde(rename = "Asia/Karachi")]
     AsiaKarachi,
-    #[serde(rename = "Asia/Kashgar")]
     AsiaKashgar,
-    #[serde(rename = "Asia/Kathmandu")]
     AsiaKathmandu,
-    #[serde(rename = "Asia/Katmandu")]
     AsiaKatmandu,
-    #[serde(rename = "Asia/Khandyga")]
     AsiaKhandyga,
-    #[serde(rename = "Asia/Kolkata")]
     AsiaKolkata,
-    #[serde(rename = "Asia/Krasnoyarsk")]
     AsiaKrasnoyarsk,
-    #[serde(rename = "Asia/Kuala_Lumpur")]
     AsiaKualaLumpur,
-    #[serde(rename = "Asia/Kuching")]
     AsiaKuching,
-    #[serde(rename = "Asia/Kuwait")]
     AsiaKuwait,
-    #[serde(rename = "Asia/Macao")]
     AsiaMacao,
-    #[serde(rename = "Asia/Macau")]
     AsiaMacau,
-    #[serde(rename = "Asia/Magadan")]
     AsiaMagadan,
-    #[serde(rename = "Asia/Makassar")]
     AsiaMakassar,
-    #[serde(rename = "Asia/Manila")]
     AsiaManila,
-    #[serde(rename = "Asia/Muscat")]
     AsiaMuscat,
-    #[serde(rename = "Asia/Nicosia")]
     AsiaNicosia,
-    #[serde(rename = "Asia/Novokuznetsk")]
     AsiaNovokuznetsk,
-    #[serde(rename = "Asia/Novosibirsk")]
     AsiaNovosibirsk,
-    #[serde(rename = "Asia/Omsk")]
     AsiaOmsk,
-    #[serde(rename = "Asia/Oral")]
     AsiaOral,
-    #[serde(rename = "Asia/Phnom_Penh")]
     AsiaPhnomPenh,
-    #[serde(rename = "Asia/Pontianak")]
     AsiaPontianak,
-    #[serde(rename = "Asia/Pyongyang")]
     AsiaPyongyang,
-    #[serde(rename = "Asia/Qatar")]
     AsiaQatar,
-    #[serde(rename = "Asia/Qostanay")]
     AsiaQostanay,
-    #[serde(rename = "Asia/Qyzylorda")]
     AsiaQyzylorda,
-    #[serde(rename = "Asia/Rangoon")]
     AsiaRangoon,
-    #[serde(rename = "Asia/Riyadh")]
     AsiaRiyadh,
-    #[serde(rename = "Asia/Saigon")]
     AsiaSaigon,
-    #[serde(rename = "Asia/Sakhalin")]
     AsiaSakhalin,
-    #[serde(rename = "Asia/Samarkand")]
     AsiaSamarkand,
-    #[serde(rename = "Asia/Seoul")]
     AsiaSeoul,
-    #[serde(rename = "Asia/Shanghai")]
     AsiaShanghai,
-    #[serde(rename = "Asia/Singapore")]
     AsiaSingapore,
-    #[serde(rename = "Asia/Srednekolymsk")]
     AsiaSrednekolymsk,
-    #[serde(rename = "Asia/Taipei")]
     AsiaTaipei,
-    #[serde(rename = "Asia/Tashkent")]
     AsiaTashkent,
-    #[serde(rename = "Asia/Tbilisi")]
     AsiaTbilisi,
-    #[serde(rename = "Asia/Tehran")]
     AsiaTehran,
-    #[serde(rename = "Asia/Tel_Aviv")]
     AsiaTelAviv,
-    #[serde(rename = "Asia/Thimbu")]
     AsiaThimbu,
-    #[serde(rename = "Asia/Thimphu")]
     AsiaThimphu,
-    #[serde(rename = "Asia/Tokyo")]
     AsiaTokyo,
-    #[serde(rename = "Asia/Tomsk")]
     AsiaTomsk,
-    #[serde(rename = "Asia/Ujung_Pandang")]
     AsiaUjungPandang,
-    #[serde(rename = "Asia/Ulaanbaatar")]
     AsiaUlaanbaatar,
-    #[serde(rename = "Asia/Ulan_Bator")]
     AsiaUlanBator,
-    #[serde(rename = "Asia/Urumqi")]
     AsiaUrumqi,
-    #[serde(rename = "Asia/Ust-Nera")]
     AsiaUstMinusNera,
-    #[serde(rename = "Asia/Vientiane")]
     AsiaVientiane,
-    #[serde(rename = "Asia/Vladivostok")]
     AsiaVladivostok,
-    #[serde(rename = "Asia/Yakutsk")]
     AsiaYakutsk,
-    #[serde(rename = "Asia/Yangon")]
     AsiaYangon,
-    #[serde(rename = "Asia/Yekaterinburg")]
     AsiaYekaterinburg,
-    #[serde(rename = "Asia/Yerevan")]
     AsiaYerevan,
-    #[serde(rename = "Atlantic/Azores")]
     AtlanticAzores,
-    #[serde(rename = "Atlantic/Bermuda")]
     AtlanticBermuda,
-    #[serde(rename = "Atlantic/Canary")]
     AtlanticCanary,
-    #[serde(rename = "Atlantic/Cape_Verde")]
     AtlanticCapeVerde,
-    #[serde(rename = "Atlantic/Faeroe")]
     AtlanticFaeroe,
-    #[serde(rename = "Atlantic/Faroe")]
     AtlanticFaroe,
-    #[serde(rename = "Atlantic/Jan_Mayen")]
     AtlanticJanMayen,
-    #[serde(rename = "Atlantic/Madeira")]
     AtlanticMadeira,
-    #[serde(rename = "Atlantic/Reykjavik")]
     AtlanticReykjavik,
-    #[serde(rename = "Atlantic/South_Georgia")]
     AtlanticSouthGeorgia,
-    #[serde(rename = "Atlantic/St_Helena")]
     AtlanticStHelena,
-    #[serde(rename = "Atlantic/Stanley")]
     AtlanticStanley,
-    #[serde(rename = "Australia/ACT")]
     AustraliaAct,
-    #[serde(rename = "Australia/Adelaide")]
     AustraliaAdelaide,
-    #[serde(rename = "Australia/Brisbane")]
     AustraliaBrisbane,
-    #[serde(rename = "Australia/Broken_Hill")]
     AustraliaBrokenHill,
-    #[serde(rename = "Australia/Canberra")]
     AustraliaCanberra,
-    #[serde(rename = "Australia/Currie")]
     AustraliaCurrie,
-    #[serde(rename = "Australia/Darwin")]
     AustraliaDarwin,
-    #[serde(rename = "Australia/Eucla")]
     AustraliaEucla,
-    #[serde(rename = "Australia/Hobart")]
     AustraliaHobart,
-    #[serde(rename = "Australia/LHI")]
     AustraliaLhi,
-    #[serde(rename = "Australia/Lindeman")]
     AustraliaLindeman,
-    #[serde(rename = "Australia/Lord_Howe")]
     AustraliaLordHowe,
-    #[serde(rename = "Australia/Melbourne")]
     AustraliaMelbourne,
-    #[serde(rename = "Australia/NSW")]
     AustraliaNsw,
-    #[serde(rename = "Australia/North")]
     AustraliaNorth,
-    #[serde(rename = "Australia/Perth")]
     AustraliaPerth,
-    #[serde(rename = "Australia/Queensland")]
     AustraliaQueensland,
-    #[serde(rename = "Australia/South")]
     AustraliaSouth,
-    #[serde(rename = "Australia/Sydney")]
     AustraliaSydney,
-    #[serde(rename = "Australia/Tasmania")]
     AustraliaTasmania,
-    #[serde(rename = "Australia/Victoria")]
     AustraliaVictoria,
-    #[serde(rename = "Australia/West")]
     AustraliaWest,
-    #[serde(rename = "Australia/Yancowinna")]
     AustraliaYancowinna,
-    #[serde(rename = "Brazil/Acre")]
     BrazilAcre,
-    #[serde(rename = "Brazil/DeNoronha")]
     BrazilDeNoronha,
-    #[serde(rename = "Brazil/East")]
     BrazilEast,
-    #[serde(rename = "Brazil/West")]
     BrazilWest,
-    #[serde(rename = "CET")]
     Cet,
-    #[serde(rename = "CST6CDT")]
     Cst6cdt,
-    #[serde(rename = "Canada/Atlantic")]
     CanadaAtlantic,
-    #[serde(rename = "Canada/Central")]
     CanadaCentral,
-    #[serde(rename = "Canada/Eastern")]
     CanadaEastern,
-    #[serde(rename = "Canada/Mountain")]
     CanadaMountain,
-    #[serde(rename = "Canada/Newfoundland")]
     CanadaNewfoundland,
-    #[serde(rename = "Canada/Pacific")]
     CanadaPacific,
-    #[serde(rename = "Canada/Saskatchewan")]
     CanadaSaskatchewan,
-    #[serde(rename = "Canada/Yukon")]
     CanadaYukon,
-    #[serde(rename = "Chile/Continental")]
     ChileContinental,
-    #[serde(rename = "Chile/EasterIsland")]
     ChileEasterIsland,
-    #[serde(rename = "Cuba")]
     Cuba,
-    #[serde(rename = "EET")]
     Eet,
-    #[serde(rename = "EST")]
     Est,
-    #[serde(rename = "EST5EDT")]
     Est5edt,
-    #[serde(rename = "Egypt")]
     Egypt,
-    #[serde(rename = "Eire")]
     Eire,
-    #[serde(rename = "Etc/GMT")]
     EtcGmt,
-    #[serde(rename = "Etc/GMT+0")]
     EtcGmtPlus0,
-    #[serde(rename = "Etc/GMT+1")]
     EtcGmtPlus1,
-    #[serde(rename = "Etc/GMT+10")]
     EtcGmtPlus10,
-    #[serde(rename = "Etc/GMT+11")]
     EtcGmtPlus11,
-    #[serde(rename = "Etc/GMT+12")]
     EtcGmtPlus12,
-    #[serde(rename = "Etc/GMT+2")]
     EtcGmtPlus2,
-    #[serde(rename = "Etc/GMT+3")]
     EtcGmtPlus3,
-    #[serde(rename = "Etc/GMT+4")]
     EtcGmtPlus4,
-    #[serde(rename = "Etc/GMT+5")]
     EtcGmtPlus5,
-    #[serde(rename = "Etc/GMT+6")]
     EtcGmtPlus6,
-    #[serde(rename = "Etc/GMT+7")]
     EtcGmtPlus7,
-    #[serde(rename = "Etc/GMT+8")]
     EtcGmtPlus8,
-    #[serde(rename = "Etc/GMT+9")]
     EtcGmtPlus9,
-    #[serde(rename = "Etc/GMT-0")]
     EtcGmtMinus0,
-    #[serde(rename = "Etc/GMT-1")]
     EtcGmtMinus1,
-    #[serde(rename = "Etc/GMT-10")]
     EtcGmtMinus10,
-    #[serde(rename = "Etc/GMT-11")]
     EtcGmtMinus11,
-    #[serde(rename = "Etc/GMT-12")]
     EtcGmtMinus12,
-    #[serde(rename = "Etc/GMT-13")]
     EtcGmtMinus13,
-    #[serde(rename = "Etc/GMT-14")]
     EtcGmtMinus14,
-    #[serde(rename = "Etc/GMT-2")]
     EtcGmtMinus2,
-    #[serde(rename = "Etc/GMT-3")]
     EtcGmtMinus3,
-    #[serde(rename = "Etc/GMT-4")]
     EtcGmtMinus4,
-    #[serde(rename = "Etc/GMT-5")]
     EtcGmtMinus5,
-    #[serde(rename = "Etc/GMT-6")]
     EtcGmtMinus6,
-    #[serde(rename = "Etc/GMT-7")]
     EtcGmtMinus7,
-    #[serde(rename = "Etc/GMT-8")]
     EtcGmtMinus8,
-    #[serde(rename = "Etc/GMT-9")]
     EtcGmtMinus9,
-    #[serde(rename = "Etc/GMT0")]
     EtcGmt0,
-    #[serde(rename = "Etc/Greenwich")]
     EtcGreenwich,
-    #[serde(rename = "Etc/UCT")]
     EtcUct,
-    #[serde(rename = "Etc/UTC")]
     EtcUtc,
-    #[serde(rename = "Etc/Universal")]
     EtcUniversal,
-    #[serde(rename = "Etc/Zulu")]
     EtcZulu,
-    #[serde(rename = "Europe/Amsterdam")]
     EuropeAmsterdam,
-    #[serde(rename = "Europe/Andorra")]
     EuropeAndorra,
-    #[serde(rename = "Europe/Astrakhan")]
     EuropeAstrakhan,
-    #[serde(rename = "Europe/Athens")]
     EuropeAthens,
-    #[serde(rename = "Europe/Belfast")]
     EuropeBelfast,
-    #[serde(rename = "Europe/Belgrade")]
     EuropeBelgrade,
-    #[serde(rename = "Europe/Berlin")]
     EuropeBerlin,
-    #[serde(rename = "Europe/Bratislava")]
     EuropeBratislava,
-    #[serde(rename = "Europe/Brussels")]
     EuropeBrussels,
-    #[serde(rename = "Europe/Bucharest")]
     EuropeBucharest,
-    #[serde(rename = "Europe/Budapest")]
     EuropeBudapest,
-    #[serde(rename = "Europe/Busingen")]
     EuropeBusingen,
-    #[serde(rename = "Europe/Chisinau")]
     EuropeChisinau,
-    #[serde(rename = "Europe/Copenhagen")]
     EuropeCopenhagen,
-    #[serde(rename = "Europe/Dublin")]
     EuropeDublin,
-    #[serde(rename = "Europe/Gibraltar")]
     EuropeGibraltar,
-    #[serde(rename = "Europe/Guernsey")]
     EuropeGuernsey,
-    #[serde(rename = "Europe/Helsinki")]
     EuropeHelsinki,
-    #[serde(rename = "Europe/Isle_of_Man")]
     EuropeIsleOfMan,
-    #[serde(rename = "Europe/Istanbul")]
     EuropeIstanbul,
-    #[serde(rename = "Europe/Jersey")]
     EuropeJersey,
-    #[serde(rename = "Europe/Kaliningrad")]
     EuropeKaliningrad,
-    #[serde(rename = "Europe/Kiev")]
     EuropeKiev,
-    #[serde(rename = "Europe/Kirov")]
     EuropeKirov,
-    #[serde(rename = "Europe/Kyiv")]
     EuropeKyiv,
-    #[serde(rename = "Europe/Lisbon")]
     EuropeLisbon,
-    #[serde(rename = "Europe/Ljubljana")]
     EuropeLjubljana,
-    #[serde(rename = "Europe/London")]
     EuropeLondon,
-    #[serde(rename = "Europe/Luxembourg")]
     EuropeLuxembourg,
-    #[serde(rename = "Europe/Madrid")]
     EuropeMadrid,
-    #[serde(rename = "Europe/Malta")]
     EuropeMalta,
-    #[serde(rename = "Europe/Mariehamn")]
     EuropeMariehamn,
-    #[serde(rename = "Europe/Minsk")]
     EuropeMinsk,
-    #[serde(rename = "Europe/Monaco")]
     EuropeMonaco,
-    #[serde(rename = "Europe/Moscow")]
     EuropeMoscow,
-    #[serde(rename = "Europe/Nicosia")]
     EuropeNicosia,
-    #[serde(rename = "Europe/Oslo")]
     EuropeOslo,
-    #[serde(rename = "Europe/Paris")]
     EuropeParis,
-    #[serde(rename = "Europe/Podgorica")]
     EuropePodgorica,
-    #[serde(rename = "Europe/Prague")]
     EuropePrague,
-    #[serde(rename = "Europe/Riga")]
     EuropeRiga,
-    #[serde(rename = "Europe/Rome")]
     EuropeRome,
-    #[serde(rename = "Europe/Samara")]
     EuropeSamara,
-    #[serde(rename = "Europe/San_Marino")]
     EuropeSanMarino,
-    #[serde(rename = "Europe/Sarajevo")]
     EuropeSarajevo,
-    #[serde(rename = "Europe/Saratov")]
     EuropeSaratov,
-    #[serde(rename = "Europe/Simferopol")]
     EuropeSimferopol,
-    #[serde(rename = "Europe/Skopje")]
     EuropeSkopje,
-    #[serde(rename = "Europe/Sofia")]
     EuropeSofia,
-    #[serde(rename = "Europe/Stockholm")]
     EuropeStockholm,
-    #[serde(rename = "Europe/Tallinn")]
     EuropeTallinn,
-    #[serde(rename = "Europe/Tirane")]
     EuropeTirane,
-    #[serde(rename = "Europe/Tiraspol")]
     EuropeTiraspol,
-    #[serde(rename = "Europe/Ulyanovsk")]
     EuropeUlyanovsk,
-    #[serde(rename = "Europe/Uzhgorod")]
     EuropeUzhgorod,
-    #[serde(rename = "Europe/Vaduz")]
     EuropeVaduz,
-    #[serde(rename = "Europe/Vatican")]
     EuropeVatican,
-    #[serde(rename = "Europe/Vienna")]
     EuropeVienna,
-    #[serde(rename = "Europe/Vilnius")]
     EuropeVilnius,
-    #[serde(rename = "Europe/Volgograd")]
     EuropeVolgograd,
-    #[serde(rename = "Europe/Warsaw")]
     EuropeWarsaw,
-    #[serde(rename = "Europe/Zagreb")]
     EuropeZagreb,
-    #[serde(rename = "Europe/Zaporozhye")]
     EuropeZaporozhye,
-    #[serde(rename = "Europe/Zurich")]
     EuropeZurich,
-    #[serde(rename = "Factory")]
     Factory,
-    #[serde(rename = "GB")]
     Gb,
-    #[serde(rename = "GB-Eire")]
     GbMinusEire,
-    #[serde(rename = "GMT")]
     Gmt,
-    #[serde(rename = "GMT+0")]
     GmtPlus0,
-    #[serde(rename = "GMT-0")]
     GmtMinus0,
-    #[serde(rename = "GMT0")]
     Gmt0,
-    #[serde(rename = "Greenwich")]
     Greenwich,
-    #[serde(rename = "HST")]
     Hst,
-    #[serde(rename = "Hongkong")]
     Hongkong,
-    #[serde(rename = "Iceland")]
     Iceland,
-    #[serde(rename = "Indian/Antananarivo")]
     IndianAntananarivo,
-    #[serde(rename = "Indian/Chagos")]
     IndianChagos,
-    #[serde(rename = "Indian/Christmas")]
     IndianChristmas,
-    #[serde(rename = "Indian/Cocos")]
     IndianCocos,
-    #[serde(rename = "Indian/Comoro")]
     IndianComoro,
-    #[serde(rename = "Indian/Kerguelen")]
     IndianKerguelen,
-    #[serde(rename = "Indian/Mahe")]
     IndianMahe,
-    #[serde(rename = "Indian/Maldives")]
     IndianMaldives,
-    #[serde(rename = "Indian/Mauritius")]
     IndianMauritius,
-    #[serde(rename = "Indian/Mayotte")]
     IndianMayotte,
-    #[serde(rename = "Indian/Reunion")]
     IndianReunion,
-    #[serde(rename = "Iran")]
     Iran,
-    #[serde(rename = "Israel")]
     Israel,
-    #[serde(rename = "Jamaica")]
     Jamaica,
-    #[serde(rename = "Japan")]
     Japan,
-    #[serde(rename = "Kwajalein")]
     Kwajalein,
-    #[serde(rename = "Libya")]
     Libya,
-    #[serde(rename = "MET")]
     Met,
-    #[serde(rename = "MST")]
     Mst,
-    #[serde(rename = "MST7MDT")]
     Mst7mdt,
-    #[serde(rename = "Mexico/BajaNorte")]
     MexicoBajaNorte,
-    #[serde(rename = "Mexico/BajaSur")]
     MexicoBajaSur,
-    #[serde(rename = "Mexico/General")]
     MexicoGeneral,
-    #[serde(rename = "NZ")]
     Nz,
-    #[serde(rename = "NZ-CHAT")]
     NzMinusChat,
-    #[serde(rename = "Navajo")]
     Navajo,
-    #[serde(rename = "PRC")]
     Prc,
-    #[serde(rename = "PST8PDT")]
     Pst8pdt,
-    #[serde(rename = "Pacific/Apia")]
     PacificApia,
-    #[serde(rename = "Pacific/Auckland")]
     PacificAuckland,
-    #[serde(rename = "Pacific/Bougainville")]
     PacificBougainville,
-    #[serde(rename = "Pacific/Chatham")]
     PacificChatham,
-    #[serde(rename = "Pacific/Chuuk")]
     PacificChuuk,
-    #[serde(rename = "Pacific/Easter")]
     PacificEaster,
-    #[serde(rename = "Pacific/Efate")]
     PacificEfate,
-    #[serde(rename = "Pacific/Enderbury")]
     PacificEnderbury,
-    #[serde(rename = "Pacific/Fakaofo")]
     PacificFakaofo,
-    #[serde(rename = "Pacific/Fiji")]
     PacificFiji,
-    #[serde(rename = "Pacific/Funafuti")]
     PacificFunafuti,
-    #[serde(rename = "Pacific/Galapagos")]
     PacificGalapagos,
-    #[serde(rename = "Pacific/Gambier")]
     PacificGambier,
-    #[serde(rename = "Pacific/Guadalcanal")]
     PacificGuadalcanal,
-    #[serde(rename = "Pacific/Guam")]
     PacificGuam,
-    #[serde(rename = "Pacific/Honolulu")]
     PacificHonolulu,
-    #[serde(rename = "Pacific/Johnston")]
     PacificJohnston,
-    #[serde(rename = "Pacific/Kanton")]
     PacificKanton,
-    #[serde(rename = "Pacific/Kiritimati")]
     PacificKiritimati,
-    #[serde(rename = "Pacific/Kosrae")]
     PacificKosrae,
-    #[serde(rename = "Pacific/Kwajalein")]
     PacificKwajalein,
-    #[serde(rename = "Pacific/Majuro")]
     PacificMajuro,
-    #[serde(rename = "Pacific/Marquesas")]
     PacificMarquesas,
-    #[serde(rename = "Pacific/Midway")]
     PacificMidway,
-    #[serde(rename = "Pacific/Nauru")]
     PacificNauru,
-    #[serde(rename = "Pacific/Niue")]
     PacificNiue,
-    #[serde(rename = "Pacific/Norfolk")]
     PacificNorfolk,
-    #[serde(rename = "Pacific/Noumea")]
     PacificNoumea,
-    #[serde(rename = "Pacific/Pago_Pago")]
     PacificPagoPago,
-    #[serde(rename = "Pacific/Palau")]
     PacificPalau,
-    #[serde(rename = "Pacific/Pitcairn")]
     PacificPitcairn,
-    #[serde(rename = "Pacific/Pohnpei")]
     PacificPohnpei,
-    #[serde(rename = "Pacific/Ponape")]
     PacificPonape,
-    #[serde(rename = "Pacific/Port_Moresby")]
     PacificPortMoresby,
-    #[serde(rename = "Pacific/Rarotonga")]
     PacificRarotonga,
-    #[serde(rename = "Pacific/Saipan")]
     PacificSaipan,
-    #[serde(rename = "Pacific/Samoa")]
     PacificSamoa,
-    #[serde(rename = "Pacific/Tahiti")]
     PacificTahiti,
-    #[serde(rename = "Pacific/Tarawa")]
     PacificTarawa,
-    #[serde(rename = "Pacific/Tongatapu")]
     PacificTongatapu,
-    #[serde(rename = "Pacific/Truk")]
     PacificTruk,
-    #[serde(rename = "Pacific/Wake")]
     PacificWake,
-    #[serde(rename = "Pacific/Wallis")]
     PacificWallis,
-    #[serde(rename = "Pacific/Yap")]
     PacificYap,
-    #[serde(rename = "Poland")]
     Poland,
-    #[serde(rename = "Portugal")]
     Portugal,
-    #[serde(rename = "ROC")]
     Roc,
-    #[serde(rename = "ROK")]
     Rok,
-    #[serde(rename = "Singapore")]
     Singapore,
-    #[serde(rename = "Turkey")]
     Turkey,
-    #[serde(rename = "UCT")]
     Uct,
-    #[serde(rename = "US/Alaska")]
     UsAlaska,
-    #[serde(rename = "US/Aleutian")]
     UsAleutian,
-    #[serde(rename = "US/Arizona")]
     UsArizona,
-    #[serde(rename = "US/Central")]
     UsCentral,
-    #[serde(rename = "US/East-Indiana")]
     UsEastMinusIndiana,
-    #[serde(rename = "US/Eastern")]
     UsEastern,
-    #[serde(rename = "US/Hawaii")]
     UsHawaii,
-    #[serde(rename = "US/Indiana-Starke")]
     UsIndianaMinusStarke,
-    #[serde(rename = "US/Michigan")]
     UsMichigan,
-    #[serde(rename = "US/Mountain")]
     UsMountain,
-    #[serde(rename = "US/Pacific")]
     UsPacific,
-    #[serde(rename = "US/Pacific-New")]
     UsPacificMinusNew,
-    #[serde(rename = "US/Samoa")]
     UsSamoa,
-    #[serde(rename = "UTC")]
     Utc,
-    #[serde(rename = "Universal")]
     Universal,
-    #[serde(rename = "W-SU")]
     WMinusSu,
-    #[serde(rename = "WET")]
     Wet,
-    #[serde(rename = "Zulu")]
     Zulu,
 }
 
@@ -1999,6 +1452,613 @@ impl CreateReportRunParametersTimezone {
     }
 }
 
+impl std::str::FromStr for CreateReportRunParametersTimezone {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Africa/Abidjan" => Ok(Self::AfricaAbidjan),
+            "Africa/Accra" => Ok(Self::AfricaAccra),
+            "Africa/Addis_Ababa" => Ok(Self::AfricaAddisAbaba),
+            "Africa/Algiers" => Ok(Self::AfricaAlgiers),
+            "Africa/Asmara" => Ok(Self::AfricaAsmara),
+            "Africa/Asmera" => Ok(Self::AfricaAsmera),
+            "Africa/Bamako" => Ok(Self::AfricaBamako),
+            "Africa/Bangui" => Ok(Self::AfricaBangui),
+            "Africa/Banjul" => Ok(Self::AfricaBanjul),
+            "Africa/Bissau" => Ok(Self::AfricaBissau),
+            "Africa/Blantyre" => Ok(Self::AfricaBlantyre),
+            "Africa/Brazzaville" => Ok(Self::AfricaBrazzaville),
+            "Africa/Bujumbura" => Ok(Self::AfricaBujumbura),
+            "Africa/Cairo" => Ok(Self::AfricaCairo),
+            "Africa/Casablanca" => Ok(Self::AfricaCasablanca),
+            "Africa/Ceuta" => Ok(Self::AfricaCeuta),
+            "Africa/Conakry" => Ok(Self::AfricaConakry),
+            "Africa/Dakar" => Ok(Self::AfricaDakar),
+            "Africa/Dar_es_Salaam" => Ok(Self::AfricaDarEsSalaam),
+            "Africa/Djibouti" => Ok(Self::AfricaDjibouti),
+            "Africa/Douala" => Ok(Self::AfricaDouala),
+            "Africa/El_Aaiun" => Ok(Self::AfricaElAaiun),
+            "Africa/Freetown" => Ok(Self::AfricaFreetown),
+            "Africa/Gaborone" => Ok(Self::AfricaGaborone),
+            "Africa/Harare" => Ok(Self::AfricaHarare),
+            "Africa/Johannesburg" => Ok(Self::AfricaJohannesburg),
+            "Africa/Juba" => Ok(Self::AfricaJuba),
+            "Africa/Kampala" => Ok(Self::AfricaKampala),
+            "Africa/Khartoum" => Ok(Self::AfricaKhartoum),
+            "Africa/Kigali" => Ok(Self::AfricaKigali),
+            "Africa/Kinshasa" => Ok(Self::AfricaKinshasa),
+            "Africa/Lagos" => Ok(Self::AfricaLagos),
+            "Africa/Libreville" => Ok(Self::AfricaLibreville),
+            "Africa/Lome" => Ok(Self::AfricaLome),
+            "Africa/Luanda" => Ok(Self::AfricaLuanda),
+            "Africa/Lubumbashi" => Ok(Self::AfricaLubumbashi),
+            "Africa/Lusaka" => Ok(Self::AfricaLusaka),
+            "Africa/Malabo" => Ok(Self::AfricaMalabo),
+            "Africa/Maputo" => Ok(Self::AfricaMaputo),
+            "Africa/Maseru" => Ok(Self::AfricaMaseru),
+            "Africa/Mbabane" => Ok(Self::AfricaMbabane),
+            "Africa/Mogadishu" => Ok(Self::AfricaMogadishu),
+            "Africa/Monrovia" => Ok(Self::AfricaMonrovia),
+            "Africa/Nairobi" => Ok(Self::AfricaNairobi),
+            "Africa/Ndjamena" => Ok(Self::AfricaNdjamena),
+            "Africa/Niamey" => Ok(Self::AfricaNiamey),
+            "Africa/Nouakchott" => Ok(Self::AfricaNouakchott),
+            "Africa/Ouagadougou" => Ok(Self::AfricaOuagadougou),
+            "Africa/Porto-Novo" => Ok(Self::AfricaPortoMinusNovo),
+            "Africa/Sao_Tome" => Ok(Self::AfricaSaoTome),
+            "Africa/Timbuktu" => Ok(Self::AfricaTimbuktu),
+            "Africa/Tripoli" => Ok(Self::AfricaTripoli),
+            "Africa/Tunis" => Ok(Self::AfricaTunis),
+            "Africa/Windhoek" => Ok(Self::AfricaWindhoek),
+            "America/Adak" => Ok(Self::AmericaAdak),
+            "America/Anchorage" => Ok(Self::AmericaAnchorage),
+            "America/Anguilla" => Ok(Self::AmericaAnguilla),
+            "America/Antigua" => Ok(Self::AmericaAntigua),
+            "America/Araguaina" => Ok(Self::AmericaAraguaina),
+            "America/Argentina/Buenos_Aires" => Ok(Self::AmericaArgentinaBuenosAires),
+            "America/Argentina/Catamarca" => Ok(Self::AmericaArgentinaCatamarca),
+            "America/Argentina/ComodRivadavia" => Ok(Self::AmericaArgentinaComodRivadavia),
+            "America/Argentina/Cordoba" => Ok(Self::AmericaArgentinaCordoba),
+            "America/Argentina/Jujuy" => Ok(Self::AmericaArgentinaJujuy),
+            "America/Argentina/La_Rioja" => Ok(Self::AmericaArgentinaLaRioja),
+            "America/Argentina/Mendoza" => Ok(Self::AmericaArgentinaMendoza),
+            "America/Argentina/Rio_Gallegos" => Ok(Self::AmericaArgentinaRioGallegos),
+            "America/Argentina/Salta" => Ok(Self::AmericaArgentinaSalta),
+            "America/Argentina/San_Juan" => Ok(Self::AmericaArgentinaSanJuan),
+            "America/Argentina/San_Luis" => Ok(Self::AmericaArgentinaSanLuis),
+            "America/Argentina/Tucuman" => Ok(Self::AmericaArgentinaTucuman),
+            "America/Argentina/Ushuaia" => Ok(Self::AmericaArgentinaUshuaia),
+            "America/Aruba" => Ok(Self::AmericaAruba),
+            "America/Asuncion" => Ok(Self::AmericaAsuncion),
+            "America/Atikokan" => Ok(Self::AmericaAtikokan),
+            "America/Atka" => Ok(Self::AmericaAtka),
+            "America/Bahia" => Ok(Self::AmericaBahia),
+            "America/Bahia_Banderas" => Ok(Self::AmericaBahiaBanderas),
+            "America/Barbados" => Ok(Self::AmericaBarbados),
+            "America/Belem" => Ok(Self::AmericaBelem),
+            "America/Belize" => Ok(Self::AmericaBelize),
+            "America/Blanc-Sablon" => Ok(Self::AmericaBlancMinusSablon),
+            "America/Boa_Vista" => Ok(Self::AmericaBoaVista),
+            "America/Bogota" => Ok(Self::AmericaBogota),
+            "America/Boise" => Ok(Self::AmericaBoise),
+            "America/Buenos_Aires" => Ok(Self::AmericaBuenosAires),
+            "America/Cambridge_Bay" => Ok(Self::AmericaCambridgeBay),
+            "America/Campo_Grande" => Ok(Self::AmericaCampoGrande),
+            "America/Cancun" => Ok(Self::AmericaCancun),
+            "America/Caracas" => Ok(Self::AmericaCaracas),
+            "America/Catamarca" => Ok(Self::AmericaCatamarca),
+            "America/Cayenne" => Ok(Self::AmericaCayenne),
+            "America/Cayman" => Ok(Self::AmericaCayman),
+            "America/Chicago" => Ok(Self::AmericaChicago),
+            "America/Chihuahua" => Ok(Self::AmericaChihuahua),
+            "America/Coral_Harbour" => Ok(Self::AmericaCoralHarbour),
+            "America/Cordoba" => Ok(Self::AmericaCordoba),
+            "America/Costa_Rica" => Ok(Self::AmericaCostaRica),
+            "America/Creston" => Ok(Self::AmericaCreston),
+            "America/Cuiaba" => Ok(Self::AmericaCuiaba),
+            "America/Curacao" => Ok(Self::AmericaCuracao),
+            "America/Danmarkshavn" => Ok(Self::AmericaDanmarkshavn),
+            "America/Dawson" => Ok(Self::AmericaDawson),
+            "America/Dawson_Creek" => Ok(Self::AmericaDawsonCreek),
+            "America/Denver" => Ok(Self::AmericaDenver),
+            "America/Detroit" => Ok(Self::AmericaDetroit),
+            "America/Dominica" => Ok(Self::AmericaDominica),
+            "America/Edmonton" => Ok(Self::AmericaEdmonton),
+            "America/Eirunepe" => Ok(Self::AmericaEirunepe),
+            "America/El_Salvador" => Ok(Self::AmericaElSalvador),
+            "America/Ensenada" => Ok(Self::AmericaEnsenada),
+            "America/Fort_Nelson" => Ok(Self::AmericaFortNelson),
+            "America/Fort_Wayne" => Ok(Self::AmericaFortWayne),
+            "America/Fortaleza" => Ok(Self::AmericaFortaleza),
+            "America/Glace_Bay" => Ok(Self::AmericaGlaceBay),
+            "America/Godthab" => Ok(Self::AmericaGodthab),
+            "America/Goose_Bay" => Ok(Self::AmericaGooseBay),
+            "America/Grand_Turk" => Ok(Self::AmericaGrandTurk),
+            "America/Grenada" => Ok(Self::AmericaGrenada),
+            "America/Guadeloupe" => Ok(Self::AmericaGuadeloupe),
+            "America/Guatemala" => Ok(Self::AmericaGuatemala),
+            "America/Guayaquil" => Ok(Self::AmericaGuayaquil),
+            "America/Guyana" => Ok(Self::AmericaGuyana),
+            "America/Halifax" => Ok(Self::AmericaHalifax),
+            "America/Havana" => Ok(Self::AmericaHavana),
+            "America/Hermosillo" => Ok(Self::AmericaHermosillo),
+            "America/Indiana/Indianapolis" => Ok(Self::AmericaIndianaIndianapolis),
+            "America/Indiana/Knox" => Ok(Self::AmericaIndianaKnox),
+            "America/Indiana/Marengo" => Ok(Self::AmericaIndianaMarengo),
+            "America/Indiana/Petersburg" => Ok(Self::AmericaIndianaPetersburg),
+            "America/Indiana/Tell_City" => Ok(Self::AmericaIndianaTellCity),
+            "America/Indiana/Vevay" => Ok(Self::AmericaIndianaVevay),
+            "America/Indiana/Vincennes" => Ok(Self::AmericaIndianaVincennes),
+            "America/Indiana/Winamac" => Ok(Self::AmericaIndianaWinamac),
+            "America/Indianapolis" => Ok(Self::AmericaIndianapolis),
+            "America/Inuvik" => Ok(Self::AmericaInuvik),
+            "America/Iqaluit" => Ok(Self::AmericaIqaluit),
+            "America/Jamaica" => Ok(Self::AmericaJamaica),
+            "America/Jujuy" => Ok(Self::AmericaJujuy),
+            "America/Juneau" => Ok(Self::AmericaJuneau),
+            "America/Kentucky/Louisville" => Ok(Self::AmericaKentuckyLouisville),
+            "America/Kentucky/Monticello" => Ok(Self::AmericaKentuckyMonticello),
+            "America/Knox_IN" => Ok(Self::AmericaKnoxIn),
+            "America/Kralendijk" => Ok(Self::AmericaKralendijk),
+            "America/La_Paz" => Ok(Self::AmericaLaPaz),
+            "America/Lima" => Ok(Self::AmericaLima),
+            "America/Los_Angeles" => Ok(Self::AmericaLosAngeles),
+            "America/Louisville" => Ok(Self::AmericaLouisville),
+            "America/Lower_Princes" => Ok(Self::AmericaLowerPrinces),
+            "America/Maceio" => Ok(Self::AmericaMaceio),
+            "America/Managua" => Ok(Self::AmericaManagua),
+            "America/Manaus" => Ok(Self::AmericaManaus),
+            "America/Marigot" => Ok(Self::AmericaMarigot),
+            "America/Martinique" => Ok(Self::AmericaMartinique),
+            "America/Matamoros" => Ok(Self::AmericaMatamoros),
+            "America/Mazatlan" => Ok(Self::AmericaMazatlan),
+            "America/Mendoza" => Ok(Self::AmericaMendoza),
+            "America/Menominee" => Ok(Self::AmericaMenominee),
+            "America/Merida" => Ok(Self::AmericaMerida),
+            "America/Metlakatla" => Ok(Self::AmericaMetlakatla),
+            "America/Mexico_City" => Ok(Self::AmericaMexicoCity),
+            "America/Miquelon" => Ok(Self::AmericaMiquelon),
+            "America/Moncton" => Ok(Self::AmericaMoncton),
+            "America/Monterrey" => Ok(Self::AmericaMonterrey),
+            "America/Montevideo" => Ok(Self::AmericaMontevideo),
+            "America/Montreal" => Ok(Self::AmericaMontreal),
+            "America/Montserrat" => Ok(Self::AmericaMontserrat),
+            "America/Nassau" => Ok(Self::AmericaNassau),
+            "America/New_York" => Ok(Self::AmericaNewYork),
+            "America/Nipigon" => Ok(Self::AmericaNipigon),
+            "America/Nome" => Ok(Self::AmericaNome),
+            "America/Noronha" => Ok(Self::AmericaNoronha),
+            "America/North_Dakota/Beulah" => Ok(Self::AmericaNorthDakotaBeulah),
+            "America/North_Dakota/Center" => Ok(Self::AmericaNorthDakotaCenter),
+            "America/North_Dakota/New_Salem" => Ok(Self::AmericaNorthDakotaNewSalem),
+            "America/Nuuk" => Ok(Self::AmericaNuuk),
+            "America/Ojinaga" => Ok(Self::AmericaOjinaga),
+            "America/Panama" => Ok(Self::AmericaPanama),
+            "America/Pangnirtung" => Ok(Self::AmericaPangnirtung),
+            "America/Paramaribo" => Ok(Self::AmericaParamaribo),
+            "America/Phoenix" => Ok(Self::AmericaPhoenix),
+            "America/Port-au-Prince" => Ok(Self::AmericaPortMinusauMinusPrince),
+            "America/Port_of_Spain" => Ok(Self::AmericaPortOfSpain),
+            "America/Porto_Acre" => Ok(Self::AmericaPortoAcre),
+            "America/Porto_Velho" => Ok(Self::AmericaPortoVelho),
+            "America/Puerto_Rico" => Ok(Self::AmericaPuertoRico),
+            "America/Punta_Arenas" => Ok(Self::AmericaPuntaArenas),
+            "America/Rainy_River" => Ok(Self::AmericaRainyRiver),
+            "America/Rankin_Inlet" => Ok(Self::AmericaRankinInlet),
+            "America/Recife" => Ok(Self::AmericaRecife),
+            "America/Regina" => Ok(Self::AmericaRegina),
+            "America/Resolute" => Ok(Self::AmericaResolute),
+            "America/Rio_Branco" => Ok(Self::AmericaRioBranco),
+            "America/Rosario" => Ok(Self::AmericaRosario),
+            "America/Santa_Isabel" => Ok(Self::AmericaSantaIsabel),
+            "America/Santarem" => Ok(Self::AmericaSantarem),
+            "America/Santiago" => Ok(Self::AmericaSantiago),
+            "America/Santo_Domingo" => Ok(Self::AmericaSantoDomingo),
+            "America/Sao_Paulo" => Ok(Self::AmericaSaoPaulo),
+            "America/Scoresbysund" => Ok(Self::AmericaScoresbysund),
+            "America/Shiprock" => Ok(Self::AmericaShiprock),
+            "America/Sitka" => Ok(Self::AmericaSitka),
+            "America/St_Barthelemy" => Ok(Self::AmericaStBarthelemy),
+            "America/St_Johns" => Ok(Self::AmericaStJohns),
+            "America/St_Kitts" => Ok(Self::AmericaStKitts),
+            "America/St_Lucia" => Ok(Self::AmericaStLucia),
+            "America/St_Thomas" => Ok(Self::AmericaStThomas),
+            "America/St_Vincent" => Ok(Self::AmericaStVincent),
+            "America/Swift_Current" => Ok(Self::AmericaSwiftCurrent),
+            "America/Tegucigalpa" => Ok(Self::AmericaTegucigalpa),
+            "America/Thule" => Ok(Self::AmericaThule),
+            "America/Thunder_Bay" => Ok(Self::AmericaThunderBay),
+            "America/Tijuana" => Ok(Self::AmericaTijuana),
+            "America/Toronto" => Ok(Self::AmericaToronto),
+            "America/Tortola" => Ok(Self::AmericaTortola),
+            "America/Vancouver" => Ok(Self::AmericaVancouver),
+            "America/Virgin" => Ok(Self::AmericaVirgin),
+            "America/Whitehorse" => Ok(Self::AmericaWhitehorse),
+            "America/Winnipeg" => Ok(Self::AmericaWinnipeg),
+            "America/Yakutat" => Ok(Self::AmericaYakutat),
+            "America/Yellowknife" => Ok(Self::AmericaYellowknife),
+            "Antarctica/Casey" => Ok(Self::AntarcticaCasey),
+            "Antarctica/Davis" => Ok(Self::AntarcticaDavis),
+            "Antarctica/DumontDUrville" => Ok(Self::AntarcticaDumontDUrville),
+            "Antarctica/Macquarie" => Ok(Self::AntarcticaMacquarie),
+            "Antarctica/Mawson" => Ok(Self::AntarcticaMawson),
+            "Antarctica/McMurdo" => Ok(Self::AntarcticaMcMurdo),
+            "Antarctica/Palmer" => Ok(Self::AntarcticaPalmer),
+            "Antarctica/Rothera" => Ok(Self::AntarcticaRothera),
+            "Antarctica/South_Pole" => Ok(Self::AntarcticaSouthPole),
+            "Antarctica/Syowa" => Ok(Self::AntarcticaSyowa),
+            "Antarctica/Troll" => Ok(Self::AntarcticaTroll),
+            "Antarctica/Vostok" => Ok(Self::AntarcticaVostok),
+            "Arctic/Longyearbyen" => Ok(Self::ArcticLongyearbyen),
+            "Asia/Aden" => Ok(Self::AsiaAden),
+            "Asia/Almaty" => Ok(Self::AsiaAlmaty),
+            "Asia/Amman" => Ok(Self::AsiaAmman),
+            "Asia/Anadyr" => Ok(Self::AsiaAnadyr),
+            "Asia/Aqtau" => Ok(Self::AsiaAqtau),
+            "Asia/Aqtobe" => Ok(Self::AsiaAqtobe),
+            "Asia/Ashgabat" => Ok(Self::AsiaAshgabat),
+            "Asia/Ashkhabad" => Ok(Self::AsiaAshkhabad),
+            "Asia/Atyrau" => Ok(Self::AsiaAtyrau),
+            "Asia/Baghdad" => Ok(Self::AsiaBaghdad),
+            "Asia/Bahrain" => Ok(Self::AsiaBahrain),
+            "Asia/Baku" => Ok(Self::AsiaBaku),
+            "Asia/Bangkok" => Ok(Self::AsiaBangkok),
+            "Asia/Barnaul" => Ok(Self::AsiaBarnaul),
+            "Asia/Beirut" => Ok(Self::AsiaBeirut),
+            "Asia/Bishkek" => Ok(Self::AsiaBishkek),
+            "Asia/Brunei" => Ok(Self::AsiaBrunei),
+            "Asia/Calcutta" => Ok(Self::AsiaCalcutta),
+            "Asia/Chita" => Ok(Self::AsiaChita),
+            "Asia/Choibalsan" => Ok(Self::AsiaChoibalsan),
+            "Asia/Chongqing" => Ok(Self::AsiaChongqing),
+            "Asia/Chungking" => Ok(Self::AsiaChungking),
+            "Asia/Colombo" => Ok(Self::AsiaColombo),
+            "Asia/Dacca" => Ok(Self::AsiaDacca),
+            "Asia/Damascus" => Ok(Self::AsiaDamascus),
+            "Asia/Dhaka" => Ok(Self::AsiaDhaka),
+            "Asia/Dili" => Ok(Self::AsiaDili),
+            "Asia/Dubai" => Ok(Self::AsiaDubai),
+            "Asia/Dushanbe" => Ok(Self::AsiaDushanbe),
+            "Asia/Famagusta" => Ok(Self::AsiaFamagusta),
+            "Asia/Gaza" => Ok(Self::AsiaGaza),
+            "Asia/Harbin" => Ok(Self::AsiaHarbin),
+            "Asia/Hebron" => Ok(Self::AsiaHebron),
+            "Asia/Ho_Chi_Minh" => Ok(Self::AsiaHoChiMinh),
+            "Asia/Hong_Kong" => Ok(Self::AsiaHongKong),
+            "Asia/Hovd" => Ok(Self::AsiaHovd),
+            "Asia/Irkutsk" => Ok(Self::AsiaIrkutsk),
+            "Asia/Istanbul" => Ok(Self::AsiaIstanbul),
+            "Asia/Jakarta" => Ok(Self::AsiaJakarta),
+            "Asia/Jayapura" => Ok(Self::AsiaJayapura),
+            "Asia/Jerusalem" => Ok(Self::AsiaJerusalem),
+            "Asia/Kabul" => Ok(Self::AsiaKabul),
+            "Asia/Kamchatka" => Ok(Self::AsiaKamchatka),
+            "Asia/Karachi" => Ok(Self::AsiaKarachi),
+            "Asia/Kashgar" => Ok(Self::AsiaKashgar),
+            "Asia/Kathmandu" => Ok(Self::AsiaKathmandu),
+            "Asia/Katmandu" => Ok(Self::AsiaKatmandu),
+            "Asia/Khandyga" => Ok(Self::AsiaKhandyga),
+            "Asia/Kolkata" => Ok(Self::AsiaKolkata),
+            "Asia/Krasnoyarsk" => Ok(Self::AsiaKrasnoyarsk),
+            "Asia/Kuala_Lumpur" => Ok(Self::AsiaKualaLumpur),
+            "Asia/Kuching" => Ok(Self::AsiaKuching),
+            "Asia/Kuwait" => Ok(Self::AsiaKuwait),
+            "Asia/Macao" => Ok(Self::AsiaMacao),
+            "Asia/Macau" => Ok(Self::AsiaMacau),
+            "Asia/Magadan" => Ok(Self::AsiaMagadan),
+            "Asia/Makassar" => Ok(Self::AsiaMakassar),
+            "Asia/Manila" => Ok(Self::AsiaManila),
+            "Asia/Muscat" => Ok(Self::AsiaMuscat),
+            "Asia/Nicosia" => Ok(Self::AsiaNicosia),
+            "Asia/Novokuznetsk" => Ok(Self::AsiaNovokuznetsk),
+            "Asia/Novosibirsk" => Ok(Self::AsiaNovosibirsk),
+            "Asia/Omsk" => Ok(Self::AsiaOmsk),
+            "Asia/Oral" => Ok(Self::AsiaOral),
+            "Asia/Phnom_Penh" => Ok(Self::AsiaPhnomPenh),
+            "Asia/Pontianak" => Ok(Self::AsiaPontianak),
+            "Asia/Pyongyang" => Ok(Self::AsiaPyongyang),
+            "Asia/Qatar" => Ok(Self::AsiaQatar),
+            "Asia/Qostanay" => Ok(Self::AsiaQostanay),
+            "Asia/Qyzylorda" => Ok(Self::AsiaQyzylorda),
+            "Asia/Rangoon" => Ok(Self::AsiaRangoon),
+            "Asia/Riyadh" => Ok(Self::AsiaRiyadh),
+            "Asia/Saigon" => Ok(Self::AsiaSaigon),
+            "Asia/Sakhalin" => Ok(Self::AsiaSakhalin),
+            "Asia/Samarkand" => Ok(Self::AsiaSamarkand),
+            "Asia/Seoul" => Ok(Self::AsiaSeoul),
+            "Asia/Shanghai" => Ok(Self::AsiaShanghai),
+            "Asia/Singapore" => Ok(Self::AsiaSingapore),
+            "Asia/Srednekolymsk" => Ok(Self::AsiaSrednekolymsk),
+            "Asia/Taipei" => Ok(Self::AsiaTaipei),
+            "Asia/Tashkent" => Ok(Self::AsiaTashkent),
+            "Asia/Tbilisi" => Ok(Self::AsiaTbilisi),
+            "Asia/Tehran" => Ok(Self::AsiaTehran),
+            "Asia/Tel_Aviv" => Ok(Self::AsiaTelAviv),
+            "Asia/Thimbu" => Ok(Self::AsiaThimbu),
+            "Asia/Thimphu" => Ok(Self::AsiaThimphu),
+            "Asia/Tokyo" => Ok(Self::AsiaTokyo),
+            "Asia/Tomsk" => Ok(Self::AsiaTomsk),
+            "Asia/Ujung_Pandang" => Ok(Self::AsiaUjungPandang),
+            "Asia/Ulaanbaatar" => Ok(Self::AsiaUlaanbaatar),
+            "Asia/Ulan_Bator" => Ok(Self::AsiaUlanBator),
+            "Asia/Urumqi" => Ok(Self::AsiaUrumqi),
+            "Asia/Ust-Nera" => Ok(Self::AsiaUstMinusNera),
+            "Asia/Vientiane" => Ok(Self::AsiaVientiane),
+            "Asia/Vladivostok" => Ok(Self::AsiaVladivostok),
+            "Asia/Yakutsk" => Ok(Self::AsiaYakutsk),
+            "Asia/Yangon" => Ok(Self::AsiaYangon),
+            "Asia/Yekaterinburg" => Ok(Self::AsiaYekaterinburg),
+            "Asia/Yerevan" => Ok(Self::AsiaYerevan),
+            "Atlantic/Azores" => Ok(Self::AtlanticAzores),
+            "Atlantic/Bermuda" => Ok(Self::AtlanticBermuda),
+            "Atlantic/Canary" => Ok(Self::AtlanticCanary),
+            "Atlantic/Cape_Verde" => Ok(Self::AtlanticCapeVerde),
+            "Atlantic/Faeroe" => Ok(Self::AtlanticFaeroe),
+            "Atlantic/Faroe" => Ok(Self::AtlanticFaroe),
+            "Atlantic/Jan_Mayen" => Ok(Self::AtlanticJanMayen),
+            "Atlantic/Madeira" => Ok(Self::AtlanticMadeira),
+            "Atlantic/Reykjavik" => Ok(Self::AtlanticReykjavik),
+            "Atlantic/South_Georgia" => Ok(Self::AtlanticSouthGeorgia),
+            "Atlantic/St_Helena" => Ok(Self::AtlanticStHelena),
+            "Atlantic/Stanley" => Ok(Self::AtlanticStanley),
+            "Australia/ACT" => Ok(Self::AustraliaAct),
+            "Australia/Adelaide" => Ok(Self::AustraliaAdelaide),
+            "Australia/Brisbane" => Ok(Self::AustraliaBrisbane),
+            "Australia/Broken_Hill" => Ok(Self::AustraliaBrokenHill),
+            "Australia/Canberra" => Ok(Self::AustraliaCanberra),
+            "Australia/Currie" => Ok(Self::AustraliaCurrie),
+            "Australia/Darwin" => Ok(Self::AustraliaDarwin),
+            "Australia/Eucla" => Ok(Self::AustraliaEucla),
+            "Australia/Hobart" => Ok(Self::AustraliaHobart),
+            "Australia/LHI" => Ok(Self::AustraliaLhi),
+            "Australia/Lindeman" => Ok(Self::AustraliaLindeman),
+            "Australia/Lord_Howe" => Ok(Self::AustraliaLordHowe),
+            "Australia/Melbourne" => Ok(Self::AustraliaMelbourne),
+            "Australia/NSW" => Ok(Self::AustraliaNsw),
+            "Australia/North" => Ok(Self::AustraliaNorth),
+            "Australia/Perth" => Ok(Self::AustraliaPerth),
+            "Australia/Queensland" => Ok(Self::AustraliaQueensland),
+            "Australia/South" => Ok(Self::AustraliaSouth),
+            "Australia/Sydney" => Ok(Self::AustraliaSydney),
+            "Australia/Tasmania" => Ok(Self::AustraliaTasmania),
+            "Australia/Victoria" => Ok(Self::AustraliaVictoria),
+            "Australia/West" => Ok(Self::AustraliaWest),
+            "Australia/Yancowinna" => Ok(Self::AustraliaYancowinna),
+            "Brazil/Acre" => Ok(Self::BrazilAcre),
+            "Brazil/DeNoronha" => Ok(Self::BrazilDeNoronha),
+            "Brazil/East" => Ok(Self::BrazilEast),
+            "Brazil/West" => Ok(Self::BrazilWest),
+            "CET" => Ok(Self::Cet),
+            "CST6CDT" => Ok(Self::Cst6cdt),
+            "Canada/Atlantic" => Ok(Self::CanadaAtlantic),
+            "Canada/Central" => Ok(Self::CanadaCentral),
+            "Canada/Eastern" => Ok(Self::CanadaEastern),
+            "Canada/Mountain" => Ok(Self::CanadaMountain),
+            "Canada/Newfoundland" => Ok(Self::CanadaNewfoundland),
+            "Canada/Pacific" => Ok(Self::CanadaPacific),
+            "Canada/Saskatchewan" => Ok(Self::CanadaSaskatchewan),
+            "Canada/Yukon" => Ok(Self::CanadaYukon),
+            "Chile/Continental" => Ok(Self::ChileContinental),
+            "Chile/EasterIsland" => Ok(Self::ChileEasterIsland),
+            "Cuba" => Ok(Self::Cuba),
+            "EET" => Ok(Self::Eet),
+            "EST" => Ok(Self::Est),
+            "EST5EDT" => Ok(Self::Est5edt),
+            "Egypt" => Ok(Self::Egypt),
+            "Eire" => Ok(Self::Eire),
+            "Etc/GMT" => Ok(Self::EtcGmt),
+            "Etc/GMT+0" => Ok(Self::EtcGmtPlus0),
+            "Etc/GMT+1" => Ok(Self::EtcGmtPlus1),
+            "Etc/GMT+10" => Ok(Self::EtcGmtPlus10),
+            "Etc/GMT+11" => Ok(Self::EtcGmtPlus11),
+            "Etc/GMT+12" => Ok(Self::EtcGmtPlus12),
+            "Etc/GMT+2" => Ok(Self::EtcGmtPlus2),
+            "Etc/GMT+3" => Ok(Self::EtcGmtPlus3),
+            "Etc/GMT+4" => Ok(Self::EtcGmtPlus4),
+            "Etc/GMT+5" => Ok(Self::EtcGmtPlus5),
+            "Etc/GMT+6" => Ok(Self::EtcGmtPlus6),
+            "Etc/GMT+7" => Ok(Self::EtcGmtPlus7),
+            "Etc/GMT+8" => Ok(Self::EtcGmtPlus8),
+            "Etc/GMT+9" => Ok(Self::EtcGmtPlus9),
+            "Etc/GMT-0" => Ok(Self::EtcGmtMinus0),
+            "Etc/GMT-1" => Ok(Self::EtcGmtMinus1),
+            "Etc/GMT-10" => Ok(Self::EtcGmtMinus10),
+            "Etc/GMT-11" => Ok(Self::EtcGmtMinus11),
+            "Etc/GMT-12" => Ok(Self::EtcGmtMinus12),
+            "Etc/GMT-13" => Ok(Self::EtcGmtMinus13),
+            "Etc/GMT-14" => Ok(Self::EtcGmtMinus14),
+            "Etc/GMT-2" => Ok(Self::EtcGmtMinus2),
+            "Etc/GMT-3" => Ok(Self::EtcGmtMinus3),
+            "Etc/GMT-4" => Ok(Self::EtcGmtMinus4),
+            "Etc/GMT-5" => Ok(Self::EtcGmtMinus5),
+            "Etc/GMT-6" => Ok(Self::EtcGmtMinus6),
+            "Etc/GMT-7" => Ok(Self::EtcGmtMinus7),
+            "Etc/GMT-8" => Ok(Self::EtcGmtMinus8),
+            "Etc/GMT-9" => Ok(Self::EtcGmtMinus9),
+            "Etc/GMT0" => Ok(Self::EtcGmt0),
+            "Etc/Greenwich" => Ok(Self::EtcGreenwich),
+            "Etc/UCT" => Ok(Self::EtcUct),
+            "Etc/UTC" => Ok(Self::EtcUtc),
+            "Etc/Universal" => Ok(Self::EtcUniversal),
+            "Etc/Zulu" => Ok(Self::EtcZulu),
+            "Europe/Amsterdam" => Ok(Self::EuropeAmsterdam),
+            "Europe/Andorra" => Ok(Self::EuropeAndorra),
+            "Europe/Astrakhan" => Ok(Self::EuropeAstrakhan),
+            "Europe/Athens" => Ok(Self::EuropeAthens),
+            "Europe/Belfast" => Ok(Self::EuropeBelfast),
+            "Europe/Belgrade" => Ok(Self::EuropeBelgrade),
+            "Europe/Berlin" => Ok(Self::EuropeBerlin),
+            "Europe/Bratislava" => Ok(Self::EuropeBratislava),
+            "Europe/Brussels" => Ok(Self::EuropeBrussels),
+            "Europe/Bucharest" => Ok(Self::EuropeBucharest),
+            "Europe/Budapest" => Ok(Self::EuropeBudapest),
+            "Europe/Busingen" => Ok(Self::EuropeBusingen),
+            "Europe/Chisinau" => Ok(Self::EuropeChisinau),
+            "Europe/Copenhagen" => Ok(Self::EuropeCopenhagen),
+            "Europe/Dublin" => Ok(Self::EuropeDublin),
+            "Europe/Gibraltar" => Ok(Self::EuropeGibraltar),
+            "Europe/Guernsey" => Ok(Self::EuropeGuernsey),
+            "Europe/Helsinki" => Ok(Self::EuropeHelsinki),
+            "Europe/Isle_of_Man" => Ok(Self::EuropeIsleOfMan),
+            "Europe/Istanbul" => Ok(Self::EuropeIstanbul),
+            "Europe/Jersey" => Ok(Self::EuropeJersey),
+            "Europe/Kaliningrad" => Ok(Self::EuropeKaliningrad),
+            "Europe/Kiev" => Ok(Self::EuropeKiev),
+            "Europe/Kirov" => Ok(Self::EuropeKirov),
+            "Europe/Kyiv" => Ok(Self::EuropeKyiv),
+            "Europe/Lisbon" => Ok(Self::EuropeLisbon),
+            "Europe/Ljubljana" => Ok(Self::EuropeLjubljana),
+            "Europe/London" => Ok(Self::EuropeLondon),
+            "Europe/Luxembourg" => Ok(Self::EuropeLuxembourg),
+            "Europe/Madrid" => Ok(Self::EuropeMadrid),
+            "Europe/Malta" => Ok(Self::EuropeMalta),
+            "Europe/Mariehamn" => Ok(Self::EuropeMariehamn),
+            "Europe/Minsk" => Ok(Self::EuropeMinsk),
+            "Europe/Monaco" => Ok(Self::EuropeMonaco),
+            "Europe/Moscow" => Ok(Self::EuropeMoscow),
+            "Europe/Nicosia" => Ok(Self::EuropeNicosia),
+            "Europe/Oslo" => Ok(Self::EuropeOslo),
+            "Europe/Paris" => Ok(Self::EuropeParis),
+            "Europe/Podgorica" => Ok(Self::EuropePodgorica),
+            "Europe/Prague" => Ok(Self::EuropePrague),
+            "Europe/Riga" => Ok(Self::EuropeRiga),
+            "Europe/Rome" => Ok(Self::EuropeRome),
+            "Europe/Samara" => Ok(Self::EuropeSamara),
+            "Europe/San_Marino" => Ok(Self::EuropeSanMarino),
+            "Europe/Sarajevo" => Ok(Self::EuropeSarajevo),
+            "Europe/Saratov" => Ok(Self::EuropeSaratov),
+            "Europe/Simferopol" => Ok(Self::EuropeSimferopol),
+            "Europe/Skopje" => Ok(Self::EuropeSkopje),
+            "Europe/Sofia" => Ok(Self::EuropeSofia),
+            "Europe/Stockholm" => Ok(Self::EuropeStockholm),
+            "Europe/Tallinn" => Ok(Self::EuropeTallinn),
+            "Europe/Tirane" => Ok(Self::EuropeTirane),
+            "Europe/Tiraspol" => Ok(Self::EuropeTiraspol),
+            "Europe/Ulyanovsk" => Ok(Self::EuropeUlyanovsk),
+            "Europe/Uzhgorod" => Ok(Self::EuropeUzhgorod),
+            "Europe/Vaduz" => Ok(Self::EuropeVaduz),
+            "Europe/Vatican" => Ok(Self::EuropeVatican),
+            "Europe/Vienna" => Ok(Self::EuropeVienna),
+            "Europe/Vilnius" => Ok(Self::EuropeVilnius),
+            "Europe/Volgograd" => Ok(Self::EuropeVolgograd),
+            "Europe/Warsaw" => Ok(Self::EuropeWarsaw),
+            "Europe/Zagreb" => Ok(Self::EuropeZagreb),
+            "Europe/Zaporozhye" => Ok(Self::EuropeZaporozhye),
+            "Europe/Zurich" => Ok(Self::EuropeZurich),
+            "Factory" => Ok(Self::Factory),
+            "GB" => Ok(Self::Gb),
+            "GB-Eire" => Ok(Self::GbMinusEire),
+            "GMT" => Ok(Self::Gmt),
+            "GMT+0" => Ok(Self::GmtPlus0),
+            "GMT-0" => Ok(Self::GmtMinus0),
+            "GMT0" => Ok(Self::Gmt0),
+            "Greenwich" => Ok(Self::Greenwich),
+            "HST" => Ok(Self::Hst),
+            "Hongkong" => Ok(Self::Hongkong),
+            "Iceland" => Ok(Self::Iceland),
+            "Indian/Antananarivo" => Ok(Self::IndianAntananarivo),
+            "Indian/Chagos" => Ok(Self::IndianChagos),
+            "Indian/Christmas" => Ok(Self::IndianChristmas),
+            "Indian/Cocos" => Ok(Self::IndianCocos),
+            "Indian/Comoro" => Ok(Self::IndianComoro),
+            "Indian/Kerguelen" => Ok(Self::IndianKerguelen),
+            "Indian/Mahe" => Ok(Self::IndianMahe),
+            "Indian/Maldives" => Ok(Self::IndianMaldives),
+            "Indian/Mauritius" => Ok(Self::IndianMauritius),
+            "Indian/Mayotte" => Ok(Self::IndianMayotte),
+            "Indian/Reunion" => Ok(Self::IndianReunion),
+            "Iran" => Ok(Self::Iran),
+            "Israel" => Ok(Self::Israel),
+            "Jamaica" => Ok(Self::Jamaica),
+            "Japan" => Ok(Self::Japan),
+            "Kwajalein" => Ok(Self::Kwajalein),
+            "Libya" => Ok(Self::Libya),
+            "MET" => Ok(Self::Met),
+            "MST" => Ok(Self::Mst),
+            "MST7MDT" => Ok(Self::Mst7mdt),
+            "Mexico/BajaNorte" => Ok(Self::MexicoBajaNorte),
+            "Mexico/BajaSur" => Ok(Self::MexicoBajaSur),
+            "Mexico/General" => Ok(Self::MexicoGeneral),
+            "NZ" => Ok(Self::Nz),
+            "NZ-CHAT" => Ok(Self::NzMinusChat),
+            "Navajo" => Ok(Self::Navajo),
+            "PRC" => Ok(Self::Prc),
+            "PST8PDT" => Ok(Self::Pst8pdt),
+            "Pacific/Apia" => Ok(Self::PacificApia),
+            "Pacific/Auckland" => Ok(Self::PacificAuckland),
+            "Pacific/Bougainville" => Ok(Self::PacificBougainville),
+            "Pacific/Chatham" => Ok(Self::PacificChatham),
+            "Pacific/Chuuk" => Ok(Self::PacificChuuk),
+            "Pacific/Easter" => Ok(Self::PacificEaster),
+            "Pacific/Efate" => Ok(Self::PacificEfate),
+            "Pacific/Enderbury" => Ok(Self::PacificEnderbury),
+            "Pacific/Fakaofo" => Ok(Self::PacificFakaofo),
+            "Pacific/Fiji" => Ok(Self::PacificFiji),
+            "Pacific/Funafuti" => Ok(Self::PacificFunafuti),
+            "Pacific/Galapagos" => Ok(Self::PacificGalapagos),
+            "Pacific/Gambier" => Ok(Self::PacificGambier),
+            "Pacific/Guadalcanal" => Ok(Self::PacificGuadalcanal),
+            "Pacific/Guam" => Ok(Self::PacificGuam),
+            "Pacific/Honolulu" => Ok(Self::PacificHonolulu),
+            "Pacific/Johnston" => Ok(Self::PacificJohnston),
+            "Pacific/Kanton" => Ok(Self::PacificKanton),
+            "Pacific/Kiritimati" => Ok(Self::PacificKiritimati),
+            "Pacific/Kosrae" => Ok(Self::PacificKosrae),
+            "Pacific/Kwajalein" => Ok(Self::PacificKwajalein),
+            "Pacific/Majuro" => Ok(Self::PacificMajuro),
+            "Pacific/Marquesas" => Ok(Self::PacificMarquesas),
+            "Pacific/Midway" => Ok(Self::PacificMidway),
+            "Pacific/Nauru" => Ok(Self::PacificNauru),
+            "Pacific/Niue" => Ok(Self::PacificNiue),
+            "Pacific/Norfolk" => Ok(Self::PacificNorfolk),
+            "Pacific/Noumea" => Ok(Self::PacificNoumea),
+            "Pacific/Pago_Pago" => Ok(Self::PacificPagoPago),
+            "Pacific/Palau" => Ok(Self::PacificPalau),
+            "Pacific/Pitcairn" => Ok(Self::PacificPitcairn),
+            "Pacific/Pohnpei" => Ok(Self::PacificPohnpei),
+            "Pacific/Ponape" => Ok(Self::PacificPonape),
+            "Pacific/Port_Moresby" => Ok(Self::PacificPortMoresby),
+            "Pacific/Rarotonga" => Ok(Self::PacificRarotonga),
+            "Pacific/Saipan" => Ok(Self::PacificSaipan),
+            "Pacific/Samoa" => Ok(Self::PacificSamoa),
+            "Pacific/Tahiti" => Ok(Self::PacificTahiti),
+            "Pacific/Tarawa" => Ok(Self::PacificTarawa),
+            "Pacific/Tongatapu" => Ok(Self::PacificTongatapu),
+            "Pacific/Truk" => Ok(Self::PacificTruk),
+            "Pacific/Wake" => Ok(Self::PacificWake),
+            "Pacific/Wallis" => Ok(Self::PacificWallis),
+            "Pacific/Yap" => Ok(Self::PacificYap),
+            "Poland" => Ok(Self::Poland),
+            "Portugal" => Ok(Self::Portugal),
+            "ROC" => Ok(Self::Roc),
+            "ROK" => Ok(Self::Rok),
+            "Singapore" => Ok(Self::Singapore),
+            "Turkey" => Ok(Self::Turkey),
+            "UCT" => Ok(Self::Uct),
+            "US/Alaska" => Ok(Self::UsAlaska),
+            "US/Aleutian" => Ok(Self::UsAleutian),
+            "US/Arizona" => Ok(Self::UsArizona),
+            "US/Central" => Ok(Self::UsCentral),
+            "US/East-Indiana" => Ok(Self::UsEastMinusIndiana),
+            "US/Eastern" => Ok(Self::UsEastern),
+            "US/Hawaii" => Ok(Self::UsHawaii),
+            "US/Indiana-Starke" => Ok(Self::UsIndianaMinusStarke),
+            "US/Michigan" => Ok(Self::UsMichigan),
+            "US/Mountain" => Ok(Self::UsMountain),
+            "US/Pacific" => Ok(Self::UsPacific),
+            "US/Pacific-New" => Ok(Self::UsPacificMinusNew),
+            "US/Samoa" => Ok(Self::UsSamoa),
+            "UTC" => Ok(Self::Utc),
+            "Universal" => Ok(Self::Universal),
+            "W-SU" => Ok(Self::WMinusSu),
+            "WET" => Ok(Self::Wet),
+            "Zulu" => Ok(Self::Zulu),
+
+            _ => Err(()),
+        }
+    }
+}
+
 impl AsRef<str> for CreateReportRunParametersTimezone {
     fn as_ref(&self) -> &str {
         self.as_str()
@@ -2008,6 +2068,14 @@ impl AsRef<str> for CreateReportRunParametersTimezone {
 impl std::fmt::Display for CreateReportRunParametersTimezone {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateReportRunParametersTimezone {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
