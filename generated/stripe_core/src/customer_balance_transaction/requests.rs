@@ -1,13 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_core::customer_balance_transaction::CustomerBalanceTransaction {
     /// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         transaction: &str,
         params: RetrieveCustomerBalanceTransaction,
-    ) -> Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction> {
+    ) -> stripe::Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction>
+    {
         client.get_query(
             &format!(
                 "/customers/{customer}/balance_transactions/{transaction}",
@@ -19,10 +18,10 @@ impl stripe_core::customer_balance_transaction::CustomerBalanceTransaction {
     }
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: ListCustomerBalanceTransaction,
-    ) -> Response<
+    ) -> stripe::Response<
         stripe_types::List<stripe_core::customer_balance_transaction::CustomerBalanceTransaction>,
     > {
         client.get_query(
@@ -32,10 +31,11 @@ impl stripe_core::customer_balance_transaction::CustomerBalanceTransaction {
     }
     /// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: CreateCustomerBalanceTransaction,
-    ) -> Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction> {
+    ) -> stripe::Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction>
+    {
         client.send_form(
             &format!("/customers/{customer}/balance_transactions", customer = customer),
             params,
@@ -44,11 +44,12 @@ impl stripe_core::customer_balance_transaction::CustomerBalanceTransaction {
     }
     /// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         transaction: &str,
         params: UpdateCustomerBalanceTransaction,
-    ) -> Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction> {
+    ) -> stripe::Response<stripe_core::customer_balance_transaction::CustomerBalanceTransaction>
+    {
         client.send_form(
             &format!(
                 "/customers/{customer}/balance_transactions/{transaction}",

@@ -1,11 +1,9 @@
-use stripe::{Client, Response};
-
 impl stripe_core::account_link::AccountLink {
     /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateAccountLink,
-    ) -> Response<stripe_core::account_link::AccountLink> {
+    ) -> stripe::Response<stripe_core::account_link::AccountLink> {
         client.send_form("/account_links", params, http_types::Method::Post)
     }
 }

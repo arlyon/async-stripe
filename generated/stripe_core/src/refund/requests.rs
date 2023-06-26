@@ -1,36 +1,37 @@
-use stripe::{Client, Response};
-
 impl stripe_core::refund::Refund {
     /// Returns a list of all refunds you’ve previously created.
     ///
     /// The refunds are returned in sorted order, with the most recent refunds appearing first.
     /// For convenience, the 10 most recent refunds are always available by default on the charge object.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListRefund,
-    ) -> Response<stripe_types::List<stripe_core::refund::Refund>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::refund::Refund>> {
         client.get_query("/refunds", params)
     }
     /// Create a refund.
-    pub fn create(client: &Client, params: CreateRefund) -> Response<stripe_core::refund::Refund> {
+    pub fn create(
+        client: &stripe::Client,
+        params: CreateRefund,
+    ) -> stripe::Response<stripe_core::refund::Refund> {
         client.send_form("/refunds", params, http_types::Method::Post)
     }
     /// Retrieves the details of an existing refund.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         refund: &stripe_core::refund::RefundId,
         params: RetrieveRefund,
-    ) -> Response<stripe_core::refund::Refund> {
+    ) -> stripe::Response<stripe_core::refund::Refund> {
         client.get_query(&format!("/refunds/{refund}", refund = refund), params)
     }
     /// Updates the specified refund by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         refund: &stripe_core::refund::RefundId,
         params: UpdateRefund,
-    ) -> Response<stripe_core::refund::Refund> {
+    ) -> stripe::Response<stripe_core::refund::Refund> {
         client.send_form(
             &format!("/refunds/{refund}", refund = refund),
             params,
@@ -41,10 +42,10 @@ impl stripe_core::refund::Refund {
     ///
     /// Refunds in other states cannot be canceled, and only refunds for payment methods that require customer action will enter the `requires_action` state.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         refund: &stripe_core::refund::RefundId,
         params: CancelRefund,
-    ) -> Response<stripe_core::refund::Refund> {
+    ) -> stripe::Response<stripe_core::refund::Refund> {
         client.send_form(
             &format!("/refunds/{refund}/cancel", refund = refund),
             params,
@@ -53,10 +54,10 @@ impl stripe_core::refund::Refund {
     }
     /// Expire a refund with a status of `requires_action`.
     pub fn expire(
-        client: &Client,
+        client: &stripe::Client,
         refund: &stripe_core::refund::RefundId,
         params: ExpireRefund,
-    ) -> Response<stripe_core::refund::Refund> {
+    ) -> stripe::Response<stripe_core::refund::Refund> {
         client.send_form(
             &format!("/test_helpers/refunds/{refund}/expire", refund = refund),
             params,

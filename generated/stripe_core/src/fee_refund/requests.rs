@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::fee_refund::FeeRefund {
     /// Refunds an application fee that has previously been collected but not yet refunded.
     /// Funds will be refunded to the Stripe account from which the fee was originally collected.
@@ -11,10 +9,10 @@ impl stripe_core::fee_refund::FeeRefund {
     /// This method will raise an error when called on an already-refunded application fee,
     /// or when trying to refund more money than is left on an application fee.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: CreateFeeRefund,
-    ) -> Response<stripe_core::fee_refund::FeeRefund> {
+    ) -> stripe::Response<stripe_core::fee_refund::FeeRefund> {
         client.send_form(
             &format!("/application_fees/{id}/refunds", id = id),
             params,
@@ -26,19 +24,19 @@ impl stripe_core::fee_refund::FeeRefund {
     /// Note that the 10 most recent refunds are always available by default on the application fee object.
     /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional refunds.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: ListFeeRefund,
-    ) -> Response<stripe_types::List<stripe_core::fee_refund::FeeRefund>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::fee_refund::FeeRefund>> {
         client.get_query(&format!("/application_fees/{id}/refunds", id = id), params)
     }
     /// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         fee: &str,
         id: &str,
         params: RetrieveFeeRefund,
-    ) -> Response<stripe_core::fee_refund::FeeRefund> {
+    ) -> stripe::Response<stripe_core::fee_refund::FeeRefund> {
         client
             .get_query(&format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id), params)
     }
@@ -46,11 +44,11 @@ impl stripe_core::fee_refund::FeeRefund {
     ///
     /// Any parameters not provided will be left unchanged.  This request only accepts metadata as an argument.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         fee: &str,
         id: &str,
         params: UpdateFeeRefund,
-    ) -> Response<stripe_core::fee_refund::FeeRefund> {
+    ) -> stripe::Response<stripe_core::fee_refund::FeeRefund> {
         client.send_form(
             &format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id),
             params,

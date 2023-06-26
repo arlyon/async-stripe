@@ -1,14 +1,13 @@
-use stripe::{Client, Response};
-
 impl stripe_core::credit_note_line_item::CreditNoteLineItem {
     /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
     ///
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         credit_note: &stripe_core::credit_note::CreditNoteId,
         params: ListCreditNoteLineItem,
-    ) -> Response<stripe_types::List<stripe_core::credit_note_line_item::CreditNoteLineItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::credit_note_line_item::CreditNoteLineItem>>
+    {
         client.get_query(
             &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
             params,

@@ -1,19 +1,18 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::financial_connections::account::Account {
     /// Returns a list of Financial Connections `Account` objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListAccount,
-    ) -> Response<stripe_types::List<stripe_misc::financial_connections::account::Account>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::financial_connections::account::Account>>
+    {
         client.get_query("/financial_connections/accounts", params)
     }
     /// Retrieves the details of an Financial Connections `Account`.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: RetrieveAccount,
-    ) -> Response<stripe_misc::financial_connections::account::Account> {
+    ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
         client.get_query(
             &format!("/financial_connections/accounts/{account}", account = account),
             params,
@@ -21,11 +20,12 @@ impl stripe_misc::financial_connections::account::Account {
     }
     /// Lists all owners for a given `Account`.
     pub fn list_owners(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: ListOwnersAccount,
-    ) -> Response<stripe_types::List<stripe_misc::financial_connections::account_owner::AccountOwner>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_misc::financial_connections::account_owner::AccountOwner>,
+    > {
         client.get_query(
             &format!("/financial_connections/accounts/{account}/owners", account = account),
             params,
@@ -33,10 +33,10 @@ impl stripe_misc::financial_connections::account::Account {
     }
     /// Refreshes the data associated with a Financial Connections `Account`.
     pub fn refresh(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: RefreshAccount,
-    ) -> Response<stripe_misc::financial_connections::account::Account> {
+    ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
         client.send_form(
             &format!("/financial_connections/accounts/{account}/refresh", account = account),
             params,
@@ -48,10 +48,10 @@ impl stripe_misc::financial_connections::account::Account {
     /// You will no longer be able to access data associated with the account (e.g.
     /// balances, transactions).
     pub fn disconnect(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: DisconnectAccount,
-    ) -> Response<stripe_misc::financial_connections::account::Account> {
+    ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
         client.send_form(
             &format!("/financial_connections/accounts/{account}/disconnect", account = account),
             params,

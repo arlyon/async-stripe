@@ -1,36 +1,35 @@
-use stripe::{Client, Response};
-
 impl stripe_core::subscription_item::SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListSubscriptionItem,
-    ) -> Response<stripe_types::List<stripe_core::subscription_item::SubscriptionItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::subscription_item::SubscriptionItem>>
+    {
         client.get_query("/subscription_items", params)
     }
     /// Retrieves the subscription item with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         item: &stripe_core::line_item::ItemId,
         params: RetrieveSubscriptionItem,
-    ) -> Response<stripe_core::subscription_item::SubscriptionItem> {
+    ) -> stripe::Response<stripe_core::subscription_item::SubscriptionItem> {
         client.get_query(&format!("/subscription_items/{item}", item = item), params)
     }
     /// Adds a new item to an existing subscription.
     ///
     /// No existing items will be changed or replaced.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateSubscriptionItem,
-    ) -> Response<stripe_core::subscription_item::SubscriptionItem> {
+    ) -> stripe::Response<stripe_core::subscription_item::SubscriptionItem> {
         client.send_form("/subscription_items", params, http_types::Method::Post)
     }
     /// Updates the plan or quantity of an item on a current subscription.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         item: &stripe_core::line_item::ItemId,
         params: UpdateSubscriptionItem,
-    ) -> Response<stripe_core::subscription_item::SubscriptionItem> {
+    ) -> stripe::Response<stripe_core::subscription_item::SubscriptionItem> {
         client.send_form(
             &format!("/subscription_items/{item}", item = item),
             params,
@@ -41,10 +40,10 @@ impl stripe_core::subscription_item::SubscriptionItem {
     ///
     /// Removing a subscription item from a subscription will not cancel the subscription.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         item: &stripe_core::line_item::ItemId,
         params: DeleteSubscriptionItem,
-    ) -> Response<stripe_core::subscription_item::DeletedSubscriptionItem> {
+    ) -> stripe::Response<stripe_core::subscription_item::DeletedSubscriptionItem> {
         client.send_form(
             &format!("/subscription_items/{item}", item = item),
             params,
@@ -57,10 +56,11 @@ impl stripe_core::subscription_item::SubscriptionItem {
     /// The first list item represents the most current usage period that hasn’t ended yet.
     /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
     pub fn usage_record_summaries(
-        client: &Client,
+        client: &stripe::Client,
         subscription_item: &stripe_core::subscription_item::SubscriptionItemId,
         params: UsageRecordSummariesSubscriptionItem,
-    ) -> Response<stripe_types::List<stripe_core::usage_record_summary::UsageRecordSummary>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::usage_record_summary::UsageRecordSummary>>
+    {
         client.get_query(
             &format!(
                 "/subscription_items/{subscription_item}/usage_record_summaries",
@@ -123,7 +123,7 @@ pub struct CreateSubscriptionItem<'a> {
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<CreateSubscriptionItemBillingThresholds>,
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -147,7 +147,7 @@ pub struct CreateSubscriptionItem<'a> {
     /// This was the default behavior for API versions prior to 2019-03-14.
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_behavior: Option<CreateSubscriptionItemPaymentBehavior>,
+    pub payment_behavior: Option<PaymentBehavior>,
     /// The identifier of the plan to add to the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,
@@ -156,10 +156,10 @@ pub struct CreateSubscriptionItem<'a> {
     pub price: Option<&'a str>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreateSubscriptionItemPriceData<'a>>,
+    pub price_data: Option<RecurringPriceData<'a>>,
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<CreateSubscriptionItemProrationBehavior>,
+    pub proration_behavior: Option<ProrationBehavior>,
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     ///
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
@@ -195,309 +195,13 @@ impl<'a> CreateSubscriptionItem<'a> {
         }
     }
 }
-/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-///
-/// When updating, pass an empty string to remove previously-defined thresholds.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItemBillingThresholds {
-    /// Usage threshold that triggers the subscription to advance to a new billing period.
-    pub usage_gte: i64,
-}
-impl CreateSubscriptionItemBillingThresholds {
-    pub fn new(usage_gte: i64) -> Self {
-        Self { usage_gte }
-    }
-}
-/// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
-///
-/// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
-/// For example, SCA regulation may require 3DS authentication to complete payment.
-/// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-/// This is the default behavior.  Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
-/// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
-/// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
-/// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
-/// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
-/// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSubscriptionItemPaymentBehavior {
-    AllowIncomplete,
-    DefaultIncomplete,
-    ErrorIfIncomplete,
-    PendingIfIncomplete,
-}
-
-impl CreateSubscriptionItemPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AllowIncomplete => "allow_incomplete",
-            Self::DefaultIncomplete => "default_incomplete",
-            Self::ErrorIfIncomplete => "error_if_incomplete",
-            Self::PendingIfIncomplete => "pending_if_incomplete",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionItemPaymentBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "allow_incomplete" => Ok(Self::AllowIncomplete),
-            "default_incomplete" => Ok(Self::DefaultIncomplete),
-            "error_if_incomplete" => Ok(Self::ErrorIfIncomplete),
-            "pending_if_incomplete" => Ok(Self::PendingIfIncomplete),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSubscriptionItemPaymentBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSubscriptionItemPaymentBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSubscriptionItemPaymentBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItemPriceData<'a> {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
-    pub product: &'a str,
-    /// The recurring components of a price such as `interval` and `interval_count`.
-    pub recurring: CreateSubscriptionItemPriceDataRecurring,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateSubscriptionItemPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> CreateSubscriptionItemPriceData<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: CreateSubscriptionItemPriceDataRecurring,
-    ) -> Self {
-        Self {
-            currency,
-            product,
-            recurring,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
-/// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSubscriptionItemPriceDataRecurring {
-    /// Specifies billing frequency.
-    ///
-    /// Either `day`, `week`, `month` or `year`.
-    pub interval: CreateSubscriptionItemPriceDataRecurringInterval,
-    /// The number of intervals between subscription billings.
-    ///
-    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-impl CreateSubscriptionItemPriceDataRecurring {
-    pub fn new(interval: CreateSubscriptionItemPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: Default::default() }
-    }
-}
-/// Specifies billing frequency.
-///
-/// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSubscriptionItemPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-}
-
-impl CreateSubscriptionItemPriceDataRecurringInterval {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Day => "day",
-            Self::Month => "month",
-            Self::Week => "week",
-            Self::Year => "year",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionItemPriceDataRecurringInterval {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "day" => Ok(Self::Day),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-            "year" => Ok(Self::Year),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSubscriptionItemPriceDataRecurringInterval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSubscriptionItemPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSubscriptionItemPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSubscriptionItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateSubscriptionItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionItemPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSubscriptionItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSubscriptionItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSubscriptionItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSubscriptionItemProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl CreateSubscriptionItemProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSubscriptionItemProrationBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSubscriptionItemProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSubscriptionItemProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSubscriptionItemProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionItem<'a> {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<UpdateSubscriptionItemBillingThresholds>,
+    pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -524,7 +228,7 @@ pub struct UpdateSubscriptionItem<'a> {
     /// This was the default behavior for API versions prior to 2019-03-14.
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_behavior: Option<UpdateSubscriptionItemPaymentBehavior>,
+    pub payment_behavior: Option<PaymentBehavior>,
     /// The identifier of the new plan for this subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,
@@ -535,10 +239,10 @@ pub struct UpdateSubscriptionItem<'a> {
     pub price: Option<&'a str>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateSubscriptionItemPriceData<'a>>,
+    pub price_data: Option<RecurringPriceData<'a>>,
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<UpdateSubscriptionItemProrationBehavior>,
+    pub proration_behavior: Option<ProrationBehavior>,
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     ///
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
@@ -559,302 +263,6 @@ impl<'a> UpdateSubscriptionItem<'a> {
         Self::default()
     }
 }
-/// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-///
-/// When updating, pass an empty string to remove previously-defined thresholds.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateSubscriptionItemBillingThresholds {
-    /// Usage threshold that triggers the subscription to advance to a new billing period.
-    pub usage_gte: i64,
-}
-impl UpdateSubscriptionItemBillingThresholds {
-    pub fn new(usage_gte: i64) -> Self {
-        Self { usage_gte }
-    }
-}
-/// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
-///
-/// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
-/// For example, SCA regulation may require 3DS authentication to complete payment.
-/// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-/// This is the default behavior.  Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
-/// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
-/// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
-/// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
-/// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
-/// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateSubscriptionItemPaymentBehavior {
-    AllowIncomplete,
-    DefaultIncomplete,
-    ErrorIfIncomplete,
-    PendingIfIncomplete,
-}
-
-impl UpdateSubscriptionItemPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AllowIncomplete => "allow_incomplete",
-            Self::DefaultIncomplete => "default_incomplete",
-            Self::ErrorIfIncomplete => "error_if_incomplete",
-            Self::PendingIfIncomplete => "pending_if_incomplete",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionItemPaymentBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "allow_incomplete" => Ok(Self::AllowIncomplete),
-            "default_incomplete" => Ok(Self::DefaultIncomplete),
-            "error_if_incomplete" => Ok(Self::ErrorIfIncomplete),
-            "pending_if_incomplete" => Ok(Self::PendingIfIncomplete),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateSubscriptionItemPaymentBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateSubscriptionItemPaymentBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateSubscriptionItemPaymentBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateSubscriptionItemPriceData<'a> {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
-    pub product: &'a str,
-    /// The recurring components of a price such as `interval` and `interval_count`.
-    pub recurring: UpdateSubscriptionItemPriceDataRecurring,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateSubscriptionItemPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> UpdateSubscriptionItemPriceData<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpdateSubscriptionItemPriceDataRecurring,
-    ) -> Self {
-        Self {
-            currency,
-            product,
-            recurring,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
-/// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateSubscriptionItemPriceDataRecurring {
-    /// Specifies billing frequency.
-    ///
-    /// Either `day`, `week`, `month` or `year`.
-    pub interval: UpdateSubscriptionItemPriceDataRecurringInterval,
-    /// The number of intervals between subscription billings.
-    ///
-    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
-}
-impl UpdateSubscriptionItemPriceDataRecurring {
-    pub fn new(interval: UpdateSubscriptionItemPriceDataRecurringInterval) -> Self {
-        Self { interval, interval_count: Default::default() }
-    }
-}
-/// Specifies billing frequency.
-///
-/// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateSubscriptionItemPriceDataRecurringInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-}
-
-impl UpdateSubscriptionItemPriceDataRecurringInterval {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Day => "day",
-            Self::Month => "month",
-            Self::Week => "week",
-            Self::Year => "year",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionItemPriceDataRecurringInterval {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "day" => Ok(Self::Day),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-            "year" => Ok(Self::Year),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateSubscriptionItemPriceDataRecurringInterval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateSubscriptionItemPriceDataRecurringInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateSubscriptionItemPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateSubscriptionItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateSubscriptionItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionItemPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateSubscriptionItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateSubscriptionItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateSubscriptionItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateSubscriptionItemProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl UpdateSubscriptionItemProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSubscriptionItemProrationBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateSubscriptionItemProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateSubscriptionItemProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateSubscriptionItemProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteSubscriptionItem {
     /// Delete all usage for the given subscription item.
@@ -864,7 +272,7 @@ pub struct DeleteSubscriptionItem {
     pub clear_usage: Option<bool>,
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<DeleteSubscriptionItemProrationBehavior>,
+    pub proration_behavior: Option<ProrationBehavior>,
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     ///
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
@@ -874,56 +282,6 @@ pub struct DeleteSubscriptionItem {
 impl DeleteSubscriptionItem {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum DeleteSubscriptionItemProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl DeleteSubscriptionItemProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
-        }
-    }
-}
-
-impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for DeleteSubscriptionItemProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for DeleteSubscriptionItemProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for DeleteSubscriptionItemProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -952,5 +310,276 @@ pub struct UsageRecordSummariesSubscriptionItem<'a> {
 impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ItemBillingThresholdsParam {
+    /// Usage threshold that triggers the subscription to advance to a new billing period.
+    pub usage_gte: i64,
+}
+impl ItemBillingThresholdsParam {
+    pub fn new(usage_gte: i64) -> Self {
+        Self { usage_gte }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PaymentBehavior {
+    AllowIncomplete,
+    DefaultIncomplete,
+    ErrorIfIncomplete,
+    PendingIfIncomplete,
+}
+
+impl PaymentBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::AllowIncomplete => "allow_incomplete",
+            Self::DefaultIncomplete => "default_incomplete",
+            Self::ErrorIfIncomplete => "error_if_incomplete",
+            Self::PendingIfIncomplete => "pending_if_incomplete",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "allow_incomplete" => Ok(Self::AllowIncomplete),
+            "default_incomplete" => Ok(Self::DefaultIncomplete),
+            "error_if_incomplete" => Ok(Self::ErrorIfIncomplete),
+            "pending_if_incomplete" => Ok(Self::PendingIfIncomplete),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PaymentBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PaymentBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Interval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+
+impl Interval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Day => "day",
+            Self::Month => "month",
+            Self::Week => "week",
+            Self::Year => "year",
+        }
+    }
+}
+
+impl std::str::FromStr for Interval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "day" => Ok(Self::Day),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+            "year" => Ok(Self::Year),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Interval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Interval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl TaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exclusive => "exclusive",
+            Self::Inclusive => "inclusive",
+            Self::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+
+impl ProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::AlwaysInvoice => "always_invoice",
+            Self::CreateProrations => "create_prorations",
+            Self::None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for ProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "always_invoice" => Ok(Self::AlwaysInvoice),
+            "create_prorations" => Ok(Self::CreateProrations),
+            "none" => Ok(Self::None),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct RecurringAdhoc {
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
+    pub interval: Interval,
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+impl RecurringAdhoc {
+    pub fn new(interval: Interval) -> Self {
+        Self { interval, interval_count: Default::default() }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct RecurringPriceData<'a> {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// The ID of the product that this price will belong to.
+    pub product: &'a str,
+    /// The recurring components of a price such as `interval` and `interval_count`.
+    pub recurring: RecurringAdhoc,
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<TaxBehavior>,
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<&'a str>,
+}
+impl<'a> RecurringPriceData<'a> {
+    pub fn new(
+        currency: stripe_types::Currency,
+        product: &'a str,
+        recurring: RecurringAdhoc,
+    ) -> Self {
+        Self {
+            currency,
+            product,
+            recurring,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }

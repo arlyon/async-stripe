@@ -17,6 +17,7 @@ use crate::url_finder::UrlFinder;
 mod codegen;
 mod components;
 mod crate_inference;
+mod dedup;
 mod graph;
 mod ids;
 mod object_context;

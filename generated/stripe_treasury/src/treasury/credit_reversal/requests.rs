@@ -1,20 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::credit_reversal::CreditReversal {
     /// Returns a list of CreditReversals.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListCreditReversal,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::credit_reversal::CreditReversal>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::credit_reversal::CreditReversal>,
+    > {
         client.get_query("/treasury/credit_reversals", params)
     }
     /// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         credit_reversal: &str,
         params: RetrieveCreditReversal,
-    ) -> Response<stripe_treasury::treasury::credit_reversal::CreditReversal> {
+    ) -> stripe::Response<stripe_treasury::treasury::credit_reversal::CreditReversal> {
         client.get_query(
             &format!(
                 "/treasury/credit_reversals/{credit_reversal}",
@@ -25,9 +24,9 @@ impl stripe_treasury::treasury::credit_reversal::CreditReversal {
     }
     /// Reverses a ReceivedCredit and creates a CreditReversal object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateCreditReversal,
-    ) -> Response<stripe_treasury::treasury::credit_reversal::CreditReversal> {
+    ) -> stripe::Response<stripe_treasury::treasury::credit_reversal::CreditReversal> {
         client.send_form("/treasury/credit_reversals", params, http_types::Method::Post)
     }
 }

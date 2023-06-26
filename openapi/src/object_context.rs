@@ -4,6 +4,7 @@ use std::fmt::{Debug, Display, Formatter, Write};
 use indoc::formatdoc;
 
 use crate::components::{Components, PathInfo};
+use crate::dedup::deduplicate_types;
 use crate::ids::{write_object_id, IDS_IN_STRIPE};
 use crate::rust_object::{
     FieldedEnumVariant, ObjectMetadata, PrintableFieldedEnumVariant, PrintableStructField,
@@ -370,12 +371,20 @@ pub fn write_obj(
     let gen_info = ObjectGenInfo::new(Derives::deser());
     let mut out = String::with_capacity(128);
 
-    components.write_object(obj, meta, gen_info, &mut out);
+    let mut obj = obj.clone();
+    let mut typs = obj.typs_mut();
+    let dedupped_objs = deduplicate_types(&mut typs);
+    components.write_object(&obj, meta, gen_info, &mut out);
+
+    for (obj, ident) in dedupped_objs {
+        let typ = RustType::Object(obj, ObjectMetadata::new(ident));
+        components.write_rust_type_objs(&typ, gen_info, &mut out);
+    }
 
     let ident = &meta.ident;
     if let Some(id_typ) = comp.id_type() {
         let id_type = components.construct_printable_type(id_typ);
-        match obj {
+        match &obj {
             RustObject::Struct(_) => write_object_trait(&mut out, ident, &id_type),
             RustObject::FieldedEnum(variants) => {
                 write_object_trait_for_enum(&mut out, ident, &id_type, variants)
@@ -403,8 +412,17 @@ pub fn write_requests(
     components: &Components,
 ) -> String {
     let mut req_bodies = String::with_capacity(128);
+    let mut specs = Vec::from(specs);
+    let mut req_typs = vec![];
+    for spec in &mut specs {
+        if let Some(param_typ) = &mut spec.params {
+            req_typs.push(param_typ);
+        }
+    }
 
-    for req in specs {
+    let dedupped_objs = deduplicate_types(&mut req_typs);
+
+    for req in &specs {
         let printable = PrintableRequestSpec {
             path_params: req
                 .path_params
@@ -429,27 +447,26 @@ pub fn write_requests(
 
     let mut out = formatdoc! {
         r#"
-        use stripe::{{Client, Response}};
-        
         impl {impl_for} {{
             {req_bodies} 
         }}
         "#
     };
+    let params_gen_info = ObjectGenInfo::new(Derives::new().serialize(true)).include_constructor();
 
-    for req in specs {
+    for req in &specs {
         components.write_rust_type_objs(
             &req.returned,
             ObjectGenInfo::new(Derives::deser()),
             &mut out,
         );
         if let Some(typ) = &req.params {
-            components.write_rust_type_objs(
-                typ,
-                ObjectGenInfo::new(Derives::new().serialize(true)).include_constructor(),
-                &mut out,
-            );
+            components.write_rust_type_objs(typ, params_gen_info, &mut out);
         }
+    }
+    for (obj, ident) in dedupped_objs {
+        let typ = RustType::Object(obj, ObjectMetadata::new(ident));
+        components.write_rust_type_objs(&typ, params_gen_info, &mut out);
     }
     out
 }

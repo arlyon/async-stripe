@@ -16,11 +16,12 @@ pub struct ObjectMetadata {
     pub ident: RustIdent,
     pub doc: Option<String>,
     pub title: Option<String>,
+    pub field_name: Option<String>,
 }
 
 impl ObjectMetadata {
     pub fn new(ident: RustIdent) -> Self {
-        Self { ident, doc: None, title: None }
+        Self { ident, doc: None, title: None, field_name: None }
     }
 
     pub fn doc(mut self, doc: String) -> Self {
@@ -50,6 +51,26 @@ impl RustObject {
                 Some(typ) => typ.has_borrow(),
             }),
         }
+    }
+
+    pub fn typs_mut(&mut self) -> Vec<&mut RustType> {
+        let mut res = vec![];
+        match self {
+            RustObject::Struct(fields) => {
+                for field in fields {
+                    res.push(&mut field.rust_type)
+                }
+            }
+            RustObject::Enum(_) => {}
+            RustObject::FieldedEnum(variants) => {
+                for variant in variants {
+                    if let Some(typ) = &mut variant.rust_type {
+                        res.push(typ);
+                    }
+                }
+            }
+        }
+        res
     }
 }
 

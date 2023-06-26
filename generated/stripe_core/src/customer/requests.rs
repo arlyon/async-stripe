@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::customer::Customer {
     /// Search for customers you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
     /// Don’t use search in read-after-write flows where strict consistency is necessary.
@@ -7,31 +5,34 @@ impl stripe_core::customer::Customer {
     /// Under normal operating conditions, data is searchable in less than a minute.
     /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
     /// Search functionality is not available to merchants in India.
-    pub fn search(client: &Client, params: SearchCustomer) -> Response<SearchReturned> {
+    pub fn search(
+        client: &stripe::Client,
+        params: SearchCustomer,
+    ) -> stripe::Response<SearchReturned> {
         client.get_query("/customers/search", params)
     }
     /// Returns a list of your customers.
     ///
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListCustomer,
-    ) -> Response<stripe_types::List<stripe_core::customer::Customer>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::customer::Customer>> {
         client.get_query("/customers", params)
     }
     /// Creates a new customer object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateCustomer,
-    ) -> Response<stripe_core::customer::Customer> {
+    ) -> stripe::Response<stripe_core::customer::Customer> {
         client.send_form("/customers", params, http_types::Method::Post)
     }
     /// Retrieves a Customer object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: RetrieveCustomer,
-    ) -> Response<RetrieveReturned> {
+    ) -> stripe::Response<RetrieveReturned> {
         client.get_query(&format!("/customers/{customer}", customer = customer), params)
     }
     /// Updates the specified customer by setting the values of the parameters passed.
@@ -42,10 +43,10 @@ impl stripe_core::customer::Customer {
     /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
     /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: UpdateCustomer,
-    ) -> Response<stripe_core::customer::Customer> {
+    ) -> stripe::Response<stripe_core::customer::Customer> {
         client.send_form(
             &format!("/customers/{customer}", customer = customer),
             params,
@@ -57,9 +58,9 @@ impl stripe_core::customer::Customer {
     /// It cannot be undone.
     /// Also immediately cancels any active subscriptions on the customer.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
-    ) -> Response<stripe_core::customer::DeletedCustomer> {
+    ) -> stripe::Response<stripe_core::customer::DeletedCustomer> {
         client.send(
             &format!("/customers/{customer}", customer = customer),
             http_types::Method::Delete,
@@ -67,10 +68,10 @@ impl stripe_core::customer::Customer {
     }
     /// Returns a list of PaymentMethods for a given Customer.
     pub fn list_payment_methods(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: ListPaymentMethodsCustomer,
-    ) -> Response<stripe_types::List<stripe_core::payment_method::PaymentMethod>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::payment_method::PaymentMethod>> {
         client.get_query(
             &format!("/customers/{customer}/payment_methods", customer = customer),
             params,
@@ -78,11 +79,11 @@ impl stripe_core::customer::Customer {
     }
     /// Retrieves a PaymentMethod object for a given Customer.
     pub fn retrieve_payment_method(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         payment_method: &stripe_core::payment_method::PaymentMethodId,
         params: RetrievePaymentMethodCustomer,
-    ) -> Response<stripe_core::payment_method::PaymentMethod> {
+    ) -> stripe::Response<stripe_core::payment_method::PaymentMethod> {
         client.get_query(
             &format!(
                 "/customers/{customer}/payment_methods/{payment_method}",
@@ -94,10 +95,10 @@ impl stripe_core::customer::Customer {
     }
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn balance_transactions(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: BalanceTransactionsCustomer,
-    ) -> Response<
+    ) -> stripe::Response<
         stripe_types::List<stripe_core::customer_balance_transaction::CustomerBalanceTransaction>,
     > {
         client.get_query(
@@ -107,11 +108,12 @@ impl stripe_core::customer::Customer {
     }
     /// Create an incoming testmode bank transfer.
     pub fn fund_cash_balance(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: FundCashBalanceCustomer,
-    ) -> Response<stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
-    {
+    ) -> stripe::Response<
+        stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
+    > {
         client.send_form(
             &format!("/test_helpers/customers/{customer}/fund_cash_balance", customer = customer),
             params,
@@ -124,10 +126,10 @@ impl stripe_core::customer::Customer {
     /// If funding instructions have already been created for a given customer, the same funding instructions will be retrieved.
     /// In other words, we will return the same funding instructions each time.
     pub fn create_funding_instructions(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: CreateFundingInstructionsCustomer,
-    ) -> Response<stripe_types::funding_instructions::FundingInstructions> {
+    ) -> stripe::Response<stripe_types::funding_instructions::FundingInstructions> {
         client.send_form(
             &format!("/customers/{customer}/funding_instructions", customer = customer),
             params,
@@ -136,9 +138,9 @@ impl stripe_core::customer::Customer {
     }
     /// Removes the currently applied discount on a customer.
     pub fn delete_discount(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
-    ) -> Response<stripe_core::discount::DeletedDiscount> {
+    ) -> stripe::Response<stripe_core::discount::DeletedDiscount> {
         client.send(
             &format!("/customers/{customer}/discount", customer = customer),
             http_types::Method::Delete,
@@ -312,7 +314,7 @@ impl<'a> ListCustomer<'a> {
 pub struct CreateCustomer<'a> {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<CreateCustomerAddress<'a>>,
+    pub address: Option<OptionalFieldsAddress<'a>>,
     /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     ///
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
@@ -320,7 +322,7 @@ pub struct CreateCustomer<'a> {
     pub balance: Option<i64>,
     /// Balance information and default balance settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_balance: Option<CreateCustomerCashBalance>,
+    pub cash_balance: Option<CashBalanceParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     /// An arbitrary string that you can attach to a customer object.
@@ -344,7 +346,7 @@ pub struct CreateCustomer<'a> {
     pub invoice_prefix: Option<&'a str>,
     /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<CreateCustomerInvoiceSettings<'a>>,
+    pub invoice_settings: Option<CustomerParam<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -378,17 +380,17 @@ pub struct CreateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<CreateCustomerShipping<'a>>,
+    pub shipping: Option<CustomerShipping<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<&'a str>,
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<CreateCustomerTax<'a>>,
+    pub tax: Option<TaxParam<'a>>,
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<CreateCustomerTaxExempt>,
+    pub tax_exempt: Option<TaxExempt>,
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_data: Option<&'a [CreateCustomerTaxIdData<'a>]>,
@@ -401,333 +403,6 @@ pub struct CreateCustomer<'a> {
 impl<'a> CreateCustomer<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The customer's address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreateCustomerAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Balance information and default balance settings for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerCashBalance {
-    /// Settings controlling the behavior of the customer's cash balance,
-    /// such as reconciliation of funds received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<CreateCustomerCashBalanceSettings>,
-}
-impl CreateCustomerCashBalance {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Settings controlling the behavior of the customer's cash balance,
-/// such as reconciliation of funds received.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerCashBalanceSettings {
-    /// Controls how funds transferred by the customer are applied to payment intents and invoices.
-    ///
-    /// Valid options are `automatic` or `manual`.
-    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
-}
-impl CreateCustomerCashBalanceSettings {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Controls how funds transferred by the customer are applied to payment intents and invoices.
-///
-/// Valid options are `automatic` or `manual`.
-/// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
-    Automatic,
-    Manual,
-}
-
-impl CreateCustomerCashBalanceSettingsReconciliationMode {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCustomerCashBalanceSettingsReconciliationMode {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateCustomerCashBalanceSettingsReconciliationMode {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateCustomerCashBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateCustomerCashBalanceSettingsReconciliationMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Default invoice settings for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerInvoiceSettings<'a> {
-    /// Default custom fields to be displayed on invoices for this customer.
-    ///
-    /// When updating, pass an empty string to remove previously-defined fields.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<&'a [CreateCustomerInvoiceSettingsCustomFields<'a>]>,
-    /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
-    /// Default footer to be displayed on invoices for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
-    /// Default options for invoice PDF rendering for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rendering_options: Option<CreateCustomerInvoiceSettingsRenderingOptions>,
-}
-impl<'a> CreateCustomerInvoiceSettings<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Default custom fields to be displayed on invoices for this customer.
-///
-/// When updating, pass an empty string to remove previously-defined fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerInvoiceSettingsCustomFields<'a> {
-    /// The name of the custom field.
-    ///
-    /// This may be up to 30 characters.
-    pub name: &'a str,
-    /// The value of the custom field.
-    ///
-    /// This may be up to 30 characters.
-    pub value: &'a str,
-}
-impl<'a> CreateCustomerInvoiceSettingsCustomFields<'a> {
-    pub fn new(name: &'a str, value: &'a str) -> Self {
-        Self { name, value }
-    }
-}
-/// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerInvoiceSettingsRenderingOptions {
-    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-    ///
-    /// One of `exclude_tax` or `include_inclusive_tax`.
-    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display: Option<CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay>,
-}
-impl CreateCustomerInvoiceSettingsRenderingOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-///
-/// One of `exclude_tax` or `include_inclusive_tax`.
-/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    ExcludeTax,
-    IncludeInclusiveTax,
-}
-
-impl CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::ExcludeTax => "exclude_tax",
-            Self::IncludeInclusiveTax => "include_inclusive_tax",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclude_tax" => Ok(Self::ExcludeTax),
-            "include_inclusive_tax" => Ok(Self::IncludeInclusiveTax),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The customer's shipping information.
-///
-/// Appears on invoices emailed to this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCustomerShipping<'a> {
-    /// Customer shipping address.
-    pub address: CreateCustomerShippingAddress<'a>,
-    /// Customer name.
-    pub name: &'a str,
-    /// Customer phone (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> CreateCustomerShipping<'a> {
-    pub fn new(address: CreateCustomerShippingAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: Default::default() }
-    }
-}
-/// Customer shipping address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerShippingAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreateCustomerShippingAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tax details about the customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCustomerTax<'a> {
-    /// A recent IP address of the customer used for tax reporting and tax location inference.
-    ///
-    /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
-    /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
-}
-impl<'a> CreateCustomerTax<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The customer's tax exemption.
-///
-/// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateCustomerTaxExempt {
-    Exempt,
-    None,
-    Reverse,
-}
-
-impl CreateCustomerTaxExempt {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCustomerTaxExempt {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateCustomerTaxExempt {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateCustomerTaxExempt {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateCustomerTaxExempt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The customer's tax IDs.
@@ -976,7 +651,7 @@ impl<'a> RetrieveCustomer<'a> {
 pub struct UpdateCustomer<'a> {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdateCustomerAddress<'a>>,
+    pub address: Option<OptionalFieldsAddress<'a>>,
     /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     ///
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
@@ -984,7 +659,7 @@ pub struct UpdateCustomer<'a> {
     pub balance: Option<i64>,
     /// Balance information and default balance settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_balance: Option<UpdateCustomerCashBalance>,
+    pub cash_balance: Option<CashBalanceParam>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
@@ -1015,7 +690,7 @@ pub struct UpdateCustomer<'a> {
     pub invoice_prefix: Option<&'a str>,
     /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<UpdateCustomerInvoiceSettings<'a>>,
+    pub invoice_settings: Option<CustomerParam<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1047,350 +722,23 @@ pub struct UpdateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<UpdateCustomerShipping<'a>>,
+    pub shipping: Option<CustomerShipping<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<&'a str>,
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<UpdateCustomerTax<'a>>,
+    pub tax: Option<TaxParam<'a>>,
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<UpdateCustomerTaxExempt>,
+    pub tax_exempt: Option<TaxExempt>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub validate: Option<bool>,
 }
 impl<'a> UpdateCustomer<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The customer's address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> UpdateCustomerAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Balance information and default balance settings for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerCashBalance {
-    /// Settings controlling the behavior of the customer's cash balance,
-    /// such as reconciliation of funds received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<UpdateCustomerCashBalanceSettings>,
-}
-impl UpdateCustomerCashBalance {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Settings controlling the behavior of the customer's cash balance,
-/// such as reconciliation of funds received.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerCashBalanceSettings {
-    /// Controls how funds transferred by the customer are applied to payment intents and invoices.
-    ///
-    /// Valid options are `automatic` or `manual`.
-    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
-}
-impl UpdateCustomerCashBalanceSettings {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Controls how funds transferred by the customer are applied to payment intents and invoices.
-///
-/// Valid options are `automatic` or `manual`.
-/// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
-    Automatic,
-    Manual,
-}
-
-impl UpdateCustomerCashBalanceSettingsReconciliationMode {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCustomerCashBalanceSettingsReconciliationMode {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateCustomerCashBalanceSettingsReconciliationMode {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateCustomerCashBalanceSettingsReconciliationMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateCustomerCashBalanceSettingsReconciliationMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Default invoice settings for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerInvoiceSettings<'a> {
-    /// Default custom fields to be displayed on invoices for this customer.
-    ///
-    /// When updating, pass an empty string to remove previously-defined fields.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<&'a [UpdateCustomerInvoiceSettingsCustomFields<'a>]>,
-    /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<&'a str>,
-    /// Default footer to be displayed on invoices for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<&'a str>,
-    /// Default options for invoice PDF rendering for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rendering_options: Option<UpdateCustomerInvoiceSettingsRenderingOptions>,
-}
-impl<'a> UpdateCustomerInvoiceSettings<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Default custom fields to be displayed on invoices for this customer.
-///
-/// When updating, pass an empty string to remove previously-defined fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerInvoiceSettingsCustomFields<'a> {
-    /// The name of the custom field.
-    ///
-    /// This may be up to 30 characters.
-    pub name: &'a str,
-    /// The value of the custom field.
-    ///
-    /// This may be up to 30 characters.
-    pub value: &'a str,
-}
-impl<'a> UpdateCustomerInvoiceSettingsCustomFields<'a> {
-    pub fn new(name: &'a str, value: &'a str) -> Self {
-        Self { name, value }
-    }
-}
-/// Default options for invoice PDF rendering for this customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerInvoiceSettingsRenderingOptions {
-    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-    ///
-    /// One of `exclude_tax` or `include_inclusive_tax`.
-    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display: Option<UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay>,
-}
-impl UpdateCustomerInvoiceSettingsRenderingOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
-///
-/// One of `exclude_tax` or `include_inclusive_tax`.
-/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
-/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    ExcludeTax,
-    IncludeInclusiveTax,
-}
-
-impl UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::ExcludeTax => "exclude_tax",
-            Self::IncludeInclusiveTax => "include_inclusive_tax",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclude_tax" => Ok(Self::ExcludeTax),
-            "include_inclusive_tax" => Ok(Self::IncludeInclusiveTax),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The customer's shipping information.
-///
-/// Appears on invoices emailed to this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateCustomerShipping<'a> {
-    /// Customer shipping address.
-    pub address: UpdateCustomerShippingAddress<'a>,
-    /// Customer name.
-    pub name: &'a str,
-    /// Customer phone (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> UpdateCustomerShipping<'a> {
-    pub fn new(address: UpdateCustomerShippingAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: Default::default() }
-    }
-}
-/// Customer shipping address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerShippingAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> UpdateCustomerShippingAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tax details about the customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateCustomerTax<'a> {
-    /// A recent IP address of the customer used for tax reporting and tax location inference.
-    ///
-    /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
-    /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<&'a str>,
-}
-impl<'a> UpdateCustomerTax<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The customer's tax exemption.
-///
-/// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateCustomerTaxExempt {
-    Exempt,
-    None,
-    Reverse,
-}
-
-impl UpdateCustomerTaxExempt {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCustomerTaxExempt {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateCustomerTaxExempt {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateCustomerTaxExempt {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateCustomerTaxExempt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -1833,5 +1181,280 @@ impl serde::Serialize for CreateFundingInstructionsCustomerFundingType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct OptionalFieldsAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> OptionalFieldsAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ReconciliationMode {
+    Automatic,
+    Manual,
+}
+
+impl ReconciliationMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Automatic => "automatic",
+            Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for ReconciliationMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ReconciliationMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReconciliationMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CustomFieldParams<'a> {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub name: &'a str,
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub value: &'a str,
+}
+impl<'a> CustomFieldParams<'a> {
+    pub fn new(name: &'a str, value: &'a str) -> Self {
+        Self { name, value }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum AmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl AmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::ExcludeTax => "exclude_tax",
+            Self::IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl std::str::FromStr for AmountTaxDisplay {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclude_tax" => Ok(Self::ExcludeTax),
+            "include_inclusive_tax" => Ok(Self::IncludeInclusiveTax),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for AmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AmountTaxDisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct TaxParam<'a> {
+    /// A recent IP address of the customer used for tax reporting and tax location inference.
+    ///
+    /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
+    /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<&'a str>,
+}
+impl<'a> TaxParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxExempt {
+    Exempt,
+    None,
+    Reverse,
+}
+
+impl TaxExempt {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exempt => "exempt",
+            Self::None => "none",
+            Self::Reverse => "reverse",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxExempt {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct BalanceSettingsParam {
+    /// Controls how funds transferred by the customer are applied to payment intents and invoices.
+    ///
+    /// Valid options are `automatic` or `manual`.
+    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reconciliation_mode: Option<ReconciliationMode>,
+}
+impl BalanceSettingsParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RenderingOptionsParam {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<AmountTaxDisplay>,
+}
+impl RenderingOptionsParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CustomerShipping<'a> {
+    /// Customer shipping address.
+    pub address: OptionalFieldsAddress<'a>,
+    /// Customer name.
+    pub name: &'a str,
+    /// Customer phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> CustomerShipping<'a> {
+    pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
+        Self { address, name, phone: Default::default() }
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CashBalanceParam {
+    /// Settings controlling the behavior of the customer's cash balance,
+    /// such as reconciliation of funds received.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<BalanceSettingsParam>,
+}
+impl CashBalanceParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CustomerParam<'a> {
+    /// Default custom fields to be displayed on invoices for this customer.
+    ///
+    /// When updating, pass an empty string to remove previously-defined fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<&'a [CustomFieldParams<'a>]>,
+    /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<&'a str>,
+    /// Default footer to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<&'a str>,
+    /// Default options for invoice PDF rendering for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<RenderingOptionsParam>,
+}
+impl<'a> CustomerParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }

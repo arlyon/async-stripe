@@ -1,33 +1,31 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::apple_pay_domain::ApplePayDomain {
     /// List apple pay domains.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListApplePayDomain,
-    ) -> Response<stripe_types::List<stripe_misc::apple_pay_domain::ApplePayDomain>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::apple_pay_domain::ApplePayDomain>> {
         client.get_query("/apple_pay/domains", params)
     }
     /// Create an apple pay domain.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateApplePayDomain,
-    ) -> Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
+    ) -> stripe::Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
         client.send_form("/apple_pay/domains", params, http_types::Method::Post)
     }
     /// Retrieve an apple pay domain.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         domain: &str,
         params: RetrieveApplePayDomain,
-    ) -> Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
+    ) -> stripe::Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
         client.get_query(&format!("/apple_pay/domains/{domain}", domain = domain), params)
     }
     /// Delete an apple pay domain.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         domain: &str,
-    ) -> Response<stripe_misc::apple_pay_domain::DeletedApplePayDomain> {
+    ) -> stripe::Response<stripe_misc::apple_pay_domain::DeletedApplePayDomain> {
         client.send(
             &format!("/apple_pay/domains/{domain}", domain = domain),
             http_types::Method::Delete,

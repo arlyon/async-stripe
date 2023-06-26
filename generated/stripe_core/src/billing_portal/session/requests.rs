@@ -1,11 +1,9 @@
-use stripe::{Client, Response};
-
 impl stripe_core::billing_portal::session::Session {
     /// Creates a session of the customer portal.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateSession,
-    ) -> Response<stripe_core::billing_portal::session::Session> {
+    ) -> stripe::Response<stripe_core::billing_portal::session::Session> {
         client.send_form("/billing_portal/sessions", params, http_types::Method::Post)
     }
 }

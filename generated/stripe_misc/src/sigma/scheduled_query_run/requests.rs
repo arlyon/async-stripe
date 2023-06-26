@@ -1,20 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::sigma::scheduled_query_run::ScheduledQueryRun {
     /// Returns a list of scheduled query runs.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListScheduledQueryRun,
-    ) -> Response<stripe_types::List<stripe_misc::sigma::scheduled_query_run::ScheduledQueryRun>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_misc::sigma::scheduled_query_run::ScheduledQueryRun>,
+    > {
         client.get_query("/sigma/scheduled_query_runs", params)
     }
     /// Retrieves the details of an scheduled query run.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         scheduled_query_run: &stripe_misc::sigma::scheduled_query_run::ScheduledQueryRunId,
         params: RetrieveScheduledQueryRun,
-    ) -> Response<stripe_misc::sigma::scheduled_query_run::ScheduledQueryRun> {
+    ) -> stripe::Response<stripe_misc::sigma::scheduled_query_run::ScheduledQueryRun> {
         client.get_query(
             &format!(
                 "/sigma/scheduled_query_runs/{scheduled_query_run}",

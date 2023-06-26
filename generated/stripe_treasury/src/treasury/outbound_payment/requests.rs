@@ -1,35 +1,34 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::outbound_payment::OutboundPayment {
     /// Creates an OutboundPayment.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.send_form("/treasury/outbound_payments", params, http_types::Method::Post)
     }
     /// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.get_query(&format!("/treasury/outbound_payments/{id}", id = id), params)
     }
     /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListOutboundPayment,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::outbound_payment::OutboundPayment>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::outbound_payment::OutboundPayment>,
+    > {
         client.get_query("/treasury/outbound_payments", params)
     }
     /// Cancel an OutboundPayment.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: CancelOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.send_form(
             &format!("/treasury/outbound_payments/{id}/cancel", id = id),
             params,
@@ -40,10 +39,10 @@ impl stripe_treasury::treasury::outbound_payment::OutboundPayment {
     ///
     /// The OutboundPayment must already be in the `processing` state.
     pub fn fail(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: FailOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.send_form(
             &format!("/test_helpers/treasury/outbound_payments/{id}/fail", id = id),
             params,
@@ -54,10 +53,10 @@ impl stripe_treasury::treasury::outbound_payment::OutboundPayment {
     ///
     /// The OutboundPayment must already be in the `processing` state.
     pub fn post(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: PostOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.send_form(
             &format!("/test_helpers/treasury/outbound_payments/{id}/post", id = id),
             params,
@@ -68,10 +67,10 @@ impl stripe_treasury::treasury::outbound_payment::OutboundPayment {
     ///
     /// The OutboundPayment must already be in the `processing` state.
     pub fn return_outbound_payment(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: ReturnOutboundPaymentOutboundPayment,
-    ) -> Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_payment::OutboundPayment> {
         client.send_form(
             &format!("/test_helpers/treasury/outbound_payments/{id}/return", id = id),
             params,

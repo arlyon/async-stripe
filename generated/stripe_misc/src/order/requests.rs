@@ -1,37 +1,38 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::order::Order {
     /// Creates a new `open` order object.
-    pub fn create(client: &Client, params: CreateOrder) -> Response<stripe_misc::order::Order> {
+    pub fn create(
+        client: &stripe::Client,
+        params: CreateOrder,
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.send_form("/orders", params, http_types::Method::Post)
     }
     /// Returns a list of your orders.
     ///
     /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListOrder,
-    ) -> Response<stripe_types::List<stripe_misc::order::Order>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::order::Order>> {
         client.get_query("/orders", params)
     }
     /// Retrieves the details of an existing order.
     ///
     /// Supply the unique order ID from either an order creation request or the order list, and Stripe will return the corresponding order information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveOrder,
-    ) -> Response<stripe_misc::order::Order> {
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.get_query(&format!("/orders/{id}", id = id), params)
     }
     /// Updates the specific order by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: UpdateOrder,
-    ) -> Response<stripe_misc::order::Order> {
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.send_form(&format!("/orders/{id}", id = id), params, http_types::Method::Post)
     }
     /// Submitting an Order transitions the status to `processing` and creates a PaymentIntent object so the order can be paid.
@@ -39,36 +40,36 @@ impl stripe_misc::order::Order {
     /// If the Order has an `amount_total` of 0, no PaymentIntent object will be created.
     /// Once the order is submitted, its contents cannot be changed, unless the [reopen](https://stripe.com/docs/api#reopen_order) method is called.
     pub fn submit(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: SubmitOrder,
-    ) -> Response<stripe_misc::order::Order> {
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.send_form(&format!("/orders/{id}/submit", id = id), params, http_types::Method::Post)
     }
     /// Cancels the order as well as the payment intent if one is attached.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: CancelOrder,
-    ) -> Response<stripe_misc::order::Order> {
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.send_form(&format!("/orders/{id}/cancel", id = id), params, http_types::Method::Post)
     }
     /// Reopens a `submitted` order.
     pub fn reopen(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: ReopenOrder,
-    ) -> Response<stripe_misc::order::Order> {
+    ) -> stripe::Response<stripe_misc::order::Order> {
         client.send_form(&format!("/orders/{id}/reopen", id = id), params, http_types::Method::Post)
     }
     /// When retrieving an order, there is an includable **line_items** property containing the first handful of those items.
     ///
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
     pub fn list_line_items(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: ListLineItemsOrder,
-    ) -> Response<stripe_types::List<stripe_core::line_item::LineItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::line_item::LineItem>> {
         client.get_query(&format!("/orders/{id}/line_items", id = id), params)
     }
 }
@@ -76,12 +77,12 @@ impl stripe_misc::order::Order {
 pub struct CreateOrder<'a> {
     /// Settings for automatic tax calculation for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreateOrderAutomaticTax>,
+    pub automatic_tax: Option<AutomaticTax>,
     /// Billing details for the customer.
     ///
     /// If a customer is provided, this will be automatically populated with values from that customer if override values are not provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<CreateOrderBillingDetails<'a>>,
+    pub billing_details: Option<BillingDetails<'a>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -96,7 +97,7 @@ pub struct CreateOrder<'a> {
     pub description: Option<&'a str>,
     /// The coupons, promotion codes, and/or discounts to apply to the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [CreateOrderDiscounts<'a>]>,
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -122,7 +123,7 @@ pub struct CreateOrder<'a> {
     pub shipping_cost: Option<CreateOrderShippingCost<'a>>,
     /// Shipping details for the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_details: Option<CreateOrderShippingDetails<'a>>,
+    pub shipping_details: Option<ShippingDetails<'a>>,
     /// Additional tax details about the purchaser to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_details: Option<CreateOrderTaxDetails<'a>>,
@@ -148,87 +149,6 @@ impl<'a> CreateOrder<'a> {
             shipping_details: Default::default(),
             tax_details: Default::default(),
         }
-    }
-}
-/// Settings for automatic tax calculation for this order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderAutomaticTax {
-    /// Enable automatic tax calculation which will automatically compute tax rates on this order.
-    pub enabled: bool,
-}
-impl CreateOrderAutomaticTax {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
-    }
-}
-/// Billing details for the customer.
-///
-/// If a customer is provided, this will be automatically populated with values from that customer if override values are not provided.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderBillingDetails<'a> {
-    /// The billing address provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<CreateOrderBillingDetailsAddress<'a>>,
-    /// The billing email provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-    /// The billing name provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// The billing phone number provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> CreateOrderBillingDetails<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The billing address provided by the customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderBillingDetailsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
-    ///
-    /// Example: "NY" or "TX".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreateOrderBillingDetailsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The coupons, promotion codes, and/or discounts to apply to the order.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderDiscounts<'a> {
-    /// ID of the coupon to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
-    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<&'a str>,
-    /// ID of the promotion code to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<&'a str>,
-}
-impl<'a> CreateOrderDiscounts<'a> {
-    pub fn new() -> Self {
-        Self::default()
     }
 }
 /// A list of line items the customer is ordering.
@@ -260,7 +180,7 @@ pub struct CreateOrderLineItems<'a> {
     /// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
     /// This Price is hidden in both the Dashboard and API lists and cannot be reused.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreateOrderLineItemsPriceData<'a>>,
+    pub price_data: Option<PriceDataWithOptionalProduct<'a>>,
     /// The ID of a [Product](https://stripe.com/docs/api/products) to add to the Order.
     ///
     /// The product must have a `default_price` specified.
@@ -276,7 +196,7 @@ pub struct CreateOrderLineItems<'a> {
     /// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
     /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_data: Option<CreateOrderLineItemsProductData<'a>>,
+    pub product_data: Option<ProductUpsertData<'a>>,
     /// The quantity of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -304,187 +224,6 @@ impl<'a> CreateOrderLineItemsDiscounts<'a> {
         Self::default()
     }
 }
-/// Data used to generate a new Price object inline.
-///
-/// The `price_data` parameter is an alternative to using the `product` or `price` parameters.
-///
-/// If you create products upfront and configure a `Product.default_price`, pass the `product` parameter when creating a line item.
-/// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
-/// This Price is hidden in both the Dashboard and API lists and cannot be reused.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderLineItemsPriceData<'a> {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// ID of the product this price belongs to.
-    ///
-    /// Use this to implement a variable-pricing model in your integration.
-    ///
-    /// This is required if `product_data` is not specifed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<&'a str>,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateOrderLineItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> CreateOrderLineItemsPriceData<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderLineItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateOrderLineItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderLineItemsPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderLineItemsPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderLineItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Defines a Product inline and adds it to the Order.
-///
-/// `product_data` is an alternative to the `product` parameter.
-///
-/// If you created a Product upfront, use the `product` parameter to refer to the existing Product.
-/// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
-/// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderLineItemsProductData<'a> {
-    /// The product's description, meant to be displayable to the customer.
-    ///
-    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// A unique identifier for this product.
-    ///
-    /// `product_data` automatically creates a Product with this ID.
-    ///
-    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
-    /// If any of the fields in the existing Product are different from the values in `product_data`, `product_data` updates the existing Product with the new information.
-    /// So set `product_data[id]` to the same string every time you sell the same product, but don't re-use the same string for different products.
-    pub id: &'a str,
-    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The product's name, meant to be displayable to the customer.
-    pub name: &'a str,
-    /// The dimensions of this product for shipping purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<CreateOrderLineItemsProductDataPackageDimensions>,
-    /// Whether this product is shipped (i.e., physical goods).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shippable: Option<bool>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
-    /// A URL of a publicly-accessible webpage for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<&'a str>,
-}
-impl<'a> CreateOrderLineItemsProductData<'a> {
-    pub fn new(id: &'a str, name: &'a str) -> Self {
-        Self {
-            description: Default::default(),
-            id,
-            images: Default::default(),
-            metadata: Default::default(),
-            name,
-            package_dimensions: Default::default(),
-            shippable: Default::default(),
-            tax_code: Default::default(),
-            url: Default::default(),
-        }
-    }
-}
-/// The dimensions of this product for shipping purposes.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderLineItemsProductDataPackageDimensions {
-    /// Height, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub height: f64,
-    /// Length, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub length: f64,
-    /// Weight, in ounces.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub weight: f64,
-    /// Width, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub width: f64,
-}
-impl CreateOrderLineItemsProductDataPackageDimensions {
-    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
-        Self { height, length, weight, width }
-    }
-}
 /// Payment information associated with the order, including payment settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateOrderPayment<'a> {
@@ -509,7 +248,7 @@ pub struct CreateOrderPaymentSettings<'a> {
     ///
     /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<&'a [CreateOrderPaymentSettingsPaymentMethodTypes]>,
+    pub payment_method_types: Option<&'a [PaymentMethodTypes]>,
     /// The URL to redirect the customer to after they authenticate their payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
@@ -526,7 +265,7 @@ pub struct CreateOrderPaymentSettings<'a> {
     pub statement_descriptor_suffix: Option<&'a str>,
     /// Provides configuration for completing a transfer for the order after it is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<CreateOrderPaymentSettingsTransferData<'a>>,
+    pub transfer_data: Option<TransferData<'a>>,
 }
 impl<'a> CreateOrderPaymentSettings<'a> {
     pub fn new() -> Self {
@@ -551,7 +290,7 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptions<'a> {
     pub bancontact: Option<CreateOrderPaymentSettingsPaymentMethodOptionsBancontact>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCard>,
+    pub card: Option<CardPaymentMethodOptions>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
@@ -572,7 +311,7 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptions<'a> {
     pub p24: Option<CreateOrderPaymentSettingsPaymentMethodOptionsP24>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit>,
+    pub sepa_debit: Option<PaymentIntentPaymentMethodOptionsParam>,
     /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateOrderPaymentSettingsPaymentMethodOptionsSofort>,
@@ -590,276 +329,21 @@ impl<'a> CreateOrderPaymentSettingsPaymentMethodOptions<'a> {
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit<'a> {
     /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
+    pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsParam<'a>>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<SetupFutureUsage>,
     /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<VerificationMethod>,
 }
 impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Additional fields for Mandate creation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a> {
-    /// A URL for custom mandate text to render during confirmation step.
-    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
-    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_mandate_url: Option<&'a str>,
-    /// Description of the mandate interval.
-    ///
-    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_description: Option<&'a str>,
-    /// Payment schedule for the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<
-        CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule,
-    >,
-    /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<
-        CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
-    >,
-}
-impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Payment schedule for the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
-    Combined,
-    Interval,
-    Sporadic,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Combined => "combined",
-            Self::Interval => "interval",
-            Self::Sporadic => "sporadic",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "combined" => Ok(Self::Combined),
-            "interval" => Ok(Self::Interval),
-            "sporadic" => Ok(Self::Sporadic),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str>
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Transaction type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    Business,
-    Personal,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Business => "business",
-            Self::Personal => "personal",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business" => Ok(Self::Business),
-            "personal" => Ok(Self::Personal),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str>
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    Automatic,
-    Instant,
-    Microdeposits,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// If paying by `afterpay_clearpay`, this sub-hash contains details about the AfterpayClearpay payment method options to pass to the order's PaymentIntent.
@@ -871,8 +355,7 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method: Option<CaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -891,63 +374,6 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
 impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Controls when the funds will be captured from the customer's account.
-///
-/// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
-///
-/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    Automatic,
-    Manual,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with the payment method.
@@ -1077,8 +503,7 @@ impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsAlipaySe
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language: Option<PreferredLanguage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -1091,65 +516,6 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsBancontact {
 impl CreateOrderPaymentSettingsPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    De,
-    En,
-    Fr,
-    Nl,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::De => "de",
-            Self::En => "en",
-            Self::Fr => "fr",
-            Self::Nl => "nl",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "de" => Ok(Self::De),
-            "en" => Ok(Self::En),
-            "fr" => Ok(Self::Fr),
-            "nl" => Ok(Self::Nl),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -1207,140 +573,17 @@ impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsBanconta
         serializer.serialize_str(self.as_str())
     }
 }
-/// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCard {
-    /// Controls when the funds will be captured from the customer's account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod>,
-    /// Indicates that you intend to make future payments with the payment method.
-    ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
-    ///
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage>,
-}
-impl CreateOrderPaymentSettingsPaymentMethodOptionsCard {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    Automatic,
-    Manual,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Indicates that you intend to make future payments with the payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<BankTransferParam<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub funding_type:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType>,
+    pub funding_type: Option<FundingType>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -1353,215 +596,6 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
 impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-#[serde(skip_serializing_if = "Option::is_none")]
-pub eu_bank_transfer: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
-    /// List of address types that should be returned in the financial_addresses response.
-    ///
-    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub requested_address_types: Option<&'a [CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes]>,
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[serde(rename = "type")]
-pub type_: CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
-
-}
-impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<
-    'a,
-> {
-    /// The desired country code of the bank account information.
-    ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
-    pub country: &'a str,
-}
-impl<'a>
-    CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>
-{
-    pub fn new(country: &'a str) -> Self {
-        Self { country }
-    }
-}
-/// List of address types that should be returned in the financial_addresses response.
-///
-/// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
-    Iban,
-    Sepa,
-    SortCode,
-    Spei,
-    Zengin,
-}
-
-impl
-    CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Iban => "iban",
-            Self::Sepa => "sepa",
-            Self::SortCode => "sort_code",
-            Self::Spei => "spei",
-            Self::Zengin => "zengin",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-    "iban" => Ok(Self::Iban),
-"sepa" => Ok(Self::Sepa),
-"sort_code" => Ok(Self::SortCode),
-"spei" => Ok(Self::Spei),
-"zengin" => Ok(Self::Zengin),
-
-            _ => Err(())
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    EuBankTransfer,
-    GbBankTransfer,
-    JpBankTransfer,
-    MxBankTransfer,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::EuBankTransfer => "eu_bank_transfer",
-            Self::GbBankTransfer => "gb_bank_transfer",
-            Self::JpBankTransfer => "jp_bank_transfer",
-            Self::MxBankTransfer => "mx_bank_transfer",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
-            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
-            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
-            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The funding method type to be used when there are not enough funds in the customer balance.
-///
-/// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    BankTransfer,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BankTransfer => "bank_transfer",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "bank_transfer" => Ok(Self::BankTransfer),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -1698,8 +732,7 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsKlarna {
     pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod>,
     /// Preferred language of the Klarna authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locale:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale>,
+    pub preferred_locale: Option<PreferredLocale>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -1755,167 +788,6 @@ impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaC
     }
 }
 impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Preferred language of the Klarna authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    DaMinusDk,
-    DeMinusAt,
-    DeMinusCh,
-    DeMinusDe,
-    EnMinusAt,
-    EnMinusAu,
-    EnMinusBe,
-    EnMinusCa,
-    EnMinusCh,
-    EnMinusDe,
-    EnMinusDk,
-    EnMinusEs,
-    EnMinusFi,
-    EnMinusFr,
-    EnMinusGb,
-    EnMinusIe,
-    EnMinusIt,
-    EnMinusNl,
-    EnMinusNo,
-    EnMinusNz,
-    EnMinusPl,
-    EnMinusPt,
-    EnMinusSe,
-    EnMinusUs,
-    EsMinusEs,
-    EsMinusUs,
-    FiMinusFi,
-    FrMinusBe,
-    FrMinusCa,
-    FrMinusCh,
-    FrMinusFr,
-    ItMinusCh,
-    ItMinusIt,
-    NbMinusNo,
-    NlMinusBe,
-    NlMinusNl,
-    PlMinusPl,
-    PtMinusPt,
-    SvMinusFi,
-    SvMinusSe,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::DaMinusDk => "da-DK",
-            Self::DeMinusAt => "de-AT",
-            Self::DeMinusCh => "de-CH",
-            Self::DeMinusDe => "de-DE",
-            Self::EnMinusAt => "en-AT",
-            Self::EnMinusAu => "en-AU",
-            Self::EnMinusBe => "en-BE",
-            Self::EnMinusCa => "en-CA",
-            Self::EnMinusCh => "en-CH",
-            Self::EnMinusDe => "en-DE",
-            Self::EnMinusDk => "en-DK",
-            Self::EnMinusEs => "en-ES",
-            Self::EnMinusFi => "en-FI",
-            Self::EnMinusFr => "en-FR",
-            Self::EnMinusGb => "en-GB",
-            Self::EnMinusIe => "en-IE",
-            Self::EnMinusIt => "en-IT",
-            Self::EnMinusNl => "en-NL",
-            Self::EnMinusNo => "en-NO",
-            Self::EnMinusNz => "en-NZ",
-            Self::EnMinusPl => "en-PL",
-            Self::EnMinusPt => "en-PT",
-            Self::EnMinusSe => "en-SE",
-            Self::EnMinusUs => "en-US",
-            Self::EsMinusEs => "es-ES",
-            Self::EsMinusUs => "es-US",
-            Self::FiMinusFi => "fi-FI",
-            Self::FrMinusBe => "fr-BE",
-            Self::FrMinusCa => "fr-CA",
-            Self::FrMinusCh => "fr-CH",
-            Self::FrMinusFr => "fr-FR",
-            Self::ItMinusCh => "it-CH",
-            Self::ItMinusIt => "it-IT",
-            Self::NbMinusNo => "nb-NO",
-            Self::NlMinusBe => "nl-BE",
-            Self::NlMinusNl => "nl-NL",
-            Self::PlMinusPl => "pl-PL",
-            Self::PtMinusPt => "pt-PT",
-            Self::SvMinusFi => "sv-FI",
-            Self::SvMinusSe => "sv-SE",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "da-DK" => Ok(Self::DaMinusDk),
-            "de-AT" => Ok(Self::DeMinusAt),
-            "de-CH" => Ok(Self::DeMinusCh),
-            "de-DE" => Ok(Self::DeMinusDe),
-            "en-AT" => Ok(Self::EnMinusAt),
-            "en-AU" => Ok(Self::EnMinusAu),
-            "en-BE" => Ok(Self::EnMinusBe),
-            "en-CA" => Ok(Self::EnMinusCa),
-            "en-CH" => Ok(Self::EnMinusCh),
-            "en-DE" => Ok(Self::EnMinusDe),
-            "en-DK" => Ok(Self::EnMinusDk),
-            "en-ES" => Ok(Self::EnMinusEs),
-            "en-FI" => Ok(Self::EnMinusFi),
-            "en-FR" => Ok(Self::EnMinusFr),
-            "en-GB" => Ok(Self::EnMinusGb),
-            "en-IE" => Ok(Self::EnMinusIe),
-            "en-IT" => Ok(Self::EnMinusIt),
-            "en-NL" => Ok(Self::EnMinusNl),
-            "en-NO" => Ok(Self::EnMinusNo),
-            "en-NZ" => Ok(Self::EnMinusNz),
-            "en-PL" => Ok(Self::EnMinusPl),
-            "en-PT" => Ok(Self::EnMinusPt),
-            "en-SE" => Ok(Self::EnMinusSe),
-            "en-US" => Ok(Self::EnMinusUs),
-            "es-ES" => Ok(Self::EsMinusEs),
-            "es-US" => Ok(Self::EsMinusUs),
-            "fi-FI" => Ok(Self::FiMinusFi),
-            "fr-BE" => Ok(Self::FrMinusBe),
-            "fr-CA" => Ok(Self::FrMinusCa),
-            "fr-CH" => Ok(Self::FrMinusCh),
-            "fr-FR" => Ok(Self::FrMinusFr),
-            "it-CH" => Ok(Self::ItMinusCh),
-            "it-IT" => Ok(Self::ItMinusIt),
-            "nb-NO" => Ok(Self::NbMinusNo),
-            "nl-BE" => Ok(Self::NlMinusBe),
-            "nl-NL" => Ok(Self::NlMinusNl),
-            "pl-PL" => Ok(Self::PlMinusPl),
-            "pt-PT" => Ok(Self::PtMinusPt),
-            "sv-FI" => Ok(Self::SvMinusFi),
-            "sv-SE" => Ok(Self::SvMinusSe),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2235,89 +1107,6 @@ impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsP24Setup
         serializer.serialize_str(self.as_str())
     }
 }
-/// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
-    /// Additional fields for Mandate creation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions>,
-    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-    ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-    ///
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage>,
-}
-impl CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Additional fields for Mandate creation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions {}
-impl CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSofort {
@@ -2461,7 +1250,7 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<&'a str>,
     /// The client type that the end customer will pay from.
-    pub client: CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient,
+    pub client: Client,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -2472,58 +1261,8 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
-    pub fn new(client: CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient) -> Self {
+    pub fn new(client: Client) -> Self {
         Self { app_id: Default::default(), client, setup_future_usage: Default::default() }
-    }
-}
-/// The client type that the end customer will pay from.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    Android,
-    Ios,
-    Web,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Android => "android",
-            Self::Ios => "ios",
-            Self::Web => "web",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "android" => Ok(Self::Android),
-            "ios" => Ok(Self::Ios),
-            "web" => Ok(Self::Web),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2574,126 +1313,6 @@ impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodOptionsWechatPa
         serializer.serialize_str(self.as_str())
     }
 }
-/// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
-///
-/// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderPaymentSettingsPaymentMethodTypes {
-    AcssDebit,
-    AfterpayClearpay,
-    Alipay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Card,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    Klarna,
-    Link,
-    Oxxo,
-    P24,
-    SepaDebit,
-    Sofort,
-    WechatPay,
-}
-
-impl CreateOrderPaymentSettingsPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AcssDebit => "acss_debit",
-            Self::AfterpayClearpay => "afterpay_clearpay",
-            Self::Alipay => "alipay",
-            Self::AuBecsDebit => "au_becs_debit",
-            Self::BacsDebit => "bacs_debit",
-            Self::Bancontact => "bancontact",
-            Self::Card => "card",
-            Self::CustomerBalance => "customer_balance",
-            Self::Eps => "eps",
-            Self::Fpx => "fpx",
-            Self::Giropay => "giropay",
-            Self::Grabpay => "grabpay",
-            Self::Ideal => "ideal",
-            Self::Klarna => "klarna",
-            Self::Link => "link",
-            Self::Oxxo => "oxxo",
-            Self::P24 => "p24",
-            Self::SepaDebit => "sepa_debit",
-            Self::Sofort => "sofort",
-            Self::WechatPay => "wechat_pay",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderPaymentSettingsPaymentMethodTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "acss_debit" => Ok(Self::AcssDebit),
-            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
-            "alipay" => Ok(Self::Alipay),
-            "au_becs_debit" => Ok(Self::AuBecsDebit),
-            "bacs_debit" => Ok(Self::BacsDebit),
-            "bancontact" => Ok(Self::Bancontact),
-            "card" => Ok(Self::Card),
-            "customer_balance" => Ok(Self::CustomerBalance),
-            "eps" => Ok(Self::Eps),
-            "fpx" => Ok(Self::Fpx),
-            "giropay" => Ok(Self::Giropay),
-            "grabpay" => Ok(Self::Grabpay),
-            "ideal" => Ok(Self::Ideal),
-            "klarna" => Ok(Self::Klarna),
-            "link" => Ok(Self::Link),
-            "oxxo" => Ok(Self::Oxxo),
-            "p24" => Ok(Self::P24),
-            "sepa_debit" => Ok(Self::SepaDebit),
-            "sofort" => Ok(Self::Sofort),
-            "wechat_pay" => Ok(Self::WechatPay),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderPaymentSettingsPaymentMethodTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Provides configuration for completing a transfer for the order after it is paid.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderPaymentSettingsTransferData<'a> {
-    /// The amount that will be transferred automatically when the order is paid.
-    ///
-    /// If no amount is set, the full amount is transferred.
-    /// There cannot be any line items with recurring prices when using this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// ID of the Connected account receiving the transfer.
-    pub destination: &'a str,
-}
-impl<'a> CreateOrderPaymentSettingsTransferData<'a> {
-    pub fn new(destination: &'a str) -> Self {
-        Self { amount: Default::default(), destination }
-    }
-}
 /// Settings for the customer cost of shipping for this order.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateOrderShippingCost<'a> {
@@ -2716,7 +1335,7 @@ pub struct CreateOrderShippingCostShippingRateData<'a> {
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimate>,
+    pub delivery_estimate: Option<DeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
@@ -2725,7 +1344,7 @@ pub struct CreateOrderShippingCostShippingRateData<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<CreateOrderShippingCostShippingRateDataFixedAmount<'a>>,
+    pub fixed_amount: Option<FixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -2737,7 +1356,7 @@ pub struct CreateOrderShippingCostShippingRateData<'a> {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateOrderShippingCostShippingRateDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
@@ -2761,331 +1380,6 @@ impl<'a> CreateOrderShippingCostShippingRateData<'a> {
             tax_code: Default::default(),
             type_: Default::default(),
         }
-    }
-}
-/// The estimated range for how long shipping will take, meant to be displayable to the customer.
-///
-/// This will appear on CheckoutSessions.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimate {
-    /// The upper bound of the estimated range.
-    ///
-    /// If empty, represents no upper bound i.e., infinite.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximum>,
-    /// The lower bound of the estimated range.
-    ///
-    /// If empty, represents no lower bound.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum>,
-}
-impl CreateOrderShippingCostShippingRateDataDeliveryEstimate {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The upper bound of the estimated range.
-///
-/// If empty, represents no upper bound i.e., infinite.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
-    /// A unit of time.
-    pub unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
-    pub fn new(
-        unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The lower bound of the estimated range.
-///
-/// If empty, represents no lower bound.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
-    /// A unit of time.
-    pub unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
-    pub fn new(
-        unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Describes a fixed amount to charge for shipping.
-///
-/// Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataFixedAmount<'a> {
-    /// A non-negative integer in cents representing how much to charge.
-    pub amount: i64,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// Shipping rates defined in each available currency option.
-    ///
-    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions,
-        >,
-    >,
-}
-impl<'a> CreateOrderShippingCostShippingRateDataFixedAmount<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, currency_options: Default::default() }
-    }
-}
-/// Shipping rates defined in each available currency option.
-///
-/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    /// A non-negative integer in cents representing how much to charge.
-    pub amount: i64,
-    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior:
-        Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
-}
-impl CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    pub fn new(amount: i64) -> Self {
-        Self { amount, tax_behavior: Default::default() }
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderShippingCostShippingRateDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateOrderShippingCostShippingRateDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderShippingCostShippingRateDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderShippingCostShippingRateDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderShippingCostShippingRateDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderShippingCostShippingRateDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -3134,51 +1428,6 @@ impl serde::Serialize for CreateOrderShippingCostShippingRateDataType {
         serializer.serialize_str(self.as_str())
     }
 }
-/// Shipping details for the order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingDetails<'a> {
-    /// The shipping address for the order.
-    pub address: CreateOrderShippingDetailsAddress<'a>,
-    /// The name of the recipient of the order.
-    pub name: &'a str,
-    /// The phone number (including extension) for the recipient of the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> CreateOrderShippingDetails<'a> {
-    pub fn new(address: CreateOrderShippingDetailsAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: Default::default() }
-    }
-}
-/// The shipping address for the order.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateOrderShippingDetailsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
-    ///
-    /// Example: "NY" or "TX".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreateOrderShippingDetailsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// Additional tax details about the purchaser to be used for this order.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateOrderTaxDetails<'a> {
@@ -3186,7 +1435,7 @@ pub struct CreateOrderTaxDetails<'a> {
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<CreateOrderTaxDetailsTaxExempt>,
+    pub tax_exempt: Option<TaxExempt>,
     /// The purchaser's tax IDs to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<&'a [CreateOrderTaxDetailsTaxIds<'a>]>,
@@ -3194,58 +1443,6 @@ pub struct CreateOrderTaxDetails<'a> {
 impl<'a> CreateOrderTaxDetails<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The purchaser's tax exemption status.
-///
-/// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateOrderTaxDetailsTaxExempt {
-    Exempt,
-    None,
-    Reverse,
-}
-
-impl CreateOrderTaxDetailsTaxExempt {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateOrderTaxDetailsTaxExempt {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderTaxDetailsTaxExempt {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderTaxDetailsTaxExempt {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateOrderTaxDetailsTaxExempt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The purchaser's tax IDs to be used for this order.
@@ -3502,12 +1699,12 @@ impl<'a> RetrieveOrder<'a> {
 pub struct UpdateOrder<'a> {
     /// Settings for automatic tax calculation for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<UpdateOrderAutomaticTax>,
+    pub automatic_tax: Option<AutomaticTax>,
     /// Billing details for the customer.
     ///
     /// If a customer is provided, this will be automatically populated with values from that customer if override values are not provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<UpdateOrderBillingDetails<'a>>,
+    pub billing_details: Option<BillingDetails<'a>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -3525,7 +1722,7 @@ pub struct UpdateOrder<'a> {
     ///
     /// Pass the empty string `""` to unset this field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [UpdateOrderDiscounts<'a>]>,
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -3552,95 +1749,12 @@ pub struct UpdateOrder<'a> {
     pub shipping_cost: Option<UpdateOrderShippingCost<'a>>,
     /// Shipping details for the order.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_details: Option<UpdateOrderShippingDetails<'a>>,
+    pub shipping_details: Option<ShippingDetails<'a>>,
     /// Additional tax details about the purchaser to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_details: Option<UpdateOrderTaxDetails<'a>>,
 }
 impl<'a> UpdateOrder<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Settings for automatic tax calculation for this order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderAutomaticTax {
-    /// Enable automatic tax calculation which will automatically compute tax rates on this order.
-    pub enabled: bool,
-}
-impl UpdateOrderAutomaticTax {
-    pub fn new(enabled: bool) -> Self {
-        Self { enabled }
-    }
-}
-/// Billing details for the customer.
-///
-/// If a customer is provided, this will be automatically populated with values from that customer if override values are not provided.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderBillingDetails<'a> {
-    /// The billing address provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdateOrderBillingDetailsAddress<'a>>,
-    /// The billing email provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-    /// The billing name provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// The billing phone number provided by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> UpdateOrderBillingDetails<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The billing address provided by the customer.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderBillingDetailsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
-    ///
-    /// Example: "NY" or "TX".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> UpdateOrderBillingDetailsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The coupons, promotion codes, and/or discounts to apply to the order.
-///
-/// Pass the empty string `""` to unset this field.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderDiscounts<'a> {
-    /// ID of the coupon to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
-    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<&'a str>,
-    /// ID of the promotion code to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<&'a str>,
-}
-impl<'a> UpdateOrderDiscounts<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -3677,7 +1791,7 @@ pub struct UpdateOrderLineItems<'a> {
     /// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
     /// This Price is hidden in both the Dashboard and API lists and cannot be reused.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateOrderLineItemsPriceData<'a>>,
+    pub price_data: Option<PriceDataWithOptionalProduct<'a>>,
     /// The ID of a [Product](https://stripe.com/docs/api/products) to add to the Order.
     ///
     /// The product must have a `default_price` specified.
@@ -3693,7 +1807,7 @@ pub struct UpdateOrderLineItems<'a> {
     /// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
     /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_data: Option<UpdateOrderLineItemsProductData<'a>>,
+    pub product_data: Option<ProductUpsertData<'a>>,
     /// The quantity of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -3721,187 +1835,6 @@ impl<'a> UpdateOrderLineItemsDiscounts<'a> {
         Self::default()
     }
 }
-/// Data used to generate a new Price object inline.
-///
-/// The `price_data` parameter is an alternative to using the `product` or `price` parameters.
-///
-/// If you create products upfront and configure a `Product.default_price`, pass the `product` parameter when creating a line item.
-/// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
-/// This Price is hidden in both the Dashboard and API lists and cannot be reused.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderLineItemsPriceData<'a> {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// ID of the product this price belongs to.
-    ///
-    /// Use this to implement a variable-pricing model in your integration.
-    ///
-    /// This is required if `product_data` is not specifed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<&'a str>,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateOrderLineItemsPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> UpdateOrderLineItemsPriceData<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderLineItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateOrderLineItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderLineItemsPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderLineItemsPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderLineItemsPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Defines a Product inline and adds it to the Order.
-///
-/// `product_data` is an alternative to the `product` parameter.
-///
-/// If you created a Product upfront, use the `product` parameter to refer to the existing Product.
-/// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
-/// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderLineItemsProductData<'a> {
-    /// The product's description, meant to be displayable to the customer.
-    ///
-    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// A unique identifier for this product.
-    ///
-    /// `product_data` automatically creates a Product with this ID.
-    ///
-    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
-    /// If any of the fields in the existing Product are different from the values in `product_data`, `product_data` updates the existing Product with the new information.
-    /// So set `product_data[id]` to the same string every time you sell the same product, but don't re-use the same string for different products.
-    pub id: &'a str,
-    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The product's name, meant to be displayable to the customer.
-    pub name: &'a str,
-    /// The dimensions of this product for shipping purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<UpdateOrderLineItemsProductDataPackageDimensions>,
-    /// Whether this product is shipped (i.e., physical goods).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shippable: Option<bool>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<&'a str>,
-    /// A URL of a publicly-accessible webpage for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<&'a str>,
-}
-impl<'a> UpdateOrderLineItemsProductData<'a> {
-    pub fn new(id: &'a str, name: &'a str) -> Self {
-        Self {
-            description: Default::default(),
-            id,
-            images: Default::default(),
-            metadata: Default::default(),
-            name,
-            package_dimensions: Default::default(),
-            shippable: Default::default(),
-            tax_code: Default::default(),
-            url: Default::default(),
-        }
-    }
-}
-/// The dimensions of this product for shipping purposes.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderLineItemsProductDataPackageDimensions {
-    /// Height, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub height: f64,
-    /// Length, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub length: f64,
-    /// Weight, in ounces.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub weight: f64,
-    /// Width, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub width: f64,
-}
-impl UpdateOrderLineItemsProductDataPackageDimensions {
-    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
-        Self { height, length, weight, width }
-    }
-}
 /// Payment information associated with the order, including payment settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateOrderPayment<'a> {
@@ -3926,7 +1859,7 @@ pub struct UpdateOrderPaymentSettings<'a> {
     ///
     /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<&'a [UpdateOrderPaymentSettingsPaymentMethodTypes]>,
+    pub payment_method_types: Option<&'a [PaymentMethodTypes]>,
     /// The URL to redirect the customer to after they authenticate their payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
@@ -3943,7 +1876,7 @@ pub struct UpdateOrderPaymentSettings<'a> {
     pub statement_descriptor_suffix: Option<&'a str>,
     /// Provides configuration for completing a transfer for the order after it is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<UpdateOrderPaymentSettingsTransferData<'a>>,
+    pub transfer_data: Option<TransferData<'a>>,
 }
 impl<'a> UpdateOrderPaymentSettings<'a> {
     pub fn new() -> Self {
@@ -3968,7 +1901,7 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptions<'a> {
     pub bancontact: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact>,
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCard>,
+    pub card: Option<CardPaymentMethodOptions>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
@@ -3989,7 +1922,7 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptions<'a> {
     pub p24: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsP24>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit>,
+    pub sepa_debit: Option<PaymentIntentPaymentMethodOptionsParam>,
     /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSofort>,
@@ -4007,276 +1940,21 @@ impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptions<'a> {
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit<'a> {
     /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
+    pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsParam<'a>>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<SetupFutureUsage>,
     /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<VerificationMethod>,
 }
 impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Additional fields for Mandate creation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a> {
-    /// A URL for custom mandate text to render during confirmation step.
-    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
-    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_mandate_url: Option<&'a str>,
-    /// Description of the mandate interval.
-    ///
-    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_description: Option<&'a str>,
-    /// Payment schedule for the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<
-        UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule,
-    >,
-    /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<
-        UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
-    >,
-}
-impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Payment schedule for the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
-    Combined,
-    Interval,
-    Sporadic,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Combined => "combined",
-            Self::Interval => "interval",
-            Self::Sporadic => "sporadic",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "combined" => Ok(Self::Combined),
-            "interval" => Ok(Self::Interval),
-            "sporadic" => Ok(Self::Sporadic),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str>
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Transaction type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    Business,
-    Personal,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Business => "business",
-            Self::Personal => "personal",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business" => Ok(Self::Business),
-            "personal" => Ok(Self::Personal),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str>
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Verification method for the intent.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    Automatic,
-    Instant,
-    Microdeposits,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// If paying by `afterpay_clearpay`, this sub-hash contains details about the AfterpayClearpay payment method options to pass to the order's PaymentIntent.
@@ -4288,8 +1966,7 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method: Option<CaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -4308,63 +1985,6 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
 impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Controls when the funds will be captured from the customer's account.
-///
-/// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
-///
-/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    Automatic,
-    Manual,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with the payment method.
@@ -4494,8 +2114,7 @@ impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsAlipaySe
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language: Option<PreferredLanguage>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4508,65 +2127,6 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact {
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    De,
-    En,
-    Fr,
-    Nl,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::De => "de",
-            Self::En => "en",
-            Self::Fr => "fr",
-            Self::Nl => "nl",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "de" => Ok(Self::De),
-            "en" => Ok(Self::En),
-            "fr" => Ok(Self::Fr),
-            "nl" => Ok(Self::Nl),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4624,140 +2184,17 @@ impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsBanconta
         serializer.serialize_str(self.as_str())
     }
 }
-/// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCard {
-    /// Controls when the funds will be captured from the customer's account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod>,
-    /// Indicates that you intend to make future payments with the payment method.
-    ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
-    ///
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage>,
-}
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsCard {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    Automatic,
-    Manual,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Indicates that you intend to make future payments with the payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<BankTransferParam<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub funding_type:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType>,
+    pub funding_type: Option<FundingType>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4770,215 +2207,6 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
 impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-#[serde(skip_serializing_if = "Option::is_none")]
-pub eu_bank_transfer: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
-    /// List of address types that should be returned in the financial_addresses response.
-    ///
-    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub requested_address_types: Option<&'a [UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes]>,
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[serde(rename = "type")]
-pub type_: UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
-
-}
-impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<
-    'a,
-> {
-    /// The desired country code of the bank account information.
-    ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
-    pub country: &'a str,
-}
-impl<'a>
-    UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>
-{
-    pub fn new(country: &'a str) -> Self {
-        Self { country }
-    }
-}
-/// List of address types that should be returned in the financial_addresses response.
-///
-/// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
-    Iban,
-    Sepa,
-    SortCode,
-    Spei,
-    Zengin,
-}
-
-impl
-    UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Iban => "iban",
-            Self::Sepa => "sepa",
-            Self::SortCode => "sort_code",
-            Self::Spei => "spei",
-            Self::Zengin => "zengin",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-    "iban" => Ok(Self::Iban),
-"sepa" => Ok(Self::Sepa),
-"sort_code" => Ok(Self::SortCode),
-"spei" => Ok(Self::Spei),
-"zengin" => Ok(Self::Zengin),
-
-            _ => Err(())
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    EuBankTransfer,
-    GbBankTransfer,
-    JpBankTransfer,
-    MxBankTransfer,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::EuBankTransfer => "eu_bank_transfer",
-            Self::GbBankTransfer => "gb_bank_transfer",
-            Self::JpBankTransfer => "jp_bank_transfer",
-            Self::MxBankTransfer => "mx_bank_transfer",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
-            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
-            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
-            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The funding method type to be used when there are not enough funds in the customer balance.
-///
-/// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    BankTransfer,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BankTransfer => "bank_transfer",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "bank_transfer" => Ok(Self::BankTransfer),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5115,8 +2343,7 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna {
     pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod>,
     /// Preferred language of the Klarna authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locale:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale>,
+    pub preferred_locale: Option<PreferredLocale>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5172,167 +2399,6 @@ impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaC
     }
 }
 impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Preferred language of the Klarna authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    DaMinusDk,
-    DeMinusAt,
-    DeMinusCh,
-    DeMinusDe,
-    EnMinusAt,
-    EnMinusAu,
-    EnMinusBe,
-    EnMinusCa,
-    EnMinusCh,
-    EnMinusDe,
-    EnMinusDk,
-    EnMinusEs,
-    EnMinusFi,
-    EnMinusFr,
-    EnMinusGb,
-    EnMinusIe,
-    EnMinusIt,
-    EnMinusNl,
-    EnMinusNo,
-    EnMinusNz,
-    EnMinusPl,
-    EnMinusPt,
-    EnMinusSe,
-    EnMinusUs,
-    EsMinusEs,
-    EsMinusUs,
-    FiMinusFi,
-    FrMinusBe,
-    FrMinusCa,
-    FrMinusCh,
-    FrMinusFr,
-    ItMinusCh,
-    ItMinusIt,
-    NbMinusNo,
-    NlMinusBe,
-    NlMinusNl,
-    PlMinusPl,
-    PtMinusPt,
-    SvMinusFi,
-    SvMinusSe,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::DaMinusDk => "da-DK",
-            Self::DeMinusAt => "de-AT",
-            Self::DeMinusCh => "de-CH",
-            Self::DeMinusDe => "de-DE",
-            Self::EnMinusAt => "en-AT",
-            Self::EnMinusAu => "en-AU",
-            Self::EnMinusBe => "en-BE",
-            Self::EnMinusCa => "en-CA",
-            Self::EnMinusCh => "en-CH",
-            Self::EnMinusDe => "en-DE",
-            Self::EnMinusDk => "en-DK",
-            Self::EnMinusEs => "en-ES",
-            Self::EnMinusFi => "en-FI",
-            Self::EnMinusFr => "en-FR",
-            Self::EnMinusGb => "en-GB",
-            Self::EnMinusIe => "en-IE",
-            Self::EnMinusIt => "en-IT",
-            Self::EnMinusNl => "en-NL",
-            Self::EnMinusNo => "en-NO",
-            Self::EnMinusNz => "en-NZ",
-            Self::EnMinusPl => "en-PL",
-            Self::EnMinusPt => "en-PT",
-            Self::EnMinusSe => "en-SE",
-            Self::EnMinusUs => "en-US",
-            Self::EsMinusEs => "es-ES",
-            Self::EsMinusUs => "es-US",
-            Self::FiMinusFi => "fi-FI",
-            Self::FrMinusBe => "fr-BE",
-            Self::FrMinusCa => "fr-CA",
-            Self::FrMinusCh => "fr-CH",
-            Self::FrMinusFr => "fr-FR",
-            Self::ItMinusCh => "it-CH",
-            Self::ItMinusIt => "it-IT",
-            Self::NbMinusNo => "nb-NO",
-            Self::NlMinusBe => "nl-BE",
-            Self::NlMinusNl => "nl-NL",
-            Self::PlMinusPl => "pl-PL",
-            Self::PtMinusPt => "pt-PT",
-            Self::SvMinusFi => "sv-FI",
-            Self::SvMinusSe => "sv-SE",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "da-DK" => Ok(Self::DaMinusDk),
-            "de-AT" => Ok(Self::DeMinusAt),
-            "de-CH" => Ok(Self::DeMinusCh),
-            "de-DE" => Ok(Self::DeMinusDe),
-            "en-AT" => Ok(Self::EnMinusAt),
-            "en-AU" => Ok(Self::EnMinusAu),
-            "en-BE" => Ok(Self::EnMinusBe),
-            "en-CA" => Ok(Self::EnMinusCa),
-            "en-CH" => Ok(Self::EnMinusCh),
-            "en-DE" => Ok(Self::EnMinusDe),
-            "en-DK" => Ok(Self::EnMinusDk),
-            "en-ES" => Ok(Self::EnMinusEs),
-            "en-FI" => Ok(Self::EnMinusFi),
-            "en-FR" => Ok(Self::EnMinusFr),
-            "en-GB" => Ok(Self::EnMinusGb),
-            "en-IE" => Ok(Self::EnMinusIe),
-            "en-IT" => Ok(Self::EnMinusIt),
-            "en-NL" => Ok(Self::EnMinusNl),
-            "en-NO" => Ok(Self::EnMinusNo),
-            "en-NZ" => Ok(Self::EnMinusNz),
-            "en-PL" => Ok(Self::EnMinusPl),
-            "en-PT" => Ok(Self::EnMinusPt),
-            "en-SE" => Ok(Self::EnMinusSe),
-            "en-US" => Ok(Self::EnMinusUs),
-            "es-ES" => Ok(Self::EsMinusEs),
-            "es-US" => Ok(Self::EsMinusUs),
-            "fi-FI" => Ok(Self::FiMinusFi),
-            "fr-BE" => Ok(Self::FrMinusBe),
-            "fr-CA" => Ok(Self::FrMinusCa),
-            "fr-CH" => Ok(Self::FrMinusCh),
-            "fr-FR" => Ok(Self::FrMinusFr),
-            "it-CH" => Ok(Self::ItMinusCh),
-            "it-IT" => Ok(Self::ItMinusIt),
-            "nb-NO" => Ok(Self::NbMinusNo),
-            "nl-BE" => Ok(Self::NlMinusBe),
-            "nl-NL" => Ok(Self::NlMinusNl),
-            "pl-PL" => Ok(Self::PlMinusPl),
-            "pt-PT" => Ok(Self::PtMinusPt),
-            "sv-FI" => Ok(Self::SvMinusFi),
-            "sv-SE" => Ok(Self::SvMinusSe),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5652,89 +2718,6 @@ impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsP24Setup
         serializer.serialize_str(self.as_str())
     }
 }
-/// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
-    /// Additional fields for Mandate creation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions>,
-    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-    ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-    ///
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage>,
-}
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Additional fields for Mandate creation.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions {}
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    None,
-    OffSession,
-    OnSession,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSofort {
@@ -5878,7 +2861,7 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<&'a str>,
     /// The client type that the end customer will pay from.
-    pub client: UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient,
+    pub client: Client,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5889,58 +2872,8 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay<'a> {
-    pub fn new(client: UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient) -> Self {
+    pub fn new(client: Client) -> Self {
         Self { app_id: Default::default(), client, setup_future_usage: Default::default() }
-    }
-}
-/// The client type that the end customer will pay from.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    Android,
-    Ios,
-    Web,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Android => "android",
-            Self::Ios => "ios",
-            Self::Web => "web",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "android" => Ok(Self::Android),
-            "ios" => Ok(Self::Ios),
-            "web" => Ok(Self::Web),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5991,126 +2924,6 @@ impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPa
         serializer.serialize_str(self.as_str())
     }
 }
-/// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
-///
-/// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderPaymentSettingsPaymentMethodTypes {
-    AcssDebit,
-    AfterpayClearpay,
-    Alipay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Card,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    Klarna,
-    Link,
-    Oxxo,
-    P24,
-    SepaDebit,
-    Sofort,
-    WechatPay,
-}
-
-impl UpdateOrderPaymentSettingsPaymentMethodTypes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::AcssDebit => "acss_debit",
-            Self::AfterpayClearpay => "afterpay_clearpay",
-            Self::Alipay => "alipay",
-            Self::AuBecsDebit => "au_becs_debit",
-            Self::BacsDebit => "bacs_debit",
-            Self::Bancontact => "bancontact",
-            Self::Card => "card",
-            Self::CustomerBalance => "customer_balance",
-            Self::Eps => "eps",
-            Self::Fpx => "fpx",
-            Self::Giropay => "giropay",
-            Self::Grabpay => "grabpay",
-            Self::Ideal => "ideal",
-            Self::Klarna => "klarna",
-            Self::Link => "link",
-            Self::Oxxo => "oxxo",
-            Self::P24 => "p24",
-            Self::SepaDebit => "sepa_debit",
-            Self::Sofort => "sofort",
-            Self::WechatPay => "wechat_pay",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderPaymentSettingsPaymentMethodTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "acss_debit" => Ok(Self::AcssDebit),
-            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
-            "alipay" => Ok(Self::Alipay),
-            "au_becs_debit" => Ok(Self::AuBecsDebit),
-            "bacs_debit" => Ok(Self::BacsDebit),
-            "bancontact" => Ok(Self::Bancontact),
-            "card" => Ok(Self::Card),
-            "customer_balance" => Ok(Self::CustomerBalance),
-            "eps" => Ok(Self::Eps),
-            "fpx" => Ok(Self::Fpx),
-            "giropay" => Ok(Self::Giropay),
-            "grabpay" => Ok(Self::Grabpay),
-            "ideal" => Ok(Self::Ideal),
-            "klarna" => Ok(Self::Klarna),
-            "link" => Ok(Self::Link),
-            "oxxo" => Ok(Self::Oxxo),
-            "p24" => Ok(Self::P24),
-            "sepa_debit" => Ok(Self::SepaDebit),
-            "sofort" => Ok(Self::Sofort),
-            "wechat_pay" => Ok(Self::WechatPay),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderPaymentSettingsPaymentMethodTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Provides configuration for completing a transfer for the order after it is paid.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderPaymentSettingsTransferData<'a> {
-    /// The amount that will be transferred automatically when the order is paid.
-    ///
-    /// If no amount is set, the full amount is transferred.
-    /// There cannot be any line items with recurring prices when using this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// ID of the Connected account receiving the transfer.
-    pub destination: &'a str,
-}
-impl<'a> UpdateOrderPaymentSettingsTransferData<'a> {
-    pub fn new(destination: &'a str) -> Self {
-        Self { amount: Default::default(), destination }
-    }
-}
 /// Settings for the customer cost of shipping for this order.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateOrderShippingCost<'a> {
@@ -6133,7 +2946,7 @@ pub struct UpdateOrderShippingCostShippingRateData<'a> {
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimate>,
+    pub delivery_estimate: Option<DeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
@@ -6142,7 +2955,7 @@ pub struct UpdateOrderShippingCostShippingRateData<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<UpdateOrderShippingCostShippingRateDataFixedAmount<'a>>,
+    pub fixed_amount: Option<FixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -6154,7 +2967,7 @@ pub struct UpdateOrderShippingCostShippingRateData<'a> {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateOrderShippingCostShippingRateDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
@@ -6178,331 +2991,6 @@ impl<'a> UpdateOrderShippingCostShippingRateData<'a> {
             tax_code: Default::default(),
             type_: Default::default(),
         }
-    }
-}
-/// The estimated range for how long shipping will take, meant to be displayable to the customer.
-///
-/// This will appear on CheckoutSessions.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimate {
-    /// The upper bound of the estimated range.
-    ///
-    /// If empty, represents no upper bound i.e., infinite.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximum>,
-    /// The lower bound of the estimated range.
-    ///
-    /// If empty, represents no lower bound.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum>,
-}
-impl UpdateOrderShippingCostShippingRateDataDeliveryEstimate {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The upper bound of the estimated range.
-///
-/// If empty, represents no upper bound i.e., infinite.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
-    /// A unit of time.
-    pub unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
-    pub fn new(
-        unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The lower bound of the estimated range.
-///
-/// If empty, represents no lower bound.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
-    /// A unit of time.
-    pub unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
-    pub fn new(
-        unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Describes a fixed amount to charge for shipping.
-///
-/// Must be present if type is `fixed_amount`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataFixedAmount<'a> {
-    /// A non-negative integer in cents representing how much to charge.
-    pub amount: i64,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// Shipping rates defined in each available currency option.
-    ///
-    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions,
-        >,
-    >,
-}
-impl<'a> UpdateOrderShippingCostShippingRateDataFixedAmount<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, currency_options: Default::default() }
-    }
-}
-/// Shipping rates defined in each available currency option.
-///
-/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    /// A non-negative integer in cents representing how much to charge.
-    pub amount: i64,
-    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior:
-        Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
-}
-impl UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
-    pub fn new(amount: i64) -> Self {
-        Self { amount, tax_behavior: Default::default() }
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderShippingCostShippingRateDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -6551,51 +3039,6 @@ impl serde::Serialize for UpdateOrderShippingCostShippingRateDataType {
         serializer.serialize_str(self.as_str())
     }
 }
-/// Shipping details for the order.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingDetails<'a> {
-    /// The shipping address for the order.
-    pub address: UpdateOrderShippingDetailsAddress<'a>,
-    /// The name of the recipient of the order.
-    pub name: &'a str,
-    /// The phone number (including extension) for the recipient of the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> UpdateOrderShippingDetails<'a> {
-    pub fn new(address: UpdateOrderShippingDetailsAddress<'a>, name: &'a str) -> Self {
-        Self { address, name, phone: Default::default() }
-    }
-}
-/// The shipping address for the order.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateOrderShippingDetailsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
-    ///
-    /// Example: "NY" or "TX".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> UpdateOrderShippingDetailsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// Additional tax details about the purchaser to be used for this order.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateOrderTaxDetails<'a> {
@@ -6603,7 +3046,7 @@ pub struct UpdateOrderTaxDetails<'a> {
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<UpdateOrderTaxDetailsTaxExempt>,
+    pub tax_exempt: Option<TaxExempt>,
     /// The purchaser's tax IDs to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<&'a [UpdateOrderTaxDetailsTaxIds<'a>]>,
@@ -6611,58 +3054,6 @@ pub struct UpdateOrderTaxDetails<'a> {
 impl<'a> UpdateOrderTaxDetails<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The purchaser's tax exemption status.
-///
-/// One of `none`, `exempt`, or `reverse`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateOrderTaxDetailsTaxExempt {
-    Exempt,
-    None,
-    Reverse,
-}
-
-impl UpdateOrderTaxDetailsTaxExempt {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateOrderTaxDetailsTaxExempt {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderTaxDetailsTaxExempt {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderTaxDetailsTaxExempt {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateOrderTaxDetailsTaxExempt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The purchaser's tax IDs to be used for this order.
@@ -6937,5 +3328,1293 @@ pub struct ListLineItemsOrder<'a> {
 impl<'a> ListLineItemsOrder<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct AutomaticTax {
+    /// Enable automatic tax calculation which will automatically compute tax rates on this order.
+    pub enabled: bool,
+}
+impl AutomaticTax {
+    pub fn new(enabled: bool) -> Self {
+        Self { enabled }
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ValidatedOptionalFieldsAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    ///
+    /// Example: "NY" or "TX".
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> ValidatedOptionalFieldsAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DiscountsDataParam<'a> {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<&'a str>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<&'a str>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<&'a str>,
+}
+impl<'a> DiscountsDataParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl TaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exclusive => "exclusive",
+            Self::Inclusive => "inclusive",
+            Self::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct PackageDimensionsSpecs {
+    /// Height, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub height: f64,
+    /// Length, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub length: f64,
+    /// Weight, in ounces.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub weight: f64,
+    /// Width, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub width: f64,
+}
+impl PackageDimensionsSpecs {
+    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
+        Self { height, length, weight, width }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl PaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Combined => "combined",
+            Self::Interval => "interval",
+            Self::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentSchedule {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "combined" => Ok(Self::Combined),
+            "interval" => Ok(Self::Interval),
+            "sporadic" => Ok(Self::Sporadic),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PaymentSchedule {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TransactionType {
+    Business,
+    Personal,
+}
+
+impl TransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Business => "business",
+            Self::Personal => "personal",
+        }
+    }
+}
+
+impl std::str::FromStr for TransactionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business" => Ok(Self::Business),
+            "personal" => Ok(Self::Personal),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TransactionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum SetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl SetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::None => "none",
+            Self::OffSession => "off_session",
+            Self::OnSession => "on_session",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "none" => Ok(Self::None),
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for SetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum VerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl VerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Automatic => "automatic",
+            Self::Instant => "instant",
+            Self::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl std::str::FromStr for VerificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "instant" => Ok(Self::Instant),
+            "microdeposits" => Ok(Self::Microdeposits),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for VerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for VerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for VerificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CaptureMethod {
+    Automatic,
+    Manual,
+}
+
+impl CaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Automatic => "automatic",
+            Self::Manual => "manual",
+        }
+    }
+}
+
+impl std::str::FromStr for CaptureMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "automatic" => Ok(Self::Automatic),
+            "manual" => Ok(Self::Manual),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PreferredLanguage {
+    De,
+    En,
+    Fr,
+    Nl,
+}
+
+impl PreferredLanguage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::De => "de",
+            Self::En => "en",
+            Self::Fr => "fr",
+            Self::Nl => "nl",
+        }
+    }
+}
+
+impl std::str::FromStr for PreferredLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "de" => Ok(Self::De),
+            "en" => Ok(Self::En),
+            "fr" => Ok(Self::Fr),
+            "nl" => Ok(Self::Nl),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PreferredLanguage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PreferredLanguage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct EuBankTransferParams<'a> {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    pub country: &'a str,
+}
+impl<'a> EuBankTransferParams<'a> {
+    pub fn new(country: &'a str) -> Self {
+        Self { country }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum RequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
+    Zengin,
+}
+
+impl RequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Iban => "iban",
+            Self::Sepa => "sepa",
+            Self::SortCode => "sort_code",
+            Self::Spei => "spei",
+            Self::Zengin => "zengin",
+        }
+    }
+}
+
+impl std::str::FromStr for RequestedAddressTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "iban" => Ok(Self::Iban),
+            "sepa" => Ok(Self::Sepa),
+            "sort_code" => Ok(Self::SortCode),
+            "spei" => Ok(Self::Spei),
+            "zengin" => Ok(Self::Zengin),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for RequestedAddressTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for RequestedAddressTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Type {
+    EuBankTransfer,
+    GbBankTransfer,
+    JpBankTransfer,
+    MxBankTransfer,
+}
+
+impl Type {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::EuBankTransfer => "eu_bank_transfer",
+            Self::GbBankTransfer => "gb_bank_transfer",
+            Self::JpBankTransfer => "jp_bank_transfer",
+            Self::MxBankTransfer => "mx_bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for Type {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
+            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
+            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
+            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Type {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Type {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum FundingType {
+    BankTransfer,
+}
+
+impl FundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl std::str::FromStr for FundingType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "bank_transfer" => Ok(Self::BankTransfer),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for FundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for FundingType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PreferredLocale {
+    DaMinusDk,
+    DeMinusAt,
+    DeMinusCh,
+    DeMinusDe,
+    EnMinusAt,
+    EnMinusAu,
+    EnMinusBe,
+    EnMinusCa,
+    EnMinusCh,
+    EnMinusDe,
+    EnMinusDk,
+    EnMinusEs,
+    EnMinusFi,
+    EnMinusFr,
+    EnMinusGb,
+    EnMinusIe,
+    EnMinusIt,
+    EnMinusNl,
+    EnMinusNo,
+    EnMinusNz,
+    EnMinusPl,
+    EnMinusPt,
+    EnMinusSe,
+    EnMinusUs,
+    EsMinusEs,
+    EsMinusUs,
+    FiMinusFi,
+    FrMinusBe,
+    FrMinusCa,
+    FrMinusCh,
+    FrMinusFr,
+    ItMinusCh,
+    ItMinusIt,
+    NbMinusNo,
+    NlMinusBe,
+    NlMinusNl,
+    PlMinusPl,
+    PtMinusPt,
+    SvMinusFi,
+    SvMinusSe,
+}
+
+impl PreferredLocale {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::DaMinusDk => "da-DK",
+            Self::DeMinusAt => "de-AT",
+            Self::DeMinusCh => "de-CH",
+            Self::DeMinusDe => "de-DE",
+            Self::EnMinusAt => "en-AT",
+            Self::EnMinusAu => "en-AU",
+            Self::EnMinusBe => "en-BE",
+            Self::EnMinusCa => "en-CA",
+            Self::EnMinusCh => "en-CH",
+            Self::EnMinusDe => "en-DE",
+            Self::EnMinusDk => "en-DK",
+            Self::EnMinusEs => "en-ES",
+            Self::EnMinusFi => "en-FI",
+            Self::EnMinusFr => "en-FR",
+            Self::EnMinusGb => "en-GB",
+            Self::EnMinusIe => "en-IE",
+            Self::EnMinusIt => "en-IT",
+            Self::EnMinusNl => "en-NL",
+            Self::EnMinusNo => "en-NO",
+            Self::EnMinusNz => "en-NZ",
+            Self::EnMinusPl => "en-PL",
+            Self::EnMinusPt => "en-PT",
+            Self::EnMinusSe => "en-SE",
+            Self::EnMinusUs => "en-US",
+            Self::EsMinusEs => "es-ES",
+            Self::EsMinusUs => "es-US",
+            Self::FiMinusFi => "fi-FI",
+            Self::FrMinusBe => "fr-BE",
+            Self::FrMinusCa => "fr-CA",
+            Self::FrMinusCh => "fr-CH",
+            Self::FrMinusFr => "fr-FR",
+            Self::ItMinusCh => "it-CH",
+            Self::ItMinusIt => "it-IT",
+            Self::NbMinusNo => "nb-NO",
+            Self::NlMinusBe => "nl-BE",
+            Self::NlMinusNl => "nl-NL",
+            Self::PlMinusPl => "pl-PL",
+            Self::PtMinusPt => "pt-PT",
+            Self::SvMinusFi => "sv-FI",
+            Self::SvMinusSe => "sv-SE",
+        }
+    }
+}
+
+impl std::str::FromStr for PreferredLocale {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "da-DK" => Ok(Self::DaMinusDk),
+            "de-AT" => Ok(Self::DeMinusAt),
+            "de-CH" => Ok(Self::DeMinusCh),
+            "de-DE" => Ok(Self::DeMinusDe),
+            "en-AT" => Ok(Self::EnMinusAt),
+            "en-AU" => Ok(Self::EnMinusAu),
+            "en-BE" => Ok(Self::EnMinusBe),
+            "en-CA" => Ok(Self::EnMinusCa),
+            "en-CH" => Ok(Self::EnMinusCh),
+            "en-DE" => Ok(Self::EnMinusDe),
+            "en-DK" => Ok(Self::EnMinusDk),
+            "en-ES" => Ok(Self::EnMinusEs),
+            "en-FI" => Ok(Self::EnMinusFi),
+            "en-FR" => Ok(Self::EnMinusFr),
+            "en-GB" => Ok(Self::EnMinusGb),
+            "en-IE" => Ok(Self::EnMinusIe),
+            "en-IT" => Ok(Self::EnMinusIt),
+            "en-NL" => Ok(Self::EnMinusNl),
+            "en-NO" => Ok(Self::EnMinusNo),
+            "en-NZ" => Ok(Self::EnMinusNz),
+            "en-PL" => Ok(Self::EnMinusPl),
+            "en-PT" => Ok(Self::EnMinusPt),
+            "en-SE" => Ok(Self::EnMinusSe),
+            "en-US" => Ok(Self::EnMinusUs),
+            "es-ES" => Ok(Self::EsMinusEs),
+            "es-US" => Ok(Self::EsMinusUs),
+            "fi-FI" => Ok(Self::FiMinusFi),
+            "fr-BE" => Ok(Self::FrMinusBe),
+            "fr-CA" => Ok(Self::FrMinusCa),
+            "fr-CH" => Ok(Self::FrMinusCh),
+            "fr-FR" => Ok(Self::FrMinusFr),
+            "it-CH" => Ok(Self::ItMinusCh),
+            "it-IT" => Ok(Self::ItMinusIt),
+            "nb-NO" => Ok(Self::NbMinusNo),
+            "nl-BE" => Ok(Self::NlMinusBe),
+            "nl-NL" => Ok(Self::NlMinusNl),
+            "pl-PL" => Ok(Self::PlMinusPl),
+            "pt-PT" => Ok(Self::PtMinusPt),
+            "sv-FI" => Ok(Self::SvMinusFi),
+            "sv-SE" => Ok(Self::SvMinusSe),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PreferredLocale {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PreferredLocale {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PaymentMethodOptionsMandateOptionsParam {}
+impl PaymentMethodOptionsMandateOptionsParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Client {
+    Android,
+    Ios,
+    Web,
+}
+
+impl Client {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Android => "android",
+            Self::Ios => "ios",
+            Self::Web => "web",
+        }
+    }
+}
+
+impl std::str::FromStr for Client {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "android" => Ok(Self::Android),
+            "ios" => Ok(Self::Ios),
+            "web" => Ok(Self::Web),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Client {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Client {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Client {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PaymentMethodTypes {
+    AcssDebit,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Card,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Link,
+    Oxxo,
+    P24,
+    SepaDebit,
+    Sofort,
+    WechatPay,
+}
+
+impl PaymentMethodTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::AcssDebit => "acss_debit",
+            Self::AfterpayClearpay => "afterpay_clearpay",
+            Self::Alipay => "alipay",
+            Self::AuBecsDebit => "au_becs_debit",
+            Self::BacsDebit => "bacs_debit",
+            Self::Bancontact => "bancontact",
+            Self::Card => "card",
+            Self::CustomerBalance => "customer_balance",
+            Self::Eps => "eps",
+            Self::Fpx => "fpx",
+            Self::Giropay => "giropay",
+            Self::Grabpay => "grabpay",
+            Self::Ideal => "ideal",
+            Self::Klarna => "klarna",
+            Self::Link => "link",
+            Self::Oxxo => "oxxo",
+            Self::P24 => "p24",
+            Self::SepaDebit => "sepa_debit",
+            Self::Sofort => "sofort",
+            Self::WechatPay => "wechat_pay",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "acss_debit" => Ok(Self::AcssDebit),
+            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
+            "alipay" => Ok(Self::Alipay),
+            "au_becs_debit" => Ok(Self::AuBecsDebit),
+            "bacs_debit" => Ok(Self::BacsDebit),
+            "bancontact" => Ok(Self::Bancontact),
+            "card" => Ok(Self::Card),
+            "customer_balance" => Ok(Self::CustomerBalance),
+            "eps" => Ok(Self::Eps),
+            "fpx" => Ok(Self::Fpx),
+            "giropay" => Ok(Self::Giropay),
+            "grabpay" => Ok(Self::Grabpay),
+            "ideal" => Ok(Self::Ideal),
+            "klarna" => Ok(Self::Klarna),
+            "link" => Ok(Self::Link),
+            "oxxo" => Ok(Self::Oxxo),
+            "p24" => Ok(Self::P24),
+            "sepa_debit" => Ok(Self::SepaDebit),
+            "sofort" => Ok(Self::Sofort),
+            "wechat_pay" => Ok(Self::WechatPay),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PaymentMethodTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct TransferData<'a> {
+    /// The amount that will be transferred automatically when the order is paid.
+    ///
+    /// If no amount is set, the full amount is transferred.
+    /// There cannot be any line items with recurring prices when using this field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// ID of the Connected account receiving the transfer.
+    pub destination: &'a str,
+}
+impl<'a> TransferData<'a> {
+    pub fn new(destination: &'a str) -> Self {
+        Self { amount: Default::default(), destination }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Unit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl Unit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::BusinessDay => "business_day",
+            Self::Day => "day",
+            Self::Hour => "hour",
+            Self::Month => "month",
+            Self::Week => "week",
+        }
+    }
+}
+
+impl std::str::FromStr for Unit {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business_day" => Ok(Self::BusinessDay),
+            "day" => Ok(Self::Day),
+            "hour" => Ok(Self::Hour),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Unit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Unit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Unit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxExempt {
+    Exempt,
+    None,
+    Reverse,
+}
+
+impl TaxExempt {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exempt => "exempt",
+            Self::None => "none",
+            Self::Reverse => "reverse",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxExempt {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exempt" => Ok(Self::Exempt),
+            "none" => Ok(Self::None),
+            "reverse" => Ok(Self::Reverse),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxExempt {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxExempt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct BillingDetails<'a> {
+    /// The billing address provided by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<ValidatedOptionalFieldsAddress<'a>>,
+    /// The billing email provided by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    /// The billing name provided by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// The billing phone number provided by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> BillingDetails<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PriceDataWithOptionalProduct<'a> {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// ID of the product this price belongs to.
+    ///
+    /// Use this to implement a variable-pricing model in your integration.
+    ///
+    /// This is required if `product_data` is not specifed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<&'a str>,
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<TaxBehavior>,
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<&'a str>,
+}
+impl<'a> PriceDataWithOptionalProduct<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ProductUpsertData<'a> {
+    /// The product's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    /// A unique identifier for this product.
+    ///
+    /// `product_data` automatically creates a Product with this ID.
+    ///
+    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
+    /// If any of the fields in the existing Product are different from the values in `product_data`, `product_data` updates the existing Product with the new information.
+    /// So set `product_data[id]` to the same string every time you sell the same product, but don't re-use the same string for different products.
+    pub id: &'a str,
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<&'a [&'a str]>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// The product's name, meant to be displayable to the customer.
+    pub name: &'a str,
+    /// The dimensions of this product for shipping purposes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_dimensions: Option<PackageDimensionsSpecs>,
+    /// Whether this product is shipped (i.e., physical goods).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shippable: Option<bool>,
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<&'a str>,
+    /// A URL of a publicly-accessible webpage for this product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<&'a str>,
+}
+impl<'a> ProductUpsertData<'a> {
+    pub fn new(id: &'a str, name: &'a str) -> Self {
+        Self {
+            description: Default::default(),
+            id,
+            images: Default::default(),
+            metadata: Default::default(),
+            name,
+            package_dimensions: Default::default(),
+            shippable: Default::default(),
+            tax_code: Default::default(),
+            url: Default::default(),
+        }
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsParam<'a> {
+    /// A URL for custom mandate text to render during confirmation step.
+    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
+    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<&'a str>,
+    /// Description of the mandate interval.
+    ///
+    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<&'a str>,
+    /// Payment schedule for the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule: Option<PaymentSchedule>,
+    /// Transaction type of the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<TransactionType>,
+}
+impl<'a> PaymentIntentPaymentMethodOptionsMandateOptionsParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CardPaymentMethodOptions {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CaptureMethod>,
+    /// Indicates that you intend to make future payments with the payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<SetupFutureUsage>,
+}
+impl CardPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct BankTransferParam<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<EuBankTransferParams<'a>>,
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types: Option<&'a [RequestedAddressTypes]>,
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    #[serde(rename = "type")]
+    pub type_: Type,
+}
+impl<'a> BankTransferParam<'a> {
+    pub fn new(type_: Type) -> Self {
+        Self {
+            eu_bank_transfer: Default::default(),
+            requested_address_types: Default::default(),
+            type_,
+        }
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsParam {
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsMandateOptionsParam>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<SetupFutureUsage>,
+}
+impl PaymentIntentPaymentMethodOptionsParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct DeliveryEstimateBound {
+    /// A unit of time.
+    pub unit: Unit,
+    /// Must be greater than 0.
+    pub value: i64,
+}
+impl DeliveryEstimateBound {
+    pub fn new(unit: Unit, value: i64) -> Self {
+        Self { unit, value }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CurrencyOption {
+    /// A non-negative integer in cents representing how much to charge.
+    pub amount: i64,
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<TaxBehavior>,
+}
+impl CurrencyOption {
+    pub fn new(amount: i64) -> Self {
+        Self { amount, tax_behavior: Default::default() }
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ShippingDetails<'a> {
+    /// The shipping address for the order.
+    pub address: ValidatedOptionalFieldsAddress<'a>,
+    /// The name of the recipient of the order.
+    pub name: &'a str,
+    /// The phone number (including extension) for the recipient of the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> ShippingDetails<'a> {
+    pub fn new(address: ValidatedOptionalFieldsAddress<'a>, name: &'a str) -> Self {
+        Self { address, name, phone: Default::default() }
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<DeliveryEstimateBound>,
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<DeliveryEstimateBound>,
+}
+impl DeliveryEstimate {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct FixedAmount<'a> {
+    /// A non-negative integer in cents representing how much to charge.
+    pub amount: i64,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+}
+impl<'a> FixedAmount<'a> {
+    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
+        Self { amount, currency, currency_options: Default::default() }
     }
 }

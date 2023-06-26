@@ -7,7 +7,8 @@ use crate::types::{ComponentPath, RustIdent};
 pub enum RefType {
     Component(ComponentPath),
     ObjectId(ComponentPath),
-    Stripe(RustIdent),
+    Types(RustIdent),
+    IntraFile(RustIdent),
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]

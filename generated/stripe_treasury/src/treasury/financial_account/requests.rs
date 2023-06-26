@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::financial_account::FinancialAccount {
     /// Creates a new FinancialAccount.
     ///
     /// For now, each connected account can only have one FinancialAccount.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateFinancialAccount,
-    ) -> Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
+    ) -> stripe::Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
         client.send_form("/treasury/financial_accounts", params, http_types::Method::Post)
     }
     /// Updates the details of a FinancialAccount.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         financial_account: &str,
         params: UpdateFinancialAccount,
-    ) -> Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
+    ) -> stripe::Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
         client.send_form(
             &format!(
                 "/treasury/financial_accounts/{financial_account}",
@@ -27,11 +25,12 @@ impl stripe_treasury::treasury::financial_account::FinancialAccount {
     }
     /// Updates the Features associated with a FinancialAccount.
     pub fn update_features(
-        client: &Client,
+        client: &stripe::Client,
         financial_account: &str,
         params: UpdateFeaturesFinancialAccount,
-    ) -> Response<stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures>
-    {
+    ) -> stripe::Response<
+        stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures,
+    > {
         client.send_form(
             &format!(
                 "/treasury/financial_accounts/{financial_account}/features",
@@ -43,18 +42,19 @@ impl stripe_treasury::treasury::financial_account::FinancialAccount {
     }
     /// Returns a list of FinancialAccounts.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListFinancialAccount,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::financial_account::FinancialAccount>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::financial_account::FinancialAccount>,
+    > {
         client.get_query("/treasury/financial_accounts", params)
     }
     /// Retrieves the details of a FinancialAccount.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         financial_account: &str,
         params: RetrieveFinancialAccount,
-    ) -> Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
+    ) -> stripe::Response<stripe_treasury::treasury::financial_account::FinancialAccount> {
         client.get_query(
             &format!(
                 "/treasury/financial_accounts/{financial_account}",
@@ -65,11 +65,12 @@ impl stripe_treasury::treasury::financial_account::FinancialAccount {
     }
     /// Retrieves Features information associated with the FinancialAccount.
     pub fn retrieve_features(
-        client: &Client,
+        client: &stripe::Client,
         financial_account: &str,
         params: RetrieveFeaturesFinancialAccount,
-    ) -> Response<stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures>
-    {
+    ) -> stripe::Response<
+        stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures,
+    > {
         client.get_query(
             &format!(
                 "/treasury/financial_accounts/{financial_account}/features",

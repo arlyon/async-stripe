@@ -1,22 +1,20 @@
-use stripe::{Client, Response};
-
 impl stripe_core::external_account::ExternalAccount {
     /// List external accounts for an account.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: ListExternalAccount,
-    ) -> Response<stripe_types::List<stripe_core::external_account::ExternalAccount>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::external_account::ExternalAccount>> {
         client
             .get_query(&format!("/accounts/{account}/external_accounts", account = account), params)
     }
     /// Retrieve a specified external account for a given account.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         id: &str,
         params: RetrieveExternalAccount,
-    ) -> Response<stripe_core::external_account::ExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::ExternalAccount> {
         client.get_query(
             &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
             params,
@@ -24,10 +22,10 @@ impl stripe_core::external_account::ExternalAccount {
     }
     /// Create an external account for a given account.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: CreateExternalAccount,
-    ) -> Response<stripe_core::external_account::ExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::ExternalAccount> {
         client.send_form(
             &format!("/accounts/{account}/external_accounts", account = account),
             params,
@@ -38,11 +36,11 @@ impl stripe_core::external_account::ExternalAccount {
     ///
     /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         id: &str,
         params: UpdateExternalAccount,
-    ) -> Response<stripe_core::external_account::ExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::ExternalAccount> {
         client.send_form(
             &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
             params,
@@ -51,10 +49,10 @@ impl stripe_core::external_account::ExternalAccount {
     }
     /// Delete a specified external account for a given account.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         id: &str,
-    ) -> Response<stripe_core::external_account::DeletedExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::DeletedExternalAccount> {
         client.send(
             &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
             http_types::Method::Delete,

@@ -1,21 +1,20 @@
-use stripe::{Client, Response};
-
 impl stripe_core::issuing::authorization::Authorization {
     /// Returns a list of Issuing `Authorization` objects.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListAuthorization,
-    ) -> Response<stripe_types::List<stripe_core::issuing::authorization::Authorization>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::issuing::authorization::Authorization>>
+    {
         client.get_query("/issuing/authorizations", params)
     }
     /// Retrieves an Issuing `Authorization` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         authorization: &str,
         params: RetrieveAuthorization,
-    ) -> Response<stripe_core::issuing::authorization::Authorization> {
+    ) -> stripe::Response<stripe_core::issuing::authorization::Authorization> {
         client.get_query(
             &format!("/issuing/authorizations/{authorization}", authorization = authorization),
             params,
@@ -25,10 +24,10 @@ impl stripe_core::issuing::authorization::Authorization {
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         authorization: &str,
         params: UpdateAuthorization,
-    ) -> Response<stripe_core::issuing::authorization::Authorization> {
+    ) -> stripe::Response<stripe_core::issuing::authorization::Authorization> {
         client.send_form(
             &format!("/issuing/authorizations/{authorization}", authorization = authorization),
             params,
@@ -41,10 +40,10 @@ impl stripe_core::issuing::authorization::Authorization {
     /// You can also respond directly to the webhook request to approve an authorization (preferred).
     /// More details can be found [here](https://site-admin.stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
     pub fn approve(
-        client: &Client,
+        client: &stripe::Client,
         authorization: &str,
         params: ApproveAuthorization,
-    ) -> Response<stripe_core::issuing::authorization::Authorization> {
+    ) -> stripe::Response<stripe_core::issuing::authorization::Authorization> {
         client.send_form(
             &format!(
                 "/issuing/authorizations/{authorization}/approve",
@@ -59,10 +58,10 @@ impl stripe_core::issuing::authorization::Authorization {
     /// This request should be made within the timeout window of the [real time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow. You can also respond directly to the webhook request to decline an authorization (preferred).
     /// More details can be found [here](https://site-admin.stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
     pub fn decline(
-        client: &Client,
+        client: &stripe::Client,
         authorization: &str,
         params: DeclineAuthorization,
-    ) -> Response<stripe_core::issuing::authorization::Authorization> {
+    ) -> stripe::Response<stripe_core::issuing::authorization::Authorization> {
         client.send_form(
             &format!(
                 "/issuing/authorizations/{authorization}/decline",

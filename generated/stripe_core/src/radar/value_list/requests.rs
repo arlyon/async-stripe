@@ -1,29 +1,27 @@
-use stripe::{Client, Response};
-
 impl stripe_core::radar::value_list::ValueList {
     /// Returns a list of `ValueList` objects.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListValueList,
-    ) -> Response<stripe_types::List<stripe_core::radar::value_list::ValueList>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::radar::value_list::ValueList>> {
         client.get_query("/radar/value_lists", params)
     }
     /// Retrieves a `ValueList` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         value_list: &str,
         params: RetrieveValueList,
-    ) -> Response<stripe_core::radar::value_list::ValueList> {
+    ) -> stripe::Response<stripe_core::radar::value_list::ValueList> {
         client
             .get_query(&format!("/radar/value_lists/{value_list}", value_list = value_list), params)
     }
     /// Creates a new `ValueList` object, which can then be referenced in rules.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateValueList,
-    ) -> Response<stripe_core::radar::value_list::ValueList> {
+    ) -> stripe::Response<stripe_core::radar::value_list::ValueList> {
         client.send_form("/radar/value_lists", params, http_types::Method::Post)
     }
     /// Updates a `ValueList` object by setting the values of the parameters passed.
@@ -31,10 +29,10 @@ impl stripe_core::radar::value_list::ValueList {
     /// Any parameters not provided will be left unchanged.
     /// Note that `item_type` is immutable.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         value_list: &str,
         params: UpdateValueList,
-    ) -> Response<stripe_core::radar::value_list::ValueList> {
+    ) -> stripe::Response<stripe_core::radar::value_list::ValueList> {
         client.send_form(
             &format!("/radar/value_lists/{value_list}", value_list = value_list),
             params,
@@ -45,9 +43,9 @@ impl stripe_core::radar::value_list::ValueList {
     ///
     /// To be deleted, a value list must not be referenced in any rules.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         value_list: &str,
-    ) -> Response<stripe_core::radar::value_list::DeletedValueList> {
+    ) -> stripe::Response<stripe_core::radar::value_list::DeletedValueList> {
         client.send(
             &format!("/radar/value_lists/{value_list}", value_list = value_list),
             http_types::Method::Delete,

@@ -156,6 +156,7 @@ impl Components {
                         let comp = self.get(path);
                         (Some(self.resolve_path(path)), comp.ident().clone())
                     }
+                    RefType::IntraFile(ident) => (None, ident.clone()),
                     RefType::ObjectId(path) => {
                         let ident = infer_id_name(path);
                         let path_info = if IDS_IN_STRIPE.contains(path) {
@@ -165,7 +166,7 @@ impl Components {
                         };
                         (Some(path_info), ident)
                     }
-                    RefType::Stripe(ident) => {
+                    RefType::Types(ident) => {
                         (Some(PathInfo { krate: Some(Crate::Types), path: None }), ident.clone())
                     }
                 };
@@ -448,17 +449,16 @@ pub fn build_field_overrides(spec: &Spec) -> anyhow::Result<Overrides> {
             .with_context(|| format!("Failed to construct override for source {override_:?}"))?;
         overrides.insert(obj, meta);
     }
-    dbg!(&overrides);
     Ok(Overrides { overrides })
 }
 
 impl Overrides {
-    pub fn replace(&self, typ: &mut RustType) {
+    pub fn replace_typ(&self, typ: &mut RustType) {
         match typ {
             RustType::Object(obj, _) => {
                 if let Some(meta) = self.overrides.get(obj) {
                     *typ = RustType::Ref {
-                        typ: RefType::Stripe(meta.ident.clone()),
+                        typ: RefType::Types(meta.ident.clone()),
                         borrowed: false,
                         has_borrow: obj.has_borrow(),
                         is_copy: obj.is_copy(),
@@ -470,7 +470,7 @@ impl Overrides {
             RustType::Simple(_) => {}
             RustType::Ref { .. } => {}
             RustType::Compound(inner) => {
-                self.replace(inner.value_typ_mut());
+                self.replace_typ(inner.value_typ_mut());
             }
         }
     }
@@ -479,14 +479,14 @@ impl Overrides {
         match obj {
             RustObject::Struct(fields) => {
                 for field in fields {
-                    self.replace(&mut field.rust_type);
+                    self.replace_typ(&mut field.rust_type);
                 }
             }
             RustObject::Enum(_) => {}
             RustObject::FieldedEnum(variants) => {
                 for var in variants {
                     if let Some(typ) = &mut var.rust_type {
-                        self.replace(typ);
+                        self.replace_typ(typ);
                     }
                 }
             }
@@ -518,9 +518,9 @@ impl Components {
 
             for req in &mut obj.requests {
                 if let Some(typ) = &mut req.params {
-                    overrides.replace(typ);
+                    overrides.replace_typ(typ);
                 }
-                overrides.replace(&mut req.returned);
+                overrides.replace_typ(&mut req.returned);
             }
         }
     }

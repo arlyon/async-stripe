@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::usage_record::UsageRecord {
     /// Creates a usage record for a specified subscription item and date, and fills it with a quantity.
     ///
@@ -11,10 +9,10 @@ impl stripe_core::usage_record::UsageRecord {
     /// In most cases, this is the desired resolution, however, you can change this behavior with the `action` parameter.  The default pricing model for metered billing is [per-unit pricing](https://stripe.com/docs/api/plans/object#plan_object-billing_scheme).
     /// For finer granularity, you can configure metered billing to have a [tiered pricing](https://stripe.com/docs/billing/subscriptions/tiers) model.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         subscription_item: &stripe_core::subscription_item::SubscriptionItemId,
         params: CreateUsageRecord,
-    ) -> Response<stripe_core::usage_record::UsageRecord> {
+    ) -> stripe::Response<stripe_core::usage_record::UsageRecord> {
         client.send_form(
             &format!(
                 "/subscription_items/{subscription_item}/usage_records",

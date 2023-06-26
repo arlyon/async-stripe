@@ -1,12 +1,10 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::reporting::report_run::ReportRun {
     /// Retrieves the details of an existing Report Run.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         report_run: &str,
         params: RetrieveReportRun,
-    ) -> Response<stripe_misc::reporting::report_run::ReportRun> {
+    ) -> stripe::Response<stripe_misc::reporting::report_run::ReportRun> {
         client.get_query(
             &format!("/reporting/report_runs/{report_run}", report_run = report_run),
             params,
@@ -16,16 +14,16 @@ impl stripe_misc::reporting::report_run::ReportRun {
     ///
     /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateReportRun,
-    ) -> Response<stripe_misc::reporting::report_run::ReportRun> {
+    ) -> stripe::Response<stripe_misc::reporting::report_run::ReportRun> {
         client.send_form("/reporting/report_runs", params, http_types::Method::Post)
     }
     /// Returns a list of Report Runs, with the most recent appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReportRun,
-    ) -> Response<stripe_types::List<stripe_misc::reporting::report_run::ReportRun>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::reporting::report_run::ReportRun>> {
         client.get_query("/reporting/report_runs", params)
     }
 }

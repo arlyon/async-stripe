@@ -1,19 +1,17 @@
-use stripe::{Client, Response};
-
 impl stripe_connect::country_spec::CountrySpec {
     /// Lists all Country Spec objects available in the API.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListCountrySpec,
-    ) -> Response<stripe_types::List<stripe_connect::country_spec::CountrySpec>> {
+    ) -> stripe::Response<stripe_types::List<stripe_connect::country_spec::CountrySpec>> {
         client.get_query("/country_specs", params)
     }
     /// Returns a Country Spec for a given Country code.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         country: &str,
         params: RetrieveCountrySpec,
-    ) -> Response<stripe_connect::country_spec::CountrySpec> {
+    ) -> stripe::Response<stripe_connect::country_spec::CountrySpec> {
         client.get_query(&format!("/country_specs/{country}", country = country), params)
     }
 }

@@ -1,20 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::transaction_entry::TransactionEntry {
     /// Retrieves a TransactionEntry object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveTransactionEntry,
-    ) -> Response<stripe_treasury::treasury::transaction_entry::TransactionEntry> {
+    ) -> stripe::Response<stripe_treasury::treasury::transaction_entry::TransactionEntry> {
         client.get_query(&format!("/treasury/transaction_entries/{id}", id = id), params)
     }
     /// Retrieves a list of TransactionEntry objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTransactionEntry,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::transaction_entry::TransactionEntry>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::transaction_entry::TransactionEntry>,
+    > {
         client.get_query("/treasury/transaction_entries", params)
     }
 }

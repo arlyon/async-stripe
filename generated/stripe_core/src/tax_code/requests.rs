@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_core::tax_code::TaxCode {
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTaxCode,
-    ) -> Response<stripe_types::List<stripe_core::tax_code::TaxCode>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::tax_code::TaxCode>> {
         client.get_query("/tax_codes", params)
     }
     /// Retrieves the details of an existing tax code.
     ///
     /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveTaxCode,
-    ) -> Response<stripe_core::tax_code::TaxCode> {
+    ) -> stripe::Response<stripe_core::tax_code::TaxCode> {
         client.get_query(&format!("/tax_codes/{id}", id = id), params)
     }
 }

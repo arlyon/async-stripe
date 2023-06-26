@@ -1,23 +1,21 @@
-use stripe::{Client, Response};
-
 impl stripe_core::capability::Capability {
     /// Returns a list of capabilities associated with the account.
     ///
     /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: ListCapability,
-    ) -> Response<stripe_types::List<stripe_core::capability::Capability>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::capability::Capability>> {
         client.get_query(&format!("/accounts/{account}/capabilities", account = account), params)
     }
     /// Retrieves information about the specified Account Capability.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         capability: &stripe_core::capability::CapabilityId,
         params: RetrieveCapability,
-    ) -> Response<stripe_core::capability::Capability> {
+    ) -> stripe::Response<stripe_core::capability::Capability> {
         client.get_query(
             &format!(
                 "/accounts/{account}/capabilities/{capability}",
@@ -29,11 +27,11 @@ impl stripe_core::capability::Capability {
     }
     /// Updates an existing Account Capability.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         capability: &stripe_core::capability::CapabilityId,
         params: UpdateCapability,
-    ) -> Response<stripe_core::capability::Capability> {
+    ) -> stripe::Response<stripe_core::capability::Capability> {
         client.send_form(
             &format!(
                 "/accounts/{account}/capabilities/{capability}",

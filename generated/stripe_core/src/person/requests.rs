@@ -1,23 +1,21 @@
-use stripe::{Client, Response};
-
 impl stripe_core::person::Person {
     /// Returns a list of people associated with the account’s legal entity.
     ///
     /// The people are returned sorted by creation date, with the most recent people appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: ListPerson,
-    ) -> Response<stripe_types::List<stripe_core::person::Person>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::person::Person>> {
         client.get_query(&format!("/accounts/{account}/persons", account = account), params)
     }
     /// Retrieves an existing person.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         person: &stripe_core::person::PersonId,
         params: RetrievePerson,
-    ) -> Response<stripe_core::person::Person> {
+    ) -> stripe::Response<stripe_core::person::Person> {
         client.get_query(
             &format!("/accounts/{account}/persons/{person}", account = account, person = person),
             params,
@@ -25,10 +23,10 @@ impl stripe_core::person::Person {
     }
     /// Creates a new person.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: CreatePerson,
-    ) -> Response<stripe_core::person::Person> {
+    ) -> stripe::Response<stripe_core::person::Person> {
         client.send_form(
             &format!("/accounts/{account}/persons", account = account),
             params,
@@ -37,11 +35,11 @@ impl stripe_core::person::Person {
     }
     /// Updates an existing person.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         person: &stripe_core::person::PersonId,
         params: UpdatePerson,
-    ) -> Response<stripe_core::person::Person> {
+    ) -> stripe::Response<stripe_core::person::Person> {
         client.send_form(
             &format!("/accounts/{account}/persons/{person}", account = account, person = person),
             params,
@@ -53,10 +51,10 @@ impl stripe_core::person::Person {
     /// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
     /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         person: &stripe_core::person::PersonId,
-    ) -> Response<stripe_core::person::DeletedPerson> {
+    ) -> stripe::Response<stripe_core::person::DeletedPerson> {
         client.send(
             &format!("/accounts/{account}/persons/{person}", account = account, person = person),
             http_types::Method::Delete,
@@ -130,7 +128,7 @@ impl<'a> RetrievePerson<'a> {
 pub struct CreatePerson<'a> {
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<CreatePersonAddress<'a>>,
+    pub address: Option<AddressSpecs<'a>>,
     /// The Kana variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kana: Option<CreatePersonAddressKana<'a>>,
@@ -139,10 +137,10 @@ pub struct CreatePerson<'a> {
     pub address_kanji: Option<CreatePersonAddressKanji<'a>>,
     /// The person's date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<CreatePersonDob>,
+    pub dob: Option<DateOfBirthSpecs>,
     /// Documents that may be submitted to satisfy various informational requests.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documents: Option<CreatePersonDocuments<'a>>,
+    pub documents: Option<PersonDocumentsSpecs<'a>>,
     /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
@@ -211,10 +209,10 @@ pub struct CreatePerson<'a> {
     pub political_exposure: Option<&'a str>,
     /// The person's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registered_address: Option<CreatePersonRegisteredAddress<'a>>,
+    pub registered_address: Option<AddressSpecs<'a>>,
     /// The relationship that this person has with the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<CreatePersonRelationship<'a>>,
+    pub relationship: Option<RelationshipSpecs<'a>>,
     /// The last four digits of the person's Social Security number (U.S.
     ///
     /// only).
@@ -222,36 +220,9 @@ pub struct CreatePerson<'a> {
     pub ssn_last_4: Option<&'a str>,
     /// The person's verification status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<CreatePersonVerification<'a>>,
+    pub verification: Option<PersonVerificationSpecs<'a>>,
 }
 impl<'a> CreatePerson<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The person's address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreatePersonAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -316,193 +287,11 @@ impl<'a> CreatePersonAddressKanji<'a> {
         Self::default()
     }
 }
-/// The person's date of birth.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreatePersonDob {
-    /// The day of birth, between 1 and 31.
-    pub day: i64,
-    /// The month of birth, between 1 and 12.
-    pub month: i64,
-    /// The four-digit year of birth.
-    pub year: i64,
-}
-impl CreatePersonDob {
-    pub fn new(day: i64, month: i64, year: i64) -> Self {
-        Self { day, month, year }
-    }
-}
-/// Documents that may be submitted to satisfy various informational requests.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonDocuments<'a> {
-    /// One or more documents that demonstrate proof that this person is authorized to represent the company.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_authorization: Option<CreatePersonDocumentsCompanyAuthorization<'a>>,
-    /// One or more documents showing the person's passport page with photo and personal data.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub passport: Option<CreatePersonDocumentsPassport<'a>>,
-    /// One or more documents showing the person's visa required for living in the country where they are residing.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub visa: Option<CreatePersonDocumentsVisa<'a>>,
-}
-impl<'a> CreatePersonDocuments<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents that demonstrate proof that this person is authorized to represent the company.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonDocumentsCompanyAuthorization<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> CreatePersonDocumentsCompanyAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents showing the person's passport page with photo and personal data.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonDocumentsPassport<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> CreatePersonDocumentsPassport<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents showing the person's visa required for living in the country where they are residing.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonDocumentsVisa<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> CreatePersonDocumentsVisa<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The person's registered address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonRegisteredAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> CreatePersonRegisteredAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The relationship that this person has with the account's legal entity.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonRelationship<'a> {
-    /// Whether the person is a director of the account's legal entity.
-    ///
-    /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub director: Option<bool>,
-    /// Whether the person has significant responsibility to control, manage, or direct the organization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub executive: Option<bool>,
-    /// Whether the person is an owner of the account’s legal entity.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<bool>,
-    /// The percent owned by the person of the account's legal entity.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percent_ownership: Option<f64>,
-    /// Whether the person is authorized as the primary representative of the account.
-    ///
-    /// This is the person nominated by the business to provide information about themselves, and general information about the account.
-    /// There can only be one representative at any given time.
-    /// At the time the account is created, this person should be set to the person responsible for opening the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub representative: Option<bool>,
-    /// The person's title (e.g., CEO, Support Engineer).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<&'a str>,
-}
-impl<'a> CreatePersonRelationship<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The person's verification status.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonVerification<'a> {
-    /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<CreatePersonVerificationAdditionalDocument<'a>>,
-    /// An identifying document, either a passport or local ID card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<CreatePersonVerificationDocument<'a>>,
-}
-impl<'a> CreatePersonVerification<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonVerificationAdditionalDocument<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> CreatePersonVerificationAdditionalDocument<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// An identifying document, either a passport or local ID card.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePersonVerificationDocument<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> CreatePersonVerificationDocument<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePerson<'a> {
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdatePersonAddress<'a>>,
+    pub address: Option<AddressSpecs<'a>>,
     /// The Kana variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kana: Option<UpdatePersonAddressKana<'a>>,
@@ -511,10 +300,10 @@ pub struct UpdatePerson<'a> {
     pub address_kanji: Option<UpdatePersonAddressKanji<'a>>,
     /// The person's date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<UpdatePersonDob>,
+    pub dob: Option<DateOfBirthSpecs>,
     /// Documents that may be submitted to satisfy various informational requests.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documents: Option<UpdatePersonDocuments<'a>>,
+    pub documents: Option<PersonDocumentsSpecs<'a>>,
     /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
@@ -583,10 +372,10 @@ pub struct UpdatePerson<'a> {
     pub political_exposure: Option<&'a str>,
     /// The person's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registered_address: Option<UpdatePersonRegisteredAddress<'a>>,
+    pub registered_address: Option<AddressSpecs<'a>>,
     /// The relationship that this person has with the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<UpdatePersonRelationship<'a>>,
+    pub relationship: Option<RelationshipSpecs<'a>>,
     /// The last four digits of the person's Social Security number (U.S.
     ///
     /// only).
@@ -594,36 +383,9 @@ pub struct UpdatePerson<'a> {
     pub ssn_last_4: Option<&'a str>,
     /// The person's verification status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<UpdatePersonVerification<'a>>,
+    pub verification: Option<PersonVerificationSpecs<'a>>,
 }
 impl<'a> UpdatePerson<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The person's address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> UpdatePersonAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -688,78 +450,8 @@ impl<'a> UpdatePersonAddressKanji<'a> {
         Self::default()
     }
 }
-/// The person's date of birth.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdatePersonDob {
-    /// The day of birth, between 1 and 31.
-    pub day: i64,
-    /// The month of birth, between 1 and 12.
-    pub month: i64,
-    /// The four-digit year of birth.
-    pub year: i64,
-}
-impl UpdatePersonDob {
-    pub fn new(day: i64, month: i64, year: i64) -> Self {
-        Self { day, month, year }
-    }
-}
-/// Documents that may be submitted to satisfy various informational requests.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonDocuments<'a> {
-    /// One or more documents that demonstrate proof that this person is authorized to represent the company.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_authorization: Option<UpdatePersonDocumentsCompanyAuthorization<'a>>,
-    /// One or more documents showing the person's passport page with photo and personal data.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub passport: Option<UpdatePersonDocumentsPassport<'a>>,
-    /// One or more documents showing the person's visa required for living in the country where they are residing.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub visa: Option<UpdatePersonDocumentsVisa<'a>>,
-}
-impl<'a> UpdatePersonDocuments<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents that demonstrate proof that this person is authorized to represent the company.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonDocumentsCompanyAuthorization<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> UpdatePersonDocumentsCompanyAuthorization<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents showing the person's passport page with photo and personal data.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonDocumentsPassport<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> UpdatePersonDocumentsPassport<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// One or more documents showing the person's visa required for living in the country where they are residing.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonDocumentsVisa<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> UpdatePersonDocumentsVisa<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The person's registered address.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonRegisteredAddress<'a> {
+pub struct AddressSpecs<'a> {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<&'a str>,
@@ -779,14 +471,38 @@ pub struct UpdatePersonRegisteredAddress<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
 }
-impl<'a> UpdatePersonRegisteredAddress<'a> {
+impl<'a> AddressSpecs<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// The relationship that this person has with the account's legal entity.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct DateOfBirthSpecs {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+impl DateOfBirthSpecs {
+    pub fn new(day: i64, month: i64, year: i64) -> Self {
+        Self { day, month, year }
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonRelationship<'a> {
+pub struct DocumentsParam<'a> {
+    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<&'a [&'a str]>,
+}
+impl<'a> DocumentsParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RelationshipSpecs<'a> {
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
@@ -812,60 +528,56 @@ pub struct UpdatePersonRelationship<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<&'a str>,
 }
-impl<'a> UpdatePersonRelationship<'a> {
+impl<'a> RelationshipSpecs<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// The person's verification status.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonVerification<'a> {
+pub struct PersonVerificationDocumentSpecs<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> PersonVerificationDocumentSpecs<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PersonDocumentsSpecs<'a> {
+    /// One or more documents that demonstrate proof that this person is authorized to represent the company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_authorization: Option<DocumentsParam<'a>>,
+    /// One or more documents showing the person's passport page with photo and personal data.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub passport: Option<DocumentsParam<'a>>,
+    /// One or more documents showing the person's visa required for living in the country where they are residing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visa: Option<DocumentsParam<'a>>,
+}
+impl<'a> PersonDocumentsSpecs<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct PersonVerificationSpecs<'a> {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<UpdatePersonVerificationAdditionalDocument<'a>>,
+    pub additional_document: Option<PersonVerificationDocumentSpecs<'a>>,
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<UpdatePersonVerificationDocument<'a>>,
+    pub document: Option<PersonVerificationDocumentSpecs<'a>>,
 }
-impl<'a> UpdatePersonVerification<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonVerificationAdditionalDocument<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> UpdatePersonVerificationAdditionalDocument<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// An identifying document, either a passport or local ID card.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePersonVerificationDocument<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> UpdatePersonVerificationDocument<'a> {
+impl<'a> PersonVerificationSpecs<'a> {
     pub fn new() -> Self {
         Self::default()
     }

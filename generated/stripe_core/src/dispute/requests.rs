@@ -1,19 +1,17 @@
-use stripe::{Client, Response};
-
 impl stripe_core::dispute::Dispute {
     /// Returns a list of your disputes.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListDispute,
-    ) -> Response<stripe_types::List<stripe_core::dispute::Dispute>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::dispute::Dispute>> {
         client.get_query("/disputes", params)
     }
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: RetrieveDispute,
-    ) -> Response<stripe_core::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::dispute::Dispute> {
         client.get_query(&format!("/disputes/{dispute}", dispute = dispute), params)
     }
     /// When you get a dispute, contacting your customer is always the best first step.
@@ -22,10 +20,10 @@ impl stripe_core::dispute::Dispute {
     /// You can do this in your [dashboard](https://dashboard.stripe.com/disputes), but if you prefer, you can use the API to submit evidence programmatically.  Depending on your dispute type, different evidence fields will give you a better chance of winning your dispute.
     /// To figure out which evidence fields to provide, see our [guide to dispute types](https://stripe.com/docs/disputes/categories).
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: UpdateDispute,
-    ) -> Response<stripe_core::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::dispute::Dispute> {
         client.send_form(
             &format!("/disputes/{dispute}", dispute = dispute),
             params,
@@ -38,10 +36,10 @@ impl stripe_core::dispute::Dispute {
     ///
     /// _Closing a dispute is irreversible_.
     pub fn close(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: CloseDispute,
-    ) -> Response<stripe_core::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::dispute::Dispute> {
         client.send_form(
             &format!("/disputes/{dispute}/close", dispute = dispute),
             params,

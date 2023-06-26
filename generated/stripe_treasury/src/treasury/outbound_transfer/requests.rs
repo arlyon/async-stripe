@@ -1,19 +1,17 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::outbound_transfer::OutboundTransfer {
     /// Creates an OutboundTransfer.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.send_form("/treasury/outbound_transfers", params, http_types::Method::Post)
     }
     /// Retrieves the details of an existing OutboundTransfer by passing the unique OutboundTransfer ID from either the OutboundTransfer creation request or OutboundTransfer list.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         outbound_transfer: &str,
         params: RetrieveOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.get_query(
             &format!(
                 "/treasury/outbound_transfers/{outbound_transfer}",
@@ -24,18 +22,19 @@ impl stripe_treasury::treasury::outbound_transfer::OutboundTransfer {
     }
     /// Returns a list of OutboundTransfers sent from the specified FinancialAccount.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListOutboundTransfer,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::outbound_transfer::OutboundTransfer>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::outbound_transfer::OutboundTransfer>,
+    > {
         client.get_query("/treasury/outbound_transfers", params)
     }
     /// An OutboundTransfer can be canceled if the funds have not yet been paid out.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         outbound_transfer: &str,
         params: CancelOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.send_form(
             &format!(
                 "/treasury/outbound_transfers/{outbound_transfer}/cancel",
@@ -49,10 +48,10 @@ impl stripe_treasury::treasury::outbound_transfer::OutboundTransfer {
     ///
     /// The OutboundTransfer must already be in the `processing` state.
     pub fn fail(
-        client: &Client,
+        client: &stripe::Client,
         outbound_transfer: &str,
         params: FailOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.send_form(
             &format!(
                 "/test_helpers/treasury/outbound_transfers/{outbound_transfer}/fail",
@@ -66,10 +65,10 @@ impl stripe_treasury::treasury::outbound_transfer::OutboundTransfer {
     ///
     /// The OutboundTransfer must already be in the `processing` state.
     pub fn post(
-        client: &Client,
+        client: &stripe::Client,
         outbound_transfer: &str,
         params: PostOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.send_form(
             &format!(
                 "/test_helpers/treasury/outbound_transfers/{outbound_transfer}/post",
@@ -83,10 +82,10 @@ impl stripe_treasury::treasury::outbound_transfer::OutboundTransfer {
     ///
     /// The OutboundTransfer must already be in the `processing` state.
     pub fn return_outbound_transfer(
-        client: &Client,
+        client: &stripe::Client,
         outbound_transfer: &str,
         params: ReturnOutboundTransferOutboundTransfer,
-    ) -> Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::outbound_transfer::OutboundTransfer> {
         client.send_form(
             &format!(
                 "/test_helpers/treasury/outbound_transfers/{outbound_transfer}/return",

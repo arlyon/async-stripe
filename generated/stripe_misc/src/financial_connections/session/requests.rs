@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::financial_connections::session::Session {
     /// To launch the Financial Connections authorization flow, create a `Session`.
     ///
     /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateSession,
-    ) -> Response<stripe_misc::financial_connections::session::Session> {
+    ) -> stripe::Response<stripe_misc::financial_connections::session::Session> {
         client.send_form("/financial_connections/sessions", params, http_types::Method::Post)
     }
     /// Retrieves the details of a Financial Connections `Session`.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: RetrieveSession,
-    ) -> Response<stripe_misc::financial_connections::session::Session> {
+    ) -> stripe::Response<stripe_misc::financial_connections::session::Session> {
         client.get_query(
             &format!("/financial_connections/sessions/{session}", session = session),
             params,

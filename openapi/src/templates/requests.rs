@@ -27,7 +27,7 @@ impl<'a> PrintableRequestSpec<'a> {
     pub fn gen_code(&self, out: &mut String) {
         let method_name = self.method_name;
         let return_type = &self.returned;
-        let mut params = vec![("client", "&Client".to_string())];
+        let mut params = vec![("client", "&stripe::Client".to_string())];
         for param in &self.path_params {
             params.push((param.name, param.typ.to_string()));
         }
@@ -85,7 +85,7 @@ impl<'a> PrintableRequestSpec<'a> {
         let _ = writedoc!(
             out,
             r#"
-        pub fn {method_name}({params_body}) -> Response<{return_type}> {{
+        pub fn {method_name}({params_body}) -> stripe::Response<{return_type}> {{
             {body}
         }}
         "#

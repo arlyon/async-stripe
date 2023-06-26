@@ -91,6 +91,7 @@ impl<'a> Inference<'a> {
                 ident,
                 doc: self.description.map(|d| d.to_string()),
                 title: self.title.map(|t| t.to_string()),
+                field_name: self.field_name.map(|t| t.to_string()),
             },
         )
     }

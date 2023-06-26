@@ -1,21 +1,20 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::identity::verification_report::VerificationReport {
     /// Retrieves an existing VerificationReport.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         report: &str,
         params: RetrieveVerificationReport,
-    ) -> Response<stripe_misc::identity::verification_report::VerificationReport> {
+    ) -> stripe::Response<stripe_misc::identity::verification_report::VerificationReport> {
         client
             .get_query(&format!("/identity/verification_reports/{report}", report = report), params)
     }
     /// List all verification reports.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListVerificationReport,
-    ) -> Response<stripe_types::List<stripe_misc::identity::verification_report::VerificationReport>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_misc::identity::verification_report::VerificationReport>,
+    > {
         client.get_query("/identity/verification_reports", params)
     }
 }

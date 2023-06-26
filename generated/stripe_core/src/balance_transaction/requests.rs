@@ -1,23 +1,22 @@
-use stripe::{Client, Response};
-
 impl stripe_core::balance_transaction::BalanceTransaction {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
     /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListBalanceTransaction,
-    ) -> Response<stripe_types::List<stripe_core::balance_transaction::BalanceTransaction>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::balance_transaction::BalanceTransaction>>
+    {
         client.get_query("/balance_transactions", params)
     }
     /// Retrieves the balance transaction with the given ID.
     ///
     /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveBalanceTransaction,
-    ) -> Response<stripe_core::balance_transaction::BalanceTransaction> {
+    ) -> stripe::Response<stripe_core::balance_transaction::BalanceTransaction> {
         client.get_query(&format!("/balance_transactions/{id}", id = id), params)
     }
 }

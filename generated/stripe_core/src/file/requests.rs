@@ -1,13 +1,11 @@
-use stripe::{Client, Response};
-
 impl stripe_core::file::File {
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListFile,
-    ) -> Response<stripe_types::List<stripe_core::file::File>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::file::File>> {
         client.get_query("/files", params)
     }
     /// Retrieves the details of an existing file object.
@@ -15,10 +13,10 @@ impl stripe_core::file::File {
     /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
     /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         file: &stripe_core::file::FileId,
         params: RetrieveFile,
-    ) -> Response<stripe_core::file::File> {
+    ) -> stripe::Response<stripe_core::file::File> {
         client.get_query(&format!("/files/{file}", file = file), params)
     }
 }

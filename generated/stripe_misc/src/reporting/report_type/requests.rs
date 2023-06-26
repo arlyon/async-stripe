@@ -1,14 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::reporting::report_type::ReportType {
     /// Retrieves the details of a Report Type.
     ///
     /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         report_type: &str,
         params: RetrieveReportType,
-    ) -> Response<stripe_misc::reporting::report_type::ReportType> {
+    ) -> stripe::Response<stripe_misc::reporting::report_type::ReportType> {
         client.get_query(
             &format!("/reporting/report_types/{report_type}", report_type = report_type),
             params,
@@ -16,9 +14,9 @@ impl stripe_misc::reporting::report_type::ReportType {
     }
     /// Returns a full list of Report Types.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReportType,
-    ) -> Response<stripe_types::List<stripe_misc::reporting::report_type::ReportType>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::reporting::report_type::ReportType>> {
         client.get_query("/reporting/report_types", params)
     }
 }

@@ -1,13 +1,11 @@
-use stripe::{Client, Response};
-
 impl stripe_core::card::Card {
     /// Update a specified source for a given customer.
     pub fn update_customer(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         id: &str,
         params: UpdateCustomerCard,
-    ) -> Response<UpdateCustomerReturned> {
+    ) -> stripe::Response<UpdateCustomerReturned> {
         client.send_form(
             &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
             params,
@@ -16,11 +14,11 @@ impl stripe_core::card::Card {
     }
     /// Delete a specified source for a given customer.
     pub fn delete_customer(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         id: &str,
         params: DeleteCustomerCard,
-    ) -> Response<DeleteCustomerReturned> {
+    ) -> stripe::Response<DeleteCustomerReturned> {
         client.send_form(
             &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
             params,
@@ -31,11 +29,11 @@ impl stripe_core::card::Card {
     ///
     /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
     pub fn update_account(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         id: &str,
         params: UpdateAccountCard,
-    ) -> Response<stripe_core::external_account::ExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::ExternalAccount> {
         client.send_form(
             &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
             params,
@@ -44,10 +42,10 @@ impl stripe_core::card::Card {
     }
     /// Delete a specified external account for a given account.
     pub fn delete_account(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         id: &str,
-    ) -> Response<stripe_core::external_account::DeletedExternalAccount> {
+    ) -> stripe::Response<stripe_core::external_account::DeletedExternalAccount> {
         client.send(
             &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
             http_types::Method::Delete,
@@ -85,7 +83,7 @@ pub struct UpdateCustomerCard<'a> {
     ///
     /// This can be either `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<UpdateCustomerCardAccountHolderType>,
+    pub account_holder_type: Option<AccountHolderType>,
     /// City/District/Suburb/Town/Village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<&'a str>,
@@ -129,55 +127,6 @@ pub struct UpdateCustomerCard<'a> {
 impl<'a> UpdateCustomerCard<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The type of entity that holds the account.
-///
-/// This can be either `individual` or `company`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateCustomerCardAccountHolderType {
-    Company,
-    Individual,
-}
-
-impl UpdateCustomerCardAccountHolderType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Company => "company",
-            Self::Individual => "individual",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateCustomerCardAccountHolderType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "company" => Ok(Self::Company),
-            "individual" => Ok(Self::Individual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateCustomerCardAccountHolderType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateCustomerCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateCustomerCardAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -270,7 +219,7 @@ pub struct UpdateAccountCard<'a> {
     ///
     /// This can be either `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<UpdateAccountCardAccountHolderType>,
+    pub account_holder_type: Option<AccountHolderType>,
     /// The bank account type.
     ///
     /// This can only be `checking` or `savings` in most countries.
@@ -323,55 +272,6 @@ impl<'a> UpdateAccountCard<'a> {
         Self::default()
     }
 }
-/// The type of entity that holds the account.
-///
-/// This can be either `individual` or `company`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateAccountCardAccountHolderType {
-    Company,
-    Individual,
-}
-
-impl UpdateAccountCardAccountHolderType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Company => "company",
-            Self::Individual => "individual",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateAccountCardAccountHolderType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "company" => Ok(Self::Company),
-            "individual" => Ok(Self::Individual),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateAccountCardAccountHolderType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateAccountCardAccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateAccountCardAccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// The bank account type.
 ///
 /// This can only be `checking` or `savings` in most countries.
@@ -421,6 +321,52 @@ impl std::fmt::Display for UpdateAccountCardAccountType {
     }
 }
 impl serde::Serialize for UpdateAccountCardAccountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum AccountHolderType {
+    Company,
+    Individual,
+}
+
+impl AccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Company => "company",
+            Self::Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "company" => Ok(Self::Company),
+            "individual" => Ok(Self::Individual),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for AccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for AccountHolderType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

@@ -1,12 +1,10 @@
-use stripe::{Client, Response};
-
 impl stripe_core::mandate::Mandate {
     /// Retrieves a Mandate object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         mandate: &stripe_core::mandate::MandateId,
         params: RetrieveMandate,
-    ) -> Response<stripe_core::mandate::Mandate> {
+    ) -> stripe::Response<stripe_core::mandate::Mandate> {
         client.get_query(&format!("/mandates/{mandate}", mandate = mandate), params)
     }
 }

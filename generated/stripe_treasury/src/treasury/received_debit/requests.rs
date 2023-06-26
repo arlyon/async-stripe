@@ -1,29 +1,28 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::received_debit::ReceivedDebit {
     /// Returns a list of ReceivedDebits.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReceivedDebit,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::received_debit::ReceivedDebit>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::received_debit::ReceivedDebit>,
+    > {
         client.get_query("/treasury/received_debits", params)
     }
     /// Retrieves the details of an existing ReceivedDebit by passing the unique ReceivedDebit ID from the ReceivedDebit list.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveReceivedDebit,
-    ) -> Response<stripe_treasury::treasury::received_debit::ReceivedDebit> {
+    ) -> stripe::Response<stripe_treasury::treasury::received_debit::ReceivedDebit> {
         client.get_query(&format!("/treasury/received_debits/{id}", id = id), params)
     }
     /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
     ///
     /// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateReceivedDebit,
-    ) -> Response<stripe_treasury::treasury::received_debit::ReceivedDebit> {
+    ) -> stripe::Response<stripe_treasury::treasury::received_debit::ReceivedDebit> {
         client.send_form("/test_helpers/treasury/received_debits", params, http_types::Method::Post)
     }
 }

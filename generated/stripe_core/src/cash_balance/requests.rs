@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_core::cash_balance::CashBalance {
     /// Retrieves a customer’s cash balance.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: RetrieveCashBalance,
-    ) -> Response<stripe_core::cash_balance::CashBalance> {
+    ) -> stripe::Response<stripe_core::cash_balance::CashBalance> {
         client
             .get_query(&format!("/customers/{customer}/cash_balance", customer = customer), params)
     }
     /// Changes the settings on a customer’s cash balance.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: UpdateCashBalance,
-    ) -> Response<stripe_core::cash_balance::CashBalance> {
+    ) -> stripe::Response<stripe_core::cash_balance::CashBalance> {
         client.send_form(
             &format!("/customers/{customer}/cash_balance", customer = customer),
             params,

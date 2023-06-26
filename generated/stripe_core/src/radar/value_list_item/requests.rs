@@ -1,35 +1,34 @@
-use stripe::{Client, Response};
-
 impl stripe_core::radar::value_list_item::ValueListItem {
     /// Returns a list of `ValueListItem` objects.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListValueListItem,
-    ) -> Response<stripe_types::List<stripe_core::radar::value_list_item::ValueListItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::radar::value_list_item::ValueListItem>>
+    {
         client.get_query("/radar/value_list_items", params)
     }
     /// Retrieves a `ValueListItem` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         item: &stripe_core::line_item::ItemId,
         params: RetrieveValueListItem,
-    ) -> Response<stripe_core::radar::value_list_item::ValueListItem> {
+    ) -> stripe::Response<stripe_core::radar::value_list_item::ValueListItem> {
         client.get_query(&format!("/radar/value_list_items/{item}", item = item), params)
     }
     /// Creates a new `ValueListItem` object, which is added to the specified parent value list.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateValueListItem,
-    ) -> Response<stripe_core::radar::value_list_item::ValueListItem> {
+    ) -> stripe::Response<stripe_core::radar::value_list_item::ValueListItem> {
         client.send_form("/radar/value_list_items", params, http_types::Method::Post)
     }
     /// Deletes a `ValueListItem` object, removing it from its parent value list.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         item: &stripe_core::line_item::ItemId,
-    ) -> Response<stripe_core::radar::value_list_item::DeletedValueListItem> {
+    ) -> stripe::Response<stripe_core::radar::value_list_item::DeletedValueListItem> {
         client.send(
             &format!("/radar/value_list_items/{item}", item = item),
             http_types::Method::Delete,

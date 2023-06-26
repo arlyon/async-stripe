@@ -1,22 +1,21 @@
-use stripe::{Client, Response};
-
 impl stripe_core::radar::early_fraud_warning::EarlyFraudWarning {
     /// Returns a list of early fraud warnings.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListEarlyFraudWarning,
-    ) -> Response<stripe_types::List<stripe_core::radar::early_fraud_warning::EarlyFraudWarning>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_core::radar::early_fraud_warning::EarlyFraudWarning>,
+    > {
         client.get_query("/radar/early_fraud_warnings", params)
     }
     /// Retrieves the details of an early fraud warning that has previously been created.
     ///
     /// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         early_fraud_warning: &str,
         params: RetrieveEarlyFraudWarning,
-    ) -> Response<stripe_core::radar::early_fraud_warning::EarlyFraudWarning> {
+    ) -> stripe::Response<stripe_core::radar::early_fraud_warning::EarlyFraudWarning> {
         client.get_query(
             &format!(
                 "/radar/early_fraud_warnings/{early_fraud_warning}",

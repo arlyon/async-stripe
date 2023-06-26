@@ -1,13 +1,11 @@
-use stripe::{Client, Response};
-
 impl stripe_core::issuing::dispute::Dispute {
     /// Returns a list of Issuing `Dispute` objects.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListDispute,
-    ) -> Response<stripe_types::List<stripe_core::issuing::dispute::Dispute>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::issuing::dispute::Dispute>> {
         client.get_query("/issuing/disputes", params)
     }
     /// Creates an Issuing `Dispute` object.
@@ -16,9 +14,9 @@ impl stripe_core::issuing::dispute::Dispute {
     /// Stripe only validates that required evidence is present during submission.
     /// Refer to [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence) for more details about evidence requirements.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateDispute,
-    ) -> Response<stripe_core::issuing::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::issuing::dispute::Dispute> {
         client.send_form("/issuing/disputes", params, http_types::Method::Post)
     }
     /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.
@@ -26,10 +24,10 @@ impl stripe_core::issuing::dispute::Dispute {
     /// Any parameters not provided will be left unchanged.
     /// Properties on the `evidence` object can be unset by passing in an empty string.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: UpdateDispute,
-    ) -> Response<stripe_core::issuing::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::issuing::dispute::Dispute> {
         client.send_form(
             &format!("/issuing/disputes/{dispute}", dispute = dispute),
             params,
@@ -38,10 +36,10 @@ impl stripe_core::issuing::dispute::Dispute {
     }
     /// Retrieves an Issuing `Dispute` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: RetrieveDispute,
-    ) -> Response<stripe_core::issuing::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::issuing::dispute::Dispute> {
         client.get_query(&format!("/issuing/disputes/{dispute}", dispute = dispute), params)
     }
     /// Submits an Issuing `Dispute` to the card network.
@@ -49,10 +47,10 @@ impl stripe_core::issuing::dispute::Dispute {
     /// Stripe validates that all evidence fields required for the dispute’s reason are present.
     /// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
     pub fn submit(
-        client: &Client,
+        client: &stripe::Client,
         dispute: &stripe_core::dispute::DisputeId,
         params: SubmitDispute,
-    ) -> Response<stripe_core::issuing::dispute::Dispute> {
+    ) -> stripe::Response<stripe_core::issuing::dispute::Dispute> {
         client.send_form(
             &format!("/issuing/disputes/{dispute}/submit", dispute = dispute),
             params,
@@ -162,7 +160,7 @@ pub struct CreateDispute<'a> {
     pub amount: Option<i64>,
     /// Evidence provided for the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub evidence: Option<CreateDisputeEvidence<'a>>,
+    pub evidence: Option<EvidenceParam<'a>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -187,519 +185,6 @@ impl<'a> CreateDispute<'a> {
         Self::default()
     }
 }
-/// Evidence provided for the dispute.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidence<'a> {
-    /// Evidence provided when `reason` is 'canceled'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled: Option<CreateDisputeEvidenceCanceled<'a>>,
-    /// Evidence provided when `reason` is 'duplicate'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate: Option<CreateDisputeEvidenceDuplicate<'a>>,
-    /// Evidence provided when `reason` is 'fraudulent'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<CreateDisputeEvidenceFraudulent<'a>>,
-    /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described: Option<CreateDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
-    /// Evidence provided when `reason` is 'not_received'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub not_received: Option<CreateDisputeEvidenceNotReceived<'a>>,
-    /// Evidence provided when `reason` is 'other'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<CreateDisputeEvidenceOther<'a>>,
-    /// The reason for filing the dispute.
-    ///
-    /// The evidence should be submitted in the field of the same name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<CreateDisputeEvidenceReason>,
-    /// Evidence provided when `reason` is 'service_not_as_described'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub service_not_as_described: Option<CreateDisputeEvidenceServiceNotAsDescribed<'a>>,
-}
-impl<'a> CreateDisputeEvidence<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'canceled'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceCanceled<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when order was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<stripe_types::Timestamp>,
-    /// Whether the cardholder was provided with a cancellation policy.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_policy_provided: Option<bool>,
-    /// Reason for canceling the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
-    /// Date when the cardholder expected to receive the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expected_at: Option<stripe_types::Timestamp>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<CreateDisputeEvidenceCanceledProductType>,
-    /// Result of cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_status: Option<CreateDisputeEvidenceCanceledReturnStatus>,
-    /// Date when the product was returned or attempted to be returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> CreateDisputeEvidenceCanceled<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceCanceledProductType {
-    Merchandise,
-    Service,
-}
-
-impl CreateDisputeEvidenceCanceledProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceCanceledProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceCanceledProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceCanceledProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceCanceledProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceCanceledReturnStatus {
-    MerchantRejected,
-    Successful,
-}
-
-impl CreateDisputeEvidenceCanceledReturnStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::MerchantRejected => "merchant_rejected",
-            Self::Successful => "successful",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceCanceledReturnStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchant_rejected" => Ok(Self::MerchantRejected),
-            "successful" => Ok(Self::Successful),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceCanceledReturnStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceCanceledReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceCanceledReturnStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'duplicate'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceDuplicate<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the card statement showing that the product had already been paid for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_statement: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the receipt showing that the product had been paid for in cash.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_receipt: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Image of the front and back of the check that was used to pay for the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub check_image: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
-    ///
-    /// Of the two or more transactions that are copies of each other, this is original undisputed one.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub original_transaction: Option<&'a str>,
-}
-impl<'a> CreateDisputeEvidenceDuplicate<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceFraudulent<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-}
-impl<'a> CreateDisputeEvidenceFraudulent<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Date when the product was received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_at: Option<stripe_types::Timestamp>,
-    /// Description of the cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_description: Option<&'a str>,
-    /// Result of cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_status: Option<CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus>,
-    /// Date when the product was returned or attempted to be returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> CreateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    MerchantRejected,
-    Successful,
-}
-
-impl CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::MerchantRejected => "merchant_rejected",
-            Self::Successful => "successful",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchant_rejected" => Ok(Self::MerchantRejected),
-            "successful" => Ok(Self::Successful),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'not_received'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceNotReceived<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when the cardholder expected to receive the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expected_at: Option<stripe_types::Timestamp>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<CreateDisputeEvidenceNotReceivedProductType>,
-}
-impl<'a> CreateDisputeEvidenceNotReceived<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceNotReceivedProductType {
-    Merchandise,
-    Service,
-}
-
-impl CreateDisputeEvidenceNotReceivedProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceNotReceivedProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceNotReceivedProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceNotReceivedProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceNotReceivedProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'other'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceOther<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<CreateDisputeEvidenceOtherProductType>,
-}
-impl<'a> CreateDisputeEvidenceOther<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceOtherProductType {
-    Merchandise,
-    Service,
-}
-
-impl CreateDisputeEvidenceOtherProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceOtherProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceOtherProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceOtherProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceOtherProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The reason for filing the dispute.
-///
-/// The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateDisputeEvidenceReason {
-    Canceled,
-    Duplicate,
-    Fraudulent,
-    MerchandiseNotAsDescribed,
-    NotReceived,
-    Other,
-    ServiceNotAsDescribed,
-}
-
-impl CreateDisputeEvidenceReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Canceled => "canceled",
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::MerchandiseNotAsDescribed => "merchandise_not_as_described",
-            Self::NotReceived => "not_received",
-            Self::Other => "other",
-            Self::ServiceNotAsDescribed => "service_not_as_described",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateDisputeEvidenceReason {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "canceled" => Ok(Self::Canceled),
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
-            "not_received" => Ok(Self::NotReceived),
-            "other" => Ok(Self::Other),
-            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateDisputeEvidenceReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateDisputeEvidenceReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateDisputeEvidenceReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'service_not_as_described'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateDisputeEvidenceServiceNotAsDescribed<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when order was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<stripe_types::Timestamp>,
-    /// Reason for canceling the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Date when the product was received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> CreateDisputeEvidenceServiceNotAsDescribed<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// Params for disputes related to Treasury FinancialAccounts.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateDisputeTreasury<'a> {
@@ -718,7 +203,7 @@ pub struct UpdateDispute<'a> {
     pub amount: Option<i64>,
     /// Evidence provided for the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub evidence: Option<UpdateDisputeEvidence<'a>>,
+    pub evidence: Option<EvidenceParam<'a>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -731,519 +216,6 @@ pub struct UpdateDispute<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateDispute<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided for the dispute.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidence<'a> {
-    /// Evidence provided when `reason` is 'canceled'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled: Option<UpdateDisputeEvidenceCanceled<'a>>,
-    /// Evidence provided when `reason` is 'duplicate'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate: Option<UpdateDisputeEvidenceDuplicate<'a>>,
-    /// Evidence provided when `reason` is 'fraudulent'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraudulent: Option<UpdateDisputeEvidenceFraudulent<'a>>,
-    /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described: Option<UpdateDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
-    /// Evidence provided when `reason` is 'not_received'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub not_received: Option<UpdateDisputeEvidenceNotReceived<'a>>,
-    /// Evidence provided when `reason` is 'other'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub other: Option<UpdateDisputeEvidenceOther<'a>>,
-    /// The reason for filing the dispute.
-    ///
-    /// The evidence should be submitted in the field of the same name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<UpdateDisputeEvidenceReason>,
-    /// Evidence provided when `reason` is 'service_not_as_described'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub service_not_as_described: Option<UpdateDisputeEvidenceServiceNotAsDescribed<'a>>,
-}
-impl<'a> UpdateDisputeEvidence<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'canceled'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceCanceled<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when order was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<stripe_types::Timestamp>,
-    /// Whether the cardholder was provided with a cancellation policy.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_policy_provided: Option<bool>,
-    /// Reason for canceling the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
-    /// Date when the cardholder expected to receive the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expected_at: Option<stripe_types::Timestamp>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<UpdateDisputeEvidenceCanceledProductType>,
-    /// Result of cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_status: Option<UpdateDisputeEvidenceCanceledReturnStatus>,
-    /// Date when the product was returned or attempted to be returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> UpdateDisputeEvidenceCanceled<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceCanceledProductType {
-    Merchandise,
-    Service,
-}
-
-impl UpdateDisputeEvidenceCanceledProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceCanceledProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceCanceledProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceCanceledProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceCanceledProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceCanceledReturnStatus {
-    MerchantRejected,
-    Successful,
-}
-
-impl UpdateDisputeEvidenceCanceledReturnStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::MerchantRejected => "merchant_rejected",
-            Self::Successful => "successful",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceCanceledReturnStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchant_rejected" => Ok(Self::MerchantRejected),
-            "successful" => Ok(Self::Successful),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceCanceledReturnStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceCanceledReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceCanceledReturnStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'duplicate'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceDuplicate<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the card statement showing that the product had already been paid for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_statement: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the receipt showing that the product had been paid for in cash.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_receipt: Option<&'a str>,
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Image of the front and back of the check that was used to pay for the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub check_image: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
-    ///
-    /// Of the two or more transactions that are copies of each other, this is original undisputed one.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub original_transaction: Option<&'a str>,
-}
-impl<'a> UpdateDisputeEvidenceDuplicate<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceFraudulent<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-}
-impl<'a> UpdateDisputeEvidenceFraudulent<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Date when the product was received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_at: Option<stripe_types::Timestamp>,
-    /// Description of the cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_description: Option<&'a str>,
-    /// Result of cardholder's attempt to return the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub return_status: Option<UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus>,
-    /// Date when the product was returned or attempted to be returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> UpdateDisputeEvidenceMerchandiseNotAsDescribed<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    MerchantRejected,
-    Successful,
-}
-
-impl UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::MerchantRejected => "merchant_rejected",
-            Self::Successful => "successful",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchant_rejected" => Ok(Self::MerchantRejected),
-            "successful" => Ok(Self::Successful),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'not_received'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceNotReceived<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when the cardholder expected to receive the product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expected_at: Option<stripe_types::Timestamp>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<UpdateDisputeEvidenceNotReceivedProductType>,
-}
-impl<'a> UpdateDisputeEvidenceNotReceived<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceNotReceivedProductType {
-    Merchandise,
-    Service,
-}
-
-impl UpdateDisputeEvidenceNotReceivedProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceNotReceivedProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceNotReceivedProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceNotReceivedProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceNotReceivedProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'other'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceOther<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Description of the merchandise or service that was purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_description: Option<&'a str>,
-    /// Whether the product was a merchandise or service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_type: Option<UpdateDisputeEvidenceOtherProductType>,
-}
-impl<'a> UpdateDisputeEvidenceOther<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceOtherProductType {
-    Merchandise,
-    Service,
-}
-
-impl UpdateDisputeEvidenceOtherProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Merchandise => "merchandise",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceOtherProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "merchandise" => Ok(Self::Merchandise),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceOtherProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceOtherProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceOtherProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The reason for filing the dispute.
-///
-/// The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateDisputeEvidenceReason {
-    Canceled,
-    Duplicate,
-    Fraudulent,
-    MerchandiseNotAsDescribed,
-    NotReceived,
-    Other,
-    ServiceNotAsDescribed,
-}
-
-impl UpdateDisputeEvidenceReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Canceled => "canceled",
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::MerchandiseNotAsDescribed => "merchandise_not_as_described",
-            Self::NotReceived => "not_received",
-            Self::Other => "other",
-            Self::ServiceNotAsDescribed => "service_not_as_described",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateDisputeEvidenceReason {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "canceled" => Ok(Self::Canceled),
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
-            "not_received" => Ok(Self::NotReceived),
-            "other" => Ok(Self::Other),
-            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateDisputeEvidenceReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateDisputeEvidenceReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateDisputeEvidenceReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Evidence provided when `reason` is 'service_not_as_described'.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateDisputeEvidenceServiceNotAsDescribed<'a> {
-    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_documentation: Option<&'a str>,
-    /// Date when order was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<stripe_types::Timestamp>,
-    /// Reason for canceling the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<&'a str>,
-    /// Explanation of why the cardholder is disputing this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub explanation: Option<&'a str>,
-    /// Date when the product was received.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_at: Option<stripe_types::Timestamp>,
-}
-impl<'a> UpdateDisputeEvidenceServiceNotAsDescribed<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1273,6 +245,365 @@ pub struct SubmitDispute<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> SubmitDispute<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ProductType {
+    Merchandise,
+    Service,
+}
+
+impl ProductType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Merchandise => "merchandise",
+            Self::Service => "service",
+        }
+    }
+}
+
+impl std::str::FromStr for ProductType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchandise" => Ok(Self::Merchandise),
+            "service" => Ok(Self::Service),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ProductType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ProductType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ReturnStatus {
+    MerchantRejected,
+    Successful,
+}
+
+impl ReturnStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::MerchantRejected => "merchant_rejected",
+            Self::Successful => "successful",
+        }
+    }
+}
+
+impl std::str::FromStr for ReturnStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "merchant_rejected" => Ok(Self::MerchantRejected),
+            "successful" => Ok(Self::Successful),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ReturnStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ReturnStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct Duplicate<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the card statement showing that the product had already been paid for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_statement: Option<&'a str>,
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the receipt showing that the product had been paid for in cash.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_receipt: Option<&'a str>,
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Image of the front and back of the check that was used to pay for the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub check_image: Option<&'a str>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
+    ///
+    /// Of the two or more transactions that are copies of each other, this is original undisputed one.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub original_transaction: Option<&'a str>,
+}
+impl<'a> Duplicate<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct Fraudulent<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+}
+impl<'a> Fraudulent<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Reason {
+    Canceled,
+    Duplicate,
+    Fraudulent,
+    MerchandiseNotAsDescribed,
+    NotReceived,
+    Other,
+    ServiceNotAsDescribed,
+}
+
+impl Reason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Canceled => "canceled",
+            Self::Duplicate => "duplicate",
+            Self::Fraudulent => "fraudulent",
+            Self::MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            Self::NotReceived => "not_received",
+            Self::Other => "other",
+            Self::ServiceNotAsDescribed => "service_not_as_described",
+        }
+    }
+}
+
+impl std::str::FromStr for Reason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "canceled" => Ok(Self::Canceled),
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
+            "not_received" => Ok(Self::NotReceived),
+            "other" => Ok(Self::Other),
+            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Reason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Reason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Reason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ServiceNotAsDescribed<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Date when order was canceled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<stripe_types::Timestamp>,
+    /// Reason for canceling the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<&'a str>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Date when the product was received.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_at: Option<stripe_types::Timestamp>,
+}
+impl<'a> ServiceNotAsDescribed<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct Canceled<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Date when order was canceled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<stripe_types::Timestamp>,
+    /// Whether the cardholder was provided with a cancellation policy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_policy_provided: Option<bool>,
+    /// Reason for canceling the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<&'a str>,
+    /// Date when the cardholder expected to receive the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_at: Option<stripe_types::Timestamp>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Description of the merchandise or service that was purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<&'a str>,
+    /// Whether the product was a merchandise or service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<ProductType>,
+    /// Result of cardholder's attempt to return the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_status: Option<ReturnStatus>,
+    /// Date when the product was returned or attempted to be returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned_at: Option<stripe_types::Timestamp>,
+}
+impl<'a> Canceled<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct MerchandiseNotAsDescribed<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Date when the product was received.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_at: Option<stripe_types::Timestamp>,
+    /// Description of the cardholder's attempt to return the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_description: Option<&'a str>,
+    /// Result of cardholder's attempt to return the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_status: Option<ReturnStatus>,
+    /// Date when the product was returned or attempted to be returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned_at: Option<stripe_types::Timestamp>,
+}
+impl<'a> MerchandiseNotAsDescribed<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct NotReceived<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Date when the cardholder expected to receive the product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_at: Option<stripe_types::Timestamp>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Description of the merchandise or service that was purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<&'a str>,
+    /// Whether the product was a merchandise or service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<ProductType>,
+}
+impl<'a> NotReceived<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct Other<'a> {
+    /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<&'a str>,
+    /// Explanation of why the cardholder is disputing this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<&'a str>,
+    /// Description of the merchandise or service that was purchased.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<&'a str>,
+    /// Whether the product was a merchandise or service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<ProductType>,
+}
+impl<'a> Other<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct EvidenceParam<'a> {
+    /// Evidence provided when `reason` is 'canceled'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<Canceled<'a>>,
+    /// Evidence provided when `reason` is 'duplicate'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duplicate: Option<Duplicate<'a>>,
+    /// Evidence provided when `reason` is 'fraudulent'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fraudulent: Option<Fraudulent<'a>>,
+    /// Evidence provided when `reason` is 'merchandise_not_as_described'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merchandise_not_as_described: Option<MerchandiseNotAsDescribed<'a>>,
+    /// Evidence provided when `reason` is 'not_received'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub not_received: Option<NotReceived<'a>>,
+    /// Evidence provided when `reason` is 'other'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<Other<'a>>,
+    /// The reason for filing the dispute.
+    ///
+    /// The evidence should be submitted in the field of the same name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Reason>,
+    /// Evidence provided when `reason` is 'service_not_as_described'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_not_as_described: Option<ServiceNotAsDescribed<'a>>,
+}
+impl<'a> EvidenceParam<'a> {
     pub fn new() -> Self {
         Self::default()
     }

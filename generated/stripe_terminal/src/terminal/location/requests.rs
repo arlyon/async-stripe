@@ -1,30 +1,28 @@
-use stripe::{Client, Response};
-
 impl stripe_terminal::terminal::location::Location {
     /// Retrieves a `Location` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         location: &str,
         params: RetrieveLocation,
-    ) -> Response<RetrieveReturned> {
+    ) -> stripe::Response<RetrieveReturned> {
         client.get_query(&format!("/terminal/locations/{location}", location = location), params)
     }
     /// Creates a new `Location` object.
     /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateLocation,
-    ) -> Response<stripe_terminal::terminal::location::Location> {
+    ) -> stripe::Response<stripe_terminal::terminal::location::Location> {
         client.send_form("/terminal/locations", params, http_types::Method::Post)
     }
     /// Updates a `Location` object by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         location: &str,
         params: UpdateLocation,
-    ) -> Response<UpdateReturned> {
+    ) -> stripe::Response<UpdateReturned> {
         client.send_form(
             &format!("/terminal/locations/{location}", location = location),
             params,
@@ -33,16 +31,16 @@ impl stripe_terminal::terminal::location::Location {
     }
     /// Returns a list of `Location` objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListLocation,
-    ) -> Response<stripe_types::List<stripe_terminal::terminal::location::Location>> {
+    ) -> stripe::Response<stripe_types::List<stripe_terminal::terminal::location::Location>> {
         client.get_query("/terminal/locations", params)
     }
     /// Deletes a `Location` object.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         location: &str,
-    ) -> Response<stripe_terminal::terminal::location::DeletedLocation> {
+    ) -> stripe::Response<stripe_terminal::terminal::location::DeletedLocation> {
         client.send(
             &format!("/terminal/locations/{location}", location = location),
             http_types::Method::Delete,

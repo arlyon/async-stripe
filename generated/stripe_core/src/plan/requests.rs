@@ -1,25 +1,26 @@
-use stripe::{Client, Response};
-
 impl stripe_core::plan::Plan {
     /// Returns a list of your plans.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListPlan,
-    ) -> Response<stripe_types::List<stripe_core::plan::Plan>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::plan::Plan>> {
         client.get_query("/plans", params)
     }
     /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
     ///
     /// It replaces the Plans API and is backwards compatible to simplify your migration.
-    pub fn create(client: &Client, params: CreatePlan) -> Response<stripe_core::plan::Plan> {
+    pub fn create(
+        client: &stripe::Client,
+        params: CreatePlan,
+    ) -> stripe::Response<stripe_core::plan::Plan> {
         client.send_form("/plans", params, http_types::Method::Post)
     }
     /// Retrieves the plan with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         plan: &stripe_core::plan::PlanId,
         params: RetrievePlan,
-    ) -> Response<stripe_core::plan::Plan> {
+    ) -> stripe::Response<stripe_core::plan::Plan> {
         client.get_query(&format!("/plans/{plan}", plan = plan), params)
     }
     /// Updates the specified plan by setting the values of the parameters passed.
@@ -27,19 +28,19 @@ impl stripe_core::plan::Plan {
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         plan: &stripe_core::plan::PlanId,
         params: UpdatePlan,
-    ) -> Response<stripe_core::plan::Plan> {
+    ) -> stripe::Response<stripe_core::plan::Plan> {
         client.send_form(&format!("/plans/{plan}", plan = plan), params, http_types::Method::Post)
     }
     /// Deleting plans means new subscribers can’t be added.
     ///
     /// Existing subscribers aren’t affected.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         plan: &stripe_core::plan::PlanId,
-    ) -> Response<stripe_core::plan::DeletedPlan> {
+    ) -> stripe::Response<stripe_core::plan::DeletedPlan> {
         client.send(&format!("/plans/{plan}", plan = plan), http_types::Method::Delete)
     }
 }

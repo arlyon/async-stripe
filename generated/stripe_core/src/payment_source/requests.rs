@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_core::payment_source::PaymentSource {
     /// List sources for a specified customer.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: ListPaymentSource,
-    ) -> Response<stripe_types::List<stripe_core::payment_source::PaymentSource>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::payment_source::PaymentSource>> {
         client.get_query(&format!("/customers/{customer}/sources", customer = customer), params)
     }
     /// Retrieve a specified source for a given customer.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         id: &str,
         params: RetrievePaymentSource,
-    ) -> Response<stripe_core::payment_source::PaymentSource> {
+    ) -> stripe::Response<stripe_core::payment_source::PaymentSource> {
         client.get_query(
             &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
             params,
@@ -27,10 +25,10 @@ impl stripe_core::payment_source::PaymentSource {
     /// However, if the owner already has a default, then it will not change.
     /// To change the default, you should [update the customer](https://stripe.com/docs/api#update_customer) to have a new `default_source`.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: CreatePaymentSource,
-    ) -> Response<stripe_core::payment_source::PaymentSource> {
+    ) -> stripe::Response<stripe_core::payment_source::PaymentSource> {
         client.send_form(
             &format!("/customers/{customer}/sources", customer = customer),
             params,

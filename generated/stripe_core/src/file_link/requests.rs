@@ -1,29 +1,27 @@
-use stripe::{Client, Response};
-
 impl stripe_core::file_link::FileLink {
     /// Retrieves the file link with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         link: &str,
         params: RetrieveFileLink,
-    ) -> Response<stripe_core::file_link::FileLink> {
+    ) -> stripe::Response<stripe_core::file_link::FileLink> {
         client.get_query(&format!("/file_links/{link}", link = link), params)
     }
     /// Creates a new file link object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateFileLink,
-    ) -> Response<stripe_core::file_link::FileLink> {
+    ) -> stripe::Response<stripe_core::file_link::FileLink> {
         client.send_form("/file_links", params, http_types::Method::Post)
     }
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         link: &str,
         params: UpdateFileLink,
-    ) -> Response<stripe_core::file_link::FileLink> {
+    ) -> stripe::Response<stripe_core::file_link::FileLink> {
         client.send_form(
             &format!("/file_links/{link}", link = link),
             params,
@@ -32,9 +30,9 @@ impl stripe_core::file_link::FileLink {
     }
     /// Returns a list of file links.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListFileLink,
-    ) -> Response<stripe_types::List<stripe_core::file_link::FileLink>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::file_link::FileLink>> {
         client.get_query("/file_links", params)
     }
 }

@@ -1,14 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_core::login_link::LoginLink {
     /// Creates a single-use login link for an Express account to access their Stripe dashboard.
     ///
     /// **You may only create login links for [Express accounts](https://stripe.com/docs/connect/express-accounts) connected to your platform**.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         account: &stripe_types::AccountId,
         params: CreateLoginLink,
-    ) -> Response<stripe_core::login_link::LoginLink> {
+    ) -> stripe::Response<stripe_core::login_link::LoginLink> {
         client.send_form(
             &format!("/accounts/{account}/login_links", account = account),
             params,

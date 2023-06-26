@@ -1,36 +1,34 @@
-use stripe::{Client, Response};
-
 impl stripe_core::tax_rate::TaxRate {
     /// Returns a list of your tax rates.
     ///
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTaxRate,
-    ) -> Response<stripe_types::List<stripe_core::tax_rate::TaxRate>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::tax_rate::TaxRate>> {
         client.get_query("/tax_rates", params)
     }
     /// Retrieves a tax rate with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         tax_rate: &stripe_core::tax_rate::TaxRateId,
         params: RetrieveTaxRate,
-    ) -> Response<stripe_core::tax_rate::TaxRate> {
+    ) -> stripe::Response<stripe_core::tax_rate::TaxRate> {
         client.get_query(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), params)
     }
     /// Creates a new tax rate.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateTaxRate,
-    ) -> Response<stripe_core::tax_rate::TaxRate> {
+    ) -> stripe::Response<stripe_core::tax_rate::TaxRate> {
         client.send_form("/tax_rates", params, http_types::Method::Post)
     }
     /// Updates an existing tax rate.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         tax_rate: &stripe_core::tax_rate::TaxRateId,
         params: UpdateTaxRate,
-    ) -> Response<stripe_core::tax_rate::TaxRate> {
+    ) -> stripe::Response<stripe_core::tax_rate::TaxRate> {
         client.send_form(
             &format!("/tax_rates/{tax_rate}", tax_rate = tax_rate),
             params,
@@ -130,7 +128,7 @@ pub struct CreateTaxRate<'a> {
     pub state: Option<&'a str>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_type: Option<CreateTaxRateTaxType>,
+    pub tax_type: Option<TaxType>,
 }
 impl<'a> CreateTaxRate<'a> {
     pub fn new(display_name: &'a str, inclusive: bool, percentage: f64) -> Self {
@@ -147,71 +145,6 @@ impl<'a> CreateTaxRate<'a> {
             state: Default::default(),
             tax_type: Default::default(),
         }
-    }
-}
-/// The high-level tax type, such as `vat` or `sales_tax`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateTaxRateTaxType {
-    Gst,
-    Hst,
-    Jct,
-    Pst,
-    Qst,
-    Rst,
-    SalesTax,
-    Vat,
-}
-
-impl CreateTaxRateTaxType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Gst => "gst",
-            Self::Hst => "hst",
-            Self::Jct => "jct",
-            Self::Pst => "pst",
-            Self::Qst => "qst",
-            Self::Rst => "rst",
-            Self::SalesTax => "sales_tax",
-            Self::Vat => "vat",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateTaxRateTaxType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "gst" => Ok(Self::Gst),
-            "hst" => Ok(Self::Hst),
-            "jct" => Ok(Self::Jct),
-            "pst" => Ok(Self::Pst),
-            "qst" => Ok(Self::Qst),
-            "rst" => Ok(Self::Rst),
-            "sales_tax" => Ok(Self::SalesTax),
-            "vat" => Ok(Self::Vat),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateTaxRateTaxType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateTaxRateTaxType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateTaxRateTaxType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -255,16 +188,15 @@ pub struct UpdateTaxRate<'a> {
     pub state: Option<&'a str>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_type: Option<UpdateTaxRateTaxType>,
+    pub tax_type: Option<TaxType>,
 }
 impl<'a> UpdateTaxRate<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// The high-level tax type, such as `vat` or `sales_tax`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateTaxRateTaxType {
+pub enum TaxType {
     Gst,
     Hst,
     Jct,
@@ -275,7 +207,7 @@ pub enum UpdateTaxRateTaxType {
     Vat,
 }
 
-impl UpdateTaxRateTaxType {
+impl TaxType {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Gst => "gst",
@@ -290,7 +222,7 @@ impl UpdateTaxRateTaxType {
     }
 }
 
-impl std::str::FromStr for UpdateTaxRateTaxType {
+impl std::str::FromStr for TaxType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -308,18 +240,18 @@ impl std::str::FromStr for UpdateTaxRateTaxType {
     }
 }
 
-impl AsRef<str> for UpdateTaxRateTaxType {
+impl AsRef<str> for TaxType {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for UpdateTaxRateTaxType {
+impl std::fmt::Display for TaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl serde::Serialize for UpdateTaxRateTaxType {
+impl serde::Serialize for TaxType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

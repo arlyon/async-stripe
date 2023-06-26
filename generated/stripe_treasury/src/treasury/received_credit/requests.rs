@@ -1,29 +1,28 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::received_credit::ReceivedCredit {
     /// Returns a list of ReceivedCredits.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReceivedCredit,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::received_credit::ReceivedCredit>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::received_credit::ReceivedCredit>,
+    > {
         client.get_query("/treasury/received_credits", params)
     }
     /// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveReceivedCredit,
-    ) -> Response<stripe_treasury::treasury::received_credit::ReceivedCredit> {
+    ) -> stripe::Response<stripe_treasury::treasury::received_credit::ReceivedCredit> {
         client.get_query(&format!("/treasury/received_credits/{id}", id = id), params)
     }
     /// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
     ///
     /// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateReceivedCredit,
-    ) -> Response<stripe_treasury::treasury::received_credit::ReceivedCredit> {
+    ) -> stripe::Response<stripe_treasury::treasury::received_credit::ReceivedCredit> {
         client.send_form(
             "/test_helpers/treasury/received_credits",
             params,

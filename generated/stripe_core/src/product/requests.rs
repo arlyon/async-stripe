@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::product::Product {
     /// Search for products you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
     /// Don’t use search in read-after-write flows where strict consistency is necessary.
@@ -7,50 +5,56 @@ impl stripe_core::product::Product {
     /// Under normal operating conditions, data is searchable in less than a minute.
     /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
     /// Search functionality is not available to merchants in India.
-    pub fn search(client: &Client, params: SearchProduct) -> Response<SearchReturned> {
+    pub fn search(
+        client: &stripe::Client,
+        params: SearchProduct,
+    ) -> stripe::Response<SearchReturned> {
         client.get_query("/products/search", params)
     }
     /// Creates a new product object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateProduct,
-    ) -> Response<stripe_core::product::Product> {
+    ) -> stripe::Response<stripe_core::product::Product> {
         client.send_form("/products", params, http_types::Method::Post)
     }
     /// Retrieves the details of an existing product.
     ///
     /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveProduct,
-    ) -> Response<stripe_core::product::Product> {
+    ) -> stripe::Response<stripe_core::product::Product> {
         client.get_query(&format!("/products/{id}", id = id), params)
     }
     /// Updates the specific product by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: UpdateProduct,
-    ) -> Response<stripe_core::product::Product> {
+    ) -> stripe::Response<stripe_core::product::Product> {
         client.send_form(&format!("/products/{id}", id = id), params, http_types::Method::Post)
     }
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListProduct,
-    ) -> Response<stripe_types::List<stripe_core::product::Product>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::product::Product>> {
         client.get_query("/products", params)
     }
     /// Delete a product.
     ///
     /// Deleting a product is only possible if it has no prices associated with it.
     /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-    pub fn delete(client: &Client, id: &str) -> Response<stripe_core::product::DeletedProduct> {
+    pub fn delete(
+        client: &stripe::Client,
+        id: &str,
+    ) -> stripe::Response<stripe_core::product::DeletedProduct> {
         client.send(&format!("/products/{id}", id = id), http_types::Method::Delete)
     }
 }
@@ -231,7 +235,7 @@ pub struct CreateProduct<'a> {
     pub name: &'a str,
     /// The dimensions of this product for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<CreateProductPackageDimensions>,
+    pub package_dimensions: Option<PackageDimensionsSpecs>,
     /// Whether this product is shipped (i.e., physical goods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
@@ -252,7 +256,7 @@ pub struct CreateProduct<'a> {
     /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateProductType>,
+    pub type_: Option<Type>,
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -313,7 +317,7 @@ pub struct CreateProductDefaultPriceData<'a> {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     ///
     /// One of `unit_amount` or `unit_amount_decimal` is required.
@@ -350,7 +354,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
@@ -396,59 +400,6 @@ impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
             minimum: Default::default(),
             preset: Default::default(),
         }
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Each element represents a pricing tier.
@@ -574,135 +525,6 @@ impl serde::Serialize for CreateProductDefaultPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateProductDefaultPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateProductDefaultPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductDefaultPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateProductDefaultPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateProductDefaultPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateProductDefaultPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The dimensions of this product for shipping purposes.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateProductPackageDimensions {
-    /// Height, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub height: f64,
-    /// Length, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub length: f64,
-    /// Weight, in ounces.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub weight: f64,
-    /// Width, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub width: f64,
-}
-impl CreateProductPackageDimensions {
-    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
-        Self { height, length, weight, width }
-    }
-}
-/// The type of the product.
-///
-/// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
-/// Set this parameter to `good` to use this product with Orders and SKUs.
-/// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateProductType {
-    Good,
-    Service,
-}
-
-impl CreateProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Good => "good",
-            Self::Service => "service",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateProductType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "good" => Ok(Self::Good),
-            "service" => Ok(Self::Service),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateProductType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveProduct<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -761,7 +583,7 @@ pub struct UpdateProduct<'a> {
     pub name: Option<&'a str>,
     /// The dimensions of this product for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<UpdateProductPackageDimensions>,
+    pub package_dimensions: Option<PackageDimensionsSpecs>,
     /// Whether this product is shipped (i.e., physical goods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
@@ -789,31 +611,6 @@ pub struct UpdateProduct<'a> {
 impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The dimensions of this product for shipping purposes.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateProductPackageDimensions {
-    /// Height, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub height: f64,
-    /// Length, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub length: f64,
-    /// Weight, in ounces.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub weight: f64,
-    /// Width, in inches.
-    ///
-    /// Maximum precision is 2 decimal places.
-    pub width: f64,
-}
-impl UpdateProductPackageDimensions {
-    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
-        Self { height, length, weight, width }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -855,7 +652,7 @@ pub struct ListProduct<'a> {
     /// Only return products of this type.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ListProductType>,
+    pub type_: Option<Type>,
     /// Only return products with the given url.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
@@ -865,14 +662,86 @@ impl<'a> ListProduct<'a> {
         Self::default()
     }
 }
-/// Only return products of this type.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum ListProductType {
+pub enum TaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl TaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exclusive => "exclusive",
+            Self::Inclusive => "inclusive",
+            Self::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct PackageDimensionsSpecs {
+    /// Height, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub height: f64,
+    /// Length, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub length: f64,
+    /// Weight, in ounces.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub weight: f64,
+    /// Width, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
+    pub width: f64,
+}
+impl PackageDimensionsSpecs {
+    pub fn new(height: f64, length: f64, weight: f64, width: f64) -> Self {
+        Self { height, length, weight, width }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Type {
     Good,
     Service,
 }
 
-impl ListProductType {
+impl Type {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Good => "good",
@@ -881,7 +750,7 @@ impl ListProductType {
     }
 }
 
-impl std::str::FromStr for ListProductType {
+impl std::str::FromStr for Type {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -893,18 +762,18 @@ impl std::str::FromStr for ListProductType {
     }
 }
 
-impl AsRef<str> for ListProductType {
+impl AsRef<str> for Type {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for ListProductType {
+impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl serde::Serialize for ListProductType {
+impl serde::Serialize for Type {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

@@ -1,26 +1,25 @@
-use stripe::{Client, Response};
-
 impl stripe_terminal::terminal::configuration::Configuration {
     /// Creates a new `Configuration` object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateConfiguration,
-    ) -> Response<stripe_terminal::terminal::configuration::Configuration> {
+    ) -> stripe::Response<stripe_terminal::terminal::configuration::Configuration> {
         client.send_form("/terminal/configurations", params, http_types::Method::Post)
     }
     /// Returns a list of `Configuration` objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListConfiguration,
-    ) -> Response<stripe_types::List<stripe_terminal::terminal::configuration::Configuration>> {
+    ) -> stripe::Response<stripe_types::List<stripe_terminal::terminal::configuration::Configuration>>
+    {
         client.get_query("/terminal/configurations", params)
     }
     /// Retrieves a `Configuration` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         configuration: &str,
         params: RetrieveConfiguration,
-    ) -> Response<RetrieveReturned> {
+    ) -> stripe::Response<RetrieveReturned> {
         client.get_query(
             &format!("/terminal/configurations/{configuration}", configuration = configuration),
             params,
@@ -28,10 +27,10 @@ impl stripe_terminal::terminal::configuration::Configuration {
     }
     /// Updates a new `Configuration` object.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         configuration: &str,
         params: UpdateConfiguration,
-    ) -> Response<UpdateReturned> {
+    ) -> stripe::Response<UpdateReturned> {
         client.send_form(
             &format!("/terminal/configurations/{configuration}", configuration = configuration),
             params,
@@ -40,9 +39,9 @@ impl stripe_terminal::terminal::configuration::Configuration {
     }
     /// Deletes a `Configuration` object.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         configuration: &str,
-    ) -> Response<stripe_terminal::terminal::configuration::DeletedConfiguration> {
+    ) -> stripe::Response<stripe_terminal::terminal::configuration::DeletedConfiguration> {
         client.send(
             &format!("/terminal/configurations/{configuration}", configuration = configuration),
             http_types::Method::Delete,
@@ -59,7 +58,7 @@ pub struct CreateConfiguration<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tipping: Option<CreateConfigurationTipping<'a>>,
+    pub tipping: Option<Tipping<'a>>,
     /// An object containing device type specific settings for Verifone P400 readers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verifone_p400: Option<CreateConfigurationVerifoneP400<'a>>,
@@ -77,309 +76,6 @@ pub struct CreateConfigurationBbposWiseposE<'a> {
     pub splashscreen: Option<&'a str>,
 }
 impl<'a> CreateConfigurationBbposWiseposE<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configurations for readers supporting on-reader tips.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTipping<'a> {
-    /// Tipping configuration for AUD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub aud: Option<CreateConfigurationTippingAud<'a>>,
-    /// Tipping configuration for CAD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cad: Option<CreateConfigurationTippingCad<'a>>,
-    /// Tipping configuration for CHF.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chf: Option<CreateConfigurationTippingChf<'a>>,
-    /// Tipping configuration for CZK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub czk: Option<CreateConfigurationTippingCzk<'a>>,
-    /// Tipping configuration for DKK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dkk: Option<CreateConfigurationTippingDkk<'a>>,
-    /// Tipping configuration for EUR.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eur: Option<CreateConfigurationTippingEur<'a>>,
-    /// Tipping configuration for GBP.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gbp: Option<CreateConfigurationTippingGbp<'a>>,
-    /// Tipping configuration for HKD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hkd: Option<CreateConfigurationTippingHkd<'a>>,
-    /// Tipping configuration for MYR.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub myr: Option<CreateConfigurationTippingMyr<'a>>,
-    /// Tipping configuration for NOK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nok: Option<CreateConfigurationTippingNok<'a>>,
-    /// Tipping configuration for NZD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nzd: Option<CreateConfigurationTippingNzd<'a>>,
-    /// Tipping configuration for SEK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sek: Option<CreateConfigurationTippingSek<'a>>,
-    /// Tipping configuration for SGD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sgd: Option<CreateConfigurationTippingSgd<'a>>,
-    /// Tipping configuration for USD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub usd: Option<CreateConfigurationTippingUsd<'a>>,
-}
-impl<'a> CreateConfigurationTipping<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for AUD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingAud<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingAud<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CAD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingCad<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingCad<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CHF.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingChf<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingChf<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CZK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingCzk<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingCzk<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for DKK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingDkk<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingDkk<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for EUR.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingEur<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingEur<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for GBP.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingGbp<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingGbp<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for HKD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingHkd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingHkd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for MYR.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingMyr<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingMyr<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for NOK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingNok<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingNok<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for NZD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingNzd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingNzd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for SEK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingSek<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingSek<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for SGD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingSgd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingSgd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for USD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateConfigurationTippingUsd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> CreateConfigurationTippingUsd<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -494,7 +190,7 @@ pub struct UpdateConfiguration<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tipping: Option<UpdateConfigurationTipping<'a>>,
+    pub tipping: Option<Tipping<'a>>,
     /// An object containing device type specific settings for Verifone P400 readers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verifone_p400: Option<UpdateConfigurationVerifoneP400<'a>>,
@@ -516,309 +212,6 @@ impl<'a> UpdateConfigurationBbposWiseposE<'a> {
         Self::default()
     }
 }
-/// Tipping configurations for readers supporting on-reader tips.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTipping<'a> {
-    /// Tipping configuration for AUD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub aud: Option<UpdateConfigurationTippingAud<'a>>,
-    /// Tipping configuration for CAD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cad: Option<UpdateConfigurationTippingCad<'a>>,
-    /// Tipping configuration for CHF.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chf: Option<UpdateConfigurationTippingChf<'a>>,
-    /// Tipping configuration for CZK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub czk: Option<UpdateConfigurationTippingCzk<'a>>,
-    /// Tipping configuration for DKK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dkk: Option<UpdateConfigurationTippingDkk<'a>>,
-    /// Tipping configuration for EUR.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eur: Option<UpdateConfigurationTippingEur<'a>>,
-    /// Tipping configuration for GBP.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gbp: Option<UpdateConfigurationTippingGbp<'a>>,
-    /// Tipping configuration for HKD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hkd: Option<UpdateConfigurationTippingHkd<'a>>,
-    /// Tipping configuration for MYR.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub myr: Option<UpdateConfigurationTippingMyr<'a>>,
-    /// Tipping configuration for NOK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nok: Option<UpdateConfigurationTippingNok<'a>>,
-    /// Tipping configuration for NZD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nzd: Option<UpdateConfigurationTippingNzd<'a>>,
-    /// Tipping configuration for SEK.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sek: Option<UpdateConfigurationTippingSek<'a>>,
-    /// Tipping configuration for SGD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sgd: Option<UpdateConfigurationTippingSgd<'a>>,
-    /// Tipping configuration for USD.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub usd: Option<UpdateConfigurationTippingUsd<'a>>,
-}
-impl<'a> UpdateConfigurationTipping<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for AUD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingAud<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingAud<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CAD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingCad<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingCad<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CHF.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingChf<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingChf<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for CZK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingCzk<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingCzk<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for DKK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingDkk<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingDkk<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for EUR.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingEur<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingEur<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for GBP.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingGbp<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingGbp<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for HKD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingHkd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingHkd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for MYR.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingMyr<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingMyr<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for NOK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingNok<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingNok<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for NZD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingNzd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingNzd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for SEK.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingSek<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingSek<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for SGD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingSgd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingSgd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Tipping configuration for USD.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateConfigurationTippingUsd<'a> {
-    /// Fixed amounts displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amounts: Option<&'a [i64]>,
-    /// Percentages displayed when collecting a tip.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentages: Option<&'a [i64]>,
-    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub smart_tip_threshold: Option<i64>,
-}
-impl<'a> UpdateConfigurationTippingUsd<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// An object containing device type specific settings for Verifone P400 readers.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateConfigurationVerifoneP400<'a> {
@@ -827,6 +220,73 @@ pub struct UpdateConfigurationVerifoneP400<'a> {
     pub splashscreen: Option<&'a str>,
 }
 impl<'a> UpdateConfigurationVerifoneP400<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CurrencySpecificConfig<'a> {
+    /// Fixed amounts displayed when collecting a tip.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fixed_amounts: Option<&'a [i64]>,
+    /// Percentages displayed when collecting a tip.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub percentages: Option<&'a [i64]>,
+    /// Below this amount, fixed amounts will be displayed; above it, percentages will be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub smart_tip_threshold: Option<i64>,
+}
+impl<'a> CurrencySpecificConfig<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct Tipping<'a> {
+    /// Tipping configuration for AUD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aud: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for CAD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cad: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for CHF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chf: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for CZK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub czk: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for DKK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dkk: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for EUR.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eur: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for GBP.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gbp: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for HKD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hkd: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for MYR.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub myr: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for NOK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nok: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for NZD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nzd: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for SEK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sek: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for SGD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sgd: Option<CurrencySpecificConfig<'a>>,
+    /// Tipping configuration for USD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usd: Option<CurrencySpecificConfig<'a>>,
+}
+impl<'a> Tipping<'a> {
     pub fn new() -> Self {
         Self::default()
     }

@@ -1,23 +1,21 @@
-use stripe::{Client, Response};
-
 impl stripe_core::event::Event {
     /// List events, going back up to 30 days.
     ///
     /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListEvent,
-    ) -> Response<stripe_types::List<stripe_core::event::Event>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::event::Event>> {
         client.get_query("/events", params)
     }
     /// Retrieves the details of an event.
     ///
     /// Supply the unique identifier of the event, which you might have received in a webhook.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveEvent,
-    ) -> Response<stripe_core::event::Event> {
+    ) -> stripe::Response<stripe_core::event::Event> {
         client.get_query(&format!("/events/{id}", id = id), params)
     }
 }

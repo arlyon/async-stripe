@@ -1,19 +1,18 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::transaction::Transaction {
     /// Retrieves the details of an existing Transaction.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveTransaction,
-    ) -> Response<stripe_treasury::treasury::transaction::Transaction> {
+    ) -> stripe::Response<stripe_treasury::treasury::transaction::Transaction> {
         client.get_query(&format!("/treasury/transactions/{id}", id = id), params)
     }
     /// Retrieves a list of Transaction objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTransaction,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::transaction::Transaction>> {
+    ) -> stripe::Response<stripe_types::List<stripe_treasury::treasury::transaction::Transaction>>
+    {
         client.get_query("/treasury/transactions", params)
     }
 }

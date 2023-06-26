@@ -1,42 +1,40 @@
-use stripe::{Client, Response};
-
 impl stripe_core::transfer::Transfer {
     /// To send funds from your Stripe account to a connected account, you create a new transfer object.
     ///
     /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateTransfer,
-    ) -> Response<stripe_core::transfer::Transfer> {
+    ) -> stripe::Response<stripe_core::transfer::Transfer> {
         client.send_form("/transfers", params, http_types::Method::Post)
     }
     /// Returns a list of existing transfers sent to connected accounts.
     ///
     /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTransfer,
-    ) -> Response<stripe_types::List<stripe_core::transfer::Transfer>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::transfer::Transfer>> {
         client.get_query("/transfers", params)
     }
     /// Retrieves the details of an existing transfer.
     ///
     /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         transfer: &stripe_core::transfer::TransferId,
         params: RetrieveTransfer,
-    ) -> Response<stripe_core::transfer::Transfer> {
+    ) -> stripe::Response<stripe_core::transfer::Transfer> {
         client.get_query(&format!("/transfers/{transfer}", transfer = transfer), params)
     }
     /// Updates the specified transfer by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         transfer: &stripe_core::transfer::TransferId,
         params: UpdateTransfer,
-    ) -> Response<stripe_core::transfer::Transfer> {
+    ) -> stripe::Response<stripe_core::transfer::Transfer> {
         client.send_form(
             &format!("/transfers/{transfer}", transfer = transfer),
             params,

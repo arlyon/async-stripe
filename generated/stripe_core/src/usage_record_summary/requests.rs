@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::usage_record_summary::UsageRecordSummary {
     /// For the specified subscription item, returns a list of summary objects.
     ///
@@ -7,10 +5,11 @@ impl stripe_core::usage_record_summary::UsageRecordSummary {
     /// The first list item represents the most current usage period that hasn’t ended yet.
     /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         subscription_item: &stripe_core::subscription_item::SubscriptionItemId,
         params: ListUsageRecordSummary,
-    ) -> Response<stripe_types::List<stripe_core::usage_record_summary::UsageRecordSummary>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::usage_record_summary::UsageRecordSummary>>
+    {
         client.get_query(
             &format!(
                 "/subscription_items/{subscription_item}/usage_record_summaries",

@@ -1,19 +1,17 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::debit_reversal::DebitReversal {
     /// Reverses a ReceivedDebit and creates a DebitReversal object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateDebitReversal,
-    ) -> Response<stripe_treasury::treasury::debit_reversal::DebitReversal> {
+    ) -> stripe::Response<stripe_treasury::treasury::debit_reversal::DebitReversal> {
         client.send_form("/treasury/debit_reversals", params, http_types::Method::Post)
     }
     /// Retrieves a DebitReversal object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         debit_reversal: &str,
         params: RetrieveDebitReversal,
-    ) -> Response<stripe_treasury::treasury::debit_reversal::DebitReversal> {
+    ) -> stripe::Response<stripe_treasury::treasury::debit_reversal::DebitReversal> {
         client.get_query(
             &format!("/treasury/debit_reversals/{debit_reversal}", debit_reversal = debit_reversal),
             params,
@@ -21,10 +19,11 @@ impl stripe_treasury::treasury::debit_reversal::DebitReversal {
     }
     /// Returns a list of DebitReversals.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListDebitReversal,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::debit_reversal::DebitReversal>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::debit_reversal::DebitReversal>,
+    > {
         client.get_query("/treasury/debit_reversals", params)
     }
 }

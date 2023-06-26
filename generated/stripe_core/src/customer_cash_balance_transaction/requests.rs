@@ -1,14 +1,13 @@
-use stripe::{Client, Response};
-
 impl stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction {
     /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         transaction: &str,
         params: RetrieveCustomerCashBalanceTransaction,
-    ) -> Response<stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
-    {
+    ) -> stripe::Response<
+        stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
+    > {
         client.get_query(
             &format!(
                 "/customers/{customer}/cash_balance_transactions/{transaction}",
@@ -20,10 +19,10 @@ impl stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransact
     }
     /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: ListCustomerCashBalanceTransaction,
-    ) -> Response<
+    ) -> stripe::Response<
         stripe_types::List<
             stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
         >,

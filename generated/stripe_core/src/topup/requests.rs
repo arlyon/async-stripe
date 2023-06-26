@@ -1,35 +1,36 @@
-use stripe::{Client, Response};
-
 impl stripe_core::topup::Topup {
     /// Top up the balance of an account.
-    pub fn create(client: &Client, params: CreateTopup) -> Response<stripe_core::topup::Topup> {
+    pub fn create(
+        client: &stripe::Client,
+        params: CreateTopup,
+    ) -> stripe::Response<stripe_core::topup::Topup> {
         client.send_form("/topups", params, http_types::Method::Post)
     }
     /// Returns a list of top-ups.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTopup,
-    ) -> Response<stripe_types::List<stripe_core::topup::Topup>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::topup::Topup>> {
         client.get_query("/topups", params)
     }
     /// Retrieves the details of a top-up that has previously been created.
     ///
     /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         topup: &stripe_core::topup::TopupId,
         params: RetrieveTopup,
-    ) -> Response<stripe_core::topup::Topup> {
+    ) -> stripe::Response<stripe_core::topup::Topup> {
         client.get_query(&format!("/topups/{topup}", topup = topup), params)
     }
     /// Updates the metadata of a top-up.
     ///
     /// Other top-up details are not editable by design.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         topup: &stripe_core::topup::TopupId,
         params: UpdateTopup,
-    ) -> Response<stripe_core::topup::Topup> {
+    ) -> stripe::Response<stripe_core::topup::Topup> {
         client.send_form(
             &format!("/topups/{topup}", topup = topup),
             params,
@@ -40,10 +41,10 @@ impl stripe_core::topup::Topup {
     ///
     /// Only pending top-ups can be canceled.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         topup: &stripe_core::topup::TopupId,
         params: CancelTopup,
-    ) -> Response<stripe_core::topup::Topup> {
+    ) -> stripe::Response<stripe_core::topup::Topup> {
         client.send_form(
             &format!("/topups/{topup}/cancel", topup = topup),
             params,

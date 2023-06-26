@@ -1,12 +1,10 @@
-use stripe::{Client, Response};
-
 impl stripe_core::tax_id::TaxId {
     /// Creates a new `TaxID` object for a customer.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: CreateTaxId,
-    ) -> Response<stripe_core::tax_id::TaxId> {
+    ) -> stripe::Response<stripe_core::tax_id::TaxId> {
         client.send_form(
             &format!("/customers/{customer}/tax_ids", customer = customer),
             params,
@@ -15,11 +13,11 @@ impl stripe_core::tax_id::TaxId {
     }
     /// Retrieves the `TaxID` object with the given identifier.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         id: &str,
         params: RetrieveTaxId,
-    ) -> Response<stripe_core::tax_id::TaxId> {
+    ) -> stripe::Response<stripe_core::tax_id::TaxId> {
         client.get_query(
             &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
             params,
@@ -27,18 +25,18 @@ impl stripe_core::tax_id::TaxId {
     }
     /// Returns a list of tax IDs for a customer.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         params: ListTaxId,
-    ) -> Response<stripe_types::List<stripe_core::tax_id::TaxId>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::tax_id::TaxId>> {
         client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), params)
     }
     /// Deletes an existing `TaxID` object.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         customer: &stripe_core::customer::CustomerId,
         id: &str,
-    ) -> Response<stripe_core::tax_id::DeletedTaxId> {
+    ) -> stripe::Response<stripe_core::tax_id::DeletedTaxId> {
         client.send(
             &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
             http_types::Method::Delete,

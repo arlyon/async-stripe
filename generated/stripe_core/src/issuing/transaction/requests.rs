@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_core::issuing::transaction::Transaction {
     /// Returns a list of Issuing `Transaction` objects.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTransaction,
-    ) -> Response<stripe_types::List<stripe_core::issuing::transaction::Transaction>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::issuing::transaction::Transaction>> {
         client.get_query("/issuing/transactions", params)
     }
     /// Retrieves an Issuing `Transaction` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         transaction: &str,
         params: RetrieveTransaction,
-    ) -> Response<stripe_core::issuing::transaction::Transaction> {
+    ) -> stripe::Response<stripe_core::issuing::transaction::Transaction> {
         client.get_query(
             &format!("/issuing/transactions/{transaction}", transaction = transaction),
             params,
@@ -25,10 +23,10 @@ impl stripe_core::issuing::transaction::Transaction {
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         transaction: &str,
         params: UpdateTransaction,
-    ) -> Response<stripe_core::issuing::transaction::Transaction> {
+    ) -> stripe::Response<stripe_core::issuing::transaction::Transaction> {
         client.send_form(
             &format!("/issuing/transactions/{transaction}", transaction = transaction),
             params,

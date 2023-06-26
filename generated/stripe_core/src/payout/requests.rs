@@ -1,30 +1,31 @@
-use stripe::{Client, Response};
-
 impl stripe_core::payout::Payout {
     /// Retrieves the details of an existing payout.
     ///
     /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         payout: &stripe_core::payout::PayoutId,
         params: RetrievePayout,
-    ) -> Response<stripe_core::payout::Payout> {
+    ) -> stripe::Response<stripe_core::payout::Payout> {
         client.get_query(&format!("/payouts/{payout}", payout = payout), params)
     }
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///
     /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListPayout,
-    ) -> Response<stripe_types::List<stripe_core::payout::Payout>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::payout::Payout>> {
         client.get_query("/payouts", params)
     }
     /// To send funds to your own bank account, you create a new payout object.
     ///
     /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
-    pub fn create(client: &Client, params: CreatePayout) -> Response<stripe_core::payout::Payout> {
+    pub fn create(
+        client: &stripe::Client,
+        params: CreatePayout,
+    ) -> stripe::Response<stripe_core::payout::Payout> {
         client.send_form("/payouts", params, http_types::Method::Post)
     }
     /// Updates the specified payout by setting the values of the parameters passed.
@@ -32,10 +33,10 @@ impl stripe_core::payout::Payout {
     /// Any parameters not provided will be left unchanged.
     /// This request accepts only the metadata as arguments.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         payout: &stripe_core::payout::PayoutId,
         params: UpdatePayout,
-    ) -> Response<stripe_core::payout::Payout> {
+    ) -> stripe::Response<stripe_core::payout::Payout> {
         client.send_form(
             &format!("/payouts/{payout}", payout = payout),
             params,
@@ -47,10 +48,10 @@ impl stripe_core::payout::Payout {
     /// Funds will be refunded to your available balance.
     /// You may not cancel automatic Stripe payouts.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         payout: &stripe_core::payout::PayoutId,
         params: CancelPayout,
-    ) -> Response<stripe_core::payout::Payout> {
+    ) -> stripe::Response<stripe_core::payout::Payout> {
         client.send_form(
             &format!("/payouts/{payout}/cancel", payout = payout),
             params,
@@ -62,10 +63,10 @@ impl stripe_core::payout::Payout {
     /// Only payouts for connected accounts to US bank accounts may be reversed at this time.
     /// If the payout is in the `pending` status, `/v1/payouts/:id/cancel` should be used instead.  By requesting a reversal via `/v1/payouts/:id/reverse`, you confirm that the authorized signatory of the selected bank account has authorized the debit on the bank account and that no other authorization is required.
     pub fn reverse(
-        client: &Client,
+        client: &stripe::Client,
         payout: &stripe_core::payout::PayoutId,
         params: ReversePayout,
-    ) -> Response<stripe_core::payout::Payout> {
+    ) -> stripe::Response<stripe_core::payout::Payout> {
         client.send_form(
             &format!("/payouts/{payout}/reverse", payout = payout),
             params,

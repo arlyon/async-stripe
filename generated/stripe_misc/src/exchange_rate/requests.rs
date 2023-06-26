@@ -1,21 +1,19 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::exchange_rate::ExchangeRate {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
     /// Only shows the currencies for which Stripe supports.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListExchangeRate,
-    ) -> Response<stripe_types::List<stripe_misc::exchange_rate::ExchangeRate>> {
+    ) -> stripe::Response<stripe_types::List<stripe_misc::exchange_rate::ExchangeRate>> {
         client.get_query("/exchange_rates", params)
     }
     /// Retrieves the exchange rates from the given currency to every supported currency.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         rate_id: &str,
         params: RetrieveExchangeRate,
-    ) -> Response<stripe_misc::exchange_rate::ExchangeRate> {
+    ) -> stripe::Response<stripe_misc::exchange_rate::ExchangeRate> {
         client.get_query(&format!("/exchange_rates/{rate_id}", rate_id = rate_id), params)
     }
 }

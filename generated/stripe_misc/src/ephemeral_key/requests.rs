@@ -1,19 +1,17 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::ephemeral_key::EphemeralKey {
     /// Creates a short-lived API key for a given resource.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateEphemeralKey,
-    ) -> Response<stripe_misc::ephemeral_key::EphemeralKey> {
+    ) -> stripe::Response<stripe_misc::ephemeral_key::EphemeralKey> {
         client.send_form("/ephemeral_keys", params, http_types::Method::Post)
     }
     /// Invalidates a short-lived API key for a given resource.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         key: &str,
         params: DeleteEphemeralKey,
-    ) -> Response<stripe_misc::ephemeral_key::EphemeralKey> {
+    ) -> stripe::Response<stripe_misc::ephemeral_key::EphemeralKey> {
         client.send_form(
             &format!("/ephemeral_keys/{key}", key = key),
             params,

@@ -1,36 +1,34 @@
-use stripe::{Client, Response};
-
 impl stripe_checkout::checkout::session::Session {
     /// Returns a list of Checkout Sessions.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListSession,
-    ) -> Response<stripe_types::List<stripe_checkout::checkout::session::Session>> {
+    ) -> stripe::Response<stripe_types::List<stripe_checkout::checkout::session::Session>> {
         client.get_query("/checkout/sessions", params)
     }
     /// Retrieves a Session object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: RetrieveSession,
-    ) -> Response<stripe_checkout::checkout::session::Session> {
+    ) -> stripe::Response<stripe_checkout::checkout::session::Session> {
         client.get_query(&format!("/checkout/sessions/{session}", session = session), params)
     }
     /// Creates a Session object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateSession,
-    ) -> Response<stripe_checkout::checkout::session::Session> {
+    ) -> stripe::Response<stripe_checkout::checkout::session::Session> {
         client.send_form("/checkout/sessions", params, http_types::Method::Post)
     }
     /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
     ///
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
     pub fn list_line_items(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: ListLineItemsSession,
-    ) -> Response<stripe_types::List<stripe_core::line_item::LineItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::line_item::LineItem>> {
         client.get_query(
             &format!("/checkout/sessions/{session}/line_items", session = session),
             params,
@@ -40,10 +38,10 @@ impl stripe_checkout::checkout::session::Session {
     ///
     /// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
     pub fn expire(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: ExpireSession,
-    ) -> Response<stripe_checkout::checkout::session::Session> {
+    ) -> stripe::Response<stripe_checkout::checkout::session::Session> {
         client.send_form(
             &format!("/checkout/sessions/{session}/expire", session = session),
             params,
@@ -881,7 +879,7 @@ pub struct CreateSessionLineItemsPriceData<'a> {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateSessionLineItemsPriceDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A non-negative integer in cents (or local equivalent) representing how much to charge.
     ///
     /// One of `unit_amount` or `unit_amount_decimal` is required.
@@ -1010,59 +1008,6 @@ impl std::fmt::Display for CreateSessionLineItemsPriceDataRecurringInterval {
     }
 }
 impl serde::Serialize for CreateSessionLineItemsPriceDataRecurringInterval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionLineItemsPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateSessionLineItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionLineItemsPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionLineItemsPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionLineItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionLineItemsPriceDataTaxBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1340,7 +1285,7 @@ pub struct CreateSessionPaymentIntentData<'a> {
     ///
     /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreateSessionPaymentIntentDataSetupFutureUsage>,
+    pub setup_future_usage: Option<SetupFutureUsage>,
     /// Shipping information for this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CreateSessionPaymentIntentDataShipping<'a>>,
@@ -1410,69 +1355,6 @@ impl std::fmt::Display for CreateSessionPaymentIntentDataCaptureMethod {
     }
 }
 impl serde::Serialize for CreateSessionPaymentIntentDataCaptureMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment
-/// method collected by this Checkout Session.
-///
-/// When setting this to `on_session`, Checkout will show a notice to the
-/// customer that their payment details will be saved.
-///
-/// When setting this to `off_session`, Checkout will show a notice to the
-/// customer that their payment details will be saved and used for future
-/// payments.
-///
-/// If a Customer has been provided or Checkout creates a new Customer,
-/// Checkout will attach the payment method to the Customer.
-///
-/// If Checkout does not create a Customer, the payment method is not attached
-/// to a Customer.
-///
-/// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionPaymentIntentDataSetupFutureUsage {
-    OffSession,
-    OnSession,
-}
-
-impl CreateSessionPaymentIntentDataSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionPaymentIntentDataSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionPaymentIntentDataSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionPaymentIntentDataSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionPaymentIntentDataSetupFutureUsage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2534,7 +2416,7 @@ pub struct CreateSessionPaymentMethodOptionsCard<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreateSessionPaymentMethodOptionsCardSetupFutureUsage>,
+    pub setup_future_usage: Option<SetupFutureUsage>,
     /// Provides information about a card payment that customers see on their statements.
     ///
     /// Concatenated with the Kana prefix (shortened Kana descriptor) or Kana statement descriptor that’s set on the account to form the complete statement descriptor.
@@ -2566,57 +2448,6 @@ pub struct CreateSessionPaymentMethodOptionsCardInstallments {
 impl CreateSessionPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-///
-/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-///
-/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    OffSession,
-    OnSession,
-}
-
-impl CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionPaymentMethodOptionsCardSetupFutureUsage {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// contains details about the Customer Balance payment method options.
@@ -5013,7 +4844,7 @@ pub struct CreateSessionShippingOptionsShippingRateData<'a> {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateSessionShippingOptionsShippingRateDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
@@ -5048,164 +4879,16 @@ pub struct CreateSessionShippingOptionsShippingRateDataDeliveryEstimate {
     ///
     /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum>,
+    pub maximum: Option<DeliveryEstimateBound>,
     /// The lower bound of the estimated range.
     ///
     /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
+    pub minimum: Option<DeliveryEstimateBound>,
 }
 impl CreateSessionShippingOptionsShippingRateDataDeliveryEstimate {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// The upper bound of the estimated range.
-///
-/// If empty, represents no upper bound i.e., infinite.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
-    /// A unit of time.
-    pub unit: CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
-    pub fn new(
-        unit: CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The lower bound of the estimated range.
-///
-/// If empty, represents no lower bound.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
-    /// A unit of time.
-    pub unit: CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
-    pub fn new(
-        unit: CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
-    ) -> Self {
-        Self { unit, value }
-    }
-}
-/// A unit of time.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::BusinessDay => "business_day",
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "business_day" => Ok(Self::BusinessDay),
-            "day" => Ok(Self::Day),
-            "hour" => Ok(Self::Hour),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Describes a fixed amount to charge for shipping.
@@ -5246,124 +4929,11 @@ pub struct CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOption
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior:
-        Option<CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
 }
 impl CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     pub fn new(amount: i64) -> Self {
         Self { amount, tax_behavior: Default::default() }
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str>
-    for CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display
-    for CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize
-    for CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateSessionShippingOptionsShippingRateDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -5624,5 +5194,167 @@ pub struct ExpireSession<'a> {
 impl<'a> ExpireSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl TaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exclusive => "exclusive",
+            Self::Inclusive => "inclusive",
+            Self::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum SetupFutureUsage {
+    OffSession,
+    OnSession,
+}
+
+impl SetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::OffSession => "off_session",
+            Self::OnSession => "on_session",
+        }
+    }
+}
+
+impl std::str::FromStr for SetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "off_session" => Ok(Self::OffSession),
+            "on_session" => Ok(Self::OnSession),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for SetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for SetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Unit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl Unit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::BusinessDay => "business_day",
+            Self::Day => "day",
+            Self::Hour => "hour",
+            Self::Month => "month",
+            Self::Week => "week",
+        }
+    }
+}
+
+impl std::str::FromStr for Unit {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "business_day" => Ok(Self::BusinessDay),
+            "day" => Ok(Self::Day),
+            "hour" => Ok(Self::Hour),
+            "month" => Ok(Self::Month),
+            "week" => Ok(Self::Week),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Unit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Unit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Unit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct DeliveryEstimateBound {
+    /// A unit of time.
+    pub unit: Unit,
+    /// Must be greater than 0.
+    pub value: i64,
+}
+impl DeliveryEstimateBound {
+    pub fn new(unit: Unit, value: i64) -> Self {
+        Self { unit, value }
     }
 }

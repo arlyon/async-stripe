@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_core::credit_note::CreditNote {
     /// Issue a credit note to adjust the amount of a finalized invoice.
     ///
@@ -8,49 +6,49 @@ impl stripe_core::credit_note::CreditNote {
     /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
     /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateCreditNote,
-    ) -> Response<stripe_core::credit_note::CreditNote> {
+    ) -> stripe::Response<stripe_core::credit_note::CreditNote> {
         client.send_form("/credit_notes", params, http_types::Method::Post)
     }
     /// Get a preview of a credit note without creating it.
     pub fn preview(
-        client: &Client,
+        client: &stripe::Client,
         params: PreviewCreditNote,
-    ) -> Response<stripe_core::credit_note::CreditNote> {
+    ) -> stripe::Response<stripe_core::credit_note::CreditNote> {
         client.get_query("/credit_notes/preview", params)
     }
     /// Retrieves the credit note object with the given identifier.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveCreditNote,
-    ) -> Response<stripe_core::credit_note::CreditNote> {
+    ) -> stripe::Response<stripe_core::credit_note::CreditNote> {
         client.get_query(&format!("/credit_notes/{id}", id = id), params)
     }
     /// Returns a list of credit notes.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListCreditNote,
-    ) -> Response<stripe_types::List<stripe_core::credit_note::CreditNote>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::credit_note::CreditNote>> {
         client.get_query("/credit_notes", params)
     }
     /// Updates an existing credit note.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: UpdateCreditNote,
-    ) -> Response<stripe_core::credit_note::CreditNote> {
+    ) -> stripe::Response<stripe_core::credit_note::CreditNote> {
         client.send_form(&format!("/credit_notes/{id}", id = id), params, http_types::Method::Post)
     }
     /// Marks a credit note as void.
     ///
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
     pub fn void_credit_note(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: VoidCreditNoteCreditNote,
-    ) -> Response<stripe_core::credit_note::CreditNote> {
+    ) -> stripe::Response<stripe_core::credit_note::CreditNote> {
         client.send_form(
             &format!("/credit_notes/{id}/void", id = id),
             params,
@@ -61,9 +59,10 @@ impl stripe_core::credit_note::CreditNote {
     ///
     /// This URL you can retrieve the full (paginated) list of line items.
     pub fn preview_lines(
-        client: &Client,
+        client: &stripe::Client,
         params: PreviewLinesCreditNote,
-    ) -> Response<stripe_types::List<stripe_core::credit_note_line_item::CreditNoteLineItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::credit_note_line_item::CreditNoteLineItem>>
+    {
         client.get_query("/credit_notes/preview/lines", params)
     }
 }
@@ -82,7 +81,7 @@ pub struct CreateCreditNote<'a> {
     pub invoice: &'a str,
     /// Line items that make up the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lines: Option<&'a [CreateCreditNoteLines<'a>]>,
+    pub lines: Option<&'a [CreditNoteLineItemParams<'a>]>,
     /// The credit note's memo appears on the credit note PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<&'a str>,
@@ -98,7 +97,7 @@ pub struct CreateCreditNote<'a> {
     pub out_of_band_amount: Option<i64>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<CreateCreditNoteReason>,
+    pub reason: Option<Reason>,
     /// ID of an existing refund to link this credit note to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<&'a str>,
@@ -125,161 +124,6 @@ impl<'a> CreateCreditNote<'a> {
         }
     }
 }
-/// Line items that make up the credit note.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCreditNoteLines<'a> {
-    /// The line item amount to credit.
-    ///
-    /// Only valid when `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The description of the credit note line item.
-    ///
-    /// Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// The invoice line item to credit.
-    ///
-    /// Only valid when the `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<&'a str>,
-    /// The line item quantity to credit.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// The tax rates which apply to the credit note line item.
-    ///
-    /// Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-    #[serde(rename = "type")]
-    pub type_: CreateCreditNoteLinesType,
-    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
-    ///
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
-    /// Only valid when `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> CreateCreditNoteLines<'a> {
-    pub fn new(type_: CreateCreditNoteLinesType) -> Self {
-        Self {
-            amount: Default::default(),
-            description: Default::default(),
-            invoice_line_item: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-            type_,
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-}
-
-impl CreateCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::CustomLineItem => "custom_line_item",
-            Self::InvoiceLineItem => "invoice_line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCreditNoteLinesType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "custom_line_item" => Ok(Self::CustomLineItem),
-            "invoice_line_item" => Ok(Self::InvoiceLineItem),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateCreditNoteLinesType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateCreditNoteReason {
-    Duplicate,
-    Fraudulent,
-    OrderChange,
-    ProductUnsatisfactory,
-}
-
-impl CreateCreditNoteReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::OrderChange => "order_change",
-            Self::ProductUnsatisfactory => "product_unsatisfactory",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCreditNoteReason {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "order_change" => Ok(Self::OrderChange),
-            "product_unsatisfactory" => Ok(Self::ProductUnsatisfactory),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateCreditNoteReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateCreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateCreditNoteReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PreviewCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
@@ -295,7 +139,7 @@ pub struct PreviewCreditNote<'a> {
     pub invoice: &'a str,
     /// Line items that make up the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lines: Option<&'a [PreviewCreditNoteLines<'a>]>,
+    pub lines: Option<&'a [CreditNoteLineItemParams<'a>]>,
     /// The credit note's memo appears on the credit note PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<&'a str>,
@@ -311,7 +155,7 @@ pub struct PreviewCreditNote<'a> {
     pub out_of_band_amount: Option<i64>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<PreviewCreditNoteReason>,
+    pub reason: Option<Reason>,
     /// ID of an existing refund to link this credit note to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<&'a str>,
@@ -336,161 +180,6 @@ impl<'a> PreviewCreditNote<'a> {
             refund: Default::default(),
             refund_amount: Default::default(),
         }
-    }
-}
-/// Line items that make up the credit note.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PreviewCreditNoteLines<'a> {
-    /// The line item amount to credit.
-    ///
-    /// Only valid when `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The description of the credit note line item.
-    ///
-    /// Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// The invoice line item to credit.
-    ///
-    /// Only valid when the `type` is `invoice_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<&'a str>,
-    /// The line item quantity to credit.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    /// The tax rates which apply to the credit note line item.
-    ///
-    /// Only valid when the `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<&'a [&'a str]>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-    #[serde(rename = "type")]
-    pub type_: PreviewCreditNoteLinesType,
-    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
-    ///
-    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
-    /// Only valid when `type` is `custom_line_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> PreviewCreditNoteLines<'a> {
-    pub fn new(type_: PreviewCreditNoteLinesType) -> Self {
-        Self {
-            amount: Default::default(),
-            description: Default::default(),
-            invoice_line_item: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-            type_,
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum PreviewCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-}
-
-impl PreviewCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::CustomLineItem => "custom_line_item",
-            Self::InvoiceLineItem => "invoice_line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewCreditNoteLinesType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "custom_line_item" => Ok(Self::CustomLineItem),
-            "invoice_line_item" => Ok(Self::InvoiceLineItem),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PreviewCreditNoteLinesType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PreviewCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for PreviewCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum PreviewCreditNoteReason {
-    Duplicate,
-    Fraudulent,
-    OrderChange,
-    ProductUnsatisfactory,
-}
-
-impl PreviewCreditNoteReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::OrderChange => "order_change",
-            Self::ProductUnsatisfactory => "product_unsatisfactory",
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewCreditNoteReason {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "order_change" => Ok(Self::OrderChange),
-            "product_unsatisfactory" => Ok(Self::ProductUnsatisfactory),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PreviewCreditNoteReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PreviewCreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for PreviewCreditNoteReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -596,7 +285,7 @@ pub struct PreviewLinesCreditNote<'a> {
     pub limit: Option<i64>,
     /// Line items that make up the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lines: Option<&'a [PreviewLinesCreditNoteLines<'a>]>,
+    pub lines: Option<&'a [CreditNoteLineItemParams<'a>]>,
     /// The credit note's memo appears on the credit note PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<&'a str>,
@@ -612,7 +301,7 @@ pub struct PreviewLinesCreditNote<'a> {
     pub out_of_band_amount: Option<i64>,
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<PreviewLinesCreditNoteReason>,
+    pub reason: Option<Reason>,
     /// ID of an existing refund to link this credit note to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<&'a str>,
@@ -648,9 +337,106 @@ impl<'a> PreviewLinesCreditNote<'a> {
         }
     }
 }
-/// Line items that make up the credit note.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Type {
+    CustomLineItem,
+    InvoiceLineItem,
+}
+
+impl Type {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::CustomLineItem => "custom_line_item",
+            Self::InvoiceLineItem => "invoice_line_item",
+        }
+    }
+}
+
+impl std::str::FromStr for Type {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "custom_line_item" => Ok(Self::CustomLineItem),
+            "invoice_line_item" => Ok(Self::InvoiceLineItem),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Type {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Type {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Reason {
+    Duplicate,
+    Fraudulent,
+    OrderChange,
+    ProductUnsatisfactory,
+}
+
+impl Reason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Duplicate => "duplicate",
+            Self::Fraudulent => "fraudulent",
+            Self::OrderChange => "order_change",
+            Self::ProductUnsatisfactory => "product_unsatisfactory",
+        }
+    }
+}
+
+impl std::str::FromStr for Reason {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "duplicate" => Ok(Self::Duplicate),
+            "fraudulent" => Ok(Self::Fraudulent),
+            "order_change" => Ok(Self::OrderChange),
+            "product_unsatisfactory" => Ok(Self::ProductUnsatisfactory),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for Reason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for Reason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for Reason {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct PreviewLinesCreditNoteLines<'a> {
+pub struct CreditNoteLineItemParams<'a> {
     /// The line item amount to credit.
     ///
     /// Only valid when `type` is `invoice_line_item`.
@@ -676,7 +462,7 @@ pub struct PreviewLinesCreditNoteLines<'a> {
     pub tax_rates: Option<&'a [&'a str]>,
     /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
     #[serde(rename = "type")]
-    pub type_: PreviewLinesCreditNoteLinesType,
+    pub type_: Type,
     /// The integer unit amount in cents (or local equivalent) of the credit note line item.
     ///
     /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
@@ -689,8 +475,8 @@ pub struct PreviewLinesCreditNoteLines<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<&'a str>,
 }
-impl<'a> PreviewLinesCreditNoteLines<'a> {
-    pub fn new(type_: PreviewLinesCreditNoteLinesType) -> Self {
+impl<'a> CreditNoteLineItemParams<'a> {
+    pub fn new(type_: Type) -> Self {
         Self {
             amount: Default::default(),
             description: Default::default(),
@@ -701,105 +487,5 @@ impl<'a> PreviewLinesCreditNoteLines<'a> {
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
-    }
-}
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum PreviewLinesCreditNoteLinesType {
-    CustomLineItem,
-    InvoiceLineItem,
-}
-
-impl PreviewLinesCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::CustomLineItem => "custom_line_item",
-            Self::InvoiceLineItem => "invoice_line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "custom_line_item" => Ok(Self::CustomLineItem),
-            "invoice_line_item" => Ok(Self::InvoiceLineItem),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PreviewLinesCreditNoteLinesType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PreviewLinesCreditNoteLinesType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for PreviewLinesCreditNoteLinesType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum PreviewLinesCreditNoteReason {
-    Duplicate,
-    Fraudulent,
-    OrderChange,
-    ProductUnsatisfactory,
-}
-
-impl PreviewLinesCreditNoteReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::OrderChange => "order_change",
-            Self::ProductUnsatisfactory => "product_unsatisfactory",
-        }
-    }
-}
-
-impl std::str::FromStr for PreviewLinesCreditNoteReason {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "order_change" => Ok(Self::OrderChange),
-            "product_unsatisfactory" => Ok(Self::ProductUnsatisfactory),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PreviewLinesCreditNoteReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PreviewLinesCreditNoteReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for PreviewLinesCreditNoteReason {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

@@ -1,14 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_core::promotion_code::PromotionCode {
     /// Retrieves the promotion code with the given ID.
     ///
     /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         promotion_code: &stripe_core::promotion_code::PromotionCodeId,
         params: RetrievePromotionCode,
-    ) -> Response<stripe_core::promotion_code::PromotionCode> {
+    ) -> stripe::Response<stripe_core::promotion_code::PromotionCode> {
         client.get_query(
             &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
             params,
@@ -18,19 +16,19 @@ impl stripe_core::promotion_code::PromotionCode {
     ///
     /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreatePromotionCode,
-    ) -> Response<stripe_core::promotion_code::PromotionCode> {
+    ) -> stripe::Response<stripe_core::promotion_code::PromotionCode> {
         client.send_form("/promotion_codes", params, http_types::Method::Post)
     }
     /// Updates the specified promotion code by setting the values of the parameters passed.
     ///
     /// Most fields are, by design, not editable.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         promotion_code: &stripe_core::promotion_code::PromotionCodeId,
         params: UpdatePromotionCode,
-    ) -> Response<stripe_core::promotion_code::PromotionCode> {
+    ) -> stripe::Response<stripe_core::promotion_code::PromotionCode> {
         client.send_form(
             &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
             params,
@@ -39,9 +37,9 @@ impl stripe_core::promotion_code::PromotionCode {
     }
     /// Returns a list of your promotion codes.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListPromotionCode,
-    ) -> Response<stripe_types::List<stripe_core::promotion_code::PromotionCode>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::promotion_code::PromotionCode>> {
         client.get_query("/promotion_codes", params)
     }
 }
@@ -120,12 +118,8 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreatePromotionCodeRestrictionsCurrencyOptions,
-        >,
-    >,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_time_transaction: Option<bool>,
@@ -137,20 +131,6 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     pub minimum_amount_currency: Option<stripe_types::Currency>,
 }
 impl<'a> CreatePromotionCodeRestrictions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Promotion codes defined in each available currency option.
-///
-/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePromotionCodeRestrictionsCurrencyOptions {
-    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum_amount: Option<i64>,
-}
-impl CreatePromotionCodeRestrictionsCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -188,28 +168,10 @@ pub struct UpdatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            UpdatePromotionCodeRestrictionsCurrencyOptions,
-        >,
-    >,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
 }
 impl<'a> UpdatePromotionCodeRestrictions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Promotion codes defined in each available currency option.
-///
-/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePromotionCodeRestrictionsCurrencyOptions {
-    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum_amount: Option<i64>,
-}
-impl UpdatePromotionCodeRestrictionsCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -255,6 +217,17 @@ pub struct ListPromotionCode<'a> {
     pub starting_after: Option<String>,
 }
 impl<'a> ListPromotionCode<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CurrencyOption {
+    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_amount: Option<i64>,
+}
+impl CurrencyOption {
     pub fn new() -> Self {
         Self::default()
     }

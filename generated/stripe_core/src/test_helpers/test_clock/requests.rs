@@ -1,12 +1,10 @@
-use stripe::{Client, Response};
-
 impl stripe_core::test_helpers::test_clock::TestClock {
     /// Retrieves a test clock.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         test_clock: &str,
         params: RetrieveTestClock,
-    ) -> Response<stripe_core::test_helpers::test_clock::TestClock> {
+    ) -> stripe::Response<stripe_core::test_helpers::test_clock::TestClock> {
         client.get_query(
             &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
             params,
@@ -14,16 +12,16 @@ impl stripe_core::test_helpers::test_clock::TestClock {
     }
     /// Creates a new test clock that can be attached to new customers and quotes.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateTestClock,
-    ) -> Response<stripe_core::test_helpers::test_clock::TestClock> {
+    ) -> stripe::Response<stripe_core::test_helpers::test_clock::TestClock> {
         client.send_form("/test_helpers/test_clocks", params, http_types::Method::Post)
     }
     /// Deletes a test clock.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         test_clock: &str,
-    ) -> Response<stripe_core::test_helpers::test_clock::DeletedTestClock> {
+    ) -> stripe::Response<stripe_core::test_helpers::test_clock::DeletedTestClock> {
         client.send(
             &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
             http_types::Method::Delete,
@@ -33,10 +31,10 @@ impl stripe_core::test_helpers::test_clock::TestClock {
     ///
     /// Advancement is done when status changes to `Ready`.
     pub fn advance(
-        client: &Client,
+        client: &stripe::Client,
         test_clock: &str,
         params: AdvanceTestClock,
-    ) -> Response<stripe_core::test_helpers::test_clock::TestClock> {
+    ) -> stripe::Response<stripe_core::test_helpers::test_clock::TestClock> {
         client.send_form(
             &format!("/test_helpers/test_clocks/{test_clock}/advance", test_clock = test_clock),
             params,
@@ -45,9 +43,10 @@ impl stripe_core::test_helpers::test_clock::TestClock {
     }
     /// Returns a list of your test clocks.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListTestClock,
-    ) -> Response<stripe_types::List<stripe_core::test_helpers::test_clock::TestClock>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::test_helpers::test_clock::TestClock>>
+    {
         client.get_query("/test_helpers/test_clocks", params)
     }
 }

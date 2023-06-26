@@ -1,40 +1,38 @@
-use stripe::{Client, Response};
-
 impl stripe_core::invoice_item::InvoiceItem {
     /// Returns a list of your invoice items.
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListInvoiceItem,
-    ) -> Response<stripe_types::List<stripe_core::invoice_item::InvoiceItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::invoice_item::InvoiceItem>> {
         client.get_query("/invoiceitems", params)
     }
     /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
     ///
     /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateInvoiceItem,
-    ) -> Response<stripe_core::invoice_item::InvoiceItem> {
+    ) -> stripe::Response<stripe_core::invoice_item::InvoiceItem> {
         client.send_form("/invoiceitems", params, http_types::Method::Post)
     }
     /// Retrieves the invoice item with the given ID.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         invoiceitem: &stripe_core::invoice_item::InvoiceitemId,
         params: RetrieveInvoiceItem,
-    ) -> Response<stripe_core::invoice_item::InvoiceItem> {
+    ) -> stripe::Response<stripe_core::invoice_item::InvoiceItem> {
         client.get_query(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), params)
     }
     /// Updates the amount or description of an invoice item on an upcoming invoice.
     ///
     /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         invoiceitem: &stripe_core::invoice_item::InvoiceitemId,
         params: UpdateInvoiceItem,
-    ) -> Response<stripe_core::invoice_item::InvoiceItem> {
+    ) -> stripe::Response<stripe_core::invoice_item::InvoiceItem> {
         client.send_form(
             &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
             params,
@@ -45,9 +43,9 @@ impl stripe_core::invoice_item::InvoiceItem {
     ///
     /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         invoiceitem: &stripe_core::invoice_item::InvoiceitemId,
-    ) -> Response<stripe_core::invoice_item::DeletedInvoiceItem> {
+    ) -> stripe::Response<stripe_core::invoice_item::DeletedInvoiceItem> {
         client.send(
             &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
             http_types::Method::Delete,
@@ -127,7 +125,7 @@ pub struct CreateInvoiceItem<'a> {
     pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the invoice item or invoice line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [CreateInvoiceItemDiscounts<'a>]>,
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -149,13 +147,13 @@ pub struct CreateInvoiceItem<'a> {
     ///
     /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period: Option<CreateInvoiceItemPeriod>,
+    pub period: Option<Period>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<&'a str>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<CreateInvoiceItemPriceData<'a>>,
+    pub price_data: Option<OneTimePriceData<'a>>,
     /// Non-negative integer.
     ///
     /// The quantity of units for the invoice item.
@@ -173,7 +171,7 @@ pub struct CreateInvoiceItem<'a> {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateInvoiceItemTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<&'a str>,
@@ -219,177 +217,6 @@ impl<'a> CreateInvoiceItem<'a> {
         }
     }
 }
-/// The coupons to redeem into discounts for the invoice item or invoice line item.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateInvoiceItemDiscounts<'a> {
-    /// ID of the coupon to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
-    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<&'a str>,
-}
-impl<'a> CreateInvoiceItemDiscounts<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The period associated with this invoice item.
-///
-/// When set to different values, the period will be rendered on the invoice.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceItemPeriod {
-    /// The end of the period, which must be greater than or equal to the start.
-    pub end: stripe_types::Timestamp,
-    /// The start of the period.
-    pub start: stripe_types::Timestamp,
-}
-impl CreateInvoiceItemPeriod {
-    pub fn new(end: stripe_types::Timestamp, start: stripe_types::Timestamp) -> Self {
-        Self { end, start }
-    }
-}
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateInvoiceItemPriceData<'a> {
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// The ID of the product that this price will belong to.
-    pub product: &'a str,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-    ///
-    /// One of `inclusive`, `exclusive`, or `unspecified`.
-    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<CreateInvoiceItemPriceDataTaxBehavior>,
-    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
-    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
-    ///
-    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
-}
-impl<'a> CreateInvoiceItemPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self {
-            currency,
-            product,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateInvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateInvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateInvoiceItemPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateInvoiceItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateInvoiceItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateInvoiceItemTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl CreateInvoiceItemTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateInvoiceItemTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateInvoiceItemTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateInvoiceItemTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveInvoiceItem<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -424,7 +251,7 @@ pub struct UpdateInvoiceItem<'a> {
     /// Item discounts are applied before invoice discounts.
     /// Pass an empty string to remove previously-defined discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<&'a [UpdateInvoiceItemDiscounts<'a>]>,
+    pub discounts: Option<&'a [DiscountsDataParam<'a>]>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -439,13 +266,13 @@ pub struct UpdateInvoiceItem<'a> {
     ///
     /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period: Option<UpdateInvoiceItemPeriod>,
+    pub period: Option<Period>,
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<&'a str>,
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<UpdateInvoiceItemPriceData<'a>>,
+    pub price_data: Option<OneTimePriceData<'a>>,
     /// Non-negative integer.
     ///
     /// The quantity of units for the invoice item.
@@ -456,7 +283,7 @@ pub struct UpdateInvoiceItem<'a> {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateInvoiceItemTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<&'a str>,
@@ -483,12 +310,8 @@ impl<'a> UpdateInvoiceItem<'a> {
         Self::default()
     }
 }
-/// The coupons & existing discounts which apply to the invoice item or invoice line item.
-///
-/// Item discounts are applied before invoice discounts.
-/// Pass an empty string to remove previously-defined discounts.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateInvoiceItemDiscounts<'a> {
+pub struct DiscountsDataParam<'a> {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
@@ -496,29 +319,74 @@ pub struct UpdateInvoiceItemDiscounts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<&'a str>,
 }
-impl<'a> UpdateInvoiceItemDiscounts<'a> {
+impl<'a> DiscountsDataParam<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// The period associated with this invoice item.
-///
-/// When set to different values, the period will be rendered on the invoice.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceItemPeriod {
+pub struct Period {
     /// The end of the period, which must be greater than or equal to the start.
     pub end: stripe_types::Timestamp,
     /// The start of the period.
     pub start: stripe_types::Timestamp,
 }
-impl UpdateInvoiceItemPeriod {
+impl Period {
     pub fn new(end: stripe_types::Timestamp, start: stripe_types::Timestamp) -> Self {
         Self { end, start }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum TaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl TaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Exclusive => "exclusive",
+            Self::Inclusive => "inclusive",
+            Self::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "exclusive" => Ok(Self::Exclusive),
+            "inclusive" => Ok(Self::Inclusive),
+            "unspecified" => Ok(Self::Unspecified),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for TaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for TaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateInvoiceItemPriceData<'a> {
+pub struct OneTimePriceData<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -530,7 +398,7 @@ pub struct UpdateInvoiceItemPriceData<'a> {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<UpdateInvoiceItemPriceDataTaxBehavior>,
+    pub tax_behavior: Option<TaxBehavior>,
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
@@ -540,7 +408,7 @@ pub struct UpdateInvoiceItemPriceData<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<&'a str>,
 }
-impl<'a> UpdateInvoiceItemPriceData<'a> {
+impl<'a> OneTimePriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
         Self {
             currency,
@@ -549,111 +417,5 @@ impl<'a> UpdateInvoiceItemPriceData<'a> {
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateInvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateInvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceItemPriceDataTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateInvoiceItemPriceDataTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
-///
-/// One of `inclusive`, `exclusive`, or `unspecified`.
-/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateInvoiceItemTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl UpdateInvoiceItemTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateInvoiceItemTaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UpdateInvoiceItemTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateInvoiceItemTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for UpdateInvoiceItemTaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

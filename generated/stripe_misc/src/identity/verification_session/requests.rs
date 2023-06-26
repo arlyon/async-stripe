@@ -1,5 +1,3 @@
-use stripe::{Client, Response};
-
 impl stripe_misc::identity::verification_session::VerificationSession {
     /// Creates a VerificationSession object.
     ///
@@ -9,9 +7,9 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     ///
     /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateVerificationSession,
-    ) -> Response<stripe_misc::identity::verification_session::VerificationSession> {
+    ) -> stripe::Response<stripe_misc::identity::verification_session::VerificationSession> {
         client.send_form("/identity/verification_sessions", params, http_types::Method::Post)
     }
     /// Retrieves the details of a VerificationSession that was previously created.
@@ -19,10 +17,10 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     /// When the session status is `requires_input`, you can use this method to retrieve a valid
     /// `client_secret` or `url` to allow re-submission.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: RetrieveVerificationSession,
-    ) -> Response<stripe_misc::identity::verification_session::VerificationSession> {
+    ) -> stripe::Response<stripe_misc::identity::verification_session::VerificationSession> {
         client.get_query(
             &format!("/identity/verification_sessions/{session}", session = session),
             params,
@@ -30,9 +28,9 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     }
     /// Returns a list of VerificationSessions.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListVerificationSession,
-    ) -> Response<
+    ) -> stripe::Response<
         stripe_types::List<stripe_misc::identity::verification_session::VerificationSession>,
     > {
         client.get_query("/identity/verification_sessions", params)
@@ -44,10 +42,10 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     /// This cannot be undone.
     /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: CancelVerificationSession,
-    ) -> Response<stripe_misc::identity::verification_session::VerificationSession> {
+    ) -> stripe::Response<stripe_misc::identity::verification_session::VerificationSession> {
         client.send_form(
             &format!("/identity/verification_sessions/{session}/cancel", session = session),
             params,
@@ -63,10 +61,10 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     /// The `metadata` field will also be erased.
     /// Redacted objects cannot be updated or used for any purpose.  [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
     pub fn redact(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: RedactVerificationSession,
-    ) -> Response<stripe_misc::identity::verification_session::VerificationSession> {
+    ) -> stripe::Response<stripe_misc::identity::verification_session::VerificationSession> {
         client.send_form(
             &format!("/identity/verification_sessions/{session}/redact", session = session),
             params,
@@ -78,10 +76,10 @@ impl stripe_misc::identity::verification_session::VerificationSession {
     /// When the session status is `requires_input`, you can use this method to update the
     /// verification check and options.
     pub fn update(
-        client: &Client,
+        client: &stripe::Client,
         session: &str,
         params: UpdateVerificationSession,
-    ) -> Response<stripe_misc::identity::verification_session::VerificationSession> {
+    ) -> stripe::Response<stripe_misc::identity::verification_session::VerificationSession> {
         client.send_form(
             &format!("/identity/verification_sessions/{session}", session = session),
             params,
@@ -103,16 +101,16 @@ pub struct CreateVerificationSession<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<CreateVerificationSessionOptions<'a>>,
+    pub options: Option<SessionOptionsParam<'a>>,
     /// The URL that the user will be redirected to upon completing the verification flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
-    pub type_: CreateVerificationSessionType,
+    pub type_: Type,
 }
 impl<'a> CreateVerificationSession<'a> {
-    pub fn new(type_: CreateVerificationSessionType) -> Self {
+    pub fn new(type_: Type) -> Self {
         Self {
             expand: Default::default(),
             metadata: Default::default(),
@@ -120,142 +118,6 @@ impl<'a> CreateVerificationSession<'a> {
             return_url: Default::default(),
             type_,
         }
-    }
-}
-/// A set of options for the session’s verification checks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateVerificationSessionOptions<'a> {
-    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<CreateVerificationSessionOptionsDocument<'a>>,
-}
-impl<'a> CreateVerificationSessionOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateVerificationSessionOptionsDocument<'a> {
-    /// Array of strings of allowed identity document types.
-    ///
-    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<&'a [CreateVerificationSessionOptionsDocumentAllowedTypes]>,
-    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
-    /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    ///
-    /// [Learn more](https://stripe.com/docs/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
-}
-impl<'a> CreateVerificationSessionOptionsDocument<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Array of strings of allowed identity document types.
-///
-/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateVerificationSessionOptionsDocumentAllowedTypes {
-    DrivingLicense,
-    IdCard,
-    Passport,
-}
-
-impl CreateVerificationSessionOptionsDocumentAllowedTypes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::DrivingLicense => "driving_license",
-            Self::IdCard => "id_card",
-            Self::Passport => "passport",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "driving_license" => Ok(Self::DrivingLicense),
-            "id_card" => Ok(Self::IdCard),
-            "passport" => Ok(Self::Passport),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateVerificationSessionOptionsDocumentAllowedTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateVerificationSessionOptionsDocumentAllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateVerificationSessionOptionsDocumentAllowedTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CreateVerificationSessionType {
-    Document,
-    IdNumber,
-}
-
-impl CreateVerificationSessionType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::Document => "document",
-            Self::IdNumber => "id_number",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateVerificationSessionType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "document" => Ok(Self::Document),
-            "id_number" => Ok(Self::IdNumber),
-
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreateVerificationSessionType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateVerificationSessionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CreateVerificationSessionType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -395,65 +257,25 @@ pub struct UpdateVerificationSession<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<UpdateVerificationSessionOptions<'a>>,
+    pub options: Option<SessionOptionsParam<'a>>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<UpdateVerificationSessionType>,
+    pub type_: Option<Type>,
 }
 impl<'a> UpdateVerificationSession<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// A set of options for the session’s verification checks.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateVerificationSessionOptions<'a> {
-    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<UpdateVerificationSessionOptionsDocument<'a>>,
-}
-impl<'a> UpdateVerificationSessionOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateVerificationSessionOptionsDocument<'a> {
-    /// Array of strings of allowed identity document types.
-    ///
-    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<&'a [UpdateVerificationSessionOptionsDocumentAllowedTypes]>,
-    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
-    /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    ///
-    /// [Learn more](https://stripe.com/docs/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
-}
-impl<'a> UpdateVerificationSessionOptionsDocument<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Array of strings of allowed identity document types.
-///
-/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateVerificationSessionOptionsDocumentAllowedTypes {
+pub enum AllowedTypes {
     DrivingLicense,
     IdCard,
     Passport,
 }
 
-impl UpdateVerificationSessionOptionsDocumentAllowedTypes {
+impl AllowedTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::DrivingLicense => "driving_license",
@@ -463,7 +285,7 @@ impl UpdateVerificationSessionOptionsDocumentAllowedTypes {
     }
 }
 
-impl std::str::FromStr for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+impl std::str::FromStr for AllowedTypes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -476,18 +298,18 @@ impl std::str::FromStr for UpdateVerificationSessionOptionsDocumentAllowedTypes 
     }
 }
 
-impl AsRef<str> for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+impl AsRef<str> for AllowedTypes {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+impl std::fmt::Display for AllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl serde::Serialize for UpdateVerificationSessionOptionsDocumentAllowedTypes {
+impl serde::Serialize for AllowedTypes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -495,14 +317,13 @@ impl serde::Serialize for UpdateVerificationSessionOptionsDocumentAllowedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum UpdateVerificationSessionType {
+pub enum Type {
     Document,
     IdNumber,
 }
 
-impl UpdateVerificationSessionType {
+impl Type {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Document => "document",
@@ -511,7 +332,7 @@ impl UpdateVerificationSessionType {
     }
 }
 
-impl std::str::FromStr for UpdateVerificationSessionType {
+impl std::str::FromStr for Type {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -523,22 +344,57 @@ impl std::str::FromStr for UpdateVerificationSessionType {
     }
 }
 
-impl AsRef<str> for UpdateVerificationSessionType {
+impl AsRef<str> for Type {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for UpdateVerificationSessionType {
+impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl serde::Serialize for UpdateVerificationSessionType {
+impl serde::Serialize for Type {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DocumentOptions<'a> {
+    /// Array of strings of allowed identity document types.
+    ///
+    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_types: Option<&'a [AllowedTypes]>,
+    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_id_number: Option<bool>,
+    /// Disable image uploads, identity document images have to be captured using the device’s camera.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_live_capture: Option<bool>,
+    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    ///
+    /// [Learn more](https://stripe.com/docs/identity/selfie).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_matching_selfie: Option<bool>,
+}
+impl<'a> DocumentOptions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct SessionOptionsParam<'a> {
+    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<DocumentOptions<'a>>,
+}
+impl<'a> SessionOptionsParam<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }

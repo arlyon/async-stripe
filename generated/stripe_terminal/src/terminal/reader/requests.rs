@@ -1,10 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_terminal::terminal::reader::Reader {
     /// Updates a `Reader` object by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, reader: &str, params: UpdateReader) -> Response<UpdateReturned> {
+    pub fn update(
+        client: &stripe::Client,
+        reader: &str,
+        params: UpdateReader,
+    ) -> stripe::Response<UpdateReturned> {
         client.send_form(
             &format!("/terminal/readers/{reader}", reader = reader),
             params,
@@ -13,31 +15,31 @@ impl stripe_terminal::terminal::reader::Reader {
     }
     /// Retrieves a `Reader` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: RetrieveReader,
-    ) -> Response<RetrieveReturned> {
+    ) -> stripe::Response<RetrieveReturned> {
         client.get_query(&format!("/terminal/readers/{reader}", reader = reader), params)
     }
     /// Creates a new `Reader` object.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form("/terminal/readers", params, http_types::Method::Post)
     }
     /// Returns a list of `Reader` objects.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReader,
-    ) -> Response<stripe_types::List<stripe_terminal::terminal::reader::Reader>> {
+    ) -> stripe::Response<stripe_types::List<stripe_terminal::terminal::reader::Reader>> {
         client.get_query("/terminal/readers", params)
     }
     /// Deletes a `Reader` object.
     pub fn delete(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
-    ) -> Response<stripe_terminal::terminal::reader::DeletedReader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::DeletedReader> {
         client.send(
             &format!("/terminal/readers/{reader}", reader = reader),
             http_types::Method::Delete,
@@ -45,10 +47,10 @@ impl stripe_terminal::terminal::reader::Reader {
     }
     /// Initiates a payment flow on a Reader.
     pub fn process_payment_intent(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: ProcessPaymentIntentReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form(
             &format!("/terminal/readers/{reader}/process_payment_intent", reader = reader),
             params,
@@ -57,10 +59,10 @@ impl stripe_terminal::terminal::reader::Reader {
     }
     /// Initiates a setup intent flow on a Reader.
     pub fn process_setup_intent(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: ProcessSetupIntentReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form(
             &format!("/terminal/readers/{reader}/process_setup_intent", reader = reader),
             params,
@@ -69,10 +71,10 @@ impl stripe_terminal::terminal::reader::Reader {
     }
     /// Cancels the current reader action.
     pub fn cancel_action(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: CancelActionReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form(
             &format!("/terminal/readers/{reader}/cancel_action", reader = reader),
             params,
@@ -81,10 +83,10 @@ impl stripe_terminal::terminal::reader::Reader {
     }
     /// Sets reader display to show cart details.
     pub fn set_reader_display(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: SetReaderDisplayReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form(
             &format!("/terminal/readers/{reader}/set_reader_display", reader = reader),
             params,
@@ -95,10 +97,10 @@ impl stripe_terminal::terminal::reader::Reader {
     ///
     /// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
     pub fn present_payment_method(
-        client: &Client,
+        client: &stripe::Client,
         reader: &str,
         params: PresentPaymentMethodReader,
-    ) -> Response<stripe_terminal::terminal::reader::Reader> {
+    ) -> stripe::Response<stripe_terminal::terminal::reader::Reader> {
         client.send_form(
             &format!(
                 "/test_helpers/terminal/readers/{reader}/present_payment_method",

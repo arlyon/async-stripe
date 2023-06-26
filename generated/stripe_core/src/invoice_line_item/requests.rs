@@ -1,14 +1,12 @@
-use stripe::{Client, Response};
-
 impl stripe_core::invoice_line_item::InvoiceLineItem {
     /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     ///
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         invoice: &stripe_core::invoice::InvoiceId,
         params: ListInvoiceLineItem,
-    ) -> Response<stripe_types::List<stripe_core::invoice_line_item::InvoiceLineItem>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::invoice_line_item::InvoiceLineItem>> {
         client.get_query(&format!("/invoices/{invoice}/lines", invoice = invoice), params)
     }
 }

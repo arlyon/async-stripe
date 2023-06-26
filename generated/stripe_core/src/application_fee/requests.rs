@@ -1,23 +1,21 @@
-use stripe::{Client, Response};
-
 impl stripe_core::application_fee::ApplicationFee {
     /// Returns a list of application fees you’ve previously collected.
     ///
     /// The application fees are returned in sorted order, with the most recent fees appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListApplicationFee,
-    ) -> Response<stripe_types::List<stripe_core::application_fee::ApplicationFee>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::application_fee::ApplicationFee>> {
         client.get_query("/application_fees", params)
     }
     /// Retrieves the details of an application fee that your account has collected.
     ///
     /// The same information is returned when refunding the application fee.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveApplicationFee,
-    ) -> Response<stripe_core::application_fee::ApplicationFee> {
+    ) -> stripe::Response<stripe_core::application_fee::ApplicationFee> {
         client.get_query(&format!("/application_fees/{id}", id = id), params)
     }
 }

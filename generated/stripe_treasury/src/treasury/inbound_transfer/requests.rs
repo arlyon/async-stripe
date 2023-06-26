@@ -1,12 +1,10 @@
-use stripe::{Client, Response};
-
 impl stripe_treasury::treasury::inbound_transfer::InboundTransfer {
     /// Cancels an InboundTransfer.
     pub fn cancel(
-        client: &Client,
+        client: &stripe::Client,
         inbound_transfer: &str,
         params: CancelInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.send_form(
             &format!(
                 "/treasury/inbound_transfers/{inbound_transfer}/cancel",
@@ -18,35 +16,36 @@ impl stripe_treasury::treasury::inbound_transfer::InboundTransfer {
     }
     /// Creates an InboundTransfer.
     pub fn create(
-        client: &Client,
+        client: &stripe::Client,
         params: CreateInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.send_form("/treasury/inbound_transfers", params, http_types::Method::Post)
     }
     /// Retrieves the details of an existing InboundTransfer.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: RetrieveInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.get_query(&format!("/treasury/inbound_transfers/{id}", id = id), params)
     }
     /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListInboundTransfer,
-    ) -> Response<stripe_types::List<stripe_treasury::treasury::inbound_transfer::InboundTransfer>>
-    {
+    ) -> stripe::Response<
+        stripe_types::List<stripe_treasury::treasury::inbound_transfer::InboundTransfer>,
+    > {
         client.get_query("/treasury/inbound_transfers", params)
     }
     /// Transitions a test mode created InboundTransfer to the `succeeded` status.
     ///
     /// The InboundTransfer must already be in the `processing` state.
     pub fn succeed(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: SucceedInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.send_form(
             &format!("/test_helpers/treasury/inbound_transfers/{id}/succeed", id = id),
             params,
@@ -57,10 +56,10 @@ impl stripe_treasury::treasury::inbound_transfer::InboundTransfer {
     ///
     /// The InboundTransfer must already be in the `processing` state.
     pub fn fail(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: FailInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.send_form(
             &format!("/test_helpers/treasury/inbound_transfers/{id}/fail", id = id),
             params,
@@ -71,10 +70,10 @@ impl stripe_treasury::treasury::inbound_transfer::InboundTransfer {
     ///
     /// The InboundTransfer must already be in the `succeeded` state.
     pub fn return_inbound_transfer(
-        client: &Client,
+        client: &stripe::Client,
         id: &str,
         params: ReturnInboundTransferInboundTransfer,
-    ) -> Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
+    ) -> stripe::Response<stripe_treasury::treasury::inbound_transfer::InboundTransfer> {
         client.send_form(
             &format!("/test_helpers/treasury/inbound_transfers/{id}/return", id = id),
             params,

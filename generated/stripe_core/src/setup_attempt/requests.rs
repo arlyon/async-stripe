@@ -1,11 +1,9 @@
-use stripe::{Client, Response};
-
 impl stripe_core::setup_attempt::SetupAttempt {
     /// Returns a list of SetupAttempts associated with a provided SetupIntent.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListSetupAttempt,
-    ) -> Response<stripe_types::List<stripe_core::setup_attempt::SetupAttempt>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::setup_attempt::SetupAttempt>> {
         client.get_query("/setup_attempts", params)
     }
 }

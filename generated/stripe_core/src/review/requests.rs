@@ -1,29 +1,27 @@
-use stripe::{Client, Response};
-
 impl stripe_core::review::Review {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
     pub fn list(
-        client: &Client,
+        client: &stripe::Client,
         params: ListReview,
-    ) -> Response<stripe_types::List<stripe_core::review::Review>> {
+    ) -> stripe::Response<stripe_types::List<stripe_core::review::Review>> {
         client.get_query("/reviews", params)
     }
     /// Retrieves a `Review` object.
     pub fn retrieve(
-        client: &Client,
+        client: &stripe::Client,
         review: &stripe_core::review::ReviewId,
         params: RetrieveReview,
-    ) -> Response<stripe_core::review::Review> {
+    ) -> stripe::Response<stripe_core::review::Review> {
         client.get_query(&format!("/reviews/{review}", review = review), params)
     }
     /// Approves a `Review` object, closing it and removing it from the list of reviews.
     pub fn approve(
-        client: &Client,
+        client: &stripe::Client,
         review: &stripe_core::review::ReviewId,
         params: ApproveReview,
-    ) -> Response<stripe_core::review::Review> {
+    ) -> stripe::Response<stripe_core::review::Review> {
         client.send_form(
             &format!("/reviews/{review}/approve", review = review),
             params,
