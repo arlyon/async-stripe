@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::ops::Deref;
 
@@ -282,7 +282,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     let mut components = IndexMap::with_capacity(spec.component_schemas().len());
 
     let mut resource_map = HashMap::new();
-    let mut obj_map = HashMap::new();
+    let mut obj_map = IndexMap::new();
     let mut id_map = HashMap::new();
     for path in spec.component_schemas().keys() {
         let path = ComponentPath::new(path.clone());
@@ -320,7 +320,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     }
 
     let mut modules = IndexMap::new();
-    let mut packages = HashSet::new();
+    let mut packages = IndexSet::new();
     for (path, obj) in &components {
         if obj.resource.in_package.is_none()
             && obj.resource.in_class.is_none()
