@@ -106,7 +106,7 @@ pub struct Charge {
     pub failure_message: Option<String>,
 
     /// Information on fraud assessments for the charge.
-    pub fraud_details: Option<FraudDetails>,
+    // pub fraud_details: Option<FraudDetails>,
 
     /// ID of the invoice this charge is for if one exists.
     pub invoice: Option<Expandable<Invoice>>,
@@ -167,7 +167,8 @@ pub struct Charge {
     pub refunded: bool,
 
     /// A list of refunds that have been applied to the charge.
-    pub refunds: List<Refund>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refunds: Option<List<Refund>>,
 
     /// ID of the review associated with this charge if one exists.
     pub review: Option<Expandable<Review>>,
