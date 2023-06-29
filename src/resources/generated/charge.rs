@@ -167,6 +167,7 @@ pub struct Charge {
     pub refunded: bool,
 
     /// A list of refunds that have been applied to the charge.
+    #[serde(default)]
     pub refunds: List<Refund>,
 
     /// ID of the review associated with this charge if one exists.
@@ -1739,6 +1740,8 @@ pub struct CreateChargeRadarOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FraudDetailsParams {
+    /// If set, can only be `fraudulent`.
+    pub stripe_report: FraudDetailsParamsStripeReport,
     /// Either `safe` or `fraudulent`.
     pub user_report: FraudDetailsParamsUserReport,
 }
@@ -1788,6 +1791,38 @@ impl std::fmt::Display for ChargeStatus {
 impl std::default::Default for ChargeStatus {
     fn default() -> Self {
         Self::Failed
+    }
+}
+
+/// An enum representing the possible values of an `FraudDetailsParams`'s `user_report` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FraudDetailsParamsStripeReport {
+    Fraudulent,
+}
+
+impl FraudDetailsParamsStripeReport {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FraudDetailsParamsStripeReport::Fraudulent => "fraudulent",
+        }
+    }
+}
+
+impl AsRef<str> for FraudDetailsParamsStripeReport {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FraudDetailsParamsStripeReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FraudDetailsParamsStripeReport {
+    fn default() -> Self {
+        Self::Fraudulent
     }
 }
 
