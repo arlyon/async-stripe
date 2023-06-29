@@ -24,6 +24,7 @@ mod core {
     pub mod placeholders;
     pub mod setup_intent_ext;
     pub mod token_ext;
+    pub mod transfer_reversal_ext;
 }
 
 #[path = "resources"]
@@ -97,6 +98,7 @@ pub use {
         account_ext::*,
         balance_transaction_ext::*,
         charge_ext::*,
+        transfer_reversal_ext::*,
         customer_ext::*,
         payment_intent_ext::*,
         payment_source::*,
