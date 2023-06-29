@@ -1794,7 +1794,7 @@ impl std::default::Default for ChargeStatus {
     }
 }
 
-/// An enum representing the possible values of an `FraudDetailsParams`'s `user_report` field.
+/// An enum representing the possible values of an `FraudDetailsParams`'s `stripe_report` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FraudDetailsParamsStripeReport {
