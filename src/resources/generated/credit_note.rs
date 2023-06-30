@@ -48,6 +48,12 @@ pub struct CreditNote {
     /// The aggregate amounts calculated per discount for all line items.
     pub discount_amounts: Vec<DiscountsResourceDiscountAmount>,
 
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    pub effective_at: Option<Timestamp>,
+
     /// ID of the invoice.
     pub invoice: Expandable<Invoice>,
 
@@ -195,6 +201,13 @@ pub struct CreateCreditNote<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_amount: Option<i64>,
 
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<Timestamp>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -246,6 +259,7 @@ impl<'a> CreateCreditNote<'a> {
         CreateCreditNote {
             amount: Default::default(),
             credit_amount: Default::default(),
+            effective_at: Default::default(),
             expand: Default::default(),
             invoice,
             lines: Default::default(),

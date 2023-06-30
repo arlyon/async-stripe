@@ -235,6 +235,13 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub due_date: Option<Timestamp>,
 
+    /// The date when this invoice is in effect.
+    ///
+    /// Same as `finalized_at` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<Timestamp>,
+
     /// Ending customer balance after the invoice is finalized.
     ///
     /// Invoices are finalized approximately an hour after successful webhook delivery or when payment collection is attempted for the invoice.
@@ -634,7 +641,7 @@ pub struct InvoiceInstallmentsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
+    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -749,6 +756,13 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub due_date: Option<Timestamp>,
 
+    /// The date when this invoice is in effect.
+    ///
+    /// Same as `finalized_at` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<Timestamp>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -843,6 +857,7 @@ impl<'a> CreateInvoice<'a> {
             description: Default::default(),
             discounts: Default::default(),
             due_date: Default::default(),
+            effective_at: Default::default(),
             expand: Default::default(),
             footer: Default::default(),
             from_invoice: Default::default(),
@@ -2425,10 +2440,13 @@ impl std::default::Default for TaxAmountTaxabilityReason {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxIdType {
+    AdNrt,
     AeTrn,
+    ArCuit,
     AuAbn,
     AuArn,
     BgUic,
+    BoTin,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -2439,6 +2457,11 @@ pub enum TaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    CnTin,
+    CoNit,
+    CrTin,
+    DoRcn,
+    EcRuc,
     EgTin,
     EsCif,
     EuOssVat,
@@ -2463,29 +2486,38 @@ pub enum TaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PeRuc,
     PhTin,
+    RsPib,
     RuInn,
     RuKpp,
     SaVat,
     SgGst,
     SgUen,
     SiTin,
+    SvNit,
     ThVat,
     TrTin,
     TwVat,
     UaVat,
     Unknown,
     UsEin,
+    UyRuc,
+    VeRif,
+    VnTin,
     ZaVat,
 }
 
 impl TaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxIdType::AdNrt => "ad_nrt",
             TaxIdType::AeTrn => "ae_trn",
+            TaxIdType::ArCuit => "ar_cuit",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::AuArn => "au_arn",
             TaxIdType::BgUic => "bg_uic",
+            TaxIdType::BoTin => "bo_tin",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
@@ -2496,6 +2528,11 @@ impl TaxIdType {
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
+            TaxIdType::CnTin => "cn_tin",
+            TaxIdType::CoNit => "co_nit",
+            TaxIdType::CrTin => "cr_tin",
+            TaxIdType::DoRcn => "do_rcn",
+            TaxIdType::EcRuc => "ec_ruc",
             TaxIdType::EgTin => "eg_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuOssVat => "eu_oss_vat",
@@ -2520,19 +2557,25 @@ impl TaxIdType {
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
+            TaxIdType::PeRuc => "pe_ruc",
             TaxIdType::PhTin => "ph_tin",
+            TaxIdType::RsPib => "rs_pib",
             TaxIdType::RuInn => "ru_inn",
             TaxIdType::RuKpp => "ru_kpp",
             TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::SiTin => "si_tin",
+            TaxIdType::SvNit => "sv_nit",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TrTin => "tr_tin",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",
             TaxIdType::Unknown => "unknown",
             TaxIdType::UsEin => "us_ein",
+            TaxIdType::UyRuc => "uy_ruc",
+            TaxIdType::VeRif => "ve_rif",
+            TaxIdType::VnTin => "vn_tin",
             TaxIdType::ZaVat => "za_vat",
         }
     }
@@ -2551,6 +2594,6 @@ impl std::fmt::Display for TaxIdType {
 }
 impl std::default::Default for TaxIdType {
     fn default() -> Self {
-        Self::AeTrn
+        Self::AdNrt
     }
 }

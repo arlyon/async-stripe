@@ -2723,7 +2723,7 @@ pub struct TransferScheduleParams {
     ///
     /// May also be set to `minimum`, representing the lowest available value for the account country.
     /// Default is `minimum`.
-    /// The `delay_days` parameter does not apply when the `interval` is `manual`.
+    /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
     /// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days: Option<DelayDays>,
