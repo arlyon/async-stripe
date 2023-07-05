@@ -25,7 +25,7 @@ pub struct TaxProductResourceCustomerDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceCustomerDetailsResourceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
+    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxProductResourceCustomerDetailsResourceTaxIdType,
 
@@ -94,10 +94,13 @@ impl std::default::Default for TaxProductResourceCustomerDetailsAddressSource {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxProductResourceCustomerDetailsResourceTaxIdType {
+    AdNrt,
     AeTrn,
+    ArCuit,
     AuAbn,
     AuArn,
     BgUic,
+    BoTin,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -108,6 +111,11 @@ pub enum TaxProductResourceCustomerDetailsResourceTaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    CnTin,
+    CoNit,
+    CrTin,
+    DoRcn,
+    EcRuc,
     EgTin,
     EsCif,
     EuOssVat,
@@ -132,29 +140,38 @@ pub enum TaxProductResourceCustomerDetailsResourceTaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PeRuc,
     PhTin,
+    RsPib,
     RuInn,
     RuKpp,
     SaVat,
     SgGst,
     SgUen,
     SiTin,
+    SvNit,
     ThVat,
     TrTin,
     TwVat,
     UaVat,
     Unknown,
     UsEin,
+    UyRuc,
+    VeRif,
+    VnTin,
     ZaVat,
 }
 
 impl TaxProductResourceCustomerDetailsResourceTaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxProductResourceCustomerDetailsResourceTaxIdType::AdNrt => "ad_nrt",
             TaxProductResourceCustomerDetailsResourceTaxIdType::AeTrn => "ae_trn",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::ArCuit => "ar_cuit",
             TaxProductResourceCustomerDetailsResourceTaxIdType::AuAbn => "au_abn",
             TaxProductResourceCustomerDetailsResourceTaxIdType::AuArn => "au_arn",
             TaxProductResourceCustomerDetailsResourceTaxIdType::BgUic => "bg_uic",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::BoTin => "bo_tin",
             TaxProductResourceCustomerDetailsResourceTaxIdType::BrCnpj => "br_cnpj",
             TaxProductResourceCustomerDetailsResourceTaxIdType::BrCpf => "br_cpf",
             TaxProductResourceCustomerDetailsResourceTaxIdType::CaBn => "ca_bn",
@@ -165,6 +182,11 @@ impl TaxProductResourceCustomerDetailsResourceTaxIdType {
             TaxProductResourceCustomerDetailsResourceTaxIdType::CaQst => "ca_qst",
             TaxProductResourceCustomerDetailsResourceTaxIdType::ChVat => "ch_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::ClTin => "cl_tin",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::CnTin => "cn_tin",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::CoNit => "co_nit",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::CrTin => "cr_tin",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::DoRcn => "do_rcn",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::EcRuc => "ec_ruc",
             TaxProductResourceCustomerDetailsResourceTaxIdType::EgTin => "eg_tin",
             TaxProductResourceCustomerDetailsResourceTaxIdType::EsCif => "es_cif",
             TaxProductResourceCustomerDetailsResourceTaxIdType::EuOssVat => "eu_oss_vat",
@@ -189,19 +211,25 @@ impl TaxProductResourceCustomerDetailsResourceTaxIdType {
             TaxProductResourceCustomerDetailsResourceTaxIdType::MySst => "my_sst",
             TaxProductResourceCustomerDetailsResourceTaxIdType::NoVat => "no_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::NzGst => "nz_gst",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::PeRuc => "pe_ruc",
             TaxProductResourceCustomerDetailsResourceTaxIdType::PhTin => "ph_tin",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::RsPib => "rs_pib",
             TaxProductResourceCustomerDetailsResourceTaxIdType::RuInn => "ru_inn",
             TaxProductResourceCustomerDetailsResourceTaxIdType::RuKpp => "ru_kpp",
             TaxProductResourceCustomerDetailsResourceTaxIdType::SaVat => "sa_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::SgGst => "sg_gst",
             TaxProductResourceCustomerDetailsResourceTaxIdType::SgUen => "sg_uen",
             TaxProductResourceCustomerDetailsResourceTaxIdType::SiTin => "si_tin",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::SvNit => "sv_nit",
             TaxProductResourceCustomerDetailsResourceTaxIdType::ThVat => "th_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::TrTin => "tr_tin",
             TaxProductResourceCustomerDetailsResourceTaxIdType::TwVat => "tw_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::UaVat => "ua_vat",
             TaxProductResourceCustomerDetailsResourceTaxIdType::Unknown => "unknown",
             TaxProductResourceCustomerDetailsResourceTaxIdType::UsEin => "us_ein",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::UyRuc => "uy_ruc",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::VeRif => "ve_rif",
+            TaxProductResourceCustomerDetailsResourceTaxIdType::VnTin => "vn_tin",
             TaxProductResourceCustomerDetailsResourceTaxIdType::ZaVat => "za_vat",
         }
     }
@@ -220,7 +248,7 @@ impl std::fmt::Display for TaxProductResourceCustomerDetailsResourceTaxIdType {
 }
 impl std::default::Default for TaxProductResourceCustomerDetailsResourceTaxIdType {
     fn default() -> Self {
-        Self::AeTrn
+        Self::AdNrt
     }
 }
 

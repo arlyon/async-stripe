@@ -1005,7 +1005,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
+    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -8440,10 +8440,13 @@ impl std::default::Default
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentPagesCheckoutSessionTaxIdType {
+    AdNrt,
     AeTrn,
+    ArCuit,
     AuAbn,
     AuArn,
     BgUic,
+    BoTin,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -8454,6 +8457,11 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    CnTin,
+    CoNit,
+    CrTin,
+    DoRcn,
+    EcRuc,
     EgTin,
     EsCif,
     EuOssVat,
@@ -8478,29 +8486,38 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PeRuc,
     PhTin,
+    RsPib,
     RuInn,
     RuKpp,
     SaVat,
     SgGst,
     SgUen,
     SiTin,
+    SvNit,
     ThVat,
     TrTin,
     TwVat,
     UaVat,
     Unknown,
     UsEin,
+    UyRuc,
+    VeRif,
+    VnTin,
     ZaVat,
 }
 
 impl PaymentPagesCheckoutSessionTaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentPagesCheckoutSessionTaxIdType::AdNrt => "ad_nrt",
             PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
+            PaymentPagesCheckoutSessionTaxIdType::ArCuit => "ar_cuit",
             PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
             PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
             PaymentPagesCheckoutSessionTaxIdType::BgUic => "bg_uic",
+            PaymentPagesCheckoutSessionTaxIdType::BoTin => "bo_tin",
             PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
             PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
             PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
@@ -8511,6 +8528,11 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::CaQst => "ca_qst",
             PaymentPagesCheckoutSessionTaxIdType::ChVat => "ch_vat",
             PaymentPagesCheckoutSessionTaxIdType::ClTin => "cl_tin",
+            PaymentPagesCheckoutSessionTaxIdType::CnTin => "cn_tin",
+            PaymentPagesCheckoutSessionTaxIdType::CoNit => "co_nit",
+            PaymentPagesCheckoutSessionTaxIdType::CrTin => "cr_tin",
+            PaymentPagesCheckoutSessionTaxIdType::DoRcn => "do_rcn",
+            PaymentPagesCheckoutSessionTaxIdType::EcRuc => "ec_ruc",
             PaymentPagesCheckoutSessionTaxIdType::EgTin => "eg_tin",
             PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
             PaymentPagesCheckoutSessionTaxIdType::EuOssVat => "eu_oss_vat",
@@ -8535,19 +8557,25 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::MySst => "my_sst",
             PaymentPagesCheckoutSessionTaxIdType::NoVat => "no_vat",
             PaymentPagesCheckoutSessionTaxIdType::NzGst => "nz_gst",
+            PaymentPagesCheckoutSessionTaxIdType::PeRuc => "pe_ruc",
             PaymentPagesCheckoutSessionTaxIdType::PhTin => "ph_tin",
+            PaymentPagesCheckoutSessionTaxIdType::RsPib => "rs_pib",
             PaymentPagesCheckoutSessionTaxIdType::RuInn => "ru_inn",
             PaymentPagesCheckoutSessionTaxIdType::RuKpp => "ru_kpp",
             PaymentPagesCheckoutSessionTaxIdType::SaVat => "sa_vat",
             PaymentPagesCheckoutSessionTaxIdType::SgGst => "sg_gst",
             PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
             PaymentPagesCheckoutSessionTaxIdType::SiTin => "si_tin",
+            PaymentPagesCheckoutSessionTaxIdType::SvNit => "sv_nit",
             PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
             PaymentPagesCheckoutSessionTaxIdType::TrTin => "tr_tin",
             PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
             PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",
             PaymentPagesCheckoutSessionTaxIdType::Unknown => "unknown",
             PaymentPagesCheckoutSessionTaxIdType::UsEin => "us_ein",
+            PaymentPagesCheckoutSessionTaxIdType::UyRuc => "uy_ruc",
+            PaymentPagesCheckoutSessionTaxIdType::VeRif => "ve_rif",
+            PaymentPagesCheckoutSessionTaxIdType::VnTin => "vn_tin",
             PaymentPagesCheckoutSessionTaxIdType::ZaVat => "za_vat",
         }
     }
@@ -8566,6 +8594,6 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
 }
 impl std::default::Default for PaymentPagesCheckoutSessionTaxIdType {
     fn default() -> Self {
-        Self::AeTrn
+        Self::AdNrt
     }
 }
