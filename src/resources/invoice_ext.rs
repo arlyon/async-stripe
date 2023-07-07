@@ -32,13 +32,13 @@ pub struct RetrieveUpcomingInvoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_items: Option<SubscriptionItemFilter>,
+    pub subscription_items: Option<Vec<UpdateSubscriptionItems>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_prorate: Option<bool>,
+    pub subscription_proration_behavior: Option<SubscriptionProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_proration_date: Option<Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_tax_percent: Option<f64>,
+    pub subscription_start_date: Option<Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_trial_end: Option<Timestamp>,
 }
@@ -50,24 +50,10 @@ impl RetrieveUpcomingInvoice {
             coupon: None,
             subscription: None,
             subscription_items: None,
-            subscription_prorate: None,
+            subscription_proration_behavior: None,
             subscription_proration_date: None,
-            subscription_tax_percent: None,
+            subscription_start_date: None,
             subscription_trial_end: None,
         }
     }
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct SubscriptionItemFilter {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<SubscriptionItemId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<PlanId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
 }
