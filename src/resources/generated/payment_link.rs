@@ -204,10 +204,16 @@ pub struct PaymentLinksResourceCustomFields {
 
     pub label: PaymentLinksResourceCustomFieldsLabel,
 
+    /// Configuration for `type=numeric` fields.
+    pub numeric: Option<PaymentLinksResourceCustomFieldsNumeric>,
+
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     pub optional: bool,
+
+    /// Configuration for `type=text` fields.
+    pub text: Option<PaymentLinksResourceCustomFieldsText>,
 
     /// The type of the field.
     #[serde(rename = "type")]
@@ -245,6 +251,24 @@ pub struct PaymentLinksResourceCustomFieldsLabel {
     /// The type of the label.
     #[serde(rename = "type")]
     pub type_: PaymentLinksResourceCustomFieldsLabelType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
