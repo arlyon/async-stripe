@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use chrono::Utc;
 #[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 use smart_default::SmartDefault;
@@ -413,7 +416,8 @@ impl std::fmt::Display for EventType {
 #[derive(Clone, Debug, Deserialize, Serialize, Default)]
 pub struct NotificationEventData {
     pub object: EventObject,
-    // previous_attributes: ...
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub previous_attributes: Option<HashMap<String, Value>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -538,7 +542,6 @@ struct Signature<'r> {
 #[cfg(feature = "webhook-events")]
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
-        use std::collections::HashMap;
         let headers: HashMap<&str, &str> = raw
             .split(',')
             .map(|header| {
