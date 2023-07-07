@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use chrono::Utc;
 #[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac};
@@ -7,6 +6,7 @@ use serde_json::Value;
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 use smart_default::SmartDefault;
+use std::collections::HashMap;
 
 use crate::error::WebhookError;
 use crate::resources::*;
@@ -537,7 +537,6 @@ struct Signature<'r> {
 #[cfg(feature = "webhook-events")]
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
-        use std::collections::HashMap;
         let headers: HashMap<&str, &str> = raw
             .split(',')
             .map(|header| {
