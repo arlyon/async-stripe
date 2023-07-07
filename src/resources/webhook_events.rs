@@ -107,10 +107,14 @@ pub enum EventType {
     CustomerSubscriptionCreated,
     #[serde(rename = "customer.subscription.deleted")]
     CustomerSubscriptionDeleted,
+    #[serde(rename = "customer.subscription.paused")]
+    CustomerSubscriptionPaused,
     #[serde(rename = "customer.subscription.pending_update_applied")]
     CustomerSubscriptionPendingUpdateApplied,
     #[serde(rename = "customer.subscription.pending_update_expired")]
     CustomerSubscriptionPendingUpdateExpired,
+    #[serde(rename = "customer.subscription.resumed")]
+    CustomerSubscriptionResumed,
     #[serde(rename = "customer.subscription.trial_will_end")]
     CustomerSubscriptionTrialWillEnd,
     #[serde(rename = "customer.subscription.updated")]
