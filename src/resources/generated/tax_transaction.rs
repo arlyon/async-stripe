@@ -88,8 +88,6 @@ pub struct TaxProductResourceTaxTransactionShippingCost {
     pub amount_tax: i64,
 
     /// The ID of an existing [ShippingRate](https://stripe.com/docs/api/shipping_rates/object).
-    ///
-    /// (It is not populated for the transaction resource object and will be removed in the next API version.).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
 
@@ -306,6 +304,8 @@ impl std::default::Default for TaxProductResourceLineItemTaxBreakdownTaxabilityR
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
+    AmusementTax,
+    CommunicationsTax,
     Gst,
     Hst,
     Igst,
@@ -321,6 +321,8 @@ pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
 impl TaxProductResourceLineItemTaxRateDetailsTaxType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxProductResourceLineItemTaxRateDetailsTaxType::AmusementTax => "amusement_tax",
+            TaxProductResourceLineItemTaxRateDetailsTaxType::CommunicationsTax => "communications_tax",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Gst => "gst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Hst => "hst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Igst => "igst",
@@ -348,7 +350,7 @@ impl std::fmt::Display for TaxProductResourceLineItemTaxRateDetailsTaxType {
 }
 impl std::default::Default for TaxProductResourceLineItemTaxRateDetailsTaxType {
     fn default() -> Self {
-        Self::Gst
+        Self::AmusementTax
     }
 }
 

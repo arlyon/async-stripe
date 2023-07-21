@@ -52,7 +52,6 @@ pub struct CustomerCashBalanceTransaction {
 
     /// The type of the cash balance transaction.
     ///
-    /// One of `applied_to_payment`, `unapplied_from_payment`, `refunded_from_payment`, `funded`, `return_initiated`, or `return_canceled`.
     /// New types may be added in future.
     /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
     #[serde(rename = "type")]

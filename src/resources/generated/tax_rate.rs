@@ -326,6 +326,7 @@ pub enum TaxRateTaxType {
     Qst,
     Rst,
     SalesTax,
+    ServiceTax,
     Vat,
 }
 
@@ -343,6 +344,7 @@ impl TaxRateTaxType {
             TaxRateTaxType::Qst => "qst",
             TaxRateTaxType::Rst => "rst",
             TaxRateTaxType::SalesTax => "sales_tax",
+            TaxRateTaxType::ServiceTax => "service_tax",
             TaxRateTaxType::Vat => "vat",
         }
     }

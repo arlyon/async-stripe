@@ -1005,7 +1005,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
+    /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -7354,8 +7354,6 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum LineItemsTaxAmountTaxabilityReason {
     CustomerExempt,
-    ExcludedTerritory,
-    JurisdictionUnsupported,
     NotCollecting,
     NotSubjectToTax,
     NotSupported,
@@ -7369,7 +7367,6 @@ pub enum LineItemsTaxAmountTaxabilityReason {
     ReverseCharge,
     StandardRated,
     TaxableBasisReduced,
-    VatExempt,
     ZeroRated,
 }
 
@@ -7377,10 +7374,6 @@ impl LineItemsTaxAmountTaxabilityReason {
     pub fn as_str(self) -> &'static str {
         match self {
             LineItemsTaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
-            LineItemsTaxAmountTaxabilityReason::ExcludedTerritory => "excluded_territory",
-            LineItemsTaxAmountTaxabilityReason::JurisdictionUnsupported => {
-                "jurisdiction_unsupported"
-            }
             LineItemsTaxAmountTaxabilityReason::NotCollecting => "not_collecting",
             LineItemsTaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
             LineItemsTaxAmountTaxabilityReason::NotSupported => "not_supported",
@@ -7394,7 +7387,6 @@ impl LineItemsTaxAmountTaxabilityReason {
             LineItemsTaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
             LineItemsTaxAmountTaxabilityReason::StandardRated => "standard_rated",
             LineItemsTaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
-            LineItemsTaxAmountTaxabilityReason::VatExempt => "vat_exempt",
             LineItemsTaxAmountTaxabilityReason::ZeroRated => "zero_rated",
         }
     }
@@ -8488,6 +8480,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     NzGst,
     PeRuc,
     PhTin,
+    RoTin,
     RsPib,
     RuInn,
     RuKpp,
@@ -8559,6 +8552,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::NzGst => "nz_gst",
             PaymentPagesCheckoutSessionTaxIdType::PeRuc => "pe_ruc",
             PaymentPagesCheckoutSessionTaxIdType::PhTin => "ph_tin",
+            PaymentPagesCheckoutSessionTaxIdType::RoTin => "ro_tin",
             PaymentPagesCheckoutSessionTaxIdType::RsPib => "rs_pib",
             PaymentPagesCheckoutSessionTaxIdType::RuInn => "ru_inn",
             PaymentPagesCheckoutSessionTaxIdType::RuKpp => "ru_kpp",

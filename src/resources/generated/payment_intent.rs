@@ -257,6 +257,14 @@ pub struct PaymentFlowsAmountDetailsResourceTip {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
+    /// Controls whether this PaymentIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects>,
+
     /// Automatically calculates compatible payment methods.
     pub enabled: bool,
 }
@@ -1861,6 +1869,14 @@ impl<'a> UpdatePaymentIntent<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
+    /// Controls whether this PaymentIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects>,
+
     /// Whether this feature is enabled.
     pub enabled: bool,
 }
@@ -4642,6 +4658,40 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuB
     ///
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentAutomaticPaymentMethods`'s `allow_redirects` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    Always,
+    Never,
+}
+
+impl CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects::Always => "always",
+            CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn default() -> Self {
+        Self::Always
+    }
 }
 
 /// An enum representing the possible values of an `CreatePaymentIntentMandateDataCustomerAcceptance`'s `type` field.
@@ -7616,6 +7666,40 @@ impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressType {
 impl std::default::Default for FundingInstructionsBankTransferFinancialAddressType {
     fn default() -> Self {
         Self::Iban
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsAutomaticPaymentMethodsPaymentIntent`'s `allow_redirects` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
+    Always,
+    Never,
+}
+
+impl PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects::Always => "always",
+            PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentFlowsAutomaticPaymentMethodsPaymentIntentAllowRedirects {
+    fn default() -> Self {
+        Self::Always
     }
 }
 

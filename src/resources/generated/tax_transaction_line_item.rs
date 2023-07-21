@@ -29,6 +29,9 @@ pub struct TaxTransactionLineItem {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
+    /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
+    pub product: Option<String>,
+
     /// The number of units of the item being purchased.
     ///
     /// For reversals, this is the quantity reversed.
