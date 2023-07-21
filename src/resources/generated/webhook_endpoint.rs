@@ -629,6 +629,8 @@ pub enum EventFilter {
     SubscriptionScheduleReleased,
     #[serde(rename = "subscription_schedule.updated")]
     SubscriptionScheduleUpdated,
+    #[serde(rename = "tax.settings.updated")]
+    TaxSettingsUpdated,
     #[serde(rename = "tax_rate.created")]
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
@@ -942,6 +944,7 @@ impl EventFilter {
             EventFilter::SubscriptionScheduleExpiring => "subscription_schedule.expiring",
             EventFilter::SubscriptionScheduleReleased => "subscription_schedule.released",
             EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
+            EventFilter::TaxSettingsUpdated => "tax.settings.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
             EventFilter::TerminalReaderActionFailed => "terminal.reader.action_failed",

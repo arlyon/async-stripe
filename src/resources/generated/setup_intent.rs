@@ -164,6 +164,14 @@ impl Object for SetupIntent {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntent {
+    /// Controls whether this SetupIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects>,
+
     /// Automatically calculates compatible payment methods.
     pub enabled: Option<bool>,
 }
@@ -496,6 +504,10 @@ pub struct CreateSetupIntent<'a> {
     /// If this hash is populated, this SetupIntent will generate a single_use Mandate on success.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub single_use: Option<CreateSetupIntentSingleUse>,
+
+    /// Set to `true` when confirming server-side and using Stripe.js, iOS, or Android client-side SDKs to handle the next actions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_stripe_sdk: Option<bool>,
 }
 
 impl<'a> CreateSetupIntent<'a> {
@@ -517,6 +529,7 @@ impl<'a> CreateSetupIntent<'a> {
             payment_method_types: Default::default(),
             return_url: Default::default(),
             single_use: Default::default(),
+            use_stripe_sdk: Default::default(),
         }
     }
 }
@@ -677,6 +690,14 @@ impl<'a> UpdateSetupIntent<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentAutomaticPaymentMethods {
+    /// Controls whether this SetupIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<CreateSetupIntentAutomaticPaymentMethodsAllowRedirects>,
+
     /// Whether this feature is enabled.
     pub enabled: bool,
 }
@@ -2003,6 +2024,40 @@ pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks {
     pub requested: Option<Vec<UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested>>,
 }
 
+/// An enum representing the possible values of an `CreateSetupIntentAutomaticPaymentMethods`'s `allow_redirects` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    Always,
+    Never,
+}
+
+impl CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentAutomaticPaymentMethodsAllowRedirects::Always => "always",
+            CreateSetupIntentAutomaticPaymentMethodsAllowRedirects::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn default() -> Self {
+        Self::Always
+    }
+}
+
 /// An enum representing the possible values of an `CreateSetupIntent`'s `flow_directions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3110,6 +3165,40 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsAutomaticPaymentMethodsSetupIntent`'s `allow_redirects` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    Always,
+    Never,
+}
+
+impl PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::Always => "always",
+            PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::Never => "never",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    fn default() -> Self {
+        Self::Always
     }
 }
 

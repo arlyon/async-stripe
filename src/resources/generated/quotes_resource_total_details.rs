@@ -60,8 +60,6 @@ pub struct LineItemsTaxAmount {
 #[serde(rename_all = "snake_case")]
 pub enum LineItemsTaxAmountTaxabilityReason {
     CustomerExempt,
-    ExcludedTerritory,
-    JurisdictionUnsupported,
     NotCollecting,
     NotSubjectToTax,
     NotSupported,
@@ -75,7 +73,6 @@ pub enum LineItemsTaxAmountTaxabilityReason {
     ReverseCharge,
     StandardRated,
     TaxableBasisReduced,
-    VatExempt,
     ZeroRated,
 }
 
@@ -83,10 +80,6 @@ impl LineItemsTaxAmountTaxabilityReason {
     pub fn as_str(self) -> &'static str {
         match self {
             LineItemsTaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
-            LineItemsTaxAmountTaxabilityReason::ExcludedTerritory => "excluded_territory",
-            LineItemsTaxAmountTaxabilityReason::JurisdictionUnsupported => {
-                "jurisdiction_unsupported"
-            }
             LineItemsTaxAmountTaxabilityReason::NotCollecting => "not_collecting",
             LineItemsTaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
             LineItemsTaxAmountTaxabilityReason::NotSupported => "not_supported",
@@ -100,7 +93,6 @@ impl LineItemsTaxAmountTaxabilityReason {
             LineItemsTaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
             LineItemsTaxAmountTaxabilityReason::StandardRated => "standard_rated",
             LineItemsTaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
-            LineItemsTaxAmountTaxabilityReason::VatExempt => "vat_exempt",
             LineItemsTaxAmountTaxabilityReason::ZeroRated => "zero_rated",
         }
     }

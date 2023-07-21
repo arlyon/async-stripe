@@ -33,7 +33,7 @@ pub struct Balance {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Funds that are not yet available in the balance, due to the 7-day rolling pay cycle.
+    /// Funds that are not yet available in the balance.
     ///
     /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
     pub pending: Vec<BalanceAmount>,

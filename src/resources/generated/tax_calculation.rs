@@ -347,6 +347,8 @@ impl std::default::Default for TaxProductResourceLineItemTaxBreakdownTaxabilityR
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
+    AmusementTax,
+    CommunicationsTax,
     Gst,
     Hst,
     Igst,
@@ -362,6 +364,10 @@ pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
 impl TaxProductResourceLineItemTaxRateDetailsTaxType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxProductResourceLineItemTaxRateDetailsTaxType::AmusementTax => "amusement_tax",
+            TaxProductResourceLineItemTaxRateDetailsTaxType::CommunicationsTax => {
+                "communications_tax"
+            }
             TaxProductResourceLineItemTaxRateDetailsTaxType::Gst => "gst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Hst => "hst",
             TaxProductResourceLineItemTaxRateDetailsTaxType::Igst => "igst",
@@ -389,7 +395,7 @@ impl std::fmt::Display for TaxProductResourceLineItemTaxRateDetailsTaxType {
 }
 impl std::default::Default for TaxProductResourceLineItemTaxRateDetailsTaxType {
     fn default() -> Self {
-        Self::Gst
+        Self::AmusementTax
     }
 }
 
@@ -503,6 +509,8 @@ impl std::default::Default for TaxProductResourceTaxCalculationShippingCostTaxBe
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxProductResourceTaxRateDetailsTaxType {
+    AmusementTax,
+    CommunicationsTax,
     Gst,
     Hst,
     Igst,
@@ -518,6 +526,8 @@ pub enum TaxProductResourceTaxRateDetailsTaxType {
 impl TaxProductResourceTaxRateDetailsTaxType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxProductResourceTaxRateDetailsTaxType::AmusementTax => "amusement_tax",
+            TaxProductResourceTaxRateDetailsTaxType::CommunicationsTax => "communications_tax",
             TaxProductResourceTaxRateDetailsTaxType::Gst => "gst",
             TaxProductResourceTaxRateDetailsTaxType::Hst => "hst",
             TaxProductResourceTaxRateDetailsTaxType::Igst => "igst",
@@ -545,6 +555,6 @@ impl std::fmt::Display for TaxProductResourceTaxRateDetailsTaxType {
 }
 impl std::default::Default for TaxProductResourceTaxRateDetailsTaxType {
     fn default() -> Self {
-        Self::Gst
+        Self::AmusementTax
     }
 }
