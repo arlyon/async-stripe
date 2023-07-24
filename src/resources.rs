@@ -50,6 +50,13 @@ mod billing {
 }
 
 #[path = "resources"]
+#[cfg(feature = "products")]
+mod products {
+    pub mod price_ext;
+    pub mod product_ext;
+}
+
+#[path = "resources"]
 #[cfg(feature = "checkout")]
 mod checkout {
     pub mod checkout_session_ext;

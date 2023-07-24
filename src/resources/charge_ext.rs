@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{AccountId, BankAccountId, CardId, ChargeId, SourceId, TokenId};
-use crate::params::Object;
+use crate::params::{Object, SearchList};
 use crate::resources::{Charge, Rule};
 
 /// The set of PaymentSource parameters that can be used to create a charge.
@@ -44,6 +44,13 @@ impl Charge {
     ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}/capture", charge_id), params)
     }
+
+    /// Searches for a charge.
+    ///
+    /// For more details see <https://stripe.com/docs/api/charges/search>.
+    pub fn search(client: &Client, params: ChargeSearchParams) -> Response<SearchList<Charge>> {
+        client.get_query("/charges/search", params)
+    }
 }
 
 impl Object for Rule {
@@ -53,5 +60,21 @@ impl Object for Rule {
     }
     fn object(&self) -> &'static str {
         ""
+    }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct ChargeSearchParams<'a> {
+    pub query: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<u64>,
+    pub expand: &'a [&'a str],
+}
+
+impl<'a> ChargeSearchParams<'a> {
+    pub fn new() -> ChargeSearchParams<'a> {
+        ChargeSearchParams { query: String::new(), limit: None, page: None, expand: &[] }
     }
 }
