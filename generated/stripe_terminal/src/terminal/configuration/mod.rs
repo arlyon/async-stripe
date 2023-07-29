@@ -84,16 +84,16 @@ impl<'de> serde::Deserialize<'de> for ConfigurationObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ConfigurationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ConfigurationObject> {
+impl miniserde::de::Visitor for crate::Place<ConfigurationObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ConfigurationObject::from_str(s)?);
+        self.out = Some(ConfigurationObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -105,7 +105,6 @@ impl stripe_types::Object for Configuration {
 }
 stripe_types::def_id!(TerminalConfigurationId, "tmc_");
 pub mod deleted;
-pub mod requests;
 pub use deleted::DeletedConfiguration;
 pub mod currency_specific_config;
 pub use currency_specific_config::CurrencySpecificConfig;

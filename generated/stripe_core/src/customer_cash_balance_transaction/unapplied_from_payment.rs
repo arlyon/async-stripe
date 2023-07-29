@@ -2,7 +2,7 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct UnappliedFromPayment {
     /// The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were unapplied from.
-    pub payment_intent: stripe_types::Expandable<stripe_core::payment_intent::PaymentIntent>,
+    pub payment_intent: stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for UnappliedFromPayment {

@@ -109,16 +109,16 @@ impl<'de> serde::Deserialize<'de> for DebitReversalNetwork {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DebitReversalNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DebitReversalNetwork> {
+impl miniserde::de::Visitor for crate::Place<DebitReversalNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DebitReversalNetwork::from_str(s)?);
+        self.out = Some(DebitReversalNetwork::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -179,16 +179,16 @@ impl<'de> serde::Deserialize<'de> for DebitReversalObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DebitReversalObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DebitReversalObject> {
+impl miniserde::de::Visitor for crate::Place<DebitReversalObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DebitReversalObject::from_str(s)?);
+        self.out = Some(DebitReversalObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -253,16 +253,16 @@ impl<'de> serde::Deserialize<'de> for DebitReversalStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DebitReversalStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DebitReversalStatus> {
+impl miniserde::de::Visitor for crate::Place<DebitReversalStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DebitReversalStatus::from_str(s)?);
+        self.out = Some(DebitReversalStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -274,5 +274,4 @@ impl stripe_types::Object for DebitReversal {
 }
 stripe_types::def_id!(TreasuryDebitReversalId);
 pub mod linked_flows;
-pub mod requests;
 pub use linked_flows::LinkedFlows;

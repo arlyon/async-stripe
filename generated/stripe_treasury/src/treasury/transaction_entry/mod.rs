@@ -121,16 +121,16 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryFlowType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for TransactionEntryFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<TransactionEntryFlowType> {
+impl miniserde::de::Visitor for crate::Place<TransactionEntryFlowType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TransactionEntryFlowType::from_str(s)?);
+        self.out = Some(TransactionEntryFlowType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -191,16 +191,16 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for TransactionEntryObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<TransactionEntryObject> {
+impl miniserde::de::Visitor for crate::Place<TransactionEntryObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TransactionEntryObject::from_str(s)?);
+        self.out = Some(TransactionEntryObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -316,16 +316,16 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for TransactionEntryType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<TransactionEntryType> {
+impl miniserde::de::Visitor for crate::Place<TransactionEntryType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TransactionEntryType::from_str(s)?);
+        self.out = Some(TransactionEntryType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -336,4 +336,3 @@ impl stripe_types::Object for TransactionEntry {
     }
 }
 stripe_types::def_id!(TreasuryTransactionEntryId);
-pub mod requests;

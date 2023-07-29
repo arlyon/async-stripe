@@ -3,7 +3,7 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct ProcessPaymentIntentAction {
     /// Most recent PaymentIntent processed by the reader.
-pub payment_intent: stripe_types::Expandable<stripe_core::payment_intent::PaymentIntent>,
+pub payment_intent: stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub process_config: Option<stripe_terminal::terminal::reader::reader_action::process_payment_intent_action::process_config::ProcessConfig>,
 

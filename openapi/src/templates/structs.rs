@@ -3,7 +3,7 @@ use std::fmt::Write;
 use indoc::{formatdoc, writedoc};
 
 use crate::object_context::{Lifetime, PrintableWithLifetime};
-use crate::rust_object::PrintableStructField;
+use crate::rust_object::{PrintableStructField, Visibility};
 use crate::templates::derives::{write_derives_line, Derives};
 use crate::templates::utils::{write_doc_comment, write_serde_rename};
 use crate::types::RustIdent;
@@ -91,6 +91,10 @@ impl<'a> PrintableStructField<'a> {
         }
 
         let typ = PrintableWithLifetime::new(&self.rust_type, lifetime);
-        let _ = writeln!(out, "pub {}: {typ},", self.field_name);
+        let vis = match self.vis {
+            Visibility::Public => "pub ",
+            Visibility::Private => "",
+        };
+        let _ = writeln!(out, "{vis}{}: {typ},", self.field_name);
     }
 }

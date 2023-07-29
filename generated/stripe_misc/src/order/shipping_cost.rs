@@ -10,10 +10,11 @@ pub struct ShippingCost {
     /// Total shipping cost after discounts and taxes are applied.
     pub amount_total: i64,
     /// The ID of the ShippingRate for this order.
-    pub shipping_rate: Option<stripe_types::Expandable<stripe_core::shipping_rate::ShippingRate>>,
+    pub shipping_rate:
+        Option<stripe_types::Expandable<stripe_product::shipping_rate::ShippingRate>>,
     /// The taxes applied to the shipping rate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxes: Option<Vec<stripe_core::line_item::tax::Tax>>,
+    pub taxes: Option<Vec<stripe_types::line_item::tax::Tax>>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ShippingCost {

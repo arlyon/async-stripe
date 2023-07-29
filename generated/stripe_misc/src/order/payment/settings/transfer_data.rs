@@ -7,7 +7,7 @@ pub struct TransferData {
     /// There cannot be any line items with recurring prices when using this field.
     pub amount: Option<i64>,
     /// ID of the Connected account receiving the transfer.
-    pub destination: stripe_types::Expandable<stripe_core::account::Account>,
+    pub destination: stripe_types::Expandable<stripe_types::account::Account>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for TransferData {

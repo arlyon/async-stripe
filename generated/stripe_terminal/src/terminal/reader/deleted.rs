@@ -2,7 +2,7 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct DeletedReader {
     /// Always true for a deleted object.
-    pub deleted: bool,
+    deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
     pub id: stripe_terminal::terminal::reader::TerminalReaderId,
     /// String representing the object's type.
@@ -74,16 +74,16 @@ impl<'de> serde::Deserialize<'de> for DeletedReaderObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DeletedReaderObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DeletedReaderObject> {
+impl miniserde::de::Visitor for crate::Place<DeletedReaderObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DeletedReaderObject::from_str(s)?);
+        self.out = Some(DeletedReaderObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

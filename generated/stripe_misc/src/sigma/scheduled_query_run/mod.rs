@@ -15,7 +15,7 @@ pub struct ScheduledQueryRun {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<stripe_misc::sigma::scheduled_query_run::run_error::RunError>,
     /// The file object representing the results of the query.
-    pub file: Option<stripe_core::file::File>,
+    pub file: Option<stripe_types::file::File>,
     /// Unique identifier for the object.
     pub id: stripe_misc::sigma::scheduled_query_run::ScheduledQueryRunId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -97,16 +97,16 @@ impl<'de> serde::Deserialize<'de> for ScheduledQueryRunObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ScheduledQueryRunObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ScheduledQueryRunObject> {
+impl miniserde::de::Visitor for crate::Place<ScheduledQueryRunObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ScheduledQueryRunObject::from_str(s)?);
+        self.out = Some(ScheduledQueryRunObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -117,6 +117,5 @@ impl stripe_types::Object for ScheduledQueryRun {
     }
 }
 stripe_types::def_id!(ScheduledQueryRunId, "sqr_");
-pub mod requests;
 pub mod run_error;
 pub use run_error::RunError;

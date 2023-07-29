@@ -87,16 +87,16 @@ impl<'de> serde::Deserialize<'de> for EphemeralKeyObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for EphemeralKeyObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<EphemeralKeyObject> {
+impl miniserde::de::Visitor for crate::Place<EphemeralKeyObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(EphemeralKeyObject::from_str(s)?);
+        self.out = Some(EphemeralKeyObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -107,4 +107,3 @@ impl stripe_types::Object for EphemeralKey {
     }
 }
 stripe_types::def_id!(EphemeralKeyId, "ephkey_");
-pub mod requests;

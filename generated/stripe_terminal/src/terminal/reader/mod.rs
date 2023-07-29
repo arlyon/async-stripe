@@ -110,16 +110,16 @@ impl<'de> serde::Deserialize<'de> for ReaderDeviceType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReaderDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReaderDeviceType> {
+impl miniserde::de::Visitor for crate::Place<ReaderDeviceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReaderDeviceType::from_str(s)?);
+        self.out = Some(ReaderDeviceType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -179,16 +179,16 @@ impl<'de> serde::Deserialize<'de> for ReaderObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReaderObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReaderObject> {
+impl miniserde::de::Visitor for crate::Place<ReaderObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReaderObject::from_str(s)?);
+        self.out = Some(ReaderObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -200,7 +200,6 @@ impl stripe_types::Object for Reader {
 }
 stripe_types::def_id!(TerminalReaderId, "tmr_");
 pub mod deleted;
-pub mod requests;
 pub use deleted::DeletedReader;
 pub mod reader_action;
 pub use reader_action::ReaderAction;

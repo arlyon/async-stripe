@@ -7,6 +7,7 @@ use anyhow::Context;
 use indexmap::map::Entry;
 use indexmap::{IndexMap, IndexSet};
 use petgraph::algo::is_cyclic_directed;
+use tracing::error;
 
 use crate::crate_inference::Crate;
 use crate::ids::IDS_IN_STRIPE;
@@ -21,6 +22,58 @@ use crate::stripe_object::{
     StripeResource,
 };
 use crate::types::{ComponentPath, RustIdent};
+
+pub const PATHS_IN_TYPES: &[&str] = &[
+    "account",
+    "file",
+    "person",
+    "external_account",
+    "file_link",
+    "bank_account",
+    "card",
+    "customer",
+    "cash_balance",
+    "payment_source",
+    "discount",
+    "subscription",
+    "tax_id",
+    "tax_code",
+    "application_fee",
+    "fee_refund",
+    "payout",
+    "topup",
+    "invoice",
+    "payment_method",
+    "charge",
+    "subscription_item",
+    "tax_rate",
+    "payment_intent",
+    "quote",
+    "setup_attempt",
+    "setup_intent",
+    "mandate",
+    "coupon",
+    "promotion_code",
+    "line_item",
+    "subscription_schedule",
+    "review",
+    "price",
+    "plan",
+    "transfer",
+    "refund",
+    "balance_transaction",
+    "dispute",
+    "product",
+    "transfer_reversal",
+    "balance_transaction_source",
+    "source",
+    "test_helpers",
+    "radar",
+    "issuing",
+    "discounts_resource_discount_amount",
+    "connect_collection_transfer",
+    "item",
+];
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub enum Module {
@@ -67,10 +120,17 @@ impl Deref for ModuleName {
     }
 }
 
+impl std::fmt::Display for ModuleName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 pub struct Components {
     pub modules: IndexMap<ModuleName, Module>,
     components: IndexMap<ComponentPath, StripeObject>,
     pub crates: IndexMap<Crate, Vec<ModuleName>>,
+    pub paths_in_types: IndexSet<ModuleName>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -94,14 +154,11 @@ impl Components {
 
     #[track_caller]
     pub fn get_module(&self, name: &ModuleName) -> &Module {
-        self.modules.get(name).expect("Module not found")
+        self.modules.get(name).unwrap_or_else(|| panic!("Module {} not found!", name))
     }
 
-    #[track_caller]
     pub fn get_crate_members(&self, krate: Crate) -> &[ModuleName] {
-        let Some(members) = self.crates.get(&krate) else {
-            return &[]
-        };
+        let Some(members) = self.crates.get(&krate) else { return &[] };
         members
     }
 
@@ -111,6 +168,10 @@ impl Components {
 
     pub fn containing_crate(&self, path: &ComponentPath) -> Crate {
         let mod_path = self.containing_module(path);
+        if self.paths_in_types.contains(mod_path.0.as_str()) {
+            return Crate::Types;
+        }
+
         for (krate, members) in &self.crates {
             if members.contains(mod_path) {
                 return *krate;
@@ -199,7 +260,7 @@ impl Components {
     fn validate_crate_deps(&self) {
         let graph = self.gen_crate_dep_graph();
         if is_cyclic_directed(&graph) {
-            panic!("Crate dependency graph contains a cycle!");
+            error!("Crate dependency graph contains a cycle!");
         }
     }
 
@@ -350,7 +411,12 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
             Module::Package { name: package, members },
         );
     }
-    let mut components = Components { modules, components, crates: Default::default() };
+    let mut components = Components {
+        modules,
+        components,
+        crates: Default::default(),
+        paths_in_types: PATHS_IN_TYPES.iter().map(|t| ModuleName(t.to_string())).collect(),
+    };
     let crate_assignments = components.make_crate_assignments();
     let mut crates: IndexMap<_, Vec<_>> = IndexMap::new();
     for (name, assignment) in crate_assignments {

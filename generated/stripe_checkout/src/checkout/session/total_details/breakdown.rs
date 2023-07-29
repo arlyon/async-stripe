@@ -2,9 +2,9 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Breakdown {
     /// The aggregated discounts.
-    pub discounts: Vec<stripe_core::line_item::discount::Discount>,
+    pub discounts: Vec<stripe_types::line_item::discount::Discount>,
     /// The aggregated tax amounts by rate.
-    pub taxes: Vec<stripe_core::line_item::tax::Tax>,
+    pub taxes: Vec<stripe_types::line_item::tax::Tax>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for Breakdown {

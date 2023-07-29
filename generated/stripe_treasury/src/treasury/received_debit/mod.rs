@@ -123,16 +123,16 @@ impl<'de> serde::Deserialize<'de> for ReceivedDebitFailureCode {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReceivedDebitFailureCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReceivedDebitFailureCode> {
+impl miniserde::de::Visitor for crate::Place<ReceivedDebitFailureCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReceivedDebitFailureCode::from_str(s)?);
+        self.out = Some(ReceivedDebitFailureCode::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -197,16 +197,16 @@ impl<'de> serde::Deserialize<'de> for ReceivedDebitNetwork {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReceivedDebitNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReceivedDebitNetwork> {
+impl miniserde::de::Visitor for crate::Place<ReceivedDebitNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReceivedDebitNetwork::from_str(s)?);
+        self.out = Some(ReceivedDebitNetwork::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -267,16 +267,16 @@ impl<'de> serde::Deserialize<'de> for ReceivedDebitObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReceivedDebitObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReceivedDebitObject> {
+impl miniserde::de::Visitor for crate::Place<ReceivedDebitObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReceivedDebitObject::from_str(s)?);
+        self.out = Some(ReceivedDebitObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -341,16 +341,16 @@ impl<'de> serde::Deserialize<'de> for ReceivedDebitStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReceivedDebitStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReceivedDebitStatus> {
+impl miniserde::de::Visitor for crate::Place<ReceivedDebitStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReceivedDebitStatus::from_str(s)?);
+        self.out = Some(ReceivedDebitStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -362,7 +362,6 @@ impl stripe_types::Object for ReceivedDebit {
 }
 stripe_types::def_id!(TreasuryReceivedDebitId);
 pub mod linked_flows;
-pub mod requests;
 pub use linked_flows::LinkedFlows;
 pub mod reversal_details;
 pub use reversal_details::ReversalDetails;

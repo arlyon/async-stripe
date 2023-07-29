@@ -84,16 +84,17 @@ impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsBalance {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for InitiatingPaymentMethodDetailsBalance {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<InitiatingPaymentMethodDetailsBalance> {
+impl miniserde::de::Visitor for crate::Place<InitiatingPaymentMethodDetailsBalance> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InitiatingPaymentMethodDetailsBalance::from_str(s)?);
+        self.out =
+            Some(InitiatingPaymentMethodDetailsBalance::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -167,16 +168,17 @@ impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for InitiatingPaymentMethodDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<InitiatingPaymentMethodDetailsType> {
+impl miniserde::de::Visitor for crate::Place<InitiatingPaymentMethodDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InitiatingPaymentMethodDetailsType::from_str(s)?);
+        self.out =
+            Some(InitiatingPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

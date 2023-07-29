@@ -86,16 +86,16 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountHolderType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for UsBankAccountAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<UsBankAccountAccountHolderType> {
+impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountHolderType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountHolderType::from_str(s)?);
+        self.out = Some(UsBankAccountAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -159,16 +159,16 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for UsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<UsBankAccountAccountType> {
+impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountType::from_str(s)?);
+        self.out = Some(UsBankAccountAccountType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -227,16 +227,16 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountNetwork {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for UsBankAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<UsBankAccountNetwork> {
+impl miniserde::de::Visitor for crate::Place<UsBankAccountNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(UsBankAccountNetwork::from_str(s)?);
+        self.out = Some(UsBankAccountNetwork::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

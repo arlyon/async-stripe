@@ -130,16 +130,16 @@ impl<'de> serde::Deserialize<'de> for OutboundPaymentObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for OutboundPaymentObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<OutboundPaymentObject> {
+impl miniserde::de::Visitor for crate::Place<OutboundPaymentObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(OutboundPaymentObject::from_str(s)?);
+        self.out = Some(OutboundPaymentObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -214,16 +214,16 @@ impl<'de> serde::Deserialize<'de> for OutboundPaymentStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for OutboundPaymentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<OutboundPaymentStatus> {
+impl miniserde::de::Visitor for crate::Place<OutboundPaymentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(OutboundPaymentStatus::from_str(s)?);
+        self.out = Some(OutboundPaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -235,7 +235,6 @@ impl stripe_types::Object for OutboundPayment {
 }
 stripe_types::def_id!(TreasuryOutboundPaymentId);
 pub mod destination_payment_method_details;
-pub mod requests;
 pub use destination_payment_method_details::DestinationPaymentMethodDetails;
 pub mod end_user_details;
 pub use end_user_details::EndUserDetails;

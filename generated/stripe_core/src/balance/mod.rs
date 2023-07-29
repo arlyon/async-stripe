@@ -92,21 +92,20 @@ impl<'de> serde::Deserialize<'de> for BalanceObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for BalanceObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<BalanceObject> {
+impl miniserde::de::Visitor for crate::Place<BalanceObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BalanceObject::from_str(s)?);
+        self.out = Some(BalanceObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
 pub mod money;
-pub mod requests;
 pub use money::Money;
 pub mod details;
 pub use details::Details;

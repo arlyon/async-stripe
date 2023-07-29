@@ -26,7 +26,7 @@ pub struct ReportRun {
     pub report_type: String,
     /// The file object representing the result of the report run (populated when
     ///  `status=succeeded`).
-    pub result: Option<stripe_core::file::File>,
+    pub result: Option<stripe_types::file::File>,
     /// Status of this report run.
     ///
     /// This will be `pending` when the run is initially created.  When the run finishes, this will be set to `succeeded` and the `result` field will be populated.  Rarely, we may encounter an error, at which point this will be set to `failed` and the `error` field will be populated.
@@ -101,16 +101,16 @@ impl<'de> serde::Deserialize<'de> for ReportRunObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ReportRunObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ReportRunObject> {
+impl miniserde::de::Visitor for crate::Place<ReportRunObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReportRunObject::from_str(s)?);
+        self.out = Some(ReportRunObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -122,5 +122,4 @@ impl stripe_types::Object for ReportRun {
 }
 stripe_types::def_id!(ReportingReportRunId);
 pub mod parameters;
-pub mod requests;
 pub use parameters::Parameters;

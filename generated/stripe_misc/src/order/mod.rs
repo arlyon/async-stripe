@@ -38,7 +38,7 @@ pub struct Order {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The customer which this orders belongs to.
-    pub customer: Option<stripe_types::Expandable<stripe_core::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
@@ -46,7 +46,7 @@ pub struct Order {
     /// The discounts applied to the order.
     ///
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<stripe_types::Expandable<stripe_core::discount::Discount>>>,
+    pub discounts: Option<Vec<stripe_types::Expandable<stripe_types::discount::Discount>>>,
     /// Unique identifier for the object.
     pub id: stripe_misc::order::OrderId,
     /// A recent IP address of the purchaser used for tax reporting and tax location inference.
@@ -56,7 +56,7 @@ pub struct Order {
     /// Each line item includes information about the product, the quantity, and the resulting cost.
     /// There is a maximum of 100 line items.
     #[serde(default)]
-    pub line_items: stripe_types::List<Option<stripe_core::line_item::LineItem>>,
+    pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -141,16 +141,16 @@ impl<'de> serde::Deserialize<'de> for OrderObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for OrderObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<OrderObject> {
+impl miniserde::de::Visitor for crate::Place<OrderObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(OrderObject::from_str(s)?);
+        self.out = Some(OrderObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -220,16 +220,16 @@ impl<'de> serde::Deserialize<'de> for OrderStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for OrderStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<OrderStatus> {
+impl miniserde::de::Visitor for crate::Place<OrderStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(OrderStatus::from_str(s)?);
+        self.out = Some(OrderStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -241,7 +241,6 @@ impl stripe_types::Object for Order {
 }
 stripe_types::def_id!(OrderId, "or_");
 pub mod automatic_tax;
-pub mod requests;
 pub use automatic_tax::AutomaticTax;
 pub mod billing_details;
 pub use billing_details::BillingDetails;

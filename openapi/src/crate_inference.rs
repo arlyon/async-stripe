@@ -14,12 +14,14 @@ pub enum Crate {
     Checkout,
     Treasury,
     Product,
+    Billing,
+    Payment,
 }
 
 impl Crate {
     pub fn all() -> &'static [Crate] {
         use Crate::*;
-        &[Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product]
+        &[Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment]
     }
 
     pub fn generated_out_path(self) -> String {
@@ -44,6 +46,8 @@ impl Crate {
             Crate::Checkout => "checkout",
             Crate::Treasury => "treasury",
             Crate::Product => "product",
+            Crate::Billing => "billing",
+            Crate::Payment => "payment",
         }
     }
 }
@@ -51,7 +55,7 @@ impl Crate {
 impl Crate {
     pub fn guaranteed_members(self) -> &'static [&'static str] {
         match self {
-            Crate::Types => &["shipping"],
+            Crate::Types => &["shipping", "api_errors"],
             Crate::Core => &[
                 "balance",
                 "balance_transaction",
@@ -64,51 +68,29 @@ impl Crate {
                 "setup_intent",
                 "fee_refund",
                 "balance_transaction_source",
-                "api_errors",
-                "error",
                 "connect_collection_transfer",
-                "discounts_resource_discount_amount",
-                "item",
                 "source_mandate_notification",
                 "setup_attempt",
-                "invoices_line_items_proration_details",
                 "payout",
                 "event",
                 "refund",
                 "token",
-                "application_fee",
                 "review",
                 "test_helpers",
                 "issuing",
-                "tax_code",
-                "shipping_rate",
-                "tax_id",
-                "tax_rate",
-                "promotion_code",
-                "discount",
-                "coupon",
-                "credit_note",
-                "invoice",
-                "invoice_item",
-                "plan",
-                "billing_portal",
-                "subscription_item",
-                "subscription",
-                "subscription_schedule",
-                "quote",
-                "card",
-                "payment_link",
-                "payment_method",
-                "source",
-                "product",
-                "price",
-                "account",
-                "topup",
-                "transfer",
-                "bank_account",
                 "radar",
             ],
-            Crate::Product => &["sku"],
+            Crate::Product => &[
+                "sku",
+                "product",
+                "coupon",
+                "discount",
+                "price",
+                "promotion_code",
+                "shipping_rate",
+                "tax_code",
+                "tax_rate",
+            ],
             Crate::Misc => &[
                 "reporting",
                 "identity",
@@ -121,9 +103,26 @@ impl Crate {
                 "order",
             ],
             Crate::Treasury => &["treasury"],
-            Crate::Connect => &["apps", "country_spec"],
+            Crate::Connect => {
+                &["apps", "country_spec", "account", "topup", "application_fee", "transfer"]
+            }
             Crate::Terminal => &["terminal"],
             Crate::Checkout => &["checkout"],
+            Crate::Billing => &[
+                "invoice",
+                "invoice_item",
+                "item",
+                "subscription",
+                "subscription_item",
+                "subscription_schedule",
+                "credit_note",
+                "quote",
+                "plan",
+                "billing_portal",
+                "tax_id",
+                "customer_balance_transaction",
+            ],
+            Crate::Payment => &["card", "payment_method", "source", "bank_account", "payment_link"],
         }
     }
 

@@ -95,16 +95,16 @@ impl<'de> serde::Deserialize<'de> for DocumentStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DocumentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DocumentStatus> {
+impl miniserde::de::Visitor for crate::Place<DocumentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DocumentStatus::from_str(s)?);
+        self.out = Some(DocumentStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -168,16 +168,16 @@ impl<'de> serde::Deserialize<'de> for DocumentType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DocumentType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<DocumentType> {
+impl miniserde::de::Visitor for crate::Place<DocumentType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DocumentType::from_str(s)?);
+        self.out = Some(DocumentType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

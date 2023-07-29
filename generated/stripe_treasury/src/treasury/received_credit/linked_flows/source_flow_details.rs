@@ -6,7 +6,7 @@ pub struct SourceFlowDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_payment: Option<stripe_treasury::treasury::outbound_payment::OutboundPayment>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payout: Option<stripe_core::payout::Payout>,
+    pub payout: Option<stripe_types::payout::Payout>,
     /// The type of the source flow that originated the ReceivedCredit.
     #[serde(rename = "type")]
     pub type_: SourceFlowDetailsType,
@@ -82,16 +82,16 @@ impl<'de> serde::Deserialize<'de> for SourceFlowDetailsType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SourceFlowDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SourceFlowDetailsType> {
+impl miniserde::de::Visitor for crate::Place<SourceFlowDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceFlowDetailsType::from_str(s)?);
+        self.out = Some(SourceFlowDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

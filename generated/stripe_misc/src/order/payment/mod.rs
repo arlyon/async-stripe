@@ -5,7 +5,7 @@ pub struct Payment {
     ///
     /// Null when the order is `open`.
     pub payment_intent:
-        Option<stripe_types::Expandable<stripe_core::payment_intent::PaymentIntent>>,
+        Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
     /// Settings describing how the order should configure generated PaymentIntents.
     pub settings: Option<stripe_misc::order::payment::settings::Settings>,
     /// The status of the underlying payment associated with this order, if any.
@@ -97,16 +97,16 @@ impl<'de> serde::Deserialize<'de> for PaymentStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for PaymentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<PaymentStatus> {
+impl miniserde::de::Visitor for crate::Place<PaymentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentStatus::from_str(s)?);
+        self.out = Some(PaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

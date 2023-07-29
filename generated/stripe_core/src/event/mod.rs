@@ -104,16 +104,16 @@ impl<'de> serde::Deserialize<'de> for EventObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for EventObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<EventObject> {
+impl miniserde::de::Visitor for crate::Place<EventObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(EventObject::from_str(s)?);
+        self.out = Some(EventObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -124,4 +124,3 @@ impl stripe_types::Object for Event {
     }
 }
 stripe_types::def_id!(EventId, "evt_");
-pub mod requests;

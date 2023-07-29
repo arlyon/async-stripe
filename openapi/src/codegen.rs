@@ -5,8 +5,11 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context};
 use indexmap::IndexSet;
+use indoc::formatdoc;
 
-use crate::components::{build_field_overrides, get_components, Components, Module, Overrides};
+use crate::components::{
+    build_field_overrides, get_components, Components, Module, ModuleName, Overrides,
+};
 use crate::crate_inference::Crate;
 use crate::ids::{write_object_id, IDS_IN_STRIPE};
 use crate::object_context::{write_obj, write_requests, ObjectGenInfo};
@@ -37,7 +40,7 @@ impl CodeGen {
     fn write_crate(&self, krate: Crate, crate_deps: &IndexSet<Crate>) -> anyhow::Result<()> {
         if krate == Crate::Types {
             if !crate_deps.is_empty() {
-                return Err(anyhow!("Types crate should not have dependencies!"));
+                return Err(anyhow!("Types crate should not have dependencies, but has dependencies {crate_deps:#?}!"));
             }
             self.write_generated_for_types_crate()?;
             return Ok(());
@@ -45,12 +48,32 @@ impl CodeGen {
 
         let base_path = PathBuf::from(krate.generated_out_path());
 
-        // Allow generated code to use absolute paths starting with the crate name instead of `crate`
-        let mut mod_rs_contents = format!("extern crate self as {};\n", krate.name());
         let toml = write_crate_toml(krate, crate_deps);
         write_to_file(toml, base_path.join("Cargo.toml"))?;
-        self.write_crate_modules(krate, base_path.join("src"), &mut mod_rs_contents)?;
-        write_to_file(mod_rs_contents, base_path.join("src/lib.rs"))?;
+
+        let crate_name = krate.name();
+
+        // We set up a few things in the base `lib.rs` file:
+        // 1. Without this recursion limit increase, `cargo doc` fails
+        // 2. The `extern` allows generated code to use absolute paths starting with the crate name instead of `crate`
+        // 3. The `Place` declaration supports using `crate::Place` for miniserde deserialization
+        let mut mod_rs = formatdoc! {
+            r#"
+            #![recursion_limit = "256"]
+            extern crate self as {crate_name};
+            
+            #[cfg(feature = "min-ser")]
+            miniserde::make_place!(Place);
+            "#
+        };
+
+        let modules = self
+            .components
+            .get_crate_members(krate)
+            .iter()
+            .filter(|m| !self.components.paths_in_types.contains(*m));
+        self.write_crate_modules(modules, &base_path.join("src"), &mut mod_rs)?;
+        write_to_file(mod_rs, base_path.join("src/lib.rs"))?;
 
         Ok(())
     }
@@ -58,7 +81,12 @@ impl CodeGen {
     fn write_generated_for_types_crate(&self) -> anyhow::Result<()> {
         let base_path = PathBuf::from(Crate::Types.generated_out_path());
         let mut mod_rs_contents = String::new();
-        self.write_crate_modules(Crate::Types, base_path.clone(), &mut mod_rs_contents)?;
+
+        let modules = self.components.get_crate_members(Crate::Types);
+        dbg!(&modules);
+        self.write_crate_modules(modules, &base_path, &mut mod_rs_contents)?;
+        let extra_types = self.components.paths_in_types.iter();
+        self.write_crate_modules(extra_types, &base_path, &mut mod_rs_contents)?;
 
         for (obj, meta) in &self.overrides.overrides {
             let mut out = String::new();
@@ -92,13 +120,12 @@ impl CodeGen {
         Ok(())
     }
 
-    fn write_crate_modules(
+    fn write_crate_modules<'a, I: IntoIterator<Item = &'a ModuleName>>(
         &self,
-        krate: Crate,
-        crate_path: PathBuf,
+        modules: I,
+        crate_path: &PathBuf,
         mod_rs_contents: &mut String,
     ) -> anyhow::Result<()> {
-        let modules = self.components.get_crate_members(krate);
         for module_name in modules {
             let module = self.components.get_module(module_name);
             match module {
@@ -166,10 +193,11 @@ impl CodeGen {
             return Ok(());
         }
 
-        if has_requests {
-            let req_content = write_requests(&comp.requests, comp, &self.components);
-            write_to_file(req_content, module_path.join("requests.rs"))?;
-        }
+        // if has_requests {
+        //     let req_content = write_requests(&comp.requests, comp, &self.components);
+        //     write_to_file(req_content, module_path.join("requests.rs"))?;
+        //     let _ = writeln!(main_content, "pub mod requests;");
+        // }
 
         for component in &children {
             self.write_component(component, module_path.join(component.mod_path()))?;
@@ -178,11 +206,6 @@ impl CodeGen {
         if let Some(deleted) = deleted_comp {
             let path = module_path.join("deleted");
             self.write_component(deleted, path)?;
-        }
-        if has_requests {
-            let _ = writeln!(main_content, "pub mod requests;");
-        }
-        if let Some(deleted) = deleted_comp {
             let _ = writeln!(main_content, "pub mod deleted;pub use deleted::{};", deleted.ident());
         }
 

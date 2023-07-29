@@ -15,20 +15,20 @@ pub fn write_deserialize_by_object_name(
 ) -> String {
     let mut match_inner = String::new();
     for NamedObjectVariant { object_name, variant_name } in variants {
-        let _ =
-            writeln!(match_inner, r#""{object_name}" => Self::{variant_name}(from_str(str)?),"#);
+        let _ = writeln!(
+            match_inner,
+            r#""{object_name}" => Self::{variant_name}(StripeDeserialize::deserialize(str)?),"#
+        );
     }
-    let _ = writeln!(
-        match_inner,
-        r#"_ => return Err(crate::StripeError::JSONDeserialize("Unexpected object name".into())),"#
-    );
+    let _ = writeln!(match_inner, r#"_ => return Err("Unexpected object name".into()),"#);
     formatdoc! {
         r#"
             #[cfg(feature = "min-ser")]
-            impl crate::deser::StripeDeserialize for {ident} {{
-                fn deserialize(str: &str) -> Result<Self, crate::StripeError> {{
+            impl stripe_types::StripeDeserialize for {ident} {{
+                fn deserialize(str: &str) -> Result<Self, String> {{
                     use miniserde::json::from_str;
-                    let obj_name: crate::deser::ObjectName = from_str(str)?;
+                    use stripe_types::StripeDeserialize;
+                    let obj_name: stripe_types::deser::ObjectName = from_str(str).map_err(|_| "Missing `object` field")?;
                     Ok(match obj_name.object.as_str() {{
             {match_inner}
                     }})
@@ -48,11 +48,11 @@ pub fn write_deserialize_by_deleted_or_not(del_or_not: DeletedOrNot, ident: &Rus
     formatdoc! {
         r#"
             #[cfg(feature = "min-ser")]
-            impl crate::deser::StripeDeserialize for {ident} {{
-                fn deserialize(str: &str) -> Result<Self, crate::StripeError> {{
-                    use crate::deser::StripeDeserialize;
+            impl stripe_types::StripeDeserialize for {ident} {{
+                fn deserialize(str: &str) -> Result<Self, String> {{
+                    use stripe_types::StripeDeserialize;
                     use miniserde::json::from_str;
-                    let maybe_deleted: crate::deser::MaybeDeleted = from_str(str)?;
+                    let maybe_deleted: stripe_types::deser::MaybeDeleted = from_str(str).map_err(|_| "Unexpected deleted field")?;
                     let deleted = maybe_deleted.deleted.unwrap_or(false);
                     if deleted {{
                         Ok(Self::{deleted_variant}(StripeDeserialize::deserialize(str)?))

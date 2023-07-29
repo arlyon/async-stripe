@@ -92,16 +92,16 @@ impl<'de> serde::Deserialize<'de> for BalanceType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for BalanceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<BalanceType> {
+impl miniserde::de::Visitor for crate::Place<BalanceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BalanceType::from_str(s)?);
+        self.out = Some(BalanceType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

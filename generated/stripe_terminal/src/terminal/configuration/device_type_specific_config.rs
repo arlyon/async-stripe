@@ -3,7 +3,7 @@
 pub struct DeviceTypeSpecificConfig {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub splashscreen: Option<stripe_types::Expandable<stripe_core::file::File>>,
+    pub splashscreen: Option<stripe_types::Expandable<stripe_types::file::File>>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for DeviceTypeSpecificConfig {

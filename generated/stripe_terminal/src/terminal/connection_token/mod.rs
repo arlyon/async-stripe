@@ -81,17 +81,16 @@ impl<'de> serde::Deserialize<'de> for ConnectionTokenObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ConnectionTokenObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<ConnectionTokenObject> {
+impl miniserde::de::Visitor for crate::Place<ConnectionTokenObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ConnectionTokenObject::from_str(s)?);
+        self.out = Some(ConnectionTokenObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
-pub mod requests;

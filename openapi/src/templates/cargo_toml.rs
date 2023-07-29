@@ -41,7 +41,7 @@ pub fn write_crate_toml(krate: Crate, crate_deps: &IndexSet<Crate>) -> String {
         
         [dependencies]
         serde.workspace = true
-        miniserde.workspace = true
+        miniserde = {{ workspace = true, optional = true }}
         http-types.workspace = true
         smol_str.workspace = true
         async-stripe = {{path = "../../async-stripe"}}
@@ -49,6 +49,7 @@ pub fn write_crate_toml(krate: Crate, crate_deps: &IndexSet<Crate>) -> String {
         
         [features]
         {feature_section}
+        min-ser = ["stripe_types/min-ser", "miniserde"]
         "#
     }
 }

@@ -42,7 +42,7 @@ pub struct Session {
     /// will create a new customer object based on information provided
     /// during the payment flow unless an existing customer was provided when
     /// the Session was created.
-    pub customer: Option<stripe_types::Expandable<stripe_core::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
     /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
     pub customer_creation: Option<SessionCustomerCreation>,
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
@@ -65,7 +65,7 @@ pub struct Session {
     pub id: stripe_checkout::checkout::session::CheckoutSessionId,
     /// The line items purchased by the customer.
     #[serde(default)]
-    pub line_items: stripe_types::List<Option<stripe_core::line_item::LineItem>>,
+    pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// The IETF language tag of the locale Checkout is displayed in.
@@ -84,9 +84,9 @@ pub struct Session {
     pub object: SessionObject,
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     pub payment_intent:
-        Option<stripe_types::Expandable<stripe_core::payment_intent::PaymentIntent>>,
+        Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
-    pub payment_link: Option<stripe_types::Expandable<stripe_core::payment_link::PaymentLink>>,
+    pub payment_link: Option<stripe_types::Expandable<stripe_payment::payment_link::PaymentLink>>,
     /// Configure whether a Checkout Session should collect a payment method.
     pub payment_method_collection: Option<SessionPaymentMethodCollection>,
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
@@ -105,7 +105,7 @@ pub struct Session {
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
-    pub setup_intent: Option<stripe_types::Expandable<stripe_core::setup_intent::SetupIntent>>,
+    pub setup_intent: Option<stripe_types::Expandable<stripe_types::setup_intent::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
     pub shipping_address_collection: Option<
         stripe_checkout::checkout::session::shipping_address_collection::ShippingAddressCollection,
@@ -124,7 +124,7 @@ pub struct Session {
     /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
     pub submit_type: Option<SessionSubmitType>,
     /// The ID of the subscription for Checkout Sessions in `subscription` mode.
-    pub subscription: Option<stripe_types::Expandable<stripe_core::subscription::Subscription>>,
+    pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
     pub success_url: String,
@@ -206,16 +206,17 @@ impl<'de> serde::Deserialize<'de> for SessionBillingAddressCollection {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionBillingAddressCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionBillingAddressCollection> {
+impl miniserde::de::Visitor for crate::Place<SessionBillingAddressCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionBillingAddressCollection::from_str(s)?);
+        self.out =
+            Some(SessionBillingAddressCollection::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -277,16 +278,16 @@ impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionCustomerCreation {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionCustomerCreation> {
+impl miniserde::de::Visitor for crate::Place<SessionCustomerCreation> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionCustomerCreation::from_str(s)?);
+        self.out = Some(SessionCustomerCreation::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -466,16 +467,16 @@ impl<'de> serde::Deserialize<'de> for SessionLocale {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionLocale {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionLocale> {
+impl miniserde::de::Visitor for crate::Place<SessionLocale> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionLocale::from_str(s)?);
+        self.out = Some(SessionLocale::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -539,16 +540,16 @@ impl<'de> serde::Deserialize<'de> for SessionMode {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionMode> {
+impl miniserde::de::Visitor for crate::Place<SessionMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionMode::from_str(s)?);
+        self.out = Some(SessionMode::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -608,16 +609,16 @@ impl<'de> serde::Deserialize<'de> for SessionObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionObject> {
+impl miniserde::de::Visitor for crate::Place<SessionObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionObject::from_str(s)?);
+        self.out = Some(SessionObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -680,16 +681,16 @@ impl<'de> serde::Deserialize<'de> for SessionPaymentMethodCollection {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionPaymentMethodCollection {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionPaymentMethodCollection> {
+impl miniserde::de::Visitor for crate::Place<SessionPaymentMethodCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionPaymentMethodCollection::from_str(s)?);
+        self.out = Some(SessionPaymentMethodCollection::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -755,16 +756,16 @@ impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionPaymentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionPaymentStatus> {
+impl miniserde::de::Visitor for crate::Place<SessionPaymentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionPaymentStatus::from_str(s)?);
+        self.out = Some(SessionPaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -828,16 +829,16 @@ impl<'de> serde::Deserialize<'de> for SessionStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionStatus> {
+impl miniserde::de::Visitor for crate::Place<SessionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionStatus::from_str(s)?);
+        self.out = Some(SessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -908,16 +909,16 @@ impl<'de> serde::Deserialize<'de> for SessionSubmitType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionSubmitType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionSubmitType> {
+impl miniserde::de::Visitor for crate::Place<SessionSubmitType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionSubmitType::from_str(s)?);
+        self.out = Some(SessionSubmitType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -929,7 +930,6 @@ impl stripe_types::Object for Session {
 }
 stripe_types::def_id!(CheckoutSessionId, "cs_");
 pub mod payment_method_options;
-pub mod requests;
 pub use payment_method_options::PaymentMethodOptions;
 pub mod after_expiration;
 pub use after_expiration::AfterExpiration;

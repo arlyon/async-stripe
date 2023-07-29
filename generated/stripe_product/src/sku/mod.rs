@@ -42,7 +42,7 @@ pub struct Sku {
     /// The ID of the product this SKU is associated with.
     ///
     /// The product must be currently active.
-    pub product: stripe_types::Expandable<stripe_core::product::Product>,
+    pub product: stripe_types::Expandable<stripe_types::product::Product>,
     /// Time at which the object was last updated.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -111,16 +111,16 @@ impl<'de> serde::Deserialize<'de> for SkuObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SkuObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SkuObject> {
+impl miniserde::de::Visitor for crate::Place<SkuObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SkuObject::from_str(s)?);
+        self.out = Some(SkuObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -132,7 +132,6 @@ impl stripe_types::Object for Sku {
 }
 stripe_types::def_id!(SkuId, "sku_");
 pub mod deleted;
-pub mod requests;
 pub use deleted::DeletedSku;
 pub mod inventory;
 pub use inventory::Inventory;

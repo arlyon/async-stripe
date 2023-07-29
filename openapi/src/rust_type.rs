@@ -84,6 +84,10 @@ impl RustType {
         }
     }
 
+    pub fn implies_private_field(&self) -> bool {
+        matches!(self, Self::Simple(SimpleType::Ext(ExtType::AlwaysTrue)))
+    }
+
     pub const fn is_option(&self) -> bool {
         matches!(self, Self::Compound(CompoundType::Option(_)))
     }
@@ -326,6 +330,7 @@ pub enum ExtType {
     Currency,
     RangeQueryTs,
     Timestamp,
+    AlwaysTrue,
 }
 
 impl ExtType {
@@ -334,6 +339,7 @@ impl ExtType {
             Self::Currency => "Currency",
             Self::RangeQueryTs => "RangeQueryTs",
             Self::Timestamp => "Timestamp",
+            Self::AlwaysTrue => "AlwaysTrue",
         }
     }
 }

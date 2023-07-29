@@ -8,7 +8,7 @@ pub struct FlowDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_transfer: Option<stripe_treasury::treasury::inbound_transfer::InboundTransfer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing_authorization: Option<stripe_core::issuing::authorization::Authorization>,
+    pub issuing_authorization: Option<stripe_types::issuing::authorization::Authorization>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_payment: Option<stripe_treasury::treasury::outbound_payment::OutboundPayment>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -111,16 +111,16 @@ impl<'de> serde::Deserialize<'de> for FlowDetailsType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FlowDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FlowDetailsType> {
+impl miniserde::de::Visitor for crate::Place<FlowDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FlowDetailsType::from_str(s)?);
+        self.out = Some(FlowDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

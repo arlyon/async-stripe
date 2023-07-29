@@ -96,16 +96,16 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsCode {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for StatusDetailsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<StatusDetailsCode> {
+impl miniserde::de::Visitor for crate::Place<StatusDetailsCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(StatusDetailsCode::from_str(s)?);
+        self.out = Some(StatusDetailsCode::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -170,16 +170,16 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsResolution {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for StatusDetailsResolution {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<StatusDetailsResolution> {
+impl miniserde::de::Visitor for crate::Place<StatusDetailsResolution> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(StatusDetailsResolution::from_str(s)?);
+        self.out = Some(StatusDetailsResolution::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -241,16 +241,16 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsRestriction {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for StatusDetailsRestriction {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<StatusDetailsRestriction> {
+impl miniserde::de::Visitor for crate::Place<StatusDetailsRestriction> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(StatusDetailsRestriction::from_str(s)?);
+        self.out = Some(StatusDetailsRestriction::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

@@ -87,16 +87,16 @@ impl<'de> serde::Deserialize<'de> for AcssDebitCurrency {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AcssDebitCurrency {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AcssDebitCurrency> {
+impl miniserde::de::Visitor for crate::Place<AcssDebitCurrency> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AcssDebitCurrency::from_str(s)?);
+        self.out = Some(AcssDebitCurrency::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -165,16 +165,16 @@ impl<'de> serde::Deserialize<'de> for AcssDebitSetupFutureUsage {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AcssDebitSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AcssDebitSetupFutureUsage> {
+impl miniserde::de::Visitor for crate::Place<AcssDebitSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AcssDebitSetupFutureUsage::from_str(s)?);
+        self.out = Some(AcssDebitSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -239,16 +239,16 @@ impl<'de> serde::Deserialize<'de> for AcssDebitVerificationMethod {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AcssDebitVerificationMethod> {
+impl miniserde::de::Visitor for crate::Place<AcssDebitVerificationMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AcssDebitVerificationMethod::from_str(s)?);
+        self.out = Some(AcssDebitVerificationMethod::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

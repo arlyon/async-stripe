@@ -111,16 +111,16 @@ impl<'de> serde::Deserialize<'de> for FinancialAccountObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FinancialAccountObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FinancialAccountObject> {
+impl miniserde::de::Visitor for crate::Place<FinancialAccountObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FinancialAccountObject::from_str(s)?);
+        self.out = Some(FinancialAccountObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -182,16 +182,16 @@ impl<'de> serde::Deserialize<'de> for FinancialAccountStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FinancialAccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FinancialAccountStatus> {
+impl miniserde::de::Visitor for crate::Place<FinancialAccountStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FinancialAccountStatus::from_str(s)?);
+        self.out = Some(FinancialAccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -275,16 +275,16 @@ impl<'de> serde::Deserialize<'de> for Array {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for Array {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<Array> {
+impl miniserde::de::Visitor for crate::Place<Array> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(Array::from_str(s)?);
+        self.out = Some(Array::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -296,7 +296,6 @@ impl stripe_types::Object for FinancialAccount {
 }
 stripe_types::def_id!(TreasuryFinancialAccountId);
 pub mod ach_toggle_settings;
-pub mod requests;
 pub use ach_toggle_settings::AchToggleSettings;
 pub mod balance;
 pub use balance::Balance;

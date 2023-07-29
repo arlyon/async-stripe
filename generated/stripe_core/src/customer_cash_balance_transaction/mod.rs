@@ -17,7 +17,7 @@ pub created: stripe_types::Timestamp,
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
 pub currency: stripe_types::Currency,
     /// The customer whose available cash balance changed as a result of this transaction.
-pub customer: stripe_types::Expandable<stripe_core::customer::Customer>,
+pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
     /// The total available cash balance for the specified currency after this transaction was applied.
     ///
     /// Represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -114,16 +114,17 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for CustomerCashBalanceTransactionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<CustomerCashBalanceTransactionObject> {
+impl miniserde::de::Visitor for crate::Place<CustomerCashBalanceTransactionObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerCashBalanceTransactionObject::from_str(s)?);
+        self.out =
+            Some(CustomerCashBalanceTransactionObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -202,16 +203,17 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for CustomerCashBalanceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
+impl miniserde::de::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerCashBalanceTransactionType::from_str(s)?);
+        self.out =
+            Some(CustomerCashBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -223,7 +225,6 @@ impl stripe_types::Object for CustomerCashBalanceTransaction {
 }
 stripe_types::def_id!(CustomerCashBalanceTransactionId);
 pub mod applied_to_payment;
-pub mod requests;
 pub use applied_to_payment::AppliedToPayment;
 pub mod funded;
 pub use funded::Funded;

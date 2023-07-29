@@ -124,16 +124,16 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for VerificationSessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<VerificationSessionObject> {
+impl miniserde::de::Visitor for crate::Place<VerificationSessionObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationSessionObject::from_str(s)?);
+        self.out = Some(VerificationSessionObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -203,16 +203,16 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for VerificationSessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<VerificationSessionStatus> {
+impl miniserde::de::Visitor for crate::Place<VerificationSessionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationSessionStatus::from_str(s)?);
+        self.out = Some(VerificationSessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -274,16 +274,16 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for VerificationSessionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<VerificationSessionType> {
+impl miniserde::de::Visitor for crate::Place<VerificationSessionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationSessionType::from_str(s)?);
+        self.out = Some(VerificationSessionType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -295,7 +295,6 @@ impl stripe_types::Object for VerificationSession {
 }
 stripe_types::def_id!(IdentityVerificationSessionId);
 pub mod last_error;
-pub mod requests;
 pub use last_error::LastError;
 pub mod options;
 pub use options::Options;

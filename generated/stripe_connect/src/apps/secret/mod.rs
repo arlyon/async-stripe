@@ -95,16 +95,16 @@ impl<'de> serde::Deserialize<'de> for SecretObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SecretObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SecretObject> {
+impl miniserde::de::Visitor for crate::Place<SecretObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SecretObject::from_str(s)?);
+        self.out = Some(SecretObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -115,6 +115,5 @@ impl stripe_types::Object for Secret {
     }
 }
 stripe_types::def_id!(AppsSecretId);
-pub mod requests;
 pub mod scope;
 pub use scope::Scope;

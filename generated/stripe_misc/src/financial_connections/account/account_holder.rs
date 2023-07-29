@@ -5,12 +5,12 @@ pub struct AccountHolder {
     ///
     /// Should only be present if `account_holder.type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<stripe_types::Expandable<stripe_core::account::Account>>,
+    pub account: Option<stripe_types::Expandable<stripe_types::account::Account>>,
     /// ID of the Stripe customer this account belongs to.
     ///
     /// Present if and only if `account_holder.type` is `customer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<stripe_types::Expandable<stripe_core::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
     /// Type of account holder that this account belongs to.
     #[serde(rename = "type")]
     pub type_: AccountHolderType,
@@ -80,16 +80,16 @@ impl<'de> serde::Deserialize<'de> for AccountHolderType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountHolderType> {
+impl miniserde::de::Visitor for crate::Place<AccountHolderType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountHolderType::from_str(s)?);
+        self.out = Some(AccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

@@ -75,16 +75,16 @@ impl<'de> serde::Deserialize<'de> for AffirmSetupFutureUsage {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AffirmSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AffirmSetupFutureUsage> {
+impl miniserde::de::Visitor for crate::Place<AffirmSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AffirmSetupFutureUsage::from_str(s)?);
+        self.out = Some(AffirmSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

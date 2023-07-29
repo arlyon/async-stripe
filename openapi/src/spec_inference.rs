@@ -127,9 +127,21 @@ impl<'a> Inference<'a> {
         false
     }
 
+    fn infer_bool_type(&self) -> RustType {
+        // NB: stripe actually includes an `enum` field with only `true` as a more reliable
+        // way to detect this case, but that is not exposed by the `openapi` crate
+        let Some(desc) = self.description else {
+            return RustType::bool();
+        };
+        if desc.contains("Always true for") {
+            return RustType::ext(ExtType::AlwaysTrue);
+        }
+        RustType::bool()
+    }
+
     fn infer_base_type(&self, field: &Schema) -> RustType {
         match &field.schema_kind {
-            SchemaKind::Type(Type::Boolean {}) => RustType::bool(),
+            SchemaKind::Type(Type::Boolean {}) => self.infer_bool_type(),
             SchemaKind::Type(Type::Number(_)) => RustType::float(),
             SchemaKind::Type(Type::Integer(format)) => self.infer_integer_type(&format.format),
             SchemaKind::Type(Type::String(typ)) => self.infer_string_typ(typ),
@@ -194,7 +206,7 @@ impl<'a> Inference<'a> {
             let element = as_data_array_item(typ).unwrap_or_else(|| {
                 panic!("Expected to find array item but found {:?}", field.schema_kind)
             });
-            let element_type = self.infer_schema_or_ref_type(element);
+            let element_type = self.required(true).infer_schema_or_ref_type(element);
             return RustType::list(element_type);
         }
 
@@ -338,7 +350,7 @@ impl<'a> Inference<'a> {
         }
 
         // Infer based on field name, otherwise default
-        let Some(name) = self.field_name else { return RustType::int(IntType::I64)};
+        let Some(name) = self.field_name else { return RustType::int(IntType::I64) };
 
         let name_snake = name.to_snake_case();
         let name_words = name_snake.split('_').collect::<Vec<_>>();
@@ -370,13 +382,13 @@ fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<Ru
     let expansion_resources = serde_json::from_value::<ExpansionResources>(resources.clone())?;
 
     let schema_kind = expansion_resources.into_schema_kind();
-    let SchemaKind::OneOf {one_of} = schema_kind else {
+    let SchemaKind::OneOf { one_of } = schema_kind else {
         return Err(anyhow!("Expected expansion resources to only contain `oneOf`"));
     };
     if one_of.len() != 1 {
         return Err(anyhow!("Expected a single specification in expansion resources"));
     }
-    let ReferenceOr::Reference {reference} = one_of.first().unwrap() else {
+    let ReferenceOr::Reference { reference } = one_of.first().unwrap() else {
         return Err(anyhow!("Expected expansion resource to only contain a schema reference"));
     };
     let path = ComponentPath::from_reference(reference);

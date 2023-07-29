@@ -81,16 +81,16 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceFundingType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for CustomerBalanceFundingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<CustomerBalanceFundingType> {
+impl miniserde::de::Visitor for crate::Place<CustomerBalanceFundingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerBalanceFundingType::from_str(s)?);
+        self.out = Some(CustomerBalanceFundingType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -154,16 +154,17 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceSetupFutureUsage {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for CustomerBalanceSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<CustomerBalanceSetupFutureUsage> {
+impl miniserde::de::Visitor for crate::Place<CustomerBalanceSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerBalanceSetupFutureUsage::from_str(s)?);
+        self.out =
+            Some(CustomerBalanceSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

@@ -77,16 +77,17 @@ impl<'de> serde::Deserialize<'de> for FinancialAddressSupportedNetworks {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FinancialAddressSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FinancialAddressSupportedNetworks> {
+impl miniserde::de::Visitor for crate::Place<FinancialAddressSupportedNetworks> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FinancialAddressSupportedNetworks::from_str(s)?);
+        self.out =
+            Some(FinancialAddressSupportedNetworks::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -145,16 +146,16 @@ impl<'de> serde::Deserialize<'de> for FinancialAddressType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FinancialAddressType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FinancialAddressType> {
+impl miniserde::de::Visitor for crate::Place<FinancialAddressType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FinancialAddressType::from_str(s)?);
+        self.out = Some(FinancialAddressType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

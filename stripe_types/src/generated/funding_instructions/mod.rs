@@ -83,16 +83,16 @@ impl<'de> serde::Deserialize<'de> for FundingInstructionsFundingType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FundingInstructionsFundingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FundingInstructionsFundingType> {
+impl miniserde::de::Visitor for crate::Place<FundingInstructionsFundingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FundingInstructionsFundingType::from_str(s)?);
+        self.out = Some(FundingInstructionsFundingType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -153,16 +153,16 @@ impl<'de> serde::Deserialize<'de> for FundingInstructionsObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FundingInstructionsObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FundingInstructionsObject> {
+impl miniserde::de::Visitor for crate::Place<FundingInstructionsObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FundingInstructionsObject::from_str(s)?);
+        self.out = Some(FundingInstructionsObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

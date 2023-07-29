@@ -88,16 +88,16 @@ impl<'de> serde::Deserialize<'de> for IdNumberIdNumberType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for IdNumberIdNumberType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<IdNumberIdNumberType> {
+impl miniserde::de::Visitor for crate::Place<IdNumberIdNumberType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IdNumberIdNumberType::from_str(s)?);
+        self.out = Some(IdNumberIdNumberType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -158,16 +158,16 @@ impl<'de> serde::Deserialize<'de> for IdNumberStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for IdNumberStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<IdNumberStatus> {
+impl miniserde::de::Visitor for crate::Place<IdNumberStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IdNumberStatus::from_str(s)?);
+        self.out = Some(IdNumberStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

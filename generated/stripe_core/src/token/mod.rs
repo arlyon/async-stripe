@@ -13,9 +13,9 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Token {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<stripe_core::bank_account::BankAccount>,
+    pub bank_account: Option<stripe_types::bank_account::BankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<stripe_core::card::Card>,
+    pub card: Option<stripe_types::card::Card>,
     /// IP address of the client that generated the token.
     pub client_ip: Option<String>,
     /// Time at which the object was created.
@@ -99,16 +99,16 @@ impl<'de> serde::Deserialize<'de> for TokenObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for TokenObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<TokenObject> {
+impl miniserde::de::Visitor for crate::Place<TokenObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TokenObject::from_str(s)?);
+        self.out = Some(TokenObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -119,4 +119,3 @@ impl stripe_types::Object for Token {
     }
 }
 stripe_types::def_id!(TokenId);
-pub mod requests;

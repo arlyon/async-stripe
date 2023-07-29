@@ -138,16 +138,16 @@ impl<'de> serde::Deserialize<'de> for AccountCategory {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountCategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountCategory> {
+impl miniserde::de::Visitor for crate::Place<AccountCategory> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountCategory::from_str(s)?);
+        self.out = Some(AccountCategory::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -207,16 +207,16 @@ impl<'de> serde::Deserialize<'de> for AccountObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountObject> {
+impl miniserde::de::Visitor for crate::Place<AccountObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountObject::from_str(s)?);
+        self.out = Some(AccountObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -284,16 +284,16 @@ impl<'de> serde::Deserialize<'de> for AccountPermissions {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountPermissions> {
+impl miniserde::de::Visitor for crate::Place<AccountPermissions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountPermissions::from_str(s)?);
+        self.out = Some(AccountPermissions::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -357,16 +357,16 @@ impl<'de> serde::Deserialize<'de> for AccountStatus {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountStatus> {
+impl miniserde::de::Visitor for crate::Place<AccountStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountStatus::from_str(s)?);
+        self.out = Some(AccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -453,16 +453,16 @@ impl<'de> serde::Deserialize<'de> for AccountSubcategory {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountSubcategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountSubcategory> {
+impl miniserde::de::Visitor for crate::Place<AccountSubcategory> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountSubcategory::from_str(s)?);
+        self.out = Some(AccountSubcategory::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -525,16 +525,17 @@ impl<'de> serde::Deserialize<'de> for AccountSupportedPaymentMethodTypes {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AccountSupportedPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AccountSupportedPaymentMethodTypes> {
+impl miniserde::de::Visitor for crate::Place<AccountSupportedPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountSupportedPaymentMethodTypes::from_str(s)?);
+        self.out =
+            Some(AccountSupportedPaymentMethodTypes::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -546,7 +547,6 @@ impl stripe_types::Object for Account {
 }
 stripe_types::def_id!(FinancialConnectionsAccountId);
 pub mod account_holder;
-pub mod requests;
 pub use account_holder::AccountHolder;
 pub mod balance;
 pub use balance::Balance;

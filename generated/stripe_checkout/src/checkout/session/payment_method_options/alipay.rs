@@ -75,16 +75,16 @@ impl<'de> serde::Deserialize<'de> for AlipaySetupFutureUsage {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for AlipaySetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<AlipaySetupFutureUsage> {
+impl miniserde::de::Visitor for crate::Place<AlipaySetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AlipaySetupFutureUsage::from_str(s)?);
+        self.out = Some(AlipaySetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

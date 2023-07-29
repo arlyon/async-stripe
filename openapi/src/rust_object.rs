@@ -126,6 +126,12 @@ pub struct EnumVariant {
     pub variant_name: RustIdent,
 }
 
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Hash)]
+pub enum Visibility {
+    Public,
+    Private,
+}
+
 /// Specification for a field in a struct
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct StructField {
@@ -138,6 +144,7 @@ pub struct StructField {
     /// Type for this field
     pub rust_type: RustType,
     pub required: bool,
+    pub vis: Visibility,
 }
 
 impl Debug for StructField {
@@ -166,6 +173,7 @@ pub struct PrintableStructField<'a> {
     /// Type for this field
     pub rust_type: PrintableType,
     pub required: bool,
+    pub vis: Visibility,
 }
 
 impl<'a> PrintableStructField<'a> {
@@ -188,6 +196,7 @@ impl<'a> PrintableStructField<'a> {
             field_name: &field.field_name,
             rust_type: printable_type,
             required: field.required,
+            vis: field.vis,
         }
     }
 }
@@ -196,10 +205,15 @@ impl StructField {
     pub fn new<T: Display>(field_name: T, rust_type: RustType, required: bool) -> Self {
         Self {
             field_name: field_name.to_string(),
-            rust_type,
             doc_comment: None,
             rename_as: None,
             required,
+            vis: if rust_type.implies_private_field() {
+                Visibility::Private
+            } else {
+                Visibility::Public
+            },
+            rust_type,
         }
     }
 

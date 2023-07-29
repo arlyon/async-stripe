@@ -96,16 +96,16 @@ impl<'de> serde::Deserialize<'de> for VerificationReportObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for VerificationReportObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<VerificationReportObject> {
+impl miniserde::de::Visitor for crate::Place<VerificationReportObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationReportObject::from_str(s)?);
+        self.out = Some(VerificationReportObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -167,16 +167,16 @@ impl<'de> serde::Deserialize<'de> for VerificationReportType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for VerificationReportType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<VerificationReportType> {
+impl miniserde::de::Visitor for crate::Place<VerificationReportType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationReportType::from_str(s)?);
+        self.out = Some(VerificationReportType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -188,7 +188,6 @@ impl stripe_types::Object for VerificationReport {
 }
 stripe_types::def_id!(IdentityVerificationReportId);
 pub mod document;
-pub mod requests;
 pub use document::Document;
 pub mod id_number;
 pub use id_number::IdNumber;

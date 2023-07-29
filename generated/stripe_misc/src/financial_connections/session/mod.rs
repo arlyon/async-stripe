@@ -90,16 +90,16 @@ impl<'de> serde::Deserialize<'de> for SessionObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionObject> {
+impl miniserde::de::Visitor for crate::Place<SessionObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionObject::from_str(s)?);
+        self.out = Some(SessionObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -167,16 +167,16 @@ impl<'de> serde::Deserialize<'de> for SessionPermissions {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SessionPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SessionPermissions> {
+impl miniserde::de::Visitor for crate::Place<SessionPermissions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SessionPermissions::from_str(s)?);
+        self.out = Some(SessionPermissions::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -188,5 +188,4 @@ impl stripe_types::Object for Session {
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);
 pub mod filters;
-pub mod requests;
 pub use filters::Filters;

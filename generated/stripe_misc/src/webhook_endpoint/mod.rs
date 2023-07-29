@@ -110,16 +110,16 @@ impl<'de> serde::Deserialize<'de> for WebhookEndpointObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for WebhookEndpointObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<WebhookEndpointObject> {
+impl miniserde::de::Visitor for crate::Place<WebhookEndpointObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(WebhookEndpointObject::from_str(s)?);
+        self.out = Some(WebhookEndpointObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -131,5 +131,4 @@ impl stripe_types::Object for WebhookEndpoint {
 }
 stripe_types::def_id!(WebhookEndpointId, "we_");
 pub mod deleted;
-pub mod requests;
 pub use deleted::DeletedWebhookEndpoint;

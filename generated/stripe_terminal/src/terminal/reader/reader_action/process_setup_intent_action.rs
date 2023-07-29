@@ -8,7 +8,7 @@ pub struct ProcessSetupIntentAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated_card: Option<String>,
     /// Most recent SetupIntent processed by the reader.
-    pub setup_intent: stripe_types::Expandable<stripe_core::setup_intent::SetupIntent>,
+    pub setup_intent: stripe_types::Expandable<stripe_types::setup_intent::SetupIntent>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ProcessSetupIntentAction {

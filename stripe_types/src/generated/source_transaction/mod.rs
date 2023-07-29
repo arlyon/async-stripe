@@ -110,16 +110,16 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SourceTransactionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SourceTransactionObject> {
+impl miniserde::de::Visitor for crate::Place<SourceTransactionObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceTransactionObject::from_str(s)?);
+        self.out = Some(SourceTransactionObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -223,16 +223,16 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SourceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SourceTransactionType> {
+impl miniserde::de::Visitor for crate::Place<SourceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceTransactionType::from_str(s)?);
+        self.out = Some(SourceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

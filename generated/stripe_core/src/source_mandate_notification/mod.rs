@@ -35,7 +35,7 @@ pub struct SourceMandateNotification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit:
         Option<stripe_core::source_mandate_notification::sepa_debit_data::SepaDebitData>,
-    pub source: stripe_core::source::Source,
+    pub source: stripe_types::source::Source,
     /// The status of the mandate notification.
     ///
     /// Valid statuses are `pending` or `submitted`.
@@ -111,16 +111,17 @@ impl<'de> serde::Deserialize<'de> for SourceMandateNotificationObject {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SourceMandateNotificationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SourceMandateNotificationObject> {
+impl miniserde::de::Visitor for crate::Place<SourceMandateNotificationObject> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceMandateNotificationObject::from_str(s)?);
+        self.out =
+            Some(SourceMandateNotificationObject::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

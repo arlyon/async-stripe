@@ -81,19 +81,21 @@ impl<'de> serde::Deserialize<'de>
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor
+impl miniserde::de::Visitor
     for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod>
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod::from_str(s)?);
+        self.out = Some(
+            PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
         Ok(())
     }
 }
@@ -165,19 +167,21 @@ impl<'de> serde::Deserialize<'de>
 impl miniserde::Deserialize
     for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor
+impl miniserde::de::Visitor
     for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage>
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage::from_str(s)?);
+        self.out = Some(
+            PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
         Ok(())
     }
 }
@@ -245,19 +249,20 @@ impl<'de> serde::Deserialize<'de>
 impl miniserde::Deserialize
     for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod
 {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor
+impl miniserde::de::Visitor
     for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod>
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::from_str(s)?,
+            PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::from_str(s)
+                .map_err(|_| miniserde::Error)?,
         );
         Ok(())
     }

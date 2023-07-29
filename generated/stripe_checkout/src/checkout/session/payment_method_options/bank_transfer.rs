@@ -2,7 +2,7 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct BankTransfer {
 #[serde(skip_serializing_if = "Option::is_none")]
-pub eu_bank_transfer: Option<stripe_core::payment_intent::payment_method_options::bank_transfer::eu_bank_transfer::EuBankTransfer>,
+pub eu_bank_transfer: Option<stripe_types::payment_intent::payment_method_options::bank_transfer::eu_bank_transfer::EuBankTransfer>,
     /// List of address types that should be returned in the financial_addresses response.
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
@@ -90,16 +90,17 @@ impl<'de> serde::Deserialize<'de> for BankTransferRequestedAddressTypes {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for BankTransferRequestedAddressTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<BankTransferRequestedAddressTypes> {
+impl miniserde::de::Visitor for crate::Place<BankTransferRequestedAddressTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BankTransferRequestedAddressTypes::from_str(s)?);
+        self.out =
+            Some(BankTransferRequestedAddressTypes::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }
@@ -167,16 +168,16 @@ impl<'de> serde::Deserialize<'de> for BankTransferType {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for BankTransferType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<BankTransferType> {
+impl miniserde::de::Visitor for crate::Place<BankTransferType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BankTransferType::from_str(s)?);
+        self.out = Some(BankTransferType::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

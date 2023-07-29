@@ -135,7 +135,7 @@ pub struct List<T> {
 }
 
 #[cfg(feature = "min-ser")]
-impl<T: StripeDeserialize> miniserde::Deserialize for List<T> {
+impl<T: crate::StripeDeserialize> miniserde::Deserialize for List<T> {
     fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         todo!()
     }

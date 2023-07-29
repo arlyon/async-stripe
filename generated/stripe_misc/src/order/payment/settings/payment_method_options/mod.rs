@@ -2,35 +2,35 @@
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct PaymentMethodOptions {
 #[serde(skip_serializing_if = "Option::is_none")]
-pub acss_debit: Option<stripe_core::payment_intent::payment_method_options::acss_debit::AcssDebit>,
+pub acss_debit: Option<stripe_types::payment_intent::payment_method_options::acss_debit::AcssDebit>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub afterpay_clearpay: Option<stripe_misc::order::payment::settings::payment_method_options::afterpay_clearpay::AfterpayClearpay>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub alipay: Option<stripe_core::payment_intent::payment_method_options::alipay::Alipay>,
+pub alipay: Option<stripe_types::payment_intent::payment_method_options::alipay::Alipay>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub bancontact: Option<stripe_core::payment_intent::payment_method_options::bancontact::Bancontact>,
+pub bancontact: Option<stripe_types::payment_intent::payment_method_options::bancontact::Bancontact>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub card: Option<stripe_misc::order::payment::settings::payment_method_options::card::Card>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub customer_balance: Option<stripe_core::payment_intent::payment_method_options::customer_balance::CustomerBalance>,
+pub customer_balance: Option<stripe_types::payment_intent::payment_method_options::customer_balance::CustomerBalance>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub ideal: Option<stripe_core::payment_intent::payment_method_options::ideal::Ideal>,
+pub ideal: Option<stripe_types::payment_intent::payment_method_options::ideal::Ideal>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub klarna: Option<stripe_core::payment_intent::payment_method_options::klarna::Klarna>,
+pub klarna: Option<stripe_types::payment_intent::payment_method_options::klarna::Klarna>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub link: Option<stripe_core::payment_intent::payment_method_options::link::Link>,
+pub link: Option<stripe_types::payment_intent::payment_method_options::link::Link>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub oxxo: Option<stripe_core::payment_intent::payment_method_options::oxxo::Oxxo>,
+pub oxxo: Option<stripe_types::payment_intent::payment_method_options::oxxo::Oxxo>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub p24: Option<stripe_core::payment_intent::payment_method_options::p24::P24>,
+pub p24: Option<stripe_types::payment_intent::payment_method_options::p24::P24>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub paypal: Option<stripe_core::payment_intent::payment_method_options::paypal::Paypal>,
+pub paypal: Option<stripe_types::payment_intent::payment_method_options::paypal::Paypal>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub sepa_debit: Option<stripe_core::payment_intent::payment_method_options::sepa_debit::SepaDebit>,
+pub sepa_debit: Option<stripe_types::payment_intent::payment_method_options::sepa_debit::SepaDebit>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub sofort: Option<stripe_core::payment_intent::payment_method_options::sofort::Sofort>,
+pub sofort: Option<stripe_types::payment_intent::payment_method_options::sofort::Sofort>,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub wechat_pay: Option<stripe_core::payment_intent::payment_method_options::wechat_pay::WechatPay>,
+pub wechat_pay: Option<stripe_types::payment_intent::payment_method_options::wechat_pay::WechatPay>,
 
 }
 #[cfg(feature = "min-ser")]

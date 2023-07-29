@@ -102,16 +102,16 @@ impl<'de> serde::Deserialize<'de> for FailureDetailsCode {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for FailureDetailsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<FailureDetailsCode> {
+impl miniserde::de::Visitor for crate::Place<FailureDetailsCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FailureDetailsCode::from_str(s)?);
+        self.out = Some(FailureDetailsCode::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

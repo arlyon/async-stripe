@@ -197,8 +197,8 @@ fn build_request(
                 let mut struct_fields = Vec::with_capacity(params.len());
                 for param in params {
                     let ParameterSchemaOrContent::Schema(schema) = &param.format else {
-                            return Err(anyhow!("Expected query parameter to follow schema format"));
-                        };
+                        return Err(anyhow!("Expected query parameter to follow schema format"));
+                    };
 
                     let struct_field = param_inference
                         .field_name(&param.name)

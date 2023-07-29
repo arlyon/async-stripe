@@ -75,16 +75,16 @@ impl<'de> serde::Deserialize<'de> for SofortSetupFutureUsage {
 
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for SofortSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::Visitor {
-        Place::new(out)
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
     }
 }
 
 #[cfg(feature = "min-ser")]
-impl miniserde::Visitor for crate::Place<SofortSetupFutureUsage> {
+impl miniserde::de::Visitor for crate::Place<SofortSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SofortSetupFutureUsage::from_str(s)?);
+        self.out = Some(SofortSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
         Ok(())
     }
 }

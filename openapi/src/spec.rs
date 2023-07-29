@@ -78,8 +78,8 @@ pub fn as_enum_strings(schema: &Schema) -> Option<Vec<String>> {
 }
 
 pub fn is_enum_with_just_empty_string(item: &ReferenceOr<Schema>) -> bool {
-    let ReferenceOr::Item(item) = item else {return false};
-    let Some(enum_strings) = as_enum_strings(item) else {return false};
+    let ReferenceOr::Item(item) = item else { return false };
+    let Some(enum_strings) = as_enum_strings(item) else { return false };
     enum_strings.len() == 1 && enum_strings.first().unwrap().is_empty()
 }
 

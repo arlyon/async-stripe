@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use serde::Serialize;
+use serde::{Deserializer, Serialize, Serializer};
 
 use crate::{AccountId, ApiVersion, ApplicationId};
 
@@ -9,6 +9,32 @@ pub struct AppInfo {
     pub name: String,
     pub url: Option<String>,
     pub version: Option<String>,
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub struct AlwaysTrue;
+
+impl serde::Serialize for AlwaysTrue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_bool(true)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AlwaysTrue {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let bool_: bool = serde::Deserialize::deserialize(deserializer)?;
+        if !bool_ {
+            Err(serde::de::Error::custom("Expected value to always be `true`"))
+        } else {
+            Ok(AlwaysTrue)
+        }
+    }
 }
 
 impl ToString for AppInfo {
