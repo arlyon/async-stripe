@@ -13,6 +13,7 @@ use crate::crate_inference::Crate;
 use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::url_finder::UrlFinder;
+use crate::utils::write_to_file;
 
 mod codegen;
 mod components;
@@ -31,6 +32,7 @@ mod stripe_object;
 mod templates;
 mod types;
 mod url_finder;
+mod utils;
 
 #[derive(Debug, StructOpt)]
 struct Command {
@@ -91,11 +93,11 @@ fn main() -> Result<()> {
     if args.graph {
         let mod_graph = codegen.components.gen_module_dep_graph();
         let graph_txt = format!("{:?}", Dot::with_config(&mod_graph, &[Config::EdgeNoLabel]));
-        write_graph(&graph_txt, "mod_graph.txt")?;
+        write_to_file(graph_txt, "graphs/mod_graph.txt")?;
 
         let crate_graph = codegen.components.gen_crate_dep_graph();
         let graph_txt = format!("{:?}", Dot::with_config(&crate_graph, &[Config::EdgeNoLabel]));
-        write_graph(&graph_txt, "crate_graph.txt")?;
+        write_to_file(graph_txt, "graphs/crate_graph.txt")?;
         return Ok(());
     }
 
@@ -138,11 +140,5 @@ fn run_rsync(src: &str, dest: &str) -> Result<()> {
     if !out.status.success() {
         return Err(anyhow!("rsync failed with outputs {:?}", out));
     }
-    Ok(())
-}
-
-fn write_graph<P: AsRef<Path>>(graph_str: &str, outfile: P) -> Result<()> {
-    File::create(outfile.as_ref())?.write_all(graph_str.as_ref())?;
-    tracing::info!("Wrote graph to {}", outfile.as_ref().display());
     Ok(())
 }

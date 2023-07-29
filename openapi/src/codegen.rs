@@ -1,9 +1,7 @@
 use std::fmt::Write as _;
-use std::fs::{create_dir_all, File};
-use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use anyhow::{anyhow, Context};
+use anyhow::anyhow;
 use indexmap::IndexSet;
 use indoc::formatdoc;
 
@@ -20,6 +18,7 @@ use crate::stripe_object::StripeObject;
 use crate::templates::cargo_toml::write_crate_toml;
 use crate::templates::derives::Derives;
 use crate::url_finder::UrlFinder;
+use crate::utils::write_to_file;
 
 pub struct CodeGen {
     pub components: Components,
@@ -214,14 +213,4 @@ impl CodeGen {
         }
         write_to_file(main_content, module_path.join("mod.rs"))
     }
-}
-
-fn write_to_file<C: AsRef<[u8]>, P: AsRef<Path>>(content: C, out_path: P) -> anyhow::Result<()> {
-    let mut base = PathBuf::from("out");
-    base.push(out_path);
-    create_dir_all(base.parent().unwrap())?;
-    File::create(&base)
-        .with_context(|| format!("Could not create file at {}", base.display()))?
-        .write_all(content.as_ref())?;
-    Ok(())
 }
