@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct SelfieCheckError {
     /// A short machine-readable string giving the reason for the verification failure.
     pub code: Option<SelfieCheckErrorCode>,
@@ -8,13 +7,6 @@ pub struct SelfieCheckError {
     /// These messages can be shown to your users.
     pub reason: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SelfieCheckError {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// A short machine-readable string giving the reason for the verification failure.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SelfieCheckErrorCode {
@@ -74,21 +66,5 @@ impl<'de> serde::Deserialize<'de> for SelfieCheckErrorCode {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SelfieCheckErrorCode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SelfieCheckErrorCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SelfieCheckErrorCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SelfieCheckErrorCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,6 +1,5 @@
 /// A portal configuration describes the functionality and behavior of a portal session.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Configuration {
     /// Whether the configuration is active and can be used to create portal sessions.
     pub active: bool,
@@ -39,13 +38,6 @@ pub struct Configuration {
     /// Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Configuration {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -98,22 +90,6 @@ impl<'de> serde::Deserialize<'de> for ConfigurationObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConfigurationObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConfigurationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ConfigurationObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConfigurationObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Configuration {

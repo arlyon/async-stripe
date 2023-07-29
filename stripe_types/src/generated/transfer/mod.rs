@@ -6,8 +6,7 @@
 ///
 /// This behavior has since been split out into a [Payout](https://stripe.com/docs/api#payout_object) object, with corresponding payout endpoints.
 /// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Transfer {
     /// Amount in %s to be transferred.
     pub amount: i64,
@@ -63,13 +62,6 @@ pub struct Transfer {
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Transfer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -121,22 +113,6 @@ impl<'de> serde::Deserialize<'de> for TransferObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TransferObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransferObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TransferObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransferObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Transfer {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Evidence {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub canceled: Option<stripe_types::issuing::dispute::evidence::canceled::Canceled>,
@@ -21,13 +20,6 @@ pub reason: EvidenceReason,
 pub service_not_as_described: Option<stripe_types::issuing::dispute::evidence::service_not_as_described::ServiceNotAsDescribed>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Evidence {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The reason for filing the dispute.
 ///
 /// Its value will match the field containing the evidence.
@@ -97,22 +89,6 @@ impl<'de> serde::Deserialize<'de> for EvidenceReason {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for EvidenceReason"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EvidenceReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<EvidenceReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(EvidenceReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod canceled;

@@ -1,6 +1,5 @@
 /// A phase describes the plans, coupon, and trialing status of a subscription for a predefined time period.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Phase {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     pub add_invoice_items:
@@ -72,13 +71,6 @@ pub struct Phase {
     /// When the trial ends within the phase.
     pub trial_end: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Phase {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Possible values are `phase_start` or `automatic`.
 ///
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
@@ -136,22 +128,6 @@ impl<'de> serde::Deserialize<'de> for PhaseBillingCycleAnchor {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseBillingCycleAnchor"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PhaseBillingCycleAnchor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PhaseBillingCycleAnchor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PhaseBillingCycleAnchor::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -212,22 +188,6 @@ impl<'de> serde::Deserialize<'de> for PhaseCollectionMethod {
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseCollectionMethod"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PhaseCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PhaseCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PhaseCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// If the subscription schedule will prorate when transitioning to this phase.
 ///
 /// Possible values are `create_prorations` and `none`.
@@ -286,22 +246,6 @@ impl<'de> serde::Deserialize<'de> for PhaseProrationBehavior {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseProrationBehavior"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PhaseProrationBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PhaseProrationBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PhaseProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod automatic_tax;

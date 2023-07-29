@@ -1,6 +1,5 @@
 /// Represents a reader action to process a setup intent.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ProcessSetupIntentAction {
     /// ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions.
     ///
@@ -9,10 +8,4 @@ pub struct ProcessSetupIntentAction {
     pub generated_card: Option<String>,
     /// Most recent SetupIntent processed by the reader.
     pub setup_intent: stripe_types::Expandable<stripe_types::setup_intent::SetupIntent>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ProcessSetupIntentAction {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

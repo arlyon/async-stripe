@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Features {
 pub customer_update: stripe_billing::billing_portal::configuration::features::customer_update::CustomerUpdate,
 pub invoice_history: stripe_billing::billing_portal::configuration::features::invoice_history::InvoiceHistory,
@@ -9,13 +8,6 @@ pub subscription_pause: stripe_billing::billing_portal::configuration::features:
 pub subscription_update: stripe_billing::billing_portal::configuration::features::subscription_update::SubscriptionUpdate,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Features {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod customer_update;
 pub use customer_update::CustomerUpdate;
 pub mod invoice_history;

@@ -3,8 +3,7 @@
 /// Customer objects to store instrument details for future payments.
 ///
 /// Related guides: [Payment Methods](https://stripe.com/docs/payments/payment-methods) and [More Payment Scenarios](https://stripe.com/docs/payments/more-payment-scenarios).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<stripe_types::payment_method::acss_debit::AcssDebit>,
@@ -97,13 +96,6 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<stripe_types::payment_method::wechat_pay::WechatPay>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethod {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -156,22 +148,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentMethodObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The type of the PaymentMethod.
@@ -314,22 +290,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentMethodType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentMethodType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for PaymentMethod {

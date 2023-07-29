@@ -1,7 +1,6 @@
 /// Encodes whether a FinancialAccount has access to a particular Feature, with a `status` enum and associated `status_details`.
 /// Stripe or the platform can control Features via the requested field.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FinancialAccountFeatures {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub card_issuing: Option<stripe_treasury::treasury::financial_account::toggle_settings::ToggleSettings>,
@@ -23,13 +22,6 @@ pub outbound_payments: Option<stripe_treasury::treasury::financial_account_featu
 pub outbound_transfers: Option<stripe_treasury::treasury::financial_account_features::outbound_transfers::OutboundTransfers>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAccountFeatures {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -83,22 +75,6 @@ impl<'de> serde::Deserialize<'de> for FinancialAccountFeaturesObject {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for FinancialAccountFeaturesObject")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAccountFeaturesObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FinancialAccountFeaturesObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialAccountFeaturesObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod financial_addresses;

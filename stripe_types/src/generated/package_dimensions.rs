@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PackageDimensions {
     /// Height, in inches.
     pub height: f64,
@@ -9,10 +8,4 @@ pub struct PackageDimensions {
     pub weight: f64,
     /// Width, in inches.
     pub width: f64,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PackageDimensions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

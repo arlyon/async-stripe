@@ -1,8 +1,7 @@
 /// This object represents a customer of your business.
 ///
 /// It lets you create recurring charges and track payments that belong to the same customer.  Related guide: [Save a card during payment](https://stripe.com/docs/payments/save-during-payment).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Customer {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -112,13 +111,6 @@ pub struct Customer {
     pub test_clock:
         Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Customer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -170,22 +162,6 @@ impl<'de> serde::Deserialize<'de> for CustomerObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CustomerObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Describes the customer's tax exemption status.
@@ -247,22 +223,6 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerTaxExempt {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CustomerTaxExempt> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Customer {

@@ -3,8 +3,7 @@
 /// To send funds to a different party, use [OutboundPayments](https://stripe.com/docs/api#outbound_payments) instead.
 /// You can send funds over ACH rails or through a domestic wire transfer to a user's own external bank account.  Simulate OutboundTransfer state changes with the `/v1/test_helpers/treasury/outbound_transfers` endpoints.
 /// These methods can only be called on test mode objects.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct OutboundTransfer {
     /// Amount (in cents) transferred.
 pub amount: i64,
@@ -60,13 +59,6 @@ pub status_transitions: stripe_treasury::treasury::outbound_transfer::status_tra
 pub transaction: stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OutboundTransfer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -119,22 +111,6 @@ impl<'de> serde::Deserialize<'de> for OutboundTransferObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OutboundTransferObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<OutboundTransferObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(OutboundTransferObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Current status of the OutboundTransfer: `processing`, `failed`, `canceled`, `posted`, `returned`.
@@ -203,22 +179,6 @@ impl<'de> serde::Deserialize<'de> for OutboundTransferStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OutboundTransferStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<OutboundTransferStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(OutboundTransferStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for OutboundTransfer {

@@ -1,6 +1,5 @@
 /// Additional details on the FinancialAccount Features information.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct StatusDetails {
     /// Represents the reason why the status is `pending` or `restricted`.
     pub code: StatusDetailsCode,
@@ -10,13 +9,6 @@ pub struct StatusDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restriction: Option<StatusDetailsRestriction>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StatusDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Represents the reason why the status is `pending` or `restricted`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum StatusDetailsCode {
@@ -93,22 +85,6 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsCode {
             .map_err(|_| serde::de::Error::custom("Unknown value for StatusDetailsCode"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StatusDetailsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<StatusDetailsCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(StatusDetailsCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Represents what the user should do, if anything, to activate the Feature.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum StatusDetailsResolution {
@@ -167,22 +143,6 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsResolution {
             .map_err(|_| serde::de::Error::custom("Unknown value for StatusDetailsResolution"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StatusDetailsResolution {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<StatusDetailsResolution> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(StatusDetailsResolution::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The `platform_restrictions` that are restricting this Feature.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum StatusDetailsRestriction {
@@ -236,21 +196,5 @@ impl<'de> serde::Deserialize<'de> for StatusDetailsRestriction {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for StatusDetailsRestriction"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StatusDetailsRestriction {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<StatusDetailsRestriction> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(StatusDetailsRestriction::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

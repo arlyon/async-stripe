@@ -1,6 +1,5 @@
 /// The resource representing a Stripe Polymorphic.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum BalanceTransactionSource {
     ApplicationFee(stripe_types::application_fee::ApplicationFee),
@@ -20,41 +19,6 @@ pub enum BalanceTransactionSource {
     Transfer(stripe_types::transfer::Transfer),
     TransferReversal(stripe_types::transfer_reversal::TransferReversal),
 }
-#[cfg(feature = "min-ser")]
-impl stripe_types::StripeDeserialize for BalanceTransactionSource {
-    fn deserialize(str: &str) -> Result<Self, String> {
-        use miniserde::json::from_str;
-        use stripe_types::StripeDeserialize;
-        let obj_name: stripe_types::deser::ObjectName =
-            from_str(str).map_err(|_| "Missing `object` field")?;
-        Ok(match obj_name.object.as_str() {
-            "application_fee" => Self::ApplicationFee(StripeDeserialize::deserialize(str)?),
-            "charge" => Self::Charge(StripeDeserialize::deserialize(str)?),
-            "connect_collection_transfer" => {
-                Self::ConnectCollectionTransfer(StripeDeserialize::deserialize(str)?)
-            }
-            "dispute" => Self::Dispute(StripeDeserialize::deserialize(str)?),
-            "fee_refund" => Self::FeeRefund(StripeDeserialize::deserialize(str)?),
-            "issuing.authorization" => {
-                Self::IssuingAuthorization(StripeDeserialize::deserialize(str)?)
-            }
-            "issuing.dispute" => Self::IssuingDispute(StripeDeserialize::deserialize(str)?),
-            "issuing.transaction" => Self::IssuingTransaction(StripeDeserialize::deserialize(str)?),
-            "payout" => Self::Payout(StripeDeserialize::deserialize(str)?),
-            "platform_tax_fee" => Self::PlatformTaxFee(StripeDeserialize::deserialize(str)?),
-            "refund" => Self::Refund(StripeDeserialize::deserialize(str)?),
-            "reserve_transaction" => Self::ReserveTransaction(StripeDeserialize::deserialize(str)?),
-            "tax_deducted_at_source" => {
-                Self::TaxDeductedAtSource(StripeDeserialize::deserialize(str)?)
-            }
-            "topup" => Self::Topup(StripeDeserialize::deserialize(str)?),
-            "transfer" => Self::Transfer(StripeDeserialize::deserialize(str)?),
-            "transfer_reversal" => Self::TransferReversal(StripeDeserialize::deserialize(str)?),
-            _ => return Err("Unexpected object name".into()),
-        })
-    }
-}
-
 impl stripe_types::Object for BalanceTransactionSource {
     type Id = String;
     fn id(&self) -> Self::Id {

@@ -26,7 +26,6 @@ categories = ["api-bindings"]
 edition = "2021"
 
 [workspace.dependencies]
-miniserde = { version = "0.1.30" }
 serde = {version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79
 http-types = { version = "2.12.0", default-features = false }
 smol_str = "0.1"

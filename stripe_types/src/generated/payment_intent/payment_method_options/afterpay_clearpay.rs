@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AfterpayClearpay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,13 +16,6 @@ pub struct AfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<AfterpayClearpaySetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AfterpayClearpay {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AfterpayClearpayCaptureMethod {
@@ -75,22 +67,6 @@ impl<'de> serde::Deserialize<'de> for AfterpayClearpayCaptureMethod {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AfterpayClearpayCaptureMethod")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AfterpayClearpayCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AfterpayClearpayCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AfterpayClearpayCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -148,22 +124,5 @@ impl<'de> serde::Deserialize<'de> for AfterpayClearpaySetupFutureUsage {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AfterpayClearpaySetupFutureUsage")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AfterpayClearpaySetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AfterpayClearpaySetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(AfterpayClearpaySetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

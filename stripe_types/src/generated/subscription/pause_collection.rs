@@ -1,7 +1,6 @@
 /// The Pause Collection settings determine how we will pause collection for this subscription and for how long the subscription
 /// should be paused.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PauseCollection {
     /// The payment collection behavior for this subscription while paused.
     ///
@@ -10,13 +9,6 @@ pub struct PauseCollection {
     /// The time after which the subscription will resume collecting payments.
     pub resumes_at: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PauseCollection {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The payment collection behavior for this subscription while paused.
 ///
 /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
@@ -75,21 +67,5 @@ impl<'de> serde::Deserialize<'de> for PauseCollectionBehavior {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PauseCollectionBehavior"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PauseCollectionBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PauseCollectionBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PauseCollectionBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,6 +1,5 @@
 /// A Financial Connections Session is the secure way to programmatically launch the client-side Stripe.js modal that lets your users link their accounts.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     /// The account holder for whom accounts are collected in this session.
     pub account_holder:
@@ -27,13 +26,6 @@ pub struct Session {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Session {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -85,22 +77,6 @@ impl<'de> serde::Deserialize<'de> for SessionObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SessionObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SessionObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Permissions requested for accounts collected during this session.
@@ -162,22 +138,6 @@ impl<'de> serde::Deserialize<'de> for SessionPermissions {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionPermissions"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SessionPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SessionPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SessionPermissions::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Session {

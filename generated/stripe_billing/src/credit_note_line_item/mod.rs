@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreditNoteLineItem {
     /// The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
     pub amount: i64,
@@ -40,13 +39,6 @@ pub struct CreditNoteLineItem {
     /// The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteLineItem {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -99,22 +91,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteLineItemObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteLineItemObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteLineItemObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteLineItemObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -172,22 +148,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteLineItemType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteLineItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteLineItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteLineItemType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for CreditNoteLineItem {

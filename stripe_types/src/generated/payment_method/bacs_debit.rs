@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct BacsDebit {
     /// Uniquely identifies this particular bank account.
     ///
@@ -11,10 +10,4 @@ pub struct BacsDebit {
     ///
     /// (e.g., `10-20-30`).
     pub sort_code: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BacsDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

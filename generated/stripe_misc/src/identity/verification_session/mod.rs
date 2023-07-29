@@ -4,8 +4,7 @@
 /// It contains details about the type of verification, such as what [verification check](/docs/identity/verification-checks) to perform.
 /// Only create one VerificationSession for each verification in your system.  A VerificationSession transitions through [multiple statuses](/docs/identity/how-sessions-work) throughout its lifetime as it progresses through the verification flow.
 /// The VerificationSession contains the user's verified data after verification checks are complete.  Related guide: [The Verification Sessions API](https://stripe.com/docs/identity/verification-sessions).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct VerificationSession {
     /// The short-lived client secret used by Stripe.js to [show a verification modal](https://stripe.com/docs/js/identity/modal) inside your app.
     ///
@@ -60,13 +59,6 @@ pub struct VerificationSession {
     pub verified_outputs:
         Option<stripe_misc::identity::verification_session::verified_outputs::VerifiedOutputs>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationSession {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -119,22 +111,6 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationSessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationSessionObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationSessionObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Status of this VerificationSession.
@@ -200,22 +176,6 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionStatus"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationSessionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationSessionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationSessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationSessionType {
@@ -269,22 +229,6 @@ impl<'de> serde::Deserialize<'de> for VerificationSessionType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationSessionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationSessionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationSessionType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for VerificationSession {

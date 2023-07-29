@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Duplicate {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<stripe_types::Expandable<stripe_types::file::File>>,
@@ -15,10 +14,4 @@ pub struct Duplicate {
     ///
     /// Of the two or more transactions that are copies of each other, this is original undisputed one.
     pub original_transaction: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Duplicate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

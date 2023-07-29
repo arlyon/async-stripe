@@ -1,8 +1,7 @@
 /// Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.
 ///
 /// Related guide: [Tax Rates](https://stripe.com/docs/billing/taxes/tax-rates).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TaxRate {
     /// Defaults to `true`.
     ///
@@ -48,13 +47,6 @@ pub struct TaxRate {
     /// The high-level tax type, such as `vat` or `sales_tax`.
     pub tax_type: Option<TaxRateTaxType>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxRate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -106,22 +98,6 @@ impl<'de> serde::Deserialize<'de> for TaxRateObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxRateObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TaxRateObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxRateObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
@@ -194,22 +170,6 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxRateTaxType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxRateTaxType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for TaxRate {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Owner {
     /// Owner's address.
     pub address: Option<stripe_types::address::Address>,
@@ -29,10 +28,4 @@ pub struct Owner {
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     pub verified_phone: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Owner {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

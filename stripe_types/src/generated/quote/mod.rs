@@ -1,7 +1,6 @@
 /// A Quote is a way to model prices that you'd like to provide to a customer.
 /// Once accepted, it will automatically create an invoice, subscription or subscription schedule.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Quote {
     /// Total before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -101,13 +100,6 @@ pub struct Quote {
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
     pub transfer_data: Option<stripe_types::quote::transfer_data::TransferData>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Quote {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or on finalization using the default payment method attached to the subscription or customer.
@@ -167,22 +159,6 @@ impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
             .map_err(|_| serde::de::Error::custom("Unknown value for QuoteCollectionMethod"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for QuoteCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuoteCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -234,22 +210,6 @@ impl<'de> serde::Deserialize<'de> for QuoteObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for QuoteObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<QuoteObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuoteObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The status of the quote.
@@ -310,22 +270,6 @@ impl<'de> serde::Deserialize<'de> for QuoteStatus {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for QuoteStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<QuoteStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(QuoteStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Quote {

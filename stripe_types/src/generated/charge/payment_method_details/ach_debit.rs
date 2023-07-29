@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AchDebit {
     /// Type of entity that holds the account.
     ///
@@ -18,13 +17,6 @@ pub struct AchDebit {
     /// Routing transit number of the bank account.
     pub routing_number: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AchDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Type of entity that holds the account.
 ///
 /// This can be either `individual` or `company`.
@@ -80,21 +72,5 @@ impl<'de> serde::Deserialize<'de> for AchDebitAccountHolderType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AchDebitAccountHolderType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AchDebitAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AchDebitAccountHolderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AchDebitAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

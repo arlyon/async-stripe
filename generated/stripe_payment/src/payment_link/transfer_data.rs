@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransferData {
     /// The amount in %s that will be transferred to the destination account.
     ///
@@ -7,10 +6,4 @@ pub struct TransferData {
     pub amount: Option<i64>,
     /// The connected account receiving the transfer.
     pub destination: stripe_types::Expandable<stripe_types::account::Account>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransferData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

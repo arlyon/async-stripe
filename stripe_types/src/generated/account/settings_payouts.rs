@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SettingsPayouts {
     /// A Boolean indicating if Stripe should try to reclaim negative balances from an attached bank account.
     ///
@@ -11,10 +10,4 @@ pub struct SettingsPayouts {
     ///
     /// If not set, this defaults to the platform's bank descriptor as set in the Dashboard.
     pub statement_descriptor: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SettingsPayouts {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

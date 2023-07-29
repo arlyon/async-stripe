@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct BillingDetails {
     /// Billing address.
     pub address: Option<stripe_types::address::Address>,
@@ -9,10 +8,4 @@ pub struct BillingDetails {
     pub name: Option<String>,
     /// Billing phone number (including extension).
     pub phone: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BillingDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,8 +1,7 @@
 /// A Connection Token is used by the Stripe Terminal SDK to connect to a reader.
 ///
 /// Related guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ConnectionToken {
     /// The id of the location that this connection token is scoped to.
     ///
@@ -17,13 +16,6 @@ pub struct ConnectionToken {
     /// Your application should pass this token to the Stripe Terminal SDK.
     pub secret: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConnectionToken {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -76,21 +68,5 @@ impl<'de> serde::Deserialize<'de> for ConnectionTokenObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConnectionTokenObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConnectionTokenObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ConnectionTokenObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConnectionTokenObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

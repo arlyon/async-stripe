@@ -12,8 +12,7 @@
 /// If you (and the platforms you may have connected to) have no webhooks configured, Stripe waits one hour after creation to finalize the invoice.  If your invoice is configured to be billed by sending an email, then based on your [email settings](https://dashboard.stripe.com/account/billing/automatic), Stripe will email the invoice to your customer and await payment.
 /// These emails can contain a link to a hosted page to pay the invoice.  Stripe applies any customer credit on the account before determining the amount due for the invoice (i.e., the amount that will be actually charged).
 /// If the amount due for the invoice is less than Stripe's [minimum allowed charge per currency](/docs/currencies#minimum-and-maximum-charge-amounts), the invoice is automatically marked paid, and we add the amount due to the customer's credit balance which is applied to the next invoice.  More details on the customer's credit balance are [here](https://stripe.com/docs/billing/customer/balance).  Related guide: [Send Invoices to Customers](https://stripe.com/docs/billing/invoices/sending).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Invoice {
     /// The country of the business associated with this invoice, most often the business creating the invoice.
     pub account_country: Option<String>,
@@ -288,13 +287,6 @@ pub struct Invoice {
     /// If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
     pub webhooks_delivered_at: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Invoice {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates the reason why the invoice was created.
 ///
 /// `subscription_cycle` indicates an invoice created by a subscription advancing into a new period.
@@ -381,22 +373,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceBillingReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceBillingReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceBillingReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
@@ -453,22 +429,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The customer's tax exempt status.
@@ -532,22 +492,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceCustomerTaxExempt {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceCustomerTaxExempt> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceCustomerTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -599,22 +543,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
@@ -683,22 +611,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceStatus {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Invoice {

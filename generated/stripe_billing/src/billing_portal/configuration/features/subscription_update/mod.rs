@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionUpdate {
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     ///
@@ -15,13 +14,6 @@ pub products: Option<Vec<stripe_billing::billing_portal::configuration::features
 pub proration_behavior: SubscriptionUpdateProrationBehavior,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionUpdate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The types of subscription updates that are supported for items listed in the `products` attribute.
 ///
 /// When empty, subscriptions are not updateable.
@@ -83,24 +75,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionUpdateDefaultAllowedUpdates {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionUpdateDefaultAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionUpdateDefaultAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            SubscriptionUpdateDefaultAllowedUpdates::from_str(s).map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
-    }
-}
 /// Determines how to handle prorations resulting from subscription updates.
 ///
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
@@ -160,23 +134,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionUpdateProrationBehavior {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionUpdateProrationBehavior")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionUpdateProrationBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionUpdateProrationBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SubscriptionUpdateProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod product;

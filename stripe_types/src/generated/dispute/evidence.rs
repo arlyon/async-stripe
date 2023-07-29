@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Evidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     ///
@@ -72,10 +71,4 @@ pub struct Evidence {
     pub uncategorized_file: Option<stripe_types::Expandable<stripe_types::file::File>>,
     /// Any additional evidence or statements.
     pub uncategorized_text: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Evidence {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

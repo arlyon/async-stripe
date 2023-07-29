@@ -1,19 +1,11 @@
 /// Restrictions that a Connect Platform has placed on this FinancialAccount.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PlatformRestriction {
     /// Restricts all inbound money movement.
     pub inbound_flows: Option<PlatformRestrictionInboundFlows>,
     /// Restricts all outbound money movement.
     pub outbound_flows: Option<PlatformRestrictionOutboundFlows>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlatformRestriction {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Restricts all inbound money movement.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlatformRestrictionInboundFlows {
@@ -70,23 +62,6 @@ impl<'de> serde::Deserialize<'de> for PlatformRestrictionInboundFlows {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlatformRestrictionInboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlatformRestrictionInboundFlows> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PlatformRestrictionInboundFlows::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Restricts all outbound money movement.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlatformRestrictionOutboundFlows {
@@ -141,22 +116,5 @@ impl<'de> serde::Deserialize<'de> for PlatformRestrictionOutboundFlows {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PlatformRestrictionOutboundFlows")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlatformRestrictionOutboundFlows {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlatformRestrictionOutboundFlows> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PlatformRestrictionOutboundFlows::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

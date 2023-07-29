@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
     /// shipping locations.
@@ -7,13 +6,6 @@ pub struct ShippingAddressCollection {
     /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<ShippingAddressCollectionAllowedCountries>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingAddressCollection {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
 /// shipping locations.
 ///
@@ -776,23 +768,5 @@ impl<'de> serde::Deserialize<'de> for ShippingAddressCollectionAllowedCountries 
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for ShippingAddressCollectionAllowedCountries")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingAddressCollectionAllowedCountries {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingAddressCollectionAllowedCountries> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            ShippingAddressCollectionAllowedCountries::from_str(s).map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }

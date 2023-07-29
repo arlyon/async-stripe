@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
     /// Controls when the funds will be captured from the customer's account.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,13 +17,6 @@ pub setup_future_usage: Option<PaymentIntentTypeSpecificPaymentMethodOptionsClie
 pub verification_method: Option<PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentIntentTypeSpecificPaymentMethodOptionsClient {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
@@ -76,27 +68,6 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor
-    for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -162,29 +133,6 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize
-    for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor
-    for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
-    }
-}
 /// Bank account verification method.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
@@ -242,29 +190,6 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize
-    for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor
-    for crate::Place<PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }
 pub mod installments;

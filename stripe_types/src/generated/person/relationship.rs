@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Relationship {
     /// Whether the person is a director of the account's legal entity.
     ///
@@ -19,10 +18,4 @@ pub struct Relationship {
     pub representative: Option<bool>,
     /// The person's title (e.g., CEO, Support Engineer).
     pub title: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Relationship {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,8 +1,7 @@
 /// An Issuing `Cardholder` object represents an individual or business entity who is [issued](https://stripe.com/docs/issuing) cards.
 ///
 /// Related guide: [How to create a Cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Cardholder {
     pub billing: stripe_types::issuing::cardholder::billing::Billing,
     /// Additional information about a `company` cardholder.
@@ -48,13 +47,6 @@ pub struct Cardholder {
     #[serde(rename = "type")]
     pub type_: CardholderType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Cardholder {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -107,22 +99,6 @@ impl<'de> serde::Deserialize<'de> for CardholderObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardholderObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardholderObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardholderObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardholderObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Specifies whether to permit authorizations on this cardholder's cards.
@@ -183,22 +159,6 @@ impl<'de> serde::Deserialize<'de> for CardholderStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for CardholderStatus"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardholderStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardholderStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardholderStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// One of `individual` or `company`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardholderType {
@@ -251,22 +211,6 @@ impl<'de> serde::Deserialize<'de> for CardholderType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardholderType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardholderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardholderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardholderType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Cardholder {

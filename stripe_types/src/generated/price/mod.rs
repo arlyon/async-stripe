@@ -3,8 +3,7 @@
 ///
 /// Different physical goods or levels of service should be represented by products, and pricing options should be represented by prices.
 /// This approach lets you change prices without having to change your provisioning scheme.  For example, you might have a single "gold" product that has prices for $10/month, $100/year, and €9 once.  Related guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription), [create an invoice](https://stripe.com/docs/billing/invoices/create), and more about [products and prices](https://stripe.com/docs/products-prices/overview).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Price {
     /// Whether the price can be used for new purchases.
     pub active: bool,
@@ -88,13 +87,6 @@ pub struct Price {
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount_decimal: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Price {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Describes how to compute the price per period.
 ///
 /// Either `per_unit` or `tiered`.
@@ -154,22 +146,6 @@ impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
             .map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PriceBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceBillingScheme::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -221,22 +197,6 @@ impl<'de> serde::Deserialize<'de> for PriceObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PriceObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PriceObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -300,22 +260,6 @@ impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
             .map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PriceTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -373,22 +317,6 @@ impl<'de> serde::Deserialize<'de> for PriceTiersMode {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTiersMode"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PriceTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PriceTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceTiersMode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PriceType {
@@ -441,22 +369,6 @@ impl<'de> serde::Deserialize<'de> for PriceType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PriceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PriceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PriceType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Price {

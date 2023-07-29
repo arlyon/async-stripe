@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Ideal {
     /// The customer's bank, if provided.
     ///
@@ -8,13 +7,6 @@ pub struct Ideal {
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
     pub bic: Option<IdealBic>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Ideal {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The customer's bank, if provided.
 ///
 /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
@@ -104,22 +96,6 @@ impl<'de> serde::Deserialize<'de> for IdealBank {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IdealBank"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for IdealBank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<IdealBank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IdealBank::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The Bank Identifier Code of the customer's bank, if the bank was provided.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum IdealBic {
@@ -205,21 +181,5 @@ impl<'de> serde::Deserialize<'de> for IdealBic {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IdealBic"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for IdealBic {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<IdealBic> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(IdealBic::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodOptions {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub acss_debit: Option<stripe_types::payment_intent::payment_method_options::acss_debit::AcssDebit>,
@@ -33,13 +32,6 @@ pub sofort: Option<stripe_types::payment_intent::payment_method_options::sofort:
 pub wechat_pay: Option<stripe_types::payment_intent::payment_method_options::wechat_pay::WechatPay>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodOptions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod afterpay_clearpay;
 pub use afterpay_clearpay::AfterpayClearpay;
 pub mod card;

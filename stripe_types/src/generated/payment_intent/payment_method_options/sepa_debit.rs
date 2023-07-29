@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct SepaDebit {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub mandate_options: Option<stripe_types::payment_intent::payment_method_options::sepa_debit_mandate_options::SepaDebitMandateOptions>,
@@ -12,13 +11,6 @@ pub mandate_options: Option<stripe_types::payment_intent::payment_method_options
 pub setup_future_usage: Option<SepaDebitSetupFutureUsage>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SepaDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -79,21 +71,5 @@ impl<'de> serde::Deserialize<'de> for SepaDebitSetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SepaDebitSetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SepaDebitSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SepaDebitSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SepaDebitSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

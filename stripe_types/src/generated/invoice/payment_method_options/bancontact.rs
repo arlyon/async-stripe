@@ -1,16 +1,8 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Bancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     pub preferred_language: BancontactPreferredLanguage,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Bancontact {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BancontactPreferredLanguage {
@@ -70,21 +62,5 @@ impl<'de> serde::Deserialize<'de> for BancontactPreferredLanguage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BancontactPreferredLanguage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BancontactPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BancontactPreferredLanguage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BancontactPreferredLanguage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

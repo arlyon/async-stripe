@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct DeliveryEstimate {
     /// The upper bound of the estimated range.
     ///
@@ -11,12 +10,5 @@ pub maximum: Option<stripe_product::shipping_rate::delivery_estimate::delivery_e
 pub minimum: Option<stripe_product::shipping_rate::delivery_estimate::delivery_estimate_bound::DeliveryEstimateBound>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeliveryEstimate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod delivery_estimate_bound;
 pub use delivery_estimate_bound::DeliveryEstimateBound;

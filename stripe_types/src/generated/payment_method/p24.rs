@@ -1,16 +1,8 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct P24 {
     /// The customer's bank, if provided.
     pub bank: Option<P24Bank>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for P24 {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The customer's bank, if provided.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum P24Bank {
@@ -132,21 +124,5 @@ impl<'de> serde::Deserialize<'de> for P24Bank {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for P24Bank"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for P24Bank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<P24Bank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(P24Bank::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

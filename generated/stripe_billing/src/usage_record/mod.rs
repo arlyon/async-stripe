@@ -2,8 +2,7 @@
 /// metered billing of subscription prices.
 ///
 /// Related guide: [Metered Billing](https://stripe.com/docs/billing/subscriptions/metered-billing).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct UsageRecord {
     /// Unique identifier for the object.
     pub id: stripe_billing::usage_record::UsageRecordId,
@@ -20,13 +19,6 @@ pub struct UsageRecord {
     /// The timestamp when this usage occurred.
     pub timestamp: stripe_types::Timestamp,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsageRecord {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for UsageRecordObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for UsageRecordObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsageRecordObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsageRecordObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsageRecordObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for UsageRecord {

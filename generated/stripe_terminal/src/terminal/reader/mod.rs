@@ -1,8 +1,7 @@
 /// A Reader represents a physical device for accepting payment details.
 ///
 /// Related guide: [Connecting to a Reader](https://stripe.com/docs/terminal/payments/connect-reader).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Reader {
     /// The most recent action performed by the reader.
     pub action: Option<stripe_terminal::terminal::reader::reader_action::ReaderAction>,
@@ -33,13 +32,6 @@ pub struct Reader {
     /// The networking status of the reader.
     pub status: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Reader {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ReaderDeviceType {
@@ -107,22 +99,6 @@ impl<'de> serde::Deserialize<'de> for ReaderDeviceType {
             .map_err(|_| serde::de::Error::custom("Unknown value for ReaderDeviceType"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReaderDeviceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReaderDeviceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReaderDeviceType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -174,22 +150,6 @@ impl<'de> serde::Deserialize<'de> for ReaderObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReaderObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReaderObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReaderObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReaderObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Reader {

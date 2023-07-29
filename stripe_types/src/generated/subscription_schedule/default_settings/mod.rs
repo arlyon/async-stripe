@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -41,13 +40,6 @@ pub struct DefaultSettings {
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     pub transfer_data: Option<stripe_types::subscription::transfer_data::TransferData>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DefaultSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Possible values are `phase_start` or `automatic`.
 ///
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
@@ -108,23 +100,6 @@ impl<'de> serde::Deserialize<'de> for DefaultSettingsBillingCycleAnchor {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DefaultSettingsBillingCycleAnchor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DefaultSettingsBillingCycleAnchor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(DefaultSettingsBillingCycleAnchor::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
@@ -182,23 +157,6 @@ impl<'de> serde::Deserialize<'de> for DefaultSettingsCollectionMethod {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DefaultSettingsCollectionMethod")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DefaultSettingsCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DefaultSettingsCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(DefaultSettingsCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod automatic_tax;

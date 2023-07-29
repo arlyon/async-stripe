@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach_credit_transfer: Option<
@@ -90,13 +89,6 @@ pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<stripe_types::charge::payment_method_details::wechat_pay::WechatPay>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod alipay;
 pub use alipay::Alipay;
 pub mod ach_credit_transfer;

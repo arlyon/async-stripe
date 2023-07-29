@@ -1,6 +1,5 @@
 /// Describes a snapshot of the owners of an account at a particular point in time.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AccountOwnership {
     /// Time at which the object was created.
     ///
@@ -16,13 +15,6 @@ pub object: AccountOwnershipObject,
 pub owners: stripe_types::List<stripe_misc::financial_connections::account_owner::AccountOwner>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountOwnership {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -77,22 +69,6 @@ impl<'de> serde::Deserialize<'de> for AccountOwnershipObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountOwnershipObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountOwnershipObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountOwnershipObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountOwnershipObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for AccountOwnership {

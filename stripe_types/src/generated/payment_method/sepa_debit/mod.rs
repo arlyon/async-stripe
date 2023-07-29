@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct SepaDebit {
     /// Bank code of bank associated with the bank account.
     pub bank_code: Option<String>,
@@ -17,12 +16,5 @@ pub struct SepaDebit {
     /// Last four characters of the IBAN.
     pub last4: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SepaDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod generated_from;
 pub use generated_from::GeneratedFrom;

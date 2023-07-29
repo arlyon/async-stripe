@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TotalDetails {
     /// This is the sum of all the discounts.
     pub amount_discount: i64,
@@ -10,12 +9,5 @@ pub struct TotalDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub breakdown: Option<stripe_checkout::checkout::session::total_details::breakdown::Breakdown>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TotalDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod breakdown;
 pub use breakdown::Breakdown;

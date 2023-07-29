@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Balance {
     /// The time that the external institution calculated this balance.
     ///
@@ -26,13 +25,6 @@ pub struct Balance {
     #[serde(rename = "type")]
     pub type_: BalanceType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Balance {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The `type` of the balance.
 ///
 /// An additional hash is included on the balance with a name matching this value.
@@ -87,22 +79,6 @@ impl<'de> serde::Deserialize<'de> for BalanceType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BalanceType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BalanceType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BalanceType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod cash_balance;

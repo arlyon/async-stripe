@@ -1,8 +1,5 @@
 #![recursion_limit = "256"]
 extern crate self as stripe_connect;
-
-#[cfg(feature = "min-ser")]
-miniserde::make_place!(Place);
 pub mod country_spec;
 pub use country_spec::CountrySpec;
 pub mod account_link;

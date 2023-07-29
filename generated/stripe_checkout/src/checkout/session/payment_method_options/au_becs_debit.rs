@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9,13 +8,6 @@ pub struct AuBecsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<AuBecsDebitSetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuBecsDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -70,21 +62,5 @@ impl<'de> serde::Deserialize<'de> for AuBecsDebitSetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AuBecsDebitSetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuBecsDebitSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AuBecsDebitSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AuBecsDebitSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct NextActionDisplayBoletoDetails {
     /// The timestamp after which the boleto expires.
     pub expires_at: Option<stripe_types::Timestamp>,
@@ -9,10 +8,4 @@ pub struct NextActionDisplayBoletoDetails {
     pub number: Option<String>,
     /// The URL to the downloadable boleto voucher PDF.
     pub pdf: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NextActionDisplayBoletoDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

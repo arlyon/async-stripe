@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AcssDebit {
     /// Name of the bank associated with the bank account.
     pub bank_name: Option<String>,
@@ -13,10 +12,4 @@ pub struct AcssDebit {
     pub last4: Option<String>,
     /// Transit number of the bank account.
     pub transit_number: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

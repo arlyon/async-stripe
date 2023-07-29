@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct WechatPayRedirectToAndroidApp {
     /// app_id is the APP ID registered on WeChat open platform.
     pub app_id: String,
@@ -15,10 +14,4 @@ pub struct WechatPayRedirectToAndroidApp {
     pub sign: String,
     /// Specifies the current time in epoch format.
     pub timestamp: String,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WechatPayRedirectToAndroidApp {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

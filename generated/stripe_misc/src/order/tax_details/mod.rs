@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TaxDetails {
     /// Describes the purchaser's tax exemption status.
     ///
@@ -8,13 +7,6 @@ pub struct TaxDetails {
     /// The purchaser's tax IDs to be used in calculation of tax for this Order.
     pub tax_ids: Vec<stripe_misc::order::tax_details::tax_id::TaxId>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Describes the purchaser's tax exemption status.
 ///
 /// One of `none`, `exempt`, or `reverse`.
@@ -73,22 +65,6 @@ impl<'de> serde::Deserialize<'de> for TaxDetailsTaxExempt {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TaxDetailsTaxExempt"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxDetailsTaxExempt {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TaxDetailsTaxExempt> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxDetailsTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod tax_id;

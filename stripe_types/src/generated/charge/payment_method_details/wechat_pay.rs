@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct WechatPay {
     /// Uniquely identifies this particular WeChat Pay account.
     ///
@@ -7,10 +6,4 @@ pub struct WechatPay {
     pub fingerprint: Option<String>,
     /// Transaction ID of this particular WeChat Pay transaction.
     pub transaction_id: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WechatPay {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

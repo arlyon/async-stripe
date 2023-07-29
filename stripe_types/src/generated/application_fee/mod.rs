@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ApplicationFee {
     /// ID of the Stripe account this fee was taken from.
     pub account: stripe_types::Expandable<stripe_types::account::Account>,
@@ -39,13 +38,6 @@ pub struct ApplicationFee {
     /// A list of refunds that have been applied to the fee.
     pub refunds: stripe_types::List<stripe_types::fee_refund::FeeRefund>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApplicationFee {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -98,22 +90,6 @@ impl<'de> serde::Deserialize<'de> for ApplicationFeeObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ApplicationFeeObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApplicationFeeObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ApplicationFeeObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ApplicationFeeObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ApplicationFee {

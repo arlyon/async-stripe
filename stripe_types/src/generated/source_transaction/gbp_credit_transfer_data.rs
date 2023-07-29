@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct GbpCreditTransferData {
     /// Bank account fingerprint associated with the Stripe owned bank account receiving the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,10 +24,4 @@ pub struct GbpCreditTransferData {
     /// Sender sort code associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_sort_code: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for GbpCreditTransferData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

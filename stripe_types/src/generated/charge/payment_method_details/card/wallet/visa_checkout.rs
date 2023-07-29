@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct VisaCheckout {
     /// Owner's verified billing address.
     ///
@@ -21,10 +20,4 @@ pub struct VisaCheckout {
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     pub shipping_address: Option<stripe_types::address::Address>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VisaCheckout {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

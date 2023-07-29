@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Consent {
     /// If `opt_in`, the customer consents to receiving promotional communications
     /// from the merchant about this Checkout Session.
@@ -7,13 +6,6 @@ pub struct Consent {
     /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
     pub terms_of_service: Option<ConsentTermsOfService>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Consent {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// If `opt_in`, the customer consents to receiving promotional communications
 /// from the merchant about this Checkout Session.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -70,22 +62,6 @@ impl<'de> serde::Deserialize<'de> for ConsentPromotions {
             .map_err(|_| serde::de::Error::custom("Unknown value for ConsentPromotions"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConsentPromotions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ConsentPromotions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConsentPromotions::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConsentTermsOfService {
@@ -136,21 +112,5 @@ impl<'de> serde::Deserialize<'de> for ConsentTermsOfService {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConsentTermsOfService"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConsentTermsOfService {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ConsentTermsOfService> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConsentTermsOfService::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

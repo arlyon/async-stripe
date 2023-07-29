@@ -1,6 +1,5 @@
 /// A Financial Connections Account represents an account that exists outside of Stripe, to which you have been granted some degree of access.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Account {
     /// The account holder that this account belongs to.
     pub account_holder:
@@ -65,13 +64,6 @@ pub struct Account {
     /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
     pub supported_payment_method_types: Vec<AccountSupportedPaymentMethodTypes>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Account {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of the account.
 ///
 /// Account category is further divided in `subcategory`.
@@ -135,22 +127,6 @@ impl<'de> serde::Deserialize<'de> for AccountCategory {
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountCategory"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountCategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountCategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountCategory::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -202,22 +178,6 @@ impl<'de> serde::Deserialize<'de> for AccountObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The list of permissions granted by this account.
@@ -281,22 +241,6 @@ impl<'de> serde::Deserialize<'de> for AccountPermissions {
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountPermissions"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountPermissions::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The status of the link to the account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountStatus {
@@ -352,22 +296,6 @@ impl<'de> serde::Deserialize<'de> for AccountStatus {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// If `category` is `cash`, one of:
@@ -450,22 +378,6 @@ impl<'de> serde::Deserialize<'de> for AccountSubcategory {
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountSubcategory"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountSubcategory {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountSubcategory> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountSubcategory::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AccountSupportedPaymentMethodTypes {
@@ -520,23 +432,6 @@ impl<'de> serde::Deserialize<'de> for AccountSupportedPaymentMethodTypes {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AccountSupportedPaymentMethodTypes")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountSupportedPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountSupportedPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(AccountSupportedPaymentMethodTypes::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Account {

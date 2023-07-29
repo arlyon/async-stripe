@@ -1,18 +1,10 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FinancialAccount {
     /// Token of the FinancialAccount.
     pub id: String,
     /// The rails used to send funds.
     pub network: FinancialAccountNetwork,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAccount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The rails used to send funds.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAccountNetwork {
@@ -63,22 +55,6 @@ impl<'de> serde::Deserialize<'de> for FinancialAccountNetwork {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAccountNetwork"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FinancialAccountNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialAccountNetwork::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for FinancialAccount {

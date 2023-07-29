@@ -1,36 +1,21 @@
 use std::fmt::Write;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Default)]
 pub struct Derives {
     copy: bool,
     default: bool,
     eq: bool,
     serialize: bool,
     deserialize: bool,
-    miniserde_deserialize: bool,
 }
 
 impl Derives {
     pub fn new() -> Self {
-        Self {
-            copy: false,
-            default: false,
-            eq: false,
-            serialize: false,
-            deserialize: false,
-            miniserde_deserialize: false,
-        }
+        Default::default()
     }
 
-    pub fn deser() -> Self {
-        Self {
-            copy: false,
-            default: false,
-            eq: false,
-            serialize: true,
-            deserialize: true,
-            miniserde_deserialize: true,
-        }
+    pub fn new_deser() -> Self {
+        Self { copy: false, default: false, eq: false, serialize: true, deserialize: true }
     }
 
     pub fn copy(mut self, copy: bool) -> Self {
@@ -55,11 +40,6 @@ impl Derives {
 
     pub fn deserialize(mut self, deserialize: bool) -> Self {
         self.deserialize = deserialize;
-        self
-    }
-
-    pub fn miniserde_deserialize(mut self, miniserde_deserialize: bool) -> Self {
-        self.miniserde_deserialize = miniserde_deserialize;
         self
     }
 
@@ -91,14 +71,9 @@ pub fn write_derives_line(derives: Derives) -> String {
     if derives.serialize {
         let _ = write!(out, "serde::Serialize,");
     }
-    let _ = write!(out, ")]");
-
     if derives.deserialize {
-        let _ = write!(out, r#"#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]"#);
+        let _ = write!(out, "serde::Deserialize,");
     }
-    if derives.miniserde_deserialize {
-        let _ = write!(out, r#"#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]"#);
-    }
-
+    let _ = write!(out, ")]");
     out
 }

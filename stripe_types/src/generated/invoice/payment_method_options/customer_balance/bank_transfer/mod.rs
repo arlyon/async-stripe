@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct BankTransfer {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub eu_bank_transfer: Option<stripe_types::invoice::payment_method_options::customer_balance::bank_transfer::eu_bank_transfer::EuBankTransfer>,
@@ -10,12 +9,5 @@ pub eu_bank_transfer: Option<stripe_types::invoice::payment_method_options::cust
 pub type_: Option<String>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankTransfer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod eu_bank_transfer;
 pub use eu_bank_transfer::EuBankTransfer;

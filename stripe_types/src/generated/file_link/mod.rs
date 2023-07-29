@@ -2,8 +2,7 @@
 /// create a `FileLink`.
 ///
 /// `FileLink`s contain a URL that can be used to retrieve the contents of the file without authentication.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FileLink {
     /// Time at which the object was created.
     ///
@@ -30,13 +29,6 @@ pub struct FileLink {
     /// The publicly accessible URL to download the file.
     pub url: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FileLink {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -88,22 +80,6 @@ impl<'de> serde::Deserialize<'de> for FileLinkObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FileLinkObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FileLinkObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FileLinkObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FileLinkObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for FileLink {

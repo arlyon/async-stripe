@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Fpx {
     /// Account holder type, if provided.
     ///
@@ -10,13 +9,6 @@ pub struct Fpx {
     /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, `pb_enterprise`, or `bank_of_china`.
     pub bank: FpxBank,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Fpx {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Account holder type, if provided.
 ///
 /// Can be one of `individual` or `company`.
@@ -72,22 +64,6 @@ impl<'de> serde::Deserialize<'de> for FpxAccountHolderType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FpxAccountHolderType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FpxAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FpxAccountHolderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FpxAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The customer's bank, if provided.
@@ -204,21 +180,5 @@ impl<'de> serde::Deserialize<'de> for FpxBank {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FpxBank"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FpxBank {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FpxBank> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FpxBank::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

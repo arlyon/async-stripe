@@ -1,8 +1,5 @@
 #![recursion_limit = "256"]
 extern crate self as stripe_misc;
-
-#[cfg(feature = "min-ser")]
-miniserde::make_place!(Place);
 pub mod apple_pay_domain;
 pub use apple_pay_domain::ApplePayDomain;
 pub mod ephemeral_key;

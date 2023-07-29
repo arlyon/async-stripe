@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct CardPresent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_cryptogram: Option<String>,
@@ -53,10 +52,4 @@ pub struct CardPresent {
     pub terminal_verification_results: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_status_information: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardPresent {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

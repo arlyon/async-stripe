@@ -2,8 +2,7 @@
 /// whether that confirmation was successful or unsuccessful.
 ///
 /// You can use SetupAttempts to inspect details of a specific attempt at setting up a payment method using a SetupIntent.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SetupAttempt {
     /// The value of [application](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-application) on the SetupIntent at the time of this confirmation.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
@@ -50,13 +49,6 @@ pub struct SetupAttempt {
     /// The value of [usage](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-usage) on the SetupIntent at the time of this confirmation, one of `off_session` or `on_session`.
     pub usage: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupAttempt {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates the directions of money movement for which this payment method is intended to be used.
 ///
 /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
@@ -117,22 +109,6 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptFlowDirections"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupAttemptFlowDirections {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupAttemptFlowDirections> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupAttemptFlowDirections::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -185,22 +161,6 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupAttemptObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupAttemptObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupAttemptObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for SetupAttempt {

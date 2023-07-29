@@ -1,6 +1,5 @@
 /// Result from a document check.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Document {
     /// Address as it appears in the document.
 pub address: Option<stripe_types::address::Address>,
@@ -31,13 +30,6 @@ pub status: DocumentStatus,
 pub type_: Option<DocumentType>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Document {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Status of this `document` check.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DocumentStatus {
@@ -90,22 +82,6 @@ impl<'de> serde::Deserialize<'de> for DocumentStatus {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DocumentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DocumentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DocumentStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Type of the document.
@@ -163,22 +139,6 @@ impl<'de> serde::Deserialize<'de> for DocumentType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DocumentType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DocumentType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DocumentType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod date_of_birth;

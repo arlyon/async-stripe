@@ -1,6 +1,5 @@
 /// TransactionEntries represent individual units of money movements within a single [Transaction](https://stripe.com/docs/api#transactions).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransactionEntry {
     pub balance_impact: stripe_treasury::treasury::transaction::balance_impact::BalanceImpact,
     /// Time at which the object was created.
@@ -35,13 +34,6 @@ pub struct TransactionEntry {
     #[serde(rename = "type")]
     pub type_: TransactionEntryType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransactionEntry {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Type of the flow associated with the TransactionEntry.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TransactionEntryFlowType {
@@ -118,22 +110,6 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryFlowType {
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionEntryFlowType"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransactionEntryFlowType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TransactionEntryFlowType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransactionEntryFlowType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -186,22 +162,6 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionEntryObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransactionEntryObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TransactionEntryObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransactionEntryObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The specific money movement that generated the TransactionEntry.
@@ -311,22 +271,6 @@ impl<'de> serde::Deserialize<'de> for TransactionEntryType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionEntryType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransactionEntryType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TransactionEntryType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TransactionEntryType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for TransactionEntry {

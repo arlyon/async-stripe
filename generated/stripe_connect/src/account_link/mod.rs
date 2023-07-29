@@ -2,8 +2,7 @@
 /// Stripe-hosted applications, such as Connect Onboarding.
 ///
 /// Related guide: [Connect Onboarding](https://stripe.com/docs/connect/connect-onboarding).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AccountLink {
     /// Time at which the object was created.
     ///
@@ -18,13 +17,6 @@ pub struct AccountLink {
     /// The URL for the account link.
     pub url: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountLink {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -77,21 +69,5 @@ impl<'de> serde::Deserialize<'de> for AccountLinkObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountLinkObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AccountLinkObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AccountLinkObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AccountLinkObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

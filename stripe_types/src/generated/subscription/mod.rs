@@ -1,8 +1,7 @@
 /// Subscriptions allow you to charge a customer on a recurring basis.
 ///
 /// Related guide: [Creating Subscriptions](https://stripe.com/docs/billing/subscriptions/creating).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Subscription {
     /// ID of the Connect Application that created the subscription.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
@@ -151,13 +150,6 @@ pub struct Subscription {
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Subscription {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
@@ -216,22 +208,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionCollectionMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionCollectionMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -284,22 +260,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
@@ -381,22 +341,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Subscription {

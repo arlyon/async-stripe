@@ -1,18 +1,10 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ApplePay {
     /// Apple Pay Eligibility.
     pub eligible: bool,
     /// Reason the card is ineligible for Apple Pay.
     pub ineligible_reason: Option<ApplePayIneligibleReason>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApplePay {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Reason the card is ineligible for Apple Pay.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ApplePayIneligibleReason {
@@ -69,21 +61,5 @@ impl<'de> serde::Deserialize<'de> for ApplePayIneligibleReason {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ApplePayIneligibleReason"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApplePayIneligibleReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ApplePayIneligibleReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ApplePayIneligibleReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

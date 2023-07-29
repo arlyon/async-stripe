@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DeletedDiscount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     ///
@@ -31,13 +30,6 @@ pub struct DeletedDiscount {
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeletedDiscount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -90,22 +82,6 @@ impl<'de> serde::Deserialize<'de> for DeletedDiscountObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedDiscountObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeletedDiscountObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DeletedDiscountObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DeletedDiscountObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for DeletedDiscount {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Shipping {
     pub address: stripe_types::address::Address,
     /// The delivery company that shipped a card.
@@ -32,13 +31,6 @@ pub struct Shipping {
     #[serde(rename = "type")]
     pub type_: ShippingType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Shipping {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The delivery company that shipped a card.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingCarrier {
@@ -100,22 +92,6 @@ impl<'de> serde::Deserialize<'de> for ShippingCarrier {
             .map_err(|_| serde::de::Error::custom("Unknown value for ShippingCarrier"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingCarrier {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingCarrier> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingCarrier::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Shipment service, such as `standard` or `express`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingService {
@@ -172,22 +148,6 @@ impl<'de> serde::Deserialize<'de> for ShippingService {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ShippingService"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingService {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingService> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingService::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The delivery status of the card.
@@ -256,22 +216,6 @@ impl<'de> serde::Deserialize<'de> for ShippingStatus {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingStatus"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Packaging options.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ShippingType {
@@ -324,22 +268,6 @@ impl<'de> serde::Deserialize<'de> for ShippingType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod customs;

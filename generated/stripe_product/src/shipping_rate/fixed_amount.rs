@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -17,10 +16,4 @@ pub struct FixedAmount {
             stripe_product::shipping_rate::currency_option::CurrencyOption,
         >,
     >,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FixedAmount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -2,8 +2,7 @@
 /// object is created.
 ///
 /// [Authorizations](https://stripe.com/docs/issuing/purchases/authorizations) must be approved for the purchase to be completed successfully.  Related guide: [Issued Card Authorizations](https://stripe.com/docs/issuing/purchases/authorizations).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Authorization {
     /// The total amount that was authorized or rejected.
     ///
@@ -78,13 +77,6 @@ pub struct Authorization {
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     pub wallet: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Authorization {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// How the card details were provided.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AuthorizationAuthorizationMethod {
@@ -150,23 +142,6 @@ impl<'de> serde::Deserialize<'de> for AuthorizationAuthorizationMethod {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuthorizationAuthorizationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AuthorizationAuthorizationMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(AuthorizationAuthorizationMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -219,22 +194,6 @@ impl<'de> serde::Deserialize<'de> for AuthorizationObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuthorizationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AuthorizationObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AuthorizationObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The current status of the authorization in its lifecycle.
@@ -293,22 +252,6 @@ impl<'de> serde::Deserialize<'de> for AuthorizationStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuthorizationStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AuthorizationStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AuthorizationStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Authorization {

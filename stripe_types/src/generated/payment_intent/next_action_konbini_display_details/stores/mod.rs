@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Stores {
     /// FamilyMart instruction details.
 pub familymart: Option<stripe_types::payment_intent::next_action_konbini_display_details::stores::familymart::Familymart>,
@@ -11,13 +10,6 @@ pub ministop: Option<stripe_types::payment_intent::next_action_konbini_display_d
 pub seicomart: Option<stripe_types::payment_intent::next_action_konbini_display_details::stores::seicomart::Seicomart>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Stores {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod familymart;
 pub use familymart::Familymart;
 pub mod lawson;

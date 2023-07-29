@@ -1,6 +1,5 @@
 /// A Configurations object represents how features should be configured for terminal readers.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Configuration {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub bbpos_wisepos_e: Option<stripe_terminal::terminal::configuration::device_type_specific_config::DeviceTypeSpecificConfig>,
@@ -20,13 +19,6 @@ pub tipping: Option<stripe_terminal::terminal::configuration::tipping::Tipping>,
 pub verifone_p400: Option<stripe_terminal::terminal::configuration::device_type_specific_config::DeviceTypeSpecificConfig>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Configuration {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for ConfigurationObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConfigurationObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ConfigurationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ConfigurationObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ConfigurationObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Configuration {

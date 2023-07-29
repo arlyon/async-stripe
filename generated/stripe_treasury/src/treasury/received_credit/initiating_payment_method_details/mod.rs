@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct InitiatingPaymentMethodDetails {
     /// Set when `type` is `balance`.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -21,13 +20,6 @@ pub type_: InitiatingPaymentMethodDetailsType,
 pub us_bank_account: Option<stripe_treasury::treasury::received_credit::initiating_payment_method_details::us_bank_account::UsBankAccount>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InitiatingPaymentMethodDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Set when `type` is `balance`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InitiatingPaymentMethodDetailsBalance {
@@ -79,23 +71,6 @@ impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsBalance {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for InitiatingPaymentMethodDetailsBalance")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InitiatingPaymentMethodDetailsBalance {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InitiatingPaymentMethodDetailsBalance> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(InitiatingPaymentMethodDetailsBalance::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Polymorphic type matching the originating money movement's source.
@@ -163,23 +138,6 @@ impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for InitiatingPaymentMethodDetailsType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InitiatingPaymentMethodDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InitiatingPaymentMethodDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(InitiatingPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod financial_account;

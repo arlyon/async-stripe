@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct InvoiceSettings {
     /// Default custom fields to be displayed on invoices for this customer.
     pub custom_fields: Option<Vec<stripe_types::invoice::custom_field::CustomField>>,
@@ -10,10 +9,4 @@ pub struct InvoiceSettings {
     pub footer: Option<String>,
     /// Default options for invoice PDF rendering for this customer.
     pub rendering_options: Option<stripe_types::invoice::rendering_options::RenderingOptions>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

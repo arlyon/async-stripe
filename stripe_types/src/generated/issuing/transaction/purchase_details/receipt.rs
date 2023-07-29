@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Receipt {
     /// The description of the item.
     ///
@@ -11,10 +10,4 @@ pub struct Receipt {
     pub total: Option<i64>,
     /// The unit cost of the item in cents.
     pub unit_cost: Option<i64>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Receipt {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

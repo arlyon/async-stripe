@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentSettings {
     /// ID of the mandate to be used for this invoice.
     ///
@@ -14,13 +13,6 @@ pub struct PaymentSettings {
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     pub payment_method_types: Option<Vec<PaymentSettingsPaymentMethodTypes>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The list of payment method types (e.g.
 ///
 /// card) to provide to the invoice’s PaymentIntent.
@@ -138,22 +130,5 @@ impl<'de> serde::Deserialize<'de> for PaymentSettingsPaymentMethodTypes {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentSettingsPaymentMethodTypes")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentSettingsPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentSettingsPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentSettingsPaymentMethodTypes::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

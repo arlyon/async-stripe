@@ -2,8 +2,7 @@
 ///
 /// Customers can add funds to their cash balance by sending a bank transfer.
 /// These funds can be used for payment and can eventually be paid out to your bank account.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CashBalance {
     /// A hash of all cash balances available to this customer.
     ///
@@ -20,13 +19,6 @@ pub struct CashBalance {
     pub object: CashBalanceObject,
     pub settings: stripe_types::cash_balance::balance_settings::BalanceSettings,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CashBalance {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for CashBalanceObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CashBalanceObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CashBalanceObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CashBalanceObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CashBalanceObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod balance_settings;

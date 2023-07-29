@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginLink {
     /// Time at which the object was created.
     ///
@@ -12,13 +11,6 @@ pub struct LoginLink {
     /// The URL for the login link.
     pub url: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LoginLink {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -71,21 +63,5 @@ impl<'de> serde::Deserialize<'de> for LoginLinkObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for LoginLinkObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LoginLinkObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<LoginLinkObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LoginLinkObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

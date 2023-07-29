@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Sofort {
     /// Bank code of bank associated with the bank account.
     pub bank_code: Option<String>,
@@ -24,13 +23,6 @@ pub struct Sofort {
     /// They cannot be set or mutated.
     pub verified_name: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Sofort {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Preferred language of the Sofort authorization page that the customer is redirected to.
 /// Can be one of `en`, `de`, `fr`, or `nl`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -91,21 +83,5 @@ impl<'de> serde::Deserialize<'de> for SofortPreferredLanguage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SofortPreferredLanguage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SofortPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SofortPreferredLanguage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SofortPreferredLanguage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

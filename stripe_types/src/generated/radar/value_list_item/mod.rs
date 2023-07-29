@@ -1,8 +1,7 @@
 /// Value list items allow you to add specific values to a given Radar value list, which can then be used in rules.
 ///
 /// Related guide: [Managing List Items](https://stripe.com/docs/radar/lists#managing-list-items).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ValueListItem {
     /// Time at which the object was created.
     ///
@@ -23,13 +22,6 @@ pub struct ValueListItem {
     /// The identifier of the value list this item belongs to.
     pub value_list: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ValueListItem {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -82,22 +74,6 @@ impl<'de> serde::Deserialize<'de> for ValueListItemObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ValueListItemObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ValueListItemObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ValueListItemObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ValueListItemObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ValueListItem {

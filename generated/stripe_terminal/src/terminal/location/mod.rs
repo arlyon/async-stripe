@@ -1,8 +1,7 @@
 /// A Location represents a grouping of readers.
 ///
 /// Related guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Location {
     pub address: stripe_types::address::Address,
     /// The ID of a configuration that will be used to customize all readers in this location.
@@ -23,13 +22,6 @@ pub struct Location {
     /// Objects of the same type share the same value.
     pub object: LocationObject,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Location {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -81,22 +73,6 @@ impl<'de> serde::Deserialize<'de> for LocationObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for LocationObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LocationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<LocationObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LocationObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Location {

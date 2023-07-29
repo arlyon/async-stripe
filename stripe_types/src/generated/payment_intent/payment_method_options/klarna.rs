@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Klarna {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14,13 +13,6 @@ pub struct Klarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<KlarnaSetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Klarna {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum KlarnaCaptureMethod {
@@ -71,22 +63,6 @@ impl<'de> serde::Deserialize<'de> for KlarnaCaptureMethod {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for KlarnaCaptureMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for KlarnaCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<KlarnaCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(KlarnaCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -143,21 +119,5 @@ impl<'de> serde::Deserialize<'de> for KlarnaSetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for KlarnaSetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for KlarnaSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<KlarnaSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(KlarnaSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

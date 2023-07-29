@@ -20,8 +20,7 @@
 /// even as regulations change over time.
 ///
 /// Related guide: [Setup Intents API](https://stripe.com/docs/payments/setup-intents).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SetupIntent {
     /// ID of the Connect application that created the SetupIntent.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
@@ -105,13 +104,6 @@ pub struct SetupIntent {
     /// If not provided, this value defaults to `off_session`.
     pub usage: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupIntent {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Reason for cancellation of this SetupIntent, one of `abandoned`, `requested_by_customer`, or `duplicate`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SetupIntentCancellationReason {
@@ -169,22 +161,6 @@ impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupIntentCancellationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupIntentCancellationReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Indicates the directions of money movement for which this payment method is intended to be used.
@@ -247,22 +223,6 @@ impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentFlowDirections"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupIntentFlowDirections {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupIntentFlowDirections::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -315,22 +275,6 @@ impl<'de> serde::Deserialize<'de> for SetupIntentObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupIntentObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupIntentObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupIntentObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// [Status](https://stripe.com/docs/payments/intents#intent-statuses) of this SetupIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `canceled`, or `succeeded`.
@@ -398,22 +342,6 @@ impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SetupIntentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SetupIntentStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for SetupIntent {

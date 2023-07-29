@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct SpendingControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     ///
@@ -18,13 +17,6 @@ pub struct SpendingControls {
     /// Currency of the amounts within `spending_limits`.
     pub spending_limits_currency: Option<stripe_types::Currency>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingControls {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
 ///
 /// All other categories will be blocked.
@@ -1052,23 +1044,6 @@ impl<'de> serde::Deserialize<'de> for SpendingControlsAllowedCategories {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingControlsAllowedCategories {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SpendingControlsAllowedCategories> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SpendingControlsAllowedCategories::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 ///
 /// All other categories will be allowed.
@@ -2094,23 +2069,6 @@ impl<'de> serde::Deserialize<'de> for SpendingControlsBlockedCategories {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SpendingControlsBlockedCategories")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingControlsBlockedCategories {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SpendingControlsBlockedCategories> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SpendingControlsBlockedCategories::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod spending_limit;

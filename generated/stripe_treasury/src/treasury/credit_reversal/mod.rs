@@ -1,8 +1,7 @@
 /// You can reverse some [ReceivedCredits](https://stripe.com/docs/api#received_credits) depending on their network and source flow.
 ///
 /// Reversing a ReceivedCredit leads to the creation of a new object known as a CreditReversal.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreditReversal {
     /// Amount (in cents) transferred.
     pub amount: i64,
@@ -42,13 +41,6 @@ pub struct CreditReversal {
     pub transaction:
         Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditReversal {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The rails used to reverse the funds.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreditReversalNetwork {
@@ -104,22 +96,6 @@ impl<'de> serde::Deserialize<'de> for CreditReversalNetwork {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalNetwork"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditReversalNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditReversalNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditReversalNetwork::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -172,22 +148,6 @@ impl<'de> serde::Deserialize<'de> for CreditReversalObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditReversalObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditReversalObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditReversalObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Status of the CreditReversal.
@@ -246,22 +206,6 @@ impl<'de> serde::Deserialize<'de> for CreditReversalStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditReversalStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditReversalStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditReversalStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for CreditReversal {

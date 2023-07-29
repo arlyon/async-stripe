@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct FinancialConnections {
     /// The list of permissions to request.
     ///
@@ -7,13 +6,6 @@ pub struct FinancialConnections {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<FinancialConnectionsPermissions>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialConnections {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The list of permissions to request.
 ///
 /// The `payment_method` permission must be included.
@@ -73,22 +65,5 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsPermissions {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for FinancialConnectionsPermissions")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialConnectionsPermissions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FinancialConnectionsPermissions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(FinancialConnectionsPermissions::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

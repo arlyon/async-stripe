@@ -1,18 +1,10 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DeliveryEstimateBound {
     /// A unit of time.
     pub unit: DeliveryEstimateBoundUnit,
     /// Must be greater than 0.
     pub value: i64,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeliveryEstimateBound {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// A unit of time.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DeliveryEstimateBoundUnit {
@@ -75,21 +67,5 @@ impl<'de> serde::Deserialize<'de> for DeliveryEstimateBoundUnit {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeliveryEstimateBoundUnit"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeliveryEstimateBoundUnit {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DeliveryEstimateBoundUnit> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DeliveryEstimateBoundUnit::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CurrencyOption {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -8,13 +7,6 @@ pub struct CurrencyOption {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     pub tax_behavior: CurrencyOptionTaxBehavior,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CurrencyOption {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
 ///
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -73,21 +65,5 @@ impl<'de> serde::Deserialize<'de> for CurrencyOptionTaxBehavior {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CurrencyOptionTaxBehavior"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CurrencyOptionTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CurrencyOptionTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CurrencyOptionTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

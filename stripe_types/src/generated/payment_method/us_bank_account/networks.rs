@@ -1,18 +1,10 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Networks {
     /// The preferred network.
     pub preferred: Option<String>,
     /// All supported networks.
     pub supported: Vec<NetworksSupported>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Networks {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// All supported networks.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum NetworksSupported {
@@ -66,21 +58,5 @@ impl<'de> serde::Deserialize<'de> for NetworksSupported {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for NetworksSupported"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NetworksSupported {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<NetworksSupported> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(NetworksSupported::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

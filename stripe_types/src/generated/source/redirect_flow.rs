@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RedirectFlow {
     /// The failure reason for the redirect, either `user_abort` (the customer aborted or dropped out of the redirect flow), `declined` (the authentication failed or the transaction was declined), or `processing_error` (the redirect failed due to a technical error).
     ///
@@ -11,10 +10,4 @@ pub struct RedirectFlow {
     pub status: String,
     /// The URL provided to you to redirect a customer to as part of a `redirect` authentication flow.
     pub url: String,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RedirectFlow {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

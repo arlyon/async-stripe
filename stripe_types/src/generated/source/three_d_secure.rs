@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct ThreeDSecure {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1_check: Option<String>,
@@ -41,10 +40,4 @@ pub struct ThreeDSecure {
     pub three_d_secure: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tokenization_method: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecure {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

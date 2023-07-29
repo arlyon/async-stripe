@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Link {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14,13 +13,6 @@ pub struct Link {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<LinkSetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Link {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Controls when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum LinkCaptureMethod {
@@ -71,22 +63,6 @@ impl<'de> serde::Deserialize<'de> for LinkCaptureMethod {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for LinkCaptureMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LinkCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<LinkCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LinkCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -146,21 +122,5 @@ impl<'de> serde::Deserialize<'de> for LinkSetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for LinkSetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LinkSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<LinkSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(LinkSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

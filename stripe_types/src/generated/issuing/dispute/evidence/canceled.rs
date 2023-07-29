@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Canceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<stripe_types::Expandable<stripe_types::file::File>>,
@@ -22,13 +21,6 @@ pub struct Canceled {
     /// Date when the product was returned or attempted to be returned.
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Canceled {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Whether the product was a merchandise or service.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CanceledProductType {
@@ -84,22 +76,6 @@ impl<'de> serde::Deserialize<'de> for CanceledProductType {
             .map_err(|_| serde::de::Error::custom("Unknown value for CanceledProductType"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CanceledProductType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CanceledProductType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CanceledProductType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Result of cardholder's attempt to return the product.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CanceledReturnStatus {
@@ -153,21 +129,5 @@ impl<'de> serde::Deserialize<'de> for CanceledReturnStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CanceledReturnStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CanceledReturnStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CanceledReturnStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CanceledReturnStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

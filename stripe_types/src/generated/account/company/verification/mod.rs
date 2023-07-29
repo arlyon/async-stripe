@@ -1,15 +1,7 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Verification {
     pub document:
         stripe_types::account::company::verification::verification_document::VerificationDocument,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Verification {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod verification_document;
 pub use verification_document::VerificationDocument;

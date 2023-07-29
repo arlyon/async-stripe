@@ -5,8 +5,7 @@
 /// Most users configure webhooks from [the dashboard](https://dashboard.stripe.com/webhooks), which provides a user interface for registering and testing your webhook endpoints.
 ///
 /// Related guide: [Setting up Webhooks](https://stripe.com/docs/webhooks/configure).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct WebhookEndpoint {
     /// The API version events are rendered as for this webhook endpoint.
     pub api_version: Option<String>,
@@ -46,13 +45,6 @@ pub struct WebhookEndpoint {
     /// The URL of the webhook endpoint.
     pub url: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WebhookEndpoint {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -105,22 +97,6 @@ impl<'de> serde::Deserialize<'de> for WebhookEndpointObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for WebhookEndpointObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WebhookEndpointObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<WebhookEndpointObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(WebhookEndpointObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for WebhookEndpoint {

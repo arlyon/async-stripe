@@ -1,18 +1,10 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentIntentDataCaptureMethod>,
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
     pub setup_future_usage: Option<PaymentIntentDataSetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentIntentData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentDataCaptureMethod {
@@ -69,22 +61,6 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentDataCaptureMethod {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentIntentDataCaptureMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentIntentDataCaptureMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentIntentDataCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Indicates that you intend to make future payments with the payment method collected during checkout.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentDataSetupFutureUsage {
@@ -139,22 +115,5 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentDataSetupFutureUsage {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentDataSetupFutureUsage")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentIntentDataSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentIntentDataSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentIntentDataSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct DocumentCheckError {
     /// A short machine-readable string giving the reason for the verification failure.
     pub code: Option<DocumentCheckErrorCode>,
@@ -8,13 +7,6 @@ pub struct DocumentCheckError {
     /// These messages can be shown to your users.
     pub reason: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DocumentCheckError {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// A short machine-readable string giving the reason for the verification failure.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DocumentCheckErrorCode {
@@ -71,21 +63,5 @@ impl<'de> serde::Deserialize<'de> for DocumentCheckErrorCode {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DocumentCheckErrorCode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DocumentCheckErrorCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DocumentCheckErrorCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DocumentCheckErrorCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

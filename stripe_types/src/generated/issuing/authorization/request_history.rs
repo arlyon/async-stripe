@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct RequestHistory {
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
@@ -31,13 +30,6 @@ pub struct RequestHistory {
     /// If approve/decline decision is directly responsed to the webhook with json payload and if the response is invalid (e.g., parsing errors), we surface the detailed message via this field.
     pub reason_message: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RequestHistory {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The reason for the approval or decline.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RequestHistoryReason {
@@ -127,21 +119,5 @@ impl<'de> serde::Deserialize<'de> for RequestHistoryReason {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RequestHistoryReason"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RequestHistoryReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RequestHistoryReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RequestHistoryReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -9,8 +9,7 @@
 ///
 /// By visiting the session's URL, the customer can manage their subscriptions and billing details.
 /// For security reasons, sessions are short-lived and will expire if the customer does not visit the URL. Create sessions on-demand when customers intend to manage their subscriptions and billing details.  Learn more in the [integration guide](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     /// The configuration used by this session, describing the features available.
     pub configuration:
@@ -44,13 +43,6 @@ pub struct Session {
     /// The short-lived URL of the session that gives customers access to the customer portal.
     pub url: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Session {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The IETF language tag of the locale Customer Portal is displayed in.
 ///
 /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
@@ -242,22 +234,6 @@ impl<'de> serde::Deserialize<'de> for SessionLocale {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SessionLocale {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SessionLocale> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SessionLocale::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -309,22 +285,6 @@ impl<'de> serde::Deserialize<'de> for SessionObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SessionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SessionObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SessionObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Session {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Parameters {
     /// The set of output columns requested for inclusion in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,10 +28,4 @@ pub struct Parameters {
     /// Has no effect on `interval_start` or `interval_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Parameters {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

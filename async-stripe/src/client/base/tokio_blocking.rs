@@ -1,7 +1,6 @@
 use std::{sync::Arc, time::Duration};
 
 use http_types::Request;
-use miniserde::Deserialize;
 
 use crate::client::base::tokio::TokioClient;
 use crate::client::request_strategy::RequestStrategy;

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct EventRequest {
     /// ID of the API request that caused the event.
     ///
@@ -11,13 +10,6 @@ pub struct EventRequest {
     /// *Note: This property is populated only for events on or after May 23, 2017*.
     pub idempotency_key: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EventRequest {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 impl stripe_types::Object for EventRequest {
     type Id = Option<String>;
     fn id(&self) -> Self::Id {

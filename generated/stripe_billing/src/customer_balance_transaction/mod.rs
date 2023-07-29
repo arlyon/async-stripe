@@ -4,8 +4,7 @@
 /// or by creating a Customer Balance Transaction, which increments or decrements the customer's `balance` by the specified `amount`.
 ///
 /// Related guide: [Customer Balance](https://stripe.com/docs/billing/customer/balance) to learn more.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CustomerBalanceTransaction {
     /// The amount of the transaction.
     ///
@@ -52,13 +51,6 @@ pub struct CustomerBalanceTransaction {
     #[serde(rename = "type")]
     pub type_: CustomerBalanceTransactionType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerBalanceTransaction {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -112,23 +104,6 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionObject {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CustomerBalanceTransactionObject")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerBalanceTransactionObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(CustomerBalanceTransactionObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
@@ -208,22 +183,6 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerBalanceTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for CustomerBalanceTransaction {

@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Sofort {
     /// Preferred language of the SOFORT authorization page that the customer is redirected to.
     pub preferred_language: Option<SofortPreferredLanguage>,
@@ -11,13 +10,6 @@ pub struct Sofort {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<SofortSetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Sofort {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Preferred language of the SOFORT authorization page that the customer is redirected to.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SofortPreferredLanguage {
@@ -88,22 +80,6 @@ impl<'de> serde::Deserialize<'de> for SofortPreferredLanguage {
             .map_err(|_| serde::de::Error::custom("Unknown value for SofortPreferredLanguage"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SofortPreferredLanguage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SofortPreferredLanguage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SofortPreferredLanguage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -161,21 +137,5 @@ impl<'de> serde::Deserialize<'de> for SofortSetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SofortSetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SofortSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SofortSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SofortSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

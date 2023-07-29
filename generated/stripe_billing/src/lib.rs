@@ -1,8 +1,5 @@
 #![recursion_limit = "256"]
 extern crate self as stripe_billing;
-
-#[cfg(feature = "min-ser")]
-miniserde::make_place!(Place);
 pub mod credit_note;
 pub use credit_note::CreditNote;
 pub mod customer_balance_transaction;

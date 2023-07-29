@@ -3,7 +3,6 @@ use std::pin::Pin;
 
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
-use miniserde::Deserialize;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::{ErrorResponse, StripeError};

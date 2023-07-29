@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Multibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entity: Option<String>,
@@ -21,10 +20,4 @@ pub struct Multibanco {
     pub refund_account_holder_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_iban: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Multibanco {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

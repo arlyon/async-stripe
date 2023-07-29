@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct BlikMandateOptionsOffSessionDetails {
     /// Amount of each recurring payment.
     pub amount: Option<i64>,
@@ -10,13 +9,6 @@ pub struct BlikMandateOptionsOffSessionDetails {
     /// Frequency indicator of each recurring payment.
     pub interval_count: Option<u64>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BlikMandateOptionsOffSessionDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Frequency interval of each recurring payment.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BlikMandateOptionsOffSessionDetailsInterval {
@@ -79,24 +71,5 @@ impl<'de> serde::Deserialize<'de> for BlikMandateOptionsOffSessionDetailsInterva
                 "Unknown value for BlikMandateOptionsOffSessionDetailsInterval",
             )
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BlikMandateOptionsOffSessionDetailsInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BlikMandateOptionsOffSessionDetailsInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            BlikMandateOptionsOffSessionDetailsInterval::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }

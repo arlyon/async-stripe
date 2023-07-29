@@ -5,8 +5,7 @@
 /// They can be bank accounts or debit cards as well, and are documented in the links above.
 ///
 /// Related guide: [Bank Debits and Transfers](https://stripe.com/docs/payments/bank-debits-transfers).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BankAccount {
     /// The ID of the account that the bank account is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -71,13 +70,6 @@ pub struct BankAccount {
     /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
     pub status: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankAccount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// A set of available payout methods for this bank account.
 ///
 /// Only values from this set should be passed as the `method` when creating a payout.
@@ -136,23 +128,6 @@ impl<'de> serde::Deserialize<'de> for BankAccountAvailablePayoutMethods {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankAccountAvailablePayoutMethods {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BankAccountAvailablePayoutMethods> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(BankAccountAvailablePayoutMethods::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -205,22 +180,6 @@ impl<'de> serde::Deserialize<'de> for BankAccountObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BankAccountObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankAccountObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BankAccountObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BankAccountObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for BankAccount {

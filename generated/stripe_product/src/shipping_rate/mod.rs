@@ -1,8 +1,7 @@
 /// Shipping rates describe the price of shipping presented to your customers and can be
 /// applied to [Checkout Sessions](https://stripe.com/docs/payments/checkout/shipping)
 /// and [Orders](https://stripe.com/docs/orders/shipping) to collect shipping costs.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ShippingRate {
     /// Whether the shipping rate can be used for new purchases.
     ///
@@ -49,13 +48,6 @@ pub struct ShippingRate {
     #[serde(rename = "type")]
     pub type_: ShippingRateType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingRate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -108,22 +100,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingRateObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingRateObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
@@ -186,22 +162,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
             .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateTaxBehavior"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingRateTaxBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The type of calculation to use on the shipping rate.
 ///
 /// Can only be `fixed_amount` for now.
@@ -254,22 +214,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingRateType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ShippingRateType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ShippingRate {

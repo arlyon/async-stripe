@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct InvoiceLineItem {
     /// The amount, in %s.
     pub amount: i64,
@@ -70,13 +69,6 @@ pub struct InvoiceLineItem {
     /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceLineItem {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -129,22 +121,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceLineItemObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceLineItemObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceLineItemObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
@@ -200,22 +176,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for InvoiceLineItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<InvoiceLineItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(InvoiceLineItemType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for InvoiceLineItem {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DeletedInvoice {
     /// Always true for a deleted object.
     deleted: stripe_types::AlwaysTrue,
@@ -10,13 +9,6 @@ pub struct DeletedInvoice {
     /// Objects of the same type share the same value.
     pub object: DeletedInvoiceObject,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeletedInvoice {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -69,22 +61,6 @@ impl<'de> serde::Deserialize<'de> for DeletedInvoiceObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedInvoiceObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DeletedInvoiceObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DeletedInvoiceObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(DeletedInvoiceObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for DeletedInvoice {

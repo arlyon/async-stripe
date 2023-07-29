@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Individual {
     /// The date of birth of this cardholder.
     pub dob: Option<stripe_types::issuing::cardholder::individual::date_of_birth::DateOfBirth>,
@@ -11,13 +10,6 @@ pub struct Individual {
     pub verification:
         Option<stripe_types::issuing::cardholder::individual::verification::Verification>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Individual {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod date_of_birth;
 pub use date_of_birth::DateOfBirth;
 pub mod verification;

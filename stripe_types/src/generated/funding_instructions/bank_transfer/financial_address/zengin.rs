@@ -1,6 +1,5 @@
 /// Zengin Records contain Japan bank account details per the Zengin format.
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Zengin {
     /// The account holder name.
     pub account_holder_name: Option<String>,
@@ -18,10 +17,4 @@ pub struct Zengin {
     pub branch_code: Option<String>,
     /// The branch name of the account.
     pub branch_name: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Zengin {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

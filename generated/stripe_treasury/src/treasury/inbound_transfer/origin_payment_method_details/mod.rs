@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct OriginPaymentMethodDetails {
 pub billing_details: stripe_treasury::treasury::received_credit::initiating_payment_method_details::billing_details::BillingDetails,
     /// The type of the payment method used in the InboundTransfer.
@@ -9,13 +8,6 @@ pub type_: OriginPaymentMethodDetailsType,
 pub us_bank_account: Option<stripe_treasury::treasury::inbound_transfer::origin_payment_method_details::us_bank_account::UsBankAccount>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OriginPaymentMethodDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of the payment method used in the InboundTransfer.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OriginPaymentMethodDetailsType {
@@ -67,22 +59,6 @@ impl<'de> serde::Deserialize<'de> for OriginPaymentMethodDetailsType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for OriginPaymentMethodDetailsType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OriginPaymentMethodDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<OriginPaymentMethodDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(OriginPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod us_bank_account;

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Other {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<stripe_types::Expandable<stripe_types::file::File>>,
@@ -10,13 +9,6 @@ pub struct Other {
     /// Whether the product was a merchandise or service.
     pub product_type: Option<OtherProductType>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Other {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Whether the product was a merchandise or service.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OtherProductType {
@@ -70,21 +62,5 @@ impl<'de> serde::Deserialize<'de> for OtherProductType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OtherProductType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OtherProductType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<OtherProductType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(OtherProductType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

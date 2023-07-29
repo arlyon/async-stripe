@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct ThreeDSecure {
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
@@ -12,13 +11,6 @@ pub struct ThreeDSecure {
     /// The version of 3D Secure that was used.
     pub version: Option<ThreeDSecureVersion>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecure {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// For authenticated transactions: how the customer was authenticated by
 /// the issuing bank.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -74,22 +66,6 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureAuthenticationFlow {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for ThreeDSecureAuthenticationFlow")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecureAuthenticationFlow {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureAuthenticationFlow> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ThreeDSecureAuthenticationFlow::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Indicates the outcome of 3D Secure authentication.
@@ -157,22 +133,6 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureResult {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureResult"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecureResult {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureResult> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ThreeDSecureResult::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Additional information about why 3D Secure succeeded or failed based
@@ -246,22 +206,6 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureResultReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureResultReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecureResultReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureResultReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ThreeDSecureResultReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The version of 3D Secure that was used.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ThreeDSecureVersion {
@@ -318,21 +262,5 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureVersion {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureVersion"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ThreeDSecureVersion {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ThreeDSecureVersion> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ThreeDSecureVersion::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct VerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: VerificationDataAddressLine1Check,
@@ -10,13 +9,6 @@ pub struct VerificationData {
     /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
     pub expiry_check: VerificationDataExpiryCheck,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationDataAddressLine1Check {
@@ -74,23 +66,6 @@ impl<'de> serde::Deserialize<'de> for VerificationDataAddressLine1Check {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for VerificationDataAddressLine1Check")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationDataAddressLine1Check {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationDataAddressLine1Check> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(VerificationDataAddressLine1Check::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
@@ -152,24 +127,6 @@ impl<'de> serde::Deserialize<'de> for VerificationDataAddressPostalCodeCheck {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationDataAddressPostalCodeCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationDataAddressPostalCodeCheck> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            VerificationDataAddressPostalCodeCheck::from_str(s).map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
-    }
-}
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationDataCvcCheck {
@@ -228,22 +185,6 @@ impl<'de> serde::Deserialize<'de> for VerificationDataCvcCheck {
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationDataCvcCheck"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationDataCvcCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationDataCvcCheck> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationDataCvcCheck::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationDataExpiryCheck {
@@ -300,21 +241,5 @@ impl<'de> serde::Deserialize<'de> for VerificationDataExpiryCheck {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationDataExpiryCheck"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationDataExpiryCheck {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationDataExpiryCheck> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationDataExpiryCheck::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

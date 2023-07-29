@@ -10,14 +10,6 @@ macro_rules! def_id_serde_impls {
             }
         }
 
-        #[cfg(feature = "min-ser")]
-        impl miniserde::Deserialize for $struct_name {
-            fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-                todo!()
-            }
-        }
-
-        #[cfg(not(feature = "min-ser"))]
         impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceFlowDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<stripe_treasury::treasury::credit_reversal::CreditReversal>,
@@ -11,13 +10,6 @@ pub struct SourceFlowDetails {
     #[serde(rename = "type")]
     pub type_: SourceFlowDetailsType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SourceFlowDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of the source flow that originated the ReceivedCredit.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SourceFlowDetailsType {
@@ -77,21 +69,5 @@ impl<'de> serde::Deserialize<'de> for SourceFlowDetailsType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SourceFlowDetailsType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SourceFlowDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SourceFlowDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SourceFlowDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

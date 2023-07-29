@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Errors {
     /// The code for the type of error.
     pub code: ErrorsCode,
@@ -8,13 +7,6 @@ pub struct Errors {
     /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
     pub requirement: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Errors {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The code for the type of error.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ErrorsCode {
@@ -244,21 +236,5 @@ impl<'de> serde::Deserialize<'de> for ErrorsCode {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ErrorsCode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ErrorsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ErrorsCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ErrorsCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

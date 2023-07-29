@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PendingInvoiceItemInterval {
     /// Specifies invoicing frequency.
     ///
@@ -11,13 +10,6 @@ pub struct PendingInvoiceItemInterval {
     /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     pub interval_count: u64,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PendingInvoiceItemInterval {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Specifies invoicing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
@@ -80,22 +72,5 @@ impl<'de> serde::Deserialize<'de> for PendingInvoiceItemIntervalInterval {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PendingInvoiceItemIntervalInterval")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PendingInvoiceItemIntervalInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PendingInvoiceItemIntervalInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PendingInvoiceItemIntervalInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

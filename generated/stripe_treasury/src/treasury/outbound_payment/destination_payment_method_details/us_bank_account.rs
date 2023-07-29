@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct UsBankAccount {
     /// Account holder type: individual or company.
     pub account_holder_type: Option<UsBankAccountAccountHolderType>,
@@ -20,13 +19,6 @@ pub struct UsBankAccount {
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Account holder type: individual or company.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsBankAccountAccountHolderType {
@@ -81,22 +73,6 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountHolderType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountAccountHolderType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccountAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountHolderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Account type: checkings or savings.
@@ -156,22 +132,6 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountType {
             .map_err(|_| serde::de::Error::custom("Unknown value for UsBankAccountAccountType"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The US bank account network used to send funds.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsBankAccountNetwork {
@@ -225,21 +185,5 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountNetwork {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for UsBankAccountNetwork"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccountNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsBankAccountNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsBankAccountNetwork::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

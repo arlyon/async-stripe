@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct NextAction {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub alipay_handle_redirect: Option<stripe_types::payment_intent::next_action_alipay_handle_redirect::NextActionAlipayHandleRedirect>,
@@ -39,26 +38,11 @@ pub wechat_pay_redirect_to_android_app: Option<stripe_types::payment_intent::nex
 pub wechat_pay_redirect_to_ios_app: Option<stripe_types::payment_intent::next_action::wechat_pay_redirect_to_ios_app::WechatPayRedirectToIosApp>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NextAction {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
 ///
 /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct NextActionUseStripeSdk {}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NextActionUseStripeSdk {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod paynow_display_qr_code;
 pub use paynow_display_qr_code::PaynowDisplayQrCode;
 pub mod pix_display_qr_code;

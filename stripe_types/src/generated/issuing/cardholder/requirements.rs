@@ -1,18 +1,10 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Requirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
     pub disabled_reason: Option<RequirementsDisabledReason>,
     /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
     pub past_due: Option<Vec<RequirementsPastDue>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Requirements {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RequirementsDisabledReason {
@@ -69,22 +61,6 @@ impl<'de> serde::Deserialize<'de> for RequirementsDisabledReason {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RequirementsDisabledReason"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RequirementsDisabledReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RequirementsDisabledReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RequirementsDisabledReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
@@ -155,21 +131,5 @@ impl<'de> serde::Deserialize<'de> for RequirementsPastDue {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RequirementsPastDue"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RequirementsPastDue {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RequirementsPastDue> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RequirementsPastDue::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

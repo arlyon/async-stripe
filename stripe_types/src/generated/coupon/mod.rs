@@ -3,8 +3,7 @@
 ///
 /// Coupons may be applied to [subscriptions](https://stripe.com/docs/api#subscriptions), [invoices](https://stripe.com/docs/api#invoices), [checkout sessions](https://stripe.com/docs/api/checkout/sessions), [quotes](https://stripe.com/docs/api#quotes), and more.
 /// Coupons do not work with conventional one-off [charges](https://stripe.com/docs/api#create_charge) or [payment intents](https://stripe.com/docs/api/payment_intents).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Coupon {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: Option<i64>,
@@ -61,13 +60,6 @@ pub struct Coupon {
     /// Taking account of the above properties, whether this coupon can still be applied to a customer.
     pub valid: bool,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Coupon {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// One of `forever`, `once`, and `repeating`.
 ///
 /// Describes how long a customer who applies this coupon will get the discount.
@@ -127,22 +119,6 @@ impl<'de> serde::Deserialize<'de> for CouponDuration {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CouponDuration"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CouponDuration {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CouponDuration> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CouponDuration::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -194,22 +170,6 @@ impl<'de> serde::Deserialize<'de> for CouponObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CouponObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CouponObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CouponObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CouponObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Coupon {

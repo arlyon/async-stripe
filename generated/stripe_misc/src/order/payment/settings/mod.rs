@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     pub application_fee_amount: Option<i64>,
@@ -28,13 +27,6 @@ pub struct Settings {
     /// Provides configuration for completing a transfer for the order after it is paid.
     pub transfer_data: Option<stripe_misc::order::payment::settings::transfer_data::TransferData>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Settings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
 ///
 /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
@@ -144,22 +136,6 @@ impl<'de> serde::Deserialize<'de> for SettingsPaymentMethodTypes {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SettingsPaymentMethodTypes"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SettingsPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SettingsPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SettingsPaymentMethodTypes::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod automatic_payment_methods;

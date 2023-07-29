@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct DateOfBirth {
     /// The day of birth, between 1 and 31.
     pub day: Option<i64>,
@@ -7,10 +6,4 @@ pub struct DateOfBirth {
     pub month: Option<i64>,
     /// The four-digit year of birth.
     pub year: Option<i64>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DateOfBirth {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

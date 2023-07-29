@@ -1,8 +1,7 @@
 /// Issue a credit note to adjust an invoice's amount after the invoice is finalized.
 ///
 /// Related guide: [Credit Notes](https://stripe.com/docs/billing/invoices/credit-notes).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreditNote {
     /// The integer amount in %s representing the total amount of the credit note, including tax.
     pub amount: i64,
@@ -77,13 +76,6 @@ pub struct CreditNote {
     /// The time that the credit note was voided.
     pub voided_at: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNote {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -136,22 +128,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
@@ -215,22 +191,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Status of this credit note, one of `issued` or `void`.
 ///
 /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
@@ -288,22 +248,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Type of this credit note, one of `pre_payment` or `post_payment`.
 ///
 /// A `pre_payment` credit note means it was issued when the invoice was open.
@@ -359,22 +303,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CreditNoteType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CreditNoteType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CreditNoteType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for CreditNote {

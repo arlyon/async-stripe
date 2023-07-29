@@ -1,16 +1,8 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Store {
     /// The name of the convenience store chain where the payment was completed.
     pub chain: Option<StoreChain>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Store {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The name of the convenience store chain where the payment was completed.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum StoreChain {
@@ -69,21 +61,5 @@ impl<'de> serde::Deserialize<'de> for StoreChain {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for StoreChain"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StoreChain {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<StoreChain> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(StoreChain::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

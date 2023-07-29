@@ -52,17 +52,13 @@ impl CodeGen {
 
         let crate_name = krate.name();
 
-        // We set up a few things in the base `lib.rs` file:
+        // We set up 2 things in the base `lib.rs` file:
         // 1. Without this recursion limit increase, `cargo doc` fails
         // 2. The `extern` allows generated code to use absolute paths starting with the crate name instead of `crate`
-        // 3. The `Place` declaration supports using `crate::Place` for miniserde deserialization
         let mut mod_rs = formatdoc! {
             r#"
             #![recursion_limit = "256"]
             extern crate self as {crate_name};
-            
-            #[cfg(feature = "min-ser")]
-            miniserde::make_place!(Place);
             "#
         };
 
@@ -82,7 +78,6 @@ impl CodeGen {
         let mut mod_rs_contents = String::new();
 
         let modules = self.components.get_crate_members(Crate::Types);
-        dbg!(&modules);
         self.write_crate_modules(modules, &base_path, &mut mod_rs_contents)?;
         let extra_types = self.components.paths_in_types.iter();
         self.write_crate_modules(extra_types, &base_path, &mut mod_rs_contents)?;
@@ -92,7 +87,7 @@ impl CodeGen {
             self.components.write_object(
                 obj,
                 &ObjectMetadata::new(meta.ident.clone()).doc(meta.doc.clone()),
-                ObjectGenInfo::new(Derives::deser()),
+                ObjectGenInfo::new(Derives::new_deser()),
                 &mut out,
             );
             write_to_file(out, base_path.join(format!("{}.rs", meta.mod_path)))?;

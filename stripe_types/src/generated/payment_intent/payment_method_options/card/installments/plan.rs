@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Plan {
     /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
     pub count: Option<u64>,
@@ -10,13 +9,6 @@ pub struct Plan {
     #[serde(rename = "type")]
     pub type_: PlanType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Plan {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
 /// One of `month`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -69,22 +61,6 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Type of installment plan, one of `fixed_count`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PlanType {
@@ -134,21 +110,5 @@ impl<'de> serde::Deserialize<'de> for PlanType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

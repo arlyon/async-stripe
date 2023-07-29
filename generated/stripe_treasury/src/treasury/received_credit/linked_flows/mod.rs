@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct LinkedFlows {
     /// The CreditReversal created as a result of this ReceivedCredit being reversed.
 pub credit_reversal: Option<String>,
@@ -18,12 +17,5 @@ pub source_flow_details: Option<stripe_treasury::treasury::received_credit::link
 pub source_flow_type: Option<String>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for LinkedFlows {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod source_flow_details;
 pub use source_flow_details::SourceFlowDetails;

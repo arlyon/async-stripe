@@ -1,11 +1,9 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Currency is the list of supported currencies.
 ///
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
-#[derive(Copy, Clone, Debug, Serialize, Eq, PartialEq, Hash)]
-#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub enum Currency {
     #[serde(rename = "aed")]
     AED, // United Arab Emirates Dirham

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ShippingCost {
     /// Total shipping cost before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -15,10 +14,4 @@ pub struct ShippingCost {
     /// The taxes applied to the shipping rate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taxes: Option<Vec<stripe_types::line_item::tax::Tax>>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ShippingCost {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AcssDebit {
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13,13 +12,6 @@ pub struct AcssDebit {
     /// Transaction type of the mandate.
     pub transaction_type: AcssDebitTransactionType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// List of Stripe products where this mandate can be selected automatically.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AcssDebitDefaultFor {
@@ -73,22 +65,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitDefaultFor {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitDefaultFor"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitDefaultFor {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitDefaultFor> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitDefaultFor::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Payment schedule for the mandate.
@@ -149,22 +125,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitPaymentSchedule {
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitPaymentSchedule"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitPaymentSchedule {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitPaymentSchedule> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitPaymentSchedule::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AcssDebitTransactionType {
@@ -218,21 +178,5 @@ impl<'de> serde::Deserialize<'de> for AcssDebitTransactionType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitTransactionType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

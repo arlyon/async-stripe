@@ -7,7 +7,6 @@ rust-version.workspace = true
 
 [dependencies]
 serde.workspace = true
-miniserde = { workspace = true, optional = true }
 http-types.workspace = true
 smol_str.workspace = true
 async-stripe = {path = "../../async-stripe"}
@@ -23,4 +22,3 @@ runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls"]
 runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
 runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
 
-min-ser = ["stripe_types/min-ser", "miniserde"]

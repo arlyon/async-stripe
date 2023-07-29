@@ -1,18 +1,10 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     pub options: Vec<CancellationReasonOptions>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CancellationReason {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Which cancellation reasons will be given as options to the customer.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CancellationReasonOptions {
@@ -84,21 +76,5 @@ impl<'de> serde::Deserialize<'de> for CancellationReasonOptions {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CancellationReasonOptions"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CancellationReasonOptions {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CancellationReasonOptions> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CancellationReasonOptions::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

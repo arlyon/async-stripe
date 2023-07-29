@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct MerchantData {
     /// A categorization of the seller's type of business.
     ///
@@ -19,10 +18,4 @@ pub struct MerchantData {
     pub postal_code: Option<String>,
     /// State where the seller is located.
     pub state: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MerchantData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

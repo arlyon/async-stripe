@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodOptions {
     /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to invoices created by the subscription.
     pub acss_debit: Option<stripe_types::invoice::payment_method_options::acss_debit::AcssDebit>,
@@ -16,12 +15,5 @@ pub struct PaymentMethodOptions {
     pub us_bank_account:
         Option<stripe_types::invoice::payment_method_options::us_bank_account::UsBankAccount>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodOptions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod card;
 pub use card::Card;

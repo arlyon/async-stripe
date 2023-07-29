@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BacsDebit {
     /// The status of the mandate on the Bacs network.
     ///
@@ -10,13 +9,6 @@ pub struct BacsDebit {
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BacsDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The status of the mandate on the Bacs network.
 ///
 /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
@@ -78,21 +70,5 @@ impl<'de> serde::Deserialize<'de> for BacsDebitNetworkStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BacsDebitNetworkStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BacsDebitNetworkStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BacsDebitNetworkStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BacsDebitNetworkStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

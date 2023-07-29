@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct MandateOptions {
     /// A URL for custom mandate text.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13,13 +12,6 @@ pub struct MandateOptions {
     /// Transaction type of the mandate.
     pub transaction_type: Option<MandateOptionsTransactionType>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MandateOptions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Payment schedule for the mandate.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MandateOptionsPaymentSchedule {
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for MandateOptionsPaymentSchedule {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MandateOptionsPaymentSchedule {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<MandateOptionsPaymentSchedule> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(MandateOptionsPaymentSchedule::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MandateOptionsTransactionType {
@@ -149,21 +125,5 @@ impl<'de> serde::Deserialize<'de> for MandateOptionsTransactionType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for MandateOptionsTransactionType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MandateOptionsTransactionType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<MandateOptionsTransactionType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(MandateOptionsTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

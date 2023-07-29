@@ -3,8 +3,7 @@
 ///
 /// Since this number is variable throughout the day, there are various reasons why you might want to know the current rate (for example, to dynamically price an item for a user with a default payment in a foreign currency).  If you want a guarantee that the charge is made with a certain exchange rate you expect is current, you can pass in `exchange_rate` to charges endpoints. If the value is no longer up to date, the charge won't go through.
 /// Please refer to our [Exchange Rates API](https://stripe.com/docs/exchange-rates) guide for more details.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ExchangeRate {
     /// Unique identifier for the object.
     ///
@@ -17,13 +16,6 @@ pub struct ExchangeRate {
     /// Hash where the keys are supported currencies and the values are the exchange rate at which the base id currency converts to the key currency.
     pub rates: std::collections::HashMap<String, f64>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ExchangeRate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -76,22 +68,6 @@ impl<'de> serde::Deserialize<'de> for ExchangeRateObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ExchangeRateObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ExchangeRateObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ExchangeRateObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ExchangeRateObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ExchangeRate {

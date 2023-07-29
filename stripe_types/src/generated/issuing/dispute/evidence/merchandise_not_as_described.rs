@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct MerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     pub additional_documentation: Option<stripe_types::Expandable<stripe_types::file::File>>,
@@ -14,13 +13,6 @@ pub struct MerchandiseNotAsDescribed {
     /// Date when the product was returned or attempted to be returned.
     pub returned_at: Option<stripe_types::Timestamp>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MerchandiseNotAsDescribed {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Result of cardholder's attempt to return the product.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum MerchandiseNotAsDescribedReturnStatus {
@@ -75,22 +67,5 @@ impl<'de> serde::Deserialize<'de> for MerchandiseNotAsDescribedReturnStatus {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for MerchandiseNotAsDescribedReturnStatus")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MerchandiseNotAsDescribedReturnStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<MerchandiseNotAsDescribedReturnStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(MerchandiseNotAsDescribedReturnStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

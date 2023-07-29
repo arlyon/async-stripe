@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct NextActionCardAwaitNotification {
     /// The time that payment will be attempted.
     ///
@@ -9,10 +8,4 @@ pub struct NextActionCardAwaitNotification {
     ///
     /// For payments of lower amount, no customer action is required.
     pub customer_approval_required: Option<bool>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NextActionCardAwaitNotification {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,8 +1,7 @@
 /// ReceivedCredits represent funds sent to a [FinancialAccount](https://stripe.com/docs/api#financial_accounts) (for example, via ACH or wire).
 ///
 /// These money movements are not initiated from the FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ReceivedCredit {
     /// Amount (in cents) transferred.
 pub amount: i64,
@@ -49,13 +48,6 @@ pub status: ReceivedCreditStatus,
 pub transaction: Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceivedCredit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Reason for the failure.
 ///
 /// A ReceivedCredit might fail because the receiving FinancialAccount is closed or frozen.
@@ -114,22 +106,6 @@ impl<'de> serde::Deserialize<'de> for ReceivedCreditFailureCode {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditFailureCode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceivedCreditFailureCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReceivedCreditFailureCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReceivedCreditFailureCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The rails used to send the funds.
@@ -193,22 +169,6 @@ impl<'de> serde::Deserialize<'de> for ReceivedCreditNetwork {
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditNetwork"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceivedCreditNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReceivedCreditNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReceivedCreditNetwork::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -261,22 +221,6 @@ impl<'de> serde::Deserialize<'de> for ReceivedCreditObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceivedCreditObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReceivedCreditObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReceivedCreditObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Status of the ReceivedCredit.
@@ -335,22 +279,6 @@ impl<'de> serde::Deserialize<'de> for ReceivedCreditStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceivedCreditStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReceivedCreditStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReceivedCreditStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ReceivedCredit {

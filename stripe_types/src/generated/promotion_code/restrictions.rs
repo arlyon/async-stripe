@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Restrictions {
     /// Promotion code restrictions defined in each available currency option.
     ///
@@ -17,10 +16,4 @@ pub struct Restrictions {
     pub minimum_amount: Option<i64>,
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount.
     pub minimum_amount_currency: Option<stripe_types::Currency>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Restrictions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

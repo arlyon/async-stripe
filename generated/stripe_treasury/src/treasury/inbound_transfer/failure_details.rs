@@ -1,16 +1,8 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FailureDetails {
     /// Reason for the failure.
     pub code: FailureDetailsCode,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FailureDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Reason for the failure.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FailureDetailsCode {
@@ -97,21 +89,5 @@ impl<'de> serde::Deserialize<'de> for FailureDetailsCode {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FailureDetailsCode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FailureDetailsCode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FailureDetailsCode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FailureDetailsCode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

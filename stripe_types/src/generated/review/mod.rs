@@ -2,8 +2,7 @@
 ///
 /// Learn more about [Radar](/radar) and reviewing payments
 /// [here](https://stripe.com/docs/radar/reviews).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Review {
     /// The ZIP or postal code of the card used, if applicable.
     pub billing_zip: Option<String>,
@@ -48,13 +47,6 @@ pub struct Review {
     /// Information related to the browsing session of the user who initiated the payment.
     pub session: Option<stripe_types::review::session::Session>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Review {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The reason the review was closed, or null if it has not yet been closed.
 ///
 /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
@@ -121,22 +113,6 @@ impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for ReviewClosedReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReviewClosedReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReviewClosedReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -188,22 +164,6 @@ impl<'de> serde::Deserialize<'de> for ReviewObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReviewObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReviewObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReviewObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReviewObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The reason the review was opened.
@@ -261,22 +221,6 @@ impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReviewOpenedReason"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReviewOpenedReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ReviewOpenedReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Review {

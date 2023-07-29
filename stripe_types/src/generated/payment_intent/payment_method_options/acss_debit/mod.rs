@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AcssDebit {
 #[serde(skip_serializing_if = "Option::is_none")]
 pub mandate_options: Option<stripe_types::payment_intent::payment_method_options::acss_debit::mandate_options::MandateOptions>,
@@ -15,13 +14,6 @@ pub setup_future_usage: Option<AcssDebitSetupFutureUsage>,
 pub verification_method: Option<AcssDebitVerificationMethod>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -84,22 +76,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitSetupFutureUsage {
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitSetupFutureUsage"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitSetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitSetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Bank account verification method.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AcssDebitVerificationMethod {
@@ -156,22 +132,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitVerificationMethod {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitVerificationMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitVerificationMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitVerificationMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod mandate_options;

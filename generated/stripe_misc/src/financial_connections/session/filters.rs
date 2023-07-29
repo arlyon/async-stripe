@@ -1,12 +1,5 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Filters {
     /// List of countries from which to filter accounts.
     pub countries: Option<Vec<String>>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Filters {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

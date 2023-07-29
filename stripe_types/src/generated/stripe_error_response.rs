@@ -1,12 +1,5 @@
 /// An error response from the Stripe API.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct StripeErrorResponse {
     pub error: Box<stripe_types::api_errors::ApiErrors>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StripeErrorResponse {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

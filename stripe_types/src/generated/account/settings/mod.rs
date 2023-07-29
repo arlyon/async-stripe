@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit_payments:
@@ -19,13 +18,6 @@ pub struct Settings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<stripe_types::account::settings::settings_treasury::SettingsTreasury>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Settings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod bacs_debit_payments;
 pub use bacs_debit_payments::BacsDebitPayments;
 pub mod settings_card_issuing;

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Payment {
     /// ID of the payment intent associated with this order.
     ///
@@ -13,13 +12,6 @@ pub struct Payment {
     /// Null when the order is `open`.
     pub status: Option<PaymentStatus>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Payment {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The status of the underlying payment associated with this order, if any.
 ///
 /// Null when the order is `open`.
@@ -92,22 +84,6 @@ impl<'de> serde::Deserialize<'de> for PaymentStatus {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod settings;

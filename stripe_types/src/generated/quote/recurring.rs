@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Recurring {
     /// Total before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -15,13 +14,6 @@ pub struct Recurring {
     pub interval_count: u64,
     pub total_details: stripe_types::quote::total_details::TotalDetails,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Recurring {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The frequency at which a subscription is billed.
 ///
 /// One of `day`, `week`, `month` or `year`.
@@ -83,21 +75,5 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RecurringInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

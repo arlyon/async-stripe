@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Klarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub background_image_url: Option<String>,
@@ -53,10 +52,4 @@ pub struct Klarna {
     pub shipping_first_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_last_name: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Klarna {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

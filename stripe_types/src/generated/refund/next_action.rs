@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct NextAction {
     /// Contains the refund details.
     pub display_details:
@@ -7,10 +6,4 @@ pub struct NextAction {
     /// Type of the next action to perform.
     #[serde(rename = "type")]
     pub type_: String,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for NextAction {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

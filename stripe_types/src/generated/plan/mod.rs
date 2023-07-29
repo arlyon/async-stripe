@@ -3,8 +3,7 @@
 /// It replaces the Plans API and is backwards compatible to simplify your migration.  Plans define the base price, currency, and billing cycle for recurring purchases of products. [Products](https://stripe.com/docs/api#products) help you track inventory or provisioning, and plans help you track pricing.
 /// Different physical goods or levels of service should be represented by products, and pricing options should be represented by plans.
 /// This approach lets you change prices without having to change your provisioning scheme.  For example, you might have a single "gold" product that has plans for $10/month, $100/year, €9/month, and €90/year.  Related guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription) and more about [products and prices](https://stripe.com/docs/products-prices/overview).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Plan {
     /// Whether the plan can be used for new purchases.
     pub active: bool,
@@ -84,13 +83,6 @@ pub struct Plan {
     /// Defaults to `licensed`.
     pub usage_type: PlanUsageType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Plan {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
@@ -155,22 +147,6 @@ impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanAggregateUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanAggregateUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Describes how to compute the price per period.
 ///
 /// Either `per_unit` or `tiered`.
@@ -228,22 +204,6 @@ impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanBillingScheme {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanBillingScheme::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The frequency at which a subscription is billed.
@@ -308,22 +268,6 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -375,22 +319,6 @@ impl<'de> serde::Deserialize<'de> for PlanObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
@@ -450,22 +378,6 @@ impl<'de> serde::Deserialize<'de> for PlanTiersMode {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanTiersMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanTiersMode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Configures how the quantity per period should be determined.
 ///
 /// Can be either `metered` or `licensed`.
@@ -523,22 +435,6 @@ impl<'de> serde::Deserialize<'de> for PlanUsageType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PlanUsageType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PlanUsageType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Plan {

@@ -13,10 +13,6 @@ use crate::rust_object::{
 use crate::rust_type::{MapKey, RustType, SimpleType};
 use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::derives::Derives;
-use crate::templates::deserialize::{
-    write_deserialize_by_deleted_or_not, write_deserialize_by_object_name,
-    write_deserialize_for_struct, DeletedOrNot, NamedObjectVariant,
-};
 use crate::templates::fielded_enum::write_fielded_enum;
 use crate::templates::object_trait::{write_object_trait, write_object_trait_for_enum};
 use crate::templates::requests::{PrintablePathParam, PrintableRequestSpec};
@@ -75,11 +71,8 @@ impl Components {
                         PrintableStructField::from_field(f, printable)
                     })
                     .collect::<Vec<_>>();
-                let struct_derives = info
-                    .derives
-                    .miniserde_deserialize(false)
-                    .copy(should_derive_copy)
-                    .default(should_derive_default);
+                let struct_derives =
+                    info.derives.copy(should_derive_copy).default(should_derive_default);
 
                 write_struct(
                     out,
@@ -89,11 +82,6 @@ impl Components {
                     info.include_constructor,
                     lifetime,
                 );
-
-                if struct_derives.derives_deserialize() {
-                    let struct_derive = write_deserialize_for_struct(ident);
-                    let _ = writeln!(out, "{struct_derive}");
-                }
 
                 for field in fields {
                     if let Some((obj, meta)) = field.rust_type.as_object() {
@@ -114,15 +102,8 @@ impl Components {
                         }
                     })
                     .collect::<Vec<_>>();
-                let enum_derives =
-                    info.derives.miniserde_deserialize(false).copy(should_derive_copy);
+                let enum_derives = info.derives.copy(should_derive_copy);
                 write_fielded_enum(out, ident, &printable_variants, enum_derives, lifetime);
-                if enum_derives.derives_deserialize() {
-                    let enum_derive = self
-                        .try_write_deserialize_for_enum_with_fields(variants, ident)
-                        .expect("Cannot implement `Deserialize`");
-                    let _ = writeln!(out, "{enum_derive}");
-                }
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         if let Some((obj, meta)) = typ.as_object() {
@@ -131,39 +112,6 @@ impl Components {
                     }
                 }
             }
-        }
-    }
-
-    fn try_write_deserialize_for_enum_with_fields(
-        &self,
-        variants: &[FieldedEnumVariant],
-        ident: &RustIdent,
-    ) -> Option<String> {
-        let components = variants
-            .iter()
-            .map(|v| v.rust_type.as_ref().and_then(|t| t.as_reference_path().map(|p| self.get(p))))
-            .collect::<Option<Vec<_>>>()?;
-
-        if let Some(as_deleted_or_not) = parse_as_deleted_or_not(&components, variants) {
-            Some(write_deserialize_by_deleted_or_not(as_deleted_or_not, ident))
-        } else {
-            let all_named_objs = components
-                .iter()
-                .zip(variants)
-                .map(|(c, variant)| {
-                    c.object_name().map(|obj_name| NamedObjectVariant {
-                        object_name: obj_name,
-                        variant_name: &variant.variant,
-                    })
-                })
-                .collect::<Option<Vec<_>>>()?;
-            let object_names = all_named_objs.iter().map(|o| o.object_name).collect::<HashSet<_>>();
-
-            // Ensure we don't end up with duplicate names - in this case something has gone very wrong
-            if object_names.len() != all_named_objs.len() {
-                panic!("Enum has duplicate object names");
-            }
-            Some(write_deserialize_by_object_name(all_named_objs, ident))
         }
     }
 }
@@ -368,7 +316,7 @@ pub fn write_obj(
     comp: &StripeObject,
     components: &Components,
 ) -> String {
-    let gen_info = ObjectGenInfo::new(Derives::deser());
+    let gen_info = ObjectGenInfo::new(Derives::new_deser());
     let mut out = String::with_capacity(128);
 
     let mut obj = obj.clone();
@@ -457,7 +405,7 @@ pub fn write_requests(
     for req in &specs {
         components.write_rust_type_objs(
             &req.returned,
-            ObjectGenInfo::new(Derives::deser()),
+            ObjectGenInfo::new(Derives::new_deser()),
             &mut out,
         );
         if let Some(typ) = &req.params {
@@ -469,20 +417,4 @@ pub fn write_requests(
         components.write_rust_type_objs(&typ, params_gen_info, &mut out);
     }
     out
-}
-
-fn parse_as_deleted_or_not<'a>(
-    components: &'a Vec<&'a StripeObject>,
-    variants: &'a [FieldedEnumVariant],
-) -> Option<DeletedOrNot<'a>> {
-    if components.len() != 2 {
-        return None;
-    }
-    let deleted_index = components.iter().position(|c| c.path().is_deleted())?;
-    let not_deleted_path = components[deleted_index].path().as_not_deleted();
-    let not_deleted_index = components.iter().position(|c| c.path() == &not_deleted_path)?;
-    Some(DeletedOrNot {
-        deleted_variant: &variants[deleted_index].variant,
-        variant: &variants[not_deleted_index].variant,
-    })
 }

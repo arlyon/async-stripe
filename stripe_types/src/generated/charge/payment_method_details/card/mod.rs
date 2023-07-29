@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Card brand.
     ///
@@ -62,13 +61,6 @@ pub struct Card {
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     pub wallet: Option<stripe_types::charge::payment_method_details::card::wallet::Wallet>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Card {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod checks;
 pub use checks::Checks;
 pub mod installments;

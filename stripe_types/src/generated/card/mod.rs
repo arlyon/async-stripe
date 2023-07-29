@@ -2,8 +2,7 @@
 /// later.
 ///
 /// You can also store multiple debit cards on a recipient in order to transfer to those cards later.  Related guide: [Card Payments with Sources](https://stripe.com/docs/sources/cards).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// The account this card belongs to.
     ///
@@ -114,13 +113,6 @@ pub struct Card {
     /// Can be `android_pay` (includes Google Pay), `apple_pay`, `masterpass`, `visa_checkout`, or null.
     pub tokenization_method: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Card {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// A set of available payout methods for this card.
 ///
 /// Only values from this set should be passed as the `method` when creating a payout.
@@ -178,22 +170,6 @@ impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
             .map_err(|_| serde::de::Error::custom("Unknown value for CardAvailablePayoutMethods"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardAvailablePayoutMethods {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardAvailablePayoutMethods> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardAvailablePayoutMethods::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -245,22 +221,6 @@ impl<'de> serde::Deserialize<'de> for CardObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Card {

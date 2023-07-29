@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Capabilities {
     /// The status of the Canadian pre-authorized debits payments capability of the account, or whether the account can directly process Canadian pre-authorized debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -101,13 +100,6 @@ pub struct Capabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<Status>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Capabilities {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Status {
     Active,
@@ -162,21 +154,5 @@ impl<'de> serde::Deserialize<'de> for Status {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for Status"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Status {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<Status> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(Status::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

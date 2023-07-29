@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct EndUserDetails {
     /// IP address of the user initiating the OutboundPayment.
     ///
@@ -11,10 +10,4 @@ pub struct EndUserDetails {
     ///
     /// Otherwise, `false`.
     pub present: bool,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EndUserDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct StatusTransitions {
     /// The time that the invoice draft was finalized.
     pub finalized_at: Option<stripe_types::Timestamp>,
@@ -9,10 +8,4 @@ pub struct StatusTransitions {
     pub paid_at: Option<stripe_types::Timestamp>,
     /// The time that the invoice was voided.
     pub voided_at: Option<stripe_types::Timestamp>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for StatusTransitions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

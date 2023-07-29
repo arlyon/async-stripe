@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct BusinessProfile {
     /// [The merchant category code for the account](https://stripe.com/docs/connect/setting-mcc).
     ///
@@ -22,10 +21,4 @@ pub struct BusinessProfile {
     pub support_url: Option<String>,
     /// The business's publicly available website.
     pub url: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BusinessProfile {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

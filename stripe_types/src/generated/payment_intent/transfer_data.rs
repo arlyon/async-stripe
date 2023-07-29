@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransferData {
     /// Amount intended to be collected by this PaymentIntent.
     ///
@@ -12,10 +11,4 @@ pub struct TransferData {
     /// reporting, and where funds from the payment will be transferred to upon
     /// payment success.
     pub destination: stripe_types::Expandable<stripe_types::account::Account>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TransferData {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

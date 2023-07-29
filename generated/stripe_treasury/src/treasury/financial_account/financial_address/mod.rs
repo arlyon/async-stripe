@@ -1,6 +1,5 @@
 /// FinancialAddresses contain identifying information that resolves to a FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FinancialAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<stripe_treasury::treasury::financial_account::financial_address::aba::Aba>,
@@ -11,13 +10,6 @@ pub struct FinancialAddress {
     #[serde(rename = "type")]
     pub type_: FinancialAddressType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAddress {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The list of networks that the address supports.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAddressSupportedNetworks {
@@ -74,23 +66,6 @@ impl<'de> serde::Deserialize<'de> for FinancialAddressSupportedNetworks {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAddressSupportedNetworks {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FinancialAddressSupportedNetworks> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(FinancialAddressSupportedNetworks::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The type of financial address.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum FinancialAddressType {
@@ -141,22 +116,6 @@ impl<'de> serde::Deserialize<'de> for FinancialAddressType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAddressType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FinancialAddressType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FinancialAddressType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FinancialAddressType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod aba;

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DestinationPaymentMethodDetails {
 pub billing_details: stripe_treasury::treasury::received_credit::initiating_payment_method_details::billing_details::BillingDetails,
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,13 +10,6 @@ pub type_: DestinationPaymentMethodDetailsType,
 pub us_bank_account: Option<stripe_treasury::treasury::outbound_payment::destination_payment_method_details::us_bank_account::UsBankAccount>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DestinationPaymentMethodDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of the payment method used in the OutboundPayment.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DestinationPaymentMethodDetailsType {
@@ -72,23 +64,6 @@ impl<'de> serde::Deserialize<'de> for DestinationPaymentMethodDetailsType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DestinationPaymentMethodDetailsType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for DestinationPaymentMethodDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<DestinationPaymentMethodDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(DestinationPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod financial_account;

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Tipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<
@@ -57,10 +56,4 @@ pub struct Tipping {
     pub usd: Option<
         stripe_terminal::terminal::configuration::currency_specific_config::CurrencySpecificConfig,
     >,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Tipping {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

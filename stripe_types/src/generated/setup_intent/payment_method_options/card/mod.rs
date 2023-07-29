@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// Configuration options for setting up an eMandate for cards issued in India.
     pub mandate_options: Option<
@@ -18,13 +17,6 @@ pub struct Card {
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     pub request_three_d_secure: Option<CardRequestThreeDSecure>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Card {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Selected network to process this SetupIntent on.
 ///
 /// Depends on the available networks of the card attached to the setup intent.
@@ -106,22 +98,6 @@ impl<'de> serde::Deserialize<'de> for CardNetwork {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardNetwork"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardNetwork {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardNetwork> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardNetwork::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 ///
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
@@ -183,22 +159,6 @@ impl<'de> serde::Deserialize<'de> for CardRequestThreeDSecure {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardRequestThreeDSecure"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardRequestThreeDSecure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardRequestThreeDSecure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardRequestThreeDSecure::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod mandate_options;

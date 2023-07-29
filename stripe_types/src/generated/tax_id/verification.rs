@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Verification {
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: VerificationStatus,
@@ -8,13 +7,6 @@ pub struct Verification {
     /// Verified name.
     pub verified_name: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Verification {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerificationStatus {
@@ -74,21 +66,5 @@ impl<'de> serde::Deserialize<'de> for VerificationStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerificationStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerificationStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

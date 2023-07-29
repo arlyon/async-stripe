@@ -1,8 +1,7 @@
 /// Value lists allow you to group values together which can then be referenced in rules.
 ///
 /// Related guide: [Default Stripe Lists](https://stripe.com/docs/radar/lists#managing-list-items).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ValueList {
     /// The name of the value list for use in rules.
     pub alias: String,
@@ -33,13 +32,6 @@ pub struct ValueList {
     /// Objects of the same type share the same value.
     pub object: ValueListObject,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ValueList {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of items in the value list.
 ///
 /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
@@ -115,22 +107,6 @@ impl<'de> serde::Deserialize<'de> for ValueListItemType {
             .map_err(|_| serde::de::Error::custom("Unknown value for ValueListItemType"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ValueListItemType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ValueListItemType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ValueListItemType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -183,22 +159,6 @@ impl<'de> serde::Deserialize<'de> for ValueListObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ValueListObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ValueListObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ValueListObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ValueListObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for ValueList {

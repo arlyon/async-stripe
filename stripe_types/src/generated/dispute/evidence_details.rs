@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct EvidenceDetails {
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     ///
@@ -16,10 +15,4 @@ pub struct EvidenceDetails {
     ///
     /// Typically, you may only submit evidence once.
     pub submission_count: u64,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EvidenceDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

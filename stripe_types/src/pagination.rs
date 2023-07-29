@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Implemented by types which represent stripe objects.
 pub trait Object {
@@ -33,19 +33,11 @@ impl Expand<'_> {
 /// ```
 ///
 /// For more details see <https://stripe.com/docs/api/expanding_objects>.
-#[derive(Clone, Debug, Serialize)] // TODO: Implement deserialize by hand for better error messages
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Serialize, Deserialize)] // TODO: Implement deserialize by hand for better error messages
 #[serde(untagged)]
 pub enum Expandable<T: Object> {
     Id(T::Id),
     Object(Box<T>),
-}
-
-#[cfg(feature = "min-ser")]
-impl<T: Object> miniserde::Deserialize for Expandable<T> {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }
 
 impl<T> Expandable<T>
@@ -125,20 +117,12 @@ pub trait Paginable {
 /// A single page of a cursor-paginated list of an object.
 ///
 /// For more details, see <https://stripe.com/docs/api/pagination>
-#[derive(Debug, Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct List<T> {
     pub data: Vec<T>,
     pub has_more: bool,
     pub total_count: Option<u64>,
     pub url: String,
-}
-
-#[cfg(feature = "min-ser")]
-impl<T: crate::StripeDeserialize> miniserde::Deserialize for List<T> {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }
 
 impl<T> Default for List<T> {

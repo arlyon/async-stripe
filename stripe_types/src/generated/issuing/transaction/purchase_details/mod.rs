@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PurchaseDetails {
     /// Information about the flight that was purchased with this transaction.
     pub flight: Option<stripe_types::issuing::transaction::purchase_details::flight::Flight>,
@@ -13,13 +12,6 @@ pub struct PurchaseDetails {
     /// A merchant-specific order number.
     pub reference: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PurchaseDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod flight;
 pub use flight::Flight;
 pub mod fuel;

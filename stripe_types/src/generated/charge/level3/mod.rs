@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Level3 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
@@ -12,12 +11,5 @@ pub struct Level3 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_from_zip: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Level3 {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod line_item;
 pub use line_item::LineItem;

@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct OwnershipRefresh {
     /// The time at which the last refresh attempt was initiated.
     ///
@@ -8,13 +7,6 @@ pub struct OwnershipRefresh {
     /// The status of the last refresh attempt.
     pub status: OwnershipRefreshStatus,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OwnershipRefresh {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The status of the last refresh attempt.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OwnershipRefreshStatus {
@@ -71,21 +63,5 @@ impl<'de> serde::Deserialize<'de> for OwnershipRefreshStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OwnershipRefreshStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OwnershipRefreshStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<OwnershipRefreshStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(OwnershipRefreshStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

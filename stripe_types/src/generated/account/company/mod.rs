@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Company {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<stripe_types::address::Address>,
@@ -59,13 +58,6 @@ pub struct Company {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<stripe_types::account::company::verification::Verification>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Company {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
@@ -175,22 +167,6 @@ impl<'de> serde::Deserialize<'de> for CompanyStructure {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CompanyStructure"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CompanyStructure {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CompanyStructure> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CompanyStructure::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod verification;

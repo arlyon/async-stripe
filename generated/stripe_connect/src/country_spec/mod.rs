@@ -3,8 +3,7 @@
 ///
 /// These requirements can differ depending on the account's country.
 /// The Country Specs API makes these rules available to your integration.  You can also view the information from this API call as [an online guide](/docs/connect/required-verification-information).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CountrySpec {
     /// The default currency for this country.
     ///
@@ -31,13 +30,6 @@ pub struct CountrySpec {
     pub supported_transfer_countries: Vec<String>,
     pub verification_fields: stripe_connect::country_spec::verification_fields::VerificationFields,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CountrySpec {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -90,22 +82,6 @@ impl<'de> serde::Deserialize<'de> for CountrySpecObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CountrySpecObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CountrySpecObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CountrySpecObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CountrySpecObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for CountrySpec {

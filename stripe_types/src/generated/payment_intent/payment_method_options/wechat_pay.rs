@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct WechatPay {
     /// The app ID registered with WeChat Pay.
     ///
@@ -15,13 +14,6 @@ pub struct WechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<WechatPaySetupFutureUsage>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WechatPay {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The client type that the end customer will pay from.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum WechatPayClient {
@@ -80,22 +72,6 @@ impl<'de> serde::Deserialize<'de> for WechatPayClient {
             .map_err(|_| serde::de::Error::custom("Unknown value for WechatPayClient"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WechatPayClient {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<WechatPayClient> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(WechatPayClient::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -150,21 +126,5 @@ impl<'de> serde::Deserialize<'de> for WechatPaySetupFutureUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for WechatPaySetupFutureUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for WechatPaySetupFutureUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<WechatPaySetupFutureUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(WechatPaySetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

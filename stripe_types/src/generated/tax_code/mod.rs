@@ -1,6 +1,5 @@
 /// [Tax codes](https://stripe.com/docs/tax/tax-categories) classify goods and services for tax purposes.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TaxCode {
     /// A detailed description of which types of products the tax code represents.
     pub description: String,
@@ -13,13 +12,6 @@ pub struct TaxCode {
     /// Objects of the same type share the same value.
     pub object: TaxCodeObject,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxCode {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -71,22 +63,6 @@ impl<'de> serde::Deserialize<'de> for TaxCodeObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxCodeObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for TaxCodeObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<TaxCodeObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(TaxCodeObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for TaxCode {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ApiErrors {
     /// For card errors, the ID of the failed charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,13 +44,6 @@ pub struct ApiErrors {
     #[serde(rename = "type")]
     pub type_: ApiErrorsType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApiErrors {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of error returned.
 ///
 /// One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`.
@@ -112,21 +104,5 @@ impl<'de> serde::Deserialize<'de> for ApiErrorsType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ApiErrorsType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ApiErrorsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ApiErrorsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ApiErrorsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

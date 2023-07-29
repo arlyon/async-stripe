@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct FutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<stripe_types::account::requirements::alternative::Alternative>>,
@@ -29,10 +28,4 @@ pub struct FutureRequirements {
     /// Will be an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
     pub pending_verification: Option<Vec<String>>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FutureRequirements {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BankTransfer {
     /// The country of the bank account to fund.
     pub country: String,
@@ -10,13 +9,6 @@ pub struct BankTransfer {
     #[serde(rename = "type")]
     pub type_: BankTransferType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankTransfer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The bank_transfer type.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BankTransferType {
@@ -70,22 +62,6 @@ impl<'de> serde::Deserialize<'de> for BankTransferType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BankTransferType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BankTransferType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BankTransferType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(BankTransferType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod financial_address;

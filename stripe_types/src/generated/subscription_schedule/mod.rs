@@ -1,8 +1,7 @@
 /// A subscription schedule allows you to create and manage the lifecycle of a subscription by predefining expected changes.
 ///
 /// Related guide: [Subscription Schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionSchedule {
     /// ID of the Connect Application that created the schedule.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
@@ -58,13 +57,6 @@ pub struct SubscriptionSchedule {
     pub test_clock:
         Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionSchedule {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Behavior of the subscription schedule and underlying subscription when it ends.
 ///
 /// Possible values are `release` and `cancel`.
@@ -129,23 +121,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionScheduleEndBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SubscriptionScheduleEndBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -198,22 +173,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionScheduleObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionScheduleObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The present status of the subscription schedule.
@@ -281,22 +240,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionScheduleStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionScheduleStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for SubscriptionSchedule {

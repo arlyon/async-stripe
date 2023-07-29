@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct UsBankAccount {
     /// Account holder type: individual or company.
     pub account_holder_type: Option<UsBankAccountAccountHolderType>,
@@ -18,13 +17,6 @@ pub struct UsBankAccount {
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccount {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Account holder type: individual or company.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsBankAccountAccountHolderType {
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountHolderType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountAccountHolderType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccountAccountHolderType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountHolderType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Account type: checkings or savings.
@@ -152,21 +128,5 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountAccountType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for UsBankAccountAccountType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for UsBankAccountAccountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<UsBankAccountAccountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(UsBankAccountAccountType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

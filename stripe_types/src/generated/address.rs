@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     pub city: Option<String>,
@@ -13,10 +12,4 @@ pub struct Address {
     pub postal_code: Option<String>,
     /// State, county, province, or region.
     pub state: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Address {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

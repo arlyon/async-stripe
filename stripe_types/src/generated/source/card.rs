@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1_check: Option<String>,
@@ -35,10 +34,4 @@ pub struct Card {
     pub three_d_secure: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tokenization_method: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Card {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,8 +1,5 @@
 #![recursion_limit = "256"]
 extern crate self as stripe_core;
-
-#[cfg(feature = "min-ser")]
-miniserde::make_place!(Place);
 pub mod balance;
 pub use balance::Balance;
 pub mod event;

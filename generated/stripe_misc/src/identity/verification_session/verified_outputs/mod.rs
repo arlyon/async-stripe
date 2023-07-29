@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct VerifiedOutputs {
     /// The user's verified address.
     pub address: Option<stripe_types::address::Address>,
@@ -16,13 +15,6 @@ pub struct VerifiedOutputs {
     /// The user's verified last name.
     pub last_name: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerifiedOutputs {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The user's verified id number type.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VerifiedOutputsIdNumberType {
@@ -79,22 +71,6 @@ impl<'de> serde::Deserialize<'de> for VerifiedOutputsIdNumberType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerifiedOutputsIdNumberType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerifiedOutputsIdNumberType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerifiedOutputsIdNumberType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(VerifiedOutputsIdNumberType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod date_of_birth;

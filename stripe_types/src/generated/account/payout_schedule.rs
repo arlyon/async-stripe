@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PayoutSchedule {
     /// The number of days charges for the account will be held before being paid out.
     pub delay_days: u32,
@@ -18,10 +17,4 @@ pub struct PayoutSchedule {
     /// Only shown if `interval` is weekly.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weekly_anchor: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PayoutSchedule {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

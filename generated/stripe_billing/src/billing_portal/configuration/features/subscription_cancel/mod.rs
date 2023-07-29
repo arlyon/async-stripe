@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionCancel {
 pub cancellation_reason: stripe_billing::billing_portal::configuration::features::subscription_cancel::cancellation_reason::CancellationReason,
     /// Whether the feature is enabled.
@@ -12,13 +11,6 @@ pub mode: SubscriptionCancelMode,
 pub proration_behavior: SubscriptionCancelProrationBehavior,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionCancel {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionCancelMode {
@@ -72,22 +64,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionCancelMode {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCancelMode"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionCancelMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionCancelMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SubscriptionCancelMode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Whether to create prorations when canceling subscriptions.
@@ -149,23 +125,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionCancelProrationBehavior {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionCancelProrationBehavior")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SubscriptionCancelProrationBehavior {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SubscriptionCancelProrationBehavior> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SubscriptionCancelProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod cancellation_reason;

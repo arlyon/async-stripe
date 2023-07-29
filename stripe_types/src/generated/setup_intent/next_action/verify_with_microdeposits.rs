@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct VerifyWithMicrodeposits {
     /// The timestamp when the microdeposits are expected to land.
     pub arrival_date: stripe_types::Timestamp,
@@ -10,13 +9,6 @@ pub struct VerifyWithMicrodeposits {
     /// Used to distinguish between different verification methods.
     pub microdeposit_type: Option<VerifyWithMicrodepositsMicrodepositType>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerifyWithMicrodeposits {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The type of the microdeposit sent to the customer.
 ///
 /// Used to distinguish between different verification methods.
@@ -73,23 +65,5 @@ impl<'de> serde::Deserialize<'de> for VerifyWithMicrodepositsMicrodepositType {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for VerifyWithMicrodepositsMicrodepositType")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerifyWithMicrodepositsMicrodepositType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<VerifyWithMicrodepositsMicrodepositType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            VerifyWithMicrodepositsMicrodepositType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }

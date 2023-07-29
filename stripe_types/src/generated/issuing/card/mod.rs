@@ -1,6 +1,5 @@
 /// You can [create physical or virtual cards](https://stripe.com/docs/issuing/cards) that are issued to cardholders.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// The brand of the card.
     pub brand: String,
@@ -65,13 +64,6 @@ pub struct Card {
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
     pub wallets: Option<stripe_types::issuing::card::wallets::Wallets>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Card {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The reason why the card was canceled.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardCancellationReason {
@@ -130,22 +122,6 @@ impl<'de> serde::Deserialize<'de> for CardCancellationReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for CardCancellationReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardCancellationReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardCancellationReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardCancellationReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -197,22 +173,6 @@ impl<'de> serde::Deserialize<'de> for CardObject {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The reason why the previous card needed to be replaced.
@@ -276,22 +236,6 @@ impl<'de> serde::Deserialize<'de> for CardReplacementReason {
             .map_err(|_| serde::de::Error::custom("Unknown value for CardReplacementReason"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardReplacementReason {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardReplacementReason> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardReplacementReason::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Whether authorizations can be approved on this card.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardStatus {
@@ -349,22 +293,6 @@ impl<'de> serde::Deserialize<'de> for CardStatus {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardStatus"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// The type of the card.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardType {
@@ -417,22 +345,6 @@ impl<'de> serde::Deserialize<'de> for CardType {
         use std::str::FromStr;
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CardType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CardType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CardType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for Card {

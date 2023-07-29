@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct OrderItem {
     /// The amount (price) for this order item.
     pub amount: Option<i64>,
@@ -23,10 +22,4 @@ pub struct OrderItem {
     /// Must be `sku`, `tax`, or `shipping`.
     #[serde(rename = "type")]
     pub type_: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for OrderItem {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

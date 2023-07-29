@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AcssDebit {
     /// Currency supported by the bank account.
 pub currency: Option<AcssDebitCurrency>,
@@ -10,13 +9,6 @@ pub mandate_options: Option<stripe_types::setup_intent::payment_method_options::
 pub verification_method: Option<AcssDebitVerificationMethod>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Currency supported by the bank account.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AcssDebitCurrency {
@@ -70,22 +62,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitCurrency {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitCurrency"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitCurrency {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitCurrency> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitCurrency::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// Bank account verification method.
@@ -144,22 +120,6 @@ impl<'de> serde::Deserialize<'de> for AcssDebitVerificationMethod {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitVerificationMethod"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AcssDebitVerificationMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AcssDebitVerificationMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AcssDebitVerificationMethod::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod mandate_options;

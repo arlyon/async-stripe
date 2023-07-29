@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CustomerUpdate {
     /// The types of customer updates that are supported.
     ///
@@ -8,13 +7,6 @@ pub struct CustomerUpdate {
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerUpdate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The types of customer updates that are supported.
 ///
 /// When empty, customers are not updateable.
@@ -79,21 +71,5 @@ impl<'de> serde::Deserialize<'de> for CustomerUpdateAllowedUpdates {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerUpdateAllowedUpdates"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for CustomerUpdateAllowedUpdates {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<CustomerUpdateAllowedUpdates> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(CustomerUpdateAllowedUpdates::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

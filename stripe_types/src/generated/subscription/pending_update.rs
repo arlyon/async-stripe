@@ -1,7 +1,6 @@
 /// Pending Updates store the changes pending from a previous update that will be applied
 /// to the Subscription upon successful payment.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     ///
@@ -19,10 +18,4 @@ pub struct PendingUpdate {
     /// Setting this flag to `true` together with `trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Option<bool>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PendingUpdate {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

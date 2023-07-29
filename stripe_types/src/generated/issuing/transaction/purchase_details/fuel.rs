@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Fuel {
     /// The type of fuel that was purchased.
     ///
@@ -14,10 +13,4 @@ pub struct Fuel {
     pub unit_cost_decimal: String,
     /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
     pub volume_decimal: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Fuel {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

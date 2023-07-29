@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
@@ -24,13 +23,6 @@ pub struct Recurring {
     /// Defaults to `licensed`.
     pub usage_type: RecurringUsageType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Recurring {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
@@ -93,22 +85,6 @@ impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RecurringAggregateUsage {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RecurringAggregateUsage> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 /// The frequency at which a subscription is billed.
@@ -174,22 +150,6 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RecurringInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Configures how the quantity per period should be determined.
 ///
 /// Can be either `metered` or `licensed`.
@@ -248,21 +208,5 @@ impl<'de> serde::Deserialize<'de> for RecurringUsageType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for RecurringUsageType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<RecurringUsageType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(RecurringUsageType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

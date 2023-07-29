@@ -39,12 +39,7 @@ impl RustEnum {
         // NB: we set serialize to false since we implement manually using `as_str` to avoid
         // duplicating the `as_str` implementation. This also avoids generating some
         // unnecessary serialization methods. The same logic applies for deserialization
-        let derives = additional_derives
-            .copy(true)
-            .eq(true)
-            .serialize(false)
-            .deserialize(false)
-            .miniserde_deserialize(false);
+        let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false);
 
         let derives = write_derives_line(derives);
         let _ = writedoc!(
@@ -109,22 +104,6 @@ impl RustEnum {
                     use std::str::FromStr;
                     let s: String = serde::Deserialize::deserialize(deserializer)?;
                     Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
-                }}
-            }}
-
-            #[cfg(feature = "min-ser")]
-            impl miniserde::Deserialize for {enum_name} {{
-                fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {{
-                    crate::Place::new(out)
-                }}
-            }}
-            
-            #[cfg(feature = "min-ser")]
-            impl miniserde::de::Visitor for crate::Place<{enum_name}> {{
-                fn string(&mut self, s: &str) -> miniserde::Result<()> {{
-                    use std::str::FromStr;
-                    self.out = Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?);
-                    Ok(())
                 }}
             }}
             "#

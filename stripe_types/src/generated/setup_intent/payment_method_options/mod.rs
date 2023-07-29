@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit:
@@ -17,13 +16,6 @@ pub struct PaymentMethodOptions {
     pub us_bank_account:
         Option<stripe_types::setup_intent::payment_method_options::us_bank_account::UsBankAccount>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentMethodOptions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod acss_debit;
 pub use acss_debit::AcssDebit;
 pub mod blik;

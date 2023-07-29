@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ReceiverFlow {
     /// The address of the receiver source.
     ///
@@ -24,10 +23,4 @@ pub struct ReceiverFlow {
     pub refund_attributes_method: String,
     /// Type of refund attribute status, one of `missing`, `requested`, or `available`.
     pub refund_attributes_status: String,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ReceiverFlow {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

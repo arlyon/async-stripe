@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Order {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the order.
     pub amount: i64,
@@ -14,10 +13,4 @@ pub struct Order {
     pub items: Option<Vec<stripe_types::source::order_item::OrderItem>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<stripe_types::shipping_details::ShippingDetails>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Order {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

@@ -1,6 +1,5 @@
 /// Toggle settings for enabling/disabling a feature.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ToggleSettings {
     /// Whether the FinancialAccount should have the Feature.
 pub requested: bool,
@@ -10,13 +9,6 @@ pub status: ToggleSettingsStatus,
 pub status_details: Vec<stripe_treasury::treasury::financial_account::toggle_settings::status_details::StatusDetails>,
 
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ToggleSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Whether the Feature is operational.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ToggleSettingsStatus {
@@ -73,22 +65,6 @@ impl<'de> serde::Deserialize<'de> for ToggleSettingsStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ToggleSettingsStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for ToggleSettingsStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<ToggleSettingsStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(ToggleSettingsStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 pub mod status_details;

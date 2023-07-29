@@ -2,8 +2,7 @@
 /// a source mandate must be sent to the payer.
 ///
 /// They will trigger a webhook or deliver an email to the customer.
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceMandateNotification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit:
@@ -46,13 +45,6 @@ pub struct SourceMandateNotification {
     #[serde(rename = "type")]
     pub type_: String,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SourceMandateNotification {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -106,23 +98,6 @@ impl<'de> serde::Deserialize<'de> for SourceMandateNotificationObject {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SourceMandateNotificationObject")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SourceMandateNotificationObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SourceMandateNotificationObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(SourceMandateNotificationObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for SourceMandateNotification {

@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentSettings {
     /// Payment-method-specific configuration to provide to invoices created by the subscription.
     pub payment_method_options:
@@ -13,13 +12,6 @@ pub struct PaymentSettings {
     /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
     pub save_default_payment_method: Option<PaymentSettingsSaveDefaultPaymentMethod>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The list of payment method types to provide to every invoice created by the subscription.
 ///
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
@@ -138,23 +130,6 @@ impl<'de> serde::Deserialize<'de> for PaymentSettingsPaymentMethodTypes {
         })
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentSettingsPaymentMethodTypes {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentSettingsPaymentMethodTypes> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(PaymentSettingsPaymentMethodTypes::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Either `off`, or `on_subscription`.
 ///
 /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
@@ -211,23 +186,5 @@ impl<'de> serde::Deserialize<'de> for PaymentSettingsSaveDefaultPaymentMethod {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentSettingsSaveDefaultPaymentMethod")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PaymentSettingsSaveDefaultPaymentMethod {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<PaymentSettingsSaveDefaultPaymentMethod> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentSettingsSaveDefaultPaymentMethod::from_str(s).map_err(|_| miniserde::Error)?,
-        );
-        Ok(())
     }
 }

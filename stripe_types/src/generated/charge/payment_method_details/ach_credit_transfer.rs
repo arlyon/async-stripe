@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AchCreditTransfer {
     /// Account number to transfer funds to.
     pub account_number: Option<String>,
@@ -9,10 +8,4 @@ pub struct AchCreditTransfer {
     pub routing_number: Option<String>,
     /// SWIFT code of the bank associated with the routing number.
     pub swift_code: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AchCreditTransfer {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

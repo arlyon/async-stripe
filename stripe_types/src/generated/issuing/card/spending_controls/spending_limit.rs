@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SpendingLimit {
     /// Maximum amount allowed to spend per interval.
     ///
@@ -12,13 +11,6 @@ pub struct SpendingLimit {
     /// Interval (or event) to which the amount applies.
     pub interval: SpendingLimitInterval,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingLimit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 ///
 /// Omitting this field will apply the limit to all categories.
@@ -1044,22 +1036,6 @@ impl<'de> serde::Deserialize<'de> for SpendingLimitCategories {
             .map_err(|_| serde::de::Error::custom("Unknown value for SpendingLimitCategories"))
     }
 }
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingLimitCategories {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SpendingLimitCategories> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SpendingLimitCategories::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
-    }
-}
 /// Interval (or event) to which the amount applies.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SpendingLimitInterval {
@@ -1125,21 +1101,5 @@ impl<'de> serde::Deserialize<'de> for SpendingLimitInterval {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SpendingLimitInterval"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for SpendingLimitInterval {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<SpendingLimitInterval> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(SpendingLimitInterval::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

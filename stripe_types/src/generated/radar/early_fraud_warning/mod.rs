@@ -2,8 +2,7 @@
 /// charge may be fraudulent.
 ///
 /// Related guide: [Early Fraud Warnings](https://stripe.com/docs/disputes/measuring#early-fraud-warnings).
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct EarlyFraudWarning {
     /// An EFW is actionable if it has not received a dispute and has not been fully refunded.
     ///
@@ -32,13 +31,6 @@ pub struct EarlyFraudWarning {
     pub payment_intent:
         Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EarlyFraudWarning {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
@@ -91,22 +83,6 @@ impl<'de> serde::Deserialize<'de> for EarlyFraudWarningObject {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for EarlyFraudWarningObject"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for EarlyFraudWarningObject {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<EarlyFraudWarningObject> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(EarlyFraudWarningObject::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
 impl stripe_types::Object for EarlyFraudWarning {

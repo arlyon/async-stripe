@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FlowDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<stripe_treasury::treasury::credit_reversal::CreditReversal>,
@@ -23,13 +22,6 @@ pub struct FlowDetails {
     #[serde(rename = "type")]
     pub type_: FlowDetailsType,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FlowDetails {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// Type of the flow that created the Transaction.
 ///
 /// Set to the same value as `flow_type`.
@@ -106,21 +98,5 @@ impl<'de> serde::Deserialize<'de> for FlowDetailsType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FlowDetailsType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for FlowDetailsType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<FlowDetailsType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(FlowDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

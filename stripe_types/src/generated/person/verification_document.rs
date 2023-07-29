@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct VerificationDocument {
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     pub back: Option<stripe_types::Expandable<stripe_types::file::File>>,
@@ -13,10 +12,4 @@ pub struct VerificationDocument {
     pub details_code: Option<String>,
     /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     pub front: Option<stripe_types::Expandable<stripe_types::file::File>>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for VerificationDocument {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

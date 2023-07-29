@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PendingRequest {
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
@@ -19,10 +18,4 @@ pub struct PendingRequest {
     pub merchant_amount: i64,
     /// The local currency the merchant is requesting to authorize.
     pub merchant_currency: stripe_types::Currency,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for PendingRequest {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

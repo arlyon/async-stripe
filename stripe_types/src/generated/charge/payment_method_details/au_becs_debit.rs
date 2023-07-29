@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct AuBecsDebit {
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: Option<String>,
@@ -12,10 +11,4 @@ pub struct AuBecsDebit {
     /// ID of the mandate used to make this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AuBecsDebit {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

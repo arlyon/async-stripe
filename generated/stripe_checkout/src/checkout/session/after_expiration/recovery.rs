@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Recovery {
     /// Enables user redeemable promotion codes on the recovered Checkout Sessions.
     ///
@@ -14,10 +13,4 @@ pub struct Recovery {
     pub expires_at: Option<stripe_types::Timestamp>,
     /// URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session.
     pub url: Option<String>,
-}
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Recovery {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
 }

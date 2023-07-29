@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct Flight {
     /// The time that the flight departed.
     pub departure_at: Option<i64>,
@@ -14,12 +13,5 @@ pub struct Flight {
     /// The travel agency that issued the ticket.
     pub travel_agency: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for Flight {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 pub mod segments;
 pub use segments::Segments;

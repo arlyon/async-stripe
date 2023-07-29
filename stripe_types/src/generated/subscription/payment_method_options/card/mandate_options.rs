@@ -1,5 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct MandateOptions {
     /// Amount to be charged for future payments.
     pub amount: Option<i64>,
@@ -11,13 +10,6 @@ pub struct MandateOptions {
     /// A description of the mandate or subscription that is meant to be displayed to the customer.
     pub description: Option<String>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MandateOptions {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// One of `fixed` or `maximum`.
 ///
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
@@ -74,21 +66,5 @@ impl<'de> serde::Deserialize<'de> for MandateOptionsAmountType {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for MandateOptionsAmountType"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for MandateOptionsAmountType {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<MandateOptionsAmountType> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(MandateOptionsAmountType::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

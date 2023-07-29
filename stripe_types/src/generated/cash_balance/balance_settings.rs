@@ -1,16 +1,8 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BalanceSettings {
     /// The configuration for how funds that land in the customer cash balance are reconciled.
     pub reconciliation_mode: BalanceSettingsReconciliationMode,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BalanceSettings {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The configuration for how funds that land in the customer cash balance are reconciled.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum BalanceSettingsReconciliationMode {
@@ -65,22 +57,5 @@ impl<'de> serde::Deserialize<'de> for BalanceSettingsReconciliationMode {
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for BalanceSettingsReconciliationMode")
         })
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for BalanceSettingsReconciliationMode {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<BalanceSettingsReconciliationMode> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out =
-            Some(BalanceSettingsReconciliationMode::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }

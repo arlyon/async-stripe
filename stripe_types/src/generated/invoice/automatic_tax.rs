@@ -1,5 +1,4 @@
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
     ///
@@ -8,13 +7,6 @@ pub struct AutomaticTax {
     /// The status of the most recent automated tax calculation for this invoice.
     pub status: Option<AutomaticTaxStatus>,
 }
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AutomaticTax {
-    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        todo!()
-    }
-}
-
 /// The status of the most recent automated tax calculation for this invoice.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum AutomaticTaxStatus {
@@ -71,21 +63,5 @@ impl<'de> serde::Deserialize<'de> for AutomaticTaxStatus {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AutomaticTaxStatus"))
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::Deserialize for AutomaticTaxStatus {
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-#[cfg(feature = "min-ser")]
-impl miniserde::de::Visitor for crate::Place<AutomaticTaxStatus> {
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(AutomaticTaxStatus::from_str(s).map_err(|_| miniserde::Error)?);
-        Ok(())
     }
 }
