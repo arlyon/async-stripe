@@ -2,8 +2,8 @@ use std::fmt::Write;
 
 use indoc::writedoc;
 
-use crate::object_context::PrintableType;
-use crate::rust_object::FieldedEnumVariant;
+use crate::printable::PrintableType;
+use crate::rust_object::EnumVariant;
 use crate::types::RustIdent;
 
 pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &PrintableType) {
@@ -24,7 +24,7 @@ pub fn write_object_trait_for_enum(
     out: &mut String,
     ident: &RustIdent,
     id_type: &PrintableType,
-    variants: &[FieldedEnumVariant],
+    variants: &[EnumVariant],
 ) {
     let mut match_inner = String::with_capacity(32);
     for variant in variants {

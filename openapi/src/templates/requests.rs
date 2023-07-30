@@ -2,7 +2,7 @@ use std::fmt::Write;
 
 use indoc::writedoc;
 
-use crate::object_context::PrintableType;
+use crate::printable::PrintableType;
 use crate::stripe_object::OperationType;
 use crate::templates::utils::write_doc_comment;
 

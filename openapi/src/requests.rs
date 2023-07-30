@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use anyhow::{anyhow, Context};
 use heck::SnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
+use tracing::warn;
 
 use crate::rust_object::{ObjectMetadata, RustObject};
 use crate::rust_type::{RustType, SimpleType};
@@ -141,7 +142,7 @@ pub fn parse_requests(
     let mut req_details = Vec::with_capacity(operations.len());
     for op in &operations {
         if should_skip_request(op) {
-            tracing::warn!("Skipping request at path {} with name {}", op.path, op.method_name);
+            warn!("Skipping request at path {} with name {}", op.path, op.method_name);
             continue;
         }
         req_details.push(get_req_details(op, spec)?);

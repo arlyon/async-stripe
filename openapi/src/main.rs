@@ -1,8 +1,6 @@
 use std::fmt::Debug;
 use std::fs;
 use std::fs::File;
-use std::io::Write;
-use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
 use petgraph::dot::{Config, Dot};
@@ -22,6 +20,7 @@ mod dedup;
 mod graph;
 mod ids;
 mod object_context;
+mod printable;
 mod requests;
 mod rust_object;
 mod rust_type;

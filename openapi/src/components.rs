@@ -7,14 +7,13 @@ use anyhow::Context;
 use indexmap::map::Entry;
 use indexmap::{IndexMap, IndexSet};
 use petgraph::algo::is_cyclic_directed;
-use tracing::error;
 
 use crate::crate_inference::Crate;
 use crate::ids::IDS_IN_STRIPE;
-use crate::object_context::{PrintableCompoundType, PrintableType};
+use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
 use crate::rust_object::RustObject;
-use crate::rust_type::{CompoundType, RefType, RustType};
+use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::{as_object_properties, get_request_form_parameters, Spec};
 use crate::spec_inference::{infer_id_name, Inference};
 use crate::stripe_object::{
@@ -122,7 +121,7 @@ impl Deref for ModuleName {
 
 impl std::fmt::Display for ModuleName {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        f.write_str(self.0.as_str())
     }
 }
 
@@ -206,19 +205,19 @@ impl Components {
         match typ {
             RustType::Object(obj, metadata) => PrintableType::QualifiedPath {
                 path: None,
-                has_borrow: obj.has_borrow(),
-                is_borrowed: false,
+                has_ref: obj.has_reference(),
+                is_ref: false,
                 ident: metadata.ident.clone(),
             },
 
-            RustType::Ref { typ, has_borrow, borrowed, .. } => {
-                let (path, ident) = match typ {
-                    RefType::Component(path) => {
+            RustType::Path { path, has_reference, is_ref, .. } => {
+                let (path, ident) = match path {
+                    PathToType::Component(path) => {
                         let comp = self.get(path);
                         (Some(self.resolve_path(path)), comp.ident().clone())
                     }
-                    RefType::IntraFile(ident) => (None, ident.clone()),
-                    RefType::ObjectId(path) => {
+                    PathToType::IntraFile(ident) => (None, ident.clone()),
+                    PathToType::ObjectId(path) => {
                         let ident = infer_id_name(path);
                         let path_info = if IDS_IN_STRIPE.contains(path) {
                             PathInfo { krate: Some(Crate::Types), path: None }
@@ -227,32 +226,32 @@ impl Components {
                         };
                         (Some(path_info), ident)
                     }
-                    RefType::Types(ident) => {
+                    PathToType::Types(ident) => {
                         (Some(PathInfo { krate: Some(Crate::Types), path: None }), ident.clone())
                     }
                 };
                 PrintableType::QualifiedPath {
                     path,
-                    has_borrow: *has_borrow,
-                    is_borrowed: *borrowed,
+                    has_ref: *has_reference,
+                    is_ref: *is_ref,
                     ident,
                 }
             }
             RustType::Simple(typ) => PrintableType::Simple(*typ),
-            RustType::Compound(typ) => {
+            RustType::Container(typ) => {
                 let inner = Box::new(self.construct_printable_type(typ.value_typ()));
                 let printable = match typ {
-                    CompoundType::List(_) => PrintableCompoundType::List(inner),
-                    CompoundType::Vec(_) => PrintableCompoundType::Vec(inner),
-                    CompoundType::Slice(_) => PrintableCompoundType::Slice(inner),
-                    CompoundType::Expandable(_) => PrintableCompoundType::Expandable(inner),
-                    CompoundType::Option(_) => PrintableCompoundType::Option(inner),
-                    CompoundType::Box(_) => PrintableCompoundType::Box(inner),
-                    CompoundType::Map { key, borrowed, .. } => {
-                        PrintableCompoundType::Map { key: *key, borrowed: *borrowed, value: inner }
+                    Container::List(_) => PrintableContainer::List(inner),
+                    Container::Vec(_) => PrintableContainer::Vec(inner),
+                    Container::Slice(_) => PrintableContainer::Slice(inner),
+                    Container::Expandable(_) => PrintableContainer::Expandable(inner),
+                    Container::Option(_) => PrintableContainer::Option(inner),
+                    Container::Box(_) => PrintableContainer::Box(inner),
+                    Container::Map { key, is_ref, .. } => {
+                        PrintableContainer::Map { key: *key, is_ref: *is_ref, value: inner }
                     }
                 };
-                PrintableType::Compound(printable)
+                PrintableType::Container(printable)
             }
         }
     }
@@ -260,7 +259,7 @@ impl Components {
     fn validate_crate_deps(&self) {
         let graph = self.gen_crate_dep_graph();
         if is_cyclic_directed(&graph) {
-            error!("Crate dependency graph contains a cycle!");
+            panic!("Crate dependency graph contains a cycle!");
         }
     }
 
@@ -285,14 +284,14 @@ impl Components {
                     self.add_deps_from_typ(deps, &field.rust_type);
                 }
             }
-            RustObject::FieldedEnum(variants) => {
+            RustObject::Enum(variants) => {
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         self.add_deps_from_typ(deps, typ);
                     }
                 }
             }
-            RustObject::Enum(_) => {}
+            RustObject::FieldlessEnum(_) => {}
         }
     }
 
@@ -303,10 +302,10 @@ impl Components {
     ) {
         match typ {
             RustType::Object(obj, _) => self.add_deps_from_obj(deps, obj),
-            RustType::Ref { typ: RefType::Component(path), .. } => {
+            RustType::Path { path: PathToType::Component(path), .. } => {
                 deps.insert(path);
             }
-            RustType::Compound(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
+            RustType::Container(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
             _ => {}
         }
     }
@@ -523,10 +522,10 @@ impl Overrides {
         match typ {
             RustType::Object(obj, _) => {
                 if let Some(meta) = self.overrides.get(obj) {
-                    *typ = RustType::Ref {
-                        typ: RefType::Types(meta.ident.clone()),
-                        borrowed: false,
-                        has_borrow: obj.has_borrow(),
+                    *typ = RustType::Path {
+                        path: PathToType::Types(meta.ident.clone()),
+                        is_ref: false,
+                        has_reference: obj.has_reference(),
                         is_copy: obj.is_copy(),
                     }
                 } else {
@@ -534,8 +533,8 @@ impl Overrides {
                 }
             }
             RustType::Simple(_) => {}
-            RustType::Ref { .. } => {}
-            RustType::Compound(inner) => {
+            RustType::Path { .. } => {}
+            RustType::Container(inner) => {
                 self.replace_typ(inner.value_typ_mut());
             }
         }
@@ -548,8 +547,8 @@ impl Overrides {
                     self.replace_typ(&mut field.rust_type);
                 }
             }
-            RustObject::Enum(_) => {}
-            RustObject::FieldedEnum(variants) => {
+            RustObject::FieldlessEnum(_) => {}
+            RustObject::Enum(variants) => {
                 for var in variants {
                     if let Some(typ) = &mut var.rust_type {
                         self.replace_typ(typ);

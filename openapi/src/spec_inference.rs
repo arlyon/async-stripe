@@ -8,9 +8,7 @@ use openapiv3::{
     Type, VariantOrUnknownOrEmpty,
 };
 
-use crate::rust_object::{
-    EnumVariant, FieldedEnumVariant, ObjectMetadata, RustEnum, RustObject, StructField,
-};
+use crate::rust_object::{EnumVariant, FieldlessVariant, ObjectMetadata, RustObject, StructField};
 use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
     as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string, ExpansionResources,
@@ -167,11 +165,7 @@ impl<'a> Inference<'a> {
     fn infer_string_typ(&self, typ: &StringType) -> RustType {
         let variants = build_enum_variants(&typ.enumeration);
         if !variants.is_empty() {
-            let mut enum_obj = RustEnum::new();
-            for variant in variants {
-                enum_obj.add_variant(variant);
-            }
-            return self.build_object_type(RustObject::Enum(enum_obj), self.next_ident());
+            return self.build_object_type(RustObject::FieldlessEnum(variants), self.next_ident());
         }
         if let Some(f_name) = self.field_name {
             if f_name == "currency" || f_name.ends_with("_currency") {
@@ -250,8 +244,8 @@ impl<'a> Inference<'a> {
         {
             RustType::ext(ExtType::RangeQueryTs)
         } else {
-            let enum_ = self.build_fielded_enum(fields).expect("Could not build enum with fields");
-            self.build_object_type(RustObject::FieldedEnum(enum_), self.next_ident())
+            let enum_ = self.build_enum_variants(fields).expect("Could not build enum with fields");
+            self.build_object_type(RustObject::Enum(enum_), self.next_ident())
         }
     }
 
@@ -299,16 +293,16 @@ impl<'a> Inference<'a> {
         struct_field
     }
 
-    fn build_fielded_enum(
+    fn build_enum_variants(
         &self,
         fields: Vec<&ReferenceOr<Schema>>,
-    ) -> anyhow::Result<Vec<FieldedEnumVariant>> {
+    ) -> anyhow::Result<Vec<EnumVariant>> {
         let mut variants = Vec::with_capacity(fields.len());
         for option in fields {
             match option.borrow() {
                 ReferenceOr::Reference { reference } => {
                     let schema_path = ComponentPath::from_reference(reference);
-                    variants.push(FieldedEnumVariant::new(
+                    variants.push(EnumVariant::new(
                         RustIdent::create(&schema_path),
                         RustType::component_path(schema_path),
                     ));
@@ -320,10 +314,11 @@ impl<'a> Inference<'a> {
                         ctx = ctx.field_name(name);
                     }
                     let rust_type = ctx.required(true).infer_schema_type(item);
-                    if let Some(RustObject::Enum(enum_)) = rust_type.as_rust_object() {
-                        for variant in &enum_.variants {
-                            variants
-                                .push(FieldedEnumVariant::fieldless(variant.variant_name.clone()));
+                    if let Some(RustObject::FieldlessEnum(fieldless_variants)) =
+                        rust_type.as_rust_object()
+                    {
+                        for variant in fieldless_variants {
+                            variants.push(EnumVariant::fieldless(variant.variant_name.clone()));
                         }
                     } else {
                         let variant_ident = if let Some(name) = inferred_name {
@@ -336,7 +331,7 @@ impl<'a> Inference<'a> {
                                 rust_type
                             ));
                         };
-                        variants.push(FieldedEnumVariant::new(variant_ident, rust_type));
+                        variants.push(EnumVariant::new(variant_ident, rust_type));
                     }
                 }
             }
@@ -395,7 +390,7 @@ fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<Ru
     Ok(RustType::expandable(RustType::component_path(path)))
 }
 
-fn build_enum_variants(options: &[Option<String>]) -> Vec<EnumVariant> {
+fn build_enum_variants(options: &[Option<String>]) -> Vec<FieldlessVariant> {
     let mut enum_variants = vec![];
     for wire_name in options.iter().flatten() {
         if wire_name.trim().is_empty() {
@@ -417,7 +412,7 @@ fn build_enum_variants(options: &[Option<String>]) -> Vec<EnumVariant> {
                 }
             }
         };
-        enum_variants.push(EnumVariant { wire_name: wire_name.clone(), variant_name });
+        enum_variants.push(FieldlessVariant { wire_name: wire_name.clone(), variant_name });
     }
     enum_variants
 }

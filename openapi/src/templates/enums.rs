@@ -2,49 +2,79 @@ use std::fmt::Write as _;
 
 use indoc::writedoc;
 
-use crate::rust_object::{EnumVariant, RustEnum};
+use crate::printable::{Lifetime, PrintableEnumVariant, PrintableWithLifetime};
+use crate::rust_object::FieldlessVariant;
 use crate::templates::derives::{write_derives_line, Derives};
 use crate::types::RustIdent;
 
-impl RustEnum {
-    /// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
-    /// and `impl Default` is a default is specified
-    pub fn write_definition_and_methods(
-        &self,
-        out: &mut String,
-        enum_name: &RustIdent,
-        additional_derives: Derives,
-    ) {
-        // Build the body of the enum definition
-        let mut enum_def_body = String::with_capacity(128);
-        for EnumVariant { variant_name, .. } in &self.variants {
-            let _ = writeln!(enum_def_body, "{variant_name},");
+pub fn write_enum_variants(
+    out: &mut String,
+    enum_name: &RustIdent,
+    variants: &[PrintableEnumVariant],
+    additional_derives: Derives,
+    lifetime: Option<Lifetime>,
+) {
+    let lifetime_str = lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
+    // Build the body of the enum definition
+    let mut enum_body = String::with_capacity(64);
+    for PrintableEnumVariant { variant, rust_type } in variants {
+        if let Some(typ) = rust_type {
+            let typ = PrintableWithLifetime::new(typ, lifetime);
+            let _ = writeln!(enum_body, "{variant}({typ}),");
+        } else {
+            let _ = writeln!(enum_body, "{variant},");
         }
+    }
+    let derives = write_derives_line(additional_derives);
+    let _ = writedoc!(
+        out,
+        r#"
+            {derives}
+            #[serde(untagged, rename_all = "snake_case")]
+            pub enum {enum_name}{lifetime_str} {{
+            {enum_body}
+            }}
+        "#
+    );
+}
+/// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
+/// and `impl Default`.
+pub fn write_fieldless_enum_variants(
+    out: &mut String,
+    variants: &[FieldlessVariant],
+    enum_name: &RustIdent,
+    additional_derives: Derives,
+) {
+    // Build the body of the enum definition
+    let mut enum_def_body = String::with_capacity(128);
+    for FieldlessVariant { variant_name, .. } in variants {
+        let _ = writeln!(enum_def_body, "{variant_name},");
+    }
 
-        // Build the body of the `as_str` implementation
-        let mut as_str_body = String::with_capacity(32);
-        for EnumVariant { wire_name, variant_name } in &self.variants {
-            let _ = writeln!(as_str_body, r#"Self::{variant_name} => "{wire_name}","#);
-        }
+    // Build the body of the `as_str` implementation
+    let mut as_str_body = String::with_capacity(32);
+    for FieldlessVariant { wire_name, variant_name } in variants {
+        let _ = writeln!(as_str_body, r#"Self::{variant_name} => "{wire_name}","#);
+    }
 
-        // Build the body of the `from_str` implementation
-        let mut from_str_body = String::with_capacity(32);
-        for EnumVariant { wire_name, variant_name } in &self.variants {
-            let _ = writeln!(from_str_body, r#""{wire_name}" => Ok(Self::{variant_name}),"#);
-        }
+    // Build the body of the `from_str` implementation
+    let mut from_str_body = String::with_capacity(32);
+    for FieldlessVariant { wire_name, variant_name } in variants {
+        let _ = writeln!(from_str_body, r#""{wire_name}" => Ok(Self::{variant_name}),"#);
+    }
 
-        let derive_deser = additional_derives.derives_deserialize();
-        let derive_serialize = additional_derives.derives_serialize();
+    let derive_deser = additional_derives.derives_deserialize();
+    let derive_serialize = additional_derives.derives_serialize();
 
-        // NB: we set serialize to false since we implement manually using `as_str` to avoid
-        // duplicating the `as_str` implementation. This also avoids generating some
-        // unnecessary serialization methods. The same logic applies for deserialization
-        let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false);
+    // NB: we set serialize to false since we implement manually using `as_str` to avoid
+    // duplicating the `as_str` implementation. This also avoids generating some
+    // unnecessary serialization methods. The same logic applies for deserialization
+    let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false);
 
-        let derives = write_derives_line(derives);
-        let _ = writedoc!(
-            out,
-            r#"
+    let derives = write_derives_line(derives);
+    let _ = writedoc!(
+        out,
+        r#"
             {derives}
             pub enum {enum_name} {{
             {enum_def_body}
@@ -80,25 +110,25 @@ impl RustEnum {
                 }}
             }}
         "#
-        );
+    );
 
-        if derive_serialize {
-            let _ = writedoc!(
-                out,
-                r#"
+    if derive_serialize {
+        let _ = writedoc!(
+            out,
+            r#"
             impl serde::Serialize for {enum_name} {{
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {{
                     serializer.serialize_str(self.as_str())
                 }}
             }}
             "#
-            );
-        }
+        );
+    }
 
-        if derive_deser {
-            let _ = writedoc!(
-                out,
-                r#"
+    if derive_deser {
+        let _ = writedoc!(
+            out,
+            r#"
             impl<'de> serde::Deserialize<'de> for {enum_name} {{
                 fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {{
                     use std::str::FromStr;
@@ -107,7 +137,6 @@ impl RustEnum {
                 }}
             }}
             "#
-            );
-        }
+        );
     }
 }

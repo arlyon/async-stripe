@@ -4,6 +4,8 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Context;
 
+/// Write to a file, starting paths from the `out` directory and ensuring existence
+/// of directories along the way.
 pub fn write_to_file<C: AsRef<[u8]>, P: AsRef<Path>>(
     content: C,
     out_path: P,

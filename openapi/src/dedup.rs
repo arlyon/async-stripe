@@ -4,7 +4,7 @@ use indexmap::map::Entry;
 use indexmap::IndexMap;
 
 use crate::rust_object::{ObjectMetadata, RustObject};
-use crate::rust_type::{RefType, RustType};
+use crate::rust_type::{PathToType, RustType};
 use crate::types::RustIdent;
 
 #[derive(Debug, Default)]
@@ -71,8 +71,8 @@ impl Collector {
                 self.visit_obj(obj);
             }
             RustType::Simple(_) => {}
-            RustType::Ref { .. } => {}
-            RustType::Compound(inner) => {
+            RustType::Path { .. } => {}
+            RustType::Container(inner) => {
                 self.visit_typ(inner.value_typ());
             }
         }
@@ -85,14 +85,14 @@ impl Collector {
                     self.visit_typ(&field.rust_type);
                 }
             }
-            RustObject::FieldedEnum(variants) => {
+            RustObject::Enum(variants) => {
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         self.visit_typ(typ);
                     }
                 }
             }
-            RustObject::Enum(_) => {}
+            RustObject::FieldlessEnum(_) => {}
         }
     }
 }
@@ -101,13 +101,13 @@ impl Dedupper {
     pub fn replace_typ(&self, typ: &mut RustType) {
         match typ {
             RustType::Object(obj, _) => {
-                let has_borrow = obj.has_borrow();
+                let has_reference = obj.has_reference();
                 let is_copy = obj.is_copy();
                 if let Some(ident) = self.objs.get(obj) {
-                    *typ = RustType::Ref {
-                        typ: RefType::IntraFile(RustIdent::create(ident)),
-                        borrowed: false,
-                        has_borrow,
+                    *typ = RustType::Path {
+                        path: PathToType::IntraFile(RustIdent::create(ident)),
+                        is_ref: false,
+                        has_reference,
                         is_copy,
                     }
                 } else {
@@ -115,8 +115,8 @@ impl Dedupper {
                 }
             }
             RustType::Simple(_) => {}
-            RustType::Ref { .. } => {}
-            RustType::Compound(inner) => {
+            RustType::Path { .. } => {}
+            RustType::Container(inner) => {
                 self.replace_typ(inner.value_typ_mut());
             }
         }
@@ -129,14 +129,14 @@ impl Dedupper {
                     self.replace_typ(&mut field.rust_type);
                 }
             }
-            RustObject::FieldedEnum(variants) => {
+            RustObject::Enum(variants) => {
                 for variant in variants {
                     if let Some(typ) = &mut variant.rust_type {
                         self.replace_typ(typ);
                     }
                 }
             }
-            RustObject::Enum(_) => {}
+            RustObject::FieldlessEnum(_) => {}
         }
     }
 }

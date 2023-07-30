@@ -3,20 +3,35 @@ use std::fmt::{Debug, Display, Formatter};
 use crate::rust_object::{DeserDefault, ObjectMetadata, RustObject};
 use crate::types::{ComponentPath, RustIdent};
 
+/// A path to a type defined elsewhere.
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum RefType {
+pub enum PathToType {
+    /// A top-level component.
     Component(ComponentPath),
+    /// The id for a top-level component.
     ObjectId(ComponentPath),
+    /// A type generated in `stripe_types`, so printed as `stripe_types::{ident}`
     Types(RustIdent),
+    /// A reference to a type in the same file (so not import needed).
     IntraFile(RustIdent),
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustType {
     Object(RustObject, ObjectMetadata),
+    /// Either a Rust defined scalar type, or a type predefined in `stripe_types`.
     Simple(SimpleType),
-    Ref { typ: RefType, borrowed: bool, has_borrow: bool, is_copy: bool },
-    Compound(CompoundType),
+    Path {
+        path: PathToType,
+        is_ref: bool,
+        /// Does the underlying type pointed to have references (e.g. when printing do
+        /// we need a lifetime?)
+        has_reference: bool,
+        /// Does the underlying type pointed to implement `Copy`?
+        is_copy: bool,
+    },
+    /// Type containing an inner type.
+    Container(Container),
 }
 
 impl RustType {
@@ -41,45 +56,46 @@ impl RustType {
     }
 
     pub fn option(typ: RustType) -> Self {
-        Self::Compound(CompoundType::Option(Box::new(typ)))
+        Self::Container(Container::Option(Box::new(typ)))
     }
 
     pub fn boxed(typ: RustType) -> Self {
-        Self::Compound(CompoundType::Box(Box::new(typ)))
+        Self::Container(Container::Box(Box::new(typ)))
     }
 
     pub fn list(typ: RustType) -> Self {
-        Self::Compound(CompoundType::List(Box::new(typ)))
+        Self::Container(Container::List(Box::new(typ)))
     }
 
+    /// Construct an `Expandable<{typ}>`.
     pub fn expandable(typ: RustType) -> Self {
-        Self::Compound(CompoundType::Expandable(Box::new(typ)))
+        Self::Container(Container::Expandable(Box::new(typ)))
     }
 
-    pub fn str_map(value: RustType, borrowed: bool) -> Self {
-        Self::Compound(CompoundType::Map { key: MapKey::String, value: Box::new(value), borrowed })
+    /// Construct a `HashMap<String, {typ}>`.
+    pub fn str_map(value: RustType, is_ref: bool) -> Self {
+        Self::Container(Container::Map { key: MapKey::String, value: Box::new(value), is_ref })
     }
 
-    pub fn currency_map(value: RustType, borrowed: bool) -> Self {
-        Self::Compound(CompoundType::Map {
-            key: MapKey::Currency,
-            value: Box::new(value),
-            borrowed,
-        })
+    /// Construct a `HashMap<Currency, {typ}>`.
+    pub fn currency_map(typ: RustType, is_ref: bool) -> Self {
+        Self::Container(Container::Map { key: MapKey::Currency, value: Box::new(typ), is_ref })
     }
 
+    /// Construct a `Vec<{typ}>`.
     pub fn vec(typ: RustType) -> Self {
-        Self::Compound(CompoundType::Vec(Box::new(typ)))
+        Self::Container(Container::Vec(Box::new(typ)))
     }
 
+    /// Construct a `&[{typ}]`
     pub fn slice(typ: RustType) -> Self {
-        Self::Compound(CompoundType::Slice(Box::new(typ)))
+        Self::Container(Container::Slice(Box::new(typ)))
     }
 
     pub fn as_id_path(&self) -> Option<&ComponentPath> {
         match self {
-            RustType::Ref { typ: RefType::ObjectId(path), .. } => Some(path),
-            RustType::Compound(typ) => typ.value_typ().as_id_path(),
+            RustType::Path { path: PathToType::ObjectId(path), .. } => Some(path),
+            RustType::Container(typ) => typ.value_typ().as_id_path(),
             _ => None,
         }
     }
@@ -88,72 +104,78 @@ impl RustType {
         matches!(self, Self::Simple(SimpleType::Ext(ExtType::AlwaysTrue)))
     }
 
+    /// Is this type `Option<>`?
     pub const fn is_option(&self) -> bool {
-        matches!(self, Self::Compound(CompoundType::Option(_)))
+        matches!(self, Self::Container(Container::Option(_)))
     }
 
     /// Can this type derive `Copy`?
     pub fn is_copy(&self) -> bool {
+        use Container::*;
         match self {
             RustType::Object(obj, ..) => obj.is_copy(),
             RustType::Simple(typ) => typ.is_copy(),
-            RustType::Ref { is_copy, .. } => *is_copy,
-            RustType::Compound(typ) => match typ {
-                CompoundType::List(_) => false,
-                CompoundType::Vec(_) => false,
-                CompoundType::Slice(_) => true,
-                CompoundType::Expandable(_) => false,
-                CompoundType::Option(inner) => inner.is_copy(),
-                CompoundType::Box(inner) => inner.is_copy(),
-                CompoundType::Map { borrowed, .. } => *borrowed,
+            RustType::Path { is_copy, .. } => *is_copy,
+            RustType::Container(typ) => match typ {
+                List(_) | Vec(_) | Expandable(_) => false,
+                Slice(_) => true,
+                Option(inner) | Box(inner) => inner.is_copy(),
+                Map { is_ref, .. } => *is_ref,
             },
         }
     }
 
-    pub fn has_borrow(&self) -> bool {
+    /// Does this contain a reference? Primarily used for detecting types that may
+    /// require lifetimes.
+    pub fn has_reference(&self) -> bool {
         match self {
-            RustType::Object(obj, ..) => obj.has_borrow(),
-            RustType::Simple(typ) => typ.is_borrowed(),
-            RustType::Ref { has_borrow, .. } => *has_borrow,
-            RustType::Compound(typ) => match typ {
-                CompoundType::Slice(_) => true,
-                CompoundType::Map { borrowed: true, .. } => true,
-                _ => typ.value_typ().has_borrow(),
+            RustType::Object(obj, ..) => obj.has_reference(),
+            RustType::Simple(typ) => typ.is_reference(),
+            RustType::Path { has_reference, .. } => *has_reference,
+            RustType::Container(typ) => match typ {
+                Container::Slice(_) => true,
+                Container::Map { is_ref: true, .. } => true,
+                _ => typ.value_typ().has_reference(),
             },
         }
     }
 
     pub fn component_path(path: ComponentPath) -> Self {
-        Self::Ref {
-            typ: RefType::Component(path),
-            borrowed: false,
-            has_borrow: false,
+        Self::Path {
+            path: PathToType::Component(path),
+            has_reference: false,
+            is_ref: false,
             is_copy: false,
         }
     }
 
-    pub fn object_id(id_path: ComponentPath, borrowed: bool) -> Self {
-        Self::Ref { typ: RefType::ObjectId(id_path), borrowed, is_copy: false, has_borrow: false }
+    pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
+        Self::Path {
+            path: PathToType::ObjectId(id_path),
+            is_ref,
+            is_copy: false,
+            has_reference: false,
+        }
     }
 
     pub fn into_nullable(self) -> Self {
         match self {
-            Self::Compound(CompoundType::List(_)) | Self::Compound(CompoundType::Option(_)) => self,
+            Self::Container(Container::List(_)) | Self::Container(Container::Option(_)) => self,
             _ => Self::option(self),
         }
     }
 
     pub fn as_skip_serializing(&self) -> Option<&'static str> {
         match self {
-            Self::Compound(CompoundType::Option(_)) => Some("Option::is_none"),
+            Self::Container(Container::Option(_)) => Some("Option::is_none"),
             _ => None,
         }
     }
 
-    pub fn as_reference_path(&self) -> Option<&ComponentPath> {
+    pub fn as_path_to_component(&self) -> Option<&ComponentPath> {
         match self {
-            Self::Compound(typ) => typ.value_typ().as_reference_path(),
-            Self::Ref { typ: RefType::Component(path), .. } => Some(path),
+            Self::Container(typ) => typ.value_typ().as_path_to_component(),
+            Self::Path { path: PathToType::Component(path), .. } => Some(path),
             _ => None,
         }
     }
@@ -161,16 +183,16 @@ impl RustType {
     pub fn as_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
-            Self::Simple(_) | Self::Ref { .. } => None,
-            Self::Compound(typ) => typ.value_typ().as_object(),
+            Self::Simple(_) | Self::Path { .. } => None,
+            Self::Container(typ) => typ.value_typ().as_object(),
         }
     }
 
     pub fn into_object(self) -> Option<(RustObject, ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
-            Self::Simple(_) | Self::Ref { .. } => None,
-            Self::Compound(typ) => typ.into_value_typ().into_object(),
+            Self::Simple(_) | Self::Path { .. } => None,
+            Self::Container(typ) => typ.into_value_typ().into_object(),
         }
     }
 
@@ -181,8 +203,8 @@ impl RustType {
     pub fn as_deser_default(&self) -> Option<DeserDefault> {
         match self {
             Self::Simple(SimpleType::Bool)
-            | Self::Compound(CompoundType::Vec(_))
-            | Self::Compound(CompoundType::List(_)) => Some(DeserDefault::Default),
+            | Self::Container(Container::Vec(_))
+            | Self::Container(Container::List(_)) => Some(DeserDefault::Default),
             _ => None,
         }
     }
@@ -204,63 +226,91 @@ impl Display for MapKey {
     }
 }
 
+/// Representation of a type containing an inner type.
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum CompoundType {
+pub enum Container {
+    /// List<{typ}>
     List(Box<RustType>),
+    /// Vec<{typ}>
     Vec(Box<RustType>),
+    /// &[{typ}]
     Slice(Box<RustType>),
+    /// Expandable<{typ}>
     Expandable(Box<RustType>),
+    /// Option<{typ}>
     Option(Box<RustType>),
+    /// Box<{typ}>
     Box(Box<RustType>),
-    Map { key: MapKey, value: Box<RustType>, borrowed: bool },
+    /// HashMap<{key}, {typ}>
+    Map {
+        /// HashMap key type.
+        key: MapKey,
+        /// HashMap value type.
+        value: Box<RustType>,
+        /// Are we a reference?
+        is_ref: bool,
+    },
 }
 
-impl CompoundType {
+impl Container {
+    /// Get a reference to the inner contained type.
     pub fn value_typ(&self) -> &RustType {
+        use Container::*;
         match self {
-            CompoundType::List(typ) => typ,
-            CompoundType::Vec(typ) => typ,
-            CompoundType::Slice(typ) => typ,
-            CompoundType::Expandable(typ) => typ,
-            CompoundType::Option(typ) => typ,
-            CompoundType::Box(typ) => typ,
-            CompoundType::Map { value, .. } => value,
+            List(typ) => typ,
+            Vec(typ) => typ,
+            Slice(typ) => typ,
+            Expandable(typ) => typ,
+            Option(typ) => typ,
+            Box(typ) => typ,
+            Map { value, .. } => value,
         }
     }
 
+    /// Extract the inner contained type.
     pub fn into_value_typ(self) -> RustType {
+        use Container::*;
         let res = match self {
-            CompoundType::List(typ) => typ,
-            CompoundType::Vec(typ) => typ,
-            CompoundType::Slice(typ) => typ,
-            CompoundType::Expandable(typ) => typ,
-            CompoundType::Option(typ) => typ,
-            CompoundType::Box(typ) => typ,
-            CompoundType::Map { value, .. } => value,
+            List(typ) => typ,
+            Vec(typ) => typ,
+            Slice(typ) => typ,
+            Expandable(typ) => typ,
+            Option(typ) => typ,
+            Box(typ) => typ,
+            Map { value, .. } => value,
         };
         *res
     }
 
+    /// Get a mutable reference to the inner contained type.
     pub fn value_typ_mut(&mut self) -> &mut RustType {
+        use Container::*;
         match self {
-            CompoundType::List(typ) => typ,
-            CompoundType::Vec(typ) => typ,
-            CompoundType::Slice(typ) => typ,
-            CompoundType::Expandable(typ) => typ,
-            CompoundType::Option(typ) => typ,
-            CompoundType::Box(typ) => typ,
-            CompoundType::Map { value, .. } => value,
+            List(typ) => typ,
+            Vec(typ) => typ,
+            Slice(typ) => typ,
+            Expandable(typ) => typ,
+            Option(typ) => typ,
+            Box(typ) => typ,
+            Map { value, .. } => value,
         }
     }
 }
 
+/// Either a Rust defined scalar type, or a type predefined in `stripe_types`.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum SimpleType {
+    /// bool
     Bool,
+    /// f64
     Float,
+    /// &str
     Str,
+    /// String
     String,
+    /// One of primitive rust integer types.
     Int(IntType),
+    /// Type defined in `stripe_types`.
     Ext(ExtType),
 }
 
@@ -270,7 +320,8 @@ impl SimpleType {
         !matches!(self, Self::String)
     }
 
-    pub const fn is_borrowed(self) -> bool {
+    /// Is this type a reference?
+    pub const fn is_reference(self) -> bool {
         matches!(self, SimpleType::Str)
     }
 
@@ -325,6 +376,7 @@ impl Display for IntType {
     }
 }
 
+/// Types defined outside of codegen, in the `stripe_types` crate.
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ExtType {
     Currency,

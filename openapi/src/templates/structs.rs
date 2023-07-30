@@ -2,8 +2,8 @@ use std::fmt::Write;
 
 use indoc::{formatdoc, writedoc};
 
-use crate::object_context::{Lifetime, PrintableWithLifetime};
-use crate::rust_object::{PrintableStructField, Visibility};
+use crate::printable::{Lifetime, PrintableStructField, PrintableWithLifetime};
+use crate::rust_object::Visibility;
 use crate::templates::derives::{write_derives_line, Derives};
 use crate::templates::utils::{write_doc_comment, write_serde_rename};
 use crate::types::RustIdent;

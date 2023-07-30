@@ -41,7 +41,7 @@ impl AsRef<str> for RustIdent {
 
 impl Display for RustIdent {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        f.write_str(self.0.as_str())
     }
 }
 #[derive(Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]

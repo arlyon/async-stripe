@@ -86,9 +86,11 @@ pub fn parse_stripe_schema_as_rust_object(
                     id_type = Some(field.rust_type.clone());
                 }
                 if field.field_name == "object" {
-                    if let Some(RustObject::Enum(variants)) = field.rust_type.as_rust_object() {
-                        if variants.variants.len() == 1 {
-                            let first = variants.variants.first().unwrap();
+                    if let Some(RustObject::FieldlessEnum(variants)) =
+                        field.rust_type.as_rust_object()
+                    {
+                        if variants.len() == 1 {
+                            let first = variants.first().unwrap();
                             object_name = Some(first.wire_name.clone());
                         }
                     }
@@ -96,13 +98,13 @@ pub fn parse_stripe_schema_as_rust_object(
             }
             StripeObjectData { obj: rust_obj, object_name, id_type }
         }
-        RustObject::FieldedEnum(_) => {
+        RustObject::Enum(_) => {
             // TODO: could validate that this enum holds what we expect from a top-level component,
             // namely a union of references to other components. We also are implicitly assuming
             // these components have ids
             StripeObjectData { obj: rust_obj, object_name: None, id_type: Some(RustType::string()) }
         }
-        RustObject::Enum(_) => panic!("Unexpected top level schema type"),
+        RustObject::FieldlessEnum(_) => panic!("Unexpected top level schema type"),
     }
 }
 

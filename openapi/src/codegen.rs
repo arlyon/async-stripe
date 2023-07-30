@@ -1,5 +1,5 @@
 use std::fmt::Write as _;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use anyhow::anyhow;
 use indexmap::IndexSet;
@@ -117,7 +117,7 @@ impl CodeGen {
     fn write_crate_modules<'a, I: IntoIterator<Item = &'a ModuleName>>(
         &self,
         modules: I,
-        crate_path: &PathBuf,
+        crate_path: &Path,
         mod_rs_contents: &mut String,
     ) -> anyhow::Result<()> {
         for module_name in modules {
