@@ -22,7 +22,7 @@ impl<'a> ProductSearchParams<'a> {
 impl Product {
     /// Searches for a product.
     ///
-    /// For more details see <https://stripe.com/docs/api/prices/search>.
+    /// For more details see <https://stripe.com/docs/api/products/search>.
     pub fn search(client: &Client, params: ProductSearchParams) -> Response<SearchList<Product>> {
         client.get_query("/products/search", params)
     }
