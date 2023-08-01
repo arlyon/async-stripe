@@ -124,10 +124,10 @@ impl Account {
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
     ///
-    /// If you’ve already collected information for your connected accounts, you [can pre-fill that information](https://stripe.com/docs/connect/best-practices#onboarding) when
+    /// If you’ve already collected information for your connected accounts, you [can prefill that information](https://stripe.com/docs/connect/best-practices#onboarding) when
     /// creating the account.
     ///
-    /// Connect Onboarding won’t ask for the pre-filled information during account onboarding. You can pre-fill any information on the account.
+    /// Connect Onboarding won’t ask for the prefilled information during account onboarding. You can prefill any information on the account.
     pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
         client.post_form("/accounts", &params)
     }
@@ -175,6 +175,9 @@ pub struct BusinessProfile {
     ///
     /// MCCs are used to classify businesses based on the goods or services they provide.
     pub mcc: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_estimated_revenue: Option<AccountMonthlyEstimatedRevenue>,
 
     /// The customer-facing business name.
     pub name: Option<String>,
@@ -385,6 +388,17 @@ pub struct AccountFutureRequirements {
     /// Will be an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due` or `currently_due`.
     pub pending_verification: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountMonthlyEstimatedRevenue {
+    /// A non-negative integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub amount: i64,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

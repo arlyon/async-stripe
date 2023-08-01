@@ -895,7 +895,7 @@ pub struct PaymentIntentPaymentMethodOptionsLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
 
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     pub persistent_token: Option<String>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3167,7 +3167,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
 
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 
@@ -4008,7 +4008,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
 
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 

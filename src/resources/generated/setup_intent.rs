@@ -339,7 +339,7 @@ pub struct SetupIntentPaymentMethodOptionsCardMandateOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsLink {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     pub persistent_token: Option<String>,
 }
 
@@ -1369,7 +1369,7 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsLink {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 }
@@ -1666,7 +1666,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsLink {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 }
