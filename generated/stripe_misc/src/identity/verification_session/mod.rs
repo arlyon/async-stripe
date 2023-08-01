@@ -37,7 +37,8 @@ pub struct VerificationSession {
     ///
     /// Objects of the same type share the same value.
     pub object: VerificationSessionObject,
-    pub options: stripe_misc::identity::verification_session::options::Options,
+    /// A set of options for the session’s verification checks.
+    pub options: Option<stripe_misc::identity::verification_session::options::Options>,
     /// Redaction status of this VerificationSession.
     ///
     /// If the VerificationSession is not redacted, this field will be null.
@@ -48,7 +49,7 @@ pub struct VerificationSession {
     pub status: VerificationSessionStatus,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
-    pub type_: VerificationSessionType,
+    pub type_: Option<VerificationSessionType>,
     /// The short-lived URL that you use to redirect a user to Stripe to submit their identity information.
     ///
     /// This URL expires after 48 hours and can only be used once.
@@ -69,8 +70,9 @@ pub enum VerificationSessionObject {
 
 impl VerificationSessionObject {
     pub fn as_str(self) -> &'static str {
+        use VerificationSessionObject::*;
         match self {
-            Self::IdentityVerificationSession => "identity.verification_session",
+            IdentityVerificationSession => "identity.verification_session",
         }
     }
 }
@@ -78,9 +80,9 @@ impl VerificationSessionObject {
 impl std::str::FromStr for VerificationSessionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerificationSessionObject::*;
         match s {
-            "identity.verification_session" => Ok(Self::IdentityVerificationSession),
-
+            "identity.verification_session" => Ok(IdentityVerificationSession),
             _ => Err(()),
         }
     }
@@ -108,8 +110,8 @@ impl serde::Serialize for VerificationSessionObject {
 impl<'de> serde::Deserialize<'de> for VerificationSessionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionObject"))
     }
 }
@@ -126,11 +128,12 @@ pub enum VerificationSessionStatus {
 
 impl VerificationSessionStatus {
     pub fn as_str(self) -> &'static str {
+        use VerificationSessionStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Processing => "processing",
-            Self::RequiresInput => "requires_input",
-            Self::Verified => "verified",
+            Canceled => "canceled",
+            Processing => "processing",
+            RequiresInput => "requires_input",
+            Verified => "verified",
         }
     }
 }
@@ -138,12 +141,12 @@ impl VerificationSessionStatus {
 impl std::str::FromStr for VerificationSessionStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerificationSessionStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "processing" => Ok(Self::Processing),
-            "requires_input" => Ok(Self::RequiresInput),
-            "verified" => Ok(Self::Verified),
-
+            "canceled" => Ok(Canceled),
+            "processing" => Ok(Processing),
+            "requires_input" => Ok(RequiresInput),
+            "verified" => Ok(Verified),
             _ => Err(()),
         }
     }
@@ -171,8 +174,8 @@ impl serde::Serialize for VerificationSessionStatus {
 impl<'de> serde::Deserialize<'de> for VerificationSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionStatus"))
     }
 }
@@ -185,9 +188,10 @@ pub enum VerificationSessionType {
 
 impl VerificationSessionType {
     pub fn as_str(self) -> &'static str {
+        use VerificationSessionType::*;
         match self {
-            Self::Document => "document",
-            Self::IdNumber => "id_number",
+            Document => "document",
+            IdNumber => "id_number",
         }
     }
 }
@@ -195,10 +199,10 @@ impl VerificationSessionType {
 impl std::str::FromStr for VerificationSessionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerificationSessionType::*;
         match s {
-            "document" => Ok(Self::Document),
-            "id_number" => Ok(Self::IdNumber),
-
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
             _ => Err(()),
         }
     }
@@ -226,8 +230,8 @@ impl serde::Serialize for VerificationSessionType {
 impl<'de> serde::Deserialize<'de> for VerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationSessionType"))
     }
 }
@@ -246,3 +250,4 @@ pub mod verified_outputs;
 pub use verified_outputs::VerifiedOutputs;
 pub mod redaction;
 pub use redaction::Redaction;
+pub mod requests;

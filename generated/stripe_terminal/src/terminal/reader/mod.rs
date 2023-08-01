@@ -1,6 +1,6 @@
 /// A Reader represents a physical device for accepting payment details.
 ///
-/// Related guide: [Connecting to a Reader](https://stripe.com/docs/terminal/payments/connect-reader).
+/// Related guide: [Connecting to a reader](https://stripe.com/docs/terminal/payments/connect-reader).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Reader {
     /// The most recent action performed by the reader.
@@ -45,13 +45,14 @@ pub enum ReaderDeviceType {
 
 impl ReaderDeviceType {
     pub fn as_str(self) -> &'static str {
+        use ReaderDeviceType::*;
         match self {
-            Self::BbposChipper2x => "bbpos_chipper2x",
-            Self::BbposWisepad3 => "bbpos_wisepad3",
-            Self::BbposWiseposE => "bbpos_wisepos_e",
-            Self::SimulatedWiseposE => "simulated_wisepos_e",
-            Self::StripeM2 => "stripe_m2",
-            Self::VerifoneP400 => "verifone_P400",
+            BbposChipper2x => "bbpos_chipper2x",
+            BbposWisepad3 => "bbpos_wisepad3",
+            BbposWiseposE => "bbpos_wisepos_e",
+            SimulatedWiseposE => "simulated_wisepos_e",
+            StripeM2 => "stripe_m2",
+            VerifoneP400 => "verifone_P400",
         }
     }
 }
@@ -59,14 +60,14 @@ impl ReaderDeviceType {
 impl std::str::FromStr for ReaderDeviceType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReaderDeviceType::*;
         match s {
-            "bbpos_chipper2x" => Ok(Self::BbposChipper2x),
-            "bbpos_wisepad3" => Ok(Self::BbposWisepad3),
-            "bbpos_wisepos_e" => Ok(Self::BbposWiseposE),
-            "simulated_wisepos_e" => Ok(Self::SimulatedWiseposE),
-            "stripe_m2" => Ok(Self::StripeM2),
-            "verifone_P400" => Ok(Self::VerifoneP400),
-
+            "bbpos_chipper2x" => Ok(BbposChipper2x),
+            "bbpos_wisepad3" => Ok(BbposWisepad3),
+            "bbpos_wisepos_e" => Ok(BbposWiseposE),
+            "simulated_wisepos_e" => Ok(SimulatedWiseposE),
+            "stripe_m2" => Ok(StripeM2),
+            "verifone_P400" => Ok(VerifoneP400),
             _ => Err(()),
         }
     }
@@ -94,8 +95,8 @@ impl serde::Serialize for ReaderDeviceType {
 impl<'de> serde::Deserialize<'de> for ReaderDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReaderDeviceType"))
     }
 }
@@ -109,8 +110,9 @@ pub enum ReaderObject {
 
 impl ReaderObject {
     pub fn as_str(self) -> &'static str {
+        use ReaderObject::*;
         match self {
-            Self::TerminalReader => "terminal.reader",
+            TerminalReader => "terminal.reader",
         }
     }
 }
@@ -118,9 +120,9 @@ impl ReaderObject {
 impl std::str::FromStr for ReaderObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReaderObject::*;
         match s {
-            "terminal.reader" => Ok(Self::TerminalReader),
-
+            "terminal.reader" => Ok(TerminalReader),
             _ => Err(()),
         }
     }
@@ -148,8 +150,8 @@ impl serde::Serialize for ReaderObject {
 impl<'de> serde::Deserialize<'de> for ReaderObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReaderObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ReaderObject"))
     }
 }
 impl stripe_types::Object for Reader {
@@ -159,7 +161,8 @@ impl stripe_types::Object for Reader {
     }
 }
 stripe_types::def_id!(TerminalReaderId, "tmr_");
-pub mod deleted;
-pub use deleted::DeletedReader;
 pub mod reader_action;
 pub use reader_action::ReaderAction;
+pub mod deleted;
+pub use deleted::DeletedReader;
+pub mod requests;

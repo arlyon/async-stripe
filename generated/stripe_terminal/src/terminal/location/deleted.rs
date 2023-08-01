@@ -19,8 +19,9 @@ pub enum DeletedLocationObject {
 
 impl DeletedLocationObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedLocationObject::*;
         match self {
-            Self::TerminalLocation => "terminal.location",
+            TerminalLocation => "terminal.location",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedLocationObject {
 impl std::str::FromStr for DeletedLocationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedLocationObject::*;
         match s {
-            "terminal.location" => Ok(Self::TerminalLocation),
-
+            "terminal.location" => Ok(TerminalLocation),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedLocationObject {
 impl<'de> serde::Deserialize<'de> for DeletedLocationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedLocationObject"))
     }
 }

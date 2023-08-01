@@ -19,10 +19,11 @@ pub enum ToggleSettingsStatus {
 
 impl ToggleSettingsStatus {
     pub fn as_str(self) -> &'static str {
+        use ToggleSettingsStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Pending => "pending",
-            Self::Restricted => "restricted",
+            Active => "active",
+            Pending => "pending",
+            Restricted => "restricted",
         }
     }
 }
@@ -30,11 +31,11 @@ impl ToggleSettingsStatus {
 impl std::str::FromStr for ToggleSettingsStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ToggleSettingsStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "pending" => Ok(Self::Pending),
-            "restricted" => Ok(Self::Restricted),
-
+            "active" => Ok(Active),
+            "pending" => Ok(Pending),
+            "restricted" => Ok(Restricted),
             _ => Err(()),
         }
     }
@@ -62,8 +63,8 @@ impl serde::Serialize for ToggleSettingsStatus {
 impl<'de> serde::Deserialize<'de> for ToggleSettingsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ToggleSettingsStatus"))
     }
 }

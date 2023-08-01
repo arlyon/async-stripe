@@ -1,7 +1,7 @@
 /// You can store multiple cards on a customer in order to charge the customer
 /// later.
 ///
-/// You can also store multiple debit cards on a recipient in order to transfer to those cards later.  Related guide: [Card Payments with Sources](https://stripe.com/docs/sources/cards).
+/// You can also store multiple debit cards on a recipient in order to transfer to those cards later.  Related guide: [Card payments with Sources](https://stripe.com/docs/sources/cards).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Card {
     /// The account this card belongs to.
@@ -32,7 +32,7 @@ pub struct Card {
     pub available_payout_methods: Option<Vec<CardAvailablePayoutMethods>>,
     /// Card brand.
     ///
-    /// Can be `American Express`, `Diners Club`, `Discover`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
+    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     pub brand: String,
     /// Two-letter ISO code representing the country of the card.
     ///
@@ -124,9 +124,10 @@ pub enum CardAvailablePayoutMethods {
 
 impl CardAvailablePayoutMethods {
     pub fn as_str(self) -> &'static str {
+        use CardAvailablePayoutMethods::*;
         match self {
-            Self::Instant => "instant",
-            Self::Standard => "standard",
+            Instant => "instant",
+            Standard => "standard",
         }
     }
 }
@@ -134,10 +135,10 @@ impl CardAvailablePayoutMethods {
 impl std::str::FromStr for CardAvailablePayoutMethods {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardAvailablePayoutMethods::*;
         match s {
-            "instant" => Ok(Self::Instant),
-            "standard" => Ok(Self::Standard),
-
+            "instant" => Ok(Instant),
+            "standard" => Ok(Standard),
             _ => Err(()),
         }
     }
@@ -165,8 +166,8 @@ impl serde::Serialize for CardAvailablePayoutMethods {
 impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardAvailablePayoutMethods"))
     }
 }
@@ -180,8 +181,9 @@ pub enum CardObject {
 
 impl CardObject {
     pub fn as_str(self) -> &'static str {
+        use CardObject::*;
         match self {
-            Self::Card => "card",
+            Card => "card",
         }
     }
 }
@@ -189,9 +191,9 @@ impl CardObject {
 impl std::str::FromStr for CardObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardObject::*;
         match s {
-            "card" => Ok(Self::Card),
-
+            "card" => Ok(Card),
             _ => Err(()),
         }
     }
@@ -219,8 +221,8 @@ impl serde::Serialize for CardObject {
 impl<'de> serde::Deserialize<'de> for CardObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
     }
 }
 impl stripe_types::Object for Card {

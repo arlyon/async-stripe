@@ -41,8 +41,9 @@ pub enum SubscriptionItemObject {
 
 impl SubscriptionItemObject {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionItemObject::*;
         match self {
-            Self::SubscriptionItem => "subscription_item",
+            SubscriptionItem => "subscription_item",
         }
     }
 }
@@ -50,9 +51,9 @@ impl SubscriptionItemObject {
 impl std::str::FromStr for SubscriptionItemObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionItemObject::*;
         match s {
-            "subscription_item" => Ok(Self::SubscriptionItem),
-
+            "subscription_item" => Ok(SubscriptionItem),
             _ => Err(()),
         }
     }
@@ -80,8 +81,8 @@ impl serde::Serialize for SubscriptionItemObject {
 impl<'de> serde::Deserialize<'de> for SubscriptionItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionItemObject"))
     }
 }
@@ -92,7 +93,7 @@ impl stripe_types::Object for SubscriptionItem {
     }
 }
 stripe_types::def_id!(SubscriptionItemId, "si_");
-pub mod deleted;
-pub use deleted::DeletedSubscriptionItem;
 pub mod billing_thresholds;
 pub use billing_thresholds::BillingThresholds;
+pub mod deleted;
+pub use deleted::DeletedSubscriptionItem;

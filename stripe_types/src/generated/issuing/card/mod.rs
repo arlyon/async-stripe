@@ -57,6 +57,9 @@ pub struct Card {
     pub shipping: Option<stripe_types::issuing::card::shipping::Shipping>,
     pub spending_controls: stripe_types::issuing::card::spending_controls::SpendingControls,
     /// Whether authorizations can be approved on this card.
+    ///
+    /// May be blocked from activating cards depending on past-due Cardholder requirements.
+    /// Defaults to `inactive`.
     pub status: CardStatus,
     /// The type of the card.
     #[serde(rename = "type")]
@@ -74,10 +77,11 @@ pub enum CardCancellationReason {
 
 impl CardCancellationReason {
     pub fn as_str(self) -> &'static str {
+        use CardCancellationReason::*;
         match self {
-            Self::DesignRejected => "design_rejected",
-            Self::Lost => "lost",
-            Self::Stolen => "stolen",
+            DesignRejected => "design_rejected",
+            Lost => "lost",
+            Stolen => "stolen",
         }
     }
 }
@@ -85,11 +89,11 @@ impl CardCancellationReason {
 impl std::str::FromStr for CardCancellationReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardCancellationReason::*;
         match s {
-            "design_rejected" => Ok(Self::DesignRejected),
-            "lost" => Ok(Self::Lost),
-            "stolen" => Ok(Self::Stolen),
-
+            "design_rejected" => Ok(DesignRejected),
+            "lost" => Ok(Lost),
+            "stolen" => Ok(Stolen),
             _ => Err(()),
         }
     }
@@ -117,8 +121,8 @@ impl serde::Serialize for CardCancellationReason {
 impl<'de> serde::Deserialize<'de> for CardCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardCancellationReason"))
     }
 }
@@ -132,8 +136,9 @@ pub enum CardObject {
 
 impl CardObject {
     pub fn as_str(self) -> &'static str {
+        use CardObject::*;
         match self {
-            Self::IssuingCard => "issuing.card",
+            IssuingCard => "issuing.card",
         }
     }
 }
@@ -141,9 +146,9 @@ impl CardObject {
 impl std::str::FromStr for CardObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardObject::*;
         match s {
-            "issuing.card" => Ok(Self::IssuingCard),
-
+            "issuing.card" => Ok(IssuingCard),
             _ => Err(()),
         }
     }
@@ -171,8 +176,8 @@ impl serde::Serialize for CardObject {
 impl<'de> serde::Deserialize<'de> for CardObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardObject"))
     }
 }
 /// The reason why the previous card needed to be replaced.
@@ -186,11 +191,12 @@ pub enum CardReplacementReason {
 
 impl CardReplacementReason {
     pub fn as_str(self) -> &'static str {
+        use CardReplacementReason::*;
         match self {
-            Self::Damaged => "damaged",
-            Self::Expired => "expired",
-            Self::Lost => "lost",
-            Self::Stolen => "stolen",
+            Damaged => "damaged",
+            Expired => "expired",
+            Lost => "lost",
+            Stolen => "stolen",
         }
     }
 }
@@ -198,12 +204,12 @@ impl CardReplacementReason {
 impl std::str::FromStr for CardReplacementReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardReplacementReason::*;
         match s {
-            "damaged" => Ok(Self::Damaged),
-            "expired" => Ok(Self::Expired),
-            "lost" => Ok(Self::Lost),
-            "stolen" => Ok(Self::Stolen),
-
+            "damaged" => Ok(Damaged),
+            "expired" => Ok(Expired),
+            "lost" => Ok(Lost),
+            "stolen" => Ok(Stolen),
             _ => Err(()),
         }
     }
@@ -231,12 +237,15 @@ impl serde::Serialize for CardReplacementReason {
 impl<'de> serde::Deserialize<'de> for CardReplacementReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardReplacementReason"))
     }
 }
 /// Whether authorizations can be approved on this card.
+///
+/// May be blocked from activating cards depending on past-due Cardholder requirements.
+/// Defaults to `inactive`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardStatus {
     Active,
@@ -246,10 +255,11 @@ pub enum CardStatus {
 
 impl CardStatus {
     pub fn as_str(self) -> &'static str {
+        use CardStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Canceled => "canceled",
-            Self::Inactive => "inactive",
+            Active => "active",
+            Canceled => "canceled",
+            Inactive => "inactive",
         }
     }
 }
@@ -257,11 +267,11 @@ impl CardStatus {
 impl std::str::FromStr for CardStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "canceled" => Ok(Self::Canceled),
-            "inactive" => Ok(Self::Inactive),
-
+            "active" => Ok(Active),
+            "canceled" => Ok(Canceled),
+            "inactive" => Ok(Inactive),
             _ => Err(()),
         }
     }
@@ -289,8 +299,8 @@ impl serde::Serialize for CardStatus {
 impl<'de> serde::Deserialize<'de> for CardStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardStatus"))
     }
 }
 /// The type of the card.
@@ -302,9 +312,10 @@ pub enum CardType {
 
 impl CardType {
     pub fn as_str(self) -> &'static str {
+        use CardType::*;
         match self {
-            Self::Physical => "physical",
-            Self::Virtual => "virtual",
+            Physical => "physical",
+            Virtual => "virtual",
         }
     }
 }
@@ -312,10 +323,10 @@ impl CardType {
 impl std::str::FromStr for CardType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardType::*;
         match s {
-            "physical" => Ok(Self::Physical),
-            "virtual" => Ok(Self::Virtual),
-
+            "physical" => Ok(Physical),
+            "virtual" => Ok(Virtual),
             _ => Err(()),
         }
     }
@@ -343,8 +354,8 @@ impl serde::Serialize for CardType {
 impl<'de> serde::Deserialize<'de> for CardType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardType"))
     }
 }
 impl stripe_types::Object for Card {

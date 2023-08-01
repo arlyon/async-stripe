@@ -21,12 +21,15 @@ pub verification_method: Option<PaymentIntentTypeSpecificPaymentMethodOptionsCli
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
     Manual,
+    ManualPreferred,
 }
 
 impl PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod::*;
         match self {
-            Self::Manual => "manual",
+            Manual => "manual",
+            ManualPreferred => "manual_preferred",
         }
     }
 }
@@ -34,9 +37,10 @@ impl PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
 impl std::str::FromStr for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod::*;
         match s {
-            "manual" => Ok(Self::Manual),
-
+            "manual" => Ok(Manual),
+            "manual_preferred" => Ok(ManualPreferred),
             _ => Err(()),
         }
     }
@@ -66,8 +70,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -84,10 +88,11 @@ pub enum PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage {
 
 impl PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage::*;
         match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
         }
     }
 }
@@ -95,11 +100,11 @@ impl PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage {
 impl std::str::FromStr for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage::*;
         match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
             _ => Err(()),
         }
     }
@@ -129,8 +134,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage"))
     }
 }
 /// Bank account verification method.
@@ -143,10 +148,11 @@ pub enum PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
 
 impl PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
+            Automatic => "automatic",
+            Instant => "instant",
+            Microdeposits => "microdeposits",
         }
     }
 }
@@ -154,11 +160,11 @@ impl PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
 impl std::str::FromStr for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
+            "automatic" => Ok(Automatic),
+            "instant" => Ok(Instant),
+            "microdeposits" => Ok(Microdeposits),
             _ => Err(()),
         }
     }
@@ -188,8 +194,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod"))
     }
 }
 pub mod installments;

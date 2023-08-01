@@ -57,16 +57,17 @@ pub enum TransactionFlowType {
 
 impl TransactionFlowType {
     pub fn as_str(self) -> &'static str {
+        use TransactionFlowType::*;
         match self {
-            Self::CreditReversal => "credit_reversal",
-            Self::DebitReversal => "debit_reversal",
-            Self::InboundTransfer => "inbound_transfer",
-            Self::IssuingAuthorization => "issuing_authorization",
-            Self::Other => "other",
-            Self::OutboundPayment => "outbound_payment",
-            Self::OutboundTransfer => "outbound_transfer",
-            Self::ReceivedCredit => "received_credit",
-            Self::ReceivedDebit => "received_debit",
+            CreditReversal => "credit_reversal",
+            DebitReversal => "debit_reversal",
+            InboundTransfer => "inbound_transfer",
+            IssuingAuthorization => "issuing_authorization",
+            Other => "other",
+            OutboundPayment => "outbound_payment",
+            OutboundTransfer => "outbound_transfer",
+            ReceivedCredit => "received_credit",
+            ReceivedDebit => "received_debit",
         }
     }
 }
@@ -74,17 +75,17 @@ impl TransactionFlowType {
 impl std::str::FromStr for TransactionFlowType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionFlowType::*;
         match s {
-            "credit_reversal" => Ok(Self::CreditReversal),
-            "debit_reversal" => Ok(Self::DebitReversal),
-            "inbound_transfer" => Ok(Self::InboundTransfer),
-            "issuing_authorization" => Ok(Self::IssuingAuthorization),
-            "other" => Ok(Self::Other),
-            "outbound_payment" => Ok(Self::OutboundPayment),
-            "outbound_transfer" => Ok(Self::OutboundTransfer),
-            "received_credit" => Ok(Self::ReceivedCredit),
-            "received_debit" => Ok(Self::ReceivedDebit),
-
+            "credit_reversal" => Ok(CreditReversal),
+            "debit_reversal" => Ok(DebitReversal),
+            "inbound_transfer" => Ok(InboundTransfer),
+            "issuing_authorization" => Ok(IssuingAuthorization),
+            "other" => Ok(Other),
+            "outbound_payment" => Ok(OutboundPayment),
+            "outbound_transfer" => Ok(OutboundTransfer),
+            "received_credit" => Ok(ReceivedCredit),
+            "received_debit" => Ok(ReceivedDebit),
             _ => Err(()),
         }
     }
@@ -112,8 +113,8 @@ impl serde::Serialize for TransactionFlowType {
 impl<'de> serde::Deserialize<'de> for TransactionFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionFlowType"))
     }
 }
@@ -127,8 +128,9 @@ pub enum TransactionObject {
 
 impl TransactionObject {
     pub fn as_str(self) -> &'static str {
+        use TransactionObject::*;
         match self {
-            Self::TreasuryTransaction => "treasury.transaction",
+            TreasuryTransaction => "treasury.transaction",
         }
     }
 }
@@ -136,9 +138,9 @@ impl TransactionObject {
 impl std::str::FromStr for TransactionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionObject::*;
         match s {
-            "treasury.transaction" => Ok(Self::TreasuryTransaction),
-
+            "treasury.transaction" => Ok(TreasuryTransaction),
             _ => Err(()),
         }
     }
@@ -166,8 +168,8 @@ impl serde::Serialize for TransactionObject {
 impl<'de> serde::Deserialize<'de> for TransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionObject"))
     }
 }
@@ -181,10 +183,11 @@ pub enum TransactionStatus {
 
 impl TransactionStatus {
     pub fn as_str(self) -> &'static str {
+        use TransactionStatus::*;
         match self {
-            Self::Open => "open",
-            Self::Posted => "posted",
-            Self::Void => "void",
+            Open => "open",
+            Posted => "posted",
+            Void => "void",
         }
     }
 }
@@ -192,11 +195,11 @@ impl TransactionStatus {
 impl std::str::FromStr for TransactionStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionStatus::*;
         match s {
-            "open" => Ok(Self::Open),
-            "posted" => Ok(Self::Posted),
-            "void" => Ok(Self::Void),
-
+            "open" => Ok(Open),
+            "posted" => Ok(Posted),
+            "void" => Ok(Void),
             _ => Err(()),
         }
     }
@@ -224,8 +227,8 @@ impl serde::Serialize for TransactionStatus {
 impl<'de> serde::Deserialize<'de> for TransactionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionStatus"))
     }
 }
@@ -240,3 +243,4 @@ pub mod status_transitions;
 pub use status_transitions::StatusTransitions;
 pub mod balance_impact;
 pub use balance_impact::BalanceImpact;
+pub mod requests;

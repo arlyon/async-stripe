@@ -2,7 +2,7 @@
 pub struct Card {
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: String,
     /// Checks on Card address and CVC if provided.
     pub checks: Option<stripe_types::payment_method::card::checks::Checks>,
@@ -43,7 +43,7 @@ pub struct Card {
     pub last4: String,
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<stripe_types::payment_method::card::networks::Networks>,
-    /// Contains details on how this Card maybe be used for 3D Secure authentication.
+    /// Contains details on how this Card may be used for 3D Secure authentication.
     pub three_d_secure_usage:
         Option<stripe_types::payment_method::card::three_d_secure_usage::ThreeDSecureUsage>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.

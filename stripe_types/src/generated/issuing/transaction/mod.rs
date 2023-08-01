@@ -2,7 +2,7 @@
 /// your Stripe account, such as a completed purchase or refund, is represented by an Issuing
 /// `Transaction` object.
 ///
-/// Related guide: [Issued Card Transactions](https://stripe.com/docs/issuing/purchases/transactions).
+/// Related guide: [Issued card transactions](https://stripe.com/docs/issuing/purchases/transactions).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Transaction {
     /// The transaction amount, which will be reflected in your balance.
@@ -76,8 +76,9 @@ pub enum TransactionObject {
 
 impl TransactionObject {
     pub fn as_str(self) -> &'static str {
+        use TransactionObject::*;
         match self {
-            Self::IssuingTransaction => "issuing.transaction",
+            IssuingTransaction => "issuing.transaction",
         }
     }
 }
@@ -85,9 +86,9 @@ impl TransactionObject {
 impl std::str::FromStr for TransactionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionObject::*;
         match s {
-            "issuing.transaction" => Ok(Self::IssuingTransaction),
-
+            "issuing.transaction" => Ok(IssuingTransaction),
             _ => Err(()),
         }
     }
@@ -115,8 +116,8 @@ impl serde::Serialize for TransactionObject {
 impl<'de> serde::Deserialize<'de> for TransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionObject"))
     }
 }
@@ -129,9 +130,10 @@ pub enum TransactionType {
 
 impl TransactionType {
     pub fn as_str(self) -> &'static str {
+        use TransactionType::*;
         match self {
-            Self::Capture => "capture",
-            Self::Refund => "refund",
+            Capture => "capture",
+            Refund => "refund",
         }
     }
 }
@@ -139,10 +141,10 @@ impl TransactionType {
 impl std::str::FromStr for TransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionType::*;
         match s {
-            "capture" => Ok(Self::Capture),
-            "refund" => Ok(Self::Refund),
-
+            "capture" => Ok(Capture),
+            "refund" => Ok(Refund),
             _ => Err(()),
         }
     }
@@ -170,9 +172,8 @@ impl serde::Serialize for TransactionType {
 impl<'de> serde::Deserialize<'de> for TransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TransactionType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TransactionType"))
     }
 }
 /// The digital wallet used for this transaction.
@@ -187,10 +188,11 @@ pub enum TransactionWallet {
 
 impl TransactionWallet {
     pub fn as_str(self) -> &'static str {
+        use TransactionWallet::*;
         match self {
-            Self::ApplePay => "apple_pay",
-            Self::GooglePay => "google_pay",
-            Self::SamsungPay => "samsung_pay",
+            ApplePay => "apple_pay",
+            GooglePay => "google_pay",
+            SamsungPay => "samsung_pay",
         }
     }
 }
@@ -198,11 +200,11 @@ impl TransactionWallet {
 impl std::str::FromStr for TransactionWallet {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransactionWallet::*;
         match s {
-            "apple_pay" => Ok(Self::ApplePay),
-            "google_pay" => Ok(Self::GooglePay),
-            "samsung_pay" => Ok(Self::SamsungPay),
-
+            "apple_pay" => Ok(ApplePay),
+            "google_pay" => Ok(GooglePay),
+            "samsung_pay" => Ok(SamsungPay),
             _ => Err(()),
         }
     }
@@ -230,8 +232,8 @@ impl serde::Serialize for TransactionWallet {
 impl<'de> serde::Deserialize<'de> for TransactionWallet {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransactionWallet"))
     }
 }

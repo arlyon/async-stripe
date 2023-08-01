@@ -1,7 +1,7 @@
 /// A payment link is a shareable URL that will take your customers to a hosted payment page.
 ///
 /// A payment link can be shared and used multiple times.  When a customer opens a payment link it will open a new [checkout session](https://stripe.com/docs/api/checkout/sessions) to render the payment page.
-/// You can use [checkout session events](https://stripe.com/docs/api/events/types#event_types-checkout.session.completed) to track payments through payment links.  Related guide: [Payment Links API](https://stripe.com/docs/payments/payment-links/api).
+/// You can use [checkout session events](https://stripe.com/docs/api/events/types#event_types-checkout.session.completed) to track payments through payment links.  Related guide: [Payment Links API](https://stripe.com/docs/payment-links).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentLink {
     /// Whether the payment link's `url` is active.
@@ -25,10 +25,17 @@ pub struct PaymentLink {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    pub custom_fields: Vec<stripe_payment::payment_link::custom_field::CustomField>,
+    pub custom_text: stripe_payment::payment_link::custom_text::CustomText,
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
     /// Unique identifier for the object.
     pub id: stripe_payment::payment_link::PaymentLinkId,
+    /// Configuration for creating invoice for payment mode payment links.
+    pub invoice_creation: Option<stripe_payment::payment_link::invoice_creation::InvoiceCreation>,
     /// The line items representing what is being sold.
     #[serde(default)]
     pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
@@ -85,9 +92,10 @@ pub enum PaymentLinkBillingAddressCollection {
 
 impl PaymentLinkBillingAddressCollection {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkBillingAddressCollection::*;
         match self {
-            Self::Auto => "auto",
-            Self::Required => "required",
+            Auto => "auto",
+            Required => "required",
         }
     }
 }
@@ -95,10 +103,10 @@ impl PaymentLinkBillingAddressCollection {
 impl std::str::FromStr for PaymentLinkBillingAddressCollection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkBillingAddressCollection::*;
         match s {
-            "auto" => Ok(Self::Auto),
-            "required" => Ok(Self::Required),
-
+            "auto" => Ok(Auto),
+            "required" => Ok(Required),
             _ => Err(()),
         }
     }
@@ -126,8 +134,8 @@ impl serde::Serialize for PaymentLinkBillingAddressCollection {
 impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection")
         })
     }
@@ -141,9 +149,10 @@ pub enum PaymentLinkCustomerCreation {
 
 impl PaymentLinkCustomerCreation {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkCustomerCreation::*;
         match self {
-            Self::Always => "always",
-            Self::IfRequired => "if_required",
+            Always => "always",
+            IfRequired => "if_required",
         }
     }
 }
@@ -151,10 +160,10 @@ impl PaymentLinkCustomerCreation {
 impl std::str::FromStr for PaymentLinkCustomerCreation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkCustomerCreation::*;
         match s {
-            "always" => Ok(Self::Always),
-            "if_required" => Ok(Self::IfRequired),
-
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
             _ => Err(()),
         }
     }
@@ -182,8 +191,8 @@ impl serde::Serialize for PaymentLinkCustomerCreation {
 impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
     }
 }
@@ -197,8 +206,9 @@ pub enum PaymentLinkObject {
 
 impl PaymentLinkObject {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkObject::*;
         match self {
-            Self::PaymentLink => "payment_link",
+            PaymentLink => "payment_link",
         }
     }
 }
@@ -206,9 +216,9 @@ impl PaymentLinkObject {
 impl std::str::FromStr for PaymentLinkObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkObject::*;
         match s {
-            "payment_link" => Ok(Self::PaymentLink),
-
+            "payment_link" => Ok(PaymentLink),
             _ => Err(()),
         }
     }
@@ -236,8 +246,8 @@ impl serde::Serialize for PaymentLinkObject {
 impl<'de> serde::Deserialize<'de> for PaymentLinkObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkObject"))
     }
 }
@@ -250,9 +260,10 @@ pub enum PaymentLinkPaymentMethodCollection {
 
 impl PaymentLinkPaymentMethodCollection {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkPaymentMethodCollection::*;
         match self {
-            Self::Always => "always",
-            Self::IfRequired => "if_required",
+            Always => "always",
+            IfRequired => "if_required",
         }
     }
 }
@@ -260,10 +271,10 @@ impl PaymentLinkPaymentMethodCollection {
 impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkPaymentMethodCollection::*;
         match s {
-            "always" => Ok(Self::Always),
-            "if_required" => Ok(Self::IfRequired),
-
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
             _ => Err(()),
         }
     }
@@ -291,8 +302,8 @@ impl serde::Serialize for PaymentLinkPaymentMethodCollection {
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection")
         })
     }
@@ -311,6 +322,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -318,9 +330,11 @@ pub enum PaymentLinkPaymentMethodTypes {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
@@ -331,32 +345,36 @@ pub enum PaymentLinkPaymentMethodTypes {
 
 impl PaymentLinkPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkPaymentMethodTypes::*;
         match self {
-            Self::Affirm => "affirm",
-            Self::AfterpayClearpay => "afterpay_clearpay",
-            Self::Alipay => "alipay",
-            Self::AuBecsDebit => "au_becs_debit",
-            Self::BacsDebit => "bacs_debit",
-            Self::Bancontact => "bancontact",
-            Self::Blik => "blik",
-            Self::Boleto => "boleto",
-            Self::Card => "card",
-            Self::Eps => "eps",
-            Self::Fpx => "fpx",
-            Self::Giropay => "giropay",
-            Self::Grabpay => "grabpay",
-            Self::Ideal => "ideal",
-            Self::Klarna => "klarna",
-            Self::Konbini => "konbini",
-            Self::Oxxo => "oxxo",
-            Self::P24 => "p24",
-            Self::Paynow => "paynow",
-            Self::Pix => "pix",
-            Self::Promptpay => "promptpay",
-            Self::SepaDebit => "sepa_debit",
-            Self::Sofort => "sofort",
-            Self::UsBankAccount => "us_bank_account",
-            Self::WechatPay => "wechat_pay",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            Cashapp => "cashapp",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            Link => "link",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
         }
     }
 }
@@ -364,33 +382,36 @@ impl PaymentLinkPaymentMethodTypes {
 impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkPaymentMethodTypes::*;
         match s {
-            "affirm" => Ok(Self::Affirm),
-            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
-            "alipay" => Ok(Self::Alipay),
-            "au_becs_debit" => Ok(Self::AuBecsDebit),
-            "bacs_debit" => Ok(Self::BacsDebit),
-            "bancontact" => Ok(Self::Bancontact),
-            "blik" => Ok(Self::Blik),
-            "boleto" => Ok(Self::Boleto),
-            "card" => Ok(Self::Card),
-            "eps" => Ok(Self::Eps),
-            "fpx" => Ok(Self::Fpx),
-            "giropay" => Ok(Self::Giropay),
-            "grabpay" => Ok(Self::Grabpay),
-            "ideal" => Ok(Self::Ideal),
-            "klarna" => Ok(Self::Klarna),
-            "konbini" => Ok(Self::Konbini),
-            "oxxo" => Ok(Self::Oxxo),
-            "p24" => Ok(Self::P24),
-            "paynow" => Ok(Self::Paynow),
-            "pix" => Ok(Self::Pix),
-            "promptpay" => Ok(Self::Promptpay),
-            "sepa_debit" => Ok(Self::SepaDebit),
-            "sofort" => Ok(Self::Sofort),
-            "us_bank_account" => Ok(Self::UsBankAccount),
-            "wechat_pay" => Ok(Self::WechatPay),
-
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "link" => Ok(Link),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
             _ => Err(()),
         }
     }
@@ -418,8 +439,8 @@ impl serde::Serialize for PaymentLinkPaymentMethodTypes {
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes")
         })
     }
@@ -435,11 +456,12 @@ pub enum PaymentLinkSubmitType {
 
 impl PaymentLinkSubmitType {
     pub fn as_str(self) -> &'static str {
+        use PaymentLinkSubmitType::*;
         match self {
-            Self::Auto => "auto",
-            Self::Book => "book",
-            Self::Donate => "donate",
-            Self::Pay => "pay",
+            Auto => "auto",
+            Book => "book",
+            Donate => "donate",
+            Pay => "pay",
         }
     }
 }
@@ -447,12 +469,12 @@ impl PaymentLinkSubmitType {
 impl std::str::FromStr for PaymentLinkSubmitType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentLinkSubmitType::*;
         match s {
-            "auto" => Ok(Self::Auto),
-            "book" => Ok(Self::Book),
-            "donate" => Ok(Self::Donate),
-            "pay" => Ok(Self::Pay),
-
+            "auto" => Ok(Auto),
+            "book" => Ok(Book),
+            "donate" => Ok(Donate),
+            "pay" => Ok(Pay),
             _ => Err(()),
         }
     }
@@ -480,8 +502,8 @@ impl serde::Serialize for PaymentLinkSubmitType {
 impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
     }
 }
@@ -498,6 +520,14 @@ pub mod automatic_tax;
 pub use automatic_tax::AutomaticTax;
 pub mod consent_collection;
 pub use consent_collection::ConsentCollection;
+pub mod custom_field;
+pub use custom_field::CustomField;
+pub mod custom_text;
+pub use custom_text::CustomText;
+pub mod invoice_creation;
+pub use invoice_creation::InvoiceCreation;
+pub mod invoice_settings;
+pub use invoice_settings::InvoiceSettings;
 pub mod payment_intent_data;
 pub use payment_intent_data::PaymentIntentData;
 pub mod phone_number_collection;
@@ -512,3 +542,4 @@ pub mod tax_id_collection;
 pub use tax_id_collection::TaxIdCollection;
 pub mod transfer_data;
 pub use transfer_data::TransferData;
+pub mod requests;

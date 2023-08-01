@@ -1,6 +1,6 @@
 /// A Location represents a grouping of readers.
 ///
-/// Related guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).
+/// Related guide: [Fleet management](https://stripe.com/docs/terminal/fleet/locations).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Location {
     pub address: stripe_types::address::Address,
@@ -32,8 +32,9 @@ pub enum LocationObject {
 
 impl LocationObject {
     pub fn as_str(self) -> &'static str {
+        use LocationObject::*;
         match self {
-            Self::TerminalLocation => "terminal.location",
+            TerminalLocation => "terminal.location",
         }
     }
 }
@@ -41,9 +42,9 @@ impl LocationObject {
 impl std::str::FromStr for LocationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use LocationObject::*;
         match s {
-            "terminal.location" => Ok(Self::TerminalLocation),
-
+            "terminal.location" => Ok(TerminalLocation),
             _ => Err(()),
         }
     }
@@ -71,8 +72,8 @@ impl serde::Serialize for LocationObject {
 impl<'de> serde::Deserialize<'de> for LocationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for LocationObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for LocationObject"))
     }
 }
 impl stripe_types::Object for Location {
@@ -84,3 +85,4 @@ impl stripe_types::Object for Location {
 stripe_types::def_id!(TerminalLocationId, "tml_");
 pub mod deleted;
 pub use deleted::DeletedLocation;
+pub mod requests;

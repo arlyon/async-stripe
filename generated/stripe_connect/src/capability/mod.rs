@@ -37,8 +37,9 @@ pub enum CapabilityObject {
 
 impl CapabilityObject {
     pub fn as_str(self) -> &'static str {
+        use CapabilityObject::*;
         match self {
-            Self::Capability => "capability",
+            Capability => "capability",
         }
     }
 }
@@ -46,9 +47,9 @@ impl CapabilityObject {
 impl std::str::FromStr for CapabilityObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapabilityObject::*;
         match s {
-            "capability" => Ok(Self::Capability),
-
+            "capability" => Ok(Capability),
             _ => Err(()),
         }
     }
@@ -76,8 +77,8 @@ impl serde::Serialize for CapabilityObject {
 impl<'de> serde::Deserialize<'de> for CapabilityObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CapabilityObject"))
     }
 }
@@ -95,12 +96,13 @@ pub enum CapabilityStatus {
 
 impl CapabilityStatus {
     pub fn as_str(self) -> &'static str {
+        use CapabilityStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Disabled => "disabled",
-            Self::Inactive => "inactive",
-            Self::Pending => "pending",
-            Self::Unrequested => "unrequested",
+            Active => "active",
+            Disabled => "disabled",
+            Inactive => "inactive",
+            Pending => "pending",
+            Unrequested => "unrequested",
         }
     }
 }
@@ -108,13 +110,13 @@ impl CapabilityStatus {
 impl std::str::FromStr for CapabilityStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CapabilityStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "disabled" => Ok(Self::Disabled),
-            "inactive" => Ok(Self::Inactive),
-            "pending" => Ok(Self::Pending),
-            "unrequested" => Ok(Self::Unrequested),
-
+            "active" => Ok(Active),
+            "disabled" => Ok(Disabled),
+            "inactive" => Ok(Inactive),
+            "pending" => Ok(Pending),
+            "unrequested" => Ok(Unrequested),
             _ => Err(()),
         }
     }
@@ -142,8 +144,8 @@ impl serde::Serialize for CapabilityStatus {
 impl<'de> serde::Deserialize<'de> for CapabilityStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CapabilityStatus"))
     }
 }
@@ -158,3 +160,4 @@ pub mod future_requirements;
 pub use future_requirements::FutureRequirements;
 pub mod requirements;
 pub use requirements::Requirements;
+pub mod requests;

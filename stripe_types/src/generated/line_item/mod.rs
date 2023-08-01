@@ -33,11 +33,6 @@ pub struct LineItem {
     pub object: LineItemObject,
     /// The price used to generate the line item.
     pub price: Option<stripe_types::price::Price>,
-    /// The ID of the product for this line item.
-    ///
-    /// This will always be the same as `price.product`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<stripe_types::Expandable<stripe_types::product::Product>>,
     /// The quantity of products being purchased.
     pub quantity: Option<u64>,
     /// The taxes applied to the line item.
@@ -54,8 +49,9 @@ pub enum LineItemObject {
 
 impl LineItemObject {
     pub fn as_str(self) -> &'static str {
+        use LineItemObject::*;
         match self {
-            Self::Item => "item",
+            Item => "item",
         }
     }
 }
@@ -63,9 +59,9 @@ impl LineItemObject {
 impl std::str::FromStr for LineItemObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use LineItemObject::*;
         match s {
-            "item" => Ok(Self::Item),
-
+            "item" => Ok(Item),
             _ => Err(()),
         }
     }
@@ -93,8 +89,8 @@ impl serde::Serialize for LineItemObject {
 impl<'de> serde::Deserialize<'de> for LineItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for LineItemObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for LineItemObject"))
     }
 }
 impl stripe_types::Object for LineItem {

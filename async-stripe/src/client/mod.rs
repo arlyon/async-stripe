@@ -29,7 +29,7 @@ mod base {
     feature = "runtime-blocking-rustls-webpki"
 ))]
 pub(crate) mod config {
-    pub(crate) use super::base::tokio_blocking::{err, ok};
+    pub(crate) use super::base::tokio_blocking::err;
     pub use super::base::tokio_blocking::{Response, TokioBlockingClient as BaseClient};
 }
 

@@ -113,9 +113,10 @@ pub enum QuoteCollectionMethod {
 
 impl QuoteCollectionMethod {
     pub fn as_str(self) -> &'static str {
+        use QuoteCollectionMethod::*;
         match self {
-            Self::ChargeAutomatically => "charge_automatically",
-            Self::SendInvoice => "send_invoice",
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
         }
     }
 }
@@ -123,10 +124,10 @@ impl QuoteCollectionMethod {
 impl std::str::FromStr for QuoteCollectionMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use QuoteCollectionMethod::*;
         match s {
-            "charge_automatically" => Ok(Self::ChargeAutomatically),
-            "send_invoice" => Ok(Self::SendInvoice),
-
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
             _ => Err(()),
         }
     }
@@ -154,8 +155,8 @@ impl serde::Serialize for QuoteCollectionMethod {
 impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for QuoteCollectionMethod"))
     }
 }
@@ -169,8 +170,9 @@ pub enum QuoteObject {
 
 impl QuoteObject {
     pub fn as_str(self) -> &'static str {
+        use QuoteObject::*;
         match self {
-            Self::Quote => "quote",
+            Quote => "quote",
         }
     }
 }
@@ -178,9 +180,9 @@ impl QuoteObject {
 impl std::str::FromStr for QuoteObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use QuoteObject::*;
         match s {
-            "quote" => Ok(Self::Quote),
-
+            "quote" => Ok(Quote),
             _ => Err(()),
         }
     }
@@ -208,8 +210,8 @@ impl serde::Serialize for QuoteObject {
 impl<'de> serde::Deserialize<'de> for QuoteObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteObject"))
     }
 }
 /// The status of the quote.
@@ -223,11 +225,12 @@ pub enum QuoteStatus {
 
 impl QuoteStatus {
     pub fn as_str(self) -> &'static str {
+        use QuoteStatus::*;
         match self {
-            Self::Accepted => "accepted",
-            Self::Canceled => "canceled",
-            Self::Draft => "draft",
-            Self::Open => "open",
+            Accepted => "accepted",
+            Canceled => "canceled",
+            Draft => "draft",
+            Open => "open",
         }
     }
 }
@@ -235,12 +238,12 @@ impl QuoteStatus {
 impl std::str::FromStr for QuoteStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use QuoteStatus::*;
         match s {
-            "accepted" => Ok(Self::Accepted),
-            "canceled" => Ok(Self::Canceled),
-            "draft" => Ok(Self::Draft),
-            "open" => Ok(Self::Open),
-
+            "accepted" => Ok(Accepted),
+            "canceled" => Ok(Canceled),
+            "draft" => Ok(Draft),
+            "open" => Ok(Open),
             _ => Err(()),
         }
     }
@@ -268,8 +271,8 @@ impl serde::Serialize for QuoteStatus {
 impl<'de> serde::Deserialize<'de> for QuoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteStatus"))
     }
 }
 impl stripe_types::Object for Quote {

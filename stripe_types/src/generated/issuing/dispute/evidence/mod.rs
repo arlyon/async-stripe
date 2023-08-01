@@ -36,14 +36,15 @@ pub enum EvidenceReason {
 
 impl EvidenceReason {
     pub fn as_str(self) -> &'static str {
+        use EvidenceReason::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Duplicate => "duplicate",
-            Self::Fraudulent => "fraudulent",
-            Self::MerchandiseNotAsDescribed => "merchandise_not_as_described",
-            Self::NotReceived => "not_received",
-            Self::Other => "other",
-            Self::ServiceNotAsDescribed => "service_not_as_described",
+            Canceled => "canceled",
+            Duplicate => "duplicate",
+            Fraudulent => "fraudulent",
+            MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            NotReceived => "not_received",
+            Other => "other",
+            ServiceNotAsDescribed => "service_not_as_described",
         }
     }
 }
@@ -51,15 +52,15 @@ impl EvidenceReason {
 impl std::str::FromStr for EvidenceReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use EvidenceReason::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "duplicate" => Ok(Self::Duplicate),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "merchandise_not_as_described" => Ok(Self::MerchandiseNotAsDescribed),
-            "not_received" => Ok(Self::NotReceived),
-            "other" => Ok(Self::Other),
-            "service_not_as_described" => Ok(Self::ServiceNotAsDescribed),
-
+            "canceled" => Ok(Canceled),
+            "duplicate" => Ok(Duplicate),
+            "fraudulent" => Ok(Fraudulent),
+            "merchandise_not_as_described" => Ok(MerchandiseNotAsDescribed),
+            "not_received" => Ok(NotReceived),
+            "other" => Ok(Other),
+            "service_not_as_described" => Ok(ServiceNotAsDescribed),
             _ => Err(()),
         }
     }
@@ -87,8 +88,8 @@ impl serde::Serialize for EvidenceReason {
 impl<'de> serde::Deserialize<'de> for EvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for EvidenceReason"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for EvidenceReason"))
     }
 }
 pub mod canceled;

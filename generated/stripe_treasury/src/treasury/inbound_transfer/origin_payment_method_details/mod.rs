@@ -16,8 +16,9 @@ pub enum OriginPaymentMethodDetailsType {
 
 impl OriginPaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
+        use OriginPaymentMethodDetailsType::*;
         match self {
-            Self::UsBankAccount => "us_bank_account",
+            UsBankAccount => "us_bank_account",
         }
     }
 }
@@ -25,9 +26,9 @@ impl OriginPaymentMethodDetailsType {
 impl std::str::FromStr for OriginPaymentMethodDetailsType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use OriginPaymentMethodDetailsType::*;
         match s {
-            "us_bank_account" => Ok(Self::UsBankAccount),
-
+            "us_bank_account" => Ok(UsBankAccount),
             _ => Err(()),
         }
     }
@@ -55,8 +56,8 @@ impl serde::Serialize for OriginPaymentMethodDetailsType {
 impl<'de> serde::Deserialize<'de> for OriginPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for OriginPaymentMethodDetailsType")
         })
     }

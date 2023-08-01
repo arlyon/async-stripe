@@ -29,6 +29,8 @@ pub struct PaymentMethod {
     pub card: Option<stripe_types::payment_method::card::Card>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<stripe_types::payment_method::card_present::CardPresent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<stripe_types::payment_method::cashapp::Cashapp>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -76,6 +78,8 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<stripe_types::payment_method::paynow::Paynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::payment_method::paypal::Paypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<stripe_types::payment_method::pix::Pix>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<stripe_types::payment_method::promptpay::Promptpay>,
@@ -95,6 +99,8 @@ pub struct PaymentMethod {
     pub us_bank_account: Option<stripe_types::payment_method::us_bank_account::UsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<stripe_types::payment_method::wechat_pay::WechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<stripe_types::payment_method::zip::Zip>,
 }
 /// String representing the object's type.
 ///
@@ -106,8 +112,9 @@ pub enum PaymentMethodObject {
 
 impl PaymentMethodObject {
     pub fn as_str(self) -> &'static str {
+        use PaymentMethodObject::*;
         match self {
-            Self::PaymentMethod => "payment_method",
+            PaymentMethod => "payment_method",
         }
     }
 }
@@ -115,9 +122,9 @@ impl PaymentMethodObject {
 impl std::str::FromStr for PaymentMethodObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodObject::*;
         match s {
-            "payment_method" => Ok(Self::PaymentMethod),
-
+            "payment_method" => Ok(PaymentMethod),
             _ => Err(()),
         }
     }
@@ -145,8 +152,8 @@ impl serde::Serialize for PaymentMethodObject {
 impl<'de> serde::Deserialize<'de> for PaymentMethodObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
     }
 }
@@ -167,6 +174,7 @@ pub enum PaymentMethodType {
     Boleto,
     Card,
     CardPresent,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -180,47 +188,53 @@ pub enum PaymentMethodType {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl PaymentMethodType {
     pub fn as_str(self) -> &'static str {
+        use PaymentMethodType::*;
         match self {
-            Self::AcssDebit => "acss_debit",
-            Self::Affirm => "affirm",
-            Self::AfterpayClearpay => "afterpay_clearpay",
-            Self::Alipay => "alipay",
-            Self::AuBecsDebit => "au_becs_debit",
-            Self::BacsDebit => "bacs_debit",
-            Self::Bancontact => "bancontact",
-            Self::Blik => "blik",
-            Self::Boleto => "boleto",
-            Self::Card => "card",
-            Self::CardPresent => "card_present",
-            Self::CustomerBalance => "customer_balance",
-            Self::Eps => "eps",
-            Self::Fpx => "fpx",
-            Self::Giropay => "giropay",
-            Self::Grabpay => "grabpay",
-            Self::Ideal => "ideal",
-            Self::InteracPresent => "interac_present",
-            Self::Klarna => "klarna",
-            Self::Konbini => "konbini",
-            Self::Link => "link",
-            Self::Oxxo => "oxxo",
-            Self::P24 => "p24",
-            Self::Paynow => "paynow",
-            Self::Pix => "pix",
-            Self::Promptpay => "promptpay",
-            Self::SepaDebit => "sepa_debit",
-            Self::Sofort => "sofort",
-            Self::UsBankAccount => "us_bank_account",
-            Self::WechatPay => "wechat_pay",
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            CardPresent => "card_present",
+            Cashapp => "cashapp",
+            CustomerBalance => "customer_balance",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            InteracPresent => "interac_present",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            Link => "link",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
+            Zip => "zip",
         }
     }
 }
@@ -228,38 +242,41 @@ impl PaymentMethodType {
 impl std::str::FromStr for PaymentMethodType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodType::*;
         match s {
-            "acss_debit" => Ok(Self::AcssDebit),
-            "affirm" => Ok(Self::Affirm),
-            "afterpay_clearpay" => Ok(Self::AfterpayClearpay),
-            "alipay" => Ok(Self::Alipay),
-            "au_becs_debit" => Ok(Self::AuBecsDebit),
-            "bacs_debit" => Ok(Self::BacsDebit),
-            "bancontact" => Ok(Self::Bancontact),
-            "blik" => Ok(Self::Blik),
-            "boleto" => Ok(Self::Boleto),
-            "card" => Ok(Self::Card),
-            "card_present" => Ok(Self::CardPresent),
-            "customer_balance" => Ok(Self::CustomerBalance),
-            "eps" => Ok(Self::Eps),
-            "fpx" => Ok(Self::Fpx),
-            "giropay" => Ok(Self::Giropay),
-            "grabpay" => Ok(Self::Grabpay),
-            "ideal" => Ok(Self::Ideal),
-            "interac_present" => Ok(Self::InteracPresent),
-            "klarna" => Ok(Self::Klarna),
-            "konbini" => Ok(Self::Konbini),
-            "link" => Ok(Self::Link),
-            "oxxo" => Ok(Self::Oxxo),
-            "p24" => Ok(Self::P24),
-            "paynow" => Ok(Self::Paynow),
-            "pix" => Ok(Self::Pix),
-            "promptpay" => Ok(Self::Promptpay),
-            "sepa_debit" => Ok(Self::SepaDebit),
-            "sofort" => Ok(Self::Sofort),
-            "us_bank_account" => Ok(Self::UsBankAccount),
-            "wechat_pay" => Ok(Self::WechatPay),
-
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "card_present" => Ok(CardPresent),
+            "cashapp" => Ok(Cashapp),
+            "customer_balance" => Ok(CustomerBalance),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "interac_present" => Ok(InteracPresent),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "link" => Ok(Link),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
             _ => Err(()),
         }
     }
@@ -287,8 +304,8 @@ impl serde::Serialize for PaymentMethodType {
 impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
     }
 }
@@ -323,6 +340,8 @@ pub mod card;
 pub use card::Card;
 pub mod card_present;
 pub use card_present::CardPresent;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod customer_balance;
 pub use customer_balance::CustomerBalance;
 pub mod eps;
@@ -349,6 +368,8 @@ pub mod p24;
 pub use p24::P24;
 pub mod paynow;
 pub use paynow::Paynow;
+pub mod paypal;
+pub use paypal::Paypal;
 pub mod pix;
 pub use pix::Pix;
 pub mod promptpay;
@@ -361,3 +382,5 @@ pub mod us_bank_account;
 pub use us_bank_account::UsBankAccount;
 pub mod wechat_pay;
 pub use wechat_pay::WechatPay;
+pub mod zip;
+pub use zip::Zip;

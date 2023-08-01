@@ -1,7 +1,7 @@
 /// An early fraud warning indicates that the card issuer has notified us that a
 /// charge may be fraudulent.
 ///
-/// Related guide: [Early Fraud Warnings](https://stripe.com/docs/disputes/measuring#early-fraud-warnings).
+/// Related guide: [Early fraud warnings](https://stripe.com/docs/disputes/measuring#early-fraud-warnings).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct EarlyFraudWarning {
     /// An EFW is actionable if it has not received a dispute and has not been fully refunded.
@@ -41,8 +41,9 @@ pub enum EarlyFraudWarningObject {
 
 impl EarlyFraudWarningObject {
     pub fn as_str(self) -> &'static str {
+        use EarlyFraudWarningObject::*;
         match self {
-            Self::RadarEarlyFraudWarning => "radar.early_fraud_warning",
+            RadarEarlyFraudWarning => "radar.early_fraud_warning",
         }
     }
 }
@@ -50,9 +51,9 @@ impl EarlyFraudWarningObject {
 impl std::str::FromStr for EarlyFraudWarningObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use EarlyFraudWarningObject::*;
         match s {
-            "radar.early_fraud_warning" => Ok(Self::RadarEarlyFraudWarning),
-
+            "radar.early_fraud_warning" => Ok(RadarEarlyFraudWarning),
             _ => Err(()),
         }
     }
@@ -80,8 +81,8 @@ impl serde::Serialize for EarlyFraudWarningObject {
 impl<'de> serde::Deserialize<'de> for EarlyFraudWarningObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for EarlyFraudWarningObject"))
     }
 }

@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::fmt::Write;
 
-use anyhow::anyhow;
+use anyhow::bail;
 use heck::SnakeCase;
 use openapiv3::{
     AdditionalProperties, IntegerFormat, ObjectType, ReferenceOr, Schema, SchemaKind, StringType,
@@ -326,10 +326,10 @@ impl<'a> Inference<'a> {
                         } else if let RustType::Simple(typ) = &rust_type {
                             RustIdent::create(typ.ident())
                         } else {
-                            return Err(anyhow!(
+                            bail!(
                                 "Could not infer a variant name for {item:?} and type {:?}",
                                 rust_type
-                            ));
+                            );
                         };
                         variants.push(EnumVariant::new(variant_ident, rust_type));
                     }
@@ -378,13 +378,13 @@ fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<Ru
 
     let schema_kind = expansion_resources.into_schema_kind();
     let SchemaKind::OneOf { one_of } = schema_kind else {
-        return Err(anyhow!("Expected expansion resources to only contain `oneOf`"));
+        bail!("Expected expansion resources to only contain `oneOf`");
     };
     if one_of.len() != 1 {
-        return Err(anyhow!("Expected a single specification in expansion resources"));
+        bail!("Expected a single specification in expansion resources");
     }
     let ReferenceOr::Reference { reference } = one_of.first().unwrap() else {
-        return Err(anyhow!("Expected expansion resource to only contain a schema reference"));
+        bail!("Expected expansion resource to only contain a schema reference");
     };
     let path = ComponentPath::from_reference(reference);
     Ok(RustType::expandable(RustType::component_path(path)))

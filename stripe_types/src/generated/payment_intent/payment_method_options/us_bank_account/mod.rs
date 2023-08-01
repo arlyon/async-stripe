@@ -28,10 +28,11 @@ pub enum UsBankAccountSetupFutureUsage {
 
 impl UsBankAccountSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
+        use UsBankAccountSetupFutureUsage::*;
         match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
         }
     }
 }
@@ -39,11 +40,11 @@ impl UsBankAccountSetupFutureUsage {
 impl std::str::FromStr for UsBankAccountSetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsBankAccountSetupFutureUsage::*;
         match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
             _ => Err(()),
         }
     }
@@ -71,8 +72,8 @@ impl serde::Serialize for UsBankAccountSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for UsBankAccountSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountSetupFutureUsage")
         })
     }
@@ -87,10 +88,11 @@ pub enum UsBankAccountVerificationMethod {
 
 impl UsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
+        use UsBankAccountVerificationMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
+            Automatic => "automatic",
+            Instant => "instant",
+            Microdeposits => "microdeposits",
         }
     }
 }
@@ -98,11 +100,11 @@ impl UsBankAccountVerificationMethod {
 impl std::str::FromStr for UsBankAccountVerificationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsBankAccountVerificationMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
+            "automatic" => Ok(Automatic),
+            "instant" => Ok(Instant),
+            "microdeposits" => Ok(Microdeposits),
             _ => Err(()),
         }
     }
@@ -130,8 +132,8 @@ impl serde::Serialize for UsBankAccountVerificationMethod {
 impl<'de> serde::Deserialize<'de> for UsBankAccountVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountVerificationMethod")
         })
     }

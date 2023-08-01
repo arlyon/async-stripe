@@ -4,7 +4,7 @@ pub struct CardPresent {
     pub amount_authorized: Option<i64>,
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
     /// When using manual capture, a future timestamp after which the charge will be automatically refunded if uncaptured.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,7 +61,7 @@ pub struct CardPresent {
     pub last4: Option<String>,
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
     /// Defines whether the authorized amount can be over-captured or not.
     pub overcapture_supported: bool,
@@ -85,12 +85,13 @@ pub enum CardPresentReadMethod {
 
 impl CardPresentReadMethod {
     pub fn as_str(self) -> &'static str {
+        use CardPresentReadMethod::*;
         match self {
-            Self::ContactEmv => "contact_emv",
-            Self::ContactlessEmv => "contactless_emv",
-            Self::ContactlessMagstripeMode => "contactless_magstripe_mode",
-            Self::MagneticStripeFallback => "magnetic_stripe_fallback",
-            Self::MagneticStripeTrack2 => "magnetic_stripe_track2",
+            ContactEmv => "contact_emv",
+            ContactlessEmv => "contactless_emv",
+            ContactlessMagstripeMode => "contactless_magstripe_mode",
+            MagneticStripeFallback => "magnetic_stripe_fallback",
+            MagneticStripeTrack2 => "magnetic_stripe_track2",
         }
     }
 }
@@ -98,13 +99,13 @@ impl CardPresentReadMethod {
 impl std::str::FromStr for CardPresentReadMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardPresentReadMethod::*;
         match s {
-            "contact_emv" => Ok(Self::ContactEmv),
-            "contactless_emv" => Ok(Self::ContactlessEmv),
-            "contactless_magstripe_mode" => Ok(Self::ContactlessMagstripeMode),
-            "magnetic_stripe_fallback" => Ok(Self::MagneticStripeFallback),
-            "magnetic_stripe_track2" => Ok(Self::MagneticStripeTrack2),
-
+            "contact_emv" => Ok(ContactEmv),
+            "contactless_emv" => Ok(ContactlessEmv),
+            "contactless_magstripe_mode" => Ok(ContactlessMagstripeMode),
+            "magnetic_stripe_fallback" => Ok(MagneticStripeFallback),
+            "magnetic_stripe_track2" => Ok(MagneticStripeTrack2),
             _ => Err(()),
         }
     }
@@ -132,8 +133,8 @@ impl serde::Serialize for CardPresentReadMethod {
 impl<'de> serde::Deserialize<'de> for CardPresentReadMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardPresentReadMethod"))
     }
 }

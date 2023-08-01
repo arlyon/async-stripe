@@ -25,10 +25,11 @@ pub enum VerifiedOutputsIdNumberType {
 
 impl VerifiedOutputsIdNumberType {
     pub fn as_str(self) -> &'static str {
+        use VerifiedOutputsIdNumberType::*;
         match self {
-            Self::BrCpf => "br_cpf",
-            Self::SgNric => "sg_nric",
-            Self::UsSsn => "us_ssn",
+            BrCpf => "br_cpf",
+            SgNric => "sg_nric",
+            UsSsn => "us_ssn",
         }
     }
 }
@@ -36,11 +37,11 @@ impl VerifiedOutputsIdNumberType {
 impl std::str::FromStr for VerifiedOutputsIdNumberType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerifiedOutputsIdNumberType::*;
         match s {
-            "br_cpf" => Ok(Self::BrCpf),
-            "sg_nric" => Ok(Self::SgNric),
-            "us_ssn" => Ok(Self::UsSsn),
-
+            "br_cpf" => Ok(BrCpf),
+            "sg_nric" => Ok(SgNric),
+            "us_ssn" => Ok(UsSsn),
             _ => Err(()),
         }
     }
@@ -68,8 +69,8 @@ impl serde::Serialize for VerifiedOutputsIdNumberType {
 impl<'de> serde::Deserialize<'de> for VerifiedOutputsIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerifiedOutputsIdNumberType"))
     }
 }

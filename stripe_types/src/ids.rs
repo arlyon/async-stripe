@@ -222,10 +222,16 @@ mod tests {
     use std::str::FromStr;
 
     use serde::de::DeserializeOwned;
-    use serde::{Deserialize, Serialize};
-    use serde_json::json;
+    use serde::Serialize;
 
-    use super::*;
+    use crate::charge::ChargeId;
+    use crate::customer::CustomerId;
+    use crate::invoice::InvoiceId;
+    use crate::payment_method::PaymentMethodId;
+    use crate::price::PriceId;
+    use crate::product::ProductId;
+    use crate::refund::RefundId;
+    use crate::subscription::SubscriptionId;
 
     fn assert_ser_de_roundtrip<T>(id: &str)
     where
@@ -245,26 +251,11 @@ mod tests {
     }
 
     #[test]
-    fn test_empty_invoice_id_default() {
-        #[derive(Deserialize)]
-        struct WithInvoiceId {
-            id: InvoiceId,
-        }
-
-        for body in [json!({"id": ""}), json!({})] {
-            let deser: WithInvoiceId = serde_json::from_value(body).expect("Could not deser");
-            assert_eq!(deser.id, InvoiceId::none());
-        }
-    }
-
-    #[test]
     fn test_ser_de_roundtrip() {
-        // InvoiceId special cased
+        // Single prefixes
         for id in ["in_12345", "in_"] {
             assert_ser_de_roundtrip::<InvoiceId>(id);
         }
-
-        // Single prefix
         assert_ser_de_roundtrip::<PriceId>("price_abc");
 
         // Case where multiple possible prefixes
@@ -276,19 +267,13 @@ mod tests {
         for id in ["anything", ""] {
             assert_ser_de_roundtrip::<ProductId>(id);
         }
-
-        // Case where enum id
-        for id in ["tok_123", "btok_456"] {
-            assert_ser_de_roundtrip::<TokenId>(id);
-        }
     }
 
     #[test]
     fn test_deser_err() {
-        // InvoiceId special cased
+        // Single prefix
         assert_deser_err::<InvoiceId>("in");
 
-        // Single prefix
         for id in ["sub", ""] {
             assert_deser_err::<SubscriptionId>(id);
         }
@@ -296,11 +281,6 @@ mod tests {
         // Case where multiple possible prefixes
         for id in ["abc_bcd", "pyr_123"] {
             assert_deser_err::<PaymentMethodId>(id);
-        }
-
-        // Case where enum id
-        for id in ["tok_123", "btok_456"] {
-            assert_deser_err::<PaymentSourceId>(id);
         }
     }
 

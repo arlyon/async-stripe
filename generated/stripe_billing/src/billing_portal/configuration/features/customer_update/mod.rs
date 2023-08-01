@@ -1,0 +1,79 @@
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct CustomerUpdate {
+    /// The types of customer updates that are supported.
+    ///
+    /// When empty, customers are not updateable.
+    pub allowed_updates: Vec<CustomerUpdateAllowedUpdates>,
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+}
+/// The types of customer updates that are supported.
+///
+/// When empty, customers are not updateable.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CustomerUpdateAllowedUpdates {
+    Address,
+    Email,
+    Name,
+    Phone,
+    Shipping,
+    TaxId,
+}
+
+impl CustomerUpdateAllowedUpdates {
+    pub fn as_str(self) -> &'static str {
+        use CustomerUpdateAllowedUpdates::*;
+        match self {
+            Address => "address",
+            Email => "email",
+            Name => "name",
+            Phone => "phone",
+            Shipping => "shipping",
+            TaxId => "tax_id",
+        }
+    }
+}
+
+impl std::str::FromStr for CustomerUpdateAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerUpdateAllowedUpdates::*;
+        match s {
+            "address" => Ok(Address),
+            "email" => Ok(Email),
+            "name" => Ok(Name),
+            "phone" => Ok(Phone),
+            "shipping" => Ok(Shipping),
+            "tax_id" => Ok(TaxId),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CustomerUpdateAllowedUpdates {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CustomerUpdateAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CustomerUpdateAllowedUpdates {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerUpdateAllowedUpdates"))
+    }
+}

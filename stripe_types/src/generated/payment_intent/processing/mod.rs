@@ -14,8 +14,9 @@ pub enum ProcessingType {
 
 impl ProcessingType {
     pub fn as_str(self) -> &'static str {
+        use ProcessingType::*;
         match self {
-            Self::Card => "card",
+            Card => "card",
         }
     }
 }
@@ -23,9 +24,9 @@ impl ProcessingType {
 impl std::str::FromStr for ProcessingType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ProcessingType::*;
         match s {
-            "card" => Ok(Self::Card),
-
+            "card" => Ok(Card),
             _ => Err(()),
         }
     }
@@ -53,8 +54,8 @@ impl serde::Serialize for ProcessingType {
 impl<'de> serde::Deserialize<'de> for ProcessingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ProcessingType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ProcessingType"))
     }
 }
 pub mod card;

@@ -1,6 +1,10 @@
 /// This is an object representing a Stripe account.
 ///
-/// You can retrieve it to see properties on the account like its current e-mail address or if the account is enabled yet to make live charges.  Some properties, marked below, are available only to platforms that want to [create and manage Express or Custom accounts](https://stripe.com/docs/connect/accounts).
+/// You can retrieve it to see properties on the account like its current requirements or if the account is enabled to make live charges or receive payouts.  For Custom accounts, the properties below are always returned.
+/// For other accounts, some properties are returned until that account has started to go through Connect Onboarding.
+/// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters are no longer returned.
+/// These are marked as **Custom Only** or **Custom and Express** below.
+/// Learn about the differences [between accounts](https://stripe.com/docs/connect/accounts).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Account {
     /// Business information about the account.
@@ -38,7 +42,7 @@ pub struct Account {
     pub details_submitted: Option<bool>,
     /// An email address associated with the account.
     ///
-    /// You can treat this as metadata: it is not used for authentication or messaging account holders.
+    /// It's not used for authentication and Stripe doesn't market to this field without explicit approval from the platform.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     /// External accounts (bank accounts and debit cards) currently attached to this account.
@@ -87,11 +91,12 @@ pub enum AccountBusinessType {
 
 impl AccountBusinessType {
     pub fn as_str(self) -> &'static str {
+        use AccountBusinessType::*;
         match self {
-            Self::Company => "company",
-            Self::GovernmentEntity => "government_entity",
-            Self::Individual => "individual",
-            Self::NonProfit => "non_profit",
+            Company => "company",
+            GovernmentEntity => "government_entity",
+            Individual => "individual",
+            NonProfit => "non_profit",
         }
     }
 }
@@ -99,12 +104,12 @@ impl AccountBusinessType {
 impl std::str::FromStr for AccountBusinessType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountBusinessType::*;
         match s {
-            "company" => Ok(Self::Company),
-            "government_entity" => Ok(Self::GovernmentEntity),
-            "individual" => Ok(Self::Individual),
-            "non_profit" => Ok(Self::NonProfit),
-
+            "company" => Ok(Company),
+            "government_entity" => Ok(GovernmentEntity),
+            "individual" => Ok(Individual),
+            "non_profit" => Ok(NonProfit),
             _ => Err(()),
         }
     }
@@ -132,8 +137,8 @@ impl serde::Serialize for AccountBusinessType {
 impl<'de> serde::Deserialize<'de> for AccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
     }
 }
@@ -147,8 +152,9 @@ pub enum AccountObject {
 
 impl AccountObject {
     pub fn as_str(self) -> &'static str {
+        use AccountObject::*;
         match self {
-            Self::Account => "account",
+            Account => "account",
         }
     }
 }
@@ -156,9 +162,9 @@ impl AccountObject {
 impl std::str::FromStr for AccountObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountObject::*;
         match s {
-            "account" => Ok(Self::Account),
-
+            "account" => Ok(Account),
             _ => Err(()),
         }
     }
@@ -186,8 +192,8 @@ impl serde::Serialize for AccountObject {
 impl<'de> serde::Deserialize<'de> for AccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
     }
 }
 /// The Stripe account type.
@@ -202,10 +208,11 @@ pub enum AccountType {
 
 impl AccountType {
     pub fn as_str(self) -> &'static str {
+        use AccountType::*;
         match self {
-            Self::Custom => "custom",
-            Self::Express => "express",
-            Self::Standard => "standard",
+            Custom => "custom",
+            Express => "express",
+            Standard => "standard",
         }
     }
 }
@@ -213,11 +220,11 @@ impl AccountType {
 impl std::str::FromStr for AccountType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountType::*;
         match s {
-            "custom" => Ok(Self::Custom),
-            "express" => Ok(Self::Express),
-            "standard" => Ok(Self::Standard),
-
+            "custom" => Ok(Custom),
+            "express" => Ok(Express),
+            "standard" => Ok(Standard),
             _ => Err(()),
         }
     }
@@ -245,8 +252,8 @@ impl serde::Serialize for AccountType {
 impl<'de> serde::Deserialize<'de> for AccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountType"))
     }
 }
 impl stripe_types::Object for Account {
@@ -255,8 +262,6 @@ impl stripe_types::Object for Account {
         self.id.clone()
     }
 }
-pub mod deleted;
-pub use deleted::DeletedAccount;
 pub mod settings_branding;
 pub use settings_branding::SettingsBranding;
 pub mod business_profile;
@@ -287,3 +292,5 @@ pub mod company;
 pub use company::Company;
 pub mod payout_schedule;
 pub use payout_schedule::PayoutSchedule;
+pub mod deleted;
+pub use deleted::DeletedAccount;

@@ -56,8 +56,9 @@ pub enum FinancialAccountObject {
 
 impl FinancialAccountObject {
     pub fn as_str(self) -> &'static str {
+        use FinancialAccountObject::*;
         match self {
-            Self::TreasuryFinancialAccount => "treasury.financial_account",
+            TreasuryFinancialAccount => "treasury.financial_account",
         }
     }
 }
@@ -65,9 +66,9 @@ impl FinancialAccountObject {
 impl std::str::FromStr for FinancialAccountObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinancialAccountObject::*;
         match s {
-            "treasury.financial_account" => Ok(Self::TreasuryFinancialAccount),
-
+            "treasury.financial_account" => Ok(TreasuryFinancialAccount),
             _ => Err(()),
         }
     }
@@ -95,8 +96,8 @@ impl serde::Serialize for FinancialAccountObject {
 impl<'de> serde::Deserialize<'de> for FinancialAccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAccountObject"))
     }
 }
@@ -109,9 +110,10 @@ pub enum FinancialAccountStatus {
 
 impl FinancialAccountStatus {
     pub fn as_str(self) -> &'static str {
+        use FinancialAccountStatus::*;
         match self {
-            Self::Closed => "closed",
-            Self::Open => "open",
+            Closed => "closed",
+            Open => "open",
         }
     }
 }
@@ -119,10 +121,10 @@ impl FinancialAccountStatus {
 impl std::str::FromStr for FinancialAccountStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinancialAccountStatus::*;
         match s {
-            "closed" => Ok(Self::Closed),
-            "open" => Ok(Self::Open),
-
+            "closed" => Ok(Closed),
+            "open" => Ok(Open),
             _ => Err(()),
         }
     }
@@ -150,8 +152,8 @@ impl serde::Serialize for FinancialAccountStatus {
 impl<'de> serde::Deserialize<'de> for FinancialAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAccountStatus"))
     }
 }
@@ -171,17 +173,18 @@ pub enum Array {
 
 impl Array {
     pub fn as_str(self) -> &'static str {
+        use Array::*;
         match self {
-            Self::CardIssuing => "card_issuing",
-            Self::DepositInsurance => "deposit_insurance",
-            Self::FinancialAddressesAba => "financial_addresses.aba",
-            Self::InboundTransfersAch => "inbound_transfers.ach",
-            Self::IntraStripeFlows => "intra_stripe_flows",
-            Self::OutboundPaymentsAch => "outbound_payments.ach",
-            Self::OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
-            Self::OutboundTransfersAch => "outbound_transfers.ach",
-            Self::OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
-            Self::RemoteDepositCapture => "remote_deposit_capture",
+            CardIssuing => "card_issuing",
+            DepositInsurance => "deposit_insurance",
+            FinancialAddressesAba => "financial_addresses.aba",
+            InboundTransfersAch => "inbound_transfers.ach",
+            IntraStripeFlows => "intra_stripe_flows",
+            OutboundPaymentsAch => "outbound_payments.ach",
+            OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
+            OutboundTransfersAch => "outbound_transfers.ach",
+            OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
+            RemoteDepositCapture => "remote_deposit_capture",
         }
     }
 }
@@ -189,18 +192,18 @@ impl Array {
 impl std::str::FromStr for Array {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use Array::*;
         match s {
-            "card_issuing" => Ok(Self::CardIssuing),
-            "deposit_insurance" => Ok(Self::DepositInsurance),
-            "financial_addresses.aba" => Ok(Self::FinancialAddressesAba),
-            "inbound_transfers.ach" => Ok(Self::InboundTransfersAch),
-            "intra_stripe_flows" => Ok(Self::IntraStripeFlows),
-            "outbound_payments.ach" => Ok(Self::OutboundPaymentsAch),
-            "outbound_payments.us_domestic_wire" => Ok(Self::OutboundPaymentsUsDomesticWire),
-            "outbound_transfers.ach" => Ok(Self::OutboundTransfersAch),
-            "outbound_transfers.us_domestic_wire" => Ok(Self::OutboundTransfersUsDomesticWire),
-            "remote_deposit_capture" => Ok(Self::RemoteDepositCapture),
-
+            "card_issuing" => Ok(CardIssuing),
+            "deposit_insurance" => Ok(DepositInsurance),
+            "financial_addresses.aba" => Ok(FinancialAddressesAba),
+            "inbound_transfers.ach" => Ok(InboundTransfersAch),
+            "intra_stripe_flows" => Ok(IntraStripeFlows),
+            "outbound_payments.ach" => Ok(OutboundPaymentsAch),
+            "outbound_payments.us_domestic_wire" => Ok(OutboundPaymentsUsDomesticWire),
+            "outbound_transfers.ach" => Ok(OutboundTransfersAch),
+            "outbound_transfers.us_domestic_wire" => Ok(OutboundTransfersUsDomesticWire),
+            "remote_deposit_capture" => Ok(RemoteDepositCapture),
             _ => Err(()),
         }
     }
@@ -228,8 +231,8 @@ impl serde::Serialize for Array {
 impl<'de> serde::Deserialize<'de> for Array {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for Array"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for Array"))
     }
 }
 impl stripe_types::Object for FinancialAccount {
@@ -249,3 +252,4 @@ pub mod status_details;
 pub use status_details::StatusDetails;
 pub mod toggle_settings;
 pub use toggle_settings::ToggleSettings;
+pub mod requests;

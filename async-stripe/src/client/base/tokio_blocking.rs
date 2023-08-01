@@ -1,6 +1,7 @@
 use std::{sync::Arc, time::Duration};
 
 use http_types::Request;
+use serde::de::DeserializeOwned;
 
 use crate::client::base::tokio::TokioClient;
 use crate::client::request_strategy::RequestStrategy;
@@ -10,11 +11,6 @@ use crate::error::StripeError;
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
 pub type Response<T> = Result<T, StripeError>;
-
-#[inline(always)]
-pub(crate) fn ok<T>(ok: T) -> Response<T> {
-    Ok(ok)
-}
 
 #[inline(always)]
 pub(crate) fn err<T>(err: crate::StripeError) -> Response<T> {
@@ -42,7 +38,7 @@ impl TokioBlockingClient {
         TokioBlockingClient { inner, runtime: Arc::new(runtime) }
     }
 
-    pub fn execute<T: Deserialize + Send + 'static>(
+    pub fn execute<T: DeserializeOwned + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,

@@ -7,6 +7,10 @@ members = [
 #  "bench/binary_size"
 ]
 
+# excluding from workspace for now so that all these smoke tests
+# can avoid dealing with features
+exclude = ["tests"]
+
 [workspace.package]
 version = "0.22.2"
 description = "API bindings for the Stripe HTTP API"

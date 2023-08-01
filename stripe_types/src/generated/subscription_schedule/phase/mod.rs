@@ -48,7 +48,7 @@ pub struct Phase {
     pub end_date: stripe_types::Timestamp,
     /// The invoice settings applicable during this phase.
     pub invoice_settings:
-        Option<stripe_types::subscription_schedule::invoice_settings::InvoiceSettings>,
+        Option<stripe_types::subscription_schedule::phase::invoice_settings::InvoiceSettings>,
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<stripe_types::subscription_schedule::phase_item::PhaseItem>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
@@ -84,9 +84,10 @@ pub enum PhaseBillingCycleAnchor {
 
 impl PhaseBillingCycleAnchor {
     pub fn as_str(self) -> &'static str {
+        use PhaseBillingCycleAnchor::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::PhaseStart => "phase_start",
+            Automatic => "automatic",
+            PhaseStart => "phase_start",
         }
     }
 }
@@ -94,10 +95,10 @@ impl PhaseBillingCycleAnchor {
 impl std::str::FromStr for PhaseBillingCycleAnchor {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PhaseBillingCycleAnchor::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "phase_start" => Ok(Self::PhaseStart),
-
+            "automatic" => Ok(Automatic),
+            "phase_start" => Ok(PhaseStart),
             _ => Err(()),
         }
     }
@@ -125,8 +126,8 @@ impl serde::Serialize for PhaseBillingCycleAnchor {
 impl<'de> serde::Deserialize<'de> for PhaseBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseBillingCycleAnchor"))
     }
 }
@@ -142,9 +143,10 @@ pub enum PhaseCollectionMethod {
 
 impl PhaseCollectionMethod {
     pub fn as_str(self) -> &'static str {
+        use PhaseCollectionMethod::*;
         match self {
-            Self::ChargeAutomatically => "charge_automatically",
-            Self::SendInvoice => "send_invoice",
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
         }
     }
 }
@@ -152,10 +154,10 @@ impl PhaseCollectionMethod {
 impl std::str::FromStr for PhaseCollectionMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PhaseCollectionMethod::*;
         match s {
-            "charge_automatically" => Ok(Self::ChargeAutomatically),
-            "send_invoice" => Ok(Self::SendInvoice),
-
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
             _ => Err(()),
         }
     }
@@ -183,8 +185,8 @@ impl serde::Serialize for PhaseCollectionMethod {
 impl<'de> serde::Deserialize<'de> for PhaseCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseCollectionMethod"))
     }
 }
@@ -200,10 +202,11 @@ pub enum PhaseProrationBehavior {
 
 impl PhaseProrationBehavior {
     pub fn as_str(self) -> &'static str {
+        use PhaseProrationBehavior::*;
         match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
         }
     }
 }
@@ -211,11 +214,11 @@ impl PhaseProrationBehavior {
 impl std::str::FromStr for PhaseProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PhaseProrationBehavior::*;
         match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
             _ => Err(()),
         }
     }
@@ -243,10 +246,12 @@ impl serde::Serialize for PhaseProrationBehavior {
 impl<'de> serde::Deserialize<'de> for PhaseProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PhaseProrationBehavior"))
     }
 }
+pub mod invoice_settings;
+pub use invoice_settings::InvoiceSettings;
 pub mod automatic_tax;
 pub use automatic_tax::AutomaticTax;

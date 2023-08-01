@@ -19,8 +19,9 @@ pub enum DeletedWebhookEndpointObject {
 
 impl DeletedWebhookEndpointObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedWebhookEndpointObject::*;
         match self {
-            Self::WebhookEndpoint => "webhook_endpoint",
+            WebhookEndpoint => "webhook_endpoint",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedWebhookEndpointObject {
 impl std::str::FromStr for DeletedWebhookEndpointObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedWebhookEndpointObject::*;
         match s {
-            "webhook_endpoint" => Ok(Self::WebhookEndpoint),
-
+            "webhook_endpoint" => Ok(WebhookEndpoint),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedWebhookEndpointObject {
 impl<'de> serde::Deserialize<'de> for DeletedWebhookEndpointObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedWebhookEndpointObject"))
     }
 }

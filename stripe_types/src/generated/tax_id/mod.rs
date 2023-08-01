@@ -1,7 +1,7 @@
 /// You can add one or multiple tax IDs to a [customer](https://stripe.com/docs/api/customers).
 /// A customer's tax IDs are displayed on invoices and credit notes issued for the customer.
 ///
-/// Related guide: [Customer Tax Identification Numbers](https://stripe.com/docs/billing/taxes/tax-ids).
+/// Related guide: [Customer tax identification numbers](https://stripe.com/docs/billing/taxes/tax-ids).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TaxId {
     /// Two-letter ISO code representing the country of the tax ID.
@@ -40,8 +40,9 @@ pub enum TaxIdObject {
 
 impl TaxIdObject {
     pub fn as_str(self) -> &'static str {
+        use TaxIdObject::*;
         match self {
-            Self::TaxId => "tax_id",
+            TaxId => "tax_id",
         }
     }
 }
@@ -49,9 +50,9 @@ impl TaxIdObject {
 impl std::str::FromStr for TaxIdObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxIdObject::*;
         match s {
-            "tax_id" => Ok(Self::TaxId),
-
+            "tax_id" => Ok(TaxId),
             _ => Err(()),
         }
     }
@@ -79,8 +80,8 @@ impl serde::Serialize for TaxIdObject {
 impl<'de> serde::Deserialize<'de> for TaxIdObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdObject"))
     }
 }
 /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
@@ -144,59 +145,60 @@ pub enum TaxIdType {
 
 impl TaxIdType {
     pub fn as_str(self) -> &'static str {
+        use TaxIdType::*;
         match self {
-            Self::AeTrn => "ae_trn",
-            Self::AuAbn => "au_abn",
-            Self::AuArn => "au_arn",
-            Self::BgUic => "bg_uic",
-            Self::BrCnpj => "br_cnpj",
-            Self::BrCpf => "br_cpf",
-            Self::CaBn => "ca_bn",
-            Self::CaGstHst => "ca_gst_hst",
-            Self::CaPstBc => "ca_pst_bc",
-            Self::CaPstMb => "ca_pst_mb",
-            Self::CaPstSk => "ca_pst_sk",
-            Self::CaQst => "ca_qst",
-            Self::ChVat => "ch_vat",
-            Self::ClTin => "cl_tin",
-            Self::EgTin => "eg_tin",
-            Self::EsCif => "es_cif",
-            Self::EuOssVat => "eu_oss_vat",
-            Self::EuVat => "eu_vat",
-            Self::GbVat => "gb_vat",
-            Self::GeVat => "ge_vat",
-            Self::HkBr => "hk_br",
-            Self::HuTin => "hu_tin",
-            Self::IdNpwp => "id_npwp",
-            Self::IlVat => "il_vat",
-            Self::InGst => "in_gst",
-            Self::IsVat => "is_vat",
-            Self::JpCn => "jp_cn",
-            Self::JpRn => "jp_rn",
-            Self::JpTrn => "jp_trn",
-            Self::KePin => "ke_pin",
-            Self::KrBrn => "kr_brn",
-            Self::LiUid => "li_uid",
-            Self::MxRfc => "mx_rfc",
-            Self::MyFrp => "my_frp",
-            Self::MyItn => "my_itn",
-            Self::MySst => "my_sst",
-            Self::NoVat => "no_vat",
-            Self::NzGst => "nz_gst",
-            Self::PhTin => "ph_tin",
-            Self::RuInn => "ru_inn",
-            Self::RuKpp => "ru_kpp",
-            Self::SaVat => "sa_vat",
-            Self::SgGst => "sg_gst",
-            Self::SgUen => "sg_uen",
-            Self::SiTin => "si_tin",
-            Self::ThVat => "th_vat",
-            Self::TrTin => "tr_tin",
-            Self::TwVat => "tw_vat",
-            Self::UaVat => "ua_vat",
-            Self::Unknown => "unknown",
-            Self::UsEin => "us_ein",
-            Self::ZaVat => "za_vat",
+            AeTrn => "ae_trn",
+            AuAbn => "au_abn",
+            AuArn => "au_arn",
+            BgUic => "bg_uic",
+            BrCnpj => "br_cnpj",
+            BrCpf => "br_cpf",
+            CaBn => "ca_bn",
+            CaGstHst => "ca_gst_hst",
+            CaPstBc => "ca_pst_bc",
+            CaPstMb => "ca_pst_mb",
+            CaPstSk => "ca_pst_sk",
+            CaQst => "ca_qst",
+            ChVat => "ch_vat",
+            ClTin => "cl_tin",
+            EgTin => "eg_tin",
+            EsCif => "es_cif",
+            EuOssVat => "eu_oss_vat",
+            EuVat => "eu_vat",
+            GbVat => "gb_vat",
+            GeVat => "ge_vat",
+            HkBr => "hk_br",
+            HuTin => "hu_tin",
+            IdNpwp => "id_npwp",
+            IlVat => "il_vat",
+            InGst => "in_gst",
+            IsVat => "is_vat",
+            JpCn => "jp_cn",
+            JpRn => "jp_rn",
+            JpTrn => "jp_trn",
+            KePin => "ke_pin",
+            KrBrn => "kr_brn",
+            LiUid => "li_uid",
+            MxRfc => "mx_rfc",
+            MyFrp => "my_frp",
+            MyItn => "my_itn",
+            MySst => "my_sst",
+            NoVat => "no_vat",
+            NzGst => "nz_gst",
+            PhTin => "ph_tin",
+            RuInn => "ru_inn",
+            RuKpp => "ru_kpp",
+            SaVat => "sa_vat",
+            SgGst => "sg_gst",
+            SgUen => "sg_uen",
+            SiTin => "si_tin",
+            ThVat => "th_vat",
+            TrTin => "tr_tin",
+            TwVat => "tw_vat",
+            UaVat => "ua_vat",
+            Unknown => "unknown",
+            UsEin => "us_ein",
+            ZaVat => "za_vat",
         }
     }
 }
@@ -204,60 +206,60 @@ impl TaxIdType {
 impl std::str::FromStr for TaxIdType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxIdType::*;
         match s {
-            "ae_trn" => Ok(Self::AeTrn),
-            "au_abn" => Ok(Self::AuAbn),
-            "au_arn" => Ok(Self::AuArn),
-            "bg_uic" => Ok(Self::BgUic),
-            "br_cnpj" => Ok(Self::BrCnpj),
-            "br_cpf" => Ok(Self::BrCpf),
-            "ca_bn" => Ok(Self::CaBn),
-            "ca_gst_hst" => Ok(Self::CaGstHst),
-            "ca_pst_bc" => Ok(Self::CaPstBc),
-            "ca_pst_mb" => Ok(Self::CaPstMb),
-            "ca_pst_sk" => Ok(Self::CaPstSk),
-            "ca_qst" => Ok(Self::CaQst),
-            "ch_vat" => Ok(Self::ChVat),
-            "cl_tin" => Ok(Self::ClTin),
-            "eg_tin" => Ok(Self::EgTin),
-            "es_cif" => Ok(Self::EsCif),
-            "eu_oss_vat" => Ok(Self::EuOssVat),
-            "eu_vat" => Ok(Self::EuVat),
-            "gb_vat" => Ok(Self::GbVat),
-            "ge_vat" => Ok(Self::GeVat),
-            "hk_br" => Ok(Self::HkBr),
-            "hu_tin" => Ok(Self::HuTin),
-            "id_npwp" => Ok(Self::IdNpwp),
-            "il_vat" => Ok(Self::IlVat),
-            "in_gst" => Ok(Self::InGst),
-            "is_vat" => Ok(Self::IsVat),
-            "jp_cn" => Ok(Self::JpCn),
-            "jp_rn" => Ok(Self::JpRn),
-            "jp_trn" => Ok(Self::JpTrn),
-            "ke_pin" => Ok(Self::KePin),
-            "kr_brn" => Ok(Self::KrBrn),
-            "li_uid" => Ok(Self::LiUid),
-            "mx_rfc" => Ok(Self::MxRfc),
-            "my_frp" => Ok(Self::MyFrp),
-            "my_itn" => Ok(Self::MyItn),
-            "my_sst" => Ok(Self::MySst),
-            "no_vat" => Ok(Self::NoVat),
-            "nz_gst" => Ok(Self::NzGst),
-            "ph_tin" => Ok(Self::PhTin),
-            "ru_inn" => Ok(Self::RuInn),
-            "ru_kpp" => Ok(Self::RuKpp),
-            "sa_vat" => Ok(Self::SaVat),
-            "sg_gst" => Ok(Self::SgGst),
-            "sg_uen" => Ok(Self::SgUen),
-            "si_tin" => Ok(Self::SiTin),
-            "th_vat" => Ok(Self::ThVat),
-            "tr_tin" => Ok(Self::TrTin),
-            "tw_vat" => Ok(Self::TwVat),
-            "ua_vat" => Ok(Self::UaVat),
-            "unknown" => Ok(Self::Unknown),
-            "us_ein" => Ok(Self::UsEin),
-            "za_vat" => Ok(Self::ZaVat),
-
+            "ae_trn" => Ok(AeTrn),
+            "au_abn" => Ok(AuAbn),
+            "au_arn" => Ok(AuArn),
+            "bg_uic" => Ok(BgUic),
+            "br_cnpj" => Ok(BrCnpj),
+            "br_cpf" => Ok(BrCpf),
+            "ca_bn" => Ok(CaBn),
+            "ca_gst_hst" => Ok(CaGstHst),
+            "ca_pst_bc" => Ok(CaPstBc),
+            "ca_pst_mb" => Ok(CaPstMb),
+            "ca_pst_sk" => Ok(CaPstSk),
+            "ca_qst" => Ok(CaQst),
+            "ch_vat" => Ok(ChVat),
+            "cl_tin" => Ok(ClTin),
+            "eg_tin" => Ok(EgTin),
+            "es_cif" => Ok(EsCif),
+            "eu_oss_vat" => Ok(EuOssVat),
+            "eu_vat" => Ok(EuVat),
+            "gb_vat" => Ok(GbVat),
+            "ge_vat" => Ok(GeVat),
+            "hk_br" => Ok(HkBr),
+            "hu_tin" => Ok(HuTin),
+            "id_npwp" => Ok(IdNpwp),
+            "il_vat" => Ok(IlVat),
+            "in_gst" => Ok(InGst),
+            "is_vat" => Ok(IsVat),
+            "jp_cn" => Ok(JpCn),
+            "jp_rn" => Ok(JpRn),
+            "jp_trn" => Ok(JpTrn),
+            "ke_pin" => Ok(KePin),
+            "kr_brn" => Ok(KrBrn),
+            "li_uid" => Ok(LiUid),
+            "mx_rfc" => Ok(MxRfc),
+            "my_frp" => Ok(MyFrp),
+            "my_itn" => Ok(MyItn),
+            "my_sst" => Ok(MySst),
+            "no_vat" => Ok(NoVat),
+            "nz_gst" => Ok(NzGst),
+            "ph_tin" => Ok(PhTin),
+            "ru_inn" => Ok(RuInn),
+            "ru_kpp" => Ok(RuKpp),
+            "sa_vat" => Ok(SaVat),
+            "sg_gst" => Ok(SgGst),
+            "sg_uen" => Ok(SgUen),
+            "si_tin" => Ok(SiTin),
+            "th_vat" => Ok(ThVat),
+            "tr_tin" => Ok(TrTin),
+            "tw_vat" => Ok(TwVat),
+            "ua_vat" => Ok(UaVat),
+            "unknown" => Ok(Unknown),
+            "us_ein" => Ok(UsEin),
+            "za_vat" => Ok(ZaVat),
             _ => Err(()),
         }
     }
@@ -285,8 +287,8 @@ impl serde::Serialize for TaxIdType {
 impl<'de> serde::Deserialize<'de> for TaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdType"))
     }
 }
 impl stripe_types::Object for TaxId {
@@ -296,7 +298,7 @@ impl stripe_types::Object for TaxId {
     }
 }
 stripe_types::def_id!(TaxIdId, "txi_");
-pub mod deleted;
-pub use deleted::DeletedTaxId;
 pub mod verification;
 pub use verification::Verification;
+pub mod deleted;
+pub use deleted::DeletedTaxId;

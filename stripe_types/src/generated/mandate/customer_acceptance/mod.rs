@@ -23,9 +23,10 @@ pub enum CustomerAcceptanceType {
 
 impl CustomerAcceptanceType {
     pub fn as_str(self) -> &'static str {
+        use CustomerAcceptanceType::*;
         match self {
-            Self::Offline => "offline",
-            Self::Online => "online",
+            Offline => "offline",
+            Online => "online",
         }
     }
 }
@@ -33,10 +34,10 @@ impl CustomerAcceptanceType {
 impl std::str::FromStr for CustomerAcceptanceType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerAcceptanceType::*;
         match s {
-            "offline" => Ok(Self::Offline),
-            "online" => Ok(Self::Online),
-
+            "offline" => Ok(Offline),
+            "online" => Ok(Online),
             _ => Err(()),
         }
     }
@@ -64,8 +65,8 @@ impl serde::Serialize for CustomerAcceptanceType {
 impl<'de> serde::Deserialize<'de> for CustomerAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerAcceptanceType"))
     }
 }

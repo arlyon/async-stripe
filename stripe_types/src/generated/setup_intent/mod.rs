@@ -31,6 +31,10 @@ pub struct SetupIntent {
     /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attach_to_self: Option<bool>,
+    /// Settings for automatic payment methods compatible with this Setup Intent.
+    pub automatic_payment_methods: Option<
+        stripe_types::automatic_payment_methods_setup_intent::AutomaticPaymentMethodsSetupIntent,
+    >,
     /// Reason for cancellation of this SetupIntent, one of `abandoned`, `requested_by_customer`, or `duplicate`.
     pub cancellation_reason: Option<SetupIntentCancellationReason>,
     /// The client secret of this SetupIntent.
@@ -114,10 +118,11 @@ pub enum SetupIntentCancellationReason {
 
 impl SetupIntentCancellationReason {
     pub fn as_str(self) -> &'static str {
+        use SetupIntentCancellationReason::*;
         match self {
-            Self::Abandoned => "abandoned",
-            Self::Duplicate => "duplicate",
-            Self::RequestedByCustomer => "requested_by_customer",
+            Abandoned => "abandoned",
+            Duplicate => "duplicate",
+            RequestedByCustomer => "requested_by_customer",
         }
     }
 }
@@ -125,11 +130,11 @@ impl SetupIntentCancellationReason {
 impl std::str::FromStr for SetupIntentCancellationReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentCancellationReason::*;
         match s {
-            "abandoned" => Ok(Self::Abandoned),
-            "duplicate" => Ok(Self::Duplicate),
-            "requested_by_customer" => Ok(Self::RequestedByCustomer),
-
+            "abandoned" => Ok(Abandoned),
+            "duplicate" => Ok(Duplicate),
+            "requested_by_customer" => Ok(RequestedByCustomer),
             _ => Err(()),
         }
     }
@@ -157,8 +162,8 @@ impl serde::Serialize for SetupIntentCancellationReason {
 impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
         })
     }
@@ -177,9 +182,10 @@ pub enum SetupIntentFlowDirections {
 
 impl SetupIntentFlowDirections {
     pub fn as_str(self) -> &'static str {
+        use SetupIntentFlowDirections::*;
         match self {
-            Self::Inbound => "inbound",
-            Self::Outbound => "outbound",
+            Inbound => "inbound",
+            Outbound => "outbound",
         }
     }
 }
@@ -187,10 +193,10 @@ impl SetupIntentFlowDirections {
 impl std::str::FromStr for SetupIntentFlowDirections {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentFlowDirections::*;
         match s {
-            "inbound" => Ok(Self::Inbound),
-            "outbound" => Ok(Self::Outbound),
-
+            "inbound" => Ok(Inbound),
+            "outbound" => Ok(Outbound),
             _ => Err(()),
         }
     }
@@ -218,8 +224,8 @@ impl serde::Serialize for SetupIntentFlowDirections {
 impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentFlowDirections"))
     }
 }
@@ -233,8 +239,9 @@ pub enum SetupIntentObject {
 
 impl SetupIntentObject {
     pub fn as_str(self) -> &'static str {
+        use SetupIntentObject::*;
         match self {
-            Self::SetupIntent => "setup_intent",
+            SetupIntent => "setup_intent",
         }
     }
 }
@@ -242,9 +249,9 @@ impl SetupIntentObject {
 impl std::str::FromStr for SetupIntentObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentObject::*;
         match s {
-            "setup_intent" => Ok(Self::SetupIntent),
-
+            "setup_intent" => Ok(SetupIntent),
             _ => Err(()),
         }
     }
@@ -272,8 +279,8 @@ impl serde::Serialize for SetupIntentObject {
 impl<'de> serde::Deserialize<'de> for SetupIntentObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentObject"))
     }
 }
@@ -290,13 +297,14 @@ pub enum SetupIntentStatus {
 
 impl SetupIntentStatus {
     pub fn as_str(self) -> &'static str {
+        use SetupIntentStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Processing => "processing",
-            Self::RequiresAction => "requires_action",
-            Self::RequiresConfirmation => "requires_confirmation",
-            Self::RequiresPaymentMethod => "requires_payment_method",
-            Self::Succeeded => "succeeded",
+            Canceled => "canceled",
+            Processing => "processing",
+            RequiresAction => "requires_action",
+            RequiresConfirmation => "requires_confirmation",
+            RequiresPaymentMethod => "requires_payment_method",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -304,14 +312,14 @@ impl SetupIntentStatus {
 impl std::str::FromStr for SetupIntentStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupIntentStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "processing" => Ok(Self::Processing),
-            "requires_action" => Ok(Self::RequiresAction),
-            "requires_confirmation" => Ok(Self::RequiresConfirmation),
-            "requires_payment_method" => Ok(Self::RequiresPaymentMethod),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "canceled" => Ok(Canceled),
+            "processing" => Ok(Processing),
+            "requires_action" => Ok(RequiresAction),
+            "requires_confirmation" => Ok(RequiresConfirmation),
+            "requires_payment_method" => Ok(RequiresPaymentMethod),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -339,8 +347,8 @@ impl serde::Serialize for SetupIntentStatus {
 impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentStatus"))
     }
 }

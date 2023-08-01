@@ -39,10 +39,11 @@ pub enum CardSetupFutureUsage {
 
 impl CardSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
+        use CardSetupFutureUsage::*;
         match self {
-            Self::None => "none",
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
         }
     }
 }
@@ -50,11 +51,11 @@ impl CardSetupFutureUsage {
 impl std::str::FromStr for CardSetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardSetupFutureUsage::*;
         match s {
-            "none" => Ok(Self::None),
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
             _ => Err(()),
         }
     }
@@ -82,8 +83,8 @@ impl serde::Serialize for CardSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for CardSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardSetupFutureUsage"))
     }
 }

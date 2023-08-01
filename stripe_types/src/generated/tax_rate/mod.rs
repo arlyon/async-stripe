@@ -1,6 +1,6 @@
 /// Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.
 ///
-/// Related guide: [Tax Rates](https://stripe.com/docs/billing/taxes/tax-rates).
+/// Related guide: [Tax rates](https://stripe.com/docs/billing/taxes/tax-rates).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TaxRate {
     /// Defaults to `true`.
@@ -19,6 +19,10 @@ pub struct TaxRate {
     pub description: Option<String>,
     /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
     pub display_name: String,
+    /// Actual/effective tax rate percentage out of 100.
+    ///
+    /// For tax calculations with automatic_tax[enabled]=true, this percentage does not include the statutory tax rate of non-taxable jurisdictions.
+    pub effective_percentage: Option<f64>,
     /// Unique identifier for the object.
     pub id: stripe_types::tax_rate::TaxRateId,
     /// This specifies if the tax rate is inclusive or exclusive.
@@ -38,7 +42,9 @@ pub struct TaxRate {
     ///
     /// Objects of the same type share the same value.
     pub object: TaxRateObject,
-    /// This represents the tax rate percent out of 100.
+    /// Tax rate percentage out of 100.
+    ///
+    /// For tax calculations with automatic_tax[enabled]=true, this percentage includes the statutory tax rate of non-taxable jurisdictions.
     pub percentage: f64,
     /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
     ///
@@ -57,8 +63,9 @@ pub enum TaxRateObject {
 
 impl TaxRateObject {
     pub fn as_str(self) -> &'static str {
+        use TaxRateObject::*;
         match self {
-            Self::TaxRate => "tax_rate",
+            TaxRate => "tax_rate",
         }
     }
 }
@@ -66,9 +73,9 @@ impl TaxRateObject {
 impl std::str::FromStr for TaxRateObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxRateObject::*;
         match s {
-            "tax_rate" => Ok(Self::TaxRate),
-
+            "tax_rate" => Ok(TaxRate),
             _ => Err(()),
         }
     }
@@ -96,16 +103,20 @@ impl serde::Serialize for TaxRateObject {
 impl<'de> serde::Deserialize<'de> for TaxRateObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateObject"))
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum TaxRateTaxType {
+    AmusementTax,
+    CommunicationsTax,
     Gst,
     Hst,
+    Igst,
     Jct,
+    LeaseTax,
     Pst,
     Qst,
     Rst,
@@ -115,15 +126,20 @@ pub enum TaxRateTaxType {
 
 impl TaxRateTaxType {
     pub fn as_str(self) -> &'static str {
+        use TaxRateTaxType::*;
         match self {
-            Self::Gst => "gst",
-            Self::Hst => "hst",
-            Self::Jct => "jct",
-            Self::Pst => "pst",
-            Self::Qst => "qst",
-            Self::Rst => "rst",
-            Self::SalesTax => "sales_tax",
-            Self::Vat => "vat",
+            AmusementTax => "amusement_tax",
+            CommunicationsTax => "communications_tax",
+            Gst => "gst",
+            Hst => "hst",
+            Igst => "igst",
+            Jct => "jct",
+            LeaseTax => "lease_tax",
+            Pst => "pst",
+            Qst => "qst",
+            Rst => "rst",
+            SalesTax => "sales_tax",
+            Vat => "vat",
         }
     }
 }
@@ -131,16 +147,20 @@ impl TaxRateTaxType {
 impl std::str::FromStr for TaxRateTaxType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxRateTaxType::*;
         match s {
-            "gst" => Ok(Self::Gst),
-            "hst" => Ok(Self::Hst),
-            "jct" => Ok(Self::Jct),
-            "pst" => Ok(Self::Pst),
-            "qst" => Ok(Self::Qst),
-            "rst" => Ok(Self::Rst),
-            "sales_tax" => Ok(Self::SalesTax),
-            "vat" => Ok(Self::Vat),
-
+            "amusement_tax" => Ok(AmusementTax),
+            "communications_tax" => Ok(CommunicationsTax),
+            "gst" => Ok(Gst),
+            "hst" => Ok(Hst),
+            "igst" => Ok(Igst),
+            "jct" => Ok(Jct),
+            "lease_tax" => Ok(LeaseTax),
+            "pst" => Ok(Pst),
+            "qst" => Ok(Qst),
+            "rst" => Ok(Rst),
+            "sales_tax" => Ok(SalesTax),
+            "vat" => Ok(Vat),
             _ => Err(()),
         }
     }
@@ -168,8 +188,8 @@ impl serde::Serialize for TaxRateTaxType {
 impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
     }
 }
 impl stripe_types::Object for TaxRate {

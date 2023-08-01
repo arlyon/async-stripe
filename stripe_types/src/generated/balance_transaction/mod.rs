@@ -1,7 +1,7 @@
 /// Balance transactions represent funds moving through your Stripe account.
 /// They're created for every type of transaction that comes into or flows out of your Stripe account balance.
 ///
-/// Related guide: [Balance Transaction Types](https://stripe.com/docs/reports/balance-transaction-types).
+/// Related guide: [Balance transaction types](https://stripe.com/docs/reports/balance-transaction-types).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BalanceTransaction {
     /// Gross amount of the transaction, in %s.
@@ -69,8 +69,9 @@ pub enum BalanceTransactionObject {
 
 impl BalanceTransactionObject {
     pub fn as_str(self) -> &'static str {
+        use BalanceTransactionObject::*;
         match self {
-            Self::BalanceTransaction => "balance_transaction",
+            BalanceTransaction => "balance_transaction",
         }
     }
 }
@@ -78,9 +79,9 @@ impl BalanceTransactionObject {
 impl std::str::FromStr for BalanceTransactionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BalanceTransactionObject::*;
         match s {
-            "balance_transaction" => Ok(Self::BalanceTransaction),
-
+            "balance_transaction" => Ok(BalanceTransaction),
             _ => Err(()),
         }
     }
@@ -108,8 +109,8 @@ impl serde::Serialize for BalanceTransactionObject {
 impl<'de> serde::Deserialize<'de> for BalanceTransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionObject"))
     }
 }
@@ -155,39 +156,40 @@ pub enum BalanceTransactionType {
 
 impl BalanceTransactionType {
     pub fn as_str(self) -> &'static str {
+        use BalanceTransactionType::*;
         match self {
-            Self::Adjustment => "adjustment",
-            Self::Advance => "advance",
-            Self::AdvanceFunding => "advance_funding",
-            Self::AnticipationRepayment => "anticipation_repayment",
-            Self::ApplicationFee => "application_fee",
-            Self::ApplicationFeeRefund => "application_fee_refund",
-            Self::Charge => "charge",
-            Self::ConnectCollectionTransfer => "connect_collection_transfer",
-            Self::Contribution => "contribution",
-            Self::IssuingAuthorizationHold => "issuing_authorization_hold",
-            Self::IssuingAuthorizationRelease => "issuing_authorization_release",
-            Self::IssuingDispute => "issuing_dispute",
-            Self::IssuingTransaction => "issuing_transaction",
-            Self::Payment => "payment",
-            Self::PaymentFailureRefund => "payment_failure_refund",
-            Self::PaymentRefund => "payment_refund",
-            Self::Payout => "payout",
-            Self::PayoutCancel => "payout_cancel",
-            Self::PayoutFailure => "payout_failure",
-            Self::Refund => "refund",
-            Self::RefundFailure => "refund_failure",
-            Self::ReserveTransaction => "reserve_transaction",
-            Self::ReservedFunds => "reserved_funds",
-            Self::StripeFee => "stripe_fee",
-            Self::StripeFxFee => "stripe_fx_fee",
-            Self::TaxFee => "tax_fee",
-            Self::Topup => "topup",
-            Self::TopupReversal => "topup_reversal",
-            Self::Transfer => "transfer",
-            Self::TransferCancel => "transfer_cancel",
-            Self::TransferFailure => "transfer_failure",
-            Self::TransferRefund => "transfer_refund",
+            Adjustment => "adjustment",
+            Advance => "advance",
+            AdvanceFunding => "advance_funding",
+            AnticipationRepayment => "anticipation_repayment",
+            ApplicationFee => "application_fee",
+            ApplicationFeeRefund => "application_fee_refund",
+            Charge => "charge",
+            ConnectCollectionTransfer => "connect_collection_transfer",
+            Contribution => "contribution",
+            IssuingAuthorizationHold => "issuing_authorization_hold",
+            IssuingAuthorizationRelease => "issuing_authorization_release",
+            IssuingDispute => "issuing_dispute",
+            IssuingTransaction => "issuing_transaction",
+            Payment => "payment",
+            PaymentFailureRefund => "payment_failure_refund",
+            PaymentRefund => "payment_refund",
+            Payout => "payout",
+            PayoutCancel => "payout_cancel",
+            PayoutFailure => "payout_failure",
+            Refund => "refund",
+            RefundFailure => "refund_failure",
+            ReserveTransaction => "reserve_transaction",
+            ReservedFunds => "reserved_funds",
+            StripeFee => "stripe_fee",
+            StripeFxFee => "stripe_fx_fee",
+            TaxFee => "tax_fee",
+            Topup => "topup",
+            TopupReversal => "topup_reversal",
+            Transfer => "transfer",
+            TransferCancel => "transfer_cancel",
+            TransferFailure => "transfer_failure",
+            TransferRefund => "transfer_refund",
         }
     }
 }
@@ -195,40 +197,40 @@ impl BalanceTransactionType {
 impl std::str::FromStr for BalanceTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BalanceTransactionType::*;
         match s {
-            "adjustment" => Ok(Self::Adjustment),
-            "advance" => Ok(Self::Advance),
-            "advance_funding" => Ok(Self::AdvanceFunding),
-            "anticipation_repayment" => Ok(Self::AnticipationRepayment),
-            "application_fee" => Ok(Self::ApplicationFee),
-            "application_fee_refund" => Ok(Self::ApplicationFeeRefund),
-            "charge" => Ok(Self::Charge),
-            "connect_collection_transfer" => Ok(Self::ConnectCollectionTransfer),
-            "contribution" => Ok(Self::Contribution),
-            "issuing_authorization_hold" => Ok(Self::IssuingAuthorizationHold),
-            "issuing_authorization_release" => Ok(Self::IssuingAuthorizationRelease),
-            "issuing_dispute" => Ok(Self::IssuingDispute),
-            "issuing_transaction" => Ok(Self::IssuingTransaction),
-            "payment" => Ok(Self::Payment),
-            "payment_failure_refund" => Ok(Self::PaymentFailureRefund),
-            "payment_refund" => Ok(Self::PaymentRefund),
-            "payout" => Ok(Self::Payout),
-            "payout_cancel" => Ok(Self::PayoutCancel),
-            "payout_failure" => Ok(Self::PayoutFailure),
-            "refund" => Ok(Self::Refund),
-            "refund_failure" => Ok(Self::RefundFailure),
-            "reserve_transaction" => Ok(Self::ReserveTransaction),
-            "reserved_funds" => Ok(Self::ReservedFunds),
-            "stripe_fee" => Ok(Self::StripeFee),
-            "stripe_fx_fee" => Ok(Self::StripeFxFee),
-            "tax_fee" => Ok(Self::TaxFee),
-            "topup" => Ok(Self::Topup),
-            "topup_reversal" => Ok(Self::TopupReversal),
-            "transfer" => Ok(Self::Transfer),
-            "transfer_cancel" => Ok(Self::TransferCancel),
-            "transfer_failure" => Ok(Self::TransferFailure),
-            "transfer_refund" => Ok(Self::TransferRefund),
-
+            "adjustment" => Ok(Adjustment),
+            "advance" => Ok(Advance),
+            "advance_funding" => Ok(AdvanceFunding),
+            "anticipation_repayment" => Ok(AnticipationRepayment),
+            "application_fee" => Ok(ApplicationFee),
+            "application_fee_refund" => Ok(ApplicationFeeRefund),
+            "charge" => Ok(Charge),
+            "connect_collection_transfer" => Ok(ConnectCollectionTransfer),
+            "contribution" => Ok(Contribution),
+            "issuing_authorization_hold" => Ok(IssuingAuthorizationHold),
+            "issuing_authorization_release" => Ok(IssuingAuthorizationRelease),
+            "issuing_dispute" => Ok(IssuingDispute),
+            "issuing_transaction" => Ok(IssuingTransaction),
+            "payment" => Ok(Payment),
+            "payment_failure_refund" => Ok(PaymentFailureRefund),
+            "payment_refund" => Ok(PaymentRefund),
+            "payout" => Ok(Payout),
+            "payout_cancel" => Ok(PayoutCancel),
+            "payout_failure" => Ok(PayoutFailure),
+            "refund" => Ok(Refund),
+            "refund_failure" => Ok(RefundFailure),
+            "reserve_transaction" => Ok(ReserveTransaction),
+            "reserved_funds" => Ok(ReservedFunds),
+            "stripe_fee" => Ok(StripeFee),
+            "stripe_fx_fee" => Ok(StripeFxFee),
+            "tax_fee" => Ok(TaxFee),
+            "topup" => Ok(Topup),
+            "topup_reversal" => Ok(TopupReversal),
+            "transfer" => Ok(Transfer),
+            "transfer_cancel" => Ok(TransferCancel),
+            "transfer_failure" => Ok(TransferFailure),
+            "transfer_refund" => Ok(TransferRefund),
             _ => Err(()),
         }
     }
@@ -256,8 +258,8 @@ impl serde::Serialize for BalanceTransactionType {
 impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionType"))
     }
 }

@@ -1,8 +1,66 @@
-use std::collections::HashSet;
-
 use indexmap::{IndexMap, IndexSet};
+use petgraph::prelude::DiGraphMap;
+use tracing::debug;
 
 use crate::components::{Components, Module, ModuleName};
+
+pub const PATHS_IN_TYPES: &[&str] = &[
+    "account",
+    "file",
+    "person",
+    "external_account",
+    "file_link",
+    "bank_account",
+    "card",
+    "customer",
+    "cash_balance",
+    "payment_source",
+    "discount",
+    "subscription",
+    "tax_id",
+    "tax_code",
+    "application_fee",
+    "fee_refund",
+    "payout",
+    "topup",
+    "invoice",
+    "payment_method",
+    "charge",
+    "subscription_item",
+    "tax_rate",
+    "payment_intent",
+    "invoiceitem",
+    "quote",
+    "setup_attempt",
+    "setup_intent",
+    "mandate",
+    "coupon",
+    "promotion_code",
+    "line_item",
+    "subscription_schedule",
+    "review",
+    "price",
+    "plan",
+    "transfer",
+    "refund",
+    "balance_transaction",
+    "dispute",
+    "product",
+    "transfer_reversal",
+    "balance_transaction_source",
+    "customer_balance_transaction",
+    "credit_note",
+    "credit_note_line_item",
+    "source",
+    "test_helpers",
+    "radar",
+    "issuing",
+    "discounts_resource_discount_amount",
+    "connect_collection_transfer",
+    "item",
+    "shipping_rate",
+    "external_account_requirements",
+];
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum Crate {
@@ -24,6 +82,15 @@ impl Crate {
         &[Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment]
     }
 
+    pub fn generate_to(self) -> String {
+        let out_path = self.generated_out_path();
+        if self == Self::Types {
+            out_path
+        } else {
+            format!("{out_path}/src")
+        }
+    }
+
     pub fn generated_out_path(self) -> String {
         if self == Crate::Types {
             "stripe_types".into()
@@ -37,17 +104,18 @@ impl Crate {
     }
 
     pub fn suffix(self) -> &'static str {
+        use Crate::*;
         match self {
-            Crate::Core => "core",
-            Crate::Types => "types",
-            Crate::Misc => "misc",
-            Crate::Connect => "connect",
-            Crate::Terminal => "terminal",
-            Crate::Checkout => "checkout",
-            Crate::Treasury => "treasury",
-            Crate::Product => "product",
-            Crate::Billing => "billing",
-            Crate::Payment => "payment",
+            Core => "core",
+            Types => "types",
+            Misc => "misc",
+            Connect => "connect",
+            Terminal => "terminal",
+            Checkout => "checkout",
+            Treasury => "treasury",
+            Product => "product",
+            Billing => "billing",
+            Payment => "payment",
         }
     }
 }
@@ -55,7 +123,12 @@ impl Crate {
 impl Crate {
     pub fn guaranteed_members(self) -> &'static [&'static str] {
         match self {
-            Crate::Types => &["shipping", "api_errors"],
+            Crate::Types => &[
+                "api_errors",
+                "shipping",
+                "invoices_line_items_proration_details",
+                "invoices_resource_line_items_proration_details",
+            ],
             Crate::Core => &[
                 "balance",
                 "balance_transaction",
@@ -101,6 +174,7 @@ impl Crate {
                 "exchange_rate",
                 "webhook_endpoint",
                 "order",
+                "tax",
             ],
             Crate::Treasury => &["treasury"],
             Crate::Connect => {
@@ -137,80 +211,69 @@ impl Crate {
 }
 
 impl Components {
-    pub fn make_crate_assignments(&self) -> IndexMap<ModuleName, Crate> {
-        let mut crate_assignments = IndexMap::new();
-        for (mod_name, module) in &self.modules {
-            match module {
-                Module::Package { name, .. } => {
-                    let Some(krate) = Crate::map_guaranteed(name) else {
-                        panic!("Expected package {} to have an enforced crate mapping", name);
-                    };
-                    crate_assignments.insert(mod_name.clone(), krate);
-                }
-                Module::Component { path } => {
-                    if let Some(krate) = Crate::map_guaranteed(path) {
-                        crate_assignments.insert(mod_name.clone(), krate);
-                    }
-                }
-            }
-        }
+    pub fn infer_all_crate_assignments(&mut self) {
+        // If a component includes requests that have URLs building off another component,
+        // place with that component. This automates determinations like `external_account`
+        // ending up in the same crate as `account` since all its requests start with `/account`.
+        let mut new_assignments: IndexMap<ModuleName, Crate> = IndexMap::new();
         for (mod_name, module) in &self.modules {
             match module {
                 Module::Package { .. } => {}
-                Module::Component { path } => {
-                    if crate_assignments.contains_key(mod_name) {
+                Module::Component { path, krate } => {
+                    if krate.is_some() {
                         continue;
                     }
                     let this_obj = self.get(path);
-                    for (assigned_name, assigned_crate) in &crate_assignments {
-                        let Some(obj) = self.maybe_get(assigned_name.as_ref()) else {
+                    for (other_mod_name, other_module) in &self.modules {
+                        let Some(krate) = other_module.krate() else {
+                            continue;
+                        };
+                        let Some(obj) = self.maybe_get(other_mod_name.as_ref()) else {
                             continue;
                         };
                         if this_obj.is_nested_resource_of(obj) {
-                            crate_assignments.insert(mod_name.clone(), *assigned_crate);
+                            new_assignments.insert(mod_name.clone(), krate);
                             break;
                         }
                     }
                 }
             }
         }
-        for mod_name in self.modules.keys() {
-            if crate_assignments.contains_key(mod_name) {
+        debug!("Inferred {new_assignments:#?} based on nested request paths");
+        for (mod_name, krate) in new_assignments {
+            self.get_module_mut(&mod_name).assign_crate(krate);
+        }
+
+        let mod_graph = self.gen_module_dep_graph();
+        let mut new_assignments: IndexMap<ModuleName, Crate> = IndexMap::new();
+        for (mod_name, module) in &self.modules {
+            if module.krate().is_some() {
                 continue;
             }
-            if let Some(assignment) = self.maybe_infer_crate_by_deps(mod_name, &crate_assignments) {
-                crate_assignments.insert(mod_name.clone(), assignment);
+            if let Some(assignment) = self.maybe_infer_crate_by_deps(mod_name, &mod_graph) {
+                new_assignments.insert(mod_name.clone(), assignment);
             }
         }
-
-        let mut missing = HashSet::new();
-        for (mod_name, module) in &self.modules {
-            if !crate_assignments.contains_key(mod_name) {
-                missing.insert(module);
-            }
+        debug!("Inferred {new_assignments:#?} based on module dependencies");
+        for (mod_name, krate) in new_assignments {
+            self.get_module_mut(&mod_name).assign_crate(krate);
         }
-        if !missing.is_empty() {
-            panic!("Some modules could not have their crate inferred: {:#?}", missing)
-        }
-
-        crate_assignments
     }
 
     fn maybe_infer_crate_by_deps(
         &self,
         mod_name: &ModuleName,
-        curr_assignments: &IndexMap<ModuleName, Crate>,
+        mod_graph: &DiGraphMap<&ModuleName, ()>,
     ) -> Option<Crate> {
-        let mod_graph = self.gen_module_dep_graph();
         let known_dependents = mod_graph
             .neighbors(mod_name)
-            .map(|n| curr_assignments.get(n))
+            .map(|n| self.get_module(n).krate())
             .collect::<Option<IndexSet<_>>>()?;
 
         // If all deps are the same crate, infer that crate
         if let Some(first) = known_dependents.first() {
             if known_dependents.iter().all(|d| d == first) {
-                Some(**first)
+                Some(*first)
             } else {
                 None
             }

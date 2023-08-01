@@ -2,7 +2,7 @@
 /// When this happens, you're given the opportunity to respond to the dispute with
 /// evidence that shows that the charge is legitimate.
 ///
-/// You can find more information about the dispute process in our [Disputes and Fraud](/docs/disputes) documentation.  Related guide: [Disputes and Fraud](https://stripe.com/docs/disputes).
+/// You can find more information about the dispute process in our [Disputes and Fraud](/docs/disputes) documentation.  Related guide: [Disputes and fraud](https://stripe.com/docs/disputes).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Dispute {
     /// Disputed amount.
@@ -65,8 +65,9 @@ pub enum DisputeObject {
 
 impl DisputeObject {
     pub fn as_str(self) -> &'static str {
+        use DisputeObject::*;
         match self {
-            Self::Dispute => "dispute",
+            Dispute => "dispute",
         }
     }
 }
@@ -74,9 +75,9 @@ impl DisputeObject {
 impl std::str::FromStr for DisputeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeObject::*;
         match s {
-            "dispute" => Ok(Self::Dispute),
-
+            "dispute" => Ok(Dispute),
             _ => Err(()),
         }
     }
@@ -104,8 +105,8 @@ impl serde::Serialize for DisputeObject {
 impl<'de> serde::Deserialize<'de> for DisputeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
     }
 }
 /// Current status of dispute.
@@ -125,15 +126,16 @@ pub enum DisputeStatus {
 
 impl DisputeStatus {
     pub fn as_str(self) -> &'static str {
+        use DisputeStatus::*;
         match self {
-            Self::ChargeRefunded => "charge_refunded",
-            Self::Lost => "lost",
-            Self::NeedsResponse => "needs_response",
-            Self::UnderReview => "under_review",
-            Self::WarningClosed => "warning_closed",
-            Self::WarningNeedsResponse => "warning_needs_response",
-            Self::WarningUnderReview => "warning_under_review",
-            Self::Won => "won",
+            ChargeRefunded => "charge_refunded",
+            Lost => "lost",
+            NeedsResponse => "needs_response",
+            UnderReview => "under_review",
+            WarningClosed => "warning_closed",
+            WarningNeedsResponse => "warning_needs_response",
+            WarningUnderReview => "warning_under_review",
+            Won => "won",
         }
     }
 }
@@ -141,16 +143,16 @@ impl DisputeStatus {
 impl std::str::FromStr for DisputeStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeStatus::*;
         match s {
-            "charge_refunded" => Ok(Self::ChargeRefunded),
-            "lost" => Ok(Self::Lost),
-            "needs_response" => Ok(Self::NeedsResponse),
-            "under_review" => Ok(Self::UnderReview),
-            "warning_closed" => Ok(Self::WarningClosed),
-            "warning_needs_response" => Ok(Self::WarningNeedsResponse),
-            "warning_under_review" => Ok(Self::WarningUnderReview),
-            "won" => Ok(Self::Won),
-
+            "charge_refunded" => Ok(ChargeRefunded),
+            "lost" => Ok(Lost),
+            "needs_response" => Ok(NeedsResponse),
+            "under_review" => Ok(UnderReview),
+            "warning_closed" => Ok(WarningClosed),
+            "warning_needs_response" => Ok(WarningNeedsResponse),
+            "warning_under_review" => Ok(WarningUnderReview),
+            "won" => Ok(Won),
             _ => Err(()),
         }
     }
@@ -178,8 +180,8 @@ impl serde::Serialize for DisputeStatus {
 impl<'de> serde::Deserialize<'de> for DisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
     }
 }
 impl stripe_types::Object for Dispute {

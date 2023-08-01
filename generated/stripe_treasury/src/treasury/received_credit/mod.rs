@@ -60,10 +60,11 @@ pub enum ReceivedCreditFailureCode {
 
 impl ReceivedCreditFailureCode {
     pub fn as_str(self) -> &'static str {
+        use ReceivedCreditFailureCode::*;
         match self {
-            Self::AccountClosed => "account_closed",
-            Self::AccountFrozen => "account_frozen",
-            Self::Other => "other",
+            AccountClosed => "account_closed",
+            AccountFrozen => "account_frozen",
+            Other => "other",
         }
     }
 }
@@ -71,11 +72,11 @@ impl ReceivedCreditFailureCode {
 impl std::str::FromStr for ReceivedCreditFailureCode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReceivedCreditFailureCode::*;
         match s {
-            "account_closed" => Ok(Self::AccountClosed),
-            "account_frozen" => Ok(Self::AccountFrozen),
-            "other" => Ok(Self::Other),
-
+            "account_closed" => Ok(AccountClosed),
+            "account_frozen" => Ok(AccountFrozen),
+            "other" => Ok(Other),
             _ => Err(()),
         }
     }
@@ -103,8 +104,8 @@ impl serde::Serialize for ReceivedCreditFailureCode {
 impl<'de> serde::Deserialize<'de> for ReceivedCreditFailureCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditFailureCode"))
     }
 }
@@ -119,11 +120,12 @@ pub enum ReceivedCreditNetwork {
 
 impl ReceivedCreditNetwork {
     pub fn as_str(self) -> &'static str {
+        use ReceivedCreditNetwork::*;
         match self {
-            Self::Ach => "ach",
-            Self::Card => "card",
-            Self::Stripe => "stripe",
-            Self::UsDomesticWire => "us_domestic_wire",
+            Ach => "ach",
+            Card => "card",
+            Stripe => "stripe",
+            UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -131,12 +133,12 @@ impl ReceivedCreditNetwork {
 impl std::str::FromStr for ReceivedCreditNetwork {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReceivedCreditNetwork::*;
         match s {
-            "ach" => Ok(Self::Ach),
-            "card" => Ok(Self::Card),
-            "stripe" => Ok(Self::Stripe),
-            "us_domestic_wire" => Ok(Self::UsDomesticWire),
-
+            "ach" => Ok(Ach),
+            "card" => Ok(Card),
+            "stripe" => Ok(Stripe),
+            "us_domestic_wire" => Ok(UsDomesticWire),
             _ => Err(()),
         }
     }
@@ -164,8 +166,8 @@ impl serde::Serialize for ReceivedCreditNetwork {
 impl<'de> serde::Deserialize<'de> for ReceivedCreditNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditNetwork"))
     }
 }
@@ -179,8 +181,9 @@ pub enum ReceivedCreditObject {
 
 impl ReceivedCreditObject {
     pub fn as_str(self) -> &'static str {
+        use ReceivedCreditObject::*;
         match self {
-            Self::TreasuryReceivedCredit => "treasury.received_credit",
+            TreasuryReceivedCredit => "treasury.received_credit",
         }
     }
 }
@@ -188,9 +191,9 @@ impl ReceivedCreditObject {
 impl std::str::FromStr for ReceivedCreditObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReceivedCreditObject::*;
         match s {
-            "treasury.received_credit" => Ok(Self::TreasuryReceivedCredit),
-
+            "treasury.received_credit" => Ok(TreasuryReceivedCredit),
             _ => Err(()),
         }
     }
@@ -218,8 +221,8 @@ impl serde::Serialize for ReceivedCreditObject {
 impl<'de> serde::Deserialize<'de> for ReceivedCreditObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditObject"))
     }
 }
@@ -235,9 +238,10 @@ pub enum ReceivedCreditStatus {
 
 impl ReceivedCreditStatus {
     pub fn as_str(self) -> &'static str {
+        use ReceivedCreditStatus::*;
         match self {
-            Self::Failed => "failed",
-            Self::Succeeded => "succeeded",
+            Failed => "failed",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -245,10 +249,10 @@ impl ReceivedCreditStatus {
 impl std::str::FromStr for ReceivedCreditStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReceivedCreditStatus::*;
         match s {
-            "failed" => Ok(Self::Failed),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "failed" => Ok(Failed),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -276,8 +280,8 @@ impl serde::Serialize for ReceivedCreditStatus {
 impl<'de> serde::Deserialize<'de> for ReceivedCreditStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReceivedCreditStatus"))
     }
 }
@@ -296,3 +300,4 @@ pub mod status_transitions;
 pub use status_transitions::StatusTransitions;
 pub mod initiating_payment_method_details;
 pub use initiating_payment_method_details::InitiatingPaymentMethodDetails;
+pub mod requests;

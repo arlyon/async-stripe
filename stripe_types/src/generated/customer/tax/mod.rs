@@ -18,11 +18,12 @@ pub enum TaxAutomaticTax {
 
 impl TaxAutomaticTax {
     pub fn as_str(self) -> &'static str {
+        use TaxAutomaticTax::*;
         match self {
-            Self::Failed => "failed",
-            Self::NotCollecting => "not_collecting",
-            Self::Supported => "supported",
-            Self::UnrecognizedLocation => "unrecognized_location",
+            Failed => "failed",
+            NotCollecting => "not_collecting",
+            Supported => "supported",
+            UnrecognizedLocation => "unrecognized_location",
         }
     }
 }
@@ -30,12 +31,12 @@ impl TaxAutomaticTax {
 impl std::str::FromStr for TaxAutomaticTax {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxAutomaticTax::*;
         match s {
-            "failed" => Ok(Self::Failed),
-            "not_collecting" => Ok(Self::NotCollecting),
-            "supported" => Ok(Self::Supported),
-            "unrecognized_location" => Ok(Self::UnrecognizedLocation),
-
+            "failed" => Ok(Failed),
+            "not_collecting" => Ok(NotCollecting),
+            "supported" => Ok(Supported),
+            "unrecognized_location" => Ok(UnrecognizedLocation),
             _ => Err(()),
         }
     }
@@ -63,9 +64,8 @@ impl serde::Serialize for TaxAutomaticTax {
 impl<'de> serde::Deserialize<'de> for TaxAutomaticTax {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxAutomaticTax"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxAutomaticTax"))
     }
 }
 pub mod location;

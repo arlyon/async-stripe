@@ -22,12 +22,14 @@ pub struct VerificationReport {
     ///
     /// Objects of the same type share the same value.
     pub object: VerificationReportObject,
-    pub options: stripe_misc::identity::verification_report::options::Options,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub options: Option<stripe_misc::identity::verification_report::options::Options>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selfie: Option<stripe_misc::identity::verification_report::selfie::Selfie>,
     /// Type of report.
     #[serde(rename = "type")]
-    pub type_: VerificationReportType,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<VerificationReportType>,
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,
 }
@@ -41,8 +43,9 @@ pub enum VerificationReportObject {
 
 impl VerificationReportObject {
     pub fn as_str(self) -> &'static str {
+        use VerificationReportObject::*;
         match self {
-            Self::IdentityVerificationReport => "identity.verification_report",
+            IdentityVerificationReport => "identity.verification_report",
         }
     }
 }
@@ -50,9 +53,9 @@ impl VerificationReportObject {
 impl std::str::FromStr for VerificationReportObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerificationReportObject::*;
         match s {
-            "identity.verification_report" => Ok(Self::IdentityVerificationReport),
-
+            "identity.verification_report" => Ok(IdentityVerificationReport),
             _ => Err(()),
         }
     }
@@ -80,8 +83,8 @@ impl serde::Serialize for VerificationReportObject {
 impl<'de> serde::Deserialize<'de> for VerificationReportObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationReportObject"))
     }
 }
@@ -94,9 +97,10 @@ pub enum VerificationReportType {
 
 impl VerificationReportType {
     pub fn as_str(self) -> &'static str {
+        use VerificationReportType::*;
         match self {
-            Self::Document => "document",
-            Self::IdNumber => "id_number",
+            Document => "document",
+            IdNumber => "id_number",
         }
     }
 }
@@ -104,10 +108,10 @@ impl VerificationReportType {
 impl std::str::FromStr for VerificationReportType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use VerificationReportType::*;
         match s {
-            "document" => Ok(Self::Document),
-            "id_number" => Ok(Self::IdNumber),
-
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
             _ => Err(()),
         }
     }
@@ -135,8 +139,8 @@ impl serde::Serialize for VerificationReportType {
 impl<'de> serde::Deserialize<'de> for VerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for VerificationReportType"))
     }
 }
@@ -155,3 +159,4 @@ pub mod selfie;
 pub use selfie::Selfie;
 pub mod options;
 pub use options::Options;
+pub mod requests;

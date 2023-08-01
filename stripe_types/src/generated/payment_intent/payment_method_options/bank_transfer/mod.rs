@@ -26,12 +26,13 @@ pub enum BankTransferRequestedAddressTypes {
 
 impl BankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
+        use BankTransferRequestedAddressTypes::*;
         match self {
-            Self::Iban => "iban",
-            Self::Sepa => "sepa",
-            Self::SortCode => "sort_code",
-            Self::Spei => "spei",
-            Self::Zengin => "zengin",
+            Iban => "iban",
+            Sepa => "sepa",
+            SortCode => "sort_code",
+            Spei => "spei",
+            Zengin => "zengin",
         }
     }
 }
@@ -39,13 +40,13 @@ impl BankTransferRequestedAddressTypes {
 impl std::str::FromStr for BankTransferRequestedAddressTypes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BankTransferRequestedAddressTypes::*;
         match s {
-            "iban" => Ok(Self::Iban),
-            "sepa" => Ok(Self::Sepa),
-            "sort_code" => Ok(Self::SortCode),
-            "spei" => Ok(Self::Spei),
-            "zengin" => Ok(Self::Zengin),
-
+            "iban" => Ok(Iban),
+            "sepa" => Ok(Sepa),
+            "sort_code" => Ok(SortCode),
+            "spei" => Ok(Spei),
+            "zengin" => Ok(Zengin),
             _ => Err(()),
         }
     }
@@ -73,8 +74,8 @@ impl serde::Serialize for BankTransferRequestedAddressTypes {
 impl<'de> serde::Deserialize<'de> for BankTransferRequestedAddressTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for BankTransferRequestedAddressTypes")
         })
     }
@@ -90,11 +91,12 @@ pub enum BankTransferType {
 
 impl BankTransferType {
     pub fn as_str(self) -> &'static str {
+        use BankTransferType::*;
         match self {
-            Self::EuBankTransfer => "eu_bank_transfer",
-            Self::GbBankTransfer => "gb_bank_transfer",
-            Self::JpBankTransfer => "jp_bank_transfer",
-            Self::MxBankTransfer => "mx_bank_transfer",
+            EuBankTransfer => "eu_bank_transfer",
+            GbBankTransfer => "gb_bank_transfer",
+            JpBankTransfer => "jp_bank_transfer",
+            MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -102,12 +104,12 @@ impl BankTransferType {
 impl std::str::FromStr for BankTransferType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BankTransferType::*;
         match s {
-            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
-            "gb_bank_transfer" => Ok(Self::GbBankTransfer),
-            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
-            "mx_bank_transfer" => Ok(Self::MxBankTransfer),
-
+            "eu_bank_transfer" => Ok(EuBankTransfer),
+            "gb_bank_transfer" => Ok(GbBankTransfer),
+            "jp_bank_transfer" => Ok(JpBankTransfer),
+            "mx_bank_transfer" => Ok(MxBankTransfer),
             _ => Err(()),
         }
     }
@@ -135,8 +137,8 @@ impl serde::Serialize for BankTransferType {
 impl<'de> serde::Deserialize<'de> for BankTransferType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BankTransferType"))
     }
 }

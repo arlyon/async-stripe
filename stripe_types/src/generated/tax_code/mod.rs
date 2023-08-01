@@ -22,8 +22,9 @@ pub enum TaxCodeObject {
 
 impl TaxCodeObject {
     pub fn as_str(self) -> &'static str {
+        use TaxCodeObject::*;
         match self {
-            Self::TaxCode => "tax_code",
+            TaxCode => "tax_code",
         }
     }
 }
@@ -31,9 +32,9 @@ impl TaxCodeObject {
 impl std::str::FromStr for TaxCodeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxCodeObject::*;
         match s {
-            "tax_code" => Ok(Self::TaxCode),
-
+            "tax_code" => Ok(TaxCode),
             _ => Err(()),
         }
     }
@@ -61,8 +62,8 @@ impl serde::Serialize for TaxCodeObject {
 impl<'de> serde::Deserialize<'de> for TaxCodeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxCodeObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxCodeObject"))
     }
 }
 impl stripe_types::Object for TaxCode {

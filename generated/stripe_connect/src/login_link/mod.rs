@@ -21,8 +21,9 @@ pub enum LoginLinkObject {
 
 impl LoginLinkObject {
     pub fn as_str(self) -> &'static str {
+        use LoginLinkObject::*;
         match self {
-            Self::LoginLink => "login_link",
+            LoginLink => "login_link",
         }
     }
 }
@@ -30,9 +31,9 @@ impl LoginLinkObject {
 impl std::str::FromStr for LoginLinkObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use LoginLinkObject::*;
         match s {
-            "login_link" => Ok(Self::LoginLink),
-
+            "login_link" => Ok(LoginLink),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for LoginLinkObject {
 impl<'de> serde::Deserialize<'de> for LoginLinkObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for LoginLinkObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for LoginLinkObject"))
     }
 }
+pub mod requests;

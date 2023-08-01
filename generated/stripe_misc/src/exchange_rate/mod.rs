@@ -26,8 +26,9 @@ pub enum ExchangeRateObject {
 
 impl ExchangeRateObject {
     pub fn as_str(self) -> &'static str {
+        use ExchangeRateObject::*;
         match self {
-            Self::ExchangeRate => "exchange_rate",
+            ExchangeRate => "exchange_rate",
         }
     }
 }
@@ -35,9 +36,9 @@ impl ExchangeRateObject {
 impl std::str::FromStr for ExchangeRateObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ExchangeRateObject::*;
         match s {
-            "exchange_rate" => Ok(Self::ExchangeRate),
-
+            "exchange_rate" => Ok(ExchangeRate),
             _ => Err(()),
         }
     }
@@ -65,8 +66,8 @@ impl serde::Serialize for ExchangeRateObject {
 impl<'de> serde::Deserialize<'de> for ExchangeRateObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ExchangeRateObject"))
     }
 }
@@ -77,3 +78,4 @@ impl stripe_types::Object for ExchangeRate {
     }
 }
 stripe_types::def_id!(ExchangeRateId);
+pub mod requests;

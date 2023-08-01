@@ -21,9 +21,10 @@ pub enum CardRequestThreeDSecure {
 
 impl CardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
+        use CardRequestThreeDSecure::*;
         match self {
-            Self::Any => "any",
-            Self::Automatic => "automatic",
+            Any => "any",
+            Automatic => "automatic",
         }
     }
 }
@@ -31,10 +32,10 @@ impl CardRequestThreeDSecure {
 impl std::str::FromStr for CardRequestThreeDSecure {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardRequestThreeDSecure::*;
         match s {
-            "any" => Ok(Self::Any),
-            "automatic" => Ok(Self::Automatic),
-
+            "any" => Ok(Any),
+            "automatic" => Ok(Automatic),
             _ => Err(()),
         }
     }
@@ -62,8 +63,8 @@ impl serde::Serialize for CardRequestThreeDSecure {
 impl<'de> serde::Deserialize<'de> for CardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardRequestThreeDSecure"))
     }
 }

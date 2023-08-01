@@ -1,6 +1,6 @@
 /// Value list items allow you to add specific values to a given Radar value list, which can then be used in rules.
 ///
-/// Related guide: [Managing List Items](https://stripe.com/docs/radar/lists#managing-list-items).
+/// Related guide: [Managing list items](https://stripe.com/docs/radar/lists#managing-list-items).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ValueListItem {
     /// Time at which the object was created.
@@ -32,8 +32,9 @@ pub enum ValueListItemObject {
 
 impl ValueListItemObject {
     pub fn as_str(self) -> &'static str {
+        use ValueListItemObject::*;
         match self {
-            Self::RadarValueListItem => "radar.value_list_item",
+            RadarValueListItem => "radar.value_list_item",
         }
     }
 }
@@ -41,9 +42,9 @@ impl ValueListItemObject {
 impl std::str::FromStr for ValueListItemObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ValueListItemObject::*;
         match s {
-            "radar.value_list_item" => Ok(Self::RadarValueListItem),
-
+            "radar.value_list_item" => Ok(RadarValueListItem),
             _ => Err(()),
         }
     }
@@ -71,8 +72,8 @@ impl serde::Serialize for ValueListItemObject {
 impl<'de> serde::Deserialize<'de> for ValueListItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ValueListItemObject"))
     }
 }

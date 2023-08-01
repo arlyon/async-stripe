@@ -30,6 +30,8 @@ pub struct PaymentMethodOptions {
     pub card_present:
         Option<stripe_types::payment_intent::payment_method_options::card_present::CardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<stripe_types::payment_intent::payment_method_options::cashapp::Cashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<
         stripe_types::payment_intent::payment_method_options::customer_balance::CustomerBalance,
     >,
@@ -60,6 +62,8 @@ pub struct PaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<stripe_types::payment_intent::payment_method_options::paynow::Paynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::payment_intent::payment_method_options::paypal::Paypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<stripe_types::payment_intent::payment_method_options::pix::Pix>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay:
@@ -76,6 +80,8 @@ pub struct PaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay:
         Option<stripe_types::payment_intent::payment_method_options::wechat_pay::WechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<stripe_types::payment_intent::payment_method_options::zip::Zip>,
 }
 pub mod blik_mandate_options_off_session_details;
 pub use blik_mandate_options_off_session_details::BlikMandateOptionsOffSessionDetails;
@@ -111,6 +117,8 @@ pub mod boleto;
 pub use boleto::Boleto;
 pub mod card_present;
 pub use card_present::CardPresent;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod customer_balance;
 pub use customer_balance::CustomerBalance;
 pub mod bank_transfer;
@@ -145,3 +153,5 @@ pub mod sofort;
 pub use sofort::Sofort;
 pub mod wechat_pay;
 pub use wechat_pay::WechatPay;
+pub mod zip;
+pub use zip::Zip;

@@ -32,6 +32,8 @@ pub struct PaymentMethodDetails {
     pub card_present:
         Option<stripe_types::charge::payment_method_details::card_present::CardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<stripe_types::charge::payment_method_details::cashapp::Cashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance:
         Option<stripe_types::charge::payment_method_details::customer_balance::CustomerBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,6 +64,8 @@ pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<stripe_types::charge::payment_method_details::paynow::Paynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::charge::payment_method_details::paypal::Paypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<stripe_types::charge::payment_method_details::pix::Pix>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<stripe_types::charge::payment_method_details::promptpay::Promptpay>,
@@ -88,6 +92,8 @@ pub struct PaymentMethodDetails {
     pub wechat: Option<stripe_types::charge::payment_method_details::wechat::Wechat>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<stripe_types::charge::payment_method_details::wechat_pay::WechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<stripe_types::charge::payment_method_details::zip::Zip>,
 }
 pub mod alipay;
 pub use alipay::Alipay;
@@ -115,6 +121,8 @@ pub mod card;
 pub use card::Card;
 pub mod card_present;
 pub use card_present::CardPresent;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod customer_balance;
 pub use customer_balance::CustomerBalance;
 pub mod eps;
@@ -145,6 +153,8 @@ pub mod p24;
 pub use p24::P24;
 pub mod paynow;
 pub use paynow::Paynow;
+pub mod paypal;
+pub use paypal::Paypal;
 pub mod pix;
 pub use pix::Pix;
 pub mod promptpay;
@@ -163,3 +173,5 @@ pub mod wechat;
 pub use wechat::Wechat;
 pub mod wechat_pay;
 pub use wechat_pay::WechatPay;
+pub mod zip;
+pub use zip::Zip;

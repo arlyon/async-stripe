@@ -15,6 +15,7 @@ impl Components {
             let deps = self.deps_for_module(module);
             for dep in deps {
                 let dependent_mod = self.containing_module(dep);
+
                 // Don't clutter with self edges since they aren't particularly meaningful
                 // in this context
                 if dependent_mod != mod_name {
@@ -28,13 +29,15 @@ impl Components {
     pub fn gen_crate_dep_graph(&self) -> DiGraphMap<Crate, ()> {
         let mut graph = DiGraphMap::new();
 
-        // Everybody depends on `stripe_types` because of trait implementations, def_id!, etc.
-        graph.add_node(Crate::Types);
-        for krate in self.crates.keys().filter(|c| c != &&Crate::Types) {
+        for krate in Crate::all().iter() {
             graph.add_node(*krate);
-            graph.add_edge(*krate, Crate::Types, ());
+            if *krate != Crate::Types {
+                // Everybody depends on `stripe_types` because of def_id!, ext types, etc.
+                graph.add_edge(*krate, Crate::Types, ());
+            }
         }
-        for (krate, members) in &self.crates {
+        for krate in Crate::all().iter() {
+            let members = self.get_crate_members(*krate);
             let mut deps = IndexSet::new();
             for member in members {
                 let module = self.modules.get(member).unwrap();

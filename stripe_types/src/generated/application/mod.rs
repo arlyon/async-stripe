@@ -19,8 +19,9 @@ pub enum ApplicationObject {
 
 impl ApplicationObject {
     pub fn as_str(self) -> &'static str {
+        use ApplicationObject::*;
         match self {
-            Self::Application => "application",
+            Application => "application",
         }
     }
 }
@@ -28,9 +29,9 @@ impl ApplicationObject {
 impl std::str::FromStr for ApplicationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ApplicationObject::*;
         match s {
-            "application" => Ok(Self::Application),
-
+            "application" => Ok(Application),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for ApplicationObject {
 impl<'de> serde::Deserialize<'de> for ApplicationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ApplicationObject"))
     }
 }

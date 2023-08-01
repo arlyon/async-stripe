@@ -36,9 +36,10 @@ pub enum BalanceType {
 
 impl BalanceType {
     pub fn as_str(self) -> &'static str {
+        use BalanceType::*;
         match self {
-            Self::Cash => "cash",
-            Self::Credit => "credit",
+            Cash => "cash",
+            Credit => "credit",
         }
     }
 }
@@ -46,10 +47,10 @@ impl BalanceType {
 impl std::str::FromStr for BalanceType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BalanceType::*;
         match s {
-            "cash" => Ok(Self::Cash),
-            "credit" => Ok(Self::Credit),
-
+            "cash" => Ok(Cash),
+            "credit" => Ok(Credit),
             _ => Err(()),
         }
     }
@@ -77,8 +78,8 @@ impl serde::Serialize for BalanceType {
 impl<'de> serde::Deserialize<'de> for BalanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceType"))
     }
 }
 pub mod cash_balance;

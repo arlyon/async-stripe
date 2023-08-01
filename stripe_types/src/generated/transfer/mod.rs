@@ -5,7 +5,7 @@
 /// Stripe account to a card or bank account.
 ///
 /// This behavior has since been split out into a [Payout](https://stripe.com/docs/api#payout_object) object, with corresponding payout endpoints.
-/// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers).
+/// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/charges-transfers).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Transfer {
     /// Amount in %s to be transferred.
@@ -72,8 +72,9 @@ pub enum TransferObject {
 
 impl TransferObject {
     pub fn as_str(self) -> &'static str {
+        use TransferObject::*;
         match self {
-            Self::Transfer => "transfer",
+            Transfer => "transfer",
         }
     }
 }
@@ -81,9 +82,9 @@ impl TransferObject {
 impl std::str::FromStr for TransferObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransferObject::*;
         match s {
-            "transfer" => Ok(Self::Transfer),
-
+            "transfer" => Ok(Transfer),
             _ => Err(()),
         }
     }
@@ -111,8 +112,8 @@ impl serde::Serialize for TransferObject {
 impl<'de> serde::Deserialize<'de> for TransferObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TransferObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TransferObject"))
     }
 }
 impl stripe_types::Object for Transfer {

@@ -22,11 +22,15 @@ pub struct PaymentMethodDetails {
     pub card_present:
         Option<stripe_types::setup_attempt::payment_method_details::card_present::CardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<stripe_types::setup_attempt::payment_method_details::cashapp::Cashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<stripe_types::setup_attempt::payment_method_details::ideal::Ideal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<stripe_types::setup_attempt::payment_method_details::klarna::Klarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<stripe_types::setup_attempt::payment_method_details::link::Link>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::setup_attempt::payment_method_details::paypal::Paypal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit:
         Option<stripe_types::setup_attempt::payment_method_details::sepa_debit::SepaDebit>,
@@ -58,12 +62,16 @@ pub mod card;
 pub use card::Card;
 pub mod card_present;
 pub use card_present::CardPresent;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod ideal;
 pub use ideal::Ideal;
 pub mod klarna;
 pub use klarna::Klarna;
 pub mod link;
 pub use link::Link;
+pub mod paypal;
+pub use paypal::Paypal;
 pub mod sepa_debit;
 pub use sepa_debit::SepaDebit;
 pub mod sofort;

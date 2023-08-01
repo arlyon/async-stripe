@@ -17,8 +17,9 @@ pub enum SetReaderDisplayActionType {
 
 impl SetReaderDisplayActionType {
     pub fn as_str(self) -> &'static str {
+        use SetReaderDisplayActionType::*;
         match self {
-            Self::Cart => "cart",
+            Cart => "cart",
         }
     }
 }
@@ -26,9 +27,9 @@ impl SetReaderDisplayActionType {
 impl std::str::FromStr for SetReaderDisplayActionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetReaderDisplayActionType::*;
         match s {
-            "cart" => Ok(Self::Cart),
-
+            "cart" => Ok(Cart),
             _ => Err(()),
         }
     }
@@ -56,8 +57,8 @@ impl serde::Serialize for SetReaderDisplayActionType {
 impl<'de> serde::Deserialize<'de> for SetReaderDisplayActionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetReaderDisplayActionType"))
     }
 }

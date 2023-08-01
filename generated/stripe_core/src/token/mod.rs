@@ -8,7 +8,7 @@
 /// Keep in mind that if your integration uses this method, you are responsible for any PCI compliance that may be required, and you must keep your secret API key safe.
 /// Unlike with client-side tokenization, your customer's information is not sent directly to Stripe, so we cannot determine how it is handled or stored.  Tokens cannot be stored or used more than once.
 /// To store card or bank account information for later use, you can create [Customer](https://stripe.com/docs/api#customers) objects or [Custom accounts](https://stripe.com/docs/api#external_accounts).
-/// Note that [Radar](https://stripe.com/docs/radar), our integrated solution for automatic fraud protection, performs best with integrations that use client-side tokenization.  Related guide: [Accept a payment](https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token).
+/// Note that [Radar](https://stripe.com/docs/radar), our integrated solution for automatic fraud protection, performs best with integrations that use client-side tokenization.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Token {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,8 +45,9 @@ pub enum TokenObject {
 
 impl TokenObject {
     pub fn as_str(self) -> &'static str {
+        use TokenObject::*;
         match self {
-            Self::Token => "token",
+            Token => "token",
         }
     }
 }
@@ -54,9 +55,9 @@ impl TokenObject {
 impl std::str::FromStr for TokenObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TokenObject::*;
         match s {
-            "token" => Ok(Self::Token),
-
+            "token" => Ok(Token),
             _ => Err(()),
         }
     }
@@ -84,8 +85,8 @@ impl serde::Serialize for TokenObject {
 impl<'de> serde::Deserialize<'de> for TokenObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TokenObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TokenObject"))
     }
 }
 impl stripe_types::Object for Token {
@@ -95,3 +96,4 @@ impl stripe_types::Object for Token {
     }
 }
 stripe_types::def_id!(TokenId);
+pub mod requests;

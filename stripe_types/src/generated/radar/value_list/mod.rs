@@ -1,6 +1,6 @@
 /// Value lists allow you to group values together which can then be referenced in rules.
 ///
-/// Related guide: [Default Stripe Lists](https://stripe.com/docs/radar/lists#managing-list-items).
+/// Related guide: [Default Stripe lists](https://stripe.com/docs/radar/lists#managing-list-items).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ValueList {
     /// The name of the value list for use in rules.
@@ -49,15 +49,16 @@ pub enum ValueListItemType {
 
 impl ValueListItemType {
     pub fn as_str(self) -> &'static str {
+        use ValueListItemType::*;
         match self {
-            Self::CardBin => "card_bin",
-            Self::CardFingerprint => "card_fingerprint",
-            Self::CaseSensitiveString => "case_sensitive_string",
-            Self::Country => "country",
-            Self::CustomerId => "customer_id",
-            Self::Email => "email",
-            Self::IpAddress => "ip_address",
-            Self::String => "string",
+            CardBin => "card_bin",
+            CardFingerprint => "card_fingerprint",
+            CaseSensitiveString => "case_sensitive_string",
+            Country => "country",
+            CustomerId => "customer_id",
+            Email => "email",
+            IpAddress => "ip_address",
+            String => "string",
         }
     }
 }
@@ -65,16 +66,16 @@ impl ValueListItemType {
 impl std::str::FromStr for ValueListItemType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ValueListItemType::*;
         match s {
-            "card_bin" => Ok(Self::CardBin),
-            "card_fingerprint" => Ok(Self::CardFingerprint),
-            "case_sensitive_string" => Ok(Self::CaseSensitiveString),
-            "country" => Ok(Self::Country),
-            "customer_id" => Ok(Self::CustomerId),
-            "email" => Ok(Self::Email),
-            "ip_address" => Ok(Self::IpAddress),
-            "string" => Ok(Self::String),
-
+            "card_bin" => Ok(CardBin),
+            "card_fingerprint" => Ok(CardFingerprint),
+            "case_sensitive_string" => Ok(CaseSensitiveString),
+            "country" => Ok(Country),
+            "customer_id" => Ok(CustomerId),
+            "email" => Ok(Email),
+            "ip_address" => Ok(IpAddress),
+            "string" => Ok(String),
             _ => Err(()),
         }
     }
@@ -102,8 +103,8 @@ impl serde::Serialize for ValueListItemType {
 impl<'de> serde::Deserialize<'de> for ValueListItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ValueListItemType"))
     }
 }
@@ -117,8 +118,9 @@ pub enum ValueListObject {
 
 impl ValueListObject {
     pub fn as_str(self) -> &'static str {
+        use ValueListObject::*;
         match self {
-            Self::RadarValueList => "radar.value_list",
+            RadarValueList => "radar.value_list",
         }
     }
 }
@@ -126,9 +128,9 @@ impl ValueListObject {
 impl std::str::FromStr for ValueListObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ValueListObject::*;
         match s {
-            "radar.value_list" => Ok(Self::RadarValueList),
-
+            "radar.value_list" => Ok(RadarValueList),
             _ => Err(()),
         }
     }
@@ -156,9 +158,8 @@ impl serde::Serialize for ValueListObject {
 impl<'de> serde::Deserialize<'de> for ValueListObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ValueListObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ValueListObject"))
     }
 }
 impl stripe_types::Object for ValueList {

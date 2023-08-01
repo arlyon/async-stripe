@@ -46,8 +46,9 @@ pub enum ReportRunObject {
 
 impl ReportRunObject {
     pub fn as_str(self) -> &'static str {
+        use ReportRunObject::*;
         match self {
-            Self::ReportingReportRun => "reporting.report_run",
+            ReportingReportRun => "reporting.report_run",
         }
     }
 }
@@ -55,9 +56,9 @@ impl ReportRunObject {
 impl std::str::FromStr for ReportRunObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReportRunObject::*;
         match s {
-            "reporting.report_run" => Ok(Self::ReportingReportRun),
-
+            "reporting.report_run" => Ok(ReportingReportRun),
             _ => Err(()),
         }
     }
@@ -85,9 +86,8 @@ impl serde::Serialize for ReportRunObject {
 impl<'de> serde::Deserialize<'de> for ReportRunObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ReportRunObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ReportRunObject"))
     }
 }
 impl stripe_types::Object for ReportRun {
@@ -99,3 +99,4 @@ impl stripe_types::Object for ReportRun {
 stripe_types::def_id!(ReportingReportRunId);
 pub mod parameters;
 pub use parameters::Parameters;
+pub mod requests;

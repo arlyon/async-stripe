@@ -19,9 +19,10 @@ pub enum FinancialAddressSupportedNetworks {
 
 impl FinancialAddressSupportedNetworks {
     pub fn as_str(self) -> &'static str {
+        use FinancialAddressSupportedNetworks::*;
         match self {
-            Self::Ach => "ach",
-            Self::UsDomesticWire => "us_domestic_wire",
+            Ach => "ach",
+            UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -29,10 +30,10 @@ impl FinancialAddressSupportedNetworks {
 impl std::str::FromStr for FinancialAddressSupportedNetworks {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinancialAddressSupportedNetworks::*;
         match s {
-            "ach" => Ok(Self::Ach),
-            "us_domestic_wire" => Ok(Self::UsDomesticWire),
-
+            "ach" => Ok(Ach),
+            "us_domestic_wire" => Ok(UsDomesticWire),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for FinancialAddressSupportedNetworks {
 impl<'de> serde::Deserialize<'de> for FinancialAddressSupportedNetworks {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for FinancialAddressSupportedNetworks")
         })
     }
@@ -74,8 +75,9 @@ pub enum FinancialAddressType {
 
 impl FinancialAddressType {
     pub fn as_str(self) -> &'static str {
+        use FinancialAddressType::*;
         match self {
-            Self::Aba => "aba",
+            Aba => "aba",
         }
     }
 }
@@ -83,9 +85,9 @@ impl FinancialAddressType {
 impl std::str::FromStr for FinancialAddressType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinancialAddressType::*;
         match s {
-            "aba" => Ok(Self::Aba),
-
+            "aba" => Ok(Aba),
             _ => Err(()),
         }
     }
@@ -113,8 +115,8 @@ impl serde::Serialize for FinancialAddressType {
 impl<'de> serde::Deserialize<'de> for FinancialAddressType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FinancialAddressType"))
     }
 }

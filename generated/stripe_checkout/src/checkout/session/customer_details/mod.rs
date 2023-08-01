@@ -28,10 +28,11 @@ pub enum CustomerDetailsTaxExempt {
 
 impl CustomerDetailsTaxExempt {
     pub fn as_str(self) -> &'static str {
+        use CustomerDetailsTaxExempt::*;
         match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
+            Exempt => "exempt",
+            None => "none",
+            Reverse => "reverse",
         }
     }
 }
@@ -39,11 +40,11 @@ impl CustomerDetailsTaxExempt {
 impl std::str::FromStr for CustomerDetailsTaxExempt {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerDetailsTaxExempt::*;
         match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
+            "exempt" => Ok(Exempt),
+            "none" => Ok(None),
+            "reverse" => Ok(Reverse),
             _ => Err(()),
         }
     }
@@ -71,8 +72,8 @@ impl serde::Serialize for CustomerDetailsTaxExempt {
 impl<'de> serde::Deserialize<'de> for CustomerDetailsTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerDetailsTaxExempt"))
     }
 }

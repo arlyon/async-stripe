@@ -27,6 +27,7 @@ pub enum CardNetwork {
     CartesBancaires,
     Diners,
     Discover,
+    EftposAu,
     Interac,
     Jcb,
     Mastercard,
@@ -37,17 +38,19 @@ pub enum CardNetwork {
 
 impl CardNetwork {
     pub fn as_str(self) -> &'static str {
+        use CardNetwork::*;
         match self {
-            Self::Amex => "amex",
-            Self::CartesBancaires => "cartes_bancaires",
-            Self::Diners => "diners",
-            Self::Discover => "discover",
-            Self::Interac => "interac",
-            Self::Jcb => "jcb",
-            Self::Mastercard => "mastercard",
-            Self::Unionpay => "unionpay",
-            Self::Unknown => "unknown",
-            Self::Visa => "visa",
+            Amex => "amex",
+            CartesBancaires => "cartes_bancaires",
+            Diners => "diners",
+            Discover => "discover",
+            EftposAu => "eftpos_au",
+            Interac => "interac",
+            Jcb => "jcb",
+            Mastercard => "mastercard",
+            Unionpay => "unionpay",
+            Unknown => "unknown",
+            Visa => "visa",
         }
     }
 }
@@ -55,18 +58,19 @@ impl CardNetwork {
 impl std::str::FromStr for CardNetwork {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardNetwork::*;
         match s {
-            "amex" => Ok(Self::Amex),
-            "cartes_bancaires" => Ok(Self::CartesBancaires),
-            "diners" => Ok(Self::Diners),
-            "discover" => Ok(Self::Discover),
-            "interac" => Ok(Self::Interac),
-            "jcb" => Ok(Self::Jcb),
-            "mastercard" => Ok(Self::Mastercard),
-            "unionpay" => Ok(Self::Unionpay),
-            "unknown" => Ok(Self::Unknown),
-            "visa" => Ok(Self::Visa),
-
+            "amex" => Ok(Amex),
+            "cartes_bancaires" => Ok(CartesBancaires),
+            "diners" => Ok(Diners),
+            "discover" => Ok(Discover),
+            "eftpos_au" => Ok(EftposAu),
+            "interac" => Ok(Interac),
+            "jcb" => Ok(Jcb),
+            "mastercard" => Ok(Mastercard),
+            "unionpay" => Ok(Unionpay),
+            "unknown" => Ok(Unknown),
+            "visa" => Ok(Visa),
             _ => Err(()),
         }
     }
@@ -94,8 +98,8 @@ impl serde::Serialize for CardNetwork {
 impl<'de> serde::Deserialize<'de> for CardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardNetwork"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardNetwork"))
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -113,10 +117,11 @@ pub enum CardRequestThreeDSecure {
 
 impl CardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
+        use CardRequestThreeDSecure::*;
         match self {
-            Self::Any => "any",
-            Self::Automatic => "automatic",
-            Self::ChallengeOnly => "challenge_only",
+            Any => "any",
+            Automatic => "automatic",
+            ChallengeOnly => "challenge_only",
         }
     }
 }
@@ -124,11 +129,11 @@ impl CardRequestThreeDSecure {
 impl std::str::FromStr for CardRequestThreeDSecure {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardRequestThreeDSecure::*;
         match s {
-            "any" => Ok(Self::Any),
-            "automatic" => Ok(Self::Automatic),
-            "challenge_only" => Ok(Self::ChallengeOnly),
-
+            "any" => Ok(Any),
+            "automatic" => Ok(Automatic),
+            "challenge_only" => Ok(ChallengeOnly),
             _ => Err(()),
         }
     }
@@ -156,8 +161,8 @@ impl serde::Serialize for CardRequestThreeDSecure {
 impl<'de> serde::Deserialize<'de> for CardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardRequestThreeDSecure"))
     }
 }

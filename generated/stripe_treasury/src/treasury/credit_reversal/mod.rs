@@ -50,9 +50,10 @@ pub enum CreditReversalNetwork {
 
 impl CreditReversalNetwork {
     pub fn as_str(self) -> &'static str {
+        use CreditReversalNetwork::*;
         match self {
-            Self::Ach => "ach",
-            Self::Stripe => "stripe",
+            Ach => "ach",
+            Stripe => "stripe",
         }
     }
 }
@@ -60,10 +61,10 @@ impl CreditReversalNetwork {
 impl std::str::FromStr for CreditReversalNetwork {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreditReversalNetwork::*;
         match s {
-            "ach" => Ok(Self::Ach),
-            "stripe" => Ok(Self::Stripe),
-
+            "ach" => Ok(Ach),
+            "stripe" => Ok(Stripe),
             _ => Err(()),
         }
     }
@@ -91,8 +92,8 @@ impl serde::Serialize for CreditReversalNetwork {
 impl<'de> serde::Deserialize<'de> for CreditReversalNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalNetwork"))
     }
 }
@@ -106,8 +107,9 @@ pub enum CreditReversalObject {
 
 impl CreditReversalObject {
     pub fn as_str(self) -> &'static str {
+        use CreditReversalObject::*;
         match self {
-            Self::TreasuryCreditReversal => "treasury.credit_reversal",
+            TreasuryCreditReversal => "treasury.credit_reversal",
         }
     }
 }
@@ -115,9 +117,9 @@ impl CreditReversalObject {
 impl std::str::FromStr for CreditReversalObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreditReversalObject::*;
         match s {
-            "treasury.credit_reversal" => Ok(Self::TreasuryCreditReversal),
-
+            "treasury.credit_reversal" => Ok(TreasuryCreditReversal),
             _ => Err(()),
         }
     }
@@ -145,8 +147,8 @@ impl serde::Serialize for CreditReversalObject {
 impl<'de> serde::Deserialize<'de> for CreditReversalObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalObject"))
     }
 }
@@ -160,10 +162,11 @@ pub enum CreditReversalStatus {
 
 impl CreditReversalStatus {
     pub fn as_str(self) -> &'static str {
+        use CreditReversalStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Posted => "posted",
-            Self::Processing => "processing",
+            Canceled => "canceled",
+            Posted => "posted",
+            Processing => "processing",
         }
     }
 }
@@ -171,11 +174,11 @@ impl CreditReversalStatus {
 impl std::str::FromStr for CreditReversalStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreditReversalStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "posted" => Ok(Self::Posted),
-            "processing" => Ok(Self::Processing),
-
+            "canceled" => Ok(Canceled),
+            "posted" => Ok(Posted),
+            "processing" => Ok(Processing),
             _ => Err(()),
         }
     }
@@ -203,8 +206,8 @@ impl serde::Serialize for CreditReversalStatus {
 impl<'de> serde::Deserialize<'de> for CreditReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditReversalStatus"))
     }
 }
@@ -215,3 +218,4 @@ impl stripe_types::Object for CreditReversal {
     }
 }
 stripe_types::def_id!(TreasuryCreditReversalId);
+pub mod requests;

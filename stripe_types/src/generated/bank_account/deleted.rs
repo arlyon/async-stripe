@@ -22,8 +22,9 @@ pub enum DeletedBankAccountObject {
 
 impl DeletedBankAccountObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedBankAccountObject::*;
         match self {
-            Self::BankAccount => "bank_account",
+            BankAccount => "bank_account",
         }
     }
 }
@@ -31,9 +32,9 @@ impl DeletedBankAccountObject {
 impl std::str::FromStr for DeletedBankAccountObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedBankAccountObject::*;
         match s {
-            "bank_account" => Ok(Self::BankAccount),
-
+            "bank_account" => Ok(BankAccount),
             _ => Err(()),
         }
     }
@@ -61,8 +62,8 @@ impl serde::Serialize for DeletedBankAccountObject {
 impl<'de> serde::Deserialize<'de> for DeletedBankAccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedBankAccountObject"))
     }
 }

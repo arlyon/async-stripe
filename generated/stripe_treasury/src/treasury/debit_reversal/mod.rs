@@ -52,9 +52,10 @@ pub enum DebitReversalNetwork {
 
 impl DebitReversalNetwork {
     pub fn as_str(self) -> &'static str {
+        use DebitReversalNetwork::*;
         match self {
-            Self::Ach => "ach",
-            Self::Card => "card",
+            Ach => "ach",
+            Card => "card",
         }
     }
 }
@@ -62,10 +63,10 @@ impl DebitReversalNetwork {
 impl std::str::FromStr for DebitReversalNetwork {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DebitReversalNetwork::*;
         match s {
-            "ach" => Ok(Self::Ach),
-            "card" => Ok(Self::Card),
-
+            "ach" => Ok(Ach),
+            "card" => Ok(Card),
             _ => Err(()),
         }
     }
@@ -93,8 +94,8 @@ impl serde::Serialize for DebitReversalNetwork {
 impl<'de> serde::Deserialize<'de> for DebitReversalNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DebitReversalNetwork"))
     }
 }
@@ -108,8 +109,9 @@ pub enum DebitReversalObject {
 
 impl DebitReversalObject {
     pub fn as_str(self) -> &'static str {
+        use DebitReversalObject::*;
         match self {
-            Self::TreasuryDebitReversal => "treasury.debit_reversal",
+            TreasuryDebitReversal => "treasury.debit_reversal",
         }
     }
 }
@@ -117,9 +119,9 @@ impl DebitReversalObject {
 impl std::str::FromStr for DebitReversalObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DebitReversalObject::*;
         match s {
-            "treasury.debit_reversal" => Ok(Self::TreasuryDebitReversal),
-
+            "treasury.debit_reversal" => Ok(TreasuryDebitReversal),
             _ => Err(()),
         }
     }
@@ -147,8 +149,8 @@ impl serde::Serialize for DebitReversalObject {
 impl<'de> serde::Deserialize<'de> for DebitReversalObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DebitReversalObject"))
     }
 }
@@ -162,10 +164,11 @@ pub enum DebitReversalStatus {
 
 impl DebitReversalStatus {
     pub fn as_str(self) -> &'static str {
+        use DebitReversalStatus::*;
         match self {
-            Self::Failed => "failed",
-            Self::Processing => "processing",
-            Self::Succeeded => "succeeded",
+            Failed => "failed",
+            Processing => "processing",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -173,11 +176,11 @@ impl DebitReversalStatus {
 impl std::str::FromStr for DebitReversalStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DebitReversalStatus::*;
         match s {
-            "failed" => Ok(Self::Failed),
-            "processing" => Ok(Self::Processing),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "failed" => Ok(Failed),
+            "processing" => Ok(Processing),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -205,8 +208,8 @@ impl serde::Serialize for DebitReversalStatus {
 impl<'de> serde::Deserialize<'de> for DebitReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DebitReversalStatus"))
     }
 }
@@ -219,3 +222,4 @@ impl stripe_types::Object for DebitReversal {
 stripe_types::def_id!(TreasuryDebitReversalId);
 pub mod linked_flows;
 pub use linked_flows::LinkedFlows;
+pub mod requests;

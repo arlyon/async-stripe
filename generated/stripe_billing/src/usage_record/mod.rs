@@ -1,7 +1,7 @@
 /// Usage records allow you to report customer usage and metrics to Stripe for
 /// metered billing of subscription prices.
 ///
-/// Related guide: [Metered Billing](https://stripe.com/docs/billing/subscriptions/metered-billing).
+/// Related guide: [Metered billing](https://stripe.com/docs/billing/subscriptions/metered-billing).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct UsageRecord {
     /// Unique identifier for the object.
@@ -29,8 +29,9 @@ pub enum UsageRecordObject {
 
 impl UsageRecordObject {
     pub fn as_str(self) -> &'static str {
+        use UsageRecordObject::*;
         match self {
-            Self::UsageRecord => "usage_record",
+            UsageRecord => "usage_record",
         }
     }
 }
@@ -38,9 +39,9 @@ impl UsageRecordObject {
 impl std::str::FromStr for UsageRecordObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsageRecordObject::*;
         match s {
-            "usage_record" => Ok(Self::UsageRecord),
-
+            "usage_record" => Ok(UsageRecord),
             _ => Err(()),
         }
     }
@@ -68,8 +69,8 @@ impl serde::Serialize for UsageRecordObject {
 impl<'de> serde::Deserialize<'de> for UsageRecordObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for UsageRecordObject"))
     }
 }
@@ -80,3 +81,4 @@ impl stripe_types::Object for UsageRecord {
     }
 }
 stripe_types::def_id!(UsageRecordId, "mbur_");
+pub mod requests;

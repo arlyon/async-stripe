@@ -1,6 +1,6 @@
 /// This is an object representing your Stripe balance.
 ///
-/// You can retrieve it to see the balance currently on your Stripe account.  You can also retrieve the balance history, which contains a list of [transactions](https://stripe.com/docs/reporting/balance-transaction-types) that contributed to the balance (charges, payouts, and so forth).  The available and pending amounts for each currency are broken down further by payment source types.  Related guide: [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances).
+/// You can retrieve it to see the balance currently on your Stripe account.  You can also retrieve the balance history, which contains a list of [transactions](https://stripe.com/docs/reporting/balance-transaction-types) that contributed to the balance (charges, payouts, and so forth).  The available and pending amounts for each currency are broken down further by payment source types.  Related guide: [Understanding Connect account balances](https://stripe.com/docs/connect/account-balances).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Balance {
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
@@ -38,8 +38,9 @@ pub enum BalanceObject {
 
 impl BalanceObject {
     pub fn as_str(self) -> &'static str {
+        use BalanceObject::*;
         match self {
-            Self::Balance => "balance",
+            Balance => "balance",
         }
     }
 }
@@ -47,9 +48,9 @@ impl BalanceObject {
 impl std::str::FromStr for BalanceObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BalanceObject::*;
         match s {
-            "balance" => Ok(Self::Balance),
-
+            "balance" => Ok(Balance),
             _ => Err(()),
         }
     }
@@ -77,11 +78,12 @@ impl serde::Serialize for BalanceObject {
 impl<'de> serde::Deserialize<'de> for BalanceObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceObject"))
     }
 }
 pub mod money;
 pub use money::Money;
 pub mod details;
 pub use details::Details;
+pub mod requests;

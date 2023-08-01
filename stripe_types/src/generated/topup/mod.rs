@@ -1,7 +1,7 @@
 /// To top up your Stripe balance, you create a top-up object.
 ///
 /// You can retrieve individual top-ups, as well as list all top-ups.
-/// Top-ups are identified by a unique, random ID.  Related guide: [Topping Up your Platform Account](https://stripe.com/docs/connect/top-ups).
+/// Top-ups are identified by a unique, random ID.  Related guide: [Topping up your platform account](https://stripe.com/docs/connect/top-ups).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Topup {
     /// Amount transferred.
@@ -68,8 +68,9 @@ pub enum TopupObject {
 
 impl TopupObject {
     pub fn as_str(self) -> &'static str {
+        use TopupObject::*;
         match self {
-            Self::Topup => "topup",
+            Topup => "topup",
         }
     }
 }
@@ -77,9 +78,9 @@ impl TopupObject {
 impl std::str::FromStr for TopupObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TopupObject::*;
         match s {
-            "topup" => Ok(Self::Topup),
-
+            "topup" => Ok(Topup),
             _ => Err(()),
         }
     }
@@ -107,8 +108,8 @@ impl serde::Serialize for TopupObject {
 impl<'de> serde::Deserialize<'de> for TopupObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TopupObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TopupObject"))
     }
 }
 /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.
@@ -123,12 +124,13 @@ pub enum TopupStatus {
 
 impl TopupStatus {
     pub fn as_str(self) -> &'static str {
+        use TopupStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Failed => "failed",
-            Self::Pending => "pending",
-            Self::Reversed => "reversed",
-            Self::Succeeded => "succeeded",
+            Canceled => "canceled",
+            Failed => "failed",
+            Pending => "pending",
+            Reversed => "reversed",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -136,13 +138,13 @@ impl TopupStatus {
 impl std::str::FromStr for TopupStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TopupStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "failed" => Ok(Self::Failed),
-            "pending" => Ok(Self::Pending),
-            "reversed" => Ok(Self::Reversed),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "canceled" => Ok(Canceled),
+            "failed" => Ok(Failed),
+            "pending" => Ok(Pending),
+            "reversed" => Ok(Reversed),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -170,8 +172,8 @@ impl serde::Serialize for TopupStatus {
 impl<'de> serde::Deserialize<'de> for TopupStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TopupStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TopupStatus"))
     }
 }
 impl stripe_types::Object for Topup {

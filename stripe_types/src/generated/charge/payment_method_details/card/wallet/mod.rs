@@ -9,10 +9,12 @@ pub dynamic_last4: Option<String>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub google_pay: Option<stripe_types::charge::payment_method_details::card::wallet::google_pay::GooglePay>,
 #[serde(skip_serializing_if = "Option::is_none")]
+pub link: Option<stripe_types::charge::payment_method_details::card::wallet::link::Link>,
+#[serde(skip_serializing_if = "Option::is_none")]
 pub masterpass: Option<stripe_types::charge::payment_method_details::card::wallet::masterpass::Masterpass>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub samsung_pay: Option<stripe_types::charge::payment_method_details::card::wallet::samsung_pay::SamsungPay>,
-    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
     ///
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
@@ -22,7 +24,7 @@ pub type_: WalletType,
 pub visa_checkout: Option<stripe_types::charge::payment_method_details::card::wallet::visa_checkout::VisaCheckout>,
 
 }
-/// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+/// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
 ///
 /// An additional hash is included on the Wallet subhash with a name matching this value.
 /// It contains additional information specific to the card wallet type.
@@ -31,6 +33,7 @@ pub enum WalletType {
     AmexExpressCheckout,
     ApplePay,
     GooglePay,
+    Link,
     Masterpass,
     SamsungPay,
     VisaCheckout,
@@ -38,13 +41,15 @@ pub enum WalletType {
 
 impl WalletType {
     pub fn as_str(self) -> &'static str {
+        use WalletType::*;
         match self {
-            Self::AmexExpressCheckout => "amex_express_checkout",
-            Self::ApplePay => "apple_pay",
-            Self::GooglePay => "google_pay",
-            Self::Masterpass => "masterpass",
-            Self::SamsungPay => "samsung_pay",
-            Self::VisaCheckout => "visa_checkout",
+            AmexExpressCheckout => "amex_express_checkout",
+            ApplePay => "apple_pay",
+            GooglePay => "google_pay",
+            Link => "link",
+            Masterpass => "masterpass",
+            SamsungPay => "samsung_pay",
+            VisaCheckout => "visa_checkout",
         }
     }
 }
@@ -52,14 +57,15 @@ impl WalletType {
 impl std::str::FromStr for WalletType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use WalletType::*;
         match s {
-            "amex_express_checkout" => Ok(Self::AmexExpressCheckout),
-            "apple_pay" => Ok(Self::ApplePay),
-            "google_pay" => Ok(Self::GooglePay),
-            "masterpass" => Ok(Self::Masterpass),
-            "samsung_pay" => Ok(Self::SamsungPay),
-            "visa_checkout" => Ok(Self::VisaCheckout),
-
+            "amex_express_checkout" => Ok(AmexExpressCheckout),
+            "apple_pay" => Ok(ApplePay),
+            "google_pay" => Ok(GooglePay),
+            "link" => Ok(Link),
+            "masterpass" => Ok(Masterpass),
+            "samsung_pay" => Ok(SamsungPay),
+            "visa_checkout" => Ok(VisaCheckout),
             _ => Err(()),
         }
     }
@@ -87,8 +93,8 @@ impl serde::Serialize for WalletType {
 impl<'de> serde::Deserialize<'de> for WalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for WalletType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for WalletType"))
     }
 }
 pub mod amex_express_checkout;
@@ -97,6 +103,8 @@ pub mod apple_pay;
 pub use apple_pay::ApplePay;
 pub mod google_pay;
 pub use google_pay::GooglePay;
+pub mod link;
+pub use link::Link;
 pub mod masterpass;
 pub use masterpass::Masterpass;
 pub mod samsung_pay;

@@ -1,7 +1,7 @@
-/// To charge a credit or a debit card, you create a `Charge` object.
-///
-/// You can retrieve and refund individual charges as well as list all charges.
-/// Charges are identified by a unique, random ID.  Related guide: [Accept a payment with the Charges API](https://stripe.com/docs/payments/accept-a-payment-charges).
+/// The `Charge` object represents a single attempt to move money into your Stripe account.
+/// PaymentIntent confirmation is the most common way to create Charges, but transferring
+/// money to a different Stripe account through Connect also creates Charges.
+/// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Charge {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -65,7 +65,7 @@ pub struct Charge {
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
     pub failure_balance_transaction:
         Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
-    /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
+    /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/error-codes) for a list of codes).
     pub failure_code: Option<String>,
     /// Message to user further explaining reason for charge failure if available.
     pub failure_message: Option<String>,
@@ -123,7 +123,6 @@ pub struct Charge {
     /// If the charge is only partially refunded, this attribute will still be false.
     pub refunded: bool,
     /// A list of refunds that have been applied to the charge.
-    #[serde(default)]
     pub refunds: stripe_types::List<stripe_types::refund::Refund>,
     /// ID of the review associated with this charge if one exists.
     pub review: Option<stripe_types::Expandable<stripe_types::review::Review>>,
@@ -173,8 +172,9 @@ pub enum ChargeObject {
 
 impl ChargeObject {
     pub fn as_str(self) -> &'static str {
+        use ChargeObject::*;
         match self {
-            Self::Charge => "charge",
+            Charge => "charge",
         }
     }
 }
@@ -182,9 +182,9 @@ impl ChargeObject {
 impl std::str::FromStr for ChargeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ChargeObject::*;
         match s {
-            "charge" => Ok(Self::Charge),
-
+            "charge" => Ok(Charge),
             _ => Err(()),
         }
     }
@@ -212,8 +212,8 @@ impl serde::Serialize for ChargeObject {
 impl<'de> serde::Deserialize<'de> for ChargeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeObject"))
     }
 }
 /// The status of the payment is either `succeeded`, `pending`, or `failed`.
@@ -226,10 +226,11 @@ pub enum ChargeStatus {
 
 impl ChargeStatus {
     pub fn as_str(self) -> &'static str {
+        use ChargeStatus::*;
         match self {
-            Self::Failed => "failed",
-            Self::Pending => "pending",
-            Self::Succeeded => "succeeded",
+            Failed => "failed",
+            Pending => "pending",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -237,11 +238,11 @@ impl ChargeStatus {
 impl std::str::FromStr for ChargeStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ChargeStatus::*;
         match s {
-            "failed" => Ok(Self::Failed),
-            "pending" => Ok(Self::Pending),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "failed" => Ok(Failed),
+            "pending" => Ok(Pending),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -269,8 +270,8 @@ impl serde::Serialize for ChargeStatus {
 impl<'de> serde::Deserialize<'de> for ChargeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeStatus"))
     }
 }
 impl stripe_types::Object for Charge {

@@ -19,8 +19,9 @@ pub enum DeletedCouponObject {
 
 impl DeletedCouponObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedCouponObject::*;
         match self {
-            Self::Coupon => "coupon",
+            Coupon => "coupon",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedCouponObject {
 impl std::str::FromStr for DeletedCouponObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedCouponObject::*;
         match s {
-            "coupon" => Ok(Self::Coupon),
-
+            "coupon" => Ok(Coupon),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedCouponObject {
 impl<'de> serde::Deserialize<'de> for DeletedCouponObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedCouponObject"))
     }
 }

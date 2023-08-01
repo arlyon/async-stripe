@@ -50,8 +50,9 @@ pub enum EventObject {
 
 impl EventObject {
     pub fn as_str(self) -> &'static str {
+        use EventObject::*;
         match self {
-            Self::Event => "event",
+            Event => "event",
         }
     }
 }
@@ -59,9 +60,9 @@ impl EventObject {
 impl std::str::FromStr for EventObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use EventObject::*;
         match s {
-            "event" => Ok(Self::Event),
-
+            "event" => Ok(Event),
             _ => Err(()),
         }
     }
@@ -89,8 +90,8 @@ impl serde::Serialize for EventObject {
 impl<'de> serde::Deserialize<'de> for EventObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for EventObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for EventObject"))
     }
 }
 impl stripe_types::Object for Event {
@@ -100,3 +101,4 @@ impl stripe_types::Object for Event {
     }
 }
 stripe_types::def_id!(EventId, "evt_");
+pub mod requests;

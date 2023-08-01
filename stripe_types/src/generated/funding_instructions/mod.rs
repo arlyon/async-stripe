@@ -2,7 +2,7 @@
 /// automatically applied to future invoices and payments using the `customer_balance` payment method.
 /// Customers can fund this balance by initiating a bank transfer to any account in the
 /// `financial_addresses` field.
-/// Related guide: [Customer Balance - Funding Instructions](https://stripe.com/docs/payments/customer-balance/funding-instructions) to learn more.
+/// Related guide: [Customer balance funding instructions](https://stripe.com/docs/payments/customer-balance/funding-instructions).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FundingInstructions {
     pub bank_transfer: stripe_types::funding_instructions::bank_transfer::BankTransfer,
@@ -27,8 +27,9 @@ pub enum FundingInstructionsFundingType {
 
 impl FundingInstructionsFundingType {
     pub fn as_str(self) -> &'static str {
+        use FundingInstructionsFundingType::*;
         match self {
-            Self::BankTransfer => "bank_transfer",
+            BankTransfer => "bank_transfer",
         }
     }
 }
@@ -36,9 +37,9 @@ impl FundingInstructionsFundingType {
 impl std::str::FromStr for FundingInstructionsFundingType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FundingInstructionsFundingType::*;
         match s {
-            "bank_transfer" => Ok(Self::BankTransfer),
-
+            "bank_transfer" => Ok(BankTransfer),
             _ => Err(()),
         }
     }
@@ -66,8 +67,8 @@ impl serde::Serialize for FundingInstructionsFundingType {
 impl<'de> serde::Deserialize<'de> for FundingInstructionsFundingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for FundingInstructionsFundingType")
         })
     }
@@ -82,8 +83,9 @@ pub enum FundingInstructionsObject {
 
 impl FundingInstructionsObject {
     pub fn as_str(self) -> &'static str {
+        use FundingInstructionsObject::*;
         match self {
-            Self::FundingInstructions => "funding_instructions",
+            FundingInstructions => "funding_instructions",
         }
     }
 }
@@ -91,9 +93,9 @@ impl FundingInstructionsObject {
 impl std::str::FromStr for FundingInstructionsObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FundingInstructionsObject::*;
         match s {
-            "funding_instructions" => Ok(Self::FundingInstructions),
-
+            "funding_instructions" => Ok(FundingInstructions),
             _ => Err(()),
         }
     }
@@ -121,8 +123,8 @@ impl serde::Serialize for FundingInstructionsObject {
 impl<'de> serde::Deserialize<'de> for FundingInstructionsObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for FundingInstructionsObject"))
     }
 }

@@ -48,8 +48,9 @@ pub enum ConfigurationObject {
 
 impl ConfigurationObject {
     pub fn as_str(self) -> &'static str {
+        use ConfigurationObject::*;
         match self {
-            Self::BillingPortalConfiguration => "billing_portal.configuration",
+            BillingPortalConfiguration => "billing_portal.configuration",
         }
     }
 }
@@ -57,9 +58,9 @@ impl ConfigurationObject {
 impl std::str::FromStr for ConfigurationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfigurationObject::*;
         match s {
-            "billing_portal.configuration" => Ok(Self::BillingPortalConfiguration),
-
+            "billing_portal.configuration" => Ok(BillingPortalConfiguration),
             _ => Err(()),
         }
     }
@@ -87,8 +88,8 @@ impl serde::Serialize for ConfigurationObject {
 impl<'de> serde::Deserialize<'de> for ConfigurationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConfigurationObject"))
     }
 }
@@ -105,3 +106,4 @@ pub mod features;
 pub use features::Features;
 pub mod login_page;
 pub use login_page::LoginPage;
+pub mod requests;

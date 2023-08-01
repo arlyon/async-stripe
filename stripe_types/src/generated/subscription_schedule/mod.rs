@@ -1,6 +1,6 @@
 /// A subscription schedule allows you to create and manage the lifecycle of a subscription by predefining expected changes.
 ///
-/// Related guide: [Subscription Schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
+/// Related guide: [Subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionSchedule {
     /// ID of the Connect Application that created the schedule.
@@ -24,7 +24,8 @@ pub struct SubscriptionSchedule {
     pub default_settings: stripe_types::subscription_schedule::default_settings::DefaultSettings,
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
-    /// Possible values are `release` and `cancel`.
+    /// Possible values are `release` or `cancel` with the default being `release`.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
     pub end_behavior: SubscriptionScheduleEndBehavior,
     /// Unique identifier for the object.
     pub id: stripe_types::subscription_schedule::SubscriptionScheduleId,
@@ -59,7 +60,8 @@ pub struct SubscriptionSchedule {
 }
 /// Behavior of the subscription schedule and underlying subscription when it ends.
 ///
-/// Possible values are `release` and `cancel`.
+/// Possible values are `release` or `cancel` with the default being `release`.
+/// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum SubscriptionScheduleEndBehavior {
     Cancel,
@@ -70,11 +72,12 @@ pub enum SubscriptionScheduleEndBehavior {
 
 impl SubscriptionScheduleEndBehavior {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionScheduleEndBehavior::*;
         match self {
-            Self::Cancel => "cancel",
-            Self::None => "none",
-            Self::Release => "release",
-            Self::Renew => "renew",
+            Cancel => "cancel",
+            None => "none",
+            Release => "release",
+            Renew => "renew",
         }
     }
 }
@@ -82,12 +85,12 @@ impl SubscriptionScheduleEndBehavior {
 impl std::str::FromStr for SubscriptionScheduleEndBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionScheduleEndBehavior::*;
         match s {
-            "cancel" => Ok(Self::Cancel),
-            "none" => Ok(Self::None),
-            "release" => Ok(Self::Release),
-            "renew" => Ok(Self::Renew),
-
+            "cancel" => Ok(Cancel),
+            "none" => Ok(None),
+            "release" => Ok(Release),
+            "renew" => Ok(Renew),
             _ => Err(()),
         }
     }
@@ -115,8 +118,8 @@ impl serde::Serialize for SubscriptionScheduleEndBehavior {
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionScheduleEndBehavior")
         })
     }
@@ -131,8 +134,9 @@ pub enum SubscriptionScheduleObject {
 
 impl SubscriptionScheduleObject {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionScheduleObject::*;
         match self {
-            Self::SubscriptionSchedule => "subscription_schedule",
+            SubscriptionSchedule => "subscription_schedule",
         }
     }
 }
@@ -140,9 +144,9 @@ impl SubscriptionScheduleObject {
 impl std::str::FromStr for SubscriptionScheduleObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionScheduleObject::*;
         match s {
-            "subscription_schedule" => Ok(Self::SubscriptionSchedule),
-
+            "subscription_schedule" => Ok(SubscriptionSchedule),
             _ => Err(()),
         }
     }
@@ -170,8 +174,8 @@ impl serde::Serialize for SubscriptionScheduleObject {
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleObject"))
     }
 }
@@ -190,12 +194,13 @@ pub enum SubscriptionScheduleStatus {
 
 impl SubscriptionScheduleStatus {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionScheduleStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Canceled => "canceled",
-            Self::Completed => "completed",
-            Self::NotStarted => "not_started",
-            Self::Released => "released",
+            Active => "active",
+            Canceled => "canceled",
+            Completed => "completed",
+            NotStarted => "not_started",
+            Released => "released",
         }
     }
 }
@@ -203,13 +208,13 @@ impl SubscriptionScheduleStatus {
 impl std::str::FromStr for SubscriptionScheduleStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionScheduleStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "canceled" => Ok(Self::Canceled),
-            "completed" => Ok(Self::Completed),
-            "not_started" => Ok(Self::NotStarted),
-            "released" => Ok(Self::Released),
-
+            "active" => Ok(Active),
+            "canceled" => Ok(Canceled),
+            "completed" => Ok(Completed),
+            "not_started" => Ok(NotStarted),
+            "released" => Ok(Released),
             _ => Err(()),
         }
     }
@@ -237,8 +242,8 @@ impl serde::Serialize for SubscriptionScheduleStatus {
 impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
     }
 }

@@ -28,8 +28,9 @@ pub enum InitiatingPaymentMethodDetailsBalance {
 
 impl InitiatingPaymentMethodDetailsBalance {
     pub fn as_str(self) -> &'static str {
+        use InitiatingPaymentMethodDetailsBalance::*;
         match self {
-            Self::Payments => "payments",
+            Payments => "payments",
         }
     }
 }
@@ -37,9 +38,9 @@ impl InitiatingPaymentMethodDetailsBalance {
 impl std::str::FromStr for InitiatingPaymentMethodDetailsBalance {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InitiatingPaymentMethodDetailsBalance::*;
         match s {
-            "payments" => Ok(Self::Payments),
-
+            "payments" => Ok(Payments),
             _ => Err(()),
         }
     }
@@ -67,8 +68,8 @@ impl serde::Serialize for InitiatingPaymentMethodDetailsBalance {
 impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsBalance {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for InitiatingPaymentMethodDetailsBalance")
         })
     }
@@ -87,12 +88,13 @@ pub enum InitiatingPaymentMethodDetailsType {
 
 impl InitiatingPaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
+        use InitiatingPaymentMethodDetailsType::*;
         match self {
-            Self::Balance => "balance",
-            Self::FinancialAccount => "financial_account",
-            Self::IssuingCard => "issuing_card",
-            Self::Stripe => "stripe",
-            Self::UsBankAccount => "us_bank_account",
+            Balance => "balance",
+            FinancialAccount => "financial_account",
+            IssuingCard => "issuing_card",
+            Stripe => "stripe",
+            UsBankAccount => "us_bank_account",
         }
     }
 }
@@ -100,13 +102,13 @@ impl InitiatingPaymentMethodDetailsType {
 impl std::str::FromStr for InitiatingPaymentMethodDetailsType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InitiatingPaymentMethodDetailsType::*;
         match s {
-            "balance" => Ok(Self::Balance),
-            "financial_account" => Ok(Self::FinancialAccount),
-            "issuing_card" => Ok(Self::IssuingCard),
-            "stripe" => Ok(Self::Stripe),
-            "us_bank_account" => Ok(Self::UsBankAccount),
-
+            "balance" => Ok(Balance),
+            "financial_account" => Ok(FinancialAccount),
+            "issuing_card" => Ok(IssuingCard),
+            "stripe" => Ok(Stripe),
+            "us_bank_account" => Ok(UsBankAccount),
             _ => Err(()),
         }
     }
@@ -134,8 +136,8 @@ impl serde::Serialize for InitiatingPaymentMethodDetailsType {
 impl<'de> serde::Deserialize<'de> for InitiatingPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for InitiatingPaymentMethodDetailsType")
         })
     }

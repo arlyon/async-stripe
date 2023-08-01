@@ -1,24 +1,20 @@
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
-use anyhow::anyhow;
-use indexmap::IndexSet;
 use indoc::formatdoc;
 
-use crate::components::{
-    build_field_overrides, get_components, Components, Module, ModuleName, Overrides,
-};
+use crate::components::{build_field_overrides, get_components, Components, Module, Overrides};
 use crate::crate_inference::Crate;
 use crate::ids::{write_object_id, IDS_IN_STRIPE};
-use crate::object_context::{write_obj, write_requests, ObjectGenInfo};
+use crate::object_context::{gen_obj, gen_requests, ObjectGenInfo};
 use crate::rust_object::ObjectMetadata;
 use crate::spec::Spec;
 use crate::spec_inference::infer_doc_comment;
 use crate::stripe_object::StripeObject;
-use crate::templates::cargo_toml::write_crate_toml;
+use crate::templates::cargo_toml::gen_crate_toml;
 use crate::templates::derives::Derives;
 use crate::url_finder::UrlFinder;
-use crate::utils::write_to_file;
+use crate::utils::{append_to_file, write_to_file};
 
 pub struct CodeGen {
     pub components: Components,
@@ -36,51 +32,10 @@ impl CodeGen {
         Ok(Self { components, spec, url_finder, overrides })
     }
 
-    fn write_crate(&self, krate: Crate, crate_deps: &IndexSet<Crate>) -> anyhow::Result<()> {
-        if krate == Crate::Types {
-            if !crate_deps.is_empty() {
-                return Err(anyhow!("Types crate should not have dependencies, but has dependencies {crate_deps:#?}!"));
-            }
-            self.write_generated_for_types_crate()?;
-            return Ok(());
-        }
-
-        let base_path = PathBuf::from(krate.generated_out_path());
-
-        let toml = write_crate_toml(krate, crate_deps);
-        write_to_file(toml, base_path.join("Cargo.toml"))?;
-
-        let crate_name = krate.name();
-
-        // We set up 2 things in the base `lib.rs` file:
-        // 1. Without this recursion limit increase, `cargo doc` fails
-        // 2. The `extern` allows generated code to use absolute paths starting with the crate name instead of `crate`
-        let mut mod_rs = formatdoc! {
-            r#"
-            #![recursion_limit = "256"]
-            extern crate self as {crate_name};
-            "#
-        };
-
-        let modules = self
-            .components
-            .get_crate_members(krate)
-            .iter()
-            .filter(|m| !self.components.paths_in_types.contains(*m));
-        self.write_crate_modules(modules, &base_path.join("src"), &mut mod_rs)?;
-        write_to_file(mod_rs, base_path.join("src/lib.rs"))?;
-
-        Ok(())
-    }
-
     fn write_generated_for_types_crate(&self) -> anyhow::Result<()> {
         let base_path = PathBuf::from(Crate::Types.generated_out_path());
         let mut mod_rs_contents = String::new();
-
-        let modules = self.components.get_crate_members(Crate::Types);
-        self.write_crate_modules(modules, &base_path, &mut mod_rs_contents)?;
-        let extra_types = self.components.paths_in_types.iter();
-        self.write_crate_modules(extra_types, &base_path, &mut mod_rs_contents)?;
+        let mod_rs_path = base_path.join("mod.rs");
 
         for (obj, meta) in &self.overrides.overrides {
             let mut out = String::new();
@@ -97,58 +52,61 @@ impl CodeGen {
                 meta.mod_path, meta.ident
             );
         }
-        let version = format!(
+
+        // Write the current API version
+        let version_file_content = format!(
             "pub const VERSION: crate::ApiVersion = crate::ApiVersion::V{};",
             self.spec.version().replace('-', "_")
         );
-        write_to_file(version, base_path.join("version.rs"))?;
+        write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
 
+        // Write the ids that must be generated in `stripe_types` itself.
         let mut ids_content = String::new();
         for id_path in IDS_IN_STRIPE.iter() {
             write_object_id(&mut ids_content, id_path);
         }
         write_to_file(ids_content, base_path.join("ids.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod ids; pub use ids::*;");
-        write_to_file(mod_rs_contents, base_path.join("mod.rs"))?;
+
+        append_to_file(mod_rs_contents, mod_rs_path)?;
         Ok(())
     }
 
-    fn write_crate_modules<'a, I: IntoIterator<Item = &'a ModuleName>>(
-        &self,
-        modules: I,
-        crate_path: &Path,
-        mod_rs_contents: &mut String,
-    ) -> anyhow::Result<()> {
-        for module_name in modules {
-            let module = self.components.get_module(module_name);
+    fn write_modules(&self) -> anyhow::Result<()> {
+        for module in self.components.modules.values() {
+            let krate = module.krate_for_types();
+            let crate_path = PathBuf::from(krate.generate_to());
+
+            let requests_crate = module.krate_unwrapped();
+            let requests_path = PathBuf::from(requests_crate.generate_to());
             match module {
-                Module::Package { name, members } => {
-                    let _ = write!(mod_rs_contents, "pub mod {name};");
-                    let base_path = crate_path.join(name);
-                    let mut package_mod_rs = String::new();
+                Module::Package { name, members, .. } => {
+                    append_to_file(format!("pub mod {name};"), crate_path.join("mod.rs"))?;
+                    let package_mod_path = crate_path.join(name);
                     for inner_path in members {
                         let obj = self.components.get(inner_path);
-                        self.write_component(obj, base_path.join(obj.mod_path()))?;
-                        let _ = write!(
-                            package_mod_rs,
-                            "pub mod {0};pub use {0}::{1};",
-                            obj.mod_path(),
-                            obj.ident()
-                        );
+                        self.write_component(obj, &package_mod_path)?;
+                        if !obj.requests.is_empty() {
+                            let req_path = requests_path.join(name).join(obj.mod_path());
+                            self.write_component_requests(obj, &req_path)?;
+                        }
                     }
-                    write_to_file(package_mod_rs, base_path.join("mod.rs"))?;
                 }
-                Module::Component { path } => {
+                Module::Component { path, .. } => {
                     let obj = self.components.get(path);
-                    let mod_path = crate_path.join(obj.mod_path());
-                    let _ = write!(
-                        mod_rs_contents,
-                        "pub mod {0};pub use {0}::{1};",
-                        obj.mod_path(),
-                        obj.ident()
-                    );
-                    self.write_component(obj, mod_path)?;
+                    self.write_component(obj, &crate_path)?;
+
+                    if !obj.requests.is_empty() {
+                        let obj_mod_path = obj.mod_path();
+                        self.write_component_requests(obj, &requests_path.join(&obj_mod_path))?;
+                        if krate != requests_crate {
+                            append_to_file(
+                                format!("pub mod {obj_mod_path};"),
+                                requests_path.join("mod.rs"),
+                            )?;
+                        }
+                    }
                 }
             }
         }
@@ -156,56 +114,90 @@ impl CodeGen {
     }
 
     pub fn write_files(&self) -> anyhow::Result<()> {
+        self.write_crate_base()?;
+        self.write_modules()
+    }
+
+    fn write_crate_base(&self) -> anyhow::Result<()> {
         let crate_graph = self.components.gen_crate_dep_graph();
 
         for krate in Crate::all() {
             let neighbors = crate_graph.neighbors(*krate);
-            self.write_crate(*krate, &neighbors.collect())?;
+            if *krate == Crate::Types {
+                self.write_generated_for_types_crate()?;
+            } else {
+                let base_path = PathBuf::from(krate.generated_out_path());
+
+                let toml = gen_crate_toml(*krate, neighbors.collect());
+                write_to_file(toml, base_path.join("Cargo.toml"))?;
+
+                let crate_name = krate.name();
+
+                // We set up 2 things in the base `mos.rs` file:
+                // 1. Without this recursion limit increase, `cargo doc` fails
+                // 2. The `extern` allows generated code to use absolute paths starting with the crate name instead of `crate`
+                let mod_rs = formatdoc! {
+                    r#"
+            #![recursion_limit = "256"]
+            extern crate self as {crate_name};
+            "#
+                };
+
+                let mod_path = base_path.join("src/mod.rs");
+                write_to_file(mod_rs, &mod_path)?;
+            }
         }
         Ok(())
     }
 
-    fn write_component(&self, comp: &StripeObject, module_path: PathBuf) -> anyhow::Result<()> {
+    fn write_component_requests(
+        &self,
+        comp: &StripeObject,
+        module_path: &Path,
+    ) -> anyhow::Result<()> {
+        let req_content = gen_requests(&comp.requests, &self.components);
+        write_to_file(req_content, module_path.join("requests.rs"))?;
+        append_to_file("pub mod requests;", module_path.join("mod.rs"))
+    }
+
+    fn gen_struct_definitions_for_component(&self, comp: &StripeObject) -> String {
         let base_obj = comp.rust_obj();
         let doc_url = self.url_finder.url_for_object(comp.path());
         let schema = self.spec.get_component_schema(comp.path());
         let doc_comment = infer_doc_comment(schema, doc_url.as_deref());
         let meta = ObjectMetadata::new(comp.ident().clone()).doc(doc_comment);
 
-        let mut main_content = write_obj(base_obj, &meta, comp, &self.components);
-        let has_requests = !comp.requests.is_empty();
-        let children: Vec<_> =
-            comp.inner_classes().iter().map(|c| self.components.get(c)).collect();
+        gen_obj(base_obj, &meta, comp, &self.components)
+    }
+
+    fn write_component(&self, comp: &StripeObject, base_path: &Path) -> anyhow::Result<()> {
+        let module_path = base_path.join(comp.mod_path());
+        let obj_module_path = module_path.join("mod.rs");
+        let parent_mod_path = base_path.join("mod.rs");
+
+        write_to_file(self.gen_struct_definitions_for_component(comp), &obj_module_path)?;
+
+        append_to_file(
+            format!("pub mod {0};pub use {0}::{1};", comp.mod_path(), comp.ident()),
+            &parent_mod_path,
+        )?;
 
         let deleted_component_path = format!("deleted_{}", comp.path());
         let deleted_comp = self.components.maybe_get(&deleted_component_path);
 
-        // If we have no requests or children, just write a simple file, see e.g. `address.rs`
-        // instead of writing a whole `address` module with just the one struct
-        if !has_requests && children.is_empty() && deleted_comp.is_none() {
-            write_to_file(main_content, format!("{}.rs", module_path.display()))?;
-            return Ok(());
-        }
-
-        // if has_requests {
-        //     let req_content = write_requests(&comp.requests, comp, &self.components);
-        //     write_to_file(req_content, module_path.join("requests.rs"))?;
-        //     let _ = writeln!(main_content, "pub mod requests;");
-        // }
-
-        for component in &children {
-            self.write_component(component, module_path.join(component.mod_path()))?;
+        for inner_comp in comp.inner_classes() {
+            let obj = self.components.get(inner_comp);
+            self.write_component(obj, &module_path)?;
         }
 
         if let Some(deleted) = deleted_comp {
-            let path = module_path.join("deleted");
-            self.write_component(deleted, path)?;
-            let _ = writeln!(main_content, "pub mod deleted;pub use deleted::{};", deleted.ident());
+            let content = self.gen_struct_definitions_for_component(deleted);
+            write_to_file(content, module_path.join("deleted.rs"))?;
+            append_to_file(
+                format!("pub mod deleted;pub use deleted::{};", deleted.ident()),
+                obj_module_path,
+            )?;
         }
-
-        for c in children {
-            let _ = write!(main_content, "pub mod {0};pub use {0}::{1};", c.mod_path(), c.ident());
-        }
-        write_to_file(main_content, module_path.join("mod.rs"))
+        Ok(())
     }
 }

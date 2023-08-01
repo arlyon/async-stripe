@@ -29,10 +29,11 @@ pub enum IdNumberIdNumberType {
 
 impl IdNumberIdNumberType {
     pub fn as_str(self) -> &'static str {
+        use IdNumberIdNumberType::*;
         match self {
-            Self::BrCpf => "br_cpf",
-            Self::SgNric => "sg_nric",
-            Self::UsSsn => "us_ssn",
+            BrCpf => "br_cpf",
+            SgNric => "sg_nric",
+            UsSsn => "us_ssn",
         }
     }
 }
@@ -40,11 +41,11 @@ impl IdNumberIdNumberType {
 impl std::str::FromStr for IdNumberIdNumberType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use IdNumberIdNumberType::*;
         match s {
-            "br_cpf" => Ok(Self::BrCpf),
-            "sg_nric" => Ok(Self::SgNric),
-            "us_ssn" => Ok(Self::UsSsn),
-
+            "br_cpf" => Ok(BrCpf),
+            "sg_nric" => Ok(SgNric),
+            "us_ssn" => Ok(UsSsn),
             _ => Err(()),
         }
     }
@@ -72,8 +73,8 @@ impl serde::Serialize for IdNumberIdNumberType {
 impl<'de> serde::Deserialize<'de> for IdNumberIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IdNumberIdNumberType"))
     }
 }
@@ -86,9 +87,10 @@ pub enum IdNumberStatus {
 
 impl IdNumberStatus {
     pub fn as_str(self) -> &'static str {
+        use IdNumberStatus::*;
         match self {
-            Self::Unverified => "unverified",
-            Self::Verified => "verified",
+            Unverified => "unverified",
+            Verified => "verified",
         }
     }
 }
@@ -96,10 +98,10 @@ impl IdNumberStatus {
 impl std::str::FromStr for IdNumberStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use IdNumberStatus::*;
         match s {
-            "unverified" => Ok(Self::Unverified),
-            "verified" => Ok(Self::Verified),
-
+            "unverified" => Ok(Unverified),
+            "verified" => Ok(Verified),
             _ => Err(()),
         }
     }
@@ -127,8 +129,8 @@ impl serde::Serialize for IdNumberStatus {
 impl<'de> serde::Deserialize<'de> for IdNumberStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IdNumberStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IdNumberStatus"))
     }
 }
 pub mod date_of_birth;

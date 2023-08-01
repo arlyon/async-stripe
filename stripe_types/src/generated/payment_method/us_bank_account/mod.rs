@@ -21,6 +21,10 @@ pub struct UsBankAccount {
     pub networks: Option<stripe_types::payment_method::us_bank_account::networks::Networks>,
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
+    /// Contains information about the future reusability of this PaymentMethod.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status_details:
+        Option<stripe_types::payment_method::us_bank_account::status_details::StatusDetails>,
 }
 /// Account holder type: individual or company.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -31,9 +35,10 @@ pub enum UsBankAccountAccountHolderType {
 
 impl UsBankAccountAccountHolderType {
     pub fn as_str(self) -> &'static str {
+        use UsBankAccountAccountHolderType::*;
         match self {
-            Self::Company => "company",
-            Self::Individual => "individual",
+            Company => "company",
+            Individual => "individual",
         }
     }
 }
@@ -41,10 +46,10 @@ impl UsBankAccountAccountHolderType {
 impl std::str::FromStr for UsBankAccountAccountHolderType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsBankAccountAccountHolderType::*;
         match s {
-            "company" => Ok(Self::Company),
-            "individual" => Ok(Self::Individual),
-
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
             _ => Err(()),
         }
     }
@@ -72,8 +77,8 @@ impl serde::Serialize for UsBankAccountAccountHolderType {
 impl<'de> serde::Deserialize<'de> for UsBankAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountAccountHolderType")
         })
     }
@@ -89,9 +94,10 @@ pub enum UsBankAccountAccountType {
 
 impl UsBankAccountAccountType {
     pub fn as_str(self) -> &'static str {
+        use UsBankAccountAccountType::*;
         match self {
-            Self::Checking => "checking",
-            Self::Savings => "savings",
+            Checking => "checking",
+            Savings => "savings",
         }
     }
 }
@@ -99,10 +105,10 @@ impl UsBankAccountAccountType {
 impl std::str::FromStr for UsBankAccountAccountType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsBankAccountAccountType::*;
         match s {
-            "checking" => Ok(Self::Checking),
-            "savings" => Ok(Self::Savings),
-
+            "checking" => Ok(Checking),
+            "savings" => Ok(Savings),
             _ => Err(()),
         }
     }
@@ -130,10 +136,12 @@ impl serde::Serialize for UsBankAccountAccountType {
 impl<'de> serde::Deserialize<'de> for UsBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for UsBankAccountAccountType"))
     }
 }
+pub mod status_details;
+pub use status_details::StatusDetails;
 pub mod networks;
 pub use networks::Networks;

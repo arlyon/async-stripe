@@ -55,8 +55,9 @@ pub struct Price {
     pub product: stripe_types::Expandable<stripe_types::product::Product>,
     /// The recurring components of a price such as `interval` and `usage_type`.
     pub recurring: Option<stripe_types::price::recurring::Recurring>,
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     pub tax_behavior: Option<PriceTaxBehavior>,
@@ -100,9 +101,10 @@ pub enum PriceBillingScheme {
 
 impl PriceBillingScheme {
     pub fn as_str(self) -> &'static str {
+        use PriceBillingScheme::*;
         match self {
-            Self::PerUnit => "per_unit",
-            Self::Tiered => "tiered",
+            PerUnit => "per_unit",
+            Tiered => "tiered",
         }
     }
 }
@@ -110,10 +112,10 @@ impl PriceBillingScheme {
 impl std::str::FromStr for PriceBillingScheme {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PriceBillingScheme::*;
         match s {
-            "per_unit" => Ok(Self::PerUnit),
-            "tiered" => Ok(Self::Tiered),
-
+            "per_unit" => Ok(PerUnit),
+            "tiered" => Ok(Tiered),
             _ => Err(()),
         }
     }
@@ -141,8 +143,8 @@ impl serde::Serialize for PriceBillingScheme {
 impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
     }
 }
@@ -156,8 +158,9 @@ pub enum PriceObject {
 
 impl PriceObject {
     pub fn as_str(self) -> &'static str {
+        use PriceObject::*;
         match self {
-            Self::Price => "price",
+            Price => "price",
         }
     }
 }
@@ -165,9 +168,9 @@ impl PriceObject {
 impl std::str::FromStr for PriceObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PriceObject::*;
         match s {
-            "price" => Ok(Self::Price),
-
+            "price" => Ok(Price),
             _ => Err(()),
         }
     }
@@ -195,12 +198,13 @@ impl serde::Serialize for PriceObject {
 impl<'de> serde::Deserialize<'de> for PriceObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceObject"))
     }
 }
-/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 ///
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -212,10 +216,11 @@ pub enum PriceTaxBehavior {
 
 impl PriceTaxBehavior {
     pub fn as_str(self) -> &'static str {
+        use PriceTaxBehavior::*;
         match self {
-            Self::Exclusive => "exclusive",
-            Self::Inclusive => "inclusive",
-            Self::Unspecified => "unspecified",
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
         }
     }
 }
@@ -223,11 +228,11 @@ impl PriceTaxBehavior {
 impl std::str::FromStr for PriceTaxBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PriceTaxBehavior::*;
         match s {
-            "exclusive" => Ok(Self::Exclusive),
-            "inclusive" => Ok(Self::Inclusive),
-            "unspecified" => Ok(Self::Unspecified),
-
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
             _ => Err(()),
         }
     }
@@ -255,8 +260,8 @@ impl serde::Serialize for PriceTaxBehavior {
 impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
     }
 }
@@ -272,9 +277,10 @@ pub enum PriceTiersMode {
 
 impl PriceTiersMode {
     pub fn as_str(self) -> &'static str {
+        use PriceTiersMode::*;
         match self {
-            Self::Graduated => "graduated",
-            Self::Volume => "volume",
+            Graduated => "graduated",
+            Volume => "volume",
         }
     }
 }
@@ -282,10 +288,10 @@ impl PriceTiersMode {
 impl std::str::FromStr for PriceTiersMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PriceTiersMode::*;
         match s {
-            "graduated" => Ok(Self::Graduated),
-            "volume" => Ok(Self::Volume),
-
+            "graduated" => Ok(Graduated),
+            "volume" => Ok(Volume),
             _ => Err(()),
         }
     }
@@ -313,8 +319,8 @@ impl serde::Serialize for PriceTiersMode {
 impl<'de> serde::Deserialize<'de> for PriceTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTiersMode"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTiersMode"))
     }
 }
 /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
@@ -326,9 +332,10 @@ pub enum PriceType {
 
 impl PriceType {
     pub fn as_str(self) -> &'static str {
+        use PriceType::*;
         match self {
-            Self::OneTime => "one_time",
-            Self::Recurring => "recurring",
+            OneTime => "one_time",
+            Recurring => "recurring",
         }
     }
 }
@@ -336,10 +343,10 @@ impl PriceType {
 impl std::str::FromStr for PriceType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PriceType::*;
         match s {
-            "one_time" => Ok(Self::OneTime),
-            "recurring" => Ok(Self::Recurring),
-
+            "one_time" => Ok(OneTime),
+            "recurring" => Ok(Recurring),
             _ => Err(()),
         }
     }
@@ -367,8 +374,8 @@ impl serde::Serialize for PriceType {
 impl<'de> serde::Deserialize<'de> for PriceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceType"))
     }
 }
 impl stripe_types::Object for Price {
@@ -378,8 +385,6 @@ impl stripe_types::Object for Price {
     }
 }
 stripe_types::def_id!(PriceId, "price_");
-pub mod deleted;
-pub use deleted::DeletedPrice;
 pub mod currency_option;
 pub use currency_option::CurrencyOption;
 pub mod custom_unit_amount;
@@ -390,3 +395,5 @@ pub mod recurring;
 pub use recurring::Recurring;
 pub mod transform_quantity;
 pub use transform_quantity::TransformQuantity;
+pub mod deleted;
+pub use deleted::DeletedPrice;

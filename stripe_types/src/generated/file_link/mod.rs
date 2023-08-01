@@ -39,8 +39,9 @@ pub enum FileLinkObject {
 
 impl FileLinkObject {
     pub fn as_str(self) -> &'static str {
+        use FileLinkObject::*;
         match self {
-            Self::FileLink => "file_link",
+            FileLink => "file_link",
         }
     }
 }
@@ -48,9 +49,9 @@ impl FileLinkObject {
 impl std::str::FromStr for FileLinkObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FileLinkObject::*;
         match s {
-            "file_link" => Ok(Self::FileLink),
-
+            "file_link" => Ok(FileLink),
             _ => Err(()),
         }
     }
@@ -78,8 +79,8 @@ impl serde::Serialize for FileLinkObject {
 impl<'de> serde::Deserialize<'de> for FileLinkObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FileLinkObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FileLinkObject"))
     }
 }
 impl stripe_types::Object for FileLink {

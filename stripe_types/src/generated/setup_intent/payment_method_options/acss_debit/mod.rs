@@ -18,9 +18,10 @@ pub enum AcssDebitCurrency {
 
 impl AcssDebitCurrency {
     pub fn as_str(self) -> &'static str {
+        use AcssDebitCurrency::*;
         match self {
-            Self::Cad => "cad",
-            Self::Usd => "usd",
+            Cad => "cad",
+            Usd => "usd",
         }
     }
 }
@@ -28,10 +29,10 @@ impl AcssDebitCurrency {
 impl std::str::FromStr for AcssDebitCurrency {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AcssDebitCurrency::*;
         match s {
-            "cad" => Ok(Self::Cad),
-            "usd" => Ok(Self::Usd),
-
+            "cad" => Ok(Cad),
+            "usd" => Ok(Usd),
             _ => Err(()),
         }
     }
@@ -59,8 +60,8 @@ impl serde::Serialize for AcssDebitCurrency {
 impl<'de> serde::Deserialize<'de> for AcssDebitCurrency {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitCurrency"))
     }
 }
@@ -74,10 +75,11 @@ pub enum AcssDebitVerificationMethod {
 
 impl AcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
+        use AcssDebitVerificationMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
+            Automatic => "automatic",
+            Instant => "instant",
+            Microdeposits => "microdeposits",
         }
     }
 }
@@ -85,11 +87,11 @@ impl AcssDebitVerificationMethod {
 impl std::str::FromStr for AcssDebitVerificationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AcssDebitVerificationMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
+            "automatic" => Ok(Automatic),
+            "instant" => Ok(Instant),
+            "microdeposits" => Ok(Microdeposits),
             _ => Err(()),
         }
     }
@@ -117,8 +119,8 @@ impl serde::Serialize for AcssDebitVerificationMethod {
 impl<'de> serde::Deserialize<'de> for AcssDebitVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AcssDebitVerificationMethod"))
     }
 }

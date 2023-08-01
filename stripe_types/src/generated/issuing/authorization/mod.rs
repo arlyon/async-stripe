@@ -1,7 +1,7 @@
 /// When an [issued card](https://stripe.com/docs/issuing) is used to make a purchase, an Issuing `Authorization`
 /// object is created.
 ///
-/// [Authorizations](https://stripe.com/docs/issuing/purchases/authorizations) must be approved for the purchase to be completed successfully.  Related guide: [Issued Card Authorizations](https://stripe.com/docs/issuing/purchases/authorizations).
+/// [Authorizations](https://stripe.com/docs/issuing/purchases/authorizations) must be approved for the purchase to be completed successfully.  Related guide: [Issued card authorizations](https://stripe.com/docs/issuing/purchases/authorizations).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Authorization {
     /// The total amount that was authorized or rejected.
@@ -58,10 +58,11 @@ pub struct Authorization {
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
     pub pending_request:
         Option<stripe_types::issuing::authorization::pending_request::PendingRequest>,
-    /// History of every time `pending_request` was approved/denied, either by you directly or by Stripe (e.g.
+    /// History of every time a `pending_request` authorization was approved/declined, either by you directly or by Stripe (e.g.
     ///
-    /// based on your `spending_controls`).
-    /// If the merchant changes the authorization by performing an [incremental authorization](https://stripe.com/docs/issuing/purchases/authorizations), you can look at this field to see the previous requests for the authorization.
+    /// based on your spending_controls).
+    /// If the merchant changes the authorization by performing an incremental authorization, you can look at this field to see the previous requests for the authorization.
+    /// This field can be helpful in determining why a given authorization was approved/declined.
     pub request_history: Vec<stripe_types::issuing::authorization::request_history::RequestHistory>,
     /// The current status of the authorization in its lifecycle.
     pub status: AuthorizationStatus,
@@ -72,9 +73,10 @@ pub struct Authorization {
     pub treasury: Option<stripe_types::issuing::authorization::treasury::Treasury>,
     pub verification_data:
         stripe_types::issuing::authorization::verification_data::VerificationData,
-    /// The digital wallet used for this authorization.
+    /// The digital wallet used for this transaction.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
+    /// Will populate as `null` when no digital wallet was utilized.
     pub wallet: Option<String>,
 }
 /// How the card details were provided.
@@ -89,12 +91,13 @@ pub enum AuthorizationAuthorizationMethod {
 
 impl AuthorizationAuthorizationMethod {
     pub fn as_str(self) -> &'static str {
+        use AuthorizationAuthorizationMethod::*;
         match self {
-            Self::Chip => "chip",
-            Self::Contactless => "contactless",
-            Self::KeyedIn => "keyed_in",
-            Self::Online => "online",
-            Self::Swipe => "swipe",
+            Chip => "chip",
+            Contactless => "contactless",
+            KeyedIn => "keyed_in",
+            Online => "online",
+            Swipe => "swipe",
         }
     }
 }
@@ -102,13 +105,13 @@ impl AuthorizationAuthorizationMethod {
 impl std::str::FromStr for AuthorizationAuthorizationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AuthorizationAuthorizationMethod::*;
         match s {
-            "chip" => Ok(Self::Chip),
-            "contactless" => Ok(Self::Contactless),
-            "keyed_in" => Ok(Self::KeyedIn),
-            "online" => Ok(Self::Online),
-            "swipe" => Ok(Self::Swipe),
-
+            "chip" => Ok(Chip),
+            "contactless" => Ok(Contactless),
+            "keyed_in" => Ok(KeyedIn),
+            "online" => Ok(Online),
+            "swipe" => Ok(Swipe),
             _ => Err(()),
         }
     }
@@ -136,8 +139,8 @@ impl serde::Serialize for AuthorizationAuthorizationMethod {
 impl<'de> serde::Deserialize<'de> for AuthorizationAuthorizationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AuthorizationAuthorizationMethod")
         })
     }
@@ -152,8 +155,9 @@ pub enum AuthorizationObject {
 
 impl AuthorizationObject {
     pub fn as_str(self) -> &'static str {
+        use AuthorizationObject::*;
         match self {
-            Self::IssuingAuthorization => "issuing.authorization",
+            IssuingAuthorization => "issuing.authorization",
         }
     }
 }
@@ -161,9 +165,9 @@ impl AuthorizationObject {
 impl std::str::FromStr for AuthorizationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AuthorizationObject::*;
         match s {
-            "issuing.authorization" => Ok(Self::IssuingAuthorization),
-
+            "issuing.authorization" => Ok(IssuingAuthorization),
             _ => Err(()),
         }
     }
@@ -191,8 +195,8 @@ impl serde::Serialize for AuthorizationObject {
 impl<'de> serde::Deserialize<'de> for AuthorizationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationObject"))
     }
 }
@@ -206,10 +210,11 @@ pub enum AuthorizationStatus {
 
 impl AuthorizationStatus {
     pub fn as_str(self) -> &'static str {
+        use AuthorizationStatus::*;
         match self {
-            Self::Closed => "closed",
-            Self::Pending => "pending",
-            Self::Reversed => "reversed",
+            Closed => "closed",
+            Pending => "pending",
+            Reversed => "reversed",
         }
     }
 }
@@ -217,11 +222,11 @@ impl AuthorizationStatus {
 impl std::str::FromStr for AuthorizationStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AuthorizationStatus::*;
         match s {
-            "closed" => Ok(Self::Closed),
-            "pending" => Ok(Self::Pending),
-            "reversed" => Ok(Self::Reversed),
-
+            "closed" => Ok(Closed),
+            "pending" => Ok(Pending),
+            "reversed" => Ok(Reversed),
             _ => Err(()),
         }
     }
@@ -249,8 +254,8 @@ impl serde::Serialize for AuthorizationStatus {
 impl<'de> serde::Deserialize<'de> for AuthorizationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AuthorizationStatus"))
     }
 }

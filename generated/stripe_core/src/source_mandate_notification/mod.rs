@@ -55,8 +55,9 @@ pub enum SourceMandateNotificationObject {
 
 impl SourceMandateNotificationObject {
     pub fn as_str(self) -> &'static str {
+        use SourceMandateNotificationObject::*;
         match self {
-            Self::SourceMandateNotification => "source_mandate_notification",
+            SourceMandateNotification => "source_mandate_notification",
         }
     }
 }
@@ -64,9 +65,9 @@ impl SourceMandateNotificationObject {
 impl std::str::FromStr for SourceMandateNotificationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SourceMandateNotificationObject::*;
         match s {
-            "source_mandate_notification" => Ok(Self::SourceMandateNotification),
-
+            "source_mandate_notification" => Ok(SourceMandateNotification),
             _ => Err(()),
         }
     }
@@ -94,8 +95,8 @@ impl serde::Serialize for SourceMandateNotificationObject {
 impl<'de> serde::Deserialize<'de> for SourceMandateNotificationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SourceMandateNotificationObject")
         })
     }

@@ -11,7 +11,11 @@ pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<stripe_types::mandate::payment_method_details::card::Card>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<stripe_types::mandate::payment_method_details::cashapp::Cashapp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<stripe_types::mandate::payment_method_details::link::Link>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::mandate::paypal::Paypal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<stripe_types::mandate::payment_method_details::sepa_debit::SepaDebit>,
     /// The type of the payment method associated with this mandate.
@@ -30,6 +34,8 @@ pub mod acss_debit;
 pub use acss_debit::AcssDebit;
 pub mod blik;
 pub use blik::Blik;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod link;
 pub use link::Link;
 pub mod sepa_debit;

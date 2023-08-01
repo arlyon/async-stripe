@@ -1,7 +1,5 @@
 use std::fmt::{Debug, Write};
 
-use indoc::formatdoc;
-
 use crate::components::Components;
 use crate::dedup::deduplicate_types;
 use crate::ids::{write_object_id, IDS_IN_STRIPE};
@@ -112,7 +110,7 @@ impl Components {
     }
 }
 
-pub fn write_obj(
+pub fn gen_obj(
     obj: &RustObject,
     meta: &ObjectMetadata,
     comp: &StripeObject,
@@ -156,12 +154,8 @@ pub fn write_obj(
     out
 }
 
-pub fn write_requests(
-    specs: &[RequestSpec],
-    component: &StripeObject,
-    components: &Components,
-) -> String {
-    let mut req_bodies = String::with_capacity(128);
+pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
+    let mut out = String::with_capacity(128);
     let mut specs = Vec::from(specs);
     let mut req_typs = vec![];
     for spec in &mut specs {
@@ -189,19 +183,9 @@ pub fn write_requests(
             returned: components.construct_printable_type(&req.returned),
             method_type: req.method_type,
         };
-        printable.gen_code(&mut req_bodies);
+        printable.gen_code(&mut out);
     }
 
-    let impl_for_typ = RustType::component_path(component.path().clone());
-    let impl_for = components.construct_printable_type(&impl_for_typ);
-
-    let mut out = formatdoc! {
-        r#"
-        impl {impl_for} {{
-            {req_bodies} 
-        }}
-        "#
-    };
     let params_gen_info = ObjectGenInfo::new(Derives::new().serialize(true)).include_constructor();
 
     for req in &specs {

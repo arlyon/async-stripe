@@ -1,0 +1,15 @@
+[package]
+name = "async-stripe-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+serde_json = "1"
+chrono = "0.4.26"
+stripe_types = {path = "../stripe_types"}
+async-stripe = {path = "../async-stripe", features = ["runtime-blocking"]}
+stripe_connect = {path = "../generated/stripe_connect", features = ["runtime-blocking"]}
+stripe_billing = {path = "../generated/stripe_billing", features = ["runtime-blocking"]}
+stripe_core = {path = "../generated/stripe_core", features = ["runtime-blocking"]}
+stripe_checkout = {path = "../generated/stripe_checkout", features = ["runtime-blocking"]}

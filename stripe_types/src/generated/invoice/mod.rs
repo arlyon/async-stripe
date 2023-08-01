@@ -11,7 +11,7 @@
 /// Stripe waits until one hour after the last webhook was successfully sent (or the last webhook timed out after failing).
 /// If you (and the platforms you may have connected to) have no webhooks configured, Stripe waits one hour after creation to finalize the invoice.  If your invoice is configured to be billed by sending an email, then based on your [email settings](https://dashboard.stripe.com/account/billing/automatic), Stripe will email the invoice to your customer and await payment.
 /// These emails can contain a link to a hosted page to pay the invoice.  Stripe applies any customer credit on the account before determining the amount due for the invoice (i.e., the amount that will be actually charged).
-/// If the amount due for the invoice is less than Stripe's [minimum allowed charge per currency](/docs/currencies#minimum-and-maximum-charge-amounts), the invoice is automatically marked paid, and we add the amount due to the customer's credit balance which is applied to the next invoice.  More details on the customer's credit balance are [here](https://stripe.com/docs/billing/customer/balance).  Related guide: [Send Invoices to Customers](https://stripe.com/docs/billing/invoices/sending).
+/// If the amount due for the invoice is less than Stripe's [minimum allowed charge per currency](/docs/currencies#minimum-and-maximum-charge-amounts), the invoice is automatically marked paid, and we add the amount due to the customer's credit balance which is applied to the next invoice.  More details on the customer's credit balance are [here](https://stripe.com/docs/billing/customer/balance).  Related guide: [Send invoices to customers](https://stripe.com/docs/billing/invoices/sending).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Invoice {
     /// The country of the business associated with this invoice, most often the business creating the invoice.
@@ -32,6 +32,8 @@ pub struct Invoice {
     pub amount_paid: i64,
     /// The difference between amount_due and amount_paid, in %s.
     pub amount_remaining: i64,
+    /// This is the sum of all the shipping amounts.
+    pub amount_shipping: i64,
     /// ID of the Connect Application that created the invoice.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
     /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
@@ -183,7 +185,7 @@ pub struct Invoice {
     pub latest_revision: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
     /// The individual line items that make up the invoice.
     ///
-    /// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
+    /// `lines` is sorted as follows: (1) pending invoice items (including prorations) in reverse chronological order, (2) subscription items in reverse chronological order, and (3) invoice items added after invoice creation in chronological order.
     pub lines: stripe_types::List<stripe_types::invoice_line_item::InvoiceLineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -235,6 +237,12 @@ pub struct Invoice {
     pub receipt_number: Option<String>,
     /// Options for invoice PDF rendering.
     pub rendering_options: Option<stripe_types::invoice::rendering_options::RenderingOptions>,
+    /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
+    pub shipping_cost: Option<stripe_types::invoice::shipping_cost::ShippingCost>,
+    /// Shipping details for the invoice.
+    ///
+    /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
+    pub shipping_details: Option<stripe_types::shipping_details::ShippingDetails>,
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
@@ -311,16 +319,17 @@ pub enum InvoiceBillingReason {
 
 impl InvoiceBillingReason {
     pub fn as_str(self) -> &'static str {
+        use InvoiceBillingReason::*;
         match self {
-            Self::AutomaticPendingInvoiceItemInvoice => "automatic_pending_invoice_item_invoice",
-            Self::Manual => "manual",
-            Self::QuoteAccept => "quote_accept",
-            Self::Subscription => "subscription",
-            Self::SubscriptionCreate => "subscription_create",
-            Self::SubscriptionCycle => "subscription_cycle",
-            Self::SubscriptionThreshold => "subscription_threshold",
-            Self::SubscriptionUpdate => "subscription_update",
-            Self::Upcoming => "upcoming",
+            AutomaticPendingInvoiceItemInvoice => "automatic_pending_invoice_item_invoice",
+            Manual => "manual",
+            QuoteAccept => "quote_accept",
+            Subscription => "subscription",
+            SubscriptionCreate => "subscription_create",
+            SubscriptionCycle => "subscription_cycle",
+            SubscriptionThreshold => "subscription_threshold",
+            SubscriptionUpdate => "subscription_update",
+            Upcoming => "upcoming",
         }
     }
 }
@@ -328,19 +337,17 @@ impl InvoiceBillingReason {
 impl std::str::FromStr for InvoiceBillingReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceBillingReason::*;
         match s {
-            "automatic_pending_invoice_item_invoice" => {
-                Ok(Self::AutomaticPendingInvoiceItemInvoice)
-            }
-            "manual" => Ok(Self::Manual),
-            "quote_accept" => Ok(Self::QuoteAccept),
-            "subscription" => Ok(Self::Subscription),
-            "subscription_create" => Ok(Self::SubscriptionCreate),
-            "subscription_cycle" => Ok(Self::SubscriptionCycle),
-            "subscription_threshold" => Ok(Self::SubscriptionThreshold),
-            "subscription_update" => Ok(Self::SubscriptionUpdate),
-            "upcoming" => Ok(Self::Upcoming),
-
+            "automatic_pending_invoice_item_invoice" => Ok(AutomaticPendingInvoiceItemInvoice),
+            "manual" => Ok(Manual),
+            "quote_accept" => Ok(QuoteAccept),
+            "subscription" => Ok(Subscription),
+            "subscription_create" => Ok(SubscriptionCreate),
+            "subscription_cycle" => Ok(SubscriptionCycle),
+            "subscription_threshold" => Ok(SubscriptionThreshold),
+            "subscription_update" => Ok(SubscriptionUpdate),
+            "upcoming" => Ok(Upcoming),
             _ => Err(()),
         }
     }
@@ -368,8 +375,8 @@ impl serde::Serialize for InvoiceBillingReason {
 impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
     }
 }
@@ -385,9 +392,10 @@ pub enum InvoiceCollectionMethod {
 
 impl InvoiceCollectionMethod {
     pub fn as_str(self) -> &'static str {
+        use InvoiceCollectionMethod::*;
         match self {
-            Self::ChargeAutomatically => "charge_automatically",
-            Self::SendInvoice => "send_invoice",
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
         }
     }
 }
@@ -395,10 +403,10 @@ impl InvoiceCollectionMethod {
 impl std::str::FromStr for InvoiceCollectionMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceCollectionMethod::*;
         match s {
-            "charge_automatically" => Ok(Self::ChargeAutomatically),
-            "send_invoice" => Ok(Self::SendInvoice),
-
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
             _ => Err(()),
         }
     }
@@ -426,8 +434,8 @@ impl serde::Serialize for InvoiceCollectionMethod {
 impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
     }
 }
@@ -444,10 +452,11 @@ pub enum InvoiceCustomerTaxExempt {
 
 impl InvoiceCustomerTaxExempt {
     pub fn as_str(self) -> &'static str {
+        use InvoiceCustomerTaxExempt::*;
         match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
+            Exempt => "exempt",
+            None => "none",
+            Reverse => "reverse",
         }
     }
 }
@@ -455,11 +464,11 @@ impl InvoiceCustomerTaxExempt {
 impl std::str::FromStr for InvoiceCustomerTaxExempt {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceCustomerTaxExempt::*;
         match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
+            "exempt" => Ok(Exempt),
+            "none" => Ok(None),
+            "reverse" => Ok(Reverse),
             _ => Err(()),
         }
     }
@@ -487,8 +496,8 @@ impl serde::Serialize for InvoiceCustomerTaxExempt {
 impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
     }
 }
@@ -502,8 +511,9 @@ pub enum InvoiceObject {
 
 impl InvoiceObject {
     pub fn as_str(self) -> &'static str {
+        use InvoiceObject::*;
         match self {
-            Self::Invoice => "invoice",
+            Invoice => "invoice",
         }
     }
 }
@@ -511,9 +521,9 @@ impl InvoiceObject {
 impl std::str::FromStr for InvoiceObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceObject::*;
         match s {
-            "invoice" => Ok(Self::Invoice),
-
+            "invoice" => Ok(Invoice),
             _ => Err(()),
         }
     }
@@ -541,8 +551,8 @@ impl serde::Serialize for InvoiceObject {
 impl<'de> serde::Deserialize<'de> for InvoiceObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceObject"))
     }
 }
 /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
@@ -550,7 +560,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceObject {
 /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum InvoiceStatus {
-    Deleted,
     Draft,
     Open,
     Paid,
@@ -560,13 +569,13 @@ pub enum InvoiceStatus {
 
 impl InvoiceStatus {
     pub fn as_str(self) -> &'static str {
+        use InvoiceStatus::*;
         match self {
-            Self::Deleted => "deleted",
-            Self::Draft => "draft",
-            Self::Open => "open",
-            Self::Paid => "paid",
-            Self::Uncollectible => "uncollectible",
-            Self::Void => "void",
+            Draft => "draft",
+            Open => "open",
+            Paid => "paid",
+            Uncollectible => "uncollectible",
+            Void => "void",
         }
     }
 }
@@ -574,14 +583,13 @@ impl InvoiceStatus {
 impl std::str::FromStr for InvoiceStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceStatus::*;
         match s {
-            "deleted" => Ok(Self::Deleted),
-            "draft" => Ok(Self::Draft),
-            "open" => Ok(Self::Open),
-            "paid" => Ok(Self::Paid),
-            "uncollectible" => Ok(Self::Uncollectible),
-            "void" => Ok(Self::Void),
-
+            "draft" => Ok(Draft),
+            "open" => Ok(Open),
+            "paid" => Ok(Paid),
+            "uncollectible" => Ok(Uncollectible),
+            "void" => Ok(Void),
             _ => Err(()),
         }
     }
@@ -609,8 +617,8 @@ impl serde::Serialize for InvoiceStatus {
 impl<'de> serde::Deserialize<'de> for InvoiceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
     }
 }
 impl stripe_types::Object for Invoice {
@@ -620,8 +628,6 @@ impl stripe_types::Object for Invoice {
     }
 }
 stripe_types::def_id!(InvoiceId, "in_");
-pub mod deleted;
-pub use deleted::DeletedInvoice;
 pub mod automatic_tax;
 pub use automatic_tax::AutomaticTax;
 pub mod threshold_item_reason;
@@ -644,5 +650,9 @@ pub mod payment_settings;
 pub use payment_settings::PaymentSettings;
 pub mod customer_tax_id;
 pub use customer_tax_id::CustomerTaxId;
+pub mod shipping_cost;
+pub use shipping_cost::ShippingCost;
 pub mod status_transitions;
 pub use status_transitions::StatusTransitions;
+pub mod deleted;
+pub use deleted::DeletedInvoice;

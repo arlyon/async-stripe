@@ -7,6 +7,8 @@ pub boleto_display_details: Option<stripe_types::payment_intent::next_action_dis
 #[serde(skip_serializing_if = "Option::is_none")]
 pub card_await_notification: Option<stripe_types::payment_intent::next_action_card_await_notification::NextActionCardAwaitNotification>,
 #[serde(skip_serializing_if = "Option::is_none")]
+pub cashapp_handle_redirect_or_display_qr_code: Option<stripe_types::payment_intent::next_action::cashapp_handle_redirect_or_display_qr_code::CashappHandleRedirectOrDisplayQrCode>,
+#[serde(skip_serializing_if = "Option::is_none")]
 pub display_bank_transfer_instructions: Option<stripe_types::payment_intent::next_action_display_bank_transfer_instructions::NextActionDisplayBankTransferInstructions>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub konbini_display_details: Option<stripe_types::payment_intent::next_action_konbini_display_details::NextActionKonbiniDisplayDetails>,
@@ -43,6 +45,10 @@ pub wechat_pay_redirect_to_ios_app: Option<stripe_types::payment_intent::next_ac
 /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct NextActionUseStripeSdk {}
+pub mod cashapp_handle_redirect_or_display_qr_code;
+pub use cashapp_handle_redirect_or_display_qr_code::CashappHandleRedirectOrDisplayQrCode;
+pub mod cashapp_qr_code;
+pub use cashapp_qr_code::CashappQrCode;
 pub mod paynow_display_qr_code;
 pub use paynow_display_qr_code::PaynowDisplayQrCode;
 pub mod pix_display_qr_code;

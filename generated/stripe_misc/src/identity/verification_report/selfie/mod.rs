@@ -23,9 +23,10 @@ pub enum SelfieStatus {
 
 impl SelfieStatus {
     pub fn as_str(self) -> &'static str {
+        use SelfieStatus::*;
         match self {
-            Self::Unverified => "unverified",
-            Self::Verified => "verified",
+            Unverified => "unverified",
+            Verified => "verified",
         }
     }
 }
@@ -33,10 +34,10 @@ impl SelfieStatus {
 impl std::str::FromStr for SelfieStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SelfieStatus::*;
         match s {
-            "unverified" => Ok(Self::Unverified),
-            "verified" => Ok(Self::Verified),
-
+            "unverified" => Ok(Unverified),
+            "verified" => Ok(Verified),
             _ => Err(()),
         }
     }
@@ -64,8 +65,8 @@ impl serde::Serialize for SelfieStatus {
 impl<'de> serde::Deserialize<'de> for SelfieStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SelfieStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SelfieStatus"))
     }
 }
 pub mod selfie_check_error;

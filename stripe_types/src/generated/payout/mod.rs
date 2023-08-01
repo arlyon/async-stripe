@@ -3,7 +3,7 @@
 /// Stripe account](/docs/connect/bank-debit-card-payouts).
 ///
 /// You can retrieve individual payouts, as well as list all payouts.
-/// Payouts are made on [varying schedules](/docs/connect/manage-payout-schedule), depending on your country and industry.  Related guide: [Receiving Payouts](https://stripe.com/docs/payouts).
+/// Payouts are made on [varying schedules](/docs/connect/manage-payout-schedule), depending on your country and industry.  Related guide: [Receiving payouts](https://stripe.com/docs/payouts).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Payout {
     /// Amount (in %s) to be transferred to your bank account or debit card.
@@ -60,6 +60,8 @@ pub struct Payout {
     pub object: PayoutObject,
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<stripe_types::Expandable<stripe_types::payout::Payout>>,
+    /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+    pub reconciliation_status: PayoutReconciliationStatus,
     /// If the payout was reversed, this is the ID of the payout that reverses this payout.
     pub reversed_by: Option<stripe_types::Expandable<stripe_types::payout::Payout>>,
     /// The source balance this payout came from.
@@ -88,8 +90,9 @@ pub enum PayoutObject {
 
 impl PayoutObject {
     pub fn as_str(self) -> &'static str {
+        use PayoutObject::*;
         match self {
-            Self::Payout => "payout",
+            Payout => "payout",
         }
     }
 }
@@ -97,9 +100,9 @@ impl PayoutObject {
 impl std::str::FromStr for PayoutObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PayoutObject::*;
         match s {
-            "payout" => Ok(Self::Payout),
-
+            "payout" => Ok(Payout),
             _ => Err(()),
         }
     }
@@ -127,8 +130,67 @@ impl serde::Serialize for PayoutObject {
 impl<'de> serde::Deserialize<'de> for PayoutObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutObject"))
+    }
+}
+/// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum PayoutReconciliationStatus {
+    Completed,
+    InProgress,
+    NotApplicable,
+}
+
+impl PayoutReconciliationStatus {
+    pub fn as_str(self) -> &'static str {
+        use PayoutReconciliationStatus::*;
+        match self {
+            Completed => "completed",
+            InProgress => "in_progress",
+            NotApplicable => "not_applicable",
+        }
+    }
+}
+
+impl std::str::FromStr for PayoutReconciliationStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PayoutReconciliationStatus::*;
+        match s {
+            "completed" => Ok(Completed),
+            "in_progress" => Ok(InProgress),
+            "not_applicable" => Ok(NotApplicable),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PayoutReconciliationStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PayoutReconciliationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for PayoutReconciliationStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for PayoutReconciliationStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PayoutReconciliationStatus"))
     }
 }
 /// Can be `bank_account` or `card`.
@@ -140,9 +202,10 @@ pub enum PayoutType {
 
 impl PayoutType {
     pub fn as_str(self) -> &'static str {
+        use PayoutType::*;
         match self {
-            Self::BankAccount => "bank_account",
-            Self::Card => "card",
+            BankAccount => "bank_account",
+            Card => "card",
         }
     }
 }
@@ -150,10 +213,10 @@ impl PayoutType {
 impl std::str::FromStr for PayoutType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PayoutType::*;
         match s {
-            "bank_account" => Ok(Self::BankAccount),
-            "card" => Ok(Self::Card),
-
+            "bank_account" => Ok(BankAccount),
+            "card" => Ok(Card),
             _ => Err(()),
         }
     }
@@ -181,8 +244,8 @@ impl serde::Serialize for PayoutType {
 impl<'de> serde::Deserialize<'de> for PayoutType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutType"))
     }
 }
 impl stripe_types::Object for Payout {

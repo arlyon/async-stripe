@@ -19,8 +19,9 @@ pub enum DeletedApplePayDomainObject {
 
 impl DeletedApplePayDomainObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedApplePayDomainObject::*;
         match self {
-            Self::ApplePayDomain => "apple_pay_domain",
+            ApplePayDomain => "apple_pay_domain",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedApplePayDomainObject {
 impl std::str::FromStr for DeletedApplePayDomainObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedApplePayDomainObject::*;
         match s {
-            "apple_pay_domain" => Ok(Self::ApplePayDomain),
-
+            "apple_pay_domain" => Ok(ApplePayDomain),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedApplePayDomainObject {
 impl<'de> serde::Deserialize<'de> for DeletedApplePayDomainObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedApplePayDomainObject"))
     }
 }

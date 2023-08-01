@@ -46,8 +46,9 @@ pub enum ReportTypeObject {
 
 impl ReportTypeObject {
     pub fn as_str(self) -> &'static str {
+        use ReportTypeObject::*;
         match self {
-            Self::ReportingReportType => "reporting.report_type",
+            ReportingReportType => "reporting.report_type",
         }
     }
 }
@@ -55,9 +56,9 @@ impl ReportTypeObject {
 impl std::str::FromStr for ReportTypeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReportTypeObject::*;
         match s {
-            "reporting.report_type" => Ok(Self::ReportingReportType),
-
+            "reporting.report_type" => Ok(ReportingReportType),
             _ => Err(()),
         }
     }
@@ -85,8 +86,8 @@ impl serde::Serialize for ReportTypeObject {
 impl<'de> serde::Deserialize<'de> for ReportTypeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReportTypeObject"))
     }
 }
@@ -97,3 +98,4 @@ impl stripe_types::Object for ReportType {
     }
 }
 stripe_types::def_id!(ReportingReportTypeId);
+pub mod requests;

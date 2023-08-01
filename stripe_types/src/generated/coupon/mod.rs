@@ -72,10 +72,11 @@ pub enum CouponDuration {
 
 impl CouponDuration {
     pub fn as_str(self) -> &'static str {
+        use CouponDuration::*;
         match self {
-            Self::Forever => "forever",
-            Self::Once => "once",
-            Self::Repeating => "repeating",
+            Forever => "forever",
+            Once => "once",
+            Repeating => "repeating",
         }
     }
 }
@@ -83,11 +84,11 @@ impl CouponDuration {
 impl std::str::FromStr for CouponDuration {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CouponDuration::*;
         match s {
-            "forever" => Ok(Self::Forever),
-            "once" => Ok(Self::Once),
-            "repeating" => Ok(Self::Repeating),
-
+            "forever" => Ok(Forever),
+            "once" => Ok(Once),
+            "repeating" => Ok(Repeating),
             _ => Err(()),
         }
     }
@@ -115,8 +116,8 @@ impl serde::Serialize for CouponDuration {
 impl<'de> serde::Deserialize<'de> for CouponDuration {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CouponDuration"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CouponDuration"))
     }
 }
 /// String representing the object's type.
@@ -129,8 +130,9 @@ pub enum CouponObject {
 
 impl CouponObject {
     pub fn as_str(self) -> &'static str {
+        use CouponObject::*;
         match self {
-            Self::Coupon => "coupon",
+            Coupon => "coupon",
         }
     }
 }
@@ -138,9 +140,9 @@ impl CouponObject {
 impl std::str::FromStr for CouponObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CouponObject::*;
         match s {
-            "coupon" => Ok(Self::Coupon),
-
+            "coupon" => Ok(Coupon),
             _ => Err(()),
         }
     }
@@ -168,8 +170,8 @@ impl serde::Serialize for CouponObject {
 impl<'de> serde::Deserialize<'de> for CouponObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CouponObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CouponObject"))
     }
 }
 impl stripe_types::Object for Coupon {
@@ -179,9 +181,9 @@ impl stripe_types::Object for Coupon {
     }
 }
 stripe_types::def_id!(CouponId);
-pub mod deleted;
-pub use deleted::DeletedCoupon;
 pub mod applies_to;
 pub use applies_to::AppliesTo;
 pub mod currency_option;
 pub use currency_option::CurrencyOption;
+pub mod deleted;
+pub use deleted::DeletedCoupon;

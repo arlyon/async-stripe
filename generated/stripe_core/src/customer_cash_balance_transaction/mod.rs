@@ -58,8 +58,9 @@ pub enum CustomerCashBalanceTransactionObject {
 
 impl CustomerCashBalanceTransactionObject {
     pub fn as_str(self) -> &'static str {
+        use CustomerCashBalanceTransactionObject::*;
         match self {
-            Self::CustomerCashBalanceTransaction => "customer_cash_balance_transaction",
+            CustomerCashBalanceTransaction => "customer_cash_balance_transaction",
         }
     }
 }
@@ -67,9 +68,9 @@ impl CustomerCashBalanceTransactionObject {
 impl std::str::FromStr for CustomerCashBalanceTransactionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerCashBalanceTransactionObject::*;
         match s {
-            "customer_cash_balance_transaction" => Ok(Self::CustomerCashBalanceTransaction),
-
+            "customer_cash_balance_transaction" => Ok(CustomerCashBalanceTransaction),
             _ => Err(()),
         }
     }
@@ -97,8 +98,8 @@ impl serde::Serialize for CustomerCashBalanceTransactionObject {
 impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionObject")
         })
     }
@@ -112,6 +113,7 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionObject {
 pub enum CustomerCashBalanceTransactionType {
     AppliedToPayment,
     Funded,
+    FundingReversed,
     RefundedFromPayment,
     ReturnCanceled,
     ReturnInitiated,
@@ -120,13 +122,15 @@ pub enum CustomerCashBalanceTransactionType {
 
 impl CustomerCashBalanceTransactionType {
     pub fn as_str(self) -> &'static str {
+        use CustomerCashBalanceTransactionType::*;
         match self {
-            Self::AppliedToPayment => "applied_to_payment",
-            Self::Funded => "funded",
-            Self::RefundedFromPayment => "refunded_from_payment",
-            Self::ReturnCanceled => "return_canceled",
-            Self::ReturnInitiated => "return_initiated",
-            Self::UnappliedFromPayment => "unapplied_from_payment",
+            AppliedToPayment => "applied_to_payment",
+            Funded => "funded",
+            FundingReversed => "funding_reversed",
+            RefundedFromPayment => "refunded_from_payment",
+            ReturnCanceled => "return_canceled",
+            ReturnInitiated => "return_initiated",
+            UnappliedFromPayment => "unapplied_from_payment",
         }
     }
 }
@@ -134,14 +138,15 @@ impl CustomerCashBalanceTransactionType {
 impl std::str::FromStr for CustomerCashBalanceTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerCashBalanceTransactionType::*;
         match s {
-            "applied_to_payment" => Ok(Self::AppliedToPayment),
-            "funded" => Ok(Self::Funded),
-            "refunded_from_payment" => Ok(Self::RefundedFromPayment),
-            "return_canceled" => Ok(Self::ReturnCanceled),
-            "return_initiated" => Ok(Self::ReturnInitiated),
-            "unapplied_from_payment" => Ok(Self::UnappliedFromPayment),
-
+            "applied_to_payment" => Ok(AppliedToPayment),
+            "funded" => Ok(Funded),
+            "funding_reversed" => Ok(FundingReversed),
+            "refunded_from_payment" => Ok(RefundedFromPayment),
+            "return_canceled" => Ok(ReturnCanceled),
+            "return_initiated" => Ok(ReturnInitiated),
+            "unapplied_from_payment" => Ok(UnappliedFromPayment),
             _ => Err(()),
         }
     }
@@ -169,8 +174,8 @@ impl serde::Serialize for CustomerCashBalanceTransactionType {
 impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionType")
         })
     }
@@ -190,3 +195,4 @@ pub mod refunded_from_payment;
 pub use refunded_from_payment::RefundedFromPayment;
 pub mod unapplied_from_payment;
 pub use unapplied_from_payment::UnappliedFromPayment;
+pub mod requests;

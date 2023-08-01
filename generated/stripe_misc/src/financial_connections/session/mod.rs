@@ -36,8 +36,9 @@ pub enum SessionObject {
 
 impl SessionObject {
     pub fn as_str(self) -> &'static str {
+        use SessionObject::*;
         match self {
-            Self::FinancialConnectionsSession => "financial_connections.session",
+            FinancialConnectionsSession => "financial_connections.session",
         }
     }
 }
@@ -45,9 +46,9 @@ impl SessionObject {
 impl std::str::FromStr for SessionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionObject::*;
         match s {
-            "financial_connections.session" => Ok(Self::FinancialConnectionsSession),
-
+            "financial_connections.session" => Ok(FinancialConnectionsSession),
             _ => Err(()),
         }
     }
@@ -75,8 +76,8 @@ impl serde::Serialize for SessionObject {
 impl<'de> serde::Deserialize<'de> for SessionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
     }
 }
 /// Permissions requested for accounts collected during this session.
@@ -90,11 +91,12 @@ pub enum SessionPermissions {
 
 impl SessionPermissions {
     pub fn as_str(self) -> &'static str {
+        use SessionPermissions::*;
         match self {
-            Self::Balances => "balances",
-            Self::Ownership => "ownership",
-            Self::PaymentMethod => "payment_method",
-            Self::Transactions => "transactions",
+            Balances => "balances",
+            Ownership => "ownership",
+            PaymentMethod => "payment_method",
+            Transactions => "transactions",
         }
     }
 }
@@ -102,12 +104,12 @@ impl SessionPermissions {
 impl std::str::FromStr for SessionPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionPermissions::*;
         match s {
-            "balances" => Ok(Self::Balances),
-            "ownership" => Ok(Self::Ownership),
-            "payment_method" => Ok(Self::PaymentMethod),
-            "transactions" => Ok(Self::Transactions),
-
+            "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
+            "payment_method" => Ok(PaymentMethod),
+            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
@@ -135,8 +137,8 @@ impl serde::Serialize for SessionPermissions {
 impl<'de> serde::Deserialize<'de> for SessionPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionPermissions"))
     }
 }
@@ -149,3 +151,4 @@ impl stripe_types::Object for Session {
 stripe_types::def_id!(FinancialConnectionsSessionId);
 pub mod filters;
 pub use filters::Filters;
+pub mod requests;

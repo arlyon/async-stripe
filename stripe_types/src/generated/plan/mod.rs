@@ -97,11 +97,12 @@ pub enum PlanAggregateUsage {
 
 impl PlanAggregateUsage {
     pub fn as_str(self) -> &'static str {
+        use PlanAggregateUsage::*;
         match self {
-            Self::LastDuringPeriod => "last_during_period",
-            Self::LastEver => "last_ever",
-            Self::Max => "max",
-            Self::Sum => "sum",
+            LastDuringPeriod => "last_during_period",
+            LastEver => "last_ever",
+            Max => "max",
+            Sum => "sum",
         }
     }
 }
@@ -109,12 +110,12 @@ impl PlanAggregateUsage {
 impl std::str::FromStr for PlanAggregateUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanAggregateUsage::*;
         match s {
-            "last_during_period" => Ok(Self::LastDuringPeriod),
-            "last_ever" => Ok(Self::LastEver),
-            "max" => Ok(Self::Max),
-            "sum" => Ok(Self::Sum),
-
+            "last_during_period" => Ok(LastDuringPeriod),
+            "last_ever" => Ok(LastEver),
+            "max" => Ok(Max),
+            "sum" => Ok(Sum),
             _ => Err(()),
         }
     }
@@ -142,8 +143,8 @@ impl serde::Serialize for PlanAggregateUsage {
 impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
@@ -160,9 +161,10 @@ pub enum PlanBillingScheme {
 
 impl PlanBillingScheme {
     pub fn as_str(self) -> &'static str {
+        use PlanBillingScheme::*;
         match self {
-            Self::PerUnit => "per_unit",
-            Self::Tiered => "tiered",
+            PerUnit => "per_unit",
+            Tiered => "tiered",
         }
     }
 }
@@ -170,10 +172,10 @@ impl PlanBillingScheme {
 impl std::str::FromStr for PlanBillingScheme {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanBillingScheme::*;
         match s {
-            "per_unit" => Ok(Self::PerUnit),
-            "tiered" => Ok(Self::Tiered),
-
+            "per_unit" => Ok(PerUnit),
+            "tiered" => Ok(Tiered),
             _ => Err(()),
         }
     }
@@ -201,8 +203,8 @@ impl serde::Serialize for PlanBillingScheme {
 impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
     }
 }
@@ -219,11 +221,12 @@ pub enum PlanInterval {
 
 impl PlanInterval {
     pub fn as_str(self) -> &'static str {
+        use PlanInterval::*;
         match self {
-            Self::Day => "day",
-            Self::Month => "month",
-            Self::Week => "week",
-            Self::Year => "year",
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
         }
     }
 }
@@ -231,12 +234,12 @@ impl PlanInterval {
 impl std::str::FromStr for PlanInterval {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanInterval::*;
         match s {
-            "day" => Ok(Self::Day),
-            "month" => Ok(Self::Month),
-            "week" => Ok(Self::Week),
-            "year" => Ok(Self::Year),
-
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
             _ => Err(()),
         }
     }
@@ -264,8 +267,8 @@ impl serde::Serialize for PlanInterval {
 impl<'de> serde::Deserialize<'de> for PlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
     }
 }
 /// String representing the object's type.
@@ -278,8 +281,9 @@ pub enum PlanObject {
 
 impl PlanObject {
     pub fn as_str(self) -> &'static str {
+        use PlanObject::*;
         match self {
-            Self::Plan => "plan",
+            Plan => "plan",
         }
     }
 }
@@ -287,9 +291,9 @@ impl PlanObject {
 impl std::str::FromStr for PlanObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanObject::*;
         match s {
-            "plan" => Ok(Self::Plan),
-
+            "plan" => Ok(Plan),
             _ => Err(()),
         }
     }
@@ -317,8 +321,8 @@ impl serde::Serialize for PlanObject {
 impl<'de> serde::Deserialize<'de> for PlanObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanObject"))
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
@@ -333,9 +337,10 @@ pub enum PlanTiersMode {
 
 impl PlanTiersMode {
     pub fn as_str(self) -> &'static str {
+        use PlanTiersMode::*;
         match self {
-            Self::Graduated => "graduated",
-            Self::Volume => "volume",
+            Graduated => "graduated",
+            Volume => "volume",
         }
     }
 }
@@ -343,10 +348,10 @@ impl PlanTiersMode {
 impl std::str::FromStr for PlanTiersMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanTiersMode::*;
         match s {
-            "graduated" => Ok(Self::Graduated),
-            "volume" => Ok(Self::Volume),
-
+            "graduated" => Ok(Graduated),
+            "volume" => Ok(Volume),
             _ => Err(()),
         }
     }
@@ -374,8 +379,8 @@ impl serde::Serialize for PlanTiersMode {
 impl<'de> serde::Deserialize<'de> for PlanTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -392,9 +397,10 @@ pub enum PlanUsageType {
 
 impl PlanUsageType {
     pub fn as_str(self) -> &'static str {
+        use PlanUsageType::*;
         match self {
-            Self::Licensed => "licensed",
-            Self::Metered => "metered",
+            Licensed => "licensed",
+            Metered => "metered",
         }
     }
 }
@@ -402,10 +408,10 @@ impl PlanUsageType {
 impl std::str::FromStr for PlanUsageType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PlanUsageType::*;
         match s {
-            "licensed" => Ok(Self::Licensed),
-            "metered" => Ok(Self::Metered),
-
+            "licensed" => Ok(Licensed),
+            "metered" => Ok(Metered),
             _ => Err(()),
         }
     }
@@ -433,8 +439,8 @@ impl serde::Serialize for PlanUsageType {
 impl<'de> serde::Deserialize<'de> for PlanUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
     }
 }
 impl stripe_types::Object for Plan {
@@ -444,9 +450,9 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-pub mod deleted;
-pub use deleted::DeletedPlan;
 pub mod tier;
 pub use tier::Tier;
 pub mod transform_usage;
 pub use transform_usage::TransformUsage;
+pub mod deleted;
+pub use deleted::DeletedPlan;

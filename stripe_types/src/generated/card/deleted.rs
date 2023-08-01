@@ -22,8 +22,9 @@ pub enum DeletedCardObject {
 
 impl DeletedCardObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedCardObject::*;
         match self {
-            Self::Card => "card",
+            Card => "card",
         }
     }
 }
@@ -31,9 +32,9 @@ impl DeletedCardObject {
 impl std::str::FromStr for DeletedCardObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedCardObject::*;
         match s {
-            "card" => Ok(Self::Card),
-
+            "card" => Ok(Card),
             _ => Err(()),
         }
     }
@@ -61,8 +62,8 @@ impl serde::Serialize for DeletedCardObject {
 impl<'de> serde::Deserialize<'de> for DeletedCardObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedCardObject"))
     }
 }

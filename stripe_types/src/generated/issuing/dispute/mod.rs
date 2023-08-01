@@ -1,6 +1,6 @@
 /// As a [card issuer](https://stripe.com/docs/issuing), you can dispute transactions that the cardholder does not recognize, suspects to be fraudulent, or has other issues with.
 ///
-/// Related guide: [Disputing Transactions](https://stripe.com/docs/issuing/purchases/disputes).
+/// Related guide: [Issuing disputes](https://stripe.com/docs/issuing/purchases/disputes).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Dispute {
     /// Disputed amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -46,8 +46,9 @@ pub enum DisputeObject {
 
 impl DisputeObject {
     pub fn as_str(self) -> &'static str {
+        use DisputeObject::*;
         match self {
-            Self::IssuingDispute => "issuing.dispute",
+            IssuingDispute => "issuing.dispute",
         }
     }
 }
@@ -55,9 +56,9 @@ impl DisputeObject {
 impl std::str::FromStr for DisputeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeObject::*;
         match s {
-            "issuing.dispute" => Ok(Self::IssuingDispute),
-
+            "issuing.dispute" => Ok(IssuingDispute),
             _ => Err(()),
         }
     }
@@ -85,8 +86,8 @@ impl serde::Serialize for DisputeObject {
 impl<'de> serde::Deserialize<'de> for DisputeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
     }
 }
 /// Current status of the dispute.
@@ -101,12 +102,13 @@ pub enum DisputeStatus {
 
 impl DisputeStatus {
     pub fn as_str(self) -> &'static str {
+        use DisputeStatus::*;
         match self {
-            Self::Expired => "expired",
-            Self::Lost => "lost",
-            Self::Submitted => "submitted",
-            Self::Unsubmitted => "unsubmitted",
-            Self::Won => "won",
+            Expired => "expired",
+            Lost => "lost",
+            Submitted => "submitted",
+            Unsubmitted => "unsubmitted",
+            Won => "won",
         }
     }
 }
@@ -114,13 +116,13 @@ impl DisputeStatus {
 impl std::str::FromStr for DisputeStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DisputeStatus::*;
         match s {
-            "expired" => Ok(Self::Expired),
-            "lost" => Ok(Self::Lost),
-            "submitted" => Ok(Self::Submitted),
-            "unsubmitted" => Ok(Self::Unsubmitted),
-            "won" => Ok(Self::Won),
-
+            "expired" => Ok(Expired),
+            "lost" => Ok(Lost),
+            "submitted" => Ok(Submitted),
+            "unsubmitted" => Ok(Unsubmitted),
+            "won" => Ok(Won),
             _ => Err(()),
         }
     }
@@ -148,8 +150,8 @@ impl serde::Serialize for DisputeStatus {
 impl<'de> serde::Deserialize<'de> for DisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
     }
 }
 impl stripe_types::Object for Dispute {

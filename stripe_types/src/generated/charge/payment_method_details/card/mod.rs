@@ -2,7 +2,7 @@
 pub struct Card {
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
     /// Check results by Card networks on Card address and CVC at time of payment.
     pub checks: Option<stripe_types::charge::payment_method_details::card::checks::Checks>,
@@ -53,8 +53,12 @@ pub struct Card {
     pub moto: Option<bool>,
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
+    /// If this card has network token credentials, this contains the details of the network token credentials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_token:
+        Option<stripe_types::charge::payment_method_details::card::network_token::NetworkToken>,
     /// Populated if this transaction used 3D Secure authentication.
     pub three_d_secure:
         Option<stripe_types::charge::payment_method_details::card::three_d_secure::ThreeDSecure>,
@@ -65,6 +69,8 @@ pub mod checks;
 pub use checks::Checks;
 pub mod installments;
 pub use installments::Installments;
+pub mod network_token;
+pub use network_token::NetworkToken;
 pub mod wallet;
 pub use wallet::Wallet;
 pub mod three_d_secure;

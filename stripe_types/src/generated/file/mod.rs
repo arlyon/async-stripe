@@ -1,6 +1,6 @@
 /// This is an object representing a file hosted on Stripe's servers.
 ///
-/// The file may have been uploaded by yourself using the [create file](https://stripe.com/docs/api#create_file) request (for example, when uploading dispute evidence) or it may have been created by Stripe (for example, the results of a [Sigma scheduled query](#scheduled_queries)).  Related guide: [File Upload Guide](https://stripe.com/docs/file-upload).
+/// The file may have been uploaded by yourself using the [create file](https://stripe.com/docs/api#create_file) request (for example, when uploading dispute evidence) or it may have been created by Stripe (for example, the results of a [Sigma scheduled query](#scheduled_queries)).  Related guide: [File upload guide](https://stripe.com/docs/file-upload).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct File {
     /// Time at which the object was created.
@@ -42,8 +42,9 @@ pub enum FileObject {
 
 impl FileObject {
     pub fn as_str(self) -> &'static str {
+        use FileObject::*;
         match self {
-            Self::File => "file",
+            File => "file",
         }
     }
 }
@@ -51,9 +52,9 @@ impl FileObject {
 impl std::str::FromStr for FileObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FileObject::*;
         match s {
-            "file" => Ok(Self::File),
-
+            "file" => Ok(File),
             _ => Err(()),
         }
     }
@@ -81,8 +82,8 @@ impl serde::Serialize for FileObject {
 impl<'de> serde::Deserialize<'de> for FileObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FileObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FileObject"))
     }
 }
 /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
@@ -107,22 +108,23 @@ pub enum FilePurpose {
 
 impl FilePurpose {
     pub fn as_str(self) -> &'static str {
+        use FilePurpose::*;
         match self {
-            Self::AccountRequirement => "account_requirement",
-            Self::AdditionalVerification => "additional_verification",
-            Self::BusinessIcon => "business_icon",
-            Self::BusinessLogo => "business_logo",
-            Self::CustomerSignature => "customer_signature",
-            Self::DisputeEvidence => "dispute_evidence",
-            Self::DocumentProviderIdentityDocument => "document_provider_identity_document",
-            Self::FinanceReportRun => "finance_report_run",
-            Self::IdentityDocument => "identity_document",
-            Self::IdentityDocumentDownloadable => "identity_document_downloadable",
-            Self::PciDocument => "pci_document",
-            Self::Selfie => "selfie",
-            Self::SigmaScheduledQuery => "sigma_scheduled_query",
-            Self::TaxDocumentUserUpload => "tax_document_user_upload",
-            Self::TerminalReaderSplashscreen => "terminal_reader_splashscreen",
+            AccountRequirement => "account_requirement",
+            AdditionalVerification => "additional_verification",
+            BusinessIcon => "business_icon",
+            BusinessLogo => "business_logo",
+            CustomerSignature => "customer_signature",
+            DisputeEvidence => "dispute_evidence",
+            DocumentProviderIdentityDocument => "document_provider_identity_document",
+            FinanceReportRun => "finance_report_run",
+            IdentityDocument => "identity_document",
+            IdentityDocumentDownloadable => "identity_document_downloadable",
+            PciDocument => "pci_document",
+            Selfie => "selfie",
+            SigmaScheduledQuery => "sigma_scheduled_query",
+            TaxDocumentUserUpload => "tax_document_user_upload",
+            TerminalReaderSplashscreen => "terminal_reader_splashscreen",
         }
     }
 }
@@ -130,23 +132,23 @@ impl FilePurpose {
 impl std::str::FromStr for FilePurpose {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FilePurpose::*;
         match s {
-            "account_requirement" => Ok(Self::AccountRequirement),
-            "additional_verification" => Ok(Self::AdditionalVerification),
-            "business_icon" => Ok(Self::BusinessIcon),
-            "business_logo" => Ok(Self::BusinessLogo),
-            "customer_signature" => Ok(Self::CustomerSignature),
-            "dispute_evidence" => Ok(Self::DisputeEvidence),
-            "document_provider_identity_document" => Ok(Self::DocumentProviderIdentityDocument),
-            "finance_report_run" => Ok(Self::FinanceReportRun),
-            "identity_document" => Ok(Self::IdentityDocument),
-            "identity_document_downloadable" => Ok(Self::IdentityDocumentDownloadable),
-            "pci_document" => Ok(Self::PciDocument),
-            "selfie" => Ok(Self::Selfie),
-            "sigma_scheduled_query" => Ok(Self::SigmaScheduledQuery),
-            "tax_document_user_upload" => Ok(Self::TaxDocumentUserUpload),
-            "terminal_reader_splashscreen" => Ok(Self::TerminalReaderSplashscreen),
-
+            "account_requirement" => Ok(AccountRequirement),
+            "additional_verification" => Ok(AdditionalVerification),
+            "business_icon" => Ok(BusinessIcon),
+            "business_logo" => Ok(BusinessLogo),
+            "customer_signature" => Ok(CustomerSignature),
+            "dispute_evidence" => Ok(DisputeEvidence),
+            "document_provider_identity_document" => Ok(DocumentProviderIdentityDocument),
+            "finance_report_run" => Ok(FinanceReportRun),
+            "identity_document" => Ok(IdentityDocument),
+            "identity_document_downloadable" => Ok(IdentityDocumentDownloadable),
+            "pci_document" => Ok(PciDocument),
+            "selfie" => Ok(Selfie),
+            "sigma_scheduled_query" => Ok(SigmaScheduledQuery),
+            "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
+            "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
             _ => Err(()),
         }
     }
@@ -174,8 +176,8 @@ impl serde::Serialize for FilePurpose {
 impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FilePurpose"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FilePurpose"))
     }
 }
 impl stripe_types::Object for File {

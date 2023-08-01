@@ -42,11 +42,12 @@ pub enum ShippingCarrier {
 
 impl ShippingCarrier {
     pub fn as_str(self) -> &'static str {
+        use ShippingCarrier::*;
         match self {
-            Self::Dhl => "dhl",
-            Self::Fedex => "fedex",
-            Self::RoyalMail => "royal_mail",
-            Self::Usps => "usps",
+            Dhl => "dhl",
+            Fedex => "fedex",
+            RoyalMail => "royal_mail",
+            Usps => "usps",
         }
     }
 }
@@ -54,12 +55,12 @@ impl ShippingCarrier {
 impl std::str::FromStr for ShippingCarrier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ShippingCarrier::*;
         match s {
-            "dhl" => Ok(Self::Dhl),
-            "fedex" => Ok(Self::Fedex),
-            "royal_mail" => Ok(Self::RoyalMail),
-            "usps" => Ok(Self::Usps),
-
+            "dhl" => Ok(Dhl),
+            "fedex" => Ok(Fedex),
+            "royal_mail" => Ok(RoyalMail),
+            "usps" => Ok(Usps),
             _ => Err(()),
         }
     }
@@ -87,9 +88,8 @@ impl serde::Serialize for ShippingCarrier {
 impl<'de> serde::Deserialize<'de> for ShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingCarrier"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingCarrier"))
     }
 }
 /// Shipment service, such as `standard` or `express`.
@@ -102,10 +102,11 @@ pub enum ShippingService {
 
 impl ShippingService {
     pub fn as_str(self) -> &'static str {
+        use ShippingService::*;
         match self {
-            Self::Express => "express",
-            Self::Priority => "priority",
-            Self::Standard => "standard",
+            Express => "express",
+            Priority => "priority",
+            Standard => "standard",
         }
     }
 }
@@ -113,11 +114,11 @@ impl ShippingService {
 impl std::str::FromStr for ShippingService {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ShippingService::*;
         match s {
-            "express" => Ok(Self::Express),
-            "priority" => Ok(Self::Priority),
-            "standard" => Ok(Self::Standard),
-
+            "express" => Ok(Express),
+            "priority" => Ok(Priority),
+            "standard" => Ok(Standard),
             _ => Err(()),
         }
     }
@@ -145,9 +146,8 @@ impl serde::Serialize for ShippingService {
 impl<'de> serde::Deserialize<'de> for ShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingService"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingService"))
     }
 }
 /// The delivery status of the card.
@@ -163,13 +163,14 @@ pub enum ShippingStatus {
 
 impl ShippingStatus {
     pub fn as_str(self) -> &'static str {
+        use ShippingStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Delivered => "delivered",
-            Self::Failure => "failure",
-            Self::Pending => "pending",
-            Self::Returned => "returned",
-            Self::Shipped => "shipped",
+            Canceled => "canceled",
+            Delivered => "delivered",
+            Failure => "failure",
+            Pending => "pending",
+            Returned => "returned",
+            Shipped => "shipped",
         }
     }
 }
@@ -177,14 +178,14 @@ impl ShippingStatus {
 impl std::str::FromStr for ShippingStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ShippingStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "delivered" => Ok(Self::Delivered),
-            "failure" => Ok(Self::Failure),
-            "pending" => Ok(Self::Pending),
-            "returned" => Ok(Self::Returned),
-            "shipped" => Ok(Self::Shipped),
-
+            "canceled" => Ok(Canceled),
+            "delivered" => Ok(Delivered),
+            "failure" => Ok(Failure),
+            "pending" => Ok(Pending),
+            "returned" => Ok(Returned),
+            "shipped" => Ok(Shipped),
             _ => Err(()),
         }
     }
@@ -212,8 +213,8 @@ impl serde::Serialize for ShippingStatus {
 impl<'de> serde::Deserialize<'de> for ShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingStatus"))
     }
 }
 /// Packaging options.
@@ -225,9 +226,10 @@ pub enum ShippingType {
 
 impl ShippingType {
     pub fn as_str(self) -> &'static str {
+        use ShippingType::*;
         match self {
-            Self::Bulk => "bulk",
-            Self::Individual => "individual",
+            Bulk => "bulk",
+            Individual => "individual",
         }
     }
 }
@@ -235,10 +237,10 @@ impl ShippingType {
 impl std::str::FromStr for ShippingType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ShippingType::*;
         match s {
-            "bulk" => Ok(Self::Bulk),
-            "individual" => Ok(Self::Individual),
-
+            "bulk" => Ok(Bulk),
+            "individual" => Ok(Individual),
             _ => Err(()),
         }
     }
@@ -266,8 +268,8 @@ impl serde::Serialize for ShippingType {
 impl<'de> serde::Deserialize<'de> for ShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ShippingType"))
     }
 }
 pub mod customs;

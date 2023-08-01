@@ -3,7 +3,7 @@
 /// A platform cannot access a Standard or Express account's persons after the account starts onboarding, such as after generating an account link for the account.
 /// See the [Standard onboarding](https://stripe.com/docs/connect/standard-accounts) or [Express onboarding documentation](https://stripe.com/docs/connect/express-accounts) for information about platform pre-filling and account onboarding steps.
 ///
-/// Related guide: [Handling Identity Verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).
+/// Related guide: [Handling identity verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Person {
     /// The account the person is associated with.
@@ -107,8 +107,9 @@ pub enum PersonObject {
 
 impl PersonObject {
     pub fn as_str(self) -> &'static str {
+        use PersonObject::*;
         match self {
-            Self::Person => "person",
+            Person => "person",
         }
     }
 }
@@ -116,9 +117,9 @@ impl PersonObject {
 impl std::str::FromStr for PersonObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PersonObject::*;
         match s {
-            "person" => Ok(Self::Person),
-
+            "person" => Ok(Person),
             _ => Err(()),
         }
     }
@@ -146,8 +147,8 @@ impl serde::Serialize for PersonObject {
 impl<'de> serde::Deserialize<'de> for PersonObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PersonObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PersonObject"))
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
@@ -159,9 +160,10 @@ pub enum PersonPoliticalExposure {
 
 impl PersonPoliticalExposure {
     pub fn as_str(self) -> &'static str {
+        use PersonPoliticalExposure::*;
         match self {
-            Self::Existing => "existing",
-            Self::None => "none",
+            Existing => "existing",
+            None => "none",
         }
     }
 }
@@ -169,10 +171,10 @@ impl PersonPoliticalExposure {
 impl std::str::FromStr for PersonPoliticalExposure {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PersonPoliticalExposure::*;
         match s {
-            "existing" => Ok(Self::Existing),
-            "none" => Ok(Self::None),
-
+            "existing" => Ok(Existing),
+            "none" => Ok(None),
             _ => Err(()),
         }
     }
@@ -200,8 +202,8 @@ impl serde::Serialize for PersonPoliticalExposure {
 impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
     }
 }
@@ -212,8 +214,6 @@ impl stripe_types::Object for Person {
     }
 }
 stripe_types::def_id!(PersonId, "person_");
-pub mod deleted;
-pub use deleted::DeletedPerson;
 pub mod date_of_birth;
 pub use date_of_birth::DateOfBirth;
 pub mod japan_address;
@@ -228,3 +228,5 @@ pub mod relationship;
 pub use relationship::Relationship;
 pub mod requirements;
 pub use requirements::Requirements;
+pub mod deleted;
+pub use deleted::DeletedPerson;

@@ -1,7 +1,7 @@
 /// `Application Fee Refund` objects allow you to refund an application fee that
 /// has previously been created but not yet refunded.
 ///
-/// Funds will be refunded to the Stripe account from which the fee was originally collected.  Related guide: [Refunding Application Fees](https://stripe.com/docs/connect/destination-charges#refunding-app-fee).
+/// Funds will be refunded to the Stripe account from which the fee was originally collected.  Related guide: [Refunding application fees](https://stripe.com/docs/connect/destination-charges#refunding-app-fee).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FeeRefund {
     /// Amount, in %s.
@@ -40,8 +40,9 @@ pub enum FeeRefundObject {
 
 impl FeeRefundObject {
     pub fn as_str(self) -> &'static str {
+        use FeeRefundObject::*;
         match self {
-            Self::FeeRefund => "fee_refund",
+            FeeRefund => "fee_refund",
         }
     }
 }
@@ -49,9 +50,9 @@ impl FeeRefundObject {
 impl std::str::FromStr for FeeRefundObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FeeRefundObject::*;
         match s {
-            "fee_refund" => Ok(Self::FeeRefund),
-
+            "fee_refund" => Ok(FeeRefund),
             _ => Err(()),
         }
     }
@@ -79,9 +80,8 @@ impl serde::Serialize for FeeRefundObject {
 impl<'de> serde::Deserialize<'de> for FeeRefundObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for FeeRefundObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FeeRefundObject"))
     }
 }
 impl stripe_types::Object for FeeRefund {

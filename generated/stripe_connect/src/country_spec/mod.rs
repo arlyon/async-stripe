@@ -40,8 +40,9 @@ pub enum CountrySpecObject {
 
 impl CountrySpecObject {
     pub fn as_str(self) -> &'static str {
+        use CountrySpecObject::*;
         match self {
-            Self::CountrySpec => "country_spec",
+            CountrySpec => "country_spec",
         }
     }
 }
@@ -49,9 +50,9 @@ impl CountrySpecObject {
 impl std::str::FromStr for CountrySpecObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CountrySpecObject::*;
         match s {
-            "country_spec" => Ok(Self::CountrySpec),
-
+            "country_spec" => Ok(CountrySpec),
             _ => Err(()),
         }
     }
@@ -79,8 +80,8 @@ impl serde::Serialize for CountrySpecObject {
 impl<'de> serde::Deserialize<'de> for CountrySpecObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CountrySpecObject"))
     }
 }
@@ -93,3 +94,4 @@ impl stripe_types::Object for CountrySpec {
 stripe_types::def_id!(CountrySpecId);
 pub mod verification_fields;
 pub use verification_fields::VerificationFields;
+pub mod requests;

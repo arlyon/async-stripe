@@ -41,10 +41,6 @@ impl StripeObject {
         self.resource.ident()
     }
 
-    pub fn object_name(&self) -> Option<&str> {
-        self.data.object_name.as_deref()
-    }
-
     pub fn id_type(&self) -> Option<&RustType> {
         self.data.id_type.as_ref()
     }

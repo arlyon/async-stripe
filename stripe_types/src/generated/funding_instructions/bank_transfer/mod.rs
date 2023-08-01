@@ -18,9 +18,10 @@ pub enum BankTransferType {
 
 impl BankTransferType {
     pub fn as_str(self) -> &'static str {
+        use BankTransferType::*;
         match self {
-            Self::EuBankTransfer => "eu_bank_transfer",
-            Self::JpBankTransfer => "jp_bank_transfer",
+            EuBankTransfer => "eu_bank_transfer",
+            JpBankTransfer => "jp_bank_transfer",
         }
     }
 }
@@ -28,10 +29,10 @@ impl BankTransferType {
 impl std::str::FromStr for BankTransferType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BankTransferType::*;
         match s {
-            "eu_bank_transfer" => Ok(Self::EuBankTransfer),
-            "jp_bank_transfer" => Ok(Self::JpBankTransfer),
-
+            "eu_bank_transfer" => Ok(EuBankTransfer),
+            "jp_bank_transfer" => Ok(JpBankTransfer),
             _ => Err(()),
         }
     }
@@ -59,8 +60,8 @@ impl serde::Serialize for BankTransferType {
 impl<'de> serde::Deserialize<'de> for BankTransferType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for BankTransferType"))
     }
 }

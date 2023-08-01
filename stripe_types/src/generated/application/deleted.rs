@@ -21,8 +21,9 @@ pub enum DeletedApplicationObject {
 
 impl DeletedApplicationObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedApplicationObject::*;
         match self {
-            Self::Application => "application",
+            Application => "application",
         }
     }
 }
@@ -30,9 +31,9 @@ impl DeletedApplicationObject {
 impl std::str::FromStr for DeletedApplicationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedApplicationObject::*;
         match s {
-            "application" => Ok(Self::Application),
-
+            "application" => Ok(Application),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for DeletedApplicationObject {
 impl<'de> serde::Deserialize<'de> for DeletedApplicationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedApplicationObject"))
     }
 }

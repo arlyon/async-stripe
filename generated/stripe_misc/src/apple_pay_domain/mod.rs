@@ -24,8 +24,9 @@ pub enum ApplePayDomainObject {
 
 impl ApplePayDomainObject {
     pub fn as_str(self) -> &'static str {
+        use ApplePayDomainObject::*;
         match self {
-            Self::ApplePayDomain => "apple_pay_domain",
+            ApplePayDomain => "apple_pay_domain",
         }
     }
 }
@@ -33,9 +34,9 @@ impl ApplePayDomainObject {
 impl std::str::FromStr for ApplePayDomainObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ApplePayDomainObject::*;
         match s {
-            "apple_pay_domain" => Ok(Self::ApplePayDomain),
-
+            "apple_pay_domain" => Ok(ApplePayDomain),
             _ => Err(()),
         }
     }
@@ -63,8 +64,8 @@ impl serde::Serialize for ApplePayDomainObject {
 impl<'de> serde::Deserialize<'de> for ApplePayDomainObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ApplePayDomainObject"))
     }
 }
@@ -77,3 +78,4 @@ impl stripe_types::Object for ApplePayDomain {
 stripe_types::def_id!(ApplePayDomainId);
 pub mod deleted;
 pub use deleted::DeletedApplePayDomain;
+pub mod requests;

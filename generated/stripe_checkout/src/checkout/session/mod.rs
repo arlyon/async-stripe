@@ -2,7 +2,7 @@
 /// one-time purchases or subscriptions through [Checkout](https://stripe.com/docs/payments/checkout)
 /// or [Payment Links](https://stripe.com/docs/payments/payment-links).
 ///
-/// We recommend creating a new Session each time your customer attempts to pay.  Once payment is successful, the Checkout Session will contain a reference to the [Customer](https://stripe.com/docs/api/customers), and either the successful [PaymentIntent](https://stripe.com/docs/api/payment_intents) or an active [Subscription](https://stripe.com/docs/api/subscriptions).  You can create a Checkout Session on your server and pass its ID to the client to begin Checkout.  Related guide: [Checkout Quickstart](https://stripe.com/docs/checkout/quickstart).
+/// We recommend creating a new Session each time your customer attempts to pay.  Once payment is successful, the Checkout Session will contain a reference to the [Customer](https://stripe.com/docs/api/customers), and either the successful [PaymentIntent](https://stripe.com/docs/api/payment_intents) or an active [Subscription](https://stripe.com/docs/api/subscriptions).  You can create a Checkout Session on your server and redirect to its URL to begin Checkout.  Related guide: [Checkout quickstart](https://stripe.com/docs/checkout/quickstart).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     /// When set, provides configuration for actions to take if this Checkout Session expires.
@@ -17,8 +17,8 @@ pub struct Session {
     pub automatic_tax: stripe_checkout::checkout::session::automatic_tax::AutomaticTax,
     /// Describes whether Checkout should collect the customer's billing address.
     pub billing_address_collection: Option<SessionBillingAddressCollection>,
-    /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
-    pub cancel_url: String,
+    /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
+    pub cancel_url: Option<String>,
     /// A unique string to reference the Checkout Session.
     ///
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
@@ -36,6 +36,14 @@ pub struct Session {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<stripe_types::Currency>,
+    /// Currency conversion details for automatic currency conversion sessions.
+    pub currency_conversion:
+        Option<stripe_checkout::checkout::session::currency_conversion::CurrencyConversion>,
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    pub custom_fields: Vec<stripe_checkout::checkout::session::custom_field::CustomField>,
+    pub custom_text: stripe_checkout::checkout::session::custom_text::CustomText,
     /// The ID of the customer for this Session.
     /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
     /// will create a new customer object based on information provided
@@ -59,9 +67,12 @@ pub struct Session {
     /// The timestamp at which the Checkout Session will expire.
     pub expires_at: stripe_types::Timestamp,
     /// Unique identifier for the object.
-    ///
-    /// Used to pass to `redirectToCheckout` in Stripe.js.
     pub id: stripe_checkout::checkout::session::CheckoutSessionId,
+    /// ID of the invoice created by the Checkout Session, if it exists.
+    pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
+    /// Details on the state of invoice creation for the Checkout Session.
+    pub invoice_creation:
+        Option<stripe_checkout::checkout::session::invoice_creation::InvoiceCreation>,
     /// The line items purchased by the customer.
     #[serde(default)]
     pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
@@ -148,9 +159,10 @@ pub enum SessionBillingAddressCollection {
 
 impl SessionBillingAddressCollection {
     pub fn as_str(self) -> &'static str {
+        use SessionBillingAddressCollection::*;
         match self {
-            Self::Auto => "auto",
-            Self::Required => "required",
+            Auto => "auto",
+            Required => "required",
         }
     }
 }
@@ -158,10 +170,10 @@ impl SessionBillingAddressCollection {
 impl std::str::FromStr for SessionBillingAddressCollection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionBillingAddressCollection::*;
         match s {
-            "auto" => Ok(Self::Auto),
-            "required" => Ok(Self::Required),
-
+            "auto" => Ok(Auto),
+            "required" => Ok(Required),
             _ => Err(()),
         }
     }
@@ -189,8 +201,8 @@ impl serde::Serialize for SessionBillingAddressCollection {
 impl<'de> serde::Deserialize<'de> for SessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SessionBillingAddressCollection")
         })
     }
@@ -204,9 +216,10 @@ pub enum SessionCustomerCreation {
 
 impl SessionCustomerCreation {
     pub fn as_str(self) -> &'static str {
+        use SessionCustomerCreation::*;
         match self {
-            Self::Always => "always",
-            Self::IfRequired => "if_required",
+            Always => "always",
+            IfRequired => "if_required",
         }
     }
 }
@@ -214,10 +227,10 @@ impl SessionCustomerCreation {
 impl std::str::FromStr for SessionCustomerCreation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionCustomerCreation::*;
         match s {
-            "always" => Ok(Self::Always),
-            "if_required" => Ok(Self::IfRequired),
-
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
             _ => Err(()),
         }
     }
@@ -245,8 +258,8 @@ impl serde::Serialize for SessionCustomerCreation {
 impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionCustomerCreation"))
     }
 }
@@ -300,48 +313,49 @@ pub enum SessionLocale {
 
 impl SessionLocale {
     pub fn as_str(self) -> &'static str {
+        use SessionLocale::*;
         match self {
-            Self::Auto => "auto",
-            Self::Bg => "bg",
-            Self::Cs => "cs",
-            Self::Da => "da",
-            Self::De => "de",
-            Self::El => "el",
-            Self::En => "en",
-            Self::EnMinusGb => "en-GB",
-            Self::Es => "es",
-            Self::EsMinus419 => "es-419",
-            Self::Et => "et",
-            Self::Fi => "fi",
-            Self::Fil => "fil",
-            Self::Fr => "fr",
-            Self::FrMinusCa => "fr-CA",
-            Self::Hr => "hr",
-            Self::Hu => "hu",
-            Self::Id => "id",
-            Self::It => "it",
-            Self::Ja => "ja",
-            Self::Ko => "ko",
-            Self::Lt => "lt",
-            Self::Lv => "lv",
-            Self::Ms => "ms",
-            Self::Mt => "mt",
-            Self::Nb => "nb",
-            Self::Nl => "nl",
-            Self::Pl => "pl",
-            Self::Pt => "pt",
-            Self::PtMinusBr => "pt-BR",
-            Self::Ro => "ro",
-            Self::Ru => "ru",
-            Self::Sk => "sk",
-            Self::Sl => "sl",
-            Self::Sv => "sv",
-            Self::Th => "th",
-            Self::Tr => "tr",
-            Self::Vi => "vi",
-            Self::Zh => "zh",
-            Self::ZhMinusHk => "zh-HK",
-            Self::ZhMinusTw => "zh-TW",
+            Auto => "auto",
+            Bg => "bg",
+            Cs => "cs",
+            Da => "da",
+            De => "de",
+            El => "el",
+            En => "en",
+            EnMinusGb => "en-GB",
+            Es => "es",
+            EsMinus419 => "es-419",
+            Et => "et",
+            Fi => "fi",
+            Fil => "fil",
+            Fr => "fr",
+            FrMinusCa => "fr-CA",
+            Hr => "hr",
+            Hu => "hu",
+            Id => "id",
+            It => "it",
+            Ja => "ja",
+            Ko => "ko",
+            Lt => "lt",
+            Lv => "lv",
+            Ms => "ms",
+            Mt => "mt",
+            Nb => "nb",
+            Nl => "nl",
+            Pl => "pl",
+            Pt => "pt",
+            PtMinusBr => "pt-BR",
+            Ro => "ro",
+            Ru => "ru",
+            Sk => "sk",
+            Sl => "sl",
+            Sv => "sv",
+            Th => "th",
+            Tr => "tr",
+            Vi => "vi",
+            Zh => "zh",
+            ZhMinusHk => "zh-HK",
+            ZhMinusTw => "zh-TW",
         }
     }
 }
@@ -349,49 +363,49 @@ impl SessionLocale {
 impl std::str::FromStr for SessionLocale {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionLocale::*;
         match s {
-            "auto" => Ok(Self::Auto),
-            "bg" => Ok(Self::Bg),
-            "cs" => Ok(Self::Cs),
-            "da" => Ok(Self::Da),
-            "de" => Ok(Self::De),
-            "el" => Ok(Self::El),
-            "en" => Ok(Self::En),
-            "en-GB" => Ok(Self::EnMinusGb),
-            "es" => Ok(Self::Es),
-            "es-419" => Ok(Self::EsMinus419),
-            "et" => Ok(Self::Et),
-            "fi" => Ok(Self::Fi),
-            "fil" => Ok(Self::Fil),
-            "fr" => Ok(Self::Fr),
-            "fr-CA" => Ok(Self::FrMinusCa),
-            "hr" => Ok(Self::Hr),
-            "hu" => Ok(Self::Hu),
-            "id" => Ok(Self::Id),
-            "it" => Ok(Self::It),
-            "ja" => Ok(Self::Ja),
-            "ko" => Ok(Self::Ko),
-            "lt" => Ok(Self::Lt),
-            "lv" => Ok(Self::Lv),
-            "ms" => Ok(Self::Ms),
-            "mt" => Ok(Self::Mt),
-            "nb" => Ok(Self::Nb),
-            "nl" => Ok(Self::Nl),
-            "pl" => Ok(Self::Pl),
-            "pt" => Ok(Self::Pt),
-            "pt-BR" => Ok(Self::PtMinusBr),
-            "ro" => Ok(Self::Ro),
-            "ru" => Ok(Self::Ru),
-            "sk" => Ok(Self::Sk),
-            "sl" => Ok(Self::Sl),
-            "sv" => Ok(Self::Sv),
-            "th" => Ok(Self::Th),
-            "tr" => Ok(Self::Tr),
-            "vi" => Ok(Self::Vi),
-            "zh" => Ok(Self::Zh),
-            "zh-HK" => Ok(Self::ZhMinusHk),
-            "zh-TW" => Ok(Self::ZhMinusTw),
-
+            "auto" => Ok(Auto),
+            "bg" => Ok(Bg),
+            "cs" => Ok(Cs),
+            "da" => Ok(Da),
+            "de" => Ok(De),
+            "el" => Ok(El),
+            "en" => Ok(En),
+            "en-GB" => Ok(EnMinusGb),
+            "es" => Ok(Es),
+            "es-419" => Ok(EsMinus419),
+            "et" => Ok(Et),
+            "fi" => Ok(Fi),
+            "fil" => Ok(Fil),
+            "fr" => Ok(Fr),
+            "fr-CA" => Ok(FrMinusCa),
+            "hr" => Ok(Hr),
+            "hu" => Ok(Hu),
+            "id" => Ok(Id),
+            "it" => Ok(It),
+            "ja" => Ok(Ja),
+            "ko" => Ok(Ko),
+            "lt" => Ok(Lt),
+            "lv" => Ok(Lv),
+            "ms" => Ok(Ms),
+            "mt" => Ok(Mt),
+            "nb" => Ok(Nb),
+            "nl" => Ok(Nl),
+            "pl" => Ok(Pl),
+            "pt" => Ok(Pt),
+            "pt-BR" => Ok(PtMinusBr),
+            "ro" => Ok(Ro),
+            "ru" => Ok(Ru),
+            "sk" => Ok(Sk),
+            "sl" => Ok(Sl),
+            "sv" => Ok(Sv),
+            "th" => Ok(Th),
+            "tr" => Ok(Tr),
+            "vi" => Ok(Vi),
+            "zh" => Ok(Zh),
+            "zh-HK" => Ok(ZhMinusHk),
+            "zh-TW" => Ok(ZhMinusTw),
             _ => Err(()),
         }
     }
@@ -419,8 +433,8 @@ impl serde::Serialize for SessionLocale {
 impl<'de> serde::Deserialize<'de> for SessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
     }
 }
 /// The mode of the Checkout Session.
@@ -433,10 +447,11 @@ pub enum SessionMode {
 
 impl SessionMode {
     pub fn as_str(self) -> &'static str {
+        use SessionMode::*;
         match self {
-            Self::Payment => "payment",
-            Self::Setup => "setup",
-            Self::Subscription => "subscription",
+            Payment => "payment",
+            Setup => "setup",
+            Subscription => "subscription",
         }
     }
 }
@@ -444,11 +459,11 @@ impl SessionMode {
 impl std::str::FromStr for SessionMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionMode::*;
         match s {
-            "payment" => Ok(Self::Payment),
-            "setup" => Ok(Self::Setup),
-            "subscription" => Ok(Self::Subscription),
-
+            "payment" => Ok(Payment),
+            "setup" => Ok(Setup),
+            "subscription" => Ok(Subscription),
             _ => Err(()),
         }
     }
@@ -476,8 +491,8 @@ impl serde::Serialize for SessionMode {
 impl<'de> serde::Deserialize<'de> for SessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
     }
 }
 /// String representing the object's type.
@@ -490,8 +505,9 @@ pub enum SessionObject {
 
 impl SessionObject {
     pub fn as_str(self) -> &'static str {
+        use SessionObject::*;
         match self {
-            Self::CheckoutSession => "checkout.session",
+            CheckoutSession => "checkout.session",
         }
     }
 }
@@ -499,9 +515,9 @@ impl SessionObject {
 impl std::str::FromStr for SessionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionObject::*;
         match s {
-            "checkout.session" => Ok(Self::CheckoutSession),
-
+            "checkout.session" => Ok(CheckoutSession),
             _ => Err(()),
         }
     }
@@ -529,8 +545,8 @@ impl serde::Serialize for SessionObject {
 impl<'de> serde::Deserialize<'de> for SessionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
     }
 }
 /// Configure whether a Checkout Session should collect a payment method.
@@ -542,9 +558,10 @@ pub enum SessionPaymentMethodCollection {
 
 impl SessionPaymentMethodCollection {
     pub fn as_str(self) -> &'static str {
+        use SessionPaymentMethodCollection::*;
         match self {
-            Self::Always => "always",
-            Self::IfRequired => "if_required",
+            Always => "always",
+            IfRequired => "if_required",
         }
     }
 }
@@ -552,10 +569,10 @@ impl SessionPaymentMethodCollection {
 impl std::str::FromStr for SessionPaymentMethodCollection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionPaymentMethodCollection::*;
         match s {
-            "always" => Ok(Self::Always),
-            "if_required" => Ok(Self::IfRequired),
-
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
             _ => Err(()),
         }
     }
@@ -583,8 +600,8 @@ impl serde::Serialize for SessionPaymentMethodCollection {
 impl<'de> serde::Deserialize<'de> for SessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SessionPaymentMethodCollection")
         })
     }
@@ -600,10 +617,11 @@ pub enum SessionPaymentStatus {
 
 impl SessionPaymentStatus {
     pub fn as_str(self) -> &'static str {
+        use SessionPaymentStatus::*;
         match self {
-            Self::NoPaymentRequired => "no_payment_required",
-            Self::Paid => "paid",
-            Self::Unpaid => "unpaid",
+            NoPaymentRequired => "no_payment_required",
+            Paid => "paid",
+            Unpaid => "unpaid",
         }
     }
 }
@@ -611,11 +629,11 @@ impl SessionPaymentStatus {
 impl std::str::FromStr for SessionPaymentStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionPaymentStatus::*;
         match s {
-            "no_payment_required" => Ok(Self::NoPaymentRequired),
-            "paid" => Ok(Self::Paid),
-            "unpaid" => Ok(Self::Unpaid),
-
+            "no_payment_required" => Ok(NoPaymentRequired),
+            "paid" => Ok(Paid),
+            "unpaid" => Ok(Unpaid),
             _ => Err(()),
         }
     }
@@ -643,8 +661,8 @@ impl serde::Serialize for SessionPaymentStatus {
 impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
     }
 }
@@ -658,10 +676,11 @@ pub enum SessionStatus {
 
 impl SessionStatus {
     pub fn as_str(self) -> &'static str {
+        use SessionStatus::*;
         match self {
-            Self::Complete => "complete",
-            Self::Expired => "expired",
-            Self::Open => "open",
+            Complete => "complete",
+            Expired => "expired",
+            Open => "open",
         }
     }
 }
@@ -669,11 +688,11 @@ impl SessionStatus {
 impl std::str::FromStr for SessionStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionStatus::*;
         match s {
-            "complete" => Ok(Self::Complete),
-            "expired" => Ok(Self::Expired),
-            "open" => Ok(Self::Open),
-
+            "complete" => Ok(Complete),
+            "expired" => Ok(Expired),
+            "open" => Ok(Open),
             _ => Err(()),
         }
     }
@@ -701,8 +720,8 @@ impl serde::Serialize for SessionStatus {
 impl<'de> serde::Deserialize<'de> for SessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionStatus"))
     }
 }
 /// Describes the type of transaction being performed by Checkout in order to customize
@@ -719,11 +738,12 @@ pub enum SessionSubmitType {
 
 impl SessionSubmitType {
     pub fn as_str(self) -> &'static str {
+        use SessionSubmitType::*;
         match self {
-            Self::Auto => "auto",
-            Self::Book => "book",
-            Self::Donate => "donate",
-            Self::Pay => "pay",
+            Auto => "auto",
+            Book => "book",
+            Donate => "donate",
+            Pay => "pay",
         }
     }
 }
@@ -731,12 +751,12 @@ impl SessionSubmitType {
 impl std::str::FromStr for SessionSubmitType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionSubmitType::*;
         match s {
-            "auto" => Ok(Self::Auto),
-            "book" => Ok(Self::Book),
-            "donate" => Ok(Self::Donate),
-            "pay" => Ok(Self::Pay),
-
+            "auto" => Ok(Auto),
+            "book" => Ok(Book),
+            "donate" => Ok(Donate),
+            "pay" => Ok(Pay),
             _ => Err(()),
         }
     }
@@ -764,8 +784,8 @@ impl serde::Serialize for SessionSubmitType {
 impl<'de> serde::Deserialize<'de> for SessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
     }
 }
@@ -786,8 +806,16 @@ pub mod consent;
 pub use consent::Consent;
 pub mod consent_collection;
 pub use consent_collection::ConsentCollection;
+pub mod currency_conversion;
+pub use currency_conversion::CurrencyConversion;
+pub mod custom_field;
+pub use custom_field::CustomField;
+pub mod custom_text;
+pub use custom_text::CustomText;
 pub mod customer_details;
 pub use customer_details::CustomerDetails;
+pub mod invoice_creation;
+pub use invoice_creation::InvoiceCreation;
 pub mod phone_number_collection;
 pub use phone_number_collection::PhoneNumberCollection;
 pub mod shipping_address_collection;
@@ -800,3 +828,4 @@ pub mod tax_id_collection;
 pub use tax_id_collection::TaxIdCollection;
 pub mod total_details;
 pub use total_details::TotalDetails;
+pub mod requests;

@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::fs;
 use std::fs::File;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{bail, Context, Result};
 use petgraph::dot::{Config, Dot};
 use structopt::StructOpt;
 
@@ -110,14 +110,14 @@ fn main() -> Result<()> {
             if *krate == Crate::Types {
                 format!("{}/mod.rs", krate.generated_out_path())
             } else {
-                format!("{}/src/lib.rs", krate.generated_out_path())
+                format!("{}/src/mod.rs", krate.generated_out_path())
             }
         ));
     }
 
     let out = fmt_cmd.output()?;
     if !out.status.success() {
-        return Err(anyhow!("Rustfmt failed with outputs {:?}", out));
+        bail!("Rustfmt failed with outputs {:?}", out);
     }
 
     if !args.dry_run {
@@ -137,7 +137,7 @@ fn run_rsync(src: &str, dest: &str) -> Result<()> {
         .output()?;
 
     if !out.status.success() {
-        return Err(anyhow!("rsync failed with outputs {:?}", out));
+        bail!("rsync failed with outputs {:?}", out);
     }
     Ok(())
 }

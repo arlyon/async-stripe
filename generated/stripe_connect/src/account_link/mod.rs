@@ -27,8 +27,9 @@ pub enum AccountLinkObject {
 
 impl AccountLinkObject {
     pub fn as_str(self) -> &'static str {
+        use AccountLinkObject::*;
         match self {
-            Self::AccountLink => "account_link",
+            AccountLink => "account_link",
         }
     }
 }
@@ -36,9 +37,9 @@ impl AccountLinkObject {
 impl std::str::FromStr for AccountLinkObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountLinkObject::*;
         match s {
-            "account_link" => Ok(Self::AccountLink),
-
+            "account_link" => Ok(AccountLink),
             _ => Err(()),
         }
     }
@@ -66,8 +67,9 @@ impl serde::Serialize for AccountLinkObject {
 impl<'de> serde::Deserialize<'de> for AccountLinkObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountLinkObject"))
     }
 }
+pub mod requests;

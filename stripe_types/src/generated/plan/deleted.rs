@@ -19,8 +19,9 @@ pub enum DeletedPlanObject {
 
 impl DeletedPlanObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedPlanObject::*;
         match self {
-            Self::Plan => "plan",
+            Plan => "plan",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedPlanObject {
 impl std::str::FromStr for DeletedPlanObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedPlanObject::*;
         match s {
-            "plan" => Ok(Self::Plan),
-
+            "plan" => Ok(Plan),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedPlanObject {
 impl<'de> serde::Deserialize<'de> for DeletedPlanObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedPlanObject"))
     }
 }

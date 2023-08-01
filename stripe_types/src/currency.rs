@@ -460,3 +460,35 @@ impl std::error::Error for ParseCurrencyError {
         "unknown currency code"
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn debug_currency() {
+        assert_eq!(format!("{:?}", Currency::AED), "AED");
+        assert_eq!(format!("{:?}", Currency::USD), "USD");
+        assert_eq!(format!("{:?}", Currency::ZMW), "ZMW");
+    }
+
+    #[test]
+    fn display_currency() {
+        assert_eq!(format!("{}", Currency::AED), "aed");
+        assert_eq!(format!("{}", Currency::USD), "usd");
+        assert_eq!(format!("{}", Currency::ZMW), "zmw");
+    }
+
+    #[test]
+    fn serialize_currency() {
+        assert_eq!(serde_json::to_string(&Currency::AED).unwrap(), "\"aed\"");
+        assert_eq!(serde_json::to_string(&Currency::USD).unwrap(), "\"usd\"");
+        assert_eq!(serde_json::to_string(&Currency::ZMW).unwrap(), "\"zmw\"");
+    }
+
+    #[test]
+    fn deserialize_currency() {
+        assert_eq!(serde_json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
+        assert_eq!(serde_json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
+        assert_eq!(serde_json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
+    }
+}

@@ -19,8 +19,9 @@ pub enum DeletedSubscriptionItemObject {
 
 impl DeletedSubscriptionItemObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedSubscriptionItemObject::*;
         match self {
-            Self::SubscriptionItem => "subscription_item",
+            SubscriptionItem => "subscription_item",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedSubscriptionItemObject {
 impl std::str::FromStr for DeletedSubscriptionItemObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedSubscriptionItemObject::*;
         match s {
-            "subscription_item" => Ok(Self::SubscriptionItem),
-
+            "subscription_item" => Ok(SubscriptionItem),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedSubscriptionItemObject {
 impl<'de> serde::Deserialize<'de> for DeletedSubscriptionItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DeletedSubscriptionItemObject")
         })
     }

@@ -54,14 +54,15 @@ pub fn write_fieldless_enum_variants(
     // Build the body of the `as_str` implementation
     let mut as_str_body = String::with_capacity(32);
     for FieldlessVariant { wire_name, variant_name } in variants {
-        let _ = writeln!(as_str_body, r#"Self::{variant_name} => "{wire_name}","#);
+        let _ = writeln!(as_str_body, r#"{variant_name} => "{wire_name}","#);
     }
 
     // Build the body of the `from_str` implementation
     let mut from_str_body = String::with_capacity(32);
     for FieldlessVariant { wire_name, variant_name } in variants {
-        let _ = writeln!(from_str_body, r#""{wire_name}" => Ok(Self::{variant_name}),"#);
+        let _ = writeln!(from_str_body, r#""{wire_name}" => Ok({variant_name}),"#);
     }
+    let _ = writeln!(from_str_body, "_ => Err(())");
 
     let derive_deser = additional_derives.derives_deserialize();
     let derive_serialize = additional_derives.derives_serialize();
@@ -82,6 +83,7 @@ pub fn write_fieldless_enum_variants(
 
             impl {enum_name} {{
                 pub fn as_str(self) -> &'static str {{
+                    use {enum_name}::*;
                     match self {{
             {as_str_body}
                     }}
@@ -91,9 +93,9 @@ pub fn write_fieldless_enum_variants(
             impl std::str::FromStr for {enum_name} {{
                 type Err = ();
                 fn from_str(s: &str) -> Result<Self, Self::Err> {{
+                    use {enum_name}::*;
                     match s {{
                 {from_str_body}
-                        _ => Err(())
                     }}
                 }}
             }}
@@ -132,8 +134,8 @@ pub fn write_fieldless_enum_variants(
             impl<'de> serde::Deserialize<'de> for {enum_name} {{
                 fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {{
                     use std::str::FromStr;
-                    let s: String = serde::Deserialize::deserialize(deserializer)?;
-                    Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
+                    let s: &str = serde::Deserialize::deserialize(deserializer)?;
+                    Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
                 }}
             }}
             "#

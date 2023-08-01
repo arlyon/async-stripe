@@ -48,8 +48,9 @@ pub enum PromotionCodeObject {
 
 impl PromotionCodeObject {
     pub fn as_str(self) -> &'static str {
+        use PromotionCodeObject::*;
         match self {
-            Self::PromotionCode => "promotion_code",
+            PromotionCode => "promotion_code",
         }
     }
 }
@@ -57,9 +58,9 @@ impl PromotionCodeObject {
 impl std::str::FromStr for PromotionCodeObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PromotionCodeObject::*;
         match s {
-            "promotion_code" => Ok(Self::PromotionCode),
-
+            "promotion_code" => Ok(PromotionCode),
             _ => Err(()),
         }
     }
@@ -87,8 +88,8 @@ impl serde::Serialize for PromotionCodeObject {
 impl<'de> serde::Deserialize<'de> for PromotionCodeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PromotionCodeObject"))
     }
 }

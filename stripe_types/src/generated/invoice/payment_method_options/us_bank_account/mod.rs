@@ -17,10 +17,11 @@ pub enum UsBankAccountVerificationMethod {
 
 impl UsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
+        use UsBankAccountVerificationMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Instant => "instant",
-            Self::Microdeposits => "microdeposits",
+            Automatic => "automatic",
+            Instant => "instant",
+            Microdeposits => "microdeposits",
         }
     }
 }
@@ -28,11 +29,11 @@ impl UsBankAccountVerificationMethod {
 impl std::str::FromStr for UsBankAccountVerificationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UsBankAccountVerificationMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "instant" => Ok(Self::Instant),
-            "microdeposits" => Ok(Self::Microdeposits),
-
+            "automatic" => Ok(Automatic),
+            "instant" => Ok(Instant),
+            "microdeposits" => Ok(Microdeposits),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for UsBankAccountVerificationMethod {
 impl<'de> serde::Deserialize<'de> for UsBankAccountVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for UsBankAccountVerificationMethod")
         })
     }

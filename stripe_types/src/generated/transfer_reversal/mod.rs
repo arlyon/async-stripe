@@ -3,7 +3,7 @@
 /// to refund any related application fees.
 ///
 /// Transfer reversals add to the platform's balance and subtract from the destination account's balance.  Reversing a transfer that was made for a [destination charge](/docs/connect/destination-charges) is allowed only up to the amount of the charge.
-/// It is possible to reverse a [transfer_group](https://stripe.com/docs/connect/charges-transfers#transfer-options) transfer only if the destination account has enough balance to cover the reversal.  Related guide: [Reversing Transfers](https://stripe.com/docs/connect/charges-transfers#reversing-transfers).
+/// It is possible to reverse a [transfer_group](https://stripe.com/docs/connect/charges-transfers#transfer-options) transfer only if the destination account has enough balance to cover the reversal.  Related guide: [Reversing transfers](https://stripe.com/docs/connect/charges-transfers#reversing-transfers).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransferReversal {
     /// Amount, in %s.
@@ -46,8 +46,9 @@ pub enum TransferReversalObject {
 
 impl TransferReversalObject {
     pub fn as_str(self) -> &'static str {
+        use TransferReversalObject::*;
         match self {
-            Self::TransferReversal => "transfer_reversal",
+            TransferReversal => "transfer_reversal",
         }
     }
 }
@@ -55,9 +56,9 @@ impl TransferReversalObject {
 impl std::str::FromStr for TransferReversalObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TransferReversalObject::*;
         match s {
-            "transfer_reversal" => Ok(Self::TransferReversal),
-
+            "transfer_reversal" => Ok(TransferReversal),
             _ => Err(()),
         }
     }
@@ -85,8 +86,8 @@ impl serde::Serialize for TransferReversalObject {
 impl<'de> serde::Deserialize<'de> for TransferReversalObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for TransferReversalObject"))
     }
 }

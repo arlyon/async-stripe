@@ -1,6 +1,6 @@
 /// A Connection Token is used by the Stripe Terminal SDK to connect to a reader.
 ///
-/// Related guide: [Fleet Management](https://stripe.com/docs/terminal/fleet/locations).
+/// Related guide: [Fleet management](https://stripe.com/docs/terminal/fleet/locations).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ConnectionToken {
     /// The id of the location that this connection token is scoped to.
@@ -26,8 +26,9 @@ pub enum ConnectionTokenObject {
 
 impl ConnectionTokenObject {
     pub fn as_str(self) -> &'static str {
+        use ConnectionTokenObject::*;
         match self {
-            Self::TerminalConnectionToken => "terminal.connection_token",
+            TerminalConnectionToken => "terminal.connection_token",
         }
     }
 }
@@ -35,9 +36,9 @@ impl ConnectionTokenObject {
 impl std::str::FromStr for ConnectionTokenObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConnectionTokenObject::*;
         match s {
-            "terminal.connection_token" => Ok(Self::TerminalConnectionToken),
-
+            "terminal.connection_token" => Ok(TerminalConnectionToken),
             _ => Err(()),
         }
     }
@@ -65,8 +66,9 @@ impl serde::Serialize for ConnectionTokenObject {
 impl<'de> serde::Deserialize<'de> for ConnectionTokenObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConnectionTokenObject"))
     }
 }
+pub mod requests;

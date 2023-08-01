@@ -172,14 +172,6 @@ impl RustType {
         }
     }
 
-    pub fn as_path_to_component(&self) -> Option<&ComponentPath> {
-        match self {
-            Self::Container(typ) => typ.value_typ().as_path_to_component(),
-            Self::Path { path: PathToType::Component(path), .. } => Some(path),
-            _ => None,
-        }
-    }
-
     pub fn as_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),

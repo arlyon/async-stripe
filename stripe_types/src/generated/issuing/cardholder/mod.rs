@@ -1,6 +1,6 @@
 /// An Issuing `Cardholder` object represents an individual or business entity who is [issued](https://stripe.com/docs/issuing) cards.
 ///
-/// Related guide: [How to create a Cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
+/// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Cardholder {
     pub billing: stripe_types::issuing::cardholder::billing::Billing,
@@ -44,6 +44,8 @@ pub struct Cardholder {
     /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: CardholderStatus,
     /// One of `individual` or `company`.
+    ///
+    /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
     #[serde(rename = "type")]
     pub type_: CardholderType,
 }
@@ -57,8 +59,9 @@ pub enum CardholderObject {
 
 impl CardholderObject {
     pub fn as_str(self) -> &'static str {
+        use CardholderObject::*;
         match self {
-            Self::IssuingCardholder => "issuing.cardholder",
+            IssuingCardholder => "issuing.cardholder",
         }
     }
 }
@@ -66,9 +69,9 @@ impl CardholderObject {
 impl std::str::FromStr for CardholderObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardholderObject::*;
         match s {
-            "issuing.cardholder" => Ok(Self::IssuingCardholder),
-
+            "issuing.cardholder" => Ok(IssuingCardholder),
             _ => Err(()),
         }
     }
@@ -96,8 +99,8 @@ impl serde::Serialize for CardholderObject {
 impl<'de> serde::Deserialize<'de> for CardholderObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardholderObject"))
     }
 }
@@ -111,10 +114,11 @@ pub enum CardholderStatus {
 
 impl CardholderStatus {
     pub fn as_str(self) -> &'static str {
+        use CardholderStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Blocked => "blocked",
-            Self::Inactive => "inactive",
+            Active => "active",
+            Blocked => "blocked",
+            Inactive => "inactive",
         }
     }
 }
@@ -122,11 +126,11 @@ impl CardholderStatus {
 impl std::str::FromStr for CardholderStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardholderStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "blocked" => Ok(Self::Blocked),
-            "inactive" => Ok(Self::Inactive),
-
+            "active" => Ok(Active),
+            "blocked" => Ok(Blocked),
+            "inactive" => Ok(Inactive),
             _ => Err(()),
         }
     }
@@ -154,12 +158,14 @@ impl serde::Serialize for CardholderStatus {
 impl<'de> serde::Deserialize<'de> for CardholderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardholderStatus"))
     }
 }
 /// One of `individual` or `company`.
+///
+/// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CardholderType {
     Company,
@@ -168,9 +174,10 @@ pub enum CardholderType {
 
 impl CardholderType {
     pub fn as_str(self) -> &'static str {
+        use CardholderType::*;
         match self {
-            Self::Company => "company",
-            Self::Individual => "individual",
+            Company => "company",
+            Individual => "individual",
         }
     }
 }
@@ -178,10 +185,10 @@ impl CardholderType {
 impl std::str::FromStr for CardholderType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardholderType::*;
         match s {
-            "company" => Ok(Self::Company),
-            "individual" => Ok(Self::Individual),
-
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
             _ => Err(()),
         }
     }
@@ -209,8 +216,8 @@ impl serde::Serialize for CardholderType {
 impl<'de> serde::Deserialize<'de> for CardholderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardholderType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CardholderType"))
     }
 }
 impl stripe_types::Object for Cardholder {

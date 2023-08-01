@@ -124,8 +124,9 @@ pub enum SourceObject {
 
 impl SourceObject {
     pub fn as_str(self) -> &'static str {
+        use SourceObject::*;
         match self {
-            Self::Source => "source",
+            Source => "source",
         }
     }
 }
@@ -133,9 +134,9 @@ impl SourceObject {
 impl std::str::FromStr for SourceObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SourceObject::*;
         match s {
-            "source" => Ok(Self::Source),
-
+            "source" => Ok(Source),
             _ => Err(()),
         }
     }
@@ -163,8 +164,8 @@ impl serde::Serialize for SourceObject {
 impl<'de> serde::Deserialize<'de> for SourceObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SourceObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SourceObject"))
     }
 }
 /// The `type` of the source.
@@ -197,26 +198,27 @@ pub enum SourceType {
 
 impl SourceType {
     pub fn as_str(self) -> &'static str {
+        use SourceType::*;
         match self {
-            Self::AchCreditTransfer => "ach_credit_transfer",
-            Self::AchDebit => "ach_debit",
-            Self::AcssDebit => "acss_debit",
-            Self::Alipay => "alipay",
-            Self::AuBecsDebit => "au_becs_debit",
-            Self::Bancontact => "bancontact",
-            Self::Card => "card",
-            Self::CardPresent => "card_present",
-            Self::Eps => "eps",
-            Self::Giropay => "giropay",
-            Self::Ideal => "ideal",
-            Self::Klarna => "klarna",
-            Self::Multibanco => "multibanco",
-            Self::P24 => "p24",
-            Self::SepaCreditTransfer => "sepa_credit_transfer",
-            Self::SepaDebit => "sepa_debit",
-            Self::Sofort => "sofort",
-            Self::ThreeDSecure => "three_d_secure",
-            Self::Wechat => "wechat",
+            AchCreditTransfer => "ach_credit_transfer",
+            AchDebit => "ach_debit",
+            AcssDebit => "acss_debit",
+            Alipay => "alipay",
+            AuBecsDebit => "au_becs_debit",
+            Bancontact => "bancontact",
+            Card => "card",
+            CardPresent => "card_present",
+            Eps => "eps",
+            Giropay => "giropay",
+            Ideal => "ideal",
+            Klarna => "klarna",
+            Multibanco => "multibanco",
+            P24 => "p24",
+            SepaCreditTransfer => "sepa_credit_transfer",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            ThreeDSecure => "three_d_secure",
+            Wechat => "wechat",
         }
     }
 }
@@ -224,27 +226,27 @@ impl SourceType {
 impl std::str::FromStr for SourceType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SourceType::*;
         match s {
-            "ach_credit_transfer" => Ok(Self::AchCreditTransfer),
-            "ach_debit" => Ok(Self::AchDebit),
-            "acss_debit" => Ok(Self::AcssDebit),
-            "alipay" => Ok(Self::Alipay),
-            "au_becs_debit" => Ok(Self::AuBecsDebit),
-            "bancontact" => Ok(Self::Bancontact),
-            "card" => Ok(Self::Card),
-            "card_present" => Ok(Self::CardPresent),
-            "eps" => Ok(Self::Eps),
-            "giropay" => Ok(Self::Giropay),
-            "ideal" => Ok(Self::Ideal),
-            "klarna" => Ok(Self::Klarna),
-            "multibanco" => Ok(Self::Multibanco),
-            "p24" => Ok(Self::P24),
-            "sepa_credit_transfer" => Ok(Self::SepaCreditTransfer),
-            "sepa_debit" => Ok(Self::SepaDebit),
-            "sofort" => Ok(Self::Sofort),
-            "three_d_secure" => Ok(Self::ThreeDSecure),
-            "wechat" => Ok(Self::Wechat),
-
+            "ach_credit_transfer" => Ok(AchCreditTransfer),
+            "ach_debit" => Ok(AchDebit),
+            "acss_debit" => Ok(AcssDebit),
+            "alipay" => Ok(Alipay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bancontact" => Ok(Bancontact),
+            "card" => Ok(Card),
+            "card_present" => Ok(CardPresent),
+            "eps" => Ok(Eps),
+            "giropay" => Ok(Giropay),
+            "ideal" => Ok(Ideal),
+            "klarna" => Ok(Klarna),
+            "multibanco" => Ok(Multibanco),
+            "p24" => Ok(P24),
+            "sepa_credit_transfer" => Ok(SepaCreditTransfer),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "three_d_secure" => Ok(ThreeDSecure),
+            "wechat" => Ok(Wechat),
             _ => Err(()),
         }
     }
@@ -272,8 +274,8 @@ impl serde::Serialize for SourceType {
 impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SourceType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SourceType"))
     }
 }
 impl stripe_types::Object for Source {

@@ -19,6 +19,8 @@ pub boleto: Option<stripe_checkout::checkout::session::payment_method_options::b
 #[serde(skip_serializing_if = "Option::is_none")]
 pub card: Option<stripe_checkout::checkout::session::payment_method_options::card::Card>,
 #[serde(skip_serializing_if = "Option::is_none")]
+pub cashapp: Option<stripe_checkout::checkout::session::payment_method_options::cashapp::Cashapp>,
+#[serde(skip_serializing_if = "Option::is_none")]
 pub customer_balance: Option<stripe_checkout::checkout::session::payment_method_options::customer_balance::CustomerBalance>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub eps: Option<stripe_checkout::checkout::session::payment_method_options::eps::Eps>,
@@ -34,6 +36,8 @@ pub ideal: Option<stripe_checkout::checkout::session::payment_method_options::id
 pub klarna: Option<stripe_checkout::checkout::session::payment_method_options::klarna::Klarna>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub konbini: Option<stripe_checkout::checkout::session::payment_method_options::konbini::Konbini>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub link: Option<stripe_checkout::checkout::session::payment_method_options::link::Link>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub oxxo: Option<stripe_checkout::checkout::session::payment_method_options::oxxo::Oxxo>,
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,6 +72,8 @@ pub mod boleto;
 pub use boleto::Boleto;
 pub mod card;
 pub use card::Card;
+pub mod cashapp;
+pub use cashapp::Cashapp;
 pub mod bank_transfer;
 pub use bank_transfer::BankTransfer;
 pub mod customer_balance;
@@ -86,6 +92,8 @@ pub mod klarna;
 pub use klarna::Klarna;
 pub mod konbini;
 pub use konbini::Konbini;
+pub mod link;
+pub use link::Link;
 pub mod oxxo;
 pub use oxxo::Oxxo;
 pub mod p24;

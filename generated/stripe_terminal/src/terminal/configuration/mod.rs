@@ -29,8 +29,9 @@ pub enum ConfigurationObject {
 
 impl ConfigurationObject {
     pub fn as_str(self) -> &'static str {
+        use ConfigurationObject::*;
         match self {
-            Self::TerminalConfiguration => "terminal.configuration",
+            TerminalConfiguration => "terminal.configuration",
         }
     }
 }
@@ -38,9 +39,9 @@ impl ConfigurationObject {
 impl std::str::FromStr for ConfigurationObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfigurationObject::*;
         match s {
-            "terminal.configuration" => Ok(Self::TerminalConfiguration),
-
+            "terminal.configuration" => Ok(TerminalConfiguration),
             _ => Err(()),
         }
     }
@@ -68,8 +69,8 @@ impl serde::Serialize for ConfigurationObject {
 impl<'de> serde::Deserialize<'de> for ConfigurationObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ConfigurationObject"))
     }
 }
@@ -80,11 +81,12 @@ impl stripe_types::Object for Configuration {
     }
 }
 stripe_types::def_id!(TerminalConfigurationId, "tmc_");
-pub mod deleted;
-pub use deleted::DeletedConfiguration;
 pub mod currency_specific_config;
 pub use currency_specific_config::CurrencySpecificConfig;
 pub mod device_type_specific_config;
 pub use device_type_specific_config::DeviceTypeSpecificConfig;
 pub mod tipping;
 pub use tipping::Tipping;
+pub mod deleted;
+pub use deleted::DeletedConfiguration;
+pub mod requests;

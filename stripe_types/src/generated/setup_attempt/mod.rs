@@ -63,9 +63,10 @@ pub enum SetupAttemptFlowDirections {
 
 impl SetupAttemptFlowDirections {
     pub fn as_str(self) -> &'static str {
+        use SetupAttemptFlowDirections::*;
         match self {
-            Self::Inbound => "inbound",
-            Self::Outbound => "outbound",
+            Inbound => "inbound",
+            Outbound => "outbound",
         }
     }
 }
@@ -73,10 +74,10 @@ impl SetupAttemptFlowDirections {
 impl std::str::FromStr for SetupAttemptFlowDirections {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupAttemptFlowDirections::*;
         match s {
-            "inbound" => Ok(Self::Inbound),
-            "outbound" => Ok(Self::Outbound),
-
+            "inbound" => Ok(Inbound),
+            "outbound" => Ok(Outbound),
             _ => Err(()),
         }
     }
@@ -104,8 +105,8 @@ impl serde::Serialize for SetupAttemptFlowDirections {
 impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptFlowDirections"))
     }
 }
@@ -119,8 +120,9 @@ pub enum SetupAttemptObject {
 
 impl SetupAttemptObject {
     pub fn as_str(self) -> &'static str {
+        use SetupAttemptObject::*;
         match self {
-            Self::SetupAttempt => "setup_attempt",
+            SetupAttempt => "setup_attempt",
         }
     }
 }
@@ -128,9 +130,9 @@ impl SetupAttemptObject {
 impl std::str::FromStr for SetupAttemptObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SetupAttemptObject::*;
         match s {
-            "setup_attempt" => Ok(Self::SetupAttempt),
-
+            "setup_attempt" => Ok(SetupAttempt),
             _ => Err(()),
         }
     }
@@ -158,8 +160,8 @@ impl serde::Serialize for SetupAttemptObject {
 impl<'de> serde::Deserialize<'de> for SetupAttemptObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptObject"))
     }
 }

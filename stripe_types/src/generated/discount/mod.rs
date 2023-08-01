@@ -1,7 +1,7 @@
 /// A discount represents the actual application of a [coupon](https://stripe.com/docs/api#coupons) or [promotion code](https://stripe.com/docs/api#promotion_codes).
 /// It contains information about when the discount began, when it will end, and what it is applied to.
 ///
-/// Related guide: [Applying Discounts to Subscriptions](https://stripe.com/docs/billing/subscriptions/discounts).
+/// Related guide: [Applying discounts to subscriptions](https://stripe.com/docs/billing/subscriptions/discounts).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Discount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
@@ -46,8 +46,9 @@ pub enum DiscountObject {
 
 impl DiscountObject {
     pub fn as_str(self) -> &'static str {
+        use DiscountObject::*;
         match self {
-            Self::Discount => "discount",
+            Discount => "discount",
         }
     }
 }
@@ -55,9 +56,9 @@ impl DiscountObject {
 impl std::str::FromStr for DiscountObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DiscountObject::*;
         match s {
-            "discount" => Ok(Self::Discount),
-
+            "discount" => Ok(Discount),
             _ => Err(()),
         }
     }
@@ -85,8 +86,8 @@ impl serde::Serialize for DiscountObject {
 impl<'de> serde::Deserialize<'de> for DiscountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DiscountObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DiscountObject"))
     }
 }
 impl stripe_types::Object for Discount {

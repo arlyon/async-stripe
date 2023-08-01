@@ -121,8 +121,9 @@ pub enum CustomerObject {
 
 impl CustomerObject {
     pub fn as_str(self) -> &'static str {
+        use CustomerObject::*;
         match self {
-            Self::Customer => "customer",
+            Customer => "customer",
         }
     }
 }
@@ -130,9 +131,9 @@ impl CustomerObject {
 impl std::str::FromStr for CustomerObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerObject::*;
         match s {
-            "customer" => Ok(Self::Customer),
-
+            "customer" => Ok(Customer),
             _ => Err(()),
         }
     }
@@ -160,8 +161,8 @@ impl serde::Serialize for CustomerObject {
 impl<'de> serde::Deserialize<'de> for CustomerObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerObject"))
     }
 }
 /// Describes the customer's tax exemption status.
@@ -177,10 +178,11 @@ pub enum CustomerTaxExempt {
 
 impl CustomerTaxExempt {
     pub fn as_str(self) -> &'static str {
+        use CustomerTaxExempt::*;
         match self {
-            Self::Exempt => "exempt",
-            Self::None => "none",
-            Self::Reverse => "reverse",
+            Exempt => "exempt",
+            None => "none",
+            Reverse => "reverse",
         }
     }
 }
@@ -188,11 +190,11 @@ impl CustomerTaxExempt {
 impl std::str::FromStr for CustomerTaxExempt {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerTaxExempt::*;
         match s {
-            "exempt" => Ok(Self::Exempt),
-            "none" => Ok(Self::None),
-            "reverse" => Ok(Self::Reverse),
-
+            "exempt" => Ok(Exempt),
+            "none" => Ok(None),
+            "reverse" => Ok(Reverse),
             _ => Err(()),
         }
     }
@@ -220,8 +222,8 @@ impl serde::Serialize for CustomerTaxExempt {
 impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
     }
 }
@@ -231,10 +233,10 @@ impl stripe_types::Object for Customer {
         self.id.clone()
     }
 }
-stripe_types::def_id!(CustomerId, "cs_");
-pub mod deleted;
-pub use deleted::DeletedCustomer;
+stripe_types::def_id!(CustomerId, "cus_");
 pub mod tax;
 pub use tax::Tax;
 pub mod invoice_settings;
 pub use invoice_settings::InvoiceSettings;
+pub mod deleted;
+pub use deleted::DeletedCustomer;

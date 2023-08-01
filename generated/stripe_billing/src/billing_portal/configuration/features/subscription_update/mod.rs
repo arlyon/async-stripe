@@ -26,10 +26,11 @@ pub enum SubscriptionUpdateDefaultAllowedUpdates {
 
 impl SubscriptionUpdateDefaultAllowedUpdates {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionUpdateDefaultAllowedUpdates::*;
         match self {
-            Self::Price => "price",
-            Self::PromotionCode => "promotion_code",
-            Self::Quantity => "quantity",
+            Price => "price",
+            PromotionCode => "promotion_code",
+            Quantity => "quantity",
         }
     }
 }
@@ -37,11 +38,11 @@ impl SubscriptionUpdateDefaultAllowedUpdates {
 impl std::str::FromStr for SubscriptionUpdateDefaultAllowedUpdates {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionUpdateDefaultAllowedUpdates::*;
         match s {
-            "price" => Ok(Self::Price),
-            "promotion_code" => Ok(Self::PromotionCode),
-            "quantity" => Ok(Self::Quantity),
-
+            "price" => Ok(Price),
+            "promotion_code" => Ok(PromotionCode),
+            "quantity" => Ok(Quantity),
             _ => Err(()),
         }
     }
@@ -69,8 +70,8 @@ impl serde::Serialize for SubscriptionUpdateDefaultAllowedUpdates {
 impl<'de> serde::Deserialize<'de> for SubscriptionUpdateDefaultAllowedUpdates {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionUpdateDefaultAllowedUpdates")
         })
     }
@@ -87,10 +88,11 @@ pub enum SubscriptionUpdateProrationBehavior {
 
 impl SubscriptionUpdateProrationBehavior {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionUpdateProrationBehavior::*;
         match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
         }
     }
 }
@@ -98,11 +100,11 @@ impl SubscriptionUpdateProrationBehavior {
 impl std::str::FromStr for SubscriptionUpdateProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionUpdateProrationBehavior::*;
         match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
             _ => Err(()),
         }
     }
@@ -130,8 +132,8 @@ impl serde::Serialize for SubscriptionUpdateProrationBehavior {
 impl<'de> serde::Deserialize<'de> for SubscriptionUpdateProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionUpdateProrationBehavior")
         })
     }

@@ -27,7 +27,7 @@ pub struct InvoiceLineItem {
     pub id: stripe_types::invoice_line_item::LineItemId,
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<String>,
+    pub invoice_item: Option<stripe_types::Expandable<stripe_types::invoice_item::InvoiceItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -51,12 +51,13 @@ pub struct InvoiceLineItem {
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
     /// The subscription that the invoice item pertains to, if any.
-    pub subscription: Option<String>,
-    /// The subscription item that generated this invoice item.
+    pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
+    /// The subscription item that generated this line item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<String>,
+    pub subscription_item:
+        Option<stripe_types::Expandable<stripe_types::subscription_item::SubscriptionItem>>,
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<stripe_types::invoice::tax_amount::TaxAmount>>,
@@ -79,8 +80,9 @@ pub enum InvoiceLineItemObject {
 
 impl InvoiceLineItemObject {
     pub fn as_str(self) -> &'static str {
+        use InvoiceLineItemObject::*;
         match self {
-            Self::LineItem => "line_item",
+            LineItem => "line_item",
         }
     }
 }
@@ -88,9 +90,9 @@ impl InvoiceLineItemObject {
 impl std::str::FromStr for InvoiceLineItemObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceLineItemObject::*;
         match s {
-            "line_item" => Ok(Self::LineItem),
-
+            "line_item" => Ok(LineItem),
             _ => Err(()),
         }
     }
@@ -118,8 +120,8 @@ impl serde::Serialize for InvoiceLineItemObject {
 impl<'de> serde::Deserialize<'de> for InvoiceLineItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemObject"))
     }
 }
@@ -132,9 +134,10 @@ pub enum InvoiceLineItemType {
 
 impl InvoiceLineItemType {
     pub fn as_str(self) -> &'static str {
+        use InvoiceLineItemType::*;
         match self {
-            Self::Invoiceitem => "invoiceitem",
-            Self::Subscription => "subscription",
+            Invoiceitem => "invoiceitem",
+            Subscription => "subscription",
         }
     }
 }
@@ -142,10 +145,10 @@ impl InvoiceLineItemType {
 impl std::str::FromStr for InvoiceLineItemType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InvoiceLineItemType::*;
         match s {
-            "invoiceitem" => Ok(Self::Invoiceitem),
-            "subscription" => Ok(Self::Subscription),
-
+            "invoiceitem" => Ok(Invoiceitem),
+            "subscription" => Ok(Subscription),
             _ => Err(()),
         }
     }
@@ -173,8 +176,8 @@ impl serde::Serialize for InvoiceLineItemType {
 impl<'de> serde::Deserialize<'de> for InvoiceLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
     }
 }

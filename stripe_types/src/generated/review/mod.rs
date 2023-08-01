@@ -61,12 +61,13 @@ pub enum ReviewClosedReason {
 
 impl ReviewClosedReason {
     pub fn as_str(self) -> &'static str {
+        use ReviewClosedReason::*;
         match self {
-            Self::Approved => "approved",
-            Self::Disputed => "disputed",
-            Self::Redacted => "redacted",
-            Self::Refunded => "refunded",
-            Self::RefundedAsFraud => "refunded_as_fraud",
+            Approved => "approved",
+            Disputed => "disputed",
+            Redacted => "redacted",
+            Refunded => "refunded",
+            RefundedAsFraud => "refunded_as_fraud",
         }
     }
 }
@@ -74,13 +75,13 @@ impl ReviewClosedReason {
 impl std::str::FromStr for ReviewClosedReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReviewClosedReason::*;
         match s {
-            "approved" => Ok(Self::Approved),
-            "disputed" => Ok(Self::Disputed),
-            "redacted" => Ok(Self::Redacted),
-            "refunded" => Ok(Self::Refunded),
-            "refunded_as_fraud" => Ok(Self::RefundedAsFraud),
-
+            "approved" => Ok(Approved),
+            "disputed" => Ok(Disputed),
+            "redacted" => Ok(Redacted),
+            "refunded" => Ok(Refunded),
+            "refunded_as_fraud" => Ok(RefundedAsFraud),
             _ => Err(()),
         }
     }
@@ -108,8 +109,8 @@ impl serde::Serialize for ReviewClosedReason {
 impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReviewClosedReason"))
     }
 }
@@ -123,8 +124,9 @@ pub enum ReviewObject {
 
 impl ReviewObject {
     pub fn as_str(self) -> &'static str {
+        use ReviewObject::*;
         match self {
-            Self::Review => "review",
+            Review => "review",
         }
     }
 }
@@ -132,9 +134,9 @@ impl ReviewObject {
 impl std::str::FromStr for ReviewObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReviewObject::*;
         match s {
-            "review" => Ok(Self::Review),
-
+            "review" => Ok(Review),
             _ => Err(()),
         }
     }
@@ -162,8 +164,8 @@ impl serde::Serialize for ReviewObject {
 impl<'de> serde::Deserialize<'de> for ReviewObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReviewObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ReviewObject"))
     }
 }
 /// The reason the review was opened.
@@ -177,9 +179,10 @@ pub enum ReviewOpenedReason {
 
 impl ReviewOpenedReason {
     pub fn as_str(self) -> &'static str {
+        use ReviewOpenedReason::*;
         match self {
-            Self::Manual => "manual",
-            Self::Rule => "rule",
+            Manual => "manual",
+            Rule => "rule",
         }
     }
 }
@@ -187,10 +190,10 @@ impl ReviewOpenedReason {
 impl std::str::FromStr for ReviewOpenedReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ReviewOpenedReason::*;
         match s {
-            "manual" => Ok(Self::Manual),
-            "rule" => Ok(Self::Rule),
-
+            "manual" => Ok(Manual),
+            "rule" => Ok(Rule),
             _ => Err(()),
         }
     }
@@ -218,8 +221,8 @@ impl serde::Serialize for ReviewOpenedReason {
 impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ReviewOpenedReason"))
     }
 }

@@ -33,8 +33,9 @@ pub enum MandateObject {
 
 impl MandateObject {
     pub fn as_str(self) -> &'static str {
+        use MandateObject::*;
         match self {
-            Self::Mandate => "mandate",
+            Mandate => "mandate",
         }
     }
 }
@@ -42,9 +43,9 @@ impl MandateObject {
 impl std::str::FromStr for MandateObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use MandateObject::*;
         match s {
-            "mandate" => Ok(Self::Mandate),
-
+            "mandate" => Ok(Mandate),
             _ => Err(()),
         }
     }
@@ -72,8 +73,8 @@ impl serde::Serialize for MandateObject {
 impl<'de> serde::Deserialize<'de> for MandateObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateObject"))
     }
 }
 /// The status of the mandate, which indicates whether it can be used to initiate a payment.
@@ -86,10 +87,11 @@ pub enum MandateStatus {
 
 impl MandateStatus {
     pub fn as_str(self) -> &'static str {
+        use MandateStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Inactive => "inactive",
-            Self::Pending => "pending",
+            Active => "active",
+            Inactive => "inactive",
+            Pending => "pending",
         }
     }
 }
@@ -97,11 +99,11 @@ impl MandateStatus {
 impl std::str::FromStr for MandateStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use MandateStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "inactive" => Ok(Self::Inactive),
-            "pending" => Ok(Self::Pending),
-
+            "active" => Ok(Active),
+            "inactive" => Ok(Inactive),
+            "pending" => Ok(Pending),
             _ => Err(()),
         }
     }
@@ -129,8 +131,8 @@ impl serde::Serialize for MandateStatus {
 impl<'de> serde::Deserialize<'de> for MandateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateStatus"))
     }
 }
 /// The type of the mandate.
@@ -142,9 +144,10 @@ pub enum MandateType {
 
 impl MandateType {
     pub fn as_str(self) -> &'static str {
+        use MandateType::*;
         match self {
-            Self::MultiUse => "multi_use",
-            Self::SingleUse => "single_use",
+            MultiUse => "multi_use",
+            SingleUse => "single_use",
         }
     }
 }
@@ -152,10 +155,10 @@ impl MandateType {
 impl std::str::FromStr for MandateType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use MandateType::*;
         match s {
-            "multi_use" => Ok(Self::MultiUse),
-            "single_use" => Ok(Self::SingleUse),
-
+            "multi_use" => Ok(MultiUse),
+            "single_use" => Ok(SingleUse),
             _ => Err(()),
         }
     }
@@ -183,8 +186,8 @@ impl serde::Serialize for MandateType {
 impl<'de> serde::Deserialize<'de> for MandateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateType"))
     }
 }
 impl stripe_types::Object for Mandate {
@@ -204,5 +207,7 @@ pub mod multi_use;
 pub use multi_use::MultiUse;
 pub mod payment_method_details;
 pub use payment_method_details::PaymentMethodDetails;
+pub mod paypal;
+pub use paypal::Paypal;
 pub mod single_use;
 pub use single_use::SingleUse;

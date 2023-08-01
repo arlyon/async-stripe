@@ -19,9 +19,10 @@ pub enum AfterCompletionType {
 
 impl AfterCompletionType {
     pub fn as_str(self) -> &'static str {
+        use AfterCompletionType::*;
         match self {
-            Self::HostedConfirmation => "hosted_confirmation",
-            Self::Redirect => "redirect",
+            HostedConfirmation => "hosted_confirmation",
+            Redirect => "redirect",
         }
     }
 }
@@ -29,10 +30,10 @@ impl AfterCompletionType {
 impl std::str::FromStr for AfterCompletionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AfterCompletionType::*;
         match s {
-            "hosted_confirmation" => Ok(Self::HostedConfirmation),
-            "redirect" => Ok(Self::Redirect),
-
+            "hosted_confirmation" => Ok(HostedConfirmation),
+            "redirect" => Ok(Redirect),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for AfterCompletionType {
 impl<'de> serde::Deserialize<'de> for AfterCompletionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AfterCompletionType"))
     }
 }

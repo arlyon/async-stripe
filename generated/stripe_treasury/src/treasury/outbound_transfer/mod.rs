@@ -69,8 +69,9 @@ pub enum OutboundTransferObject {
 
 impl OutboundTransferObject {
     pub fn as_str(self) -> &'static str {
+        use OutboundTransferObject::*;
         match self {
-            Self::TreasuryOutboundTransfer => "treasury.outbound_transfer",
+            TreasuryOutboundTransfer => "treasury.outbound_transfer",
         }
     }
 }
@@ -78,9 +79,9 @@ impl OutboundTransferObject {
 impl std::str::FromStr for OutboundTransferObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use OutboundTransferObject::*;
         match s {
-            "treasury.outbound_transfer" => Ok(Self::TreasuryOutboundTransfer),
-
+            "treasury.outbound_transfer" => Ok(TreasuryOutboundTransfer),
             _ => Err(()),
         }
     }
@@ -108,8 +109,8 @@ impl serde::Serialize for OutboundTransferObject {
 impl<'de> serde::Deserialize<'de> for OutboundTransferObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferObject"))
     }
 }
@@ -129,12 +130,13 @@ pub enum OutboundTransferStatus {
 
 impl OutboundTransferStatus {
     pub fn as_str(self) -> &'static str {
+        use OutboundTransferStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Failed => "failed",
-            Self::Posted => "posted",
-            Self::Processing => "processing",
-            Self::Returned => "returned",
+            Canceled => "canceled",
+            Failed => "failed",
+            Posted => "posted",
+            Processing => "processing",
+            Returned => "returned",
         }
     }
 }
@@ -142,13 +144,13 @@ impl OutboundTransferStatus {
 impl std::str::FromStr for OutboundTransferStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use OutboundTransferStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "failed" => Ok(Self::Failed),
-            "posted" => Ok(Self::Posted),
-            "processing" => Ok(Self::Processing),
-            "returned" => Ok(Self::Returned),
-
+            "canceled" => Ok(Canceled),
+            "failed" => Ok(Failed),
+            "posted" => Ok(Posted),
+            "processing" => Ok(Processing),
+            "returned" => Ok(Returned),
             _ => Err(()),
         }
     }
@@ -176,8 +178,8 @@ impl serde::Serialize for OutboundTransferStatus {
 impl<'de> serde::Deserialize<'de> for OutboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for OutboundTransferStatus"))
     }
 }
@@ -194,3 +196,4 @@ pub mod returned_details;
 pub use returned_details::ReturnedDetails;
 pub mod status_transitions;
 pub use status_transitions::StatusTransitions;
+pub mod requests;

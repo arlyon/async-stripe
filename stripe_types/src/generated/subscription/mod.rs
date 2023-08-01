@@ -1,6 +1,6 @@
 /// Subscriptions allow you to charge a customer on a recurring basis.
 ///
-/// Related guide: [Creating Subscriptions](https://stripe.com/docs/billing/subscriptions/creating).
+/// Related guide: [Creating subscriptions](https://stripe.com/docs/billing/subscriptions/creating).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Subscription {
     /// ID of the Connect Application that created the subscription.
@@ -27,6 +27,9 @@ pub struct Subscription {
     ///
     /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
     pub canceled_at: Option<stripe_types::Timestamp>,
+    /// Details about why this subscription was cancelled.
+    pub cancellation_details:
+        Option<stripe_types::subscription::cancellation_details::CancellationDetails>,
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
@@ -147,6 +150,8 @@ pub struct Subscription {
     pub transfer_data: Option<stripe_types::subscription::transfer_data::TransferData>,
     /// If the subscription has a trial, the end of that trial.
     pub trial_end: Option<stripe_types::Timestamp>,
+    /// Settings related to subscription trials.
+    pub trial_settings: Option<stripe_types::subscription::trial_settings::TrialSettings>,
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<stripe_types::Timestamp>,
 }
@@ -162,9 +167,10 @@ pub enum SubscriptionCollectionMethod {
 
 impl SubscriptionCollectionMethod {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionCollectionMethod::*;
         match self {
-            Self::ChargeAutomatically => "charge_automatically",
-            Self::SendInvoice => "send_invoice",
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
         }
     }
 }
@@ -172,10 +178,10 @@ impl SubscriptionCollectionMethod {
 impl std::str::FromStr for SubscriptionCollectionMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionCollectionMethod::*;
         match s {
-            "charge_automatically" => Ok(Self::ChargeAutomatically),
-            "send_invoice" => Ok(Self::SendInvoice),
-
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
             _ => Err(()),
         }
     }
@@ -203,8 +209,8 @@ impl serde::Serialize for SubscriptionCollectionMethod {
 impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
     }
 }
@@ -218,8 +224,9 @@ pub enum SubscriptionObject {
 
 impl SubscriptionObject {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionObject::*;
         match self {
-            Self::Subscription => "subscription",
+            Subscription => "subscription",
         }
     }
 }
@@ -227,9 +234,9 @@ impl SubscriptionObject {
 impl std::str::FromStr for SubscriptionObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionObject::*;
         match s {
-            "subscription" => Ok(Self::Subscription),
-
+            "subscription" => Ok(Subscription),
             _ => Err(()),
         }
     }
@@ -257,8 +264,8 @@ impl serde::Serialize for SubscriptionObject {
 impl<'de> serde::Deserialize<'de> for SubscriptionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionObject"))
     }
 }
@@ -281,20 +288,23 @@ pub enum SubscriptionStatus {
     Incomplete,
     IncompleteExpired,
     PastDue,
+    Paused,
     Trialing,
     Unpaid,
 }
 
 impl SubscriptionStatus {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Canceled => "canceled",
-            Self::Incomplete => "incomplete",
-            Self::IncompleteExpired => "incomplete_expired",
-            Self::PastDue => "past_due",
-            Self::Trialing => "trialing",
-            Self::Unpaid => "unpaid",
+            Active => "active",
+            Canceled => "canceled",
+            Incomplete => "incomplete",
+            IncompleteExpired => "incomplete_expired",
+            PastDue => "past_due",
+            Paused => "paused",
+            Trialing => "trialing",
+            Unpaid => "unpaid",
         }
     }
 }
@@ -302,15 +312,16 @@ impl SubscriptionStatus {
 impl std::str::FromStr for SubscriptionStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "canceled" => Ok(Self::Canceled),
-            "incomplete" => Ok(Self::Incomplete),
-            "incomplete_expired" => Ok(Self::IncompleteExpired),
-            "past_due" => Ok(Self::PastDue),
-            "trialing" => Ok(Self::Trialing),
-            "unpaid" => Ok(Self::Unpaid),
-
+            "active" => Ok(Active),
+            "canceled" => Ok(Canceled),
+            "incomplete" => Ok(Incomplete),
+            "incomplete_expired" => Ok(IncompleteExpired),
+            "past_due" => Ok(PastDue),
+            "paused" => Ok(Paused),
+            "trialing" => Ok(Trialing),
+            "unpaid" => Ok(Unpaid),
             _ => Err(()),
         }
     }
@@ -338,8 +349,8 @@ impl serde::Serialize for SubscriptionStatus {
 impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
     }
 }
@@ -350,6 +361,8 @@ impl stripe_types::Object for Subscription {
     }
 }
 stripe_types::def_id!(SubscriptionId, "sub_");
+pub mod cancellation_details;
+pub use cancellation_details::CancellationDetails;
 pub mod automatic_tax;
 pub use automatic_tax::AutomaticTax;
 pub mod billing_thresholds;
@@ -366,3 +379,5 @@ pub mod payment_settings;
 pub use payment_settings::PaymentSettings;
 pub mod pending_update;
 pub use pending_update::PendingUpdate;
+pub mod trial_settings;
+pub use trial_settings::TrialSettings;

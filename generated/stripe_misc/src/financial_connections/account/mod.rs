@@ -77,11 +77,12 @@ pub enum AccountCategory {
 
 impl AccountCategory {
     pub fn as_str(self) -> &'static str {
+        use AccountCategory::*;
         match self {
-            Self::Cash => "cash",
-            Self::Credit => "credit",
-            Self::Investment => "investment",
-            Self::Other => "other",
+            Cash => "cash",
+            Credit => "credit",
+            Investment => "investment",
+            Other => "other",
         }
     }
 }
@@ -89,12 +90,12 @@ impl AccountCategory {
 impl std::str::FromStr for AccountCategory {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountCategory::*;
         match s {
-            "cash" => Ok(Self::Cash),
-            "credit" => Ok(Self::Credit),
-            "investment" => Ok(Self::Investment),
-            "other" => Ok(Self::Other),
-
+            "cash" => Ok(Cash),
+            "credit" => Ok(Credit),
+            "investment" => Ok(Investment),
+            "other" => Ok(Other),
             _ => Err(()),
         }
     }
@@ -122,9 +123,8 @@ impl serde::Serialize for AccountCategory {
 impl<'de> serde::Deserialize<'de> for AccountCategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for AccountCategory"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountCategory"))
     }
 }
 /// String representing the object's type.
@@ -137,8 +137,9 @@ pub enum AccountObject {
 
 impl AccountObject {
     pub fn as_str(self) -> &'static str {
+        use AccountObject::*;
         match self {
-            Self::FinancialConnectionsAccount => "financial_connections.account",
+            FinancialConnectionsAccount => "financial_connections.account",
         }
     }
 }
@@ -146,9 +147,9 @@ impl AccountObject {
 impl std::str::FromStr for AccountObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountObject::*;
         match s {
-            "financial_connections.account" => Ok(Self::FinancialConnectionsAccount),
-
+            "financial_connections.account" => Ok(FinancialConnectionsAccount),
             _ => Err(()),
         }
     }
@@ -176,8 +177,8 @@ impl serde::Serialize for AccountObject {
 impl<'de> serde::Deserialize<'de> for AccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
     }
 }
 /// The list of permissions granted by this account.
@@ -191,11 +192,12 @@ pub enum AccountPermissions {
 
 impl AccountPermissions {
     pub fn as_str(self) -> &'static str {
+        use AccountPermissions::*;
         match self {
-            Self::Balances => "balances",
-            Self::Ownership => "ownership",
-            Self::PaymentMethod => "payment_method",
-            Self::Transactions => "transactions",
+            Balances => "balances",
+            Ownership => "ownership",
+            PaymentMethod => "payment_method",
+            Transactions => "transactions",
         }
     }
 }
@@ -203,12 +205,12 @@ impl AccountPermissions {
 impl std::str::FromStr for AccountPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountPermissions::*;
         match s {
-            "balances" => Ok(Self::Balances),
-            "ownership" => Ok(Self::Ownership),
-            "payment_method" => Ok(Self::PaymentMethod),
-            "transactions" => Ok(Self::Transactions),
-
+            "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
+            "payment_method" => Ok(PaymentMethod),
+            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
@@ -236,8 +238,8 @@ impl serde::Serialize for AccountPermissions {
 impl<'de> serde::Deserialize<'de> for AccountPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountPermissions"))
     }
 }
@@ -251,10 +253,11 @@ pub enum AccountStatus {
 
 impl AccountStatus {
     pub fn as_str(self) -> &'static str {
+        use AccountStatus::*;
         match self {
-            Self::Active => "active",
-            Self::Disconnected => "disconnected",
-            Self::Inactive => "inactive",
+            Active => "active",
+            Disconnected => "disconnected",
+            Inactive => "inactive",
         }
     }
 }
@@ -262,11 +265,11 @@ impl AccountStatus {
 impl std::str::FromStr for AccountStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountStatus::*;
         match s {
-            "active" => Ok(Self::Active),
-            "disconnected" => Ok(Self::Disconnected),
-            "inactive" => Ok(Self::Inactive),
-
+            "active" => Ok(Active),
+            "disconnected" => Ok(Disconnected),
+            "inactive" => Ok(Inactive),
             _ => Err(()),
         }
     }
@@ -294,8 +297,8 @@ impl serde::Serialize for AccountStatus {
 impl<'de> serde::Deserialize<'de> for AccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for AccountStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountStatus"))
     }
 }
 /// If `category` is `cash`, one of:
@@ -324,13 +327,14 @@ pub enum AccountSubcategory {
 
 impl AccountSubcategory {
     pub fn as_str(self) -> &'static str {
+        use AccountSubcategory::*;
         match self {
-            Self::Checking => "checking",
-            Self::CreditCard => "credit_card",
-            Self::LineOfCredit => "line_of_credit",
-            Self::Mortgage => "mortgage",
-            Self::Other => "other",
-            Self::Savings => "savings",
+            Checking => "checking",
+            CreditCard => "credit_card",
+            LineOfCredit => "line_of_credit",
+            Mortgage => "mortgage",
+            Other => "other",
+            Savings => "savings",
         }
     }
 }
@@ -338,14 +342,14 @@ impl AccountSubcategory {
 impl std::str::FromStr for AccountSubcategory {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountSubcategory::*;
         match s {
-            "checking" => Ok(Self::Checking),
-            "credit_card" => Ok(Self::CreditCard),
-            "line_of_credit" => Ok(Self::LineOfCredit),
-            "mortgage" => Ok(Self::Mortgage),
-            "other" => Ok(Self::Other),
-            "savings" => Ok(Self::Savings),
-
+            "checking" => Ok(Checking),
+            "credit_card" => Ok(CreditCard),
+            "line_of_credit" => Ok(LineOfCredit),
+            "mortgage" => Ok(Mortgage),
+            "other" => Ok(Other),
+            "savings" => Ok(Savings),
             _ => Err(()),
         }
     }
@@ -373,8 +377,8 @@ impl serde::Serialize for AccountSubcategory {
 impl<'de> serde::Deserialize<'de> for AccountSubcategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for AccountSubcategory"))
     }
 }
@@ -387,9 +391,10 @@ pub enum AccountSupportedPaymentMethodTypes {
 
 impl AccountSupportedPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
+        use AccountSupportedPaymentMethodTypes::*;
         match self {
-            Self::Link => "link",
-            Self::UsBankAccount => "us_bank_account",
+            Link => "link",
+            UsBankAccount => "us_bank_account",
         }
     }
 }
@@ -397,10 +402,10 @@ impl AccountSupportedPaymentMethodTypes {
 impl std::str::FromStr for AccountSupportedPaymentMethodTypes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountSupportedPaymentMethodTypes::*;
         match s {
-            "link" => Ok(Self::Link),
-            "us_bank_account" => Ok(Self::UsBankAccount),
-
+            "link" => Ok(Link),
+            "us_bank_account" => Ok(UsBankAccount),
             _ => Err(()),
         }
     }
@@ -428,8 +433,8 @@ impl serde::Serialize for AccountSupportedPaymentMethodTypes {
 impl<'de> serde::Deserialize<'de> for AccountSupportedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AccountSupportedPaymentMethodTypes")
         })
     }
@@ -449,3 +454,4 @@ pub mod balance_refresh;
 pub use balance_refresh::BalanceRefresh;
 pub mod ownership_refresh;
 pub use ownership_refresh::OwnershipRefresh;
+pub mod requests;

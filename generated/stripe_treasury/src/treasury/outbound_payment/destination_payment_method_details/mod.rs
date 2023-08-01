@@ -19,9 +19,10 @@ pub enum DestinationPaymentMethodDetailsType {
 
 impl DestinationPaymentMethodDetailsType {
     pub fn as_str(self) -> &'static str {
+        use DestinationPaymentMethodDetailsType::*;
         match self {
-            Self::FinancialAccount => "financial_account",
-            Self::UsBankAccount => "us_bank_account",
+            FinancialAccount => "financial_account",
+            UsBankAccount => "us_bank_account",
         }
     }
 }
@@ -29,10 +30,10 @@ impl DestinationPaymentMethodDetailsType {
 impl std::str::FromStr for DestinationPaymentMethodDetailsType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DestinationPaymentMethodDetailsType::*;
         match s {
-            "financial_account" => Ok(Self::FinancialAccount),
-            "us_bank_account" => Ok(Self::UsBankAccount),
-
+            "financial_account" => Ok(FinancialAccount),
+            "us_bank_account" => Ok(UsBankAccount),
             _ => Err(()),
         }
     }
@@ -60,8 +61,8 @@ impl serde::Serialize for DestinationPaymentMethodDetailsType {
 impl<'de> serde::Deserialize<'de> for DestinationPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DestinationPaymentMethodDetailsType")
         })
     }

@@ -71,8 +71,9 @@ pub enum InboundTransferObject {
 
 impl InboundTransferObject {
     pub fn as_str(self) -> &'static str {
+        use InboundTransferObject::*;
         match self {
-            Self::TreasuryInboundTransfer => "treasury.inbound_transfer",
+            TreasuryInboundTransfer => "treasury.inbound_transfer",
         }
     }
 }
@@ -80,9 +81,9 @@ impl InboundTransferObject {
 impl std::str::FromStr for InboundTransferObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InboundTransferObject::*;
         match s {
-            "treasury.inbound_transfer" => Ok(Self::TreasuryInboundTransfer),
-
+            "treasury.inbound_transfer" => Ok(TreasuryInboundTransfer),
             _ => Err(()),
         }
     }
@@ -110,8 +111,8 @@ impl serde::Serialize for InboundTransferObject {
 impl<'de> serde::Deserialize<'de> for InboundTransferObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InboundTransferObject"))
     }
 }
@@ -130,11 +131,12 @@ pub enum InboundTransferStatus {
 
 impl InboundTransferStatus {
     pub fn as_str(self) -> &'static str {
+        use InboundTransferStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Failed => "failed",
-            Self::Processing => "processing",
-            Self::Succeeded => "succeeded",
+            Canceled => "canceled",
+            Failed => "failed",
+            Processing => "processing",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -142,12 +144,12 @@ impl InboundTransferStatus {
 impl std::str::FromStr for InboundTransferStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use InboundTransferStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "failed" => Ok(Self::Failed),
-            "processing" => Ok(Self::Processing),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "canceled" => Ok(Canceled),
+            "failed" => Ok(Failed),
+            "processing" => Ok(Processing),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -175,8 +177,8 @@ impl serde::Serialize for InboundTransferStatus {
 impl<'de> serde::Deserialize<'de> for InboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InboundTransferStatus"))
     }
 }
@@ -195,3 +197,4 @@ pub mod linked_flows;
 pub use linked_flows::LinkedFlows;
 pub mod status_transitions;
 pub use status_transitions::StatusTransitions;
+pub mod requests;

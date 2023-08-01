@@ -34,9 +34,6 @@ pub canceled_at: Option<stripe_types::Timestamp>,
 pub cancellation_reason: Option<PaymentIntentCancellationReason>,
     /// Controls when the funds will be captured from the customer's account.
 pub capture_method: PaymentIntentCaptureMethod,
-    /// Charges that were created by this PaymentIntent, if any.
-#[serde(default)]
-pub charges: stripe_types::List<stripe_types::charge::Charge>,
     /// The client secret of this PaymentIntent.
     ///
     /// Used for client-side retrieval using a publishable key.
@@ -71,6 +68,9 @@ pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
     ///
     /// It will be cleared if the PaymentIntent is later updated for any reason.
 pub last_payment_error: Option<Box<stripe_types::api_errors::ApiErrors>>,
+    /// The latest charge created by this payment intent.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub latest_charge: Option<stripe_types::Expandable<stripe_types::charge::Charge>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
 pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -153,14 +153,15 @@ pub enum PaymentIntentCancellationReason {
 
 impl PaymentIntentCancellationReason {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentCancellationReason::*;
         match self {
-            Self::Abandoned => "abandoned",
-            Self::Automatic => "automatic",
-            Self::Duplicate => "duplicate",
-            Self::FailedInvoice => "failed_invoice",
-            Self::Fraudulent => "fraudulent",
-            Self::RequestedByCustomer => "requested_by_customer",
-            Self::VoidInvoice => "void_invoice",
+            Abandoned => "abandoned",
+            Automatic => "automatic",
+            Duplicate => "duplicate",
+            FailedInvoice => "failed_invoice",
+            Fraudulent => "fraudulent",
+            RequestedByCustomer => "requested_by_customer",
+            VoidInvoice => "void_invoice",
         }
     }
 }
@@ -168,15 +169,15 @@ impl PaymentIntentCancellationReason {
 impl std::str::FromStr for PaymentIntentCancellationReason {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentCancellationReason::*;
         match s {
-            "abandoned" => Ok(Self::Abandoned),
-            "automatic" => Ok(Self::Automatic),
-            "duplicate" => Ok(Self::Duplicate),
-            "failed_invoice" => Ok(Self::FailedInvoice),
-            "fraudulent" => Ok(Self::Fraudulent),
-            "requested_by_customer" => Ok(Self::RequestedByCustomer),
-            "void_invoice" => Ok(Self::VoidInvoice),
-
+            "abandoned" => Ok(Abandoned),
+            "automatic" => Ok(Automatic),
+            "duplicate" => Ok(Duplicate),
+            "failed_invoice" => Ok(FailedInvoice),
+            "fraudulent" => Ok(Fraudulent),
+            "requested_by_customer" => Ok(RequestedByCustomer),
+            "void_invoice" => Ok(VoidInvoice),
             _ => Err(()),
         }
     }
@@ -204,8 +205,8 @@ impl serde::Serialize for PaymentIntentCancellationReason {
 impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentCancellationReason")
         })
     }
@@ -214,14 +215,17 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PaymentIntentCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
 impl PaymentIntentCaptureMethod {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentCaptureMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
+            Automatic => "automatic",
+            AutomaticAsync => "automatic_async",
+            Manual => "manual",
         }
     }
 }
@@ -229,10 +233,11 @@ impl PaymentIntentCaptureMethod {
 impl std::str::FromStr for PaymentIntentCaptureMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentCaptureMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
+            "automatic" => Ok(Automatic),
+            "automatic_async" => Ok(AutomaticAsync),
+            "manual" => Ok(Manual),
             _ => Err(()),
         }
     }
@@ -260,8 +265,8 @@ impl serde::Serialize for PaymentIntentCaptureMethod {
 impl<'de> serde::Deserialize<'de> for PaymentIntentCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentCaptureMethod"))
     }
 }
@@ -273,9 +278,10 @@ pub enum PaymentIntentConfirmationMethod {
 
 impl PaymentIntentConfirmationMethod {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentConfirmationMethod::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::Manual => "manual",
+            Automatic => "automatic",
+            Manual => "manual",
         }
     }
 }
@@ -283,10 +289,10 @@ impl PaymentIntentConfirmationMethod {
 impl std::str::FromStr for PaymentIntentConfirmationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentConfirmationMethod::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "manual" => Ok(Self::Manual),
-
+            "automatic" => Ok(Automatic),
+            "manual" => Ok(Manual),
             _ => Err(()),
         }
     }
@@ -314,8 +320,8 @@ impl serde::Serialize for PaymentIntentConfirmationMethod {
 impl<'de> serde::Deserialize<'de> for PaymentIntentConfirmationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentConfirmationMethod")
         })
     }
@@ -330,8 +336,9 @@ pub enum PaymentIntentObject {
 
 impl PaymentIntentObject {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentObject::*;
         match self {
-            Self::PaymentIntent => "payment_intent",
+            PaymentIntent => "payment_intent",
         }
     }
 }
@@ -339,9 +346,9 @@ impl PaymentIntentObject {
 impl std::str::FromStr for PaymentIntentObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentObject::*;
         match s {
-            "payment_intent" => Ok(Self::PaymentIntent),
-
+            "payment_intent" => Ok(PaymentIntent),
             _ => Err(()),
         }
     }
@@ -369,8 +376,8 @@ impl serde::Serialize for PaymentIntentObject {
 impl<'de> serde::Deserialize<'de> for PaymentIntentObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentObject"))
     }
 }
@@ -387,9 +394,10 @@ pub enum PaymentIntentSetupFutureUsage {
 
 impl PaymentIntentSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentSetupFutureUsage::*;
         match self {
-            Self::OffSession => "off_session",
-            Self::OnSession => "on_session",
+            OffSession => "off_session",
+            OnSession => "on_session",
         }
     }
 }
@@ -397,10 +405,10 @@ impl PaymentIntentSetupFutureUsage {
 impl std::str::FromStr for PaymentIntentSetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentSetupFutureUsage::*;
         match s {
-            "off_session" => Ok(Self::OffSession),
-            "on_session" => Ok(Self::OnSession),
-
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
             _ => Err(()),
         }
     }
@@ -428,8 +436,8 @@ impl serde::Serialize for PaymentIntentSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentIntentSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentSetupFutureUsage")
         })
     }
@@ -450,14 +458,15 @@ pub enum PaymentIntentStatus {
 
 impl PaymentIntentStatus {
     pub fn as_str(self) -> &'static str {
+        use PaymentIntentStatus::*;
         match self {
-            Self::Canceled => "canceled",
-            Self::Processing => "processing",
-            Self::RequiresAction => "requires_action",
-            Self::RequiresCapture => "requires_capture",
-            Self::RequiresConfirmation => "requires_confirmation",
-            Self::RequiresPaymentMethod => "requires_payment_method",
-            Self::Succeeded => "succeeded",
+            Canceled => "canceled",
+            Processing => "processing",
+            RequiresAction => "requires_action",
+            RequiresCapture => "requires_capture",
+            RequiresConfirmation => "requires_confirmation",
+            RequiresPaymentMethod => "requires_payment_method",
+            Succeeded => "succeeded",
         }
     }
 }
@@ -465,15 +474,15 @@ impl PaymentIntentStatus {
 impl std::str::FromStr for PaymentIntentStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentStatus::*;
         match s {
-            "canceled" => Ok(Self::Canceled),
-            "processing" => Ok(Self::Processing),
-            "requires_action" => Ok(Self::RequiresAction),
-            "requires_capture" => Ok(Self::RequiresCapture),
-            "requires_confirmation" => Ok(Self::RequiresConfirmation),
-            "requires_payment_method" => Ok(Self::RequiresPaymentMethod),
-            "succeeded" => Ok(Self::Succeeded),
-
+            "canceled" => Ok(Canceled),
+            "processing" => Ok(Processing),
+            "requires_action" => Ok(RequiresAction),
+            "requires_capture" => Ok(RequiresCapture),
+            "requires_confirmation" => Ok(RequiresConfirmation),
+            "requires_payment_method" => Ok(RequiresPaymentMethod),
+            "succeeded" => Ok(Succeeded),
             _ => Err(()),
         }
     }
@@ -501,8 +510,8 @@ impl serde::Serialize for PaymentIntentStatus {
 impl<'de> serde::Deserialize<'de> for PaymentIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentStatus"))
     }
 }

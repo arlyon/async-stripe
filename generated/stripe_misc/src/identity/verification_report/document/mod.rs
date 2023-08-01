@@ -39,9 +39,10 @@ pub enum DocumentStatus {
 
 impl DocumentStatus {
     pub fn as_str(self) -> &'static str {
+        use DocumentStatus::*;
         match self {
-            Self::Unverified => "unverified",
-            Self::Verified => "verified",
+            Unverified => "unverified",
+            Verified => "verified",
         }
     }
 }
@@ -49,10 +50,10 @@ impl DocumentStatus {
 impl std::str::FromStr for DocumentStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DocumentStatus::*;
         match s {
-            "unverified" => Ok(Self::Unverified),
-            "verified" => Ok(Self::Verified),
-
+            "unverified" => Ok(Unverified),
+            "verified" => Ok(Verified),
             _ => Err(()),
         }
     }
@@ -80,8 +81,8 @@ impl serde::Serialize for DocumentStatus {
 impl<'de> serde::Deserialize<'de> for DocumentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentStatus"))
     }
 }
 /// Type of the document.
@@ -94,10 +95,11 @@ pub enum DocumentType {
 
 impl DocumentType {
     pub fn as_str(self) -> &'static str {
+        use DocumentType::*;
         match self {
-            Self::DrivingLicense => "driving_license",
-            Self::IdCard => "id_card",
-            Self::Passport => "passport",
+            DrivingLicense => "driving_license",
+            IdCard => "id_card",
+            Passport => "passport",
         }
     }
 }
@@ -105,11 +107,11 @@ impl DocumentType {
 impl std::str::FromStr for DocumentType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DocumentType::*;
         match s {
-            "driving_license" => Ok(Self::DrivingLicense),
-            "id_card" => Ok(Self::IdCard),
-            "passport" => Ok(Self::Passport),
-
+            "driving_license" => Ok(DrivingLicense),
+            "id_card" => Ok(IdCard),
+            "passport" => Ok(Passport),
             _ => Err(()),
         }
     }
@@ -137,8 +139,8 @@ impl serde::Serialize for DocumentType {
 impl<'de> serde::Deserialize<'de> for DocumentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DocumentType"))
     }
 }
 pub mod date_of_birth;

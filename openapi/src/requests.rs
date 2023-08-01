@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Context};
+use anyhow::{bail, Context};
 use heck::SnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::warn;
@@ -98,11 +98,11 @@ fn get_req_details<'a>(
             }
             Parameter::Path { parameter_data, .. } => {
                 if !parameter_data.required {
-                    return Err(anyhow!("Expected path parameter to be required"));
+                    bail!("Expected path parameter to be required");
                 }
                 path_params.push(parameter_data);
             }
-            _ => return Err(anyhow!("Unexpected parameter type {param:?}")),
+            _ => bail!("Unexpected parameter type {param:?}"),
         }
     }
     let form_params = get_request_form_parameters(operation);
@@ -137,6 +137,7 @@ pub fn parse_requests(
     operations: Vec<StripeOperation>,
     spec: &Spec,
     ident: &RustIdent,
+    component: &ComponentPath,
     path_id_map: &HashMap<String, ComponentPath>,
 ) -> anyhow::Result<Vec<RequestSpec>> {
     let mut req_details = Vec::with_capacity(operations.len());
@@ -153,8 +154,14 @@ pub fn parse_requests(
     let mut requests = Vec::with_capacity(operations.len());
     for req in &req_details {
         requests.push(
-            build_request(req, ident, &method_names[&RequestKey::from_op(req)], path_id_map)
-                .with_context(|| format!("Error generating request operation {req:?}"))?,
+            build_request(
+                req,
+                ident,
+                &method_names[&RequestKey::from_op(req)],
+                component,
+                path_id_map,
+            )
+            .with_context(|| format!("Error generating request operation {req:?}"))?,
         );
     }
     Ok(requests)
@@ -181,6 +188,7 @@ fn build_request(
     req: &RequestDetails,
     parent_ident: &RustIdent,
     method_name: &str,
+    component: &ComponentPath,
     path_id_map: &HashMap<String, ComponentPath>,
 ) -> anyhow::Result<RequestSpec> {
     let return_ident = RustIdent::joined(method_name, "returned");
@@ -198,7 +206,7 @@ fn build_request(
                 let mut struct_fields = Vec::with_capacity(params.len());
                 for param in params {
                     let ParameterSchemaOrContent::Schema(schema) = &param.format else {
-                        return Err(anyhow!("Expected query parameter to follow schema format"));
+                        bail!("Expected query parameter to follow schema format");
                     };
 
                     let struct_field = param_inference
@@ -216,9 +224,10 @@ fn build_request(
         },
     };
     let mut path_params = vec![];
+    let has_single_path_param = req.path_params.len() == 1;
     for param in &req.path_params {
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
-            return Err(anyhow!("Expected path parameter to follow schema format"));
+            bail!("Expected path parameter to follow schema format");
         };
         let mut rust_type = Inference::new(&params_ident)
             .can_borrow(true)
@@ -228,10 +237,18 @@ fn build_request(
             .infer_schema_or_ref_type(schema);
 
         if rust_type != RustType::Simple(SimpleType::Str) {
-            return Err(anyhow!("Expected path parameter to be a string"));
+            bail!("Expected path parameter to be a string");
         }
+        // Try our best to determine a specialized id type for this parameter, e.g. `AccountId`.
+        // First, try to use the name of the path parameter to infer the id type.
         if let Some(id_path) = path_id_map.get(param.name.as_str()) {
             rust_type = RustType::object_id(id_path.clone(), true);
+            // If there's just a single path parameter, try assuming the id corresponds
+            // to the parent component
+        } else if has_single_path_param {
+            if path_id_map.contains_key(component.as_ref()) {
+                rust_type = RustType::object_id(component.clone(), true);
+            }
         }
 
         path_params.push(PathParam { name: param.name.clone(), rust_type })

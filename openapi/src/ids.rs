@@ -18,7 +18,7 @@ pub fn id_prefixes() -> HashMap<&'static str, &'static str> {
         ("quote", "qt"),
         ("file", "file"),
         ("file_link", "link"),
-        ("customer", "cs"),
+        ("customer", "cus"),
         ("discount", "di"),
         ("card", "card"),
         ("topup", "tu"),

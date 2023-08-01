@@ -18,8 +18,9 @@ pub enum CustomerBalanceFundingType {
 
 impl CustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
+        use CustomerBalanceFundingType::*;
         match self {
-            Self::BankTransfer => "bank_transfer",
+            BankTransfer => "bank_transfer",
         }
     }
 }
@@ -27,9 +28,9 @@ impl CustomerBalanceFundingType {
 impl std::str::FromStr for CustomerBalanceFundingType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CustomerBalanceFundingType::*;
         match s {
-            "bank_transfer" => Ok(Self::BankTransfer),
-
+            "bank_transfer" => Ok(BankTransfer),
             _ => Err(()),
         }
     }
@@ -57,8 +58,8 @@ impl serde::Serialize for CustomerBalanceFundingType {
 impl<'de> serde::Deserialize<'de> for CustomerBalanceFundingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceFundingType"))
     }
 }

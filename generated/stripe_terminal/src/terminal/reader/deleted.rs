@@ -19,8 +19,9 @@ pub enum DeletedReaderObject {
 
 impl DeletedReaderObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedReaderObject::*;
         match self {
-            Self::TerminalReader => "terminal.reader",
+            TerminalReader => "terminal.reader",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedReaderObject {
 impl std::str::FromStr for DeletedReaderObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedReaderObject::*;
         match s {
-            "terminal.reader" => Ok(Self::TerminalReader),
-
+            "terminal.reader" => Ok(TerminalReader),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedReaderObject {
 impl<'de> serde::Deserialize<'de> for DeletedReaderObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedReaderObject"))
     }
 }

@@ -32,8 +32,9 @@ pub enum FinancialAccountFeaturesObject {
 
 impl FinancialAccountFeaturesObject {
     pub fn as_str(self) -> &'static str {
+        use FinancialAccountFeaturesObject::*;
         match self {
-            Self::TreasuryFinancialAccountFeatures => "treasury.financial_account_features",
+            TreasuryFinancialAccountFeatures => "treasury.financial_account_features",
         }
     }
 }
@@ -41,9 +42,9 @@ impl FinancialAccountFeaturesObject {
 impl std::str::FromStr for FinancialAccountFeaturesObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FinancialAccountFeaturesObject::*;
         match s {
-            "treasury.financial_account_features" => Ok(Self::TreasuryFinancialAccountFeatures),
-
+            "treasury.financial_account_features" => Ok(TreasuryFinancialAccountFeatures),
             _ => Err(()),
         }
     }
@@ -71,8 +72,8 @@ impl serde::Serialize for FinancialAccountFeaturesObject {
 impl<'de> serde::Deserialize<'de> for FinancialAccountFeaturesObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for FinancialAccountFeaturesObject")
         })
     }

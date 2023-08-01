@@ -18,6 +18,12 @@ pub struct Company {
     /// This Boolean will be `true` if you've manually indicated that all executives are provided via [the `executives_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-executives_provided), or if Stripe determined that sufficient executives were provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executives_provided: Option<bool>,
+    /// The export license ID number of the company, also referred as Import Export Code (India only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub export_license_id: Option<String>,
+    /// The purpose code to use for export transactions (India only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub export_purpose_code: Option<String>,
     /// The company's legal name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -87,27 +93,28 @@ pub enum CompanyStructure {
 
 impl CompanyStructure {
     pub fn as_str(self) -> &'static str {
+        use CompanyStructure::*;
         match self {
-            Self::FreeZoneEstablishment => "free_zone_establishment",
-            Self::FreeZoneLlc => "free_zone_llc",
-            Self::GovernmentInstrumentality => "government_instrumentality",
-            Self::GovernmentalUnit => "governmental_unit",
-            Self::IncorporatedNonProfit => "incorporated_non_profit",
-            Self::LimitedLiabilityPartnership => "limited_liability_partnership",
-            Self::Llc => "llc",
-            Self::MultiMemberLlc => "multi_member_llc",
-            Self::PrivateCompany => "private_company",
-            Self::PrivateCorporation => "private_corporation",
-            Self::PrivatePartnership => "private_partnership",
-            Self::PublicCompany => "public_company",
-            Self::PublicCorporation => "public_corporation",
-            Self::PublicPartnership => "public_partnership",
-            Self::SingleMemberLlc => "single_member_llc",
-            Self::SoleEstablishment => "sole_establishment",
-            Self::SoleProprietorship => "sole_proprietorship",
-            Self::TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
-            Self::UnincorporatedAssociation => "unincorporated_association",
-            Self::UnincorporatedNonProfit => "unincorporated_non_profit",
+            FreeZoneEstablishment => "free_zone_establishment",
+            FreeZoneLlc => "free_zone_llc",
+            GovernmentInstrumentality => "government_instrumentality",
+            GovernmentalUnit => "governmental_unit",
+            IncorporatedNonProfit => "incorporated_non_profit",
+            LimitedLiabilityPartnership => "limited_liability_partnership",
+            Llc => "llc",
+            MultiMemberLlc => "multi_member_llc",
+            PrivateCompany => "private_company",
+            PrivateCorporation => "private_corporation",
+            PrivatePartnership => "private_partnership",
+            PublicCompany => "public_company",
+            PublicCorporation => "public_corporation",
+            PublicPartnership => "public_partnership",
+            SingleMemberLlc => "single_member_llc",
+            SoleEstablishment => "sole_establishment",
+            SoleProprietorship => "sole_proprietorship",
+            TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
+            UnincorporatedAssociation => "unincorporated_association",
+            UnincorporatedNonProfit => "unincorporated_non_profit",
         }
     }
 }
@@ -115,28 +122,28 @@ impl CompanyStructure {
 impl std::str::FromStr for CompanyStructure {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CompanyStructure::*;
         match s {
-            "free_zone_establishment" => Ok(Self::FreeZoneEstablishment),
-            "free_zone_llc" => Ok(Self::FreeZoneLlc),
-            "government_instrumentality" => Ok(Self::GovernmentInstrumentality),
-            "governmental_unit" => Ok(Self::GovernmentalUnit),
-            "incorporated_non_profit" => Ok(Self::IncorporatedNonProfit),
-            "limited_liability_partnership" => Ok(Self::LimitedLiabilityPartnership),
-            "llc" => Ok(Self::Llc),
-            "multi_member_llc" => Ok(Self::MultiMemberLlc),
-            "private_company" => Ok(Self::PrivateCompany),
-            "private_corporation" => Ok(Self::PrivateCorporation),
-            "private_partnership" => Ok(Self::PrivatePartnership),
-            "public_company" => Ok(Self::PublicCompany),
-            "public_corporation" => Ok(Self::PublicCorporation),
-            "public_partnership" => Ok(Self::PublicPartnership),
-            "single_member_llc" => Ok(Self::SingleMemberLlc),
-            "sole_establishment" => Ok(Self::SoleEstablishment),
-            "sole_proprietorship" => Ok(Self::SoleProprietorship),
-            "tax_exempt_government_instrumentality" => Ok(Self::TaxExemptGovernmentInstrumentality),
-            "unincorporated_association" => Ok(Self::UnincorporatedAssociation),
-            "unincorporated_non_profit" => Ok(Self::UnincorporatedNonProfit),
-
+            "free_zone_establishment" => Ok(FreeZoneEstablishment),
+            "free_zone_llc" => Ok(FreeZoneLlc),
+            "government_instrumentality" => Ok(GovernmentInstrumentality),
+            "governmental_unit" => Ok(GovernmentalUnit),
+            "incorporated_non_profit" => Ok(IncorporatedNonProfit),
+            "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
+            "llc" => Ok(Llc),
+            "multi_member_llc" => Ok(MultiMemberLlc),
+            "private_company" => Ok(PrivateCompany),
+            "private_corporation" => Ok(PrivateCorporation),
+            "private_partnership" => Ok(PrivatePartnership),
+            "public_company" => Ok(PublicCompany),
+            "public_corporation" => Ok(PublicCorporation),
+            "public_partnership" => Ok(PublicPartnership),
+            "single_member_llc" => Ok(SingleMemberLlc),
+            "sole_establishment" => Ok(SoleEstablishment),
+            "sole_proprietorship" => Ok(SoleProprietorship),
+            "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
+            "unincorporated_association" => Ok(UnincorporatedAssociation),
+            "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             _ => Err(()),
         }
     }
@@ -164,8 +171,8 @@ impl serde::Serialize for CompanyStructure {
 impl<'de> serde::Deserialize<'de> for CompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CompanyStructure"))
     }
 }

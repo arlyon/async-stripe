@@ -41,8 +41,9 @@ pub enum SecretObject {
 
 impl SecretObject {
     pub fn as_str(self) -> &'static str {
+        use SecretObject::*;
         match self {
-            Self::AppsSecret => "apps.secret",
+            AppsSecret => "apps.secret",
         }
     }
 }
@@ -50,9 +51,9 @@ impl SecretObject {
 impl std::str::FromStr for SecretObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SecretObject::*;
         match s {
-            "apps.secret" => Ok(Self::AppsSecret),
-
+            "apps.secret" => Ok(AppsSecret),
             _ => Err(()),
         }
     }
@@ -80,8 +81,8 @@ impl serde::Serialize for SecretObject {
 impl<'de> serde::Deserialize<'de> for SecretObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SecretObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SecretObject"))
     }
 }
 impl stripe_types::Object for Secret {
@@ -93,3 +94,4 @@ impl stripe_types::Object for Secret {
 stripe_types::def_id!(AppsSecretId);
 pub mod scope;
 pub use scope::Scope;
+pub mod requests;

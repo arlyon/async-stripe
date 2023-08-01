@@ -19,8 +19,9 @@ pub enum DeletedValueListObject {
 
 impl DeletedValueListObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedValueListObject::*;
         match self {
-            Self::RadarValueList => "radar.value_list",
+            RadarValueList => "radar.value_list",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedValueListObject {
 impl std::str::FromStr for DeletedValueListObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedValueListObject::*;
         match s {
-            "radar.value_list" => Ok(Self::RadarValueList),
-
+            "radar.value_list" => Ok(RadarValueList),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedValueListObject {
 impl<'de> serde::Deserialize<'de> for DeletedValueListObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedValueListObject"))
     }
 }

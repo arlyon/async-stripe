@@ -19,8 +19,9 @@ pub enum DeletedPersonObject {
 
 impl DeletedPersonObject {
     pub fn as_str(self) -> &'static str {
+        use DeletedPersonObject::*;
         match self {
-            Self::Person => "person",
+            Person => "person",
         }
     }
 }
@@ -28,9 +29,9 @@ impl DeletedPersonObject {
 impl std::str::FromStr for DeletedPersonObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeletedPersonObject::*;
         match s {
-            "person" => Ok(Self::Person),
-
+            "person" => Ok(Person),
             _ => Err(()),
         }
     }
@@ -58,8 +59,8 @@ impl serde::Serialize for DeletedPersonObject {
 impl<'de> serde::Deserialize<'de> for DeletedPersonObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for DeletedPersonObject"))
     }
 }

@@ -5,6 +5,9 @@ description.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 
+[lib]
+path = "src/mod.rs"
+
 [dependencies]
 serde.workspace = true
 http-types.workspace = true

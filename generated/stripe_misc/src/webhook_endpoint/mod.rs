@@ -4,7 +4,7 @@
 ///
 /// Most users configure webhooks from [the dashboard](https://dashboard.stripe.com/webhooks), which provides a user interface for registering and testing your webhook endpoints.
 ///
-/// Related guide: [Setting up Webhooks](https://stripe.com/docs/webhooks/configure).
+/// Related guide: [Setting up webhooks](https://stripe.com/docs/webhooks/configure).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct WebhookEndpoint {
     /// The API version events are rendered as for this webhook endpoint.
@@ -55,8 +55,9 @@ pub enum WebhookEndpointObject {
 
 impl WebhookEndpointObject {
     pub fn as_str(self) -> &'static str {
+        use WebhookEndpointObject::*;
         match self {
-            Self::WebhookEndpoint => "webhook_endpoint",
+            WebhookEndpoint => "webhook_endpoint",
         }
     }
 }
@@ -64,9 +65,9 @@ impl WebhookEndpointObject {
 impl std::str::FromStr for WebhookEndpointObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use WebhookEndpointObject::*;
         match s {
-            "webhook_endpoint" => Ok(Self::WebhookEndpoint),
-
+            "webhook_endpoint" => Ok(WebhookEndpoint),
             _ => Err(()),
         }
     }
@@ -94,8 +95,8 @@ impl serde::Serialize for WebhookEndpointObject {
 impl<'de> serde::Deserialize<'de> for WebhookEndpointObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for WebhookEndpointObject"))
     }
 }
@@ -108,3 +109,4 @@ impl stripe_types::Object for WebhookEndpoint {
 stripe_types::def_id!(WebhookEndpointId, "we_");
 pub mod deleted;
 pub use deleted::DeletedWebhookEndpoint;
+pub mod requests;

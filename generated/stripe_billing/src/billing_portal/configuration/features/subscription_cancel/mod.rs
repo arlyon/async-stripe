@@ -20,9 +20,10 @@ pub enum SubscriptionCancelMode {
 
 impl SubscriptionCancelMode {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionCancelMode::*;
         match self {
-            Self::AtPeriodEnd => "at_period_end",
-            Self::Immediately => "immediately",
+            AtPeriodEnd => "at_period_end",
+            Immediately => "immediately",
         }
     }
 }
@@ -30,10 +31,10 @@ impl SubscriptionCancelMode {
 impl std::str::FromStr for SubscriptionCancelMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionCancelMode::*;
         match s {
-            "at_period_end" => Ok(Self::AtPeriodEnd),
-            "immediately" => Ok(Self::Immediately),
-
+            "at_period_end" => Ok(AtPeriodEnd),
+            "immediately" => Ok(Immediately),
             _ => Err(()),
         }
     }
@@ -61,8 +62,8 @@ impl serde::Serialize for SubscriptionCancelMode {
 impl<'de> serde::Deserialize<'de> for SubscriptionCancelMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCancelMode"))
     }
 }
@@ -78,10 +79,11 @@ pub enum SubscriptionCancelProrationBehavior {
 
 impl SubscriptionCancelProrationBehavior {
     pub fn as_str(self) -> &'static str {
+        use SubscriptionCancelProrationBehavior::*;
         match self {
-            Self::AlwaysInvoice => "always_invoice",
-            Self::CreateProrations => "create_prorations",
-            Self::None => "none",
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
         }
     }
 }
@@ -89,11 +91,11 @@ impl SubscriptionCancelProrationBehavior {
 impl std::str::FromStr for SubscriptionCancelProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SubscriptionCancelProrationBehavior::*;
         match s {
-            "always_invoice" => Ok(Self::AlwaysInvoice),
-            "create_prorations" => Ok(Self::CreateProrations),
-            "none" => Ok(Self::None),
-
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
             _ => Err(()),
         }
     }
@@ -121,8 +123,8 @@ impl serde::Serialize for SubscriptionCancelProrationBehavior {
 impl<'de> serde::Deserialize<'de> for SubscriptionCancelProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SubscriptionCancelProrationBehavior")
         })
     }

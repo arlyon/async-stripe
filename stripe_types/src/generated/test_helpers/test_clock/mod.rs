@@ -35,8 +35,9 @@ pub enum TestClockObject {
 
 impl TestClockObject {
     pub fn as_str(self) -> &'static str {
+        use TestClockObject::*;
         match self {
-            Self::TestHelpersTestClock => "test_helpers.test_clock",
+            TestHelpersTestClock => "test_helpers.test_clock",
         }
     }
 }
@@ -44,9 +45,9 @@ impl TestClockObject {
 impl std::str::FromStr for TestClockObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TestClockObject::*;
         match s {
-            "test_helpers.test_clock" => Ok(Self::TestHelpersTestClock),
-
+            "test_helpers.test_clock" => Ok(TestHelpersTestClock),
             _ => Err(()),
         }
     }
@@ -74,9 +75,8 @@ impl serde::Serialize for TestClockObject {
 impl<'de> serde::Deserialize<'de> for TestClockObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TestClockObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TestClockObject"))
     }
 }
 /// The status of the Test Clock.
@@ -89,10 +89,11 @@ pub enum TestClockStatus {
 
 impl TestClockStatus {
     pub fn as_str(self) -> &'static str {
+        use TestClockStatus::*;
         match self {
-            Self::Advancing => "advancing",
-            Self::InternalFailure => "internal_failure",
-            Self::Ready => "ready",
+            Advancing => "advancing",
+            InternalFailure => "internal_failure",
+            Ready => "ready",
         }
     }
 }
@@ -100,11 +101,11 @@ impl TestClockStatus {
 impl std::str::FromStr for TestClockStatus {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TestClockStatus::*;
         match s {
-            "advancing" => Ok(Self::Advancing),
-            "internal_failure" => Ok(Self::InternalFailure),
-            "ready" => Ok(Self::Ready),
-
+            "advancing" => Ok(Advancing),
+            "internal_failure" => Ok(InternalFailure),
+            "ready" => Ok(Ready),
             _ => Err(()),
         }
     }
@@ -132,9 +133,8 @@ impl serde::Serialize for TestClockStatus {
 impl<'de> serde::Deserialize<'de> for TestClockStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TestClockStatus"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TestClockStatus"))
     }
 }
 impl stripe_types::Object for TestClock {

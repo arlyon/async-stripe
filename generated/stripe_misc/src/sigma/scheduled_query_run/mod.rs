@@ -42,8 +42,9 @@ pub enum ScheduledQueryRunObject {
 
 impl ScheduledQueryRunObject {
     pub fn as_str(self) -> &'static str {
+        use ScheduledQueryRunObject::*;
         match self {
-            Self::ScheduledQueryRun => "scheduled_query_run",
+            ScheduledQueryRun => "scheduled_query_run",
         }
     }
 }
@@ -51,9 +52,9 @@ impl ScheduledQueryRunObject {
 impl std::str::FromStr for ScheduledQueryRunObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ScheduledQueryRunObject::*;
         match s {
-            "scheduled_query_run" => Ok(Self::ScheduledQueryRun),
-
+            "scheduled_query_run" => Ok(ScheduledQueryRun),
             _ => Err(()),
         }
     }
@@ -81,8 +82,8 @@ impl serde::Serialize for ScheduledQueryRunObject {
 impl<'de> serde::Deserialize<'de> for ScheduledQueryRunObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ScheduledQueryRunObject"))
     }
 }
@@ -95,3 +96,4 @@ impl stripe_types::Object for ScheduledQueryRun {
 stripe_types::def_id!(ScheduledQueryRunId, "sqr_");
 pub mod run_error;
 pub use run_error::RunError;
+pub mod requests;

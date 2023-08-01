@@ -3,7 +3,7 @@
 /// They can be used in conjunction with [Prices](https://stripe.com/docs/api#prices) to configure pricing in Payment Links, Checkout, and Subscriptions.
 ///
 /// Related guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription),
-/// [share a Payment Link](https://stripe.com/docs/payments/payment-links/overview),
+/// [share a Payment Link](https://stripe.com/docs/payment-links),
 /// [accept payments with Checkout](https://stripe.com/docs/payments/accept-a-payment#create-product-prices-upfront),
 /// and more about [Products and Prices](https://stripe.com/docs/products-prices/overview).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -65,9 +65,9 @@ pub struct Product {
     /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
     #[serde(rename = "type")]
     pub type_: ProductType,
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
     /// Time at which the object was last updated.
@@ -87,8 +87,9 @@ pub enum ProductObject {
 
 impl ProductObject {
     pub fn as_str(self) -> &'static str {
+        use ProductObject::*;
         match self {
-            Self::Product => "product",
+            Product => "product",
         }
     }
 }
@@ -96,9 +97,9 @@ impl ProductObject {
 impl std::str::FromStr for ProductObject {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ProductObject::*;
         match s {
-            "product" => Ok(Self::Product),
-
+            "product" => Ok(Product),
             _ => Err(()),
         }
     }
@@ -126,8 +127,8 @@ impl serde::Serialize for ProductObject {
 impl<'de> serde::Deserialize<'de> for ProductObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ProductObject"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ProductObject"))
     }
 }
 /// The type of the product.
@@ -141,9 +142,10 @@ pub enum ProductType {
 
 impl ProductType {
     pub fn as_str(self) -> &'static str {
+        use ProductType::*;
         match self {
-            Self::Good => "good",
-            Self::Service => "service",
+            Good => "good",
+            Service => "service",
         }
     }
 }
@@ -151,10 +153,10 @@ impl ProductType {
 impl std::str::FromStr for ProductType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ProductType::*;
         match s {
-            "good" => Ok(Self::Good),
-            "service" => Ok(Self::Service),
-
+            "good" => Ok(Good),
+            "service" => Ok(Service),
             _ => Err(()),
         }
     }
@@ -182,8 +184,8 @@ impl serde::Serialize for ProductType {
 impl<'de> serde::Deserialize<'de> for ProductType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ProductType"))
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ProductType"))
     }
 }
 impl stripe_types::Object for Product {

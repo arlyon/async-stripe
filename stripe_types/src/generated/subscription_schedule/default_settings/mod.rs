@@ -53,9 +53,10 @@ pub enum DefaultSettingsBillingCycleAnchor {
 
 impl DefaultSettingsBillingCycleAnchor {
     pub fn as_str(self) -> &'static str {
+        use DefaultSettingsBillingCycleAnchor::*;
         match self {
-            Self::Automatic => "automatic",
-            Self::PhaseStart => "phase_start",
+            Automatic => "automatic",
+            PhaseStart => "phase_start",
         }
     }
 }
@@ -63,10 +64,10 @@ impl DefaultSettingsBillingCycleAnchor {
 impl std::str::FromStr for DefaultSettingsBillingCycleAnchor {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DefaultSettingsBillingCycleAnchor::*;
         match s {
-            "automatic" => Ok(Self::Automatic),
-            "phase_start" => Ok(Self::PhaseStart),
-
+            "automatic" => Ok(Automatic),
+            "phase_start" => Ok(PhaseStart),
             _ => Err(()),
         }
     }
@@ -94,8 +95,8 @@ impl serde::Serialize for DefaultSettingsBillingCycleAnchor {
 impl<'de> serde::Deserialize<'de> for DefaultSettingsBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DefaultSettingsBillingCycleAnchor")
         })
     }
@@ -112,9 +113,10 @@ pub enum DefaultSettingsCollectionMethod {
 
 impl DefaultSettingsCollectionMethod {
     pub fn as_str(self) -> &'static str {
+        use DefaultSettingsCollectionMethod::*;
         match self {
-            Self::ChargeAutomatically => "charge_automatically",
-            Self::SendInvoice => "send_invoice",
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
         }
     }
 }
@@ -122,10 +124,10 @@ impl DefaultSettingsCollectionMethod {
 impl std::str::FromStr for DefaultSettingsCollectionMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DefaultSettingsCollectionMethod::*;
         match s {
-            "charge_automatically" => Ok(Self::ChargeAutomatically),
-            "send_invoice" => Ok(Self::SendInvoice),
-
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
             _ => Err(()),
         }
     }
@@ -153,8 +155,8 @@ impl serde::Serialize for DefaultSettingsCollectionMethod {
 impl<'de> serde::Deserialize<'de> for DefaultSettingsCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s).map_err(|_| {
             serde::de::Error::custom("Unknown value for DefaultSettingsCollectionMethod")
         })
     }
