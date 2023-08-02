@@ -2,13 +2,11 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Account {
     /// The account holder that this account belongs to.
-    pub account_holder:
-        Option<stripe_misc::financial_connections::account::account_holder::AccountHolder>,
+    pub account_holder: Option<stripe_misc::account_holder::AccountHolder>,
     /// The most recent information about the account's balance.
-    pub balance: Option<stripe_misc::financial_connections::account::balance::Balance>,
+    pub balance: Option<stripe_misc::balance::Balance>,
     /// The state of the most recent attempt to refresh the account balance.
-    pub balance_refresh:
-        Option<stripe_misc::financial_connections::account::balance_refresh::BalanceRefresh>,
+    pub balance_refresh: Option<stripe_misc::balance_refresh::BalanceRefresh>,
     /// The type of the account.
     ///
     /// Account category is further divided in `subcategory`.
@@ -40,8 +38,7 @@ pub struct Account {
         >,
     >,
     /// The state of the most recent attempt to refresh the account owners.
-    pub ownership_refresh:
-        Option<stripe_misc::financial_connections::account::ownership_refresh::OwnershipRefresh>,
+    pub ownership_refresh: Option<stripe_misc::ownership_refresh::OwnershipRefresh>,
     /// The list of permissions granted by this account.
     pub permissions: Option<Vec<AccountPermissions>>,
     /// The status of the link to the account.
@@ -446,12 +443,4 @@ impl stripe_types::Object for Account {
     }
 }
 stripe_types::def_id!(FinancialConnectionsAccountId);
-pub mod account_holder;
-pub use account_holder::AccountHolder;
-pub mod balance;
-pub use balance::Balance;
-pub mod balance_refresh;
-pub use balance_refresh::BalanceRefresh;
-pub mod ownership_refresh;
-pub use ownership_refresh::OwnershipRefresh;
 pub mod requests;

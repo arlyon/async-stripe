@@ -5,9 +5,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Charge {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternate_statement_descriptors: Option<
-        stripe_types::charge::alternate_statement_descriptors::AlternateStatementDescriptors,
-    >,
+    pub alternate_statement_descriptors:
+        Option<stripe_types::alternate_statement_descriptors::AlternateStatementDescriptors>,
     /// Amount intended to be collected by this payment.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -35,7 +34,7 @@ pub struct Charge {
     /// ID of the balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).
     pub balance_transaction:
         Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
-    pub billing_details: stripe_types::payment_method::billing_details::BillingDetails,
+    pub billing_details: stripe_types::billing_details::BillingDetails,
     /// The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements.
     ///
     /// Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
@@ -70,13 +69,13 @@ pub struct Charge {
     /// Message to user further explaining reason for charge failure if available.
     pub failure_message: Option<String>,
     /// Information on fraud assessments for the charge.
-    pub fraud_details: Option<stripe_types::charge::fraud_details::FraudDetails>,
+    pub fraud_details: Option<stripe_types::fraud_details::FraudDetails>,
     /// Unique identifier for the object.
     pub id: stripe_types::charge::ChargeId,
     /// ID of the invoice this charge is for if one exists.
     pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub level3: Option<stripe_types::charge::level3::Level3>,
+    pub level3: Option<stripe_types::level3::Level3>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -89,12 +88,12 @@ pub struct Charge {
     pub object: ChargeObject,
     /// The account (if any) the charge was made on behalf of without triggering an automatic transfer.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account>>,
     /// Details about whether the payment was accepted, and why.
     ///
     /// See [understanding declines](https://stripe.com/docs/declines) for details.
-    pub outcome: Option<stripe_types::charge::outcome::Outcome>,
+    pub outcome: Option<stripe_types::outcome::Outcome>,
     /// `true` if the charge succeeded, or was successfully authorized for later capture.
     pub paid: bool,
     /// ID of the PaymentIntent associated with this charge, if one exists.
@@ -103,10 +102,9 @@ pub struct Charge {
     /// ID of the payment method used in this charge.
     pub payment_method: Option<String>,
     /// Details about the payment method at the time of the transaction.
-    pub payment_method_details:
-        Option<stripe_types::charge::payment_method_details::PaymentMethodDetails>,
+    pub payment_method_details: Option<stripe_types::payment_method_details::PaymentMethodDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<stripe_types::charge::radar_options::RadarOptions>,
+    pub radar_options: Option<stripe_types::radar_options::RadarOptions>,
     /// This is the email address that the receipt for this charge was sent to.
     pub receipt_email: Option<String>,
     /// This is the transaction number that appears on email receipts sent for this charge.
@@ -156,10 +154,10 @@ pub struct Charge {
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
     ///
     /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
-    pub transfer_data: Option<stripe_types::charge::transfer_data::TransferData>,
+    pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
 /// String representing the object's type.
@@ -281,17 +279,3 @@ impl stripe_types::Object for Charge {
     }
 }
 stripe_types::def_id!(ChargeId, "ch_" | "py_");
-pub mod alternate_statement_descriptors;
-pub use alternate_statement_descriptors::AlternateStatementDescriptors;
-pub mod fraud_details;
-pub use fraud_details::FraudDetails;
-pub mod outcome;
-pub use outcome::Outcome;
-pub mod transfer_data;
-pub use transfer_data::TransferData;
-pub mod level3;
-pub use level3::Level3;
-pub mod payment_method_details;
-pub use payment_method_details::PaymentMethodDetails;
-pub mod radar_options;
-pub use radar_options::RadarOptions;

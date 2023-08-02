@@ -20,7 +20,7 @@ pub struct DebitReversal {
     /// Unique identifier for the object.
     pub id: stripe_treasury::treasury::debit_reversal::TreasuryDebitReversalId,
     /// Other flows linked to a DebitReversal.
-    pub linked_flows: Option<stripe_treasury::treasury::debit_reversal::linked_flows::LinkedFlows>,
+    pub linked_flows: Option<stripe_treasury::linked_flows::LinkedFlows>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -37,8 +37,7 @@ pub struct DebitReversal {
     pub received_debit: String,
     /// Status of the DebitReversal.
     pub status: DebitReversalStatus,
-    pub status_transitions:
-        stripe_treasury::treasury::received_debit::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_treasury::status_transitions::StatusTransitions,
     /// The Transaction associated with this object.
     pub transaction:
         Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,
@@ -220,6 +219,4 @@ impl stripe_types::Object for DebitReversal {
     }
 }
 stripe_types::def_id!(TreasuryDebitReversalId);
-pub mod linked_flows;
-pub use linked_flows::LinkedFlows;
 pub mod requests;

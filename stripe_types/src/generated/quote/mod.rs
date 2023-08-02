@@ -14,17 +14,17 @@ pub struct Quote {
     pub application_fee_amount: Option<i64>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// Only applicable if there are line items with recurring prices on the quote.
     pub application_fee_percent: Option<f64>,
-    pub automatic_tax: stripe_types::quote::automatic_tax::AutomaticTax,
+    pub automatic_tax: stripe_types::automatic_tax::AutomaticTax,
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or on finalization using the default payment method attached to the subscription or customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
     pub collection_method: QuoteCollectionMethod,
-    pub computed: stripe_types::quote::computed::Computed,
+    pub computed: stripe_types::computed::Computed,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -54,7 +54,7 @@ pub struct Quote {
     /// Details of the quote that was cloned.
     ///
     /// See the [cloning documentation](https://stripe.com/docs/quotes/clone) for more details.
-    pub from_quote: Option<stripe_types::quote::from_quote::FromQuote>,
+    pub from_quote: Option<stripe_types::from_quote::FromQuote>,
     /// A header that will be displayed on the quote PDF.
     pub header: Option<String>,
     /// Unique identifier for the object.
@@ -62,7 +62,7 @@ pub struct Quote {
     /// The invoice that was created from this quote.
     pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
     /// All invoices will be billed using the specified settings.
-    pub invoice_settings: Option<stripe_types::quote::invoice_settings::InvoiceSettings>,
+    pub invoice_settings: Option<stripe_types::invoice_settings::InvoiceSettings>,
     /// A list of items the customer is being quoted for.
     #[serde(default)]
     pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
@@ -86,19 +86,19 @@ pub struct Quote {
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account>>,
     /// The status of the quote.
     pub status: QuoteStatus,
-    pub status_transitions: stripe_types::quote::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_types::status_transitions::StatusTransitions,
     /// The subscription that was created or updated from this quote.
     pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
-    pub subscription_data: stripe_types::quote::subscription_data::SubscriptionData,
+    pub subscription_data: stripe_types::subscription_data::SubscriptionData,
     /// The subscription schedule that was created or updated from this quote.
     pub subscription_schedule:
         Option<stripe_types::Expandable<stripe_types::subscription_schedule::SubscriptionSchedule>>,
     /// ID of the test clock this quote belongs to.
     pub test_clock:
         Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
-    pub total_details: stripe_types::quote::total_details::TotalDetails,
+    pub total_details: stripe_types::total_details::TotalDetails,
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
-    pub transfer_data: Option<stripe_types::quote::transfer_data::TransferData>,
+    pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
 }
 /// Either `charge_automatically`, or `send_invoice`.
 ///
@@ -282,23 +282,3 @@ impl stripe_types::Object for Quote {
     }
 }
 stripe_types::def_id!(QuoteId, "qt_");
-pub mod invoice_settings;
-pub use invoice_settings::InvoiceSettings;
-pub mod automatic_tax;
-pub use automatic_tax::AutomaticTax;
-pub mod computed;
-pub use computed::Computed;
-pub mod from_quote;
-pub use from_quote::FromQuote;
-pub mod recurring;
-pub use recurring::Recurring;
-pub mod status_transitions;
-pub use status_transitions::StatusTransitions;
-pub mod subscription_data;
-pub use subscription_data::SubscriptionData;
-pub mod total_details;
-pub use total_details::TotalDetails;
-pub mod transfer_data;
-pub use transfer_data::TransferData;
-pub mod upfront;
-pub use upfront::Upfront;

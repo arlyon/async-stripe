@@ -263,7 +263,7 @@ pub struct CreateCharge<'a> {
     /// The Stripe account ID for which these funds are intended.
     ///
     /// Automatically set if you use the `destination` parameter.
-    /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
+    /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
     /// Options to configure Radar.
@@ -308,7 +308,7 @@ pub struct CreateCharge<'a> {
     pub transfer_data: Option<CreateChargeTransferData<'a>>,
     /// A string that identifies this transaction as part of a group.
     ///
-    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/charges-transfers#transfer-options).
+    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
@@ -419,7 +419,7 @@ pub struct UpdateCharge<'a> {
     /// A string that identifies this transaction as part of a group.
     ///
     /// `transfer_group` may only be provided if it has not been set.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
@@ -533,7 +533,7 @@ pub struct CaptureCharge<'a> {
     /// A string that identifies this transaction as part of a group.
     ///
     /// `transfer_group` may only be provided if it has not been set.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }

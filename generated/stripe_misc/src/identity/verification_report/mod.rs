@@ -11,11 +11,11 @@ pub struct VerificationReport {
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<stripe_misc::identity::verification_report::document::Document>,
+    pub document: Option<stripe_misc::document::Document>,
     /// Unique identifier for the object.
     pub id: stripe_misc::identity::verification_report::IdentityVerificationReportId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<stripe_misc::identity::verification_report::id_number::IdNumber>,
+    pub id_number: Option<stripe_misc::id_number::IdNumber>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// String representing the object's type.
@@ -23,9 +23,9 @@ pub struct VerificationReport {
     /// Objects of the same type share the same value.
     pub object: VerificationReportObject,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<stripe_misc::identity::verification_report::options::Options>,
+    pub options: Option<stripe_misc::options::Options>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub selfie: Option<stripe_misc::identity::verification_report::selfie::Selfie>,
+    pub selfie: Option<stripe_misc::selfie::Selfie>,
     /// Type of report.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -151,12 +151,4 @@ impl stripe_types::Object for VerificationReport {
     }
 }
 stripe_types::def_id!(IdentityVerificationReportId);
-pub mod document;
-pub use document::Document;
-pub mod id_number;
-pub use id_number::IdNumber;
-pub mod selfie;
-pub use selfie::Selfie;
-pub mod options;
-pub use options::Options;
 pub mod requests;

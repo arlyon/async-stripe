@@ -66,7 +66,7 @@ fn main() -> Result<()> {
 
     let in_path = args.spec_path;
     let out_path = args.out;
-    fs::remove_dir_all(&out_path).context("could not create out folder")?;
+    fs::remove_dir_all(&out_path).context("could not remove out folder")?;
     fs::create_dir_all(&out_path).context("could not create out folder")?;
 
     tracing::info!("generating code for {} to {}", in_path, out_path);

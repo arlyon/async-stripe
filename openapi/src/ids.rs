@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::fmt::Write;
 
-use indexmap::IndexSet;
 use lazy_static::lazy_static;
 
 use crate::spec_inference::infer_id_name;
@@ -89,7 +88,6 @@ lazy_static! {
     pub static ref ID_PREFIXES: HashMap<&'static str, &'static str> = id_prefixes();
     pub static ref COMPLEX_ID_PREFIXES: HashMap<&'static str, &'static [&'static str]> =
         complex_id_prefixes();
-    pub static ref IDS_IN_STRIPE: IndexSet<ComponentPath> = ids_in_stripe();
 }
 
 pub fn write_object_id(out: &mut String, path: &ComponentPath) {
@@ -104,12 +102,4 @@ pub fn write_object_id(out: &mut String, path: &ComponentPath) {
     } else {
         let _ = writeln!(out, "{crate_name}::def_id!({ident});");
     }
-}
-
-fn ids_in_stripe() -> IndexSet<ComponentPath> {
-    let mut res = IndexSet::new();
-    for comp in ["account", "application"] {
-        res.insert(ComponentPath::new(comp.to_string()));
-    }
-    res
 }

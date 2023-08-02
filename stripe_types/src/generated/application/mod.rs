@@ -1,7 +1,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Application {
     /// Unique identifier for the object.
-    pub id: stripe_types::ApplicationId,
+    pub id: stripe_types::application::ApplicationId,
     /// The name of the application.
     pub name: Option<String>,
     /// String representing the object's type.
@@ -65,10 +65,11 @@ impl<'de> serde::Deserialize<'de> for ApplicationObject {
     }
 }
 impl stripe_types::Object for Application {
-    type Id = stripe_types::ApplicationId;
+    type Id = stripe_types::application::ApplicationId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }
 }
+stripe_types::def_id!(ApplicationId, "ca_");
 pub mod deleted;
 pub use deleted::DeletedApplication;

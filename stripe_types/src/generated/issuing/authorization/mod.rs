@@ -11,7 +11,7 @@ pub struct Authorization {
     /// Detailed breakdown of amount components.
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub amount_details: Option<stripe_types::issuing::authorization::amount_details::AmountDetails>,
+    pub amount_details: Option<stripe_types::amount_details::AmountDetails>,
     /// Whether the authorization has been approved.
     pub approved: bool,
     /// How the card details were provided.
@@ -42,13 +42,13 @@ pub struct Authorization {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub merchant_currency: stripe_types::Currency,
-    pub merchant_data: stripe_types::issuing::authorization::merchant_data::MerchantData,
+    pub merchant_data: stripe_types::merchant_data::MerchantData,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about the authorization, such as identifiers, set by the card network.
-    pub network_data: Option<stripe_types::issuing::authorization::network_data::NetworkData>,
+    pub network_data: Option<stripe_types::network_data::NetworkData>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -56,23 +56,21 @@ pub struct Authorization {
     /// The pending authorization request.
     ///
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
-    pub pending_request:
-        Option<stripe_types::issuing::authorization::pending_request::PendingRequest>,
+    pub pending_request: Option<stripe_types::pending_request::PendingRequest>,
     /// History of every time a `pending_request` authorization was approved/declined, either by you directly or by Stripe (e.g.
     ///
     /// based on your spending_controls).
     /// If the merchant changes the authorization by performing an incremental authorization, you can look at this field to see the previous requests for the authorization.
     /// This field can be helpful in determining why a given authorization was approved/declined.
-    pub request_history: Vec<stripe_types::issuing::authorization::request_history::RequestHistory>,
+    pub request_history: Vec<stripe_types::request_history::RequestHistory>,
     /// The current status of the authorization in its lifecycle.
     pub status: AuthorizationStatus,
     /// List of [transactions](https://stripe.com/docs/api/issuing/transactions) associated with this authorization.
     pub transactions: Vec<stripe_types::issuing::transaction::Transaction>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub treasury: Option<stripe_types::issuing::authorization::treasury::Treasury>,
-    pub verification_data:
-        stripe_types::issuing::authorization::verification_data::VerificationData,
+    pub treasury: Option<stripe_types::treasury::Treasury>,
+    pub verification_data: stripe_types::verification_data::VerificationData,
     /// The digital wallet used for this transaction.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
@@ -266,17 +264,3 @@ impl stripe_types::Object for Authorization {
     }
 }
 stripe_types::def_id!(IssuingAuthorizationId, "iauth_");
-pub mod amount_details;
-pub use amount_details::AmountDetails;
-pub mod merchant_data;
-pub use merchant_data::MerchantData;
-pub mod network_data;
-pub use network_data::NetworkData;
-pub mod pending_request;
-pub use pending_request::PendingRequest;
-pub mod request_history;
-pub use request_history::RequestHistory;
-pub mod treasury;
-pub use treasury::Treasury;
-pub mod verification_data;
-pub use verification_data::VerificationData;

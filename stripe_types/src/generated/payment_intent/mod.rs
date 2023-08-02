@@ -14,7 +14,7 @@ pub amount: i64,
     /// Amount that can be captured from this PaymentIntent.
 pub amount_capturable: i64,
 #[serde(skip_serializing_if = "Option::is_none")]
-pub amount_details: Option<stripe_types::payment_intent::amount_details::AmountDetails>,
+pub amount_details: Option<stripe_types::amount_details::AmountDetails>,
     /// Amount that was collected by this PaymentIntent.
 pub amount_received: i64,
     /// ID of the Connect application that created the PaymentIntent.
@@ -79,7 +79,7 @@ pub livemode: bool,
     /// For more information, see the [documentation](https://stripe.com/docs/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
 pub metadata: std::collections::HashMap<String, String>,
     /// If present, this property tells you what actions you need to take in order for your customer to fulfill a payment using the provided source.
-pub next_action: Option<stripe_types::payment_intent::next_action::NextAction>,
+pub next_action: Option<stripe_types::next_action::NextAction>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -91,13 +91,13 @@ pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account
     /// ID of the payment method used in this PaymentIntent.
 pub payment_method: Option<stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>>,
     /// Payment-method-specific configuration for this PaymentIntent.
-pub payment_method_options: Option<stripe_types::payment_intent::payment_method_options::PaymentMethodOptions>,
+pub payment_method_options: Option<stripe_types::payment_method_options::PaymentMethodOptions>,
     /// The list of payment method types (e.g.
     ///
     /// card) that this PaymentIntent is allowed to use.
 pub payment_method_types: Vec<String>,
     /// If present, this property tells you about the processing state of the payment.
-pub processing: Option<stripe_types::payment_intent::processing::Processing>,
+pub processing: Option<stripe_types::processing::Processing>,
     /// Email address that the receipt for the resulting payment will be sent to.
     ///
     /// If `receipt_email` is specified for a payment in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
@@ -132,7 +132,7 @@ pub status: PaymentIntentStatus,
     /// The data with which to automatically create a Transfer when the payment is finalized.
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
-pub transfer_data: Option<stripe_types::payment_intent::transfer_data::TransferData>,
+pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
     /// A string that identifies the resulting payment as part of a group.
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
@@ -522,27 +522,3 @@ impl stripe_types::Object for PaymentIntent {
     }
 }
 stripe_types::def_id!(PaymentIntentId, "pi_");
-pub mod amount_details;
-pub use amount_details::AmountDetails;
-pub mod next_action;
-pub use next_action::NextAction;
-pub mod next_action_alipay_handle_redirect;
-pub use next_action_alipay_handle_redirect::NextActionAlipayHandleRedirect;
-pub mod next_action_display_boleto_details;
-pub use next_action_display_boleto_details::NextActionDisplayBoletoDetails;
-pub mod next_action_card_await_notification;
-pub use next_action_card_await_notification::NextActionCardAwaitNotification;
-pub mod next_action_display_bank_transfer_instructions;
-pub use next_action_display_bank_transfer_instructions::NextActionDisplayBankTransferInstructions;
-pub mod next_action_oxxo_display_details;
-pub use next_action_oxxo_display_details::NextActionOxxoDisplayDetails;
-pub mod next_action_konbini_display_details;
-pub use next_action_konbini_display_details::NextActionKonbiniDisplayDetails;
-pub mod next_action_redirect_to_url;
-pub use next_action_redirect_to_url::NextActionRedirectToUrl;
-pub mod payment_method_options;
-pub use payment_method_options::PaymentMethodOptions;
-pub mod processing;
-pub use processing::Processing;
-pub mod transfer_data;
-pub use transfer_data::TransferData;

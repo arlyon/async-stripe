@@ -14,7 +14,6 @@ http-types.workspace = true
 smol_str.workspace = true
 async-stripe = {path = "../../async-stripe"}
 stripe_types = {path = "../../stripe_types"}
-stripe_payment = {path = "../../generated/stripe_payment"}
 
 
 [features]

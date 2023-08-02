@@ -61,7 +61,7 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<stripe_types::customer::invoice_settings::InvoiceSettings>,
+    pub invoice_settings: Option<stripe_types::invoice_settings::InvoiceSettings>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -96,7 +96,7 @@ pub struct Customer {
     #[serde(default)]
     pub subscriptions: stripe_types::List<stripe_types::subscription::Subscription>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<stripe_types::customer::tax::Tax>,
+    pub tax: Option<stripe_types::tax::Tax>,
     /// Describes the customer's tax exemption status.
     ///
     /// One of `none`, `exempt`, or `reverse`.
@@ -234,9 +234,5 @@ impl stripe_types::Object for Customer {
     }
 }
 stripe_types::def_id!(CustomerId, "cus_");
-pub mod tax;
-pub use tax::Tax;
-pub mod invoice_settings;
-pub use invoice_settings::InvoiceSettings;
 pub mod deleted;
 pub use deleted::DeletedCustomer;

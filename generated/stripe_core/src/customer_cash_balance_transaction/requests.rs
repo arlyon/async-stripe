@@ -5,7 +5,7 @@ pub fn retrieve(
     customer: &stripe_types::customer::CustomerId,
     transaction: &str,
     params: RetrieveCustomerCashBalanceTransaction,
-) -> stripe::Response<stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
+) -> stripe::Response<stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
 {
     client.get_query(
         &format!(
@@ -23,7 +23,7 @@ pub fn list(
     params: ListCustomerCashBalanceTransaction,
 ) -> stripe::Response<
     stripe_types::List<
-        stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
+        stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
     >,
 > {
     client.get_query(

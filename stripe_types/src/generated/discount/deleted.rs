@@ -1,48 +1,50 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug,serde::Serialize,serde::Deserialize,)]
 pub struct DeletedDiscount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     ///
     /// Will not be present for subscription mode.
-    pub checkout_session: Option<String>,
-    pub coupon: stripe_types::coupon::Coupon,
+pub checkout_session: Option<String>,
+pub coupon: stripe_types::coupon::Coupon,
     /// The ID of the customer associated with this discount.
-    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
+pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
     /// Always true for a deleted object.
-    deleted: stripe_types::AlwaysTrue,
+deleted: stripe_types::AlwaysTrue,
     /// The ID of the discount object.
     ///
     /// Discounts cannot be fetched by ID.
     /// Use `expand[]=discounts` in API calls to expand discount IDs in an array.
-    pub id: stripe_types::discount::DiscountId,
+pub id: stripe_types::discount::DiscountId,
     /// The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
-    pub invoice: Option<String>,
+pub invoice: Option<String>,
     /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
-    pub invoice_item: Option<String>,
+pub invoice_item: Option<String>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
-    pub object: DeletedDiscountObject,
+pub object: DeletedDiscountObject,
     /// The promotion code applied to create this discount.
-    pub promotion_code:
-        Option<stripe_types::Expandable<stripe_types::promotion_code::PromotionCode>>,
+pub promotion_code: Option<stripe_types::Expandable<stripe_types::promotion_code::PromotionCode>>,
     /// Date that the coupon was applied.
-    pub start: stripe_types::Timestamp,
+pub start: stripe_types::Timestamp,
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
-    pub subscription: Option<String>,
+pub subscription: Option<String>,
+
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy,Clone, Debug,Eq, PartialEq,)]
 pub enum DeletedDiscountObject {
-    Discount,
+Discount,
+
 }
 
 impl DeletedDiscountObject {
     pub fn as_str(self) -> &'static str {
         use DeletedDiscountObject::*;
         match self {
-            Discount => "discount",
+Discount => "discount",
+
         }
     }
 }
@@ -52,8 +54,9 @@ impl std::str::FromStr for DeletedDiscountObject {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DeletedDiscountObject::*;
         match s {
-            "discount" => Ok(Discount),
-            _ => Err(()),
+    "discount" => Ok(Discount),
+_ => Err(())
+
         }
     }
 }
@@ -70,10 +73,7 @@ impl std::fmt::Display for DeletedDiscountObject {
     }
 }
 impl serde::Serialize for DeletedDiscountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
     }
 }
@@ -81,8 +81,7 @@ impl<'de> serde::Deserialize<'de> for DeletedDiscountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for DeletedDiscountObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DeletedDiscountObject"))
     }
 }
 impl stripe_types::Object for DeletedDiscount {

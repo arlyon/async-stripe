@@ -5,7 +5,6 @@ use indoc::formatdoc;
 
 use crate::components::{build_field_overrides, get_components, Components, Module, Overrides};
 use crate::crate_inference::Crate;
-use crate::ids::{write_object_id, IDS_IN_STRIPE};
 use crate::object_context::{gen_obj, gen_requests, ObjectGenInfo};
 use crate::rust_object::ObjectMetadata;
 use crate::spec::Spec;
@@ -61,24 +60,16 @@ impl CodeGen {
         write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
 
-        // Write the ids that must be generated in `stripe_types` itself.
-        let mut ids_content = String::new();
-        for id_path in IDS_IN_STRIPE.iter() {
-            write_object_id(&mut ids_content, id_path);
-        }
-        write_to_file(ids_content, base_path.join("ids.rs"))?;
-        let _ = writeln!(mod_rs_contents, "pub mod ids; pub use ids::*;");
-
         append_to_file(mod_rs_contents, mod_rs_path)?;
         Ok(())
     }
 
     fn write_modules(&self) -> anyhow::Result<()> {
         for module in self.components.modules.values() {
-            let krate = module.krate_for_types();
+            let krate = module.krate_unwrapped().for_types();
             let crate_path = PathBuf::from(krate.generate_to());
 
-            let requests_crate = module.krate_unwrapped();
+            let requests_crate = module.krate_unwrapped().base();
             let requests_path = PathBuf::from(requests_crate.generate_to());
             match module {
                 Module::Package { name, members, .. } => {
@@ -184,11 +175,6 @@ impl CodeGen {
 
         let deleted_component_path = format!("deleted_{}", comp.path());
         let deleted_comp = self.components.maybe_get(&deleted_component_path);
-
-        for inner_comp in comp.inner_classes() {
-            let obj = self.components.get(inner_comp);
-            self.write_component(obj, &module_path)?;
-        }
 
         if let Some(deleted) = deleted_comp {
             let content = self.gen_struct_definitions_for_component(deleted);

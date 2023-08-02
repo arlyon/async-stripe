@@ -6,15 +6,14 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     /// When set, provides configuration for actions to take if this Checkout Session expires.
-    pub after_expiration:
-        Option<stripe_checkout::checkout::session::after_expiration::AfterExpiration>,
+    pub after_expiration: Option<stripe_checkout::after_expiration::AfterExpiration>,
     /// Enables user redeemable promotion codes.
     pub allow_promotion_codes: Option<bool>,
     /// Total of all items before discounts or taxes are applied.
     pub amount_subtotal: Option<i64>,
     /// Total of all items after discounts and taxes are applied.
     pub amount_total: Option<i64>,
-    pub automatic_tax: stripe_checkout::checkout::session::automatic_tax::AutomaticTax,
+    pub automatic_tax: stripe_checkout::automatic_tax::AutomaticTax,
     /// Describes whether Checkout should collect the customer's billing address.
     pub billing_address_collection: Option<SessionBillingAddressCollection>,
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
@@ -24,10 +23,9 @@ pub struct Session {
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
     pub client_reference_id: Option<String>,
     /// Results of `consent_collection` for this session.
-    pub consent: Option<stripe_checkout::checkout::session::consent::Consent>,
+    pub consent: Option<stripe_checkout::consent::Consent>,
     /// When set, provides configuration for the Checkout Session to gather active consent from customers.
-    pub consent_collection:
-        Option<stripe_checkout::checkout::session::consent_collection::ConsentCollection>,
+    pub consent_collection: Option<stripe_checkout::consent_collection::ConsentCollection>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -37,13 +35,12 @@ pub struct Session {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<stripe_types::Currency>,
     /// Currency conversion details for automatic currency conversion sessions.
-    pub currency_conversion:
-        Option<stripe_checkout::checkout::session::currency_conversion::CurrencyConversion>,
+    pub currency_conversion: Option<stripe_checkout::currency_conversion::CurrencyConversion>,
     /// Collect additional information from your customer using custom fields.
     ///
     /// Up to 2 fields are supported.
-    pub custom_fields: Vec<stripe_checkout::checkout::session::custom_field::CustomField>,
-    pub custom_text: stripe_checkout::checkout::session::custom_text::CustomText,
+    pub custom_fields: Vec<stripe_checkout::custom_field::CustomField>,
+    pub custom_text: stripe_checkout::custom_text::CustomText,
     /// The ID of the customer for this Session.
     /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
     /// will create a new customer object based on information provided
@@ -55,8 +52,7 @@ pub struct Session {
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
     ///
     /// Only the customer's email is present on Sessions in `setup` mode.
-    pub customer_details:
-        Option<stripe_checkout::checkout::session::customer_details::CustomerDetails>,
+    pub customer_details: Option<stripe_checkout::customer_details::CustomerDetails>,
     /// If provided, this value will be used when the Customer object is created.
     /// If not provided, customers will be asked to enter their email address.
     /// Use this parameter to prefill customer data if you already have an email
@@ -71,8 +67,7 @@ pub struct Session {
     /// ID of the invoice created by the Checkout Session, if it exists.
     pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
     /// Details on the state of invoice creation for the Checkout Session.
-    pub invoice_creation:
-        Option<stripe_checkout::checkout::session::invoice_creation::InvoiceCreation>,
+    pub invoice_creation: Option<stripe_checkout::invoice_creation::InvoiceCreation>,
     /// The line items purchased by the customer.
     #[serde(default)]
     pub line_items: stripe_types::List<stripe_types::line_item::LineItem>,
@@ -96,12 +91,12 @@ pub struct Session {
     pub payment_intent:
         Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
-    pub payment_link: Option<stripe_types::Expandable<stripe_payment::payment_link::PaymentLink>>,
+    pub payment_link: Option<stripe_types::Expandable<stripe_types::payment_link::PaymentLink>>,
     /// Configure whether a Checkout Session should collect a payment method.
     pub payment_method_collection: Option<SessionPaymentMethodCollection>,
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
     pub payment_method_options:
-        Option<stripe_checkout::checkout::session::payment_method_options::PaymentMethodOptions>,
+        Option<stripe_checkout::payment_method_options::PaymentMethodOptions>,
     /// A list of the types of payment methods (e.g.
     ///
     /// card) this Checkout Session is allowed to accept.
@@ -111,21 +106,20 @@ pub struct Session {
     pub payment_status: SessionPaymentStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number_collection:
-        Option<stripe_checkout::checkout::session::phone_number_collection::PhoneNumberCollection>,
+        Option<stripe_checkout::phone_number_collection::PhoneNumberCollection>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     pub setup_intent: Option<stripe_types::Expandable<stripe_types::setup_intent::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
-    pub shipping_address_collection: Option<
-        stripe_checkout::checkout::session::shipping_address_collection::ShippingAddressCollection,
-    >,
+    pub shipping_address_collection:
+        Option<stripe_checkout::shipping_address_collection::ShippingAddressCollection>,
     /// The details of the customer cost of shipping, including the customer chosen ShippingRate.
-    pub shipping_cost: Option<stripe_checkout::checkout::session::shipping_cost::ShippingCost>,
+    pub shipping_cost: Option<stripe_checkout::shipping_cost::ShippingCost>,
     /// Shipping information for this Checkout Session.
     pub shipping_details: Option<stripe_types::shipping_details::ShippingDetails>,
     /// The shipping rate options applied to this Session.
-    pub shipping_options: Vec<stripe_checkout::checkout::session::shipping_option::ShippingOption>,
+    pub shipping_options: Vec<stripe_checkout::shipping_option::ShippingOption>,
     /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
     pub status: Option<SessionStatus>,
     /// Describes the type of transaction being performed by Checkout in order to customize
@@ -137,12 +131,11 @@ pub struct Session {
     pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
-    pub success_url: String,
+    pub success_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id_collection:
-        Option<stripe_checkout::checkout::session::tax_id_collection::TaxIdCollection>,
+    pub tax_id_collection: Option<stripe_checkout::tax_id_collection::TaxIdCollection>,
     /// Tax and discount details for the computed total amount.
-    pub total_details: Option<stripe_checkout::checkout::session::total_details::TotalDetails>,
+    pub total_details: Option<stripe_checkout::total_details::TotalDetails>,
     /// The URL to the Checkout Session.
     ///
     /// Redirect customers to this URL to take them to Checkout.
@@ -796,36 +789,4 @@ impl stripe_types::Object for Session {
     }
 }
 stripe_types::def_id!(CheckoutSessionId, "cs_");
-pub mod payment_method_options;
-pub use payment_method_options::PaymentMethodOptions;
-pub mod after_expiration;
-pub use after_expiration::AfterExpiration;
-pub mod automatic_tax;
-pub use automatic_tax::AutomaticTax;
-pub mod consent;
-pub use consent::Consent;
-pub mod consent_collection;
-pub use consent_collection::ConsentCollection;
-pub mod currency_conversion;
-pub use currency_conversion::CurrencyConversion;
-pub mod custom_field;
-pub use custom_field::CustomField;
-pub mod custom_text;
-pub use custom_text::CustomText;
-pub mod customer_details;
-pub use customer_details::CustomerDetails;
-pub mod invoice_creation;
-pub use invoice_creation::InvoiceCreation;
-pub mod phone_number_collection;
-pub use phone_number_collection::PhoneNumberCollection;
-pub mod shipping_address_collection;
-pub use shipping_address_collection::ShippingAddressCollection;
-pub mod shipping_cost;
-pub use shipping_cost::ShippingCost;
-pub mod shipping_option;
-pub use shipping_option::ShippingOption;
-pub mod tax_id_collection;
-pub use tax_id_collection::TaxIdCollection;
-pub mod total_details;
-pub use total_details::TotalDetails;
 pub mod requests;

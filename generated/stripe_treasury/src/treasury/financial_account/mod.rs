@@ -3,48 +3,48 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FinancialAccount {
     /// The array of paths to active Features in the Features hash.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub active_features: Option<Vec<Array>>,
-pub balance: stripe_treasury::treasury::financial_account::balance::Balance,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_features: Option<Vec<Array>>,
+    pub balance: stripe_treasury::balance::Balance,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-pub country: String,
+    pub country: String,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-pub created: stripe_types::Timestamp,
-#[serde(skip_serializing_if = "Option::is_none")]
-pub features: Option<stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures>,
+    pub created: stripe_types::Timestamp,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features:
+        Option<stripe_treasury::treasury::financial_account_features::FinancialAccountFeatures>,
     /// The set of credentials that resolve to a FinancialAccount.
-pub financial_addresses: Vec<stripe_treasury::treasury::financial_account::financial_address::FinancialAddress>,
+    pub financial_addresses: Vec<stripe_treasury::financial_address::FinancialAddress>,
     /// Unique identifier for the object.
-pub id: stripe_treasury::treasury::financial_account::TreasuryFinancialAccountId,
+    pub id: stripe_treasury::treasury::financial_account::TreasuryFinancialAccountId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-pub livemode: bool,
+    pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-pub metadata: Option<std::collections::HashMap<String, String>>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
-pub object: FinancialAccountObject,
+    pub object: FinancialAccountObject,
     /// The array of paths to pending Features in the Features hash.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub pending_features: Option<Vec<Array>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_features: Option<Vec<Array>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub platform_restrictions: Option<stripe_treasury::treasury::financial_account_features::platform_restriction::PlatformRestriction>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub platform_restrictions: Option<stripe_treasury::platform_restriction::PlatformRestriction>,
     /// The array of paths to restricted Features in the Features hash.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub restricted_features: Option<Vec<Array>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted_features: Option<Vec<Array>>,
     /// The enum specifying what state the account is in.
-pub status: FinancialAccountStatus,
-pub status_details: stripe_treasury::treasury::financial_account::status_details::StatusDetails,
+    pub status: FinancialAccountStatus,
+    pub status_details: stripe_treasury::status_details::StatusDetails,
     /// The currencies the FinancialAccount can hold a balance in.
     ///
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-pub supported_currencies: Vec<String>,
-
+    pub supported_currencies: Vec<String>,
 }
 /// String representing the object's type.
 ///
@@ -242,14 +242,4 @@ impl stripe_types::Object for FinancialAccount {
     }
 }
 stripe_types::def_id!(TreasuryFinancialAccountId);
-pub mod ach_toggle_settings;
-pub use ach_toggle_settings::AchToggleSettings;
-pub mod balance;
-pub use balance::Balance;
-pub mod financial_address;
-pub use financial_address::FinancialAddress;
-pub mod status_details;
-pub use status_details::StatusDetails;
-pub mod toggle_settings;
-pub use toggle_settings::ToggleSettings;
 pub mod requests;

@@ -23,7 +23,7 @@ pub struct Review {
     /// Information related to the location of the payment.
     ///
     /// Note that this information is an approximation and attempts to locate the nearest population center - it should not be used to determine a specific address.
-    pub ip_address_location: Option<stripe_types::review::location::Location>,
+    pub ip_address_location: Option<stripe_types::location::Location>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// String representing the object's type.
@@ -45,7 +45,7 @@ pub struct Review {
     /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
     pub reason: String,
     /// Information related to the browsing session of the user who initiated the payment.
-    pub session: Option<stripe_types::review::session::Session>,
+    pub session: Option<stripe_types::session::Session>,
 }
 /// The reason the review was closed, or null if it has not yet been closed.
 ///
@@ -233,7 +233,3 @@ impl stripe_types::Object for Review {
     }
 }
 stripe_types::def_id!(ReviewId, "prv_");
-pub mod location;
-pub use location::Location;
-pub mod session;
-pub use session::Session;

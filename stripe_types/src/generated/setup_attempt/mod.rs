@@ -38,8 +38,7 @@ pub struct SetupAttempt {
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account>>,
     /// ID of the payment method used with this SetupAttempt.
     pub payment_method: stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>,
-    pub payment_method_details:
-        stripe_types::setup_attempt::payment_method_details::PaymentMethodDetails,
+    pub payment_method_details: stripe_types::payment_method_details::PaymentMethodDetails,
     /// The error encountered during this attempt to confirm the SetupIntent, if any.
     pub setup_error: Option<Box<stripe_types::api_errors::ApiErrors>>,
     /// ID of the SetupIntent that this attempt belongs to.
@@ -172,5 +171,3 @@ impl stripe_types::Object for SetupAttempt {
     }
 }
 stripe_types::def_id!(SetupAttemptId, "setatt_");
-pub mod payment_method_details;
-pub use payment_method_details::PaymentMethodDetails;

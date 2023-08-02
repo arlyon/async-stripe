@@ -79,7 +79,7 @@ pub struct SetupIntent {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// If present, this property tells you what actions you need to take in order for your customer to continue payment setup.
-    pub next_action: Option<stripe_types::setup_intent::next_action::NextAction>,
+    pub next_action: Option<stripe_types::next_action::NextAction>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -90,8 +90,7 @@ pub struct SetupIntent {
     pub payment_method:
         Option<stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>>,
     /// Payment-method-specific configuration for this SetupIntent.
-    pub payment_method_options:
-        Option<stripe_types::setup_intent::payment_method_options::PaymentMethodOptions>,
+    pub payment_method_options: Option<stripe_types::payment_method_options::PaymentMethodOptions>,
     /// The list of payment method types (e.g.
     ///
     /// card) that this SetupIntent is allowed to set up.
@@ -359,9 +358,3 @@ impl stripe_types::Object for SetupIntent {
     }
 }
 stripe_types::def_id!(SetupIntentId, "seti_");
-pub mod next_action;
-pub use next_action::NextAction;
-pub mod next_action_redirect_to_url;
-pub use next_action_redirect_to_url::NextActionRedirectToUrl;
-pub mod payment_method_options;
-pub use payment_method_options::PaymentMethodOptions;

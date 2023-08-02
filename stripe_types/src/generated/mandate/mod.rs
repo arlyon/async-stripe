@@ -1,22 +1,25 @@
 /// A Mandate is a record of the permission a customer has given you to debit their payment method.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Mandate {
-    pub customer_acceptance: stripe_types::mandate::customer_acceptance::CustomerAcceptance,
+    pub customer_acceptance: stripe_types::customer_acceptance::CustomerAcceptance,
     /// Unique identifier for the object.
     pub id: stripe_types::mandate::MandateId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multi_use: Option<stripe_types::mandate::multi_use::MultiUse>,
+    pub multi_use: Option<stripe_types::multi_use::MultiUse>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
     pub object: MandateObject,
+    /// The account (if any) for which the mandate is intended.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
     /// ID of the payment method associated with this mandate.
     pub payment_method: stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>,
-    pub payment_method_details: stripe_types::mandate::payment_method_details::PaymentMethodDetails,
+    pub payment_method_details: stripe_types::payment_method_details::PaymentMethodDetails,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub single_use: Option<stripe_types::mandate::single_use::SingleUse>,
+    pub single_use: Option<stripe_types::single_use::SingleUse>,
     /// The status of the mandate, which indicates whether it can be used to initiate a payment.
     pub status: MandateStatus,
     /// The type of the mandate.
@@ -197,17 +200,3 @@ impl stripe_types::Object for Mandate {
     }
 }
 stripe_types::def_id!(MandateId, "mandate_");
-pub mod customer_acceptance;
-pub use customer_acceptance::CustomerAcceptance;
-pub mod au_becs_debit;
-pub use au_becs_debit::AuBecsDebit;
-pub mod bacs_debit;
-pub use bacs_debit::BacsDebit;
-pub mod multi_use;
-pub use multi_use::MultiUse;
-pub mod payment_method_details;
-pub use payment_method_details::PaymentMethodDetails;
-pub mod paypal;
-pub use paypal::Paypal;
-pub mod single_use;
-pub use single_use::SingleUse;

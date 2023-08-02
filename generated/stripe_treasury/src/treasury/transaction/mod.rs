@@ -3,7 +3,7 @@
 pub struct Transaction {
     /// Amount (in cents) transferred.
     pub amount: i64,
-    pub balance_impact: stripe_treasury::treasury::transaction::balance_impact::BalanceImpact,
+    pub balance_impact: stripe_treasury::balance_impact::BalanceImpact,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -38,8 +38,7 @@ pub struct Transaction {
     pub object: TransactionObject,
     /// Status of the Transaction.
     pub status: TransactionStatus,
-    pub status_transitions:
-        stripe_treasury::treasury::transaction::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_treasury::status_transitions::StatusTransitions,
 }
 /// Type of the flow that created the Transaction.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -239,8 +238,4 @@ impl stripe_types::Object for Transaction {
     }
 }
 stripe_types::def_id!(TreasuryTransactionId);
-pub mod status_transitions;
-pub use status_transitions::StatusTransitions;
-pub mod balance_impact;
-pub use balance_impact::BalanceImpact;
 pub mod requests;

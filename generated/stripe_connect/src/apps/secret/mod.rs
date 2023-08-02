@@ -29,7 +29,7 @@ pub struct Secret {
     pub object: SecretObject,
     /// The plaintext secret value to be stored.
     pub payload: Option<String>,
-    pub scope: stripe_connect::apps::secret::scope::Scope,
+    pub scope: stripe_connect::scope::Scope,
 }
 /// String representing the object's type.
 ///
@@ -92,6 +92,4 @@ impl stripe_types::Object for Secret {
     }
 }
 stripe_types::def_id!(AppsSecretId);
-pub mod scope;
-pub use scope::Scope;
 pub mod requests;

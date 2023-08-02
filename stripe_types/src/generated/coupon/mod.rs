@@ -8,7 +8,7 @@ pub struct Coupon {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub applies_to: Option<stripe_types::coupon::applies_to::AppliesTo>,
+    pub applies_to: Option<stripe_types::applies_to::AppliesTo>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -22,7 +22,7 @@ pub struct Coupon {
     pub currency_options: Option<
         std::collections::HashMap<
             stripe_types::Currency,
-            stripe_types::coupon::currency_option::CurrencyOption,
+            stripe_types::currency_option::CurrencyOption,
         >,
     >,
     /// One of `forever`, `once`, and `repeating`.
@@ -181,9 +181,5 @@ impl stripe_types::Object for Coupon {
     }
 }
 stripe_types::def_id!(CouponId);
-pub mod applies_to;
-pub use applies_to::AppliesTo;
-pub mod currency_option;
-pub use currency_option::CurrencyOption;
 pub mod deleted;
 pub use deleted::DeletedCoupon;

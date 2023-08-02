@@ -2,7 +2,7 @@ use std::fmt::{Debug, Write};
 
 use crate::components::Components;
 use crate::dedup::deduplicate_types;
-use crate::ids::{write_object_id, IDS_IN_STRIPE};
+use crate::ids::write_object_id;
 use crate::printable::{Lifetime, PrintableEnumVariant, PrintableStructField};
 use crate::rust_object::{ObjectMetadata, RustObject};
 use crate::rust_type::RustType;
@@ -120,6 +120,9 @@ pub fn gen_obj(
     let mut out = String::with_capacity(128);
 
     let mut obj = obj.clone();
+
+    // NB: we deduplicate the fields / variants of a top-level struct, not the object
+    // itself
     let mut typs = obj.typs_mut();
     let dedupped_objs = deduplicate_types(&mut typs);
     components.write_object(&obj, meta, gen_info, &mut out);
@@ -146,7 +149,7 @@ pub fn gen_obj(
             // Only generate the id definition if the paths match - e.g. if we're generating
             // `DeletedAccount`, we don't want to duplicate `AccountId` since `DeletedAccount`
             // uses that same id
-            if path == comp.path() && !IDS_IN_STRIPE.contains(path) {
+            if path == comp.path() {
                 write_object_id(&mut out, path)
             }
         }

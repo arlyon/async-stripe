@@ -28,11 +28,11 @@ pub struct Price {
     pub currency_options: Option<
         std::collections::HashMap<
             stripe_types::Currency,
-            stripe_types::price::currency_option::CurrencyOption,
+            stripe_types::currency_option::CurrencyOption,
         >,
     >,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
-    pub custom_unit_amount: Option<stripe_types::price::custom_unit_amount::CustomUnitAmount>,
+    pub custom_unit_amount: Option<stripe_types::custom_unit_amount::CustomUnitAmount>,
     /// Unique identifier for the object.
     pub id: stripe_types::price::PriceId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -54,7 +54,7 @@ pub struct Price {
     /// The ID of the product this price is associated with.
     pub product: stripe_types::Expandable<stripe_types::product::Product>,
     /// The recurring components of a price such as `interval` and `usage_type`.
-    pub recurring: Option<stripe_types::price::recurring::Recurring>,
+    pub recurring: Option<stripe_types::recurring::Recurring>,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -66,7 +66,7 @@ pub struct Price {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Vec<stripe_types::price::tier::Tier>>,
+    pub tiers: Option<Vec<stripe_types::tier::Tier>>,
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -75,7 +75,7 @@ pub struct Price {
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_quantity: Option<stripe_types::price::transform_quantity::TransformQuantity>,
+    pub transform_quantity: Option<stripe_types::transform_quantity::TransformQuantity>,
     /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
     #[serde(rename = "type")]
     pub type_: PriceType,
@@ -385,15 +385,5 @@ impl stripe_types::Object for Price {
     }
 }
 stripe_types::def_id!(PriceId, "price_");
-pub mod currency_option;
-pub use currency_option::CurrencyOption;
-pub mod custom_unit_amount;
-pub use custom_unit_amount::CustomUnitAmount;
-pub mod tier;
-pub use tier::Tier;
-pub mod recurring;
-pub use recurring::Recurring;
-pub mod transform_quantity;
-pub use transform_quantity::TransformQuantity;
 pub mod deleted;
 pub use deleted::DeletedPrice;

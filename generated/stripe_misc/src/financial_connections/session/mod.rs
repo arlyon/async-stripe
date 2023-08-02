@@ -2,14 +2,13 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     /// The account holder for whom accounts are collected in this session.
-    pub account_holder:
-        Option<stripe_misc::financial_connections::account::account_holder::AccountHolder>,
+    pub account_holder: Option<stripe_misc::account_holder::AccountHolder>,
     /// The accounts that were collected as part of this Session.
     pub accounts: stripe_types::List<stripe_misc::financial_connections::account::Account>,
     /// A value that will be passed to the client to launch the authentication flow.
     pub client_secret: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub filters: Option<stripe_misc::financial_connections::session::filters::Filters>,
+    pub filters: Option<stripe_misc::filters::Filters>,
     /// Unique identifier for the object.
     pub id: stripe_misc::financial_connections::session::FinancialConnectionsSessionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -149,6 +148,4 @@ impl stripe_types::Object for Session {
     }
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);
-pub mod filters;
-pub use filters::Filters;
 pub mod requests;

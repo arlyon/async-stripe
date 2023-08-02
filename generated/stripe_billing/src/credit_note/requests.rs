@@ -68,6 +68,12 @@ pub struct CreateCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the amount to credit the customer's balance, which will be automatically applied to their next invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_amount: Option<i64>,
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -109,6 +115,7 @@ impl<'a> CreateCreditNote<'a> {
         Self {
             amount: Default::default(),
             credit_amount: Default::default(),
+            effective_at: Default::default(),
             expand: Default::default(),
             invoice,
             lines: Default::default(),
@@ -130,6 +137,12 @@ pub struct PreviewCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the amount to credit the customer's balance, which will be automatically applied to their next invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_amount: Option<i64>,
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -171,6 +184,7 @@ impl<'a> PreviewCreditNote<'a> {
         Self {
             amount: Default::default(),
             credit_amount: Default::default(),
+            effective_at: Default::default(),
             expand: Default::default(),
             invoice,
             lines: Default::default(),
@@ -269,6 +283,12 @@ pub struct PreviewLinesCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the amount to credit the customer's balance, which will be automatically applied to their next invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_amount: Option<i64>,
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -327,6 +347,7 @@ impl<'a> PreviewLinesCreditNote<'a> {
         Self {
             amount: Default::default(),
             credit_amount: Default::default(),
+            effective_at: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             invoice,

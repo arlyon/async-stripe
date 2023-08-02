@@ -3,7 +3,7 @@ pub struct DeletedApplication {
     /// Always true for a deleted object.
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
-    pub id: stripe_types::ApplicationId,
+    pub id: stripe_types::application::ApplicationId,
     /// The name of the application.
     pub name: Option<String>,
     /// String representing the object's type.
@@ -67,7 +67,7 @@ impl<'de> serde::Deserialize<'de> for DeletedApplicationObject {
     }
 }
 impl stripe_types::Object for DeletedApplication {
-    type Id = stripe_types::ApplicationId;
+    type Id = stripe_types::application::ApplicationId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }

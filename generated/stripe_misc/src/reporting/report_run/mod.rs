@@ -20,7 +20,7 @@ pub struct ReportRun {
     ///
     /// Objects of the same type share the same value.
     pub object: ReportRunObject,
-    pub parameters: stripe_misc::reporting::report_run::parameters::Parameters,
+    pub parameters: stripe_misc::parameters::Parameters,
     /// The ID of the [report type](https://stripe.com/docs/reports/report-types) to run, such as `"balance.summary.1"`.
     pub report_type: String,
     /// The file object representing the result of the report run (populated when
@@ -97,6 +97,4 @@ impl stripe_types::Object for ReportRun {
     }
 }
 stripe_types::def_id!(ReportingReportRunId);
-pub mod parameters;
-pub use parameters::Parameters;
 pub mod requests;

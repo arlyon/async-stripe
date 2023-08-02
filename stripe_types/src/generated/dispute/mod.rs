@@ -21,8 +21,8 @@ pub struct Dispute {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    pub evidence: stripe_types::dispute::evidence::Evidence,
-    pub evidence_details: stripe_types::dispute::evidence_details::EvidenceDetails,
+    pub evidence: stripe_types::evidence::Evidence,
+    pub evidence_details: stripe_types::evidence_details::EvidenceDetails,
     /// Unique identifier for the object.
     pub id: stripe_types::dispute::DisputeId,
     /// If true, it is still possible to refund the disputed payment.
@@ -191,7 +191,3 @@ impl stripe_types::Object for Dispute {
     }
 }
 stripe_types::def_id!(DisputeId, "dp_" | "du_");
-pub mod evidence;
-pub use evidence::Evidence;
-pub mod evidence_details;
-pub use evidence_details::EvidenceDetails;

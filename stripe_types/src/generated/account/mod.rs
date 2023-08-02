@@ -9,19 +9,19 @@
 pub struct Account {
     /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_profile: Option<stripe_types::account::business_profile::BusinessProfile>,
+    pub business_profile: Option<stripe_types::business_profile::BusinessProfile>,
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<AccountBusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<stripe_types::account::capabilities::Capabilities>,
+    pub capabilities: Option<stripe_types::capabilities::Capabilities>,
     /// Whether the account can create live charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charges_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<stripe_types::account::company::Company>,
+    pub company: Option<stripe_types::company::Company>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub controller: Option<stripe_types::account::controller::Controller>,
+    pub controller: Option<stripe_types::controller::Controller>,
     /// The account's country.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
@@ -49,9 +49,9 @@ pub struct Account {
     #[serde(default)]
     pub external_accounts: stripe_types::List<stripe_types::external_account::ExternalAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<stripe_types::account::future_requirements::FutureRequirements>,
+    pub future_requirements: Option<stripe_types::future_requirements::FutureRequirements>,
     /// Unique identifier for the object.
-    pub id: stripe_types::AccountId,
+    pub id: stripe_types::account::AccountId,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<stripe_types::person::Person>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -67,12 +67,12 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<stripe_types::account::requirements::Requirements>,
+    pub requirements: Option<stripe_types::requirements::Requirements>,
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<stripe_types::account::settings::Settings>,
+    pub settings: Option<stripe_types::settings::Settings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_acceptance: Option<stripe_types::account::tos_acceptance::TosAcceptance>,
+    pub tos_acceptance: Option<stripe_types::tos_acceptance::TosAcceptance>,
     /// The Stripe account type.
     ///
     /// Can be `standard`, `express`, or `custom`.
@@ -257,40 +257,11 @@ impl<'de> serde::Deserialize<'de> for AccountType {
     }
 }
 impl stripe_types::Object for Account {
-    type Id = stripe_types::AccountId;
+    type Id = stripe_types::account::AccountId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }
 }
-pub mod settings_branding;
-pub use settings_branding::SettingsBranding;
-pub mod business_profile;
-pub use business_profile::BusinessProfile;
-pub mod capabilities;
-pub use capabilities::Capabilities;
-pub mod settings_card_payments;
-pub use settings_card_payments::SettingsCardPayments;
-pub mod settings_dashboard;
-pub use settings_dashboard::SettingsDashboard;
-pub mod decline_charge_on;
-pub use decline_charge_on::DeclineChargeOn;
-pub mod future_requirements;
-pub use future_requirements::FutureRequirements;
-pub mod settings_payments;
-pub use settings_payments::SettingsPayments;
-pub mod settings_payouts;
-pub use settings_payouts::SettingsPayouts;
-pub mod requirements;
-pub use requirements::Requirements;
-pub mod settings;
-pub use settings::Settings;
-pub mod tos_acceptance;
-pub use tos_acceptance::TosAcceptance;
-pub mod controller;
-pub use controller::Controller;
-pub mod company;
-pub use company::Company;
-pub mod payout_schedule;
-pub use payout_schedule::PayoutSchedule;
+stripe_types::def_id!(AccountId, "acct_");
 pub mod deleted;
 pub use deleted::DeletedAccount;

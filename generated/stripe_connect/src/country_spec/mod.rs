@@ -28,7 +28,7 @@ pub struct CountrySpec {
     pub supported_payment_methods: Vec<String>,
     /// Countries that can accept transfers from the specified country.
     pub supported_transfer_countries: Vec<String>,
-    pub verification_fields: stripe_connect::country_spec::verification_fields::VerificationFields,
+    pub verification_fields: stripe_connect::verification_fields::VerificationFields,
 }
 /// String representing the object's type.
 ///
@@ -92,6 +92,4 @@ impl stripe_types::Object for CountrySpec {
     }
 }
 stripe_types::def_id!(CountrySpecId);
-pub mod verification_fields;
-pub use verification_fields::VerificationFields;
 pub mod requests;

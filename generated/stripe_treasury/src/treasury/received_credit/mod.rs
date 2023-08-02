@@ -4,49 +4,50 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ReceivedCredit {
     /// Amount (in cents) transferred.
-pub amount: i64,
+    pub amount: i64,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-pub created: stripe_types::Timestamp,
+    pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-pub currency: stripe_types::Currency,
+    pub currency: stripe_types::Currency,
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-pub description: String,
+    pub description: String,
     /// Reason for the failure.
     ///
     /// A ReceivedCredit might fail because the receiving FinancialAccount is closed or frozen.
-pub failure_code: Option<ReceivedCreditFailureCode>,
+    pub failure_code: Option<ReceivedCreditFailureCode>,
     /// The FinancialAccount that received the funds.
-pub financial_account: Option<String>,
+    pub financial_account: Option<String>,
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-pub hosted_regulatory_receipt_url: Option<String>,
+    pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
-pub id: stripe_treasury::treasury::received_credit::TreasuryReceivedCreditId,
-pub initiating_payment_method_details: stripe_treasury::treasury::received_credit::initiating_payment_method_details::InitiatingPaymentMethodDetails,
-pub linked_flows: stripe_treasury::treasury::received_credit::linked_flows::LinkedFlows,
+    pub id: stripe_treasury::treasury::received_credit::TreasuryReceivedCreditId,
+    pub initiating_payment_method_details:
+        stripe_treasury::initiating_payment_method_details::InitiatingPaymentMethodDetails,
+    pub linked_flows: stripe_treasury::linked_flows::LinkedFlows,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-pub livemode: bool,
+    pub livemode: bool,
     /// The rails used to send the funds.
-pub network: ReceivedCreditNetwork,
+    pub network: ReceivedCreditNetwork,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
-pub object: ReceivedCreditObject,
+    pub object: ReceivedCreditObject,
     /// Details describing when a ReceivedCredit may be reversed.
-pub reversal_details: Option<stripe_treasury::treasury::received_credit::reversal_details::ReversalDetails>,
+    pub reversal_details: Option<stripe_treasury::reversal_details::ReversalDetails>,
     /// Status of the ReceivedCredit.
     ///
     /// ReceivedCredits are created either `succeeded` (approved) or `failed` (declined).
     /// If a ReceivedCredit is declined, the failure reason can be found in the `failure_code` field.
-pub status: ReceivedCreditStatus,
+    pub status: ReceivedCreditStatus,
     /// The Transaction associated with this object.
-pub transaction: Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,
-
+    pub transaction:
+        Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,
 }
 /// Reason for the failure.
 ///
@@ -292,12 +293,4 @@ impl stripe_types::Object for ReceivedCredit {
     }
 }
 stripe_types::def_id!(TreasuryReceivedCreditId);
-pub mod linked_flows;
-pub use linked_flows::LinkedFlows;
-pub mod reversal_details;
-pub use reversal_details::ReversalDetails;
-pub mod status_transitions;
-pub use status_transitions::StatusTransitions;
-pub mod initiating_payment_method_details;
-pub use initiating_payment_method_details::InitiatingPaymentMethodDetails;
 pub mod requests;

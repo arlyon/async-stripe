@@ -44,7 +44,7 @@ pub struct Refund {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_action: Option<stripe_types::refund::next_action::NextAction>,
+    pub next_action: Option<stripe_types::next_action::NextAction>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -196,7 +196,3 @@ impl stripe_types::Object for Refund {
     }
 }
 stripe_types::def_id!(RefundId, "re_" | "pyr_");
-pub mod next_action;
-pub use next_action::NextAction;
-pub mod next_action_display_details;
-pub use next_action_display_details::NextActionDisplayDetails;

@@ -3,7 +3,7 @@ pub struct DeletedAccount {
     /// Always true for a deleted object.
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
-    pub id: stripe_types::AccountId,
+    pub id: stripe_types::account::AccountId,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -65,7 +65,7 @@ impl<'de> serde::Deserialize<'de> for DeletedAccountObject {
     }
 }
 impl stripe_types::Object for DeletedAccount {
-    type Id = stripe_types::AccountId;
+    type Id = stripe_types::account::AccountId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }

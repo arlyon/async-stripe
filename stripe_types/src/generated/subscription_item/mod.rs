@@ -3,8 +3,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-    pub billing_thresholds:
-        Option<stripe_types::subscription_item::billing_thresholds::BillingThresholds>,
+    pub billing_thresholds: Option<stripe_types::billing_thresholds::BillingThresholds>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -93,7 +92,5 @@ impl stripe_types::Object for SubscriptionItem {
     }
 }
 stripe_types::def_id!(SubscriptionItemId, "si_");
-pub mod billing_thresholds;
-pub use billing_thresholds::BillingThresholds;
 pub mod deleted;
 pub use deleted::DeletedSubscriptionItem;

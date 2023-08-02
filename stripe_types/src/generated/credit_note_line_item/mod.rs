@@ -24,7 +24,7 @@ pub struct CreditNoteLineItem {
     /// The number of units of product being credited.
     pub quantity: Option<u64>,
     /// The amount of tax calculated per tax rate for this line item.
-    pub tax_amounts: Vec<stripe_types::credit_note::tax_amount::TaxAmount>,
+    pub tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
     /// The tax rates which apply to the line item.
     pub tax_rates: Vec<stripe_types::tax_rate::TaxRate>,
     /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.

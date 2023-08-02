@@ -7,7 +7,7 @@
 /// If your invoice is configured to be billed through automatic charges,
 /// Stripe automatically finalizes your invoice and attempts payment.
 ///
-/// Note that finalizing the invoice, [when automatic](https://stripe.com/docs/billing/invoices/workflow/#auto_advance), does not happen immediately as the invoice is created.
+/// Note that finalizing the invoice, [when automatic](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection), does not happen immediately as the invoice is created.
 /// Stripe waits until one hour after the last webhook was successfully sent (or the last webhook timed out after failing).
 /// If you (and the platforms you may have connected to) have no webhooks configured, Stripe waits one hour after creation to finalize the invoice.  If your invoice is configured to be billed by sending an email, then based on your [email settings](https://dashboard.stripe.com/account/billing/automatic), Stripe will email the invoice to your customer and await payment.
 /// These emails can contain a link to a hosted page to pay the invoice.  Stripe applies any customer credit on the account before determining the amount due for the invoice (i.e., the amount that will be actually charged).
@@ -47,12 +47,12 @@ pub struct Invoice {
     ///
     /// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
     pub attempted: bool,
-    /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     ///
-    /// When `false`, the invoice's state will not automatically advance without an explicit action.
+    /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
-    pub automatic_tax: stripe_types::invoice::automatic_tax::AutomaticTax,
+    pub automatic_tax: stripe_types::automatic_tax::AutomaticTax,
     /// Indicates the reason why the invoice was created.
     ///
     /// `subscription_cycle` indicates an invoice created by a subscription advancing into a new period.
@@ -79,7 +79,7 @@ pub struct Invoice {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// Custom fields displayed on the invoice.
-    pub custom_fields: Option<Vec<stripe_types::invoice::custom_field::CustomField>>,
+    pub custom_fields: Option<Vec<stripe_types::custom_field::CustomField>>,
     /// The ID of the customer who will be billed.
     pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
     /// The customer's address.
@@ -117,7 +117,7 @@ pub struct Invoice {
     /// Until the invoice is finalized, this field will contain the same tax IDs as `customer.tax_ids`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_tax_ids: Option<Vec<stripe_types::invoice::customer_tax_id::CustomerTaxId>>,
+    pub customer_tax_ids: Option<Vec<stripe_types::customer_tax_id::CustomerTaxId>>,
     /// ID of the default payment method for the invoice.
     ///
     /// It must belong to the customer associated with the invoice.
@@ -150,6 +150,11 @@ pub struct Invoice {
     ///
     /// This value will be `null` for invoices where `collection_method=charge_automatically`.
     pub due_date: Option<stripe_types::Timestamp>,
+    /// The date when this invoice is in effect.
+    ///
+    /// Same as `finalized_at` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Ending customer balance after the invoice is finalized.
     ///
     /// Invoices are finalized approximately an hour after successful webhook delivery or when payment collection is attempted for the invoice.
@@ -160,7 +165,7 @@ pub struct Invoice {
     /// Details of the invoice that was cloned.
     ///
     /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
-    pub from_invoice: Option<stripe_types::invoice::from_invoice::FromInvoice>,
+    pub from_invoice: Option<stripe_types::from_invoice::FromInvoice>,
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     ///
     /// If the invoice has not been finalized yet, this will be null.
@@ -222,7 +227,7 @@ pub struct Invoice {
     /// Note that voiding an invoice will cancel the PaymentIntent.
     pub payment_intent:
         Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
-    pub payment_settings: stripe_types::invoice::payment_settings::PaymentSettings,
+    pub payment_settings: stripe_types::payment_settings::PaymentSettings,
     /// End of the usage period during which invoice items were added to this invoice.
     pub period_end: stripe_types::Timestamp,
     /// Start of the usage period during which invoice items were added to this invoice.
@@ -236,9 +241,9 @@ pub struct Invoice {
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
     /// Options for invoice PDF rendering.
-    pub rendering_options: Option<stripe_types::invoice::rendering_options::RenderingOptions>,
+    pub rendering_options: Option<stripe_types::rendering_options::RenderingOptions>,
     /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
-    pub shipping_cost: Option<stripe_types::invoice::shipping_cost::ShippingCost>,
+    pub shipping_cost: Option<stripe_types::shipping_cost::ShippingCost>,
     /// Shipping details for the invoice.
     ///
     /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
@@ -254,9 +259,13 @@ pub struct Invoice {
     ///
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     pub status: Option<InvoiceStatus>,
-    pub status_transitions: stripe_types::invoice::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_types::status_transitions::StatusTransitions,
     /// The subscription that this invoice was prepared for, if any.
     pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
+    /// Details about the subscription that created this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_details:
+        Option<stripe_types::subscription_details_data::SubscriptionDetailsData>,
     /// Only set for upcoming invoices that preview prorations.
     ///
     /// The time used to calculate prorations.
@@ -278,7 +287,7 @@ pub struct Invoice {
     pub test_clock:
         Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub threshold_reason: Option<stripe_types::invoice::threshold_reason::ThresholdReason>,
+    pub threshold_reason: Option<stripe_types::threshold_reason::ThresholdReason>,
     /// Total after discounts and taxes.
     pub total: i64,
     /// The aggregate amounts calculated per discount across all line items.
@@ -286,9 +295,9 @@ pub struct Invoice {
     /// The integer amount in %s representing the total amount of the invoice including all discounts but excluding all tax.
     pub total_excluding_tax: Option<i64>,
     /// The aggregate amounts calculated per tax rate for all line items.
-    pub total_tax_amounts: Vec<stripe_types::invoice::tax_amount::TaxAmount>,
+    pub total_tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
     /// The account (if any) the payment will be attributed to for tax reporting, and where funds from the payment will be transferred to for the invoice.
-    pub transfer_data: Option<stripe_types::invoice::transfer_data::TransferData>,
+    pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
     /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
     ///
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
@@ -628,31 +637,5 @@ impl stripe_types::Object for Invoice {
     }
 }
 stripe_types::def_id!(InvoiceId, "in_");
-pub mod automatic_tax;
-pub use automatic_tax::AutomaticTax;
-pub mod threshold_item_reason;
-pub use threshold_item_reason::ThresholdItemReason;
-pub mod custom_field;
-pub use custom_field::CustomField;
-pub mod rendering_options;
-pub use rendering_options::RenderingOptions;
-pub mod tax_amount;
-pub use tax_amount::TaxAmount;
-pub mod threshold_reason;
-pub use threshold_reason::ThresholdReason;
-pub mod transfer_data;
-pub use transfer_data::TransferData;
-pub mod from_invoice;
-pub use from_invoice::FromInvoice;
-pub mod payment_method_options;
-pub use payment_method_options::PaymentMethodOptions;
-pub mod payment_settings;
-pub use payment_settings::PaymentSettings;
-pub mod customer_tax_id;
-pub use customer_tax_id::CustomerTaxId;
-pub mod shipping_cost;
-pub use shipping_cost::ShippingCost;
-pub mod status_transitions;
-pub use status_transitions::StatusTransitions;
 pub mod deleted;
 pub use deleted::DeletedInvoice;

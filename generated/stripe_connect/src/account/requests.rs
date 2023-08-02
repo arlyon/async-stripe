@@ -9,7 +9,7 @@ pub fn retrieve_for_my_account(
 /// Retrieves the details of an account.
 pub fn retrieve(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: RetrieveAccount,
 ) -> stripe::Response<stripe_types::account::Account> {
     client.get_query(&format!("/accounts/{account}", account = account), params)
@@ -23,7 +23,7 @@ pub fn retrieve(
 /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
 pub fn update(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: UpdateAccount,
 ) -> stripe::Response<stripe_types::account::Account> {
     client.send_form(
@@ -44,10 +44,10 @@ pub fn list(
 /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
 /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
 ///
-/// If you’ve already collected information for your connected accounts, you [can pre-fill that information](https://stripe.com/docs/connect/best-practices#onboarding) when
+/// If you’ve already collected information for your connected accounts, you [can prefill that information](https://stripe.com/docs/connect/best-practices#onboarding) when
 /// creating the account.
 ///
-/// Connect Onboarding won’t ask for the pre-filled information during account onboarding. You can pre-fill any information on the account.
+/// Connect Onboarding won’t ask for the prefilled information during account onboarding. You can prefill any information on the account.
 pub fn create(
     client: &stripe::Client,
     params: CreateAccount,
@@ -62,7 +62,7 @@ pub fn create(
 /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
 pub fn delete(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
 ) -> stripe::Response<stripe_types::account::DeletedAccount> {
     client.send(&format!("/accounts/{account}", account = account), http_types::Method::Delete)
 }
@@ -73,7 +73,7 @@ pub fn delete(
 /// Accounts created using live-mode keys may only be rejected once all balances are zero.
 pub fn reject(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: RejectAccount,
 ) -> stripe::Response<stripe_types::account::Account> {
     client.send_form(
@@ -87,7 +87,7 @@ pub fn reject(
 /// The people are returned sorted by creation date, with the most recent people appearing first.
 pub fn persons(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: PersonsAccount,
 ) -> stripe::Response<stripe_types::List<stripe_types::person::Person>> {
     client.get_query(&format!("/accounts/{account}/persons", account = account), params)
@@ -97,9 +97,9 @@ pub fn persons(
 /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
 pub fn capabilities(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: CapabilitiesAccount,
-) -> stripe::Response<stripe_types::List<stripe_connect::capability::Capability>> {
+) -> stripe::Response<stripe_types::List<stripe_types::capability::Capability>> {
     client.get_query(&format!("/accounts/{account}/capabilities", account = account), params)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1020,6 +1020,20 @@ impl<'a> CapabilitiesAccount<'a> {
         Self::default()
     }
 }
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct MonthlyEstimatedRevenueSpecs {
+    /// A non-negative integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub amount: i64,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+}
+impl MonthlyEstimatedRevenueSpecs {
+    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
+        Self { amount, currency }
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct AddressSpecs<'a> {
     /// City, district, suburb, town, or village.
@@ -1565,6 +1579,11 @@ pub struct BusinessProfileSpecs<'a> {
     /// MCCs are used to classify businesses based on the goods or services they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<&'a str>,
+    /// An estimate of the monthly revenue of the business.
+    ///
+    /// Only accepted for accounts in Brazil and India.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_estimated_revenue: Option<MonthlyEstimatedRevenueSpecs>,
     /// The customer-facing business name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
@@ -1812,7 +1831,7 @@ pub struct TransferScheduleSpecs {
     ///
     /// May also be set to `minimum`, representing the lowest available value for the account country.
     /// Default is `minimum`.
-    /// The `delay_days` parameter does not apply when the `interval` is `manual`.
+    /// The `delay_days` parameter remains at the last configured value if `interval` is `manual`.
     /// [Learn more about controlling payout delay days](https://stripe.com/docs/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days: Option<DelayDays>,

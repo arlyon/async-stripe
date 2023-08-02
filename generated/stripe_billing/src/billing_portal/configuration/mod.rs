@@ -5,8 +5,7 @@ pub struct Configuration {
     pub active: bool,
     /// ID of the Connect Application that created the configuration.
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
-    pub business_profile:
-        stripe_billing::billing_portal::configuration::business_profile::BusinessProfile,
+    pub business_profile: stripe_billing::business_profile::BusinessProfile,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -15,7 +14,7 @@ pub struct Configuration {
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub default_return_url: Option<String>,
-    pub features: stripe_billing::billing_portal::configuration::features::Features,
+    pub features: stripe_billing::features::Features,
     /// Unique identifier for the object.
     pub id: stripe_billing::billing_portal::configuration::BillingPortalConfigurationId,
     /// Whether the configuration is the default.
@@ -24,7 +23,7 @@ pub struct Configuration {
     pub is_default: bool,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    pub login_page: stripe_billing::billing_portal::configuration::login_page::LoginPage,
+    pub login_page: stripe_billing::login_page::LoginPage,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -100,10 +99,4 @@ impl stripe_types::Object for Configuration {
     }
 }
 stripe_types::def_id!(BillingPortalConfigurationId, "bpc_");
-pub mod business_profile;
-pub use business_profile::BusinessProfile;
-pub mod features;
-pub use features::Features;
-pub mod login_page;
-pub use login_page::LoginPage;
 pub mod requests;

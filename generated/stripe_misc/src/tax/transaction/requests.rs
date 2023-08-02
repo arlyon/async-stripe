@@ -66,7 +66,7 @@ pub struct CreateReversalTransaction<'a> {
     pub mode: CreateReversalTransactionMode,
     /// The ID of the Transaction to partially or fully reverse.
     pub original_transaction: &'a str,
-    /// A custom identifier for this reversal, such as 'myOrder_123-refund_1', which must be unique across all transactions.
+    /// A custom identifier for this reversal, such as `myOrder_123-refund_1`, which must be unique across all transactions.
     ///
     /// The reference helps identify this reversal transaction in exported [tax reports](https://stripe.com/docs/tax/reports).
     pub reference: &'a str,

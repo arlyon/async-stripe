@@ -19,6 +19,8 @@ pub struct TransactionLineItem {
     ///
     /// Objects of the same type share the same value.
     pub object: TransactionLineItemObject,
+    /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
+    pub product: Option<String>,
     /// The number of units of the item being purchased.
     ///
     /// For reversals, this is the quantity reversed.
@@ -26,7 +28,7 @@ pub struct TransactionLineItem {
     /// A custom identifier for this line item in the transaction.
     pub reference: String,
     /// If `type=reversal`, contains information about what was reversed.
-    pub reversal: Option<stripe_misc::tax::transaction_line_item::reversal::Reversal>,
+    pub reversal: Option<stripe_misc::reversal::Reversal>,
     /// Specifies whether the `amount` includes taxes.
     ///
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
@@ -214,5 +216,3 @@ impl stripe_types::Object for TransactionLineItem {
     }
 }
 stripe_types::def_id!(TaxTransactionLineItemId);
-pub mod reversal;
-pub use reversal::Reversal;

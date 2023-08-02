@@ -2,6 +2,8 @@ pub mod calculation;
 pub use calculation::Calculation;
 pub mod calculation_line_item;
 pub use calculation_line_item::CalculationLineItem;
+pub mod settings;
+pub use settings::Settings;
 pub mod transaction;
 pub use transaction::Transaction;
 pub mod transaction_line_item;

@@ -11,7 +11,7 @@ pub struct Calculation {
     pub currency: stripe_types::Currency,
     /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
     pub customer: Option<String>,
-    pub customer_details: stripe_misc::tax::calculation::customer_details::CustomerDetails,
+    pub customer_details: stripe_misc::customer_details::CustomerDetails,
     /// Timestamp of date at which the tax calculation will expire.
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the calculation.
@@ -32,7 +32,7 @@ pub struct Calculation {
     /// The amount of tax already included in the line item prices.
     pub tax_amount_inclusive: i64,
     /// Breakdown of individual tax amounts that add up to the total.
-    pub tax_breakdown: Vec<stripe_misc::tax::calculation::tax_breakdown::TaxBreakdown>,
+    pub tax_breakdown: Vec<stripe_misc::tax_breakdown::TaxBreakdown>,
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
     pub tax_date: stripe_types::Timestamp,
 }
@@ -98,8 +98,4 @@ impl stripe_types::Object for Calculation {
     }
 }
 stripe_types::def_id!(TaxCalculationId);
-pub mod customer_details;
-pub use customer_details::CustomerDetails;
-pub mod tax_breakdown;
-pub use tax_breakdown::TaxBreakdown;
 pub mod requests;

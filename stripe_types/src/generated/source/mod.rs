@@ -4,33 +4,32 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Source {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach_credit_transfer: Option<stripe_types::source::ach_credit_transfer::AchCreditTransfer>,
+    pub ach_credit_transfer: Option<stripe_types::ach_credit_transfer::AchCreditTransfer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach_debit: Option<stripe_types::source::ach_debit::AchDebit>,
+    pub ach_debit: Option<stripe_types::ach_debit::AchDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<stripe_types::source::acss_debit::AcssDebit>,
+    pub acss_debit: Option<stripe_types::acss_debit::AcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<stripe_types::source::alipay::Alipay>,
+    pub alipay: Option<stripe_types::alipay::Alipay>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount associated with the source.
     ///
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
     pub amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<stripe_types::source::au_becs_debit::AuBecsDebit>,
+    pub au_becs_debit: Option<stripe_types::au_becs_debit::AuBecsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<stripe_types::source::bancontact::Bancontact>,
+    pub bancontact: Option<stripe_types::bancontact::Bancontact>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<stripe_types::source::card::Card>,
+    pub card: Option<stripe_types::card::Card>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<stripe_types::source::card_present::CardPresent>,
+    pub card_present: Option<stripe_types::card_present::CardPresent>,
     /// The client secret of the source.
     ///
     /// Used for client-side retrieval using a publishable key.
     pub client_secret: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code_verification:
-        Option<stripe_types::source::code_verification_flow::CodeVerificationFlow>,
+    pub code_verification: Option<stripe_types::code_verification_flow::CodeVerificationFlow>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -46,19 +45,19 @@ pub struct Source {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<stripe_types::source::eps::Eps>,
+    pub eps: Option<stripe_types::eps::Eps>,
     /// The authentication `flow` of the source.
     ///
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
     pub flow: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<stripe_types::source::giropay::Giropay>,
+    pub giropay: Option<stripe_types::giropay::Giropay>,
     /// Unique identifier for the object.
     pub id: stripe_types::source::SourceId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<stripe_types::source::ideal::Ideal>,
+    pub ideal: Option<stripe_types::ideal::Ideal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna: Option<stripe_types::source::klarna::Klarna>,
+    pub klarna: Option<stripe_types::klarna::Klarna>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -66,28 +65,27 @@ pub struct Source {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multibanco: Option<stripe_types::source::multibanco::Multibanco>,
+    pub multibanco: Option<stripe_types::multibanco::Multibanco>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
     pub object: SourceObject,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
-    pub owner: Option<stripe_types::source::owner::Owner>,
+    pub owner: Option<stripe_types::owner::Owner>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<stripe_types::source::p24::P24>,
+    pub p24: Option<stripe_types::p24::P24>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receiver: Option<stripe_types::source::receiver_flow::ReceiverFlow>,
+    pub receiver: Option<stripe_types::receiver_flow::ReceiverFlow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<stripe_types::source::redirect_flow::RedirectFlow>,
+    pub redirect: Option<stripe_types::redirect_flow::RedirectFlow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_credit_transfer:
-        Option<stripe_types::source::sepa_credit_transfer::SepaCreditTransfer>,
+    pub sepa_credit_transfer: Option<stripe_types::sepa_credit_transfer::SepaCreditTransfer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<stripe_types::source::sepa_debit::SepaDebit>,
+    pub sepa_debit: Option<stripe_types::sepa_debit::SepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<stripe_types::source::sofort::Sofort>,
+    pub sofort: Option<stripe_types::sofort::Sofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_order: Option<stripe_types::source::order::Order>,
+    pub source_order: Option<stripe_types::order::Order>,
     /// Extra information about a source.
     ///
     /// This will appear on your customer's statement every time you charge the source.
@@ -97,7 +95,7 @@ pub struct Source {
     /// Only `chargeable` sources can be used to create a charge.
     pub status: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure: Option<stripe_types::source::three_d_secure::ThreeDSecure>,
+    pub three_d_secure: Option<stripe_types::three_d_secure::ThreeDSecure>,
     /// The `type` of the source.
     ///
     /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
@@ -112,7 +110,7 @@ pub struct Source {
     /// If an incompatible value is passed, an error will be returned.
     pub usage: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat: Option<stripe_types::source::wechat::Wechat>,
+    pub wechat: Option<stripe_types::wechat::Wechat>,
 }
 /// String representing the object's type.
 ///
@@ -285,53 +283,3 @@ impl stripe_types::Object for Source {
     }
 }
 stripe_types::def_id!(SourceId, "src_");
-pub mod code_verification_flow;
-pub use code_verification_flow::CodeVerificationFlow;
-pub mod order;
-pub use order::Order;
-pub mod order_item;
-pub use order_item::OrderItem;
-pub mod owner;
-pub use owner::Owner;
-pub mod receiver_flow;
-pub use receiver_flow::ReceiverFlow;
-pub mod redirect_flow;
-pub use redirect_flow::RedirectFlow;
-pub mod ach_credit_transfer;
-pub use ach_credit_transfer::AchCreditTransfer;
-pub mod ach_debit;
-pub use ach_debit::AchDebit;
-pub mod acss_debit;
-pub use acss_debit::AcssDebit;
-pub mod alipay;
-pub use alipay::Alipay;
-pub mod au_becs_debit;
-pub use au_becs_debit::AuBecsDebit;
-pub mod bancontact;
-pub use bancontact::Bancontact;
-pub mod card;
-pub use card::Card;
-pub mod card_present;
-pub use card_present::CardPresent;
-pub mod eps;
-pub use eps::Eps;
-pub mod giropay;
-pub use giropay::Giropay;
-pub mod ideal;
-pub use ideal::Ideal;
-pub mod klarna;
-pub use klarna::Klarna;
-pub mod multibanco;
-pub use multibanco::Multibanco;
-pub mod p24;
-pub use p24::P24;
-pub mod sepa_credit_transfer;
-pub use sepa_credit_transfer::SepaCreditTransfer;
-pub mod sepa_debit;
-pub use sepa_debit::SepaDebit;
-pub mod sofort;
-pub use sofort::Sofort;
-pub mod three_d_secure;
-pub use three_d_secure::ThreeDSecure;
-pub mod wechat;
-pub use wechat::Wechat;

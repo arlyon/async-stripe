@@ -12,7 +12,7 @@ pub struct ScheduledQueryRun {
     /// When the query was run, Sigma contained a snapshot of your Stripe data at this time.
     pub data_load_time: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub error: Option<stripe_misc::sigma::scheduled_query_run::run_error::RunError>,
+    pub error: Option<stripe_misc::run_error::RunError>,
     /// The file object representing the results of the query.
     pub file: Option<stripe_types::file::File>,
     /// Unique identifier for the object.
@@ -94,6 +94,4 @@ impl stripe_types::Object for ScheduledQueryRun {
     }
 }
 stripe_types::def_id!(ScheduledQueryRunId, "sqr_");
-pub mod run_error;
-pub use run_error::RunError;
 pub mod requests;

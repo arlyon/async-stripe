@@ -9,7 +9,7 @@ pub fn list(
 /// Retrieves the details of an Financial Connections `Account`.
 pub fn retrieve(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: RetrieveAccount,
 ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
     client
@@ -18,7 +18,7 @@ pub fn retrieve(
 /// Lists all owners for a given `Account`.
 pub fn list_owners(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: ListOwnersAccount,
 ) -> stripe::Response<
     stripe_types::List<stripe_misc::financial_connections::account_owner::AccountOwner>,
@@ -31,7 +31,7 @@ pub fn list_owners(
 /// Refreshes the data associated with a Financial Connections `Account`.
 pub fn refresh(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: RefreshAccount,
 ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
     client.send_form(
@@ -46,7 +46,7 @@ pub fn refresh(
 /// balances, transactions).
 pub fn disconnect(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: DisconnectAccount,
 ) -> stripe::Response<stripe_misc::financial_connections::account::Account> {
     client.send_form(

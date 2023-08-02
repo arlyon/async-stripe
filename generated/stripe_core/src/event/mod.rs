@@ -23,7 +23,7 @@ pub struct Event {
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    pub data: stripe_types::event_data::EventData,
+    pub data: stripe_core::event_data::EventData,
     /// Unique identifier for the object.
     pub id: stripe_core::event::EventId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -35,7 +35,7 @@ pub struct Event {
     /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
     pub pending_webhooks: i64,
     /// Information on the API request that instigated the event.
-    pub request: Option<stripe_types::event_request::EventRequest>,
+    pub request: Option<stripe_core::event_request::EventRequest>,
     /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
     #[serde(rename = "type")]
     pub type_: String,

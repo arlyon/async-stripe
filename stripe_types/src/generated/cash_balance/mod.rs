@@ -17,7 +17,7 @@ pub struct CashBalance {
     ///
     /// Objects of the same type share the same value.
     pub object: CashBalanceObject,
-    pub settings: stripe_types::cash_balance::balance_settings::BalanceSettings,
+    pub settings: stripe_types::balance_settings::BalanceSettings,
 }
 /// String representing the object's type.
 ///
@@ -74,5 +74,3 @@ impl<'de> serde::Deserialize<'de> for CashBalanceObject {
             .map_err(|_| serde::de::Error::custom("Unknown value for CashBalanceObject"))
     }
 }
-pub mod balance_settings;
-pub use balance_settings::BalanceSettings;

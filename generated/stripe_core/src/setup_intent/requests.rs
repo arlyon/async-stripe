@@ -44,7 +44,7 @@ pub fn update(
 /// provided payment method.
 ///
 /// For example, you would confirm a SetupIntent when a customer hits the “Save” button on a payment method management page on your website.  If the selected payment method does not require any additional steps from the customer, the SetupIntent will transition to the `succeeded` status.  Otherwise, it will transition to the `requires_action` status and suggest additional actions via `next_action`.
-/// If setup fails, the SetupIntent will transition to the `requires_payment_method` status.
+/// If setup fails, the SetupIntent will transition to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
 pub fn confirm(
     client: &stripe::Client,
     intent: &stripe_types::setup_intent::SetupIntentId,
@@ -168,6 +168,9 @@ pub struct CreateSetupIntent<'a> {
     /// If not provided, this value defaults to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage: Option<CreateSetupIntentUsage>,
+    /// Set to `true` when confirming server-side and using Stripe.js, iOS, or Android client-side SDKs to handle the next actions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_stripe_sdk: Option<bool>,
 }
 impl<'a> CreateSetupIntent<'a> {
     pub fn new() -> Self {
@@ -177,12 +180,71 @@ impl<'a> CreateSetupIntent<'a> {
 /// When enabled, this SetupIntent will accept payment methods that you have enabled in the Dashboard and are compatible with this SetupIntent's other parameters.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSetupIntentAutomaticPaymentMethods {
+    /// Controls whether this SetupIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<CreateSetupIntentAutomaticPaymentMethodsAllowRedirects>,
     /// Whether this feature is enabled.
     pub enabled: bool,
 }
 impl CreateSetupIntentAutomaticPaymentMethods {
     pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+        Self { allow_redirects: Default::default(), enabled }
+    }
+}
+/// Controls whether this SetupIntent will accept redirect-based payment methods.
+///
+/// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+///
+/// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    Always,
+    Never,
+}
+
+impl CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        use CreateSetupIntentAutomaticPaymentMethodsAllowRedirects::*;
+        match self {
+            Always => "always",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentAutomaticPaymentMethodsAllowRedirects::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// This hash contains details about the Mandate to create.
@@ -1107,7 +1169,7 @@ impl<'a> CreateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsLink<'a> {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }
@@ -2219,7 +2281,7 @@ impl<'a> UpdateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsLink<'a> {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }
@@ -2289,6 +2351,9 @@ pub struct ConfirmSetupIntent<'a> {
     /// This parameter is only used for cards and other redirect-based payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
+    /// Set to `true` when confirming server-side and using Stripe.js, iOS, or Android client-side SDKs to handle the next actions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_stripe_sdk: Option<bool>,
 }
 impl<'a> ConfirmSetupIntent<'a> {
     pub fn new() -> Self {
@@ -3314,7 +3379,7 @@ impl<'a> ConfirmSetupIntentPaymentMethodOptionsAcssDebit<'a> {
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodOptionsLink<'a> {
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }

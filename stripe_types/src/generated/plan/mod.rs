@@ -63,7 +63,7 @@ pub struct Plan {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Vec<stripe_types::plan::tier::Tier>>,
+    pub tiers: Option<Vec<stripe_types::tier::Tier>>,
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -72,7 +72,7 @@ pub struct Plan {
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_usage: Option<stripe_types::plan::transform_usage::TransformUsage>,
+    pub transform_usage: Option<stripe_types::transform_usage::TransformUsage>,
     /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     pub trial_period_days: Option<u32>,
     /// Configures how the quantity per period should be determined.
@@ -450,9 +450,5 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-pub mod tier;
-pub use tier::Tier;
-pub mod transform_usage;
-pub use transform_usage::TransformUsage;
 pub mod deleted;
 pub use deleted::DeletedPlan;

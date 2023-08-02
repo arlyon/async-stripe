@@ -60,7 +60,7 @@ pub struct InvoiceLineItem {
         Option<stripe_types::Expandable<stripe_types::subscription_item::SubscriptionItem>>,
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<stripe_types::invoice::tax_amount::TaxAmount>>,
+    pub tax_amounts: Option<Vec<stripe_types::tax_amount::TaxAmount>>,
     /// The tax rates which apply to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<stripe_types::tax_rate::TaxRate>>,

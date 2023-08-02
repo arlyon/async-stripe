@@ -207,6 +207,7 @@ pub enum TaxType {
     Qst,
     Rst,
     SalesTax,
+    ServiceTax,
     Vat,
 }
 
@@ -225,6 +226,7 @@ impl TaxType {
             Qst => "qst",
             Rst => "rst",
             SalesTax => "sales_tax",
+            ServiceTax => "service_tax",
             Vat => "vat",
         }
     }
@@ -246,6 +248,7 @@ impl std::str::FromStr for TaxType {
             "qst" => Ok(Qst),
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
+            "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
             _ => Err(()),
         }

@@ -4,8 +4,11 @@ use petgraph::prelude::DiGraphMap;
 use crate::components::{Components, ModuleName};
 use crate::crate_inference::Crate;
 
+pub type ModuleGraph<'a> = DiGraphMap<&'a ModuleName, ()>;
+
 impl Components {
-    pub fn gen_module_dep_graph(&self) -> DiGraphMap<&ModuleName, ()> {
+    /// Generate a dependency graph with an edge from A to B implying that A depends on B
+    pub fn gen_module_dep_graph(&self) -> ModuleGraph {
         let mut graph = DiGraphMap::new();
         for mod_name in self.modules.keys() {
             graph.add_node(mod_name);
@@ -45,7 +48,7 @@ impl Components {
                 deps.extend(module_deps);
             }
             for dep in deps {
-                let dependent_crate = self.containing_crate(dep);
+                let dependent_crate = self.containing_crate(dep).for_types();
                 // Don't clutter with self edges since they aren't particularly meaningful
                 // in this context
                 if dependent_crate != *krate {

@@ -34,7 +34,7 @@ pub struct PromotionCode {
     ///
     /// Objects of the same type share the same value.
     pub object: PromotionCodeObject,
-    pub restrictions: stripe_types::promotion_code::restrictions::Restrictions,
+    pub restrictions: stripe_types::restrictions::Restrictions,
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
 }
@@ -100,7 +100,3 @@ impl stripe_types::Object for PromotionCode {
     }
 }
 stripe_types::def_id!(PromotionCodeId, "promo_");
-pub mod currency_option;
-pub use currency_option::CurrencyOption;
-pub mod restrictions;
-pub use restrictions::Restrictions;

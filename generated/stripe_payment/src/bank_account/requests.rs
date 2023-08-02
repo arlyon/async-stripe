@@ -43,7 +43,7 @@ pub fn verify(
 /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
 pub fn update_account(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     id: &str,
     params: UpdateAccountBankAccount,
 ) -> stripe::Response<stripe_types::external_account::ExternalAccount> {
@@ -56,7 +56,7 @@ pub fn update_account(
 /// Delete a specified external account for a given account.
 pub fn delete_account(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     id: &str,
 ) -> stripe::Response<stripe_types::external_account::DeletedExternalAccount> {
     client.send(

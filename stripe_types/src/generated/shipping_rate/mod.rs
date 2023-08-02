@@ -1,6 +1,7 @@
-/// Shipping rates describe the price of shipping presented to your customers and can be
-/// applied to [Checkout Sessions](https://stripe.com/docs/payments/checkout/shipping)
-/// and [Orders](https://stripe.com/docs/orders/shipping) to collect shipping costs.
+/// Shipping rates describe the price of shipping presented to your customers and
+/// applied to a purchase.
+///
+/// For more information, see [Charge for shipping](https://stripe.com/docs/payments/during-payment/charge-shipping).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ShippingRate {
     /// Whether the shipping rate can be used for new purchases.
@@ -14,13 +15,13 @@ pub struct ShippingRate {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
-    pub delivery_estimate: Option<stripe_types::shipping_rate::delivery_estimate::DeliveryEstimate>,
+    pub delivery_estimate: Option<stripe_types::delivery_estimate::DeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
     pub display_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<stripe_types::shipping_rate::fixed_amount::FixedAmount>,
+    pub fixed_amount: Option<stripe_types::fixed_amount::FixedAmount>,
     /// Unique identifier for the object.
     pub id: stripe_types::shipping_rate::ShippingRateId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -225,9 +226,3 @@ impl stripe_types::Object for ShippingRate {
     }
 }
 stripe_types::def_id!(ShippingRateId, "shr_");
-pub mod currency_option;
-pub use currency_option::CurrencyOption;
-pub mod delivery_estimate;
-pub use delivery_estimate::DeliveryEstimate;
-pub mod fixed_amount;
-pub use fixed_amount::FixedAmount;

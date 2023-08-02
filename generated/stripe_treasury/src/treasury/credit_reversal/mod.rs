@@ -35,8 +35,7 @@ pub struct CreditReversal {
     pub received_credit: String,
     /// Status of the CreditReversal.
     pub status: CreditReversalStatus,
-    pub status_transitions:
-        stripe_treasury::treasury::received_credit::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_treasury::status_transitions::StatusTransitions,
     /// The Transaction associated with this object.
     pub transaction:
         Option<stripe_types::Expandable<stripe_treasury::treasury::transaction::Transaction>>,

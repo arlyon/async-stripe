@@ -65,7 +65,7 @@ pub fn update(
 /// payment method.
 ///
 /// Upon confirmation, the PaymentIntent will attempt to initiate a payment. If the selected payment method requires additional authentication steps, the PaymentIntent will transition to the `requires_action` status and suggest additional actions via `next_action`.
-/// If payment fails, the PaymentIntent will transition to the `requires_payment_method` status.
+/// If payment fails, the PaymentIntent transitions to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
 /// If payment succeeds, the PaymentIntent will transition to the `succeeded` status (or `requires_capture`, if `capture_method` is set to `manual`). If the `confirmation_method` is `automatic`, payment may be attempted using our [client SDKs](https://stripe.com/docs/stripe-js/reference#stripe-handle-card-payment) and the PaymentIntent’s [client_secret](https://stripe.com/docs/api#payment_intent_object-client_secret). After `next_action`s are handled by the client, no additional confirmation is required to complete the payment. If the `confirmation_method` is `manual`, all payment attempts must be initiated using a secret key. If any actions are required for the payment, the PaymentIntent will return to the `requires_confirmation` state after those actions are completed.
 /// Your server needs to then explicitly re-confirm the PaymentIntent to initiate the next payment attempt.
 /// Read the [expanded documentation](https://stripe.com/docs/payments/payment-intents/web-manual) to learn more about manual confirmation.
@@ -447,12 +447,71 @@ impl<'a> CreatePaymentIntent<'a> {
 /// When enabled, this PaymentIntent will accept payment methods that you have enabled in the Dashboard and are compatible with this PaymentIntent's other parameters.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
+    /// Controls whether this PaymentIntent will accept redirect-based payment methods.
+    ///
+    /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+    ///
+    /// To [confirm](https://stripe.com/docs/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_redirects: Option<CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects>,
     /// Whether this feature is enabled.
     pub enabled: bool,
 }
 impl CreatePaymentIntentAutomaticPaymentMethods {
     pub fn new(enabled: bool) -> Self {
-        Self { enabled }
+        Self { allow_redirects: Default::default(), enabled }
+    }
+}
+/// Controls whether this PaymentIntent will accept redirect-based payment methods.
+///
+/// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
+///
+/// To [confirm](https://stripe.com/docs/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    Always,
+    Never,
+}
+
+impl CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects::*;
+        match self {
+            Always => "always",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -2386,7 +2445,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<&'a [RequestedAddressTypes]>,
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -2401,13 +2460,14 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> 
         }
     }
 }
-/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -2418,6 +2478,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
             GbBankTransfer => "gb_bank_transfer",
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
+            UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -2431,6 +2492,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "gb_bank_transfer" => Ok(GbBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
+            "us_bank_transfer" => Ok(UsBankTransfer),
             _ => Err(()),
         }
     }
@@ -3059,7 +3121,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -6145,7 +6207,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<&'a [RequestedAddressTypes]>,
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -6160,13 +6222,14 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> 
         }
     }
 }
-/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -6177,6 +6240,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
             GbBankTransfer => "gb_bank_transfer",
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
+            UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -6190,6 +6254,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
             "gb_bank_transfer" => Ok(GbBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
+            "us_bank_transfer" => Ok(UsBankTransfer),
             _ => Err(()),
         }
     }
@@ -6818,7 +6883,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -9941,7 +10006,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<&'a [RequestedAddressTypes]>,
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -9956,13 +10021,14 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>
         }
     }
 }
-/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+/// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -9973,6 +10039,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
             GbBankTransfer => "gb_bank_transfer",
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
+            UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -9986,6 +10053,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
             "gb_bank_transfer" => Ok(GbBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
+            "us_bank_transfer" => Ok(UsBankTransfer),
             _ => Err(()),
         }
     }
@@ -10614,7 +10682,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// Token used for persistent Link logins.
+    /// [Deprecated] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -12954,10 +13022,12 @@ impl<'a> EuBankTransferParams<'a> {
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum RequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
@@ -12965,10 +13035,12 @@ impl RequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         use RequestedAddressTypes::*;
         match self {
+            Aba => "aba",
             Iban => "iban",
             Sepa => "sepa",
             SortCode => "sort_code",
             Spei => "spei",
+            Swift => "swift",
             Zengin => "zengin",
         }
     }
@@ -12979,10 +13051,12 @@ impl std::str::FromStr for RequestedAddressTypes {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RequestedAddressTypes::*;
         match s {
+            "aba" => Ok(Aba),
             "iban" => Ok(Iban),
             "sepa" => Ok(Sepa),
             "sort_code" => Ok(SortCode),
             "spei" => Ok(Spei),
+            "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             _ => Err(()),
         }

@@ -45,10 +45,6 @@ impl StripeObject {
         self.data.id_type.as_ref()
     }
 
-    pub fn inner_classes(&self) -> &[ComponentPath] {
-        &self.resource.inner_classes
-    }
-
     pub fn rust_obj(&self) -> &RustObject {
         &self.data.obj
     }
@@ -136,18 +132,13 @@ pub enum OperationType {
 #[derive(Debug, Clone, serde::Deserialize)]
 struct BaseResource {
     pub class_name: String,
-    #[serde(default)]
-    pub inner_classes: Vec<String>,
-    pub in_class: Option<String>,
     pub in_package: Option<String>,
 }
 
 #[derive(Debug, Clone)]
 pub struct StripeResource {
     pub path: ComponentPath,
-    pub inner_classes: Vec<ComponentPath>,
     pub base_ident: RustIdent,
-    pub in_class: Option<ComponentPath>,
     pub in_package: Option<String>,
     pub requests: Vec<StripeOperation>,
 }
@@ -162,14 +153,6 @@ impl StripeResource {
     }
 }
 
-fn maybe_force_ident(class_: &str) -> Option<RustIdent> {
-    if class_ == "StripeError" {
-        Some(RustIdent::create("APIErrors"))
-    } else {
-        None
-    }
-}
-
 impl StripeResource {
     pub fn from_schema(schema: &Schema, path: ComponentPath) -> anyhow::Result<Self> {
         let resource: BaseResource = schema
@@ -178,13 +161,8 @@ impl StripeResource {
             .get("x-stripeResource")
             .context("No stripe resource")
             .and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
-        let mut in_class = None;
+
         let mut in_package = None;
-        if let Some(class_) = resource.in_class {
-            if !class_.is_empty() {
-                in_class = Some(ComponentPath::new(class_));
-            }
-        }
         if let Some(package) = resource.in_package {
             if !package.is_empty() {
                 in_package = Some(package.to_snake_case());
@@ -192,24 +170,13 @@ impl StripeResource {
         }
 
         let class_ = &resource.class_name;
-        let ident = if let Some(forced) = maybe_force_ident(class_) {
-            forced
-        } else {
-            RustIdent::create(class_)
-        };
+        let ident = RustIdent::create(&schema.schema_data.title.as_ref().unwrap_or(class_));
         let requests = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") {
             serde_json::from_value(val.clone())?
         } else {
             vec![]
         };
-        Ok(StripeResource {
-            inner_classes: resource.inner_classes.into_iter().map(ComponentPath::new).collect(),
-            in_class,
-            base_ident: ident,
-            in_package,
-            requests,
-            path,
-        })
+        Ok(StripeResource { base_ident: ident, in_package, requests, path })
     }
 }
 

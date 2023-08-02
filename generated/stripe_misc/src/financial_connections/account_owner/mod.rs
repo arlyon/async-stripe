@@ -1,3 +1,4 @@
+/// Describes an owner of an account.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct AccountOwner {
     /// The email address of the owner.

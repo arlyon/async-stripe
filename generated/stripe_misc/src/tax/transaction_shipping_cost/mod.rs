@@ -8,8 +8,6 @@ pub struct TransactionShippingCost {
     /// The amount of tax calculated for shipping, in integer cents.
     pub amount_tax: i64,
     /// The ID of an existing [ShippingRate](https://stripe.com/docs/api/shipping_rates/object).
-    ///
-    /// (It is not populated for the transaction resource object and will be removed in the next API version.).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
     /// Specifies whether the `amount` includes taxes.
@@ -20,9 +18,7 @@ pub struct TransactionShippingCost {
     ///
     /// (It is not populated for the transaction resource object and will be removed in the next API version.).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_breakdown: Option<
-        Vec<stripe_misc::tax::calculation_line_item::line_item_tax_breakdown::LineItemTaxBreakdown>,
-    >,
+    pub tax_breakdown: Option<Vec<stripe_misc::line_item_tax_breakdown::LineItemTaxBreakdown>>,
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for shipping.
     pub tax_code: String,
 }

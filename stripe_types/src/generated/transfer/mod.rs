@@ -5,7 +5,7 @@
 /// Stripe account to a card or bank account.
 ///
 /// This behavior has since been split out into a [Payout](https://stripe.com/docs/api#payout_object) object, with corresponding payout endpoints.
-/// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/charges-transfers).
+/// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/separate-charges-and-transfers).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Transfer {
     /// Amount in %s to be transferred.
@@ -59,7 +59,7 @@ pub struct Transfer {
     pub source_type: Option<String>,
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
 /// String representing the object's type.

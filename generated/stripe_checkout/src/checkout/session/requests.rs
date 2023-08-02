@@ -547,11 +547,17 @@ pub struct CreateSessionCustomFields<'a> {
     pub key: &'a str,
     /// The label for the field, displayed to the customer.
     pub label: CreateSessionCustomFieldsLabel<'a>,
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<CreateSessionCustomFieldsNumeric>,
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<CreateSessionCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]
     pub type_: CreateSessionCustomFieldsType,
@@ -562,7 +568,15 @@ impl<'a> CreateSessionCustomFields<'a> {
         label: CreateSessionCustomFieldsLabel<'a>,
         type_: CreateSessionCustomFieldsType,
     ) -> Self {
-        Self { dropdown: Default::default(), key, label, optional: Default::default(), type_ }
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// Configuration for `type=dropdown` fields.
@@ -656,6 +670,36 @@ impl serde::Serialize for CreateSessionCustomFieldsLabelType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Configuration for `type=numeric` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSessionCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl CreateSessionCustomFieldsNumeric {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Configuration for `type=text` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSessionCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl CreateSessionCustomFieldsText {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// The type of the field.
@@ -2944,10 +2988,12 @@ impl<'a> CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTrans
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
@@ -2955,10 +3001,12 @@ impl CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddres
     pub fn as_str(self) -> &'static str {
         use CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
         match self {
+            Aba => "aba",
             Iban => "iban",
             Sepa => "sepa",
             SortCode => "sort_code",
             Spei => "spei",
+            Swift => "swift",
             Zengin => "zengin",
         }
     }
@@ -2971,10 +3019,12 @@ impl std::str::FromStr
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
         match s {
+            "aba" => Ok(Aba),
             "iban" => Ok(Iban),
             "sepa" => Ok(Sepa),
             "sort_code" => Ok(SortCode),
             "spei" => Ok(Spei),
+            "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             _ => Err(()),
         }
@@ -3015,6 +3065,7 @@ pub enum CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -3025,6 +3076,7 @@ impl CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
             GbBankTransfer => "gb_bank_transfer",
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
+            UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -3038,6 +3090,7 @@ impl std::str::FromStr for CreateSessionPaymentMethodOptionsCustomerBalanceBankT
             "gb_bank_transfer" => Ok(GbBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
+            "us_bank_transfer" => Ok(UsBankTransfer),
             _ => Err(()),
         }
     }
@@ -5802,7 +5855,7 @@ impl serde::Serialize for CreateSessionSubmitType {
 pub struct CreateSessionSubscriptionData<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// To use an application fee percent, the request must be made on behalf of another account, using the `Stripe-Account` header or an OAuth key.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5926,7 +5979,7 @@ impl serde::Serialize for CreateSessionSubscriptionDataProrationBehavior {
 pub struct CreateSessionSubscriptionDataTransferData<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,

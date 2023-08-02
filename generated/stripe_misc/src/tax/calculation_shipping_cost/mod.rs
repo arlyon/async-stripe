@@ -16,9 +16,7 @@ pub struct CalculationShippingCost {
     pub tax_behavior: CalculationShippingCostTaxBehavior,
     /// Detailed account of taxes relevant to shipping cost.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_breakdown: Option<
-        Vec<stripe_misc::tax::calculation_line_item::line_item_tax_breakdown::LineItemTaxBreakdown>,
-    >,
+    pub tax_breakdown: Option<Vec<stripe_misc::line_item_tax_breakdown::LineItemTaxBreakdown>>,
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for shipping.
     pub tax_code: String,
 }

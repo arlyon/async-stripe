@@ -18,10 +18,10 @@ pub struct SubscriptionSchedule {
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
-    pub current_phase: Option<stripe_types::subscription_schedule::current_phase::CurrentPhase>,
+    pub current_phase: Option<stripe_types::current_phase::CurrentPhase>,
     /// ID of the customer who owns the subscription schedule.
     pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
-    pub default_settings: stripe_types::subscription_schedule::default_settings::DefaultSettings,
+    pub default_settings: stripe_types::default_settings::DefaultSettings,
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
@@ -40,7 +40,7 @@ pub struct SubscriptionSchedule {
     /// Objects of the same type share the same value.
     pub object: SubscriptionScheduleObject,
     /// Configuration for the subscription schedule's phases.
-    pub phases: Vec<stripe_types::subscription_schedule::phase::Phase>,
+    pub phases: Vec<stripe_types::phase::Phase>,
     /// Time at which the subscription schedule was released.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -254,15 +254,3 @@ impl stripe_types::Object for SubscriptionSchedule {
     }
 }
 stripe_types::def_id!(SubscriptionScheduleId, "sub_sched_");
-pub mod invoice_settings;
-pub use invoice_settings::InvoiceSettings;
-pub mod add_invoice_item;
-pub use add_invoice_item::AddInvoiceItem;
-pub mod phase_item;
-pub use phase_item::PhaseItem;
-pub mod current_phase;
-pub use current_phase::CurrentPhase;
-pub mod phase;
-pub use phase::Phase;
-pub mod default_settings;
-pub use default_settings::DefaultSettings;

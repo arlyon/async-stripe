@@ -7,16 +7,15 @@ pub struct Subscription {
     pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     pub application_fee_percent: Option<f64>,
-    pub automatic_tax: stripe_types::subscription::automatic_tax::AutomaticTax,
+    pub automatic_tax: stripe_types::automatic_tax::AutomaticTax,
     /// Determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     ///
     /// The timestamp is in UTC format.
     pub billing_cycle_anchor: stripe_types::Timestamp,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    pub billing_thresholds:
-        Option<stripe_types::subscription::billing_thresholds::BillingThresholds>,
+    pub billing_thresholds: Option<stripe_types::billing_thresholds::BillingThresholds>,
     /// A date in the future at which the subscription will automatically get canceled.
     pub cancel_at: Option<stripe_types::Timestamp>,
     /// If the subscription has been canceled with the `at_period_end` flag set to `true`, `cancel_at_period_end` on the subscription will be true.
@@ -28,8 +27,7 @@ pub struct Subscription {
     /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
     pub canceled_at: Option<stripe_types::Timestamp>,
     /// Details about why this subscription was cancelled.
-    pub cancellation_details:
-        Option<stripe_types::subscription::cancellation_details::CancellationDetails>,
+    pub cancellation_details: Option<stripe_types::cancellation_details::CancellationDetails>,
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
@@ -107,22 +105,21 @@ pub struct Subscription {
     /// See the Connect documentation for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account>>,
     /// If specified, payment collection for this subscription will be paused.
-    pub pause_collection: Option<stripe_types::subscription::pause_collection::PauseCollection>,
+    pub pause_collection: Option<stripe_types::pause_collection::PauseCollection>,
     /// Payment settings passed on to invoices created by the subscription.
-    pub payment_settings: Option<stripe_types::subscription::payment_settings::PaymentSettings>,
+    pub payment_settings: Option<stripe_types::payment_settings::PaymentSettings>,
     /// Specifies an interval for how often to bill for any pending invoice items.
     ///
     /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
-    pub pending_invoice_item_interval: Option<
-        stripe_types::subscription::pending_invoice_item_interval::PendingInvoiceItemInterval,
-    >,
+    pub pending_invoice_item_interval:
+        Option<stripe_types::pending_invoice_item_interval::PendingInvoiceItemInterval>,
     /// You can use this [SetupIntent](https://stripe.com/docs/api/setup_intents) to collect user authentication when creating a subscription without immediate payment or updating a subscription's payment method, allowing you to optimize for off-session payments.
     ///
     /// Learn more in the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication#scenario-2).
     pub pending_setup_intent:
         Option<stripe_types::Expandable<stripe_types::setup_intent::SetupIntent>>,
     /// If specified, [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates) that will be applied to the subscription once the `latest_invoice` has been paid.
-    pub pending_update: Option<stripe_types::subscription::pending_update::PendingUpdate>,
+    pub pending_update: Option<stripe_types::pending_update::PendingUpdate>,
     /// The schedule attached to the subscription.
     pub schedule:
         Option<stripe_types::Expandable<stripe_types::subscription_schedule::SubscriptionSchedule>>,
@@ -138,7 +135,8 @@ pub struct Subscription {
     /// If the first invoice is not paid within 23 hours, the subscription transitions to `incomplete_expired`.
     /// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
     /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
-    /// If subscription `collection_method=charge_automatically` it becomes `past_due` when payment to renew it fails and `canceled` or `unpaid` (depending on your subscriptions settings) when Stripe has exhausted all payment retry attempts.
+    /// If subscription `collection_method=charge_automatically`, it becomes `past_due` when payment is required but cannot be paid (due to failed payment or awaiting additional user actions).
+    /// Once Stripe has exhausted all payment retry attempts, the subscription will become `canceled` or `unpaid` (depending on your subscriptions settings).
     /// If subscription `collection_method=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
     /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
     /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
@@ -147,11 +145,11 @@ pub struct Subscription {
     pub test_clock:
         Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
     /// The account (if any) the subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
-    pub transfer_data: Option<stripe_types::subscription::transfer_data::TransferData>,
+    pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
     /// If the subscription has a trial, the end of that trial.
     pub trial_end: Option<stripe_types::Timestamp>,
     /// Settings related to subscription trials.
-    pub trial_settings: Option<stripe_types::subscription::trial_settings::TrialSettings>,
+    pub trial_settings: Option<stripe_types::trial_settings::TrialSettings>,
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<stripe_types::Timestamp>,
 }
@@ -277,7 +275,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionObject {
 /// If the first invoice is not paid within 23 hours, the subscription transitions to `incomplete_expired`.
 /// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
 /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
-/// If subscription `collection_method=charge_automatically` it becomes `past_due` when payment to renew it fails and `canceled` or `unpaid` (depending on your subscriptions settings) when Stripe has exhausted all payment retry attempts.
+/// If subscription `collection_method=charge_automatically`, it becomes `past_due` when payment is required but cannot be paid (due to failed payment or awaiting additional user actions).
+/// Once Stripe has exhausted all payment retry attempts, the subscription will become `canceled` or `unpaid` (depending on your subscriptions settings).
 /// If subscription `collection_method=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
 /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
 /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
@@ -361,23 +360,3 @@ impl stripe_types::Object for Subscription {
     }
 }
 stripe_types::def_id!(SubscriptionId, "sub_");
-pub mod cancellation_details;
-pub use cancellation_details::CancellationDetails;
-pub mod automatic_tax;
-pub use automatic_tax::AutomaticTax;
-pub mod billing_thresholds;
-pub use billing_thresholds::BillingThresholds;
-pub mod pending_invoice_item_interval;
-pub use pending_invoice_item_interval::PendingInvoiceItemInterval;
-pub mod transfer_data;
-pub use transfer_data::TransferData;
-pub mod pause_collection;
-pub use pause_collection::PauseCollection;
-pub mod payment_method_options;
-pub use payment_method_options::PaymentMethodOptions;
-pub mod payment_settings;
-pub use payment_settings::PaymentSettings;
-pub mod pending_update;
-pub use pending_update::PendingUpdate;
-pub mod trial_settings;
-pub use trial_settings::TrialSettings;

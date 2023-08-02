@@ -23,7 +23,7 @@ pub struct Session {
     /// Information about a specific flow for the customer to go through.
     ///
     /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
-    pub flow: Option<stripe_billing::billing_portal::session::flow::Flow>,
+    pub flow: Option<stripe_billing::flow::Flow>,
     /// Unique identifier for the object.
     pub id: stripe_billing::billing_portal::session::BillingPortalSessionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -39,7 +39,7 @@ pub struct Session {
     /// The account for which the session was created on behalf of.
     ///
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub on_behalf_of: Option<String>,
     /// The URL to redirect customers to when they click on the portal's link to return to your website.
@@ -300,6 +300,4 @@ impl stripe_types::Object for Session {
     }
 }
 stripe_types::def_id!(BillingPortalSessionId, "bps_");
-pub mod flow;
-pub use flow::Flow;
 pub mod requests;

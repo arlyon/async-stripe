@@ -3,15 +3,15 @@
 pub fn list(
     client: &stripe::Client,
     params: ListPaymentLink,
-) -> stripe::Response<stripe_types::List<stripe_payment::payment_link::PaymentLink>> {
+) -> stripe::Response<stripe_types::List<stripe_types::payment_link::PaymentLink>> {
     client.get_query("/payment_links", params)
 }
 /// Retrieve a payment link.
 pub fn retrieve(
     client: &stripe::Client,
-    payment_link: &stripe_payment::payment_link::PaymentLinkId,
+    payment_link: &stripe_types::payment_link::PaymentLinkId,
     params: RetrievePaymentLink,
-) -> stripe::Response<stripe_payment::payment_link::PaymentLink> {
+) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
     client.get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), params)
 }
 /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
@@ -19,7 +19,7 @@ pub fn retrieve(
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
 pub fn list_line_items(
     client: &stripe::Client,
-    payment_link: &stripe_payment::payment_link::PaymentLinkId,
+    payment_link: &stripe_types::payment_link::PaymentLinkId,
     params: ListLineItemsPaymentLink,
 ) -> stripe::Response<stripe_types::List<stripe_types::line_item::LineItem>> {
     client.get_query(
@@ -31,15 +31,15 @@ pub fn list_line_items(
 pub fn create(
     client: &stripe::Client,
     params: CreatePaymentLink,
-) -> stripe::Response<stripe_payment::payment_link::PaymentLink> {
+) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
     client.send_form("/payment_links", params, http_types::Method::Post)
 }
 /// Updates a payment link.
 pub fn update(
     client: &stripe::Client,
-    payment_link: &stripe_payment::payment_link::PaymentLinkId,
+    payment_link: &stripe_types::payment_link::PaymentLinkId,
     params: UpdatePaymentLink,
-) -> stripe::Response<stripe_payment::payment_link::PaymentLink> {
+) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
     client.send_form(
         &format!("/payment_links/{payment_link}", payment_link = payment_link),
         params,
@@ -131,7 +131,7 @@ pub struct CreatePaymentLink<'a> {
     pub application_fee_amount: Option<i64>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// There must be at least 1 line item with a recurring price to use this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
@@ -388,11 +388,17 @@ pub struct CreatePaymentLinkCustomFields<'a> {
     pub key: &'a str,
     /// The label for the field, displayed to the customer.
     pub label: CreatePaymentLinkCustomFieldsLabel<'a>,
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<CreatePaymentLinkCustomFieldsNumeric>,
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<CreatePaymentLinkCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkCustomFieldsType,
@@ -403,7 +409,15 @@ impl<'a> CreatePaymentLinkCustomFields<'a> {
         label: CreatePaymentLinkCustomFieldsLabel<'a>,
         type_: CreatePaymentLinkCustomFieldsType,
     ) -> Self {
-        Self { dropdown: Default::default(), key, label, optional: Default::default(), type_ }
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -465,6 +479,36 @@ impl serde::Serialize for CreatePaymentLinkCustomFieldsLabelType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Configuration for `type=numeric` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePaymentLinkCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl CreatePaymentLinkCustomFieldsNumeric {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Configuration for `type=text` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePaymentLinkCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl CreatePaymentLinkCustomFieldsText {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// The type of the field.
@@ -983,11 +1027,17 @@ pub struct UpdatePaymentLinkCustomFields<'a> {
     pub key: &'a str,
     /// The label for the field, displayed to the customer.
     pub label: UpdatePaymentLinkCustomFieldsLabel<'a>,
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<UpdatePaymentLinkCustomFieldsNumeric>,
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<UpdatePaymentLinkCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkCustomFieldsType,
@@ -998,7 +1048,15 @@ impl<'a> UpdatePaymentLinkCustomFields<'a> {
         label: UpdatePaymentLinkCustomFieldsLabel<'a>,
         type_: UpdatePaymentLinkCustomFieldsType,
     ) -> Self {
-        Self { dropdown: Default::default(), key, label, optional: Default::default(), type_ }
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -1060,6 +1118,36 @@ impl serde::Serialize for UpdatePaymentLinkCustomFieldsLabelType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Configuration for `type=numeric` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl UpdatePaymentLinkCustomFieldsNumeric {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Configuration for `type=text` fields.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+impl UpdatePaymentLinkCustomFieldsText {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// The type of the field.

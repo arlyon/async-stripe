@@ -3,9 +3,9 @@
 /// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Cardholder {
-    pub billing: stripe_types::issuing::cardholder::billing::Billing,
+    pub billing: stripe_types::billing::Billing,
     /// Additional information about a `company` cardholder.
-    pub company: Option<stripe_types::issuing::cardholder::company::Company>,
+    pub company: Option<stripe_types::company::Company>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -15,7 +15,7 @@ pub struct Cardholder {
     /// Unique identifier for the object.
     pub id: stripe_types::issuing::cardholder::IssuingCardholderId,
     /// Additional information about an `individual` cardholder.
-    pub individual: Option<stripe_types::issuing::cardholder::individual::Individual>,
+    pub individual: Option<stripe_types::individual::Individual>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -35,12 +35,15 @@ pub struct Cardholder {
     /// This is required for all cardholders who will be creating EU cards.
     /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
     pub phone_number: Option<String>,
-    pub requirements: stripe_types::issuing::cardholder::requirements::Requirements,
+    /// The cardholder’s preferred locales (languages), ordered by preference.
+    ///
+    /// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+    pub preferred_locales: Option<Vec<CardholderPreferredLocales>>,
+    pub requirements: stripe_types::requirements::Requirements,
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    pub spending_controls:
-        Option<stripe_types::issuing::cardholder::spending_controls::SpendingControls>,
+    pub spending_controls: Option<stripe_types::spending_controls::SpendingControls>,
     /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: CardholderStatus,
     /// One of `individual` or `company`.
@@ -102,6 +105,73 @@ impl<'de> serde::Deserialize<'de> for CardholderObject {
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CardholderObject"))
+    }
+}
+/// The cardholder’s preferred locales (languages), ordered by preference.
+///
+/// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CardholderPreferredLocales {
+    De,
+    En,
+    Es,
+    Fr,
+    It,
+}
+
+impl CardholderPreferredLocales {
+    pub fn as_str(self) -> &'static str {
+        use CardholderPreferredLocales::*;
+        match self {
+            De => "de",
+            En => "en",
+            Es => "es",
+            Fr => "fr",
+            It => "it",
+        }
+    }
+}
+
+impl std::str::FromStr for CardholderPreferredLocales {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CardholderPreferredLocales::*;
+        match s {
+            "de" => Ok(De),
+            "en" => Ok(En),
+            "es" => Ok(Es),
+            "fr" => Ok(Fr),
+            "it" => Ok(It),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CardholderPreferredLocales {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CardholderPreferredLocales {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for CardholderPreferredLocales {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: &str = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CardholderPreferredLocales"))
     }
 }
 /// Specifies whether to permit authorizations on this cardholder's cards.
@@ -227,13 +297,3 @@ impl stripe_types::Object for Cardholder {
     }
 }
 stripe_types::def_id!(IssuingCardholderId, "ich_");
-pub mod billing;
-pub use billing::Billing;
-pub mod spending_controls;
-pub use spending_controls::SpendingControls;
-pub mod company;
-pub use company::Company;
-pub mod individual;
-pub use individual::Individual;
-pub mod requirements;
-pub use requirements::Requirements;

@@ -15,7 +15,7 @@ pub struct Dispute {
     pub created: stripe_types::Timestamp,
     /// The currency the `transaction` was made in.
     pub currency: stripe_types::Currency,
-    pub evidence: stripe_types::issuing::dispute::evidence::Evidence,
+    pub evidence: stripe_types::evidence::Evidence,
     /// Unique identifier for the object.
     pub id: stripe_types::issuing::dispute::IssuingDisputeId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -34,7 +34,7 @@ pub struct Dispute {
     pub transaction: stripe_types::Expandable<stripe_types::issuing::transaction::Transaction>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub treasury: Option<stripe_types::issuing::dispute::treasury::Treasury>,
+    pub treasury: Option<stripe_types::treasury::Treasury>,
 }
 /// String representing the object's type.
 ///
@@ -161,7 +161,3 @@ impl stripe_types::Object for Dispute {
     }
 }
 stripe_types::def_id!(IssuingDisputeId, "idp_");
-pub mod evidence;
-pub use evidence::Evidence;
-pub mod treasury;
-pub use treasury::Treasury;

@@ -1,23 +1,24 @@
 /// A Configurations object represents how features should be configured for terminal readers.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Configuration {
-#[serde(skip_serializing_if = "Option::is_none")]
-pub bbpos_wisepos_e: Option<stripe_terminal::terminal::configuration::device_type_specific_config::DeviceTypeSpecificConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bbpos_wisepos_e:
+        Option<stripe_terminal::device_type_specific_config::DeviceTypeSpecificConfig>,
     /// Unique identifier for the object.
-pub id: stripe_terminal::terminal::configuration::TerminalConfigurationId,
+    pub id: stripe_terminal::terminal::configuration::TerminalConfigurationId,
     /// Whether this Configuration is the default for your account.
-pub is_account_default: Option<bool>,
+    pub is_account_default: Option<bool>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-pub livemode: bool,
+    pub livemode: bool,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
-pub object: ConfigurationObject,
-#[serde(skip_serializing_if = "Option::is_none")]
-pub tipping: Option<stripe_terminal::terminal::configuration::tipping::Tipping>,
-#[serde(skip_serializing_if = "Option::is_none")]
-pub verifone_p400: Option<stripe_terminal::terminal::configuration::device_type_specific_config::DeviceTypeSpecificConfig>,
-
+    pub object: ConfigurationObject,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tipping: Option<stripe_terminal::tipping::Tipping>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verifone_p400:
+        Option<stripe_terminal::device_type_specific_config::DeviceTypeSpecificConfig>,
 }
 /// String representing the object's type.
 ///
@@ -81,12 +82,6 @@ impl stripe_types::Object for Configuration {
     }
 }
 stripe_types::def_id!(TerminalConfigurationId, "tmc_");
-pub mod currency_specific_config;
-pub use currency_specific_config::CurrencySpecificConfig;
-pub mod device_type_specific_config;
-pub use device_type_specific_config::DeviceTypeSpecificConfig;
-pub mod tipping;
-pub use tipping::Tipping;
 pub mod deleted;
 pub use deleted::DeletedConfiguration;
 pub mod requests;

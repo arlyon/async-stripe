@@ -107,7 +107,7 @@ pub struct CreateQuote<'a> {
     pub application_fee_amount: Option<i64>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// There must be at least 1 line item with a recurring price to use this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
@@ -256,7 +256,7 @@ pub struct UpdateQuote<'a> {
     pub application_fee_amount: Option<i64>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// There must be at least 1 line item with a recurring price to use this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
@@ -756,7 +756,7 @@ pub struct TransferDataSpecs<'a> {
     pub amount: Option<i64>,
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     /// There must be at least 1 line item with a recurring price to use this field.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -5,7 +5,7 @@
 /// Related guide: [Customer balance funding instructions](https://stripe.com/docs/payments/customer-balance/funding-instructions).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FundingInstructions {
-    pub bank_transfer: stripe_types::funding_instructions::bank_transfer::BankTransfer,
+    pub bank_transfer: stripe_types::bank_transfer::BankTransfer,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -128,5 +128,3 @@ impl<'de> serde::Deserialize<'de> for FundingInstructionsObject {
             .map_err(|_| serde::de::Error::custom("Unknown value for FundingInstructionsObject"))
     }
 }
-pub mod bank_transfer;
-pub use bank_transfer::BankTransfer;

@@ -27,6 +27,11 @@ pub struct CreditNote {
     pub discount_amount: i64,
     /// The aggregate amounts calculated per discount for all line items.
     pub discount_amounts: Vec<stripe_types::discount_amount::DiscountAmount>,
+    /// The date when this credit note is in effect.
+    ///
+    /// Same as `created` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the credit note PDF.
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
     pub id: stripe_types::credit_note::CreditNoteId,
     /// ID of the invoice.
@@ -56,7 +61,7 @@ pub struct CreditNote {
     /// Refund related to this credit note.
     pub refund: Option<stripe_types::Expandable<stripe_types::refund::Refund>>,
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
-    pub shipping_cost: Option<stripe_types::invoice::shipping_cost::ShippingCost>,
+    pub shipping_cost: Option<stripe_types::shipping_cost::ShippingCost>,
     /// Status of this credit note, one of `issued` or `void`.
     ///
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
@@ -66,7 +71,7 @@ pub struct CreditNote {
     /// The integer amount in %s representing the amount of the credit note, excluding all tax and invoice level discounts.
     pub subtotal_excluding_tax: Option<i64>,
     /// The aggregate amounts calculated per tax rate for all line items.
-    pub tax_amounts: Vec<stripe_types::credit_note::tax_amount::TaxAmount>,
+    pub tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
     /// The integer amount in %s representing the total amount of the credit note, including tax and all discount.
     pub total: i64,
     /// The integer amount in %s representing the total amount of the credit note, excluding tax, but including discounts.
@@ -320,5 +325,3 @@ impl stripe_types::Object for CreditNote {
     }
 }
 stripe_types::def_id!(CreditNoteId, "cn_");
-pub mod tax_amount;
-pub use tax_amount::TaxAmount;

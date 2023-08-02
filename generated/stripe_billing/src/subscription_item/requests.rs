@@ -58,8 +58,7 @@ pub fn usage_record_summaries(
     client: &stripe::Client,
     subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     params: UsageRecordSummariesSubscriptionItem,
-) -> stripe::Response<stripe_types::List<stripe_billing::usage_record_summary::UsageRecordSummary>>
-{
+) -> stripe::Response<stripe_types::List<stripe_types::usage_record_summary::UsageRecordSummary>> {
     client.get_query(
         &format!(
             "/subscription_items/{subscription_item}/usage_record_summaries",

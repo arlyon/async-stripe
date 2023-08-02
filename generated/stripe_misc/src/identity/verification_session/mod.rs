@@ -20,7 +20,7 @@ pub struct VerificationSession {
     /// Unique identifier for the object.
     pub id: stripe_misc::identity::verification_session::IdentityVerificationSessionId,
     /// If present, this property tells you the last error encountered when processing the verification.
-    pub last_error: Option<stripe_misc::identity::verification_session::last_error::LastError>,
+    pub last_error: Option<stripe_misc::last_error::LastError>,
     /// ID of the most recent VerificationReport.
     ///
     /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
@@ -38,11 +38,11 @@ pub struct VerificationSession {
     /// Objects of the same type share the same value.
     pub object: VerificationSessionObject,
     /// A set of options for the session’s verification checks.
-    pub options: Option<stripe_misc::identity::verification_session::options::Options>,
+    pub options: Option<stripe_misc::options::Options>,
     /// Redaction status of this VerificationSession.
     ///
     /// If the VerificationSession is not redacted, this field will be null.
-    pub redaction: Option<stripe_misc::identity::verification_session::redaction::Redaction>,
+    pub redaction: Option<stripe_misc::redaction::Redaction>,
     /// Status of this VerificationSession.
     ///
     /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
@@ -57,8 +57,7 @@ pub struct VerificationSession {
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     pub url: Option<String>,
     /// The user’s verified data.
-    pub verified_outputs:
-        Option<stripe_misc::identity::verification_session::verified_outputs::VerifiedOutputs>,
+    pub verified_outputs: Option<stripe_misc::verified_outputs::VerifiedOutputs>,
 }
 /// String representing the object's type.
 ///
@@ -242,12 +241,4 @@ impl stripe_types::Object for VerificationSession {
     }
 }
 stripe_types::def_id!(IdentityVerificationSessionId);
-pub mod last_error;
-pub use last_error::LastError;
-pub mod options;
-pub use options::Options;
-pub mod verified_outputs;
-pub use verified_outputs::VerifiedOutputs;
-pub mod redaction;
-pub use redaction::Redaction;
 pub mod requests;

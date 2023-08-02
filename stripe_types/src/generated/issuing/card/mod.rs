@@ -54,8 +54,8 @@ pub struct Card {
     /// The reason why the previous card needed to be replaced.
     pub replacement_reason: Option<CardReplacementReason>,
     /// Where and how the card will be shipped.
-    pub shipping: Option<stripe_types::issuing::card::shipping::Shipping>,
-    pub spending_controls: stripe_types::issuing::card::spending_controls::SpendingControls,
+    pub shipping: Option<stripe_types::shipping::Shipping>,
+    pub spending_controls: stripe_types::spending_controls::SpendingControls,
     /// Whether authorizations can be approved on this card.
     ///
     /// May be blocked from activating cards depending on past-due Cardholder requirements.
@@ -65,7 +65,7 @@ pub struct Card {
     #[serde(rename = "type")]
     pub type_: CardType,
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
-    pub wallets: Option<stripe_types::issuing::card::wallets::Wallets>,
+    pub wallets: Option<stripe_types::wallets::Wallets>,
 }
 /// The reason why the card was canceled.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -365,9 +365,3 @@ impl stripe_types::Object for Card {
     }
 }
 stripe_types::def_id!(IssuingCardId, "ic_");
-pub mod spending_controls;
-pub use spending_controls::SpendingControls;
-pub mod shipping;
-pub use shipping::Shipping;
-pub mod wallets;
-pub use wallets::Wallets;

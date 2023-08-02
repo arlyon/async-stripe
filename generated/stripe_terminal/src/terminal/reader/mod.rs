@@ -4,7 +4,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Reader {
     /// The most recent action performed by the reader.
-    pub action: Option<stripe_terminal::terminal::reader::reader_action::ReaderAction>,
+    pub action: Option<stripe_terminal::reader_action::ReaderAction>,
     /// The current software version of the reader.
     pub device_sw_version: Option<String>,
     /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
@@ -161,8 +161,6 @@ impl stripe_types::Object for Reader {
     }
 }
 stripe_types::def_id!(TerminalReaderId, "tmr_");
-pub mod reader_action;
-pub use reader_action::ReaderAction;
 pub mod deleted;
 pub use deleted::DeletedReader;
 pub mod requests;

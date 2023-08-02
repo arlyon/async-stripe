@@ -6,27 +6,27 @@ pub struct Balance {
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
     /// The available balance for each currency and payment type can be found in the `source_types` property.
-    pub available: Vec<stripe_core::balance::money::Money>,
+    pub available: Vec<stripe_core::money::Money>,
     /// Funds held due to negative balances on connected Custom accounts.
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect_reserved: Option<Vec<stripe_core::balance::money::Money>>,
+    pub connect_reserved: Option<Vec<stripe_core::money::Money>>,
     /// Funds that can be paid out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Vec<stripe_core::balance::money::Money>>,
+    pub instant_available: Option<Vec<stripe_core::money::Money>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing: Option<stripe_core::balance::details::Details>,
+    pub issuing: Option<stripe_core::details::Details>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
     pub object: BalanceObject,
-    /// Funds that are not yet available in the balance, due to the 7-day rolling pay cycle.
+    /// Funds that are not yet available in the balance.
     ///
     /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
-    pub pending: Vec<stripe_core::balance::money::Money>,
+    pub pending: Vec<stripe_core::money::Money>,
 }
 /// String representing the object's type.
 ///
@@ -82,8 +82,4 @@ impl<'de> serde::Deserialize<'de> for BalanceObject {
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceObject"))
     }
 }
-pub mod money;
-pub use money::Money;
-pub mod details;
-pub use details::Details;
 pub mod requests;

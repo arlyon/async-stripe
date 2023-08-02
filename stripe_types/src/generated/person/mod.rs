@@ -1,7 +1,7 @@
 /// This is an object representing a person associated with a Stripe account.
 ///
 /// A platform cannot access a Standard or Express account's persons after the account starts onboarding, such as after generating an account link for the account.
-/// See the [Standard onboarding](https://stripe.com/docs/connect/standard-accounts) or [Express onboarding documentation](https://stripe.com/docs/connect/express-accounts) for information about platform pre-filling and account onboarding steps.
+/// See the [Standard onboarding](https://stripe.com/docs/connect/standard-accounts) or [Express onboarding documentation](https://stripe.com/docs/connect/express-accounts) for information about platform prefilling and account onboarding steps.
 ///
 /// Related guide: [Handling identity verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -13,16 +13,16 @@ pub struct Person {
     pub address: Option<stripe_types::address::Address>,
     /// The Kana variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kana: Option<stripe_types::person::japan_address::JapanAddress>,
+    pub address_kana: Option<stripe_types::japan_address::JapanAddress>,
     /// The Kanji variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kanji: Option<stripe_types::person::japan_address::JapanAddress>,
+    pub address_kanji: Option<stripe_types::japan_address::JapanAddress>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<stripe_types::person::date_of_birth::DateOfBirth>,
+    pub dob: Option<stripe_types::date_of_birth::DateOfBirth>,
     /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
@@ -40,7 +40,7 @@ pub struct Person {
     pub full_name_aliases: Option<Vec<String>>,
     /// Information about the upcoming new requirements for this person, including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<stripe_types::person::future_requirements::FutureRequirements>,
+    pub future_requirements: Option<stripe_types::future_requirements::FutureRequirements>,
     /// The person's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
@@ -85,17 +85,17 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<stripe_types::address::Address>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<stripe_types::person::relationship::Relationship>,
+    pub relationship: Option<stripe_types::relationship::Relationship>,
     /// Information about the requirements for this person, including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<stripe_types::person::requirements::Requirements>,
+    pub requirements: Option<stripe_types::requirements::Requirements>,
     /// Whether the last four digits of the person's Social Security number have been provided (U.S.
     ///
     /// only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4_provided: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<stripe_types::person::verification::Verification>,
+    pub verification: Option<stripe_types::verification::Verification>,
 }
 /// String representing the object's type.
 ///
@@ -214,19 +214,5 @@ impl stripe_types::Object for Person {
     }
 }
 stripe_types::def_id!(PersonId, "person_");
-pub mod date_of_birth;
-pub use date_of_birth::DateOfBirth;
-pub mod japan_address;
-pub use japan_address::JapanAddress;
-pub mod verification;
-pub use verification::Verification;
-pub mod verification_document;
-pub use verification_document::VerificationDocument;
-pub mod future_requirements;
-pub use future_requirements::FutureRequirements;
-pub mod relationship;
-pub use relationship::Relationship;
-pub mod requirements;
-pub use requirements::Requirements;
 pub mod deleted;
 pub use deleted::DeletedPerson;

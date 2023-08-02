@@ -4,7 +4,7 @@
 /// The people are returned sorted by creation date, with the most recent people appearing first.
 pub fn list(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: ListPerson,
 ) -> stripe::Response<stripe_types::List<stripe_types::person::Person>> {
     client.get_query(&format!("/accounts/{account}/persons", account = account), params)
@@ -12,7 +12,7 @@ pub fn list(
 /// Retrieves an existing person.
 pub fn retrieve(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     person: &stripe_types::person::PersonId,
     params: RetrievePerson,
 ) -> stripe::Response<stripe_types::person::Person> {
@@ -24,7 +24,7 @@ pub fn retrieve(
 /// Creates a new person.
 pub fn create(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: CreatePerson,
 ) -> stripe::Response<stripe_types::person::Person> {
     client.send_form(
@@ -36,7 +36,7 @@ pub fn create(
 /// Updates an existing person.
 pub fn update(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     person: &stripe_types::person::PersonId,
     params: UpdatePerson,
 ) -> stripe::Response<stripe_types::person::Person> {
@@ -52,7 +52,7 @@ pub fn update(
 /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
 pub fn delete(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     person: &stripe_types::person::PersonId,
 ) -> stripe::Response<stripe_types::person::DeletedPerson> {
     client.send(

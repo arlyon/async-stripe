@@ -102,7 +102,7 @@ pub fn fund_cash_balance(
     client: &stripe::Client,
     customer: &stripe_types::customer::CustomerId,
     params: FundCashBalanceCustomer,
-) -> stripe::Response<stripe_core::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
+) -> stripe::Response<stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
 {
     client.send_form(
         &format!("/test_helpers/customers/{customer}/fund_cash_balance", customer = customer),
@@ -374,7 +374,7 @@ impl<'a> CreateCustomer<'a> {
 /// The customer's tax IDs.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerTaxIdData<'a> {
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: CreateCustomerTaxIdDataType,
     /// Value of the tax ID.
@@ -385,13 +385,16 @@ impl<'a> CreateCustomerTaxIdData<'a> {
         Self { type_, value }
     }
 }
-/// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CreateCustomerTaxIdDataType {
+    AdNrt,
     AeTrn,
+    ArCuit,
     AuAbn,
     AuArn,
     BgUic,
+    BoTin,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -402,6 +405,11 @@ pub enum CreateCustomerTaxIdDataType {
     CaQst,
     ChVat,
     ClTin,
+    CnTin,
+    CoNit,
+    CrTin,
+    DoRcn,
+    EcRuc,
     EgTin,
     EsCif,
     EuOssVat,
@@ -426,18 +434,25 @@ pub enum CreateCustomerTaxIdDataType {
     MySst,
     NoVat,
     NzGst,
+    PeRuc,
     PhTin,
+    RoTin,
+    RsPib,
     RuInn,
     RuKpp,
     SaVat,
     SgGst,
     SgUen,
     SiTin,
+    SvNit,
     ThVat,
     TrTin,
     TwVat,
     UaVat,
     UsEin,
+    UyRuc,
+    VeRif,
+    VnTin,
     ZaVat,
 }
 
@@ -445,10 +460,13 @@ impl CreateCustomerTaxIdDataType {
     pub fn as_str(self) -> &'static str {
         use CreateCustomerTaxIdDataType::*;
         match self {
+            AdNrt => "ad_nrt",
             AeTrn => "ae_trn",
+            ArCuit => "ar_cuit",
             AuAbn => "au_abn",
             AuArn => "au_arn",
             BgUic => "bg_uic",
+            BoTin => "bo_tin",
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
             CaBn => "ca_bn",
@@ -459,6 +477,11 @@ impl CreateCustomerTaxIdDataType {
             CaQst => "ca_qst",
             ChVat => "ch_vat",
             ClTin => "cl_tin",
+            CnTin => "cn_tin",
+            CoNit => "co_nit",
+            CrTin => "cr_tin",
+            DoRcn => "do_rcn",
+            EcRuc => "ec_ruc",
             EgTin => "eg_tin",
             EsCif => "es_cif",
             EuOssVat => "eu_oss_vat",
@@ -483,18 +506,25 @@ impl CreateCustomerTaxIdDataType {
             MySst => "my_sst",
             NoVat => "no_vat",
             NzGst => "nz_gst",
+            PeRuc => "pe_ruc",
             PhTin => "ph_tin",
+            RoTin => "ro_tin",
+            RsPib => "rs_pib",
             RuInn => "ru_inn",
             RuKpp => "ru_kpp",
             SaVat => "sa_vat",
             SgGst => "sg_gst",
             SgUen => "sg_uen",
             SiTin => "si_tin",
+            SvNit => "sv_nit",
             ThVat => "th_vat",
             TrTin => "tr_tin",
             TwVat => "tw_vat",
             UaVat => "ua_vat",
             UsEin => "us_ein",
+            UyRuc => "uy_ruc",
+            VeRif => "ve_rif",
+            VnTin => "vn_tin",
             ZaVat => "za_vat",
         }
     }
@@ -505,10 +535,13 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCustomerTaxIdDataType::*;
         match s {
+            "ad_nrt" => Ok(AdNrt),
             "ae_trn" => Ok(AeTrn),
+            "ar_cuit" => Ok(ArCuit),
             "au_abn" => Ok(AuAbn),
             "au_arn" => Ok(AuArn),
             "bg_uic" => Ok(BgUic),
+            "bo_tin" => Ok(BoTin),
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
             "ca_bn" => Ok(CaBn),
@@ -519,6 +552,11 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
             "ca_qst" => Ok(CaQst),
             "ch_vat" => Ok(ChVat),
             "cl_tin" => Ok(ClTin),
+            "cn_tin" => Ok(CnTin),
+            "co_nit" => Ok(CoNit),
+            "cr_tin" => Ok(CrTin),
+            "do_rcn" => Ok(DoRcn),
+            "ec_ruc" => Ok(EcRuc),
             "eg_tin" => Ok(EgTin),
             "es_cif" => Ok(EsCif),
             "eu_oss_vat" => Ok(EuOssVat),
@@ -543,18 +581,25 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
             "my_sst" => Ok(MySst),
             "no_vat" => Ok(NoVat),
             "nz_gst" => Ok(NzGst),
+            "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
+            "ro_tin" => Ok(RoTin),
+            "rs_pib" => Ok(RsPib),
             "ru_inn" => Ok(RuInn),
             "ru_kpp" => Ok(RuKpp),
             "sa_vat" => Ok(SaVat),
             "sg_gst" => Ok(SgGst),
             "sg_uen" => Ok(SgUen),
             "si_tin" => Ok(SiTin),
+            "sv_nit" => Ok(SvNit),
             "th_vat" => Ok(ThVat),
             "tr_tin" => Ok(TrTin),
             "tw_vat" => Ok(TwVat),
             "ua_vat" => Ok(UaVat),
             "us_ein" => Ok(UsEin),
+            "uy_ruc" => Ok(UyRuc),
+            "ve_rif" => Ok(VeRif),
+            "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
             _ => Err(()),
         }
@@ -1055,6 +1100,7 @@ pub enum CreateFundingInstructionsCustomerBankTransferType {
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CreateFundingInstructionsCustomerBankTransferType {
@@ -1065,6 +1111,7 @@ impl CreateFundingInstructionsCustomerBankTransferType {
             GbBankTransfer => "gb_bank_transfer",
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
+            UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -1078,6 +1125,7 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
             "gb_bank_transfer" => Ok(GbBankTransfer),
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
+            "us_bank_transfer" => Ok(UsBankTransfer),
             _ => Err(()),
         }
     }

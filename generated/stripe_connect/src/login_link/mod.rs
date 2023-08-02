@@ -1,3 +1,4 @@
+/// Login Links are single-use login link for an Express account to access their Stripe dashboard.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct LoginLink {
     /// Time at which the object was created.

@@ -8,15 +8,6 @@
 pub fn search(client: &stripe::Client, params: SearchInvoice) -> stripe::Response<SearchReturned> {
     client.get_query("/invoices/search", params)
 }
-/// You can list all invoices, or list the invoices for a specific customer.
-///
-/// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListInvoice,
-) -> stripe::Response<stripe_types::List<stripe_types::invoice::Invoice>> {
-    client.get_query("/invoices", params)
-}
 /// At any time, you can preview the upcoming invoice for a customer.
 ///
 /// This will show you all the charges that are pending, including subscription renewal charges, invoice item charges, etc.
@@ -60,20 +51,6 @@ pub fn pay(
         http_types::Method::Post,
     )
 }
-/// Stripe automatically finalizes drafts before sending and attempting payment on invoices.
-///
-/// However, if you’d like to finalize a draft invoice manually, you can do so using this method.
-pub fn finalize_invoice(
-    client: &stripe::Client,
-    invoice: &stripe_types::invoice::InvoiceId,
-    params: FinalizeInvoiceInvoice,
-) -> stripe::Response<stripe_types::invoice::Invoice> {
-    client.send_form(
-        &format!("/invoices/{invoice}/finalize", invoice = invoice),
-        params,
-        http_types::Method::Post,
-    )
-}
 /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
 ///
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
@@ -92,6 +69,15 @@ pub fn create(
 ) -> stripe::Response<stripe_types::invoice::Invoice> {
     client.send_form("/invoices", params, http_types::Method::Post)
 }
+/// You can list all invoices, or list the invoices for a specific customer.
+///
+/// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
+pub fn list(
+    client: &stripe::Client,
+    params: ListInvoice,
+) -> stripe::Response<stripe_types::List<stripe_types::invoice::Invoice>> {
+    client.get_query("/invoices", params)
+}
 /// Retrieves the invoice with the given ID.
 pub fn retrieve(
     client: &stripe::Client,
@@ -109,6 +95,20 @@ pub fn delete(
     invoice: &stripe_types::invoice::InvoiceId,
 ) -> stripe::Response<stripe_types::invoice::DeletedInvoice> {
     client.send(&format!("/invoices/{invoice}", invoice = invoice), http_types::Method::Delete)
+}
+/// Stripe automatically finalizes drafts before sending and attempting payment on invoices.
+///
+/// However, if you’d like to finalize a draft invoice manually, you can do so using this method.
+pub fn finalize_invoice(
+    client: &stripe::Client,
+    invoice: &stripe_types::invoice::InvoiceId,
+    params: FinalizeInvoiceInvoice,
+) -> stripe::Response<stripe_types::invoice::Invoice> {
+    client.send_form(
+        &format!("/invoices/{invoice}/finalize", invoice = invoice),
+        params,
+        http_types::Method::Post,
+    )
 }
 /// Stripe will automatically send invoices to customers according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
 ///
@@ -252,113 +252,6 @@ impl<'a> SearchInvoice<'a> {
         }
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
-pub struct ListInvoice<'a> {
-    /// The collection method of the invoice to retrieve.
-    ///
-    /// Either `charge_automatically` or `send_invoice`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<CollectionMethod>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// Only return invoices for the customer specified by this customer ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub due_date: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    ///
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    ///
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
-    /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
-    ///
-    /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<ListInvoiceStatus>,
-    /// Only return invoices for the subscription specified by this subscription ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<&'a str>,
-}
-impl<'a> ListInvoice<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
-///
-/// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum ListInvoiceStatus {
-    Draft,
-    Open,
-    Paid,
-    Uncollectible,
-    Void,
-}
-
-impl ListInvoiceStatus {
-    pub fn as_str(self) -> &'static str {
-        use ListInvoiceStatus::*;
-        match self {
-            Draft => "draft",
-            Open => "open",
-            Paid => "paid",
-            Uncollectible => "uncollectible",
-            Void => "void",
-        }
-    }
-}
-
-impl std::str::FromStr for ListInvoiceStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListInvoiceStatus::*;
-        match s {
-            "draft" => Ok(Draft),
-            "open" => Ok(Open),
-            "paid" => Ok(Paid),
-            "uncollectible" => Ok(Uncollectible),
-            "void" => Ok(Void),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for ListInvoiceStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ListInvoiceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for ListInvoiceStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpcomingInvoice<'a> {
     /// Settings for automatic tax lookup for this invoice preview.
@@ -482,7 +375,7 @@ pub struct UpdateInvoice<'a> {
     /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
-    /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
     /// Settings for automatic tax lookup for this invoice.
@@ -539,6 +432,12 @@ pub struct UpdateInvoice<'a> {
     /// This field can only be updated on `draft` invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub due_date: Option<stripe_types::Timestamp>,
+    /// The date when this invoice is in effect.
+    ///
+    /// Same as `finalized_at` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -1020,22 +919,6 @@ impl<'a> PayInvoice<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct FinalizeInvoiceInvoice<'a> {
-    /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/invoicing/automatic-charging) of the invoice.
-    ///
-    /// When `false`, the invoice's state will not automatically advance without an explicit action.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub auto_advance: Option<bool>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> FinalizeInvoiceInvoice<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpcomingLinesInvoice<'a> {
     /// Settings for automatic tax lookup for this invoice preview.
@@ -1176,9 +1059,9 @@ pub struct CreateInvoice<'a> {
     /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
-    /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
     ///
-    /// When `false`, the invoice's state will not automatically advance without an explicit action.
+    /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
     /// Settings for automatic tax lookup for this invoice.
@@ -1239,6 +1122,12 @@ pub struct CreateInvoice<'a> {
     /// Valid only for invoices where `collection_method=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub due_date: Option<stripe_types::Timestamp>,
+    /// The date when this invoice is in effect.
+    ///
+    /// Same as `finalized_at` unless overwritten.
+    /// When defined, this value replaces the system-generated 'Date of issue' printed on the invoice PDF and receipt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_at: Option<stripe_types::Timestamp>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -1814,6 +1703,113 @@ impl serde::Serialize for CreateInvoiceShippingCostShippingRateDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct ListInvoice<'a> {
+    /// The collection method of the invoice to retrieve.
+    ///
+    /// Either `charge_automatically` or `send_invoice`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_method: Option<CollectionMethod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// Only return invoices for the customer specified by this customer ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub due_date: Option<stripe_types::RangeQueryTs>,
+    /// A cursor for use in pagination.
+    ///
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<String>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    ///
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<String>,
+    /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
+    ///
+    /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<ListInvoiceStatus>,
+    /// Only return invoices for the subscription specified by this subscription ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<&'a str>,
+}
+impl<'a> ListInvoice<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
+///
+/// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ListInvoiceStatus {
+    Draft,
+    Open,
+    Paid,
+    Uncollectible,
+    Void,
+}
+
+impl ListInvoiceStatus {
+    pub fn as_str(self) -> &'static str {
+        use ListInvoiceStatus::*;
+        match self {
+            Draft => "draft",
+            Open => "open",
+            Paid => "paid",
+            Uncollectible => "uncollectible",
+            Void => "void",
+        }
+    }
+}
+
+impl std::str::FromStr for ListInvoiceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListInvoiceStatus::*;
+        match s {
+            "draft" => Ok(Draft),
+            "open" => Ok(Open),
+            "paid" => Ok(Paid),
+            "uncollectible" => Ok(Uncollectible),
+            "void" => Ok(Void),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListInvoiceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListInvoiceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for ListInvoiceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveInvoice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1821,6 +1817,22 @@ pub struct RetrieveInvoice<'a> {
     pub expand: Option<&'a [&'a str]>,
 }
 impl<'a> RetrieveInvoice<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct FinalizeInvoiceInvoice<'a> {
+    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
+    ///
+    /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub auto_advance: Option<bool>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> FinalizeInvoiceInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1856,53 +1868,6 @@ pub struct VoidInvoiceInvoice<'a> {
 impl<'a> VoidInvoiceInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum CollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-}
-
-impl CollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        use CollectionMethod::*;
-        match self {
-            ChargeAutomatically => "charge_automatically",
-            SendInvoice => "send_invoice",
-        }
-    }
-}
-
-impl std::str::FromStr for CollectionMethod {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CollectionMethod::*;
-        match s {
-            "charge_automatically" => Ok(ChargeAutomatically),
-            "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CollectionMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for CollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2009,10 +1974,13 @@ impl serde::Serialize for TaxExempt {
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Type {
+    AdNrt,
     AeTrn,
+    ArCuit,
     AuAbn,
     AuArn,
     BgUic,
+    BoTin,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -2023,6 +1991,11 @@ pub enum Type {
     CaQst,
     ChVat,
     ClTin,
+    CnTin,
+    CoNit,
+    CrTin,
+    DoRcn,
+    EcRuc,
     EgTin,
     EsCif,
     EuOssVat,
@@ -2047,18 +2020,25 @@ pub enum Type {
     MySst,
     NoVat,
     NzGst,
+    PeRuc,
     PhTin,
+    RoTin,
+    RsPib,
     RuInn,
     RuKpp,
     SaVat,
     SgGst,
     SgUen,
     SiTin,
+    SvNit,
     ThVat,
     TrTin,
     TwVat,
     UaVat,
     UsEin,
+    UyRuc,
+    VeRif,
+    VnTin,
     ZaVat,
 }
 
@@ -2066,10 +2046,13 @@ impl Type {
     pub fn as_str(self) -> &'static str {
         use Type::*;
         match self {
+            AdNrt => "ad_nrt",
             AeTrn => "ae_trn",
+            ArCuit => "ar_cuit",
             AuAbn => "au_abn",
             AuArn => "au_arn",
             BgUic => "bg_uic",
+            BoTin => "bo_tin",
             BrCnpj => "br_cnpj",
             BrCpf => "br_cpf",
             CaBn => "ca_bn",
@@ -2080,6 +2063,11 @@ impl Type {
             CaQst => "ca_qst",
             ChVat => "ch_vat",
             ClTin => "cl_tin",
+            CnTin => "cn_tin",
+            CoNit => "co_nit",
+            CrTin => "cr_tin",
+            DoRcn => "do_rcn",
+            EcRuc => "ec_ruc",
             EgTin => "eg_tin",
             EsCif => "es_cif",
             EuOssVat => "eu_oss_vat",
@@ -2104,18 +2092,25 @@ impl Type {
             MySst => "my_sst",
             NoVat => "no_vat",
             NzGst => "nz_gst",
+            PeRuc => "pe_ruc",
             PhTin => "ph_tin",
+            RoTin => "ro_tin",
+            RsPib => "rs_pib",
             RuInn => "ru_inn",
             RuKpp => "ru_kpp",
             SaVat => "sa_vat",
             SgGst => "sg_gst",
             SgUen => "sg_uen",
             SiTin => "si_tin",
+            SvNit => "sv_nit",
             ThVat => "th_vat",
             TrTin => "tr_tin",
             TwVat => "tw_vat",
             UaVat => "ua_vat",
             UsEin => "us_ein",
+            UyRuc => "uy_ruc",
+            VeRif => "ve_rif",
+            VnTin => "vn_tin",
             ZaVat => "za_vat",
         }
     }
@@ -2126,10 +2121,13 @@ impl std::str::FromStr for Type {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use Type::*;
         match s {
+            "ad_nrt" => Ok(AdNrt),
             "ae_trn" => Ok(AeTrn),
+            "ar_cuit" => Ok(ArCuit),
             "au_abn" => Ok(AuAbn),
             "au_arn" => Ok(AuArn),
             "bg_uic" => Ok(BgUic),
+            "bo_tin" => Ok(BoTin),
             "br_cnpj" => Ok(BrCnpj),
             "br_cpf" => Ok(BrCpf),
             "ca_bn" => Ok(CaBn),
@@ -2140,6 +2138,11 @@ impl std::str::FromStr for Type {
             "ca_qst" => Ok(CaQst),
             "ch_vat" => Ok(ChVat),
             "cl_tin" => Ok(ClTin),
+            "cn_tin" => Ok(CnTin),
+            "co_nit" => Ok(CoNit),
+            "cr_tin" => Ok(CrTin),
+            "do_rcn" => Ok(DoRcn),
+            "ec_ruc" => Ok(EcRuc),
             "eg_tin" => Ok(EgTin),
             "es_cif" => Ok(EsCif),
             "eu_oss_vat" => Ok(EuOssVat),
@@ -2164,18 +2167,25 @@ impl std::str::FromStr for Type {
             "my_sst" => Ok(MySst),
             "no_vat" => Ok(NoVat),
             "nz_gst" => Ok(NzGst),
+            "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
+            "ro_tin" => Ok(RoTin),
+            "rs_pib" => Ok(RsPib),
             "ru_inn" => Ok(RuInn),
             "ru_kpp" => Ok(RuKpp),
             "sa_vat" => Ok(SaVat),
             "sg_gst" => Ok(SgGst),
             "sg_uen" => Ok(SgUen),
             "si_tin" => Ok(SiTin),
+            "sv_nit" => Ok(SvNit),
             "th_vat" => Ok(ThVat),
             "tr_tin" => Ok(TrTin),
             "tw_vat" => Ok(TwVat),
             "ua_vat" => Ok(UaVat),
             "us_ein" => Ok(UsEin),
+            "uy_ruc" => Ok(UyRuc),
+            "ve_rif" => Ok(VeRif),
+            "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
             _ => Err(()),
         }
@@ -2450,6 +2460,53 @@ impl serde::Serialize for SubscriptionResumeAt {
 pub enum SubscriptionTrialEnd {
     Now,
     Timestamp(stripe_types::Timestamp),
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum CollectionMethod {
+    ChargeAutomatically,
+    SendInvoice,
+}
+
+impl CollectionMethod {
+    pub fn as_str(self) -> &'static str {
+        use CollectionMethod::*;
+        match self {
+            ChargeAutomatically => "charge_automatically",
+            SendInvoice => "send_invoice",
+        }
+    }
+}
+
+impl std::str::FromStr for CollectionMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CollectionMethod::*;
+        match s {
+            "charge_automatically" => Ok(ChargeAutomatically),
+            "send_invoice" => Ok(SendInvoice),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CollectionMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl serde::Serialize for CollectionMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CustomFieldParams<'a> {
@@ -2984,7 +3041,7 @@ impl<'a> CustomerShipping<'a> {
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DataParams<'a> {
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: Type,
     /// Value of the tax ID.
@@ -3066,7 +3123,7 @@ pub struct BankTransferParam<'a> {
     pub eu_bank_transfer: Option<EuBankTransferParam<'a>>,
     /// The bank transfer type that can be used for funding.
     ///
-    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,

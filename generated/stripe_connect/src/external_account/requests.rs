@@ -2,7 +2,7 @@
 /// List external accounts for an account.
 pub fn list(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: ListExternalAccount,
 ) -> stripe::Response<stripe_types::List<stripe_types::external_account::ExternalAccount>> {
     client.get_query(&format!("/accounts/{account}/external_accounts", account = account), params)
@@ -10,7 +10,7 @@ pub fn list(
 /// Retrieve a specified external account for a given account.
 pub fn retrieve(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     id: &str,
     params: RetrieveExternalAccount,
 ) -> stripe::Response<stripe_types::external_account::ExternalAccount> {
@@ -22,7 +22,7 @@ pub fn retrieve(
 /// Create an external account for a given account.
 pub fn create(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: CreateExternalAccount,
 ) -> stripe::Response<stripe_types::external_account::ExternalAccount> {
     client.send_form(
@@ -36,7 +36,7 @@ pub fn create(
 /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
 pub fn update(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     id: &str,
     params: UpdateExternalAccount,
 ) -> stripe::Response<stripe_types::external_account::ExternalAccount> {
@@ -49,7 +49,7 @@ pub fn update(
 /// Delete a specified external account for a given account.
 pub fn delete(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     id: &str,
 ) -> stripe::Response<stripe_types::external_account::DeletedExternalAccount> {
     client.send(

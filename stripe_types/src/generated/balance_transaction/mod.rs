@@ -31,7 +31,7 @@ pub struct BalanceTransaction {
     /// Fees (in %s) paid for this transaction.
     pub fee: i64,
     /// Detailed breakdown of fees (in %s) paid for this transaction.
-    pub fee_details: Vec<stripe_types::balance_transaction::fee::Fee>,
+    pub fee_details: Vec<stripe_types::fee::Fee>,
     /// Unique identifier for the object.
     pub id: stripe_types::balance_transaction::BalanceTransactionId,
     /// Net amount of the transaction, in %s.
@@ -270,5 +270,3 @@ impl stripe_types::Object for BalanceTransaction {
     }
 }
 stripe_types::def_id!(BalanceTransactionId, "txn_");
-pub mod fee;
-pub use fee::Fee;

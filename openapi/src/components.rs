@@ -3,12 +3,12 @@ use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::ops::Deref;
 
-use anyhow::{bail, Context};
+use anyhow::Context;
 use indexmap::{IndexMap, IndexSet};
-use petgraph::algo::is_cyclic_directed;
+use petgraph::Direction;
+use tracing::info;
 
-use crate::crate_inference::{Crate, PATHS_IN_TYPES};
-use crate::ids::IDS_IN_STRIPE;
+use crate::crate_inference::{maybe_specified_crate, validate_crate_map, Crate};
 use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
 use crate::rust_object::RustObject;
@@ -21,37 +21,68 @@ use crate::stripe_object::{
 };
 use crate::types::{ComponentPath, RustIdent};
 
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
+pub struct CrateInfo {
+    krate: Crate,
+    type_defs_in_stripe_types: bool,
+}
+
+impl CrateInfo {
+    pub fn new(krate: Crate) -> Self {
+        Self { krate, type_defs_in_stripe_types: false }
+    }
+
+    pub fn set_type_defs_in_types_crate(&mut self) {
+        self.type_defs_in_stripe_types = true;
+    }
+
+    pub fn are_type_defs_types_crate(&self) -> bool {
+        self.type_defs_in_stripe_types || self.krate == Crate::Types
+    }
+
+    pub fn for_types(&self) -> Crate {
+        if self.type_defs_in_stripe_types {
+            Crate::Types
+        } else {
+            self.krate
+        }
+    }
+
+    pub fn base(&self) -> Crate {
+        self.krate
+    }
+}
+
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub enum Module {
-    Package { name: String, members: Vec<ComponentPath>, krate: Crate },
-    Component { path: ComponentPath, krate: Option<Crate> },
+    Package { name: String, members: Vec<ComponentPath>, krate: Option<CrateInfo> },
+    Component { path: ComponentPath, krate: Option<CrateInfo> },
 }
 
 impl Module {
-    pub fn krate(&self) -> Option<Crate> {
+    pub fn krate(&self) -> Option<CrateInfo> {
         match self {
-            Module::Package { krate, .. } => Some(*krate),
+            Module::Package { krate, .. } => *krate,
             Module::Component { krate, .. } => *krate,
         }
     }
 
     #[track_caller]
-    pub fn krate_for_types(&self) -> Crate {
-        let name = match self {
-            Module::Package { name, .. } => name,
-            Module::Component { path, .. } => path.as_ref(),
+    pub fn krate_unwrapped(&self) -> CrateInfo {
+        let Some(krate) = self.krate() else {
+            panic!("Module has no crate assigned: \n{:?}", self);
         };
-        if PATHS_IN_TYPES.contains(&name) {
-            Crate::Types
-        } else {
-            self.krate_unwrapped()
-        }
+        krate
     }
 
     #[track_caller]
-    pub fn krate_unwrapped(&self) -> Crate {
-        let Some(krate) = self.krate() else {
-            panic!("Module has no crate assigned: \n{:?}", self);
+    pub fn krate_unwrapped_mut(&mut self) -> &mut CrateInfo {
+        let Some(krate) = match self {
+            Module::Package { krate, .. } => krate,
+            Module::Component { krate, .. } => krate,
+        }
+        .as_mut() else {
+            panic!("No krate assigned");
         };
         krate
     }
@@ -59,10 +90,10 @@ impl Module {
     pub fn assign_crate(&mut self, new_krate: Crate) {
         match self {
             Module::Package { krate, .. } => {
-                *krate = new_krate;
+                *krate = Some(CrateInfo::new(new_krate));
             }
             Module::Component { krate, .. } => {
-                *krate = Some(new_krate);
+                *krate = Some(CrateInfo::new(new_krate));
             }
         }
     }
@@ -150,9 +181,10 @@ impl Components {
     pub fn get_crate_members(&self, krate: Crate) -> IndexSet<&ModuleName> {
         let mut members = IndexSet::new();
         for (mod_name, module) in &self.modules {
-            if module.krate() == Some(krate)
-                || (krate == Crate::Types && PATHS_IN_TYPES.contains(&mod_name.as_ref()))
-            {
+            let Some(mod_krate) = module.krate() else {
+                continue;
+            };
+            if mod_krate.base() == krate || mod_krate.for_types() == krate {
                 members.insert(mod_name);
             }
         }
@@ -164,11 +196,8 @@ impl Components {
     }
 
     #[track_caller]
-    pub fn containing_crate(&self, path: &ComponentPath) -> Crate {
+    pub fn containing_crate(&self, path: &ComponentPath) -> CrateInfo {
         let mod_path = self.containing_module(path);
-        if PATHS_IN_TYPES.contains(&mod_path.as_ref()) {
-            return Crate::Types;
-        }
         let module = self.get_module(mod_path);
         module.krate_unwrapped()
     }
@@ -181,16 +210,12 @@ impl Components {
     pub fn resolve_path(&self, path: &ComponentPath) -> PathInfo {
         let component = self.get(path);
         let mut pieces = vec![];
-        let mut parent = if path.is_deleted() { self.parent_for_deleted(path) } else { component };
+        let parent = if path.is_deleted() { self.parent_for_deleted(path) } else { component };
         pieces.push(parent.mod_path());
-        while let Some(in_class) = &parent.resource.in_class {
-            parent = self.get(in_class);
-            pieces.push(parent.mod_path());
-        }
         if let Some(package) = &parent.resource.in_package {
             pieces.push(package.to_string());
         }
-        let krate = self.containing_crate(path);
+        let krate = self.containing_crate(path).for_types();
         let full_path = pieces.into_iter().rev().collect::<Vec<_>>().join("::");
         PathInfo { krate: Some(krate), path: Some(full_path) }
     }
@@ -213,11 +238,7 @@ impl Components {
                     PathToType::IntraFile(ident) => (None, ident.clone()),
                     PathToType::ObjectId(path) => {
                         let ident = infer_id_name(path);
-                        let path_info = if IDS_IN_STRIPE.contains(path) {
-                            PathInfo { krate: Some(Crate::Types), path: None }
-                        } else {
-                            self.resolve_path(path)
-                        };
+                        let path_info = self.resolve_path(path);
                         (Some(path_info), ident)
                     }
                     PathToType::Types(ident) => {
@@ -250,30 +271,6 @@ impl Components {
         }
     }
 
-    fn validate_crate_assignment(&self) -> anyhow::Result<()> {
-        let mods_missing_crates = self
-            .modules
-            .iter()
-            .filter(|(_, module)| module.krate().is_none())
-            .map(|(name, _)| name)
-            .collect::<Vec<_>>();
-        if !mods_missing_crates.is_empty() {
-            bail!("Some modules could not have their crate inferred: {:#?}", mods_missing_crates);
-        }
-        let graph = self.gen_crate_dep_graph();
-        let deps_for_types_crate = graph.neighbors(Crate::Types).collect::<Vec<_>>();
-        if !deps_for_types_crate.is_empty() {
-            bail!(
-                "Types crate should not have dependencies, but has dependencies {:#?}!",
-                deps_for_types_crate
-            );
-        }
-        if is_cyclic_directed(&graph) {
-            bail!("Crate dependency graph contains a cycle!");
-        }
-        Ok(())
-    }
-
     pub fn add_component_deps<'a>(
         &'a self,
         deps: &mut IndexSet<&'a ComponentPath>,
@@ -282,6 +279,20 @@ impl Components {
         let component = self.get(path);
         let base_type = component.rust_obj();
         self.add_deps_from_obj(deps, base_type);
+        let reqs = &component.requests;
+        let mut typs = vec![];
+        for req in reqs {
+            if let Some(params) = &req.params {
+                typs.push(params);
+            }
+            typs.push(&req.returned);
+            for path_param in &req.path_params {
+                typs.push(&path_param.rust_type);
+            }
+        }
+        for typ in typs {
+            self.add_deps_from_typ(deps, typ);
+        }
     }
 
     pub fn add_deps_from_obj<'a>(
@@ -326,25 +337,51 @@ impl Components {
         match module {
             Module::Package { members, .. } => {
                 for path in members {
-                    self.add_deps_for_path_and_children(&mut deps, path);
+                    self.add_component_deps(&mut deps, path);
                 }
             }
             Module::Component { path, .. } => {
-                self.add_deps_for_path_and_children(&mut deps, path);
+                self.add_component_deps(&mut deps, path);
             }
         }
         deps
     }
 
-    fn add_deps_for_path_and_children<'a>(
-        &'a self,
-        deps: &mut IndexSet<&'a ComponentPath>,
-        path: &'a ComponentPath,
-    ) {
-        self.add_component_deps(deps, path);
-        let obj = self.get(path);
-        for class_ in obj.inner_classes() {
-            self.add_deps_for_path_and_children(deps, class_);
+    pub fn filter_unused_modules(&mut self) {
+        let mut unused = vec![];
+        loop {
+            let mod_graph = self.gen_module_dep_graph();
+            for (mod_name, module) in &self.modules {
+                // This will be a false positive here since we don't include `ApiError` in
+                // dependency calculation even though it is really the error type in all
+                // requests.
+                if mod_name.as_ref() == "error" {
+                    continue;
+                }
+                match module {
+                    Module::Package { .. } => {}
+                    Module::Component { path, .. } => {
+                        let obj = self.get(path);
+                        if obj.requests.is_empty() {
+                            if mod_graph.neighbors_directed(mod_name, Direction::Incoming).count()
+                                == 0
+                            {
+                                unused.push(mod_name.clone());
+                            }
+                        }
+                    }
+                }
+            }
+            let done_filtering = unused.is_empty();
+            if done_filtering {
+                break;
+            }
+
+            info!("Filtering unused modules: {unused:#?}");
+            for unused_mod in unused.drain(..) {
+                self.modules.remove(&unused_mod);
+                self.components.remove(unused_mod.as_ref());
+            }
         }
     }
 }
@@ -393,15 +430,12 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     let mut modules = IndexMap::new();
     let mut packages = IndexSet::new();
     for (path, obj) in &components {
-        if obj.resource.in_package.is_none()
-            && obj.resource.in_class.is_none()
-            && !obj.is_deleted_item()
-        {
+        if obj.resource.in_package.is_none() && !obj.is_deleted_item() {
             modules.insert(
                 ModuleName::from_comp_path(obj.path()),
                 Module::Component {
                     path: path.clone(),
-                    krate: Crate::map_guaranteed(path.as_ref()),
+                    krate: maybe_specified_crate(path.as_ref()).map(CrateInfo::new),
                 },
             );
         }
@@ -412,24 +446,23 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     for package in packages {
         let mut members = vec![];
         for obj in components.values() {
-            if obj.resource.in_package.as_deref() == Some(&package)
-                && obj.resource.in_class.is_none()
-                && !obj.is_deleted_item()
-            {
+            if obj.resource.in_package.as_deref() == Some(&package) && !obj.is_deleted_item() {
                 members.push(obj.path().clone());
             }
         }
-        let krate = Crate::map_guaranteed(&package).unwrap_or_else(|| {
+        let krate = maybe_specified_crate(&package).map(CrateInfo::new).unwrap_or_else(|| {
             panic!("Package {} required a crate mapping", package);
         });
         modules.insert(
             ModuleName::from_package_name(package.clone()),
-            Module::Package { name: package, members, krate },
+            Module::Package { name: package, members, krate: Some(krate) },
         );
     }
     let mut components = Components { modules, components };
-    components.infer_all_crate_assignments();
-    components.validate_crate_assignment()?;
+    components.filter_unused_modules();
+
+    validate_crate_map(&components)?;
+    components.infer_all_crate_assignments()?;
     Ok(components)
 }
 
@@ -564,10 +597,7 @@ fn find_parent_module(
     components: &HashMap<ComponentPath, StripeResource>,
 ) -> ModuleName {
     let start_path = if path.is_deleted() { path.as_not_deleted() } else { path.clone() };
-    let mut parent = components.get(&start_path).unwrap();
-    while let Some(in_class) = &parent.in_class {
-        parent = components.get(in_class).unwrap();
-    }
+    let parent = components.get(&start_path).unwrap();
     if let Some(package_name) = &parent.in_package {
         ModuleName::from_package_name(package_name.clone())
     } else {

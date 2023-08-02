@@ -1,30 +1,33 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug,serde::Serialize,serde::Deserialize,)]
 pub struct DeletedCard {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub currency: Option<stripe_types::Currency>,
     /// Always true for a deleted object.
-    deleted: stripe_types::AlwaysTrue,
+deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
-    pub id: stripe_types::card::CardId,
+pub id: stripe_types::card::CardId,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
-    pub object: DeletedCardObject,
+pub object: DeletedCardObject,
+
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy,Clone, Debug,Eq, PartialEq,)]
 pub enum DeletedCardObject {
-    Card,
+Card,
+
 }
 
 impl DeletedCardObject {
     pub fn as_str(self) -> &'static str {
         use DeletedCardObject::*;
         match self {
-            Card => "card",
+Card => "card",
+
         }
     }
 }
@@ -34,8 +37,9 @@ impl std::str::FromStr for DeletedCardObject {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DeletedCardObject::*;
         match s {
-            "card" => Ok(Card),
-            _ => Err(()),
+    "card" => Ok(Card),
+_ => Err(())
+
         }
     }
 }
@@ -52,10 +56,7 @@ impl std::fmt::Display for DeletedCardObject {
     }
 }
 impl serde::Serialize for DeletedCardObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
     }
 }
@@ -63,8 +64,7 @@ impl<'de> serde::Deserialize<'de> for DeletedCardObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for DeletedCardObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DeletedCardObject"))
     }
 }
 impl stripe_types::Object for DeletedCard {

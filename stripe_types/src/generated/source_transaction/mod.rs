@@ -6,13 +6,11 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach_credit_transfer:
-        Option<stripe_types::source_transaction::ach_credit_transfer_data::AchCreditTransferData>,
+    pub ach_credit_transfer: Option<stripe_types::ach_credit_transfer_data::AchCreditTransferData>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the amount your customer has pushed to the receiver.
     pub amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub chf_credit_transfer:
-        Option<stripe_types::source_transaction::chf_credit_transfer_data::ChfCreditTransferData>,
+    pub chf_credit_transfer: Option<stripe_types::chf_credit_transfer_data::ChfCreditTransferData>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -22,8 +20,7 @@ pub struct SourceTransaction {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gbp_credit_transfer:
-        Option<stripe_types::source_transaction::gbp_credit_transfer_data::GbpCreditTransferData>,
+    pub gbp_credit_transfer: Option<stripe_types::gbp_credit_transfer_data::GbpCreditTransferData>,
     /// Unique identifier for the object.
     pub id: stripe_types::source_transaction::SourceTransactionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -33,10 +30,10 @@ pub struct SourceTransaction {
     /// Objects of the same type share the same value.
     pub object: SourceTransactionObject,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paper_check: Option<stripe_types::source_transaction::paper_check_data::PaperCheckData>,
+    pub paper_check: Option<stripe_types::paper_check_data::PaperCheckData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_credit_transfer:
-        Option<stripe_types::source_transaction::sepa_credit_transfer_data::SepaCreditTransferData>,
+        Option<stripe_types::sepa_credit_transfer_data::SepaCreditTransferData>,
     /// The ID of the source this transaction is attached to.
     pub source: String,
     /// The status of the transaction, one of `succeeded`, `pending`, or `failed`.
@@ -205,13 +202,3 @@ impl stripe_types::Object for SourceTransaction {
     }
 }
 stripe_types::def_id!(SourceTransactionId);
-pub mod ach_credit_transfer_data;
-pub use ach_credit_transfer_data::AchCreditTransferData;
-pub mod chf_credit_transfer_data;
-pub use chf_credit_transfer_data::ChfCreditTransferData;
-pub mod gbp_credit_transfer_data;
-pub use gbp_credit_transfer_data::GbpCreditTransferData;
-pub mod paper_check_data;
-pub use paper_check_data::PaperCheckData;
-pub mod sepa_credit_transfer_data;
-pub use sepa_credit_transfer_data::SepaCreditTransferData;

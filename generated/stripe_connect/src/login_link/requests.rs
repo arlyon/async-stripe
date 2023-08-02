@@ -4,7 +4,7 @@
 /// **You may only create login links for [Express accounts](https://stripe.com/docs/connect/express-accounts) connected to your platform**.
 pub fn create(
     client: &stripe::Client,
-    account: &stripe_types::AccountId,
+    account: &stripe_types::account::AccountId,
     params: CreateLoginLink,
 ) -> stripe::Response<stripe_connect::login_link::LoginLink> {
     client.send_form(

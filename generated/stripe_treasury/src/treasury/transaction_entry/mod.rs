@@ -1,7 +1,7 @@
 /// TransactionEntries represent individual units of money movements within a single [Transaction](https://stripe.com/docs/api#transactions).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransactionEntry {
-    pub balance_impact: stripe_treasury::treasury::transaction::balance_impact::BalanceImpact,
+    pub balance_impact: stripe_treasury::balance_impact::BalanceImpact,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.

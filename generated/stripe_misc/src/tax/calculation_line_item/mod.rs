@@ -15,7 +15,7 @@ pub struct CalculationLineItem {
     ///
     /// Objects of the same type share the same value.
     pub object: CalculationLineItemObject,
-    /// A Product ID.
+    /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
     pub product: Option<String>,
     /// The number of units of the item being purchased.
     ///
@@ -28,9 +28,7 @@ pub struct CalculationLineItem {
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
     pub tax_behavior: CalculationLineItemTaxBehavior,
     /// Detailed account of taxes relevant to this line item.
-    pub tax_breakdown: Option<
-        Vec<stripe_misc::tax::calculation_line_item::line_item_tax_breakdown::LineItemTaxBreakdown>,
-    >,
+    pub tax_breakdown: Option<Vec<stripe_misc::line_item_tax_breakdown::LineItemTaxBreakdown>>,
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for this resource.
     pub tax_code: String,
 }
@@ -155,5 +153,3 @@ impl stripe_types::Object for CalculationLineItem {
     }
 }
 stripe_types::def_id!(TaxCalculationLineItemId);
-pub mod line_item_tax_breakdown;
-pub use line_item_tax_breakdown::LineItemTaxBreakdown;

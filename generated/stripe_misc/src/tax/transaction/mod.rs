@@ -13,7 +13,7 @@ pub struct Transaction {
     pub currency: stripe_types::Currency,
     /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
     pub customer: Option<String>,
-    pub customer_details: stripe_misc::tax::calculation::customer_details::CustomerDetails,
+    pub customer_details: stripe_misc::customer_details::CustomerDetails,
     /// Unique identifier for the transaction.
     pub id: stripe_misc::tax::transaction::TaxTransactionId,
     /// The tax collected or refunded, by line item.
@@ -32,7 +32,7 @@ pub struct Transaction {
     /// A custom unique identifier, such as 'myOrder_123'.
     pub reference: String,
     /// If `type=reversal`, contains information about what was reversed.
-    pub reversal: Option<stripe_misc::tax::transaction::reversal::Reversal>,
+    pub reversal: Option<stripe_misc::reversal::Reversal>,
     /// The shipping cost details for the transaction.
     pub shipping_cost: Option<stripe_misc::tax::transaction_shipping_cost::TransactionShippingCost>,
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
@@ -158,6 +158,4 @@ impl stripe_types::Object for Transaction {
     }
 }
 stripe_types::def_id!(TaxTransactionId);
-pub mod reversal;
-pub use reversal::Reversal;
 pub mod requests;

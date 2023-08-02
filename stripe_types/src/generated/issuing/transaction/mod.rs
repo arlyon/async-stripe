@@ -12,7 +12,7 @@ pub struct Transaction {
     /// Detailed breakdown of amount components.
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub amount_details: Option<stripe_types::issuing::transaction::amount_details::AmountDetails>,
+    pub amount_details: Option<stripe_types::amount_details::AmountDetails>,
     /// The `Authorization` object that led to this transaction.
     pub authorization:
         Option<stripe_types::Expandable<stripe_types::issuing::authorization::Authorization>>,
@@ -43,7 +43,7 @@ pub struct Transaction {
     pub merchant_amount: i64,
     /// The currency with which the merchant is taking payment.
     pub merchant_currency: stripe_types::Currency,
-    pub merchant_data: stripe_types::issuing::authorization::merchant_data::MerchantData,
+    pub merchant_data: stripe_types::merchant_data::MerchantData,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -53,11 +53,10 @@ pub struct Transaction {
     /// Objects of the same type share the same value.
     pub object: TransactionObject,
     /// Additional purchase information that is optionally provided by the merchant.
-    pub purchase_details:
-        Option<stripe_types::issuing::transaction::purchase_details::PurchaseDetails>,
+    pub purchase_details: Option<stripe_types::purchase_details::PurchaseDetails>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub treasury: Option<stripe_types::issuing::transaction::treasury::Treasury>,
+    pub treasury: Option<stripe_types::treasury::Treasury>,
     /// The nature of the transaction.
     #[serde(rename = "type")]
     pub type_: TransactionType,
@@ -244,9 +243,3 @@ impl stripe_types::Object for Transaction {
     }
 }
 stripe_types::def_id!(IssuingTransactionId, "ipi_");
-pub mod amount_details;
-pub use amount_details::AmountDetails;
-pub mod purchase_details;
-pub use purchase_details::PurchaseDetails;
-pub mod treasury;
-pub use treasury::Treasury;
