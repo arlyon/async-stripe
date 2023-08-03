@@ -15,13 +15,13 @@ pub struct CustomerBalanceTransaction {
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The ID of the credit note (if any) related to the transaction.
-    pub credit_note: Option<stripe_types::Expandable<stripe_types::credit_note::CreditNote>>,
+    pub credit_note: Option<stripe_types::Expandable<stripe_types::CreditNote>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The ID of the customer the transaction belongs to.
-    pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
+    pub customer: stripe_types::Expandable<stripe_types::Customer>,
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
@@ -34,7 +34,7 @@ pub struct CustomerBalanceTransaction {
     /// Unique identifier for the object.
     pub id: stripe_types::customer_balance_transaction::CustomerBalanceTransactionId,
     /// The ID of the invoice (if any) related to the transaction.
-    pub invoice: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
+    pub invoice: Option<stripe_types::Expandable<stripe_types::Invoice>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -54,7 +54,7 @@ pub struct CustomerBalanceTransaction {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerBalanceTransactionObject {
     CustomerBalanceTransaction,
 }
@@ -87,7 +87,13 @@ impl AsRef<str> for CustomerBalanceTransactionObject {
 
 impl std::fmt::Display for CustomerBalanceTransactionObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerBalanceTransactionObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerBalanceTransactionObject {
@@ -102,15 +108,13 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerBalanceTransactionObject")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceTransactionObject"))
     }
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
 ///
 /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerBalanceTransactionType {
     Adjustment,
     AppliedToInvoice,
@@ -170,7 +174,13 @@ impl AsRef<str> for CustomerBalanceTransactionType {
 
 impl std::fmt::Display for CustomerBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerBalanceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerBalanceTransactionType {
@@ -185,9 +195,7 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType"))
     }
 }
 impl stripe_types::Object for CustomerBalanceTransaction {

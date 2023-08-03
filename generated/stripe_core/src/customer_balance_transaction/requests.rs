@@ -1,61 +1,19 @@
 
 /// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    transaction: &str,
-    params: RetrieveCustomerBalanceTransaction,
-) -> stripe::Response<stripe_types::customer_balance_transaction::CustomerBalanceTransaction> {
-    client.get_query(
-        &format!(
-            "/customers/{customer}/balance_transactions/{transaction}",
-            customer = customer,
-            transaction = transaction
-        ),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, transaction: &str, params: RetrieveCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+    client.get_query(&format!("/customers/{customer}/balance_transactions/{transaction}", customer = customer, transaction = transaction), params)
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-pub fn list(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: ListCustomerBalanceTransaction,
-) -> stripe::Response<
-    stripe_types::List<stripe_types::customer_balance_transaction::CustomerBalanceTransaction>,
-> {
-    client.get_query(
-        &format!("/customers/{customer}/balance_transactions", customer = customer),
-        params,
-    )
+pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListCustomerBalanceTransaction) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
+    client.get_query(&format!("/customers/{customer}/balance_transactions", customer = customer), params)
 }
 /// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
-pub fn create(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: CreateCustomerBalanceTransaction,
-) -> stripe::Response<stripe_types::customer_balance_transaction::CustomerBalanceTransaction> {
-    client.send_form(
-        &format!("/customers/{customer}/balance_transactions", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreateCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+    client.send_form(&format!("/customers/{customer}/balance_transactions", customer = customer), params, http_types::Method::Post)
 }
 /// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
-pub fn update(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    transaction: &str,
-    params: UpdateCustomerBalanceTransaction,
-) -> stripe::Response<stripe_types::customer_balance_transaction::CustomerBalanceTransaction> {
-    client.send_form(
-        &format!(
-            "/customers/{customer}/balance_transactions/{transaction}",
-            customer = customer,
-            transaction = transaction
-        ),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, transaction: &str, params: UpdateCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+    client.send_form(&format!("/customers/{customer}/balance_transactions/{transaction}", customer = customer, transaction = transaction), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCustomerBalanceTransaction<'a> {
@@ -124,13 +82,7 @@ pub struct CreateCustomerBalanceTransaction<'a> {
 }
 impl<'a> CreateCustomerBalanceTransaction<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self {
-            amount,
-            currency,
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-        }
+        Self { amount, currency, description: Default::default(), expand: Default::default(), metadata: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

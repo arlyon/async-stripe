@@ -1,41 +1,86 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<stripe_types::acss_debit::AcssDebit>,
+    pub ach_credit_transfer: Option<stripe_types::PaymentMethodDetailsAchCreditTransfer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<stripe_types::au_becs_debit::AuBecsDebit>,
+    pub ach_debit: Option<stripe_types::PaymentMethodDetailsAchDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<stripe_types::bacs_debit::BacsDebit>,
+    pub acss_debit: Option<stripe_types::PaymentMethodDetailsAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<stripe_types::bancontact::Bancontact>,
+    pub affirm: Option<stripe_types::PaymentMethodDetailsAffirm>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<stripe_types::blik::Blik>,
+    pub afterpay_clearpay: Option<stripe_types::PaymentMethodDetailsAfterpayClearpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<stripe_types::boleto::Boleto>,
+    pub alipay: Option<stripe_types::PaymentFlowsPrivatePaymentMethodsAlipayDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<stripe_types::card::Card>,
+    pub au_becs_debit: Option<stripe_types::PaymentMethodDetailsAuBecsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<stripe_types::card_present::CardPresent>,
+    pub bacs_debit: Option<stripe_types::PaymentMethodDetailsBacsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<stripe_types::cashapp::Cashapp>,
+    pub bancontact: Option<stripe_types::PaymentMethodDetailsBancontact>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<stripe_types::ideal::Ideal>,
+    pub blik: Option<stripe_types::PaymentMethodDetailsBlik>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna: Option<stripe_types::klarna::Klarna>,
+    pub boleto: Option<stripe_types::PaymentMethodDetailsBoleto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<stripe_types::link::Link>,
+    pub card: Option<stripe_types::PaymentMethodDetailsCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<stripe_types::paypal::Paypal>,
+    pub card_present: Option<stripe_types::PaymentMethodDetailsCardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<stripe_types::sepa_debit::SepaDebit>,
+    pub cashapp: Option<stripe_types::PaymentMethodDetailsCashapp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<stripe_types::sofort::Sofort>,
-    /// The type of the payment method used in the SetupIntent (e.g., `card`).
-    ///
+    pub customer_balance: Option<stripe_types::PaymentMethodDetailsCustomerBalance>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps: Option<stripe_types::PaymentMethodDetailsEps>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<stripe_types::PaymentMethodDetailsFpx>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay: Option<stripe_types::PaymentMethodDetailsGiropay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<stripe_types::PaymentMethodDetailsGrabpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<stripe_types::PaymentMethodDetailsIdeal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interac_present: Option<stripe_types::PaymentMethodDetailsInteracPresent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<stripe_types::PaymentMethodDetailsKlarna>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini: Option<stripe_types::PaymentMethodDetailsKonbini>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<stripe_types::PaymentMethodDetailsLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multibanco: Option<stripe_types::PaymentMethodDetailsMultibanco>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<stripe_types::PaymentMethodDetailsOxxo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24: Option<stripe_types::PaymentMethodDetailsP24>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<stripe_types::PaymentMethodDetailsPaynow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_types::PaymentMethodDetailsPaypal>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<stripe_types::PaymentMethodDetailsPix>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay: Option<stripe_types::PaymentMethodDetailsPromptpay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_credit_transfer: Option<stripe_types::PaymentMethodDetailsSepaCreditTransfer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<stripe_types::PaymentMethodDetailsSepaDebit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort: Option<stripe_types::PaymentMethodDetailsSofort>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_account: Option<stripe_types::PaymentMethodDetailsStripeAccount>,
+    /// The type of transaction-specific details of the payment method used in the payment, one of `ach_credit_transfer`, `ach_debit`, `acss_debit`, `alipay`, `au_becs_debit`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `klarna`, `multibanco`, `p24`, `sepa_debit`, `sofort`, `stripe_account`, or `wechat`.
     /// An additional hash is included on `payment_method_details` with a name matching this value.
-    /// It contains confirmation-specific information for the payment method.
+    /// It contains information specific to the payment method.
     #[serde(rename = "type")]
     pub type_: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<stripe_types::us_bank_account::UsBankAccount>,
+    pub us_bank_account: Option<stripe_types::PaymentMethodDetailsUsBankAccount>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat: Option<stripe_types::PaymentMethodDetailsWechat>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<stripe_types::PaymentMethodDetailsWechatPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<stripe_types::PaymentMethodDetailsZip>,
 }

@@ -1,16 +1,34 @@
-#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct CurrencyOption {
-    /// A non-negative integer in cents representing how much to charge.
-    pub amount: i64,
-    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+    pub custom_unit_amount: Option<stripe_types::CustomUnitAmount>,
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    pub tax_behavior: CurrencyOptionTaxBehavior,
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    pub tax_behavior: Option<CurrencyOptionTaxBehavior>,
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Vec<stripe_types::PriceTier>>,
+    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    ///
+    /// Only set if `billing_scheme=per_unit`.
+    pub unit_amount: Option<i64>,
+    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    ///
+    /// Only set if `billing_scheme=per_unit`.
+    pub unit_amount_decimal: Option<String>,
 }
-/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 ///
+/// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+/// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CurrencyOptionTaxBehavior {
     Exclusive,
     Inclusive,
@@ -49,7 +67,13 @@ impl AsRef<str> for CurrencyOptionTaxBehavior {
 
 impl std::fmt::Display for CurrencyOptionTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CurrencyOptionTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CurrencyOptionTaxBehavior {
@@ -64,7 +88,6 @@ impl<'de> serde::Deserialize<'de> for CurrencyOptionTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CurrencyOptionTaxBehavior"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CurrencyOptionTaxBehavior"))
     }
 }

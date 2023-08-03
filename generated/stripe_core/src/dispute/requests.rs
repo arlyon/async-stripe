@@ -1,17 +1,10 @@
 
 /// Returns a list of your disputes.
-pub fn list(
-    client: &stripe::Client,
-    params: ListDispute,
-) -> stripe::Response<stripe_types::List<stripe_types::dispute::Dispute>> {
+pub fn list(client: &stripe::Client, params: ListDispute) -> stripe::Response<stripe_types::List<stripe_types::Dispute>> {
     client.get_query("/disputes", params)
 }
 /// Retrieves the dispute with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    dispute: &stripe_types::dispute::DisputeId,
-    params: RetrieveDispute,
-) -> stripe::Response<stripe_types::dispute::Dispute> {
+pub fn retrieve(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: RetrieveDispute) -> stripe::Response<stripe_types::Dispute> {
     client.get_query(&format!("/disputes/{dispute}", dispute = dispute), params)
 }
 /// When you get a dispute, contacting your customer is always the best first step.
@@ -19,32 +12,16 @@ pub fn retrieve(
 /// If that doesn’t work, you can submit evidence to help us resolve the dispute in your favor.
 /// You can do this in your [dashboard](https://dashboard.stripe.com/disputes), but if you prefer, you can use the API to submit evidence programmatically.  Depending on your dispute type, different evidence fields will give you a better chance of winning your dispute.
 /// To figure out which evidence fields to provide, see our [guide to dispute types](https://stripe.com/docs/disputes/categories).
-pub fn update(
-    client: &stripe::Client,
-    dispute: &stripe_types::dispute::DisputeId,
-    params: UpdateDispute,
-) -> stripe::Response<stripe_types::dispute::Dispute> {
-    client.send_form(
-        &format!("/disputes/{dispute}", dispute = dispute),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: UpdateDispute) -> stripe::Response<stripe_types::Dispute> {
+    client.send_form(&format!("/disputes/{dispute}", dispute = dispute), params, http_types::Method::Post)
 }
 /// Closing the dispute for a charge indicates that you do not have any evidence to submit and are essentially dismissing the dispute, acknowledging it as lost.
 ///
 /// The status of the dispute will change from `needs_response` to `lost`.
 ///
 /// _Closing a dispute is irreversible_.
-pub fn close(
-    client: &stripe::Client,
-    dispute: &stripe_types::dispute::DisputeId,
-    params: CloseDispute,
-) -> stripe::Response<stripe_types::dispute::Dispute> {
-    client.send_form(
-        &format!("/disputes/{dispute}/close", dispute = dispute),
-        params,
-        http_types::Method::Post,
-    )
+pub fn close(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: CloseDispute) -> stripe::Response<stripe_types::Dispute> {
+    client.send_form(&format!("/disputes/{dispute}/close", dispute = dispute), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListDispute<'a> {

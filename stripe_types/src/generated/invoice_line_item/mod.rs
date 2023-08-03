@@ -13,7 +13,7 @@ pub struct InvoiceLineItem {
     /// Often useful for displaying to users.
     pub description: Option<String>,
     /// The amount of discount calculated per discount for this line item.
-    pub discount_amounts: Option<Vec<stripe_types::discount_amount::DiscountAmount>>,
+    pub discount_amounts: Option<Vec<stripe_types::DiscountsResourceDiscountAmount>>,
     /// If true, discounts will apply to this line item.
     ///
     /// Always false for prorations.
@@ -22,12 +22,12 @@ pub struct InvoiceLineItem {
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<stripe_types::Expandable<stripe_types::discount::Discount>>>,
+    pub discounts: Option<Vec<stripe_types::Expandable<stripe_types::Discount>>>,
     /// Unique identifier for the object.
     pub id: stripe_types::invoice_line_item::LineItemId,
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<stripe_types::Expandable<stripe_types::invoice_item::InvoiceItem>>,
+    pub invoice_item: Option<stripe_types::Expandable<stripe_types::InvoiceItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -39,31 +39,30 @@ pub struct InvoiceLineItem {
     ///
     /// Objects of the same type share the same value.
     pub object: InvoiceLineItemObject,
-    pub period: stripe_types::invoice_line_item_period::InvoiceLineItemPeriod,
+    pub period: stripe_types::InvoiceLineItemPeriod,
     /// The plan of the subscription, if the line item is a subscription or a proration.
-    pub plan: Option<stripe_types::plan::Plan>,
+    pub plan: Option<stripe_types::Plan>,
     /// The price of the line item.
-    pub price: Option<stripe_types::price::Price>,
+    pub price: Option<stripe_types::Price>,
     /// Whether this is a proration.
     pub proration: bool,
     /// Additional details for proration line items.
-    pub proration_details: Option<stripe_types::proration_details::ProrationDetails>,
+    pub proration_details: Option<stripe_types::InvoicesResourceLineItemsProrationDetails>,
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
     /// The subscription that the invoice item pertains to, if any.
-    pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
+    pub subscription: Option<stripe_types::Expandable<stripe_types::Subscription>>,
     /// The subscription item that generated this line item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item:
-        Option<stripe_types::Expandable<stripe_types::subscription_item::SubscriptionItem>>,
+    pub subscription_item: Option<stripe_types::Expandable<stripe_types::SubscriptionItem>>,
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<stripe_types::tax_amount::TaxAmount>>,
+    pub tax_amounts: Option<Vec<stripe_types::InvoiceTaxAmount>>,
     /// The tax rates which apply to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<stripe_types::tax_rate::TaxRate>>,
+    pub tax_rates: Option<Vec<stripe_types::TaxRate>>,
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
@@ -73,7 +72,7 @@ pub struct InvoiceLineItem {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceLineItemObject {
     LineItem,
 }
@@ -106,7 +105,13 @@ impl AsRef<str> for InvoiceLineItemObject {
 
 impl std::fmt::Display for InvoiceLineItemObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceLineItemObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceLineItemObject {
@@ -121,12 +126,11 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemObject"))
     }
 }
 /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceLineItemType {
     Invoiceitem,
     Subscription,
@@ -162,7 +166,13 @@ impl AsRef<str> for InvoiceLineItemType {
 
 impl std::fmt::Display for InvoiceLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceLineItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceLineItemType {
@@ -177,8 +187,7 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
     }
 }
 impl stripe_types::Object for InvoiceLineItem {

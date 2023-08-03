@@ -6,30 +6,30 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<stripe_types::acss_debit::AcssDebit>,
+    pub acss_debit: Option<stripe_types::PaymentMethodAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<stripe_types::affirm::Affirm>,
+    pub affirm: Option<stripe_types::PaymentMethodAffirm>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<stripe_types::afterpay_clearpay::AfterpayClearpay>,
+    pub afterpay_clearpay: Option<stripe_types::PaymentMethodAfterpayClearpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<stripe_types::alipay::Alipay>,
+    pub alipay: Option<stripe_types::PaymentFlowsPrivatePaymentMethodsAlipay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<stripe_types::au_becs_debit::AuBecsDebit>,
+    pub au_becs_debit: Option<stripe_types::PaymentMethodAuBecsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<stripe_types::bacs_debit::BacsDebit>,
+    pub bacs_debit: Option<stripe_types::PaymentMethodBacsDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<stripe_types::bancontact::Bancontact>,
-    pub billing_details: stripe_types::billing_details::BillingDetails,
+    pub bancontact: Option<stripe_types::PaymentMethodBancontact>,
+    pub billing_details: stripe_types::BillingDetails,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<stripe_types::blik::Blik>,
+    pub blik: Option<stripe_types::PaymentMethodBlik>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<stripe_types::boleto::Boleto>,
+    pub boleto: Option<stripe_types::PaymentMethodBoleto>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<stripe_types::card::Card>,
+    pub card: Option<stripe_types::PaymentMethodCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<stripe_types::card_present::CardPresent>,
+    pub card_present: Option<stripe_types::PaymentMethodCardPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<stripe_types::cashapp::Cashapp>,
+    pub cashapp: Option<stripe_types::PaymentMethodCashapp>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -37,29 +37,29 @@ pub struct PaymentMethod {
     /// The ID of the Customer to which this PaymentMethod is saved.
     ///
     /// This will not be set when the PaymentMethod has not been saved to a Customer.
-    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::Customer>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<stripe_types::customer_balance::CustomerBalance>,
+    pub customer_balance: Option<stripe_types::PaymentMethodCustomerBalance>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<stripe_types::eps::Eps>,
+    pub eps: Option<stripe_types::PaymentMethodEps>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<stripe_types::fpx::Fpx>,
+    pub fpx: Option<stripe_types::PaymentMethodFpx>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<stripe_types::giropay::Giropay>,
+    pub giropay: Option<stripe_types::PaymentMethodGiropay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<stripe_types::grabpay::Grabpay>,
+    pub grabpay: Option<stripe_types::PaymentMethodGrabpay>,
     /// Unique identifier for the object.
     pub id: stripe_types::payment_method::PaymentMethodId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<stripe_types::ideal::Ideal>,
+    pub ideal: Option<stripe_types::PaymentMethodIdeal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<stripe_types::interac_present::InteracPresent>,
+    pub interac_present: Option<stripe_types::PaymentMethodInteracPresent>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna: Option<stripe_types::klarna::Klarna>,
+    pub klarna: Option<stripe_types::PaymentMethodKlarna>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<stripe_types::konbini::Konbini>,
+    pub konbini: Option<stripe_types::PaymentMethodKonbini>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<stripe_types::link::Link>,
+    pub link: Option<stripe_types::PaymentMethodLink>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -71,23 +71,23 @@ pub struct PaymentMethod {
     /// Objects of the same type share the same value.
     pub object: PaymentMethodObject,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<stripe_types::oxxo::Oxxo>,
+    pub oxxo: Option<stripe_types::PaymentMethodOxxo>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<stripe_types::p24::P24>,
+    pub p24: Option<stripe_types::PaymentMethodP24>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<stripe_types::paynow::Paynow>,
+    pub paynow: Option<stripe_types::PaymentMethodPaynow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<stripe_types::paypal::Paypal>,
+    pub paypal: Option<stripe_types::PaymentMethodPaypal>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<stripe_types::pix::Pix>,
+    pub pix: Option<stripe_types::PaymentMethodPix>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<stripe_types::promptpay::Promptpay>,
+    pub promptpay: Option<stripe_types::PaymentMethodPromptpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub radar_options: Option<stripe_types::radar_options::RadarOptions>,
+    pub radar_options: Option<stripe_types::RadarRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<stripe_types::sepa_debit::SepaDebit>,
+    pub sepa_debit: Option<stripe_types::PaymentMethodSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<stripe_types::sofort::Sofort>,
+    pub sofort: Option<stripe_types::PaymentMethodSofort>,
     /// The type of the PaymentMethod.
     ///
     /// An additional hash is included on the PaymentMethod with a name matching this value.
@@ -95,16 +95,16 @@ pub struct PaymentMethod {
     #[serde(rename = "type")]
     pub type_: PaymentMethodType,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<stripe_types::us_bank_account::UsBankAccount>,
+    pub us_bank_account: Option<stripe_types::PaymentMethodUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<stripe_types::wechat_pay::WechatPay>,
+    pub wechat_pay: Option<stripe_types::PaymentMethodWechatPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<stripe_types::zip::Zip>,
+    pub zip: Option<stripe_types::PaymentMethodZip>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodObject {
     PaymentMethod,
 }
@@ -137,7 +137,13 @@ impl AsRef<str> for PaymentMethodObject {
 
 impl std::fmt::Display for PaymentMethodObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PaymentMethodObject {
@@ -152,15 +158,14 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
     }
 }
 /// The type of the PaymentMethod.
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodType {
     AcssDebit,
     Affirm,
@@ -289,7 +294,13 @@ impl AsRef<str> for PaymentMethodType {
 
 impl std::fmt::Display for PaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PaymentMethodType {
@@ -304,8 +315,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
     }
 }
 impl stripe_types::Object for PaymentMethod {

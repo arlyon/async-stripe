@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ApiVersion {
     V2011_01_01,
     V2011_06_21,
@@ -322,7 +322,13 @@ impl AsRef<str> for ApiVersion {
 
 impl std::fmt::Display for ApiVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ApiVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ApiVersion {

@@ -8,7 +8,7 @@ pub struct CancellationDetails {
     pub reason: Option<CancellationDetailsReason>,
 }
 /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancellationDetailsFeedback {
     CustomerService,
     LowQuality,
@@ -62,7 +62,13 @@ impl AsRef<str> for CancellationDetailsFeedback {
 
 impl std::fmt::Display for CancellationDetailsFeedback {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CancellationDetailsFeedback {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CancellationDetailsFeedback {
@@ -77,12 +83,11 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
     }
 }
 /// Why this subscription was cancelled.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancellationDetailsReason {
     CancellationRequested,
     PaymentDisputed,
@@ -121,7 +126,13 @@ impl AsRef<str> for CancellationDetailsReason {
 
 impl std::fmt::Display for CancellationDetailsReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CancellationDetailsReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CancellationDetailsReason {
@@ -136,7 +147,6 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsReason"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsReason"))
     }
 }

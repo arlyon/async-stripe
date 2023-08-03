@@ -1,46 +1,29 @@
 
 /// Returns a list of your plans.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPlan,
-) -> stripe::Response<stripe_types::List<stripe_types::plan::Plan>> {
+pub fn list(client: &stripe::Client, params: ListPlan) -> stripe::Response<stripe_types::List<stripe_types::Plan>> {
     client.get_query("/plans", params)
 }
 /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
 ///
 /// It replaces the Plans API and is backwards compatible to simplify your migration.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePlan,
-) -> stripe::Response<stripe_types::plan::Plan> {
+pub fn create(client: &stripe::Client, params: CreatePlan) -> stripe::Response<stripe_types::Plan> {
     client.send_form("/plans", params, http_types::Method::Post)
 }
 /// Retrieves the plan with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    plan: &stripe_types::plan::PlanId,
-    params: RetrievePlan,
-) -> stripe::Response<stripe_types::plan::Plan> {
+pub fn retrieve(client: &stripe::Client, plan: &stripe_types::plan::PlanId, params: RetrievePlan) -> stripe::Response<stripe_types::Plan> {
     client.get_query(&format!("/plans/{plan}", plan = plan), params)
 }
 /// Updates the specified plan by setting the values of the parameters passed.
 ///
 /// Any parameters not provided are left unchanged.
 /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-pub fn update(
-    client: &stripe::Client,
-    plan: &stripe_types::plan::PlanId,
-    params: UpdatePlan,
-) -> stripe::Response<stripe_types::plan::Plan> {
+pub fn update(client: &stripe::Client, plan: &stripe_types::plan::PlanId, params: UpdatePlan) -> stripe::Response<stripe_types::Plan> {
     client.send_form(&format!("/plans/{plan}", plan = plan), params, http_types::Method::Post)
 }
 /// Deleting plans means new subscribers can’t be added.
 ///
 /// Existing subscribers aren’t affected.
-pub fn delete(
-    client: &stripe::Client,
-    plan: &stripe_types::plan::PlanId,
-) -> stripe::Response<stripe_types::plan::DeletedPlan> {
+pub fn delete(client: &stripe::Client, plan: &stripe_types::plan::PlanId) -> stripe::Response<stripe_types::DeletedPlan> {
     client.send(&format!("/plans/{plan}", plan = plan), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -202,7 +185,7 @@ impl<'a> CreatePlan<'a> {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -244,7 +227,13 @@ impl AsRef<str> for CreatePlanAggregateUsage {
 
 impl std::fmt::Display for CreatePlanAggregateUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanAggregateUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanAggregateUsage {
@@ -260,7 +249,7 @@ impl serde::Serialize for CreatePlanAggregateUsage {
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanBillingScheme {
     PerUnit,
     Tiered,
@@ -296,7 +285,13 @@ impl AsRef<str> for CreatePlanBillingScheme {
 
 impl std::fmt::Display for CreatePlanBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanBillingScheme {
@@ -310,7 +305,7 @@ impl serde::Serialize for CreatePlanBillingScheme {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanInterval {
     Day,
     Month,
@@ -352,7 +347,13 @@ impl AsRef<str> for CreatePlanInterval {
 
 impl std::fmt::Display for CreatePlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanInterval {
@@ -364,7 +365,7 @@ impl serde::Serialize for CreatePlanInterval {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreatePlanProduct<'a> {
     InlineProductParams(CreatePlanInlineProductParams<'a>),
     Id(&'a str),
@@ -409,15 +410,7 @@ pub struct CreatePlanInlineProductParams<'a> {
 }
 impl<'a> CreatePlanInlineProductParams<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self {
-            active: Default::default(),
-            id: Default::default(),
-            metadata: Default::default(),
-            name,
-            statement_descriptor: Default::default(),
-            tax_code: Default::default(),
-            unit_label: Default::default(),
-        }
+        Self { active: Default::default(), id: Default::default(), metadata: Default::default(), name, statement_descriptor: Default::default(), tax_code: Default::default(), unit_label: Default::default() }
     }
 }
 /// Each element represents a pricing tier.
@@ -450,13 +443,7 @@ pub struct CreatePlanTiers<'a> {
 }
 impl<'a> CreatePlanTiers<'a> {
     pub fn new(up_to: CreatePlanTiersUpTo) -> Self {
-        Self {
-            flat_amount: Default::default(),
-            flat_amount_decimal: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-            up_to,
-        }
+        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -464,7 +451,7 @@ impl<'a> CreatePlanTiers<'a> {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreatePlanTiersUpTo {
     Inf,
     I64(i64),
@@ -472,7 +459,7 @@ pub enum CreatePlanTiersUpTo {
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanTiersMode {
     Graduated,
     Volume,
@@ -508,7 +495,13 @@ impl AsRef<str> for CreatePlanTiersMode {
 
 impl std::fmt::Display for CreatePlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanTiersMode {
@@ -535,7 +528,7 @@ impl CreatePlanTransformUsage {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanTransformUsageRound {
     Down,
     Up,
@@ -571,7 +564,13 @@ impl AsRef<str> for CreatePlanTransformUsageRound {
 
 impl std::fmt::Display for CreatePlanTransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanTransformUsageRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanTransformUsageRound {
@@ -588,7 +587,7 @@ impl serde::Serialize for CreatePlanTransformUsageRound {
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePlanUsageType {
     Licensed,
     Metered,
@@ -624,7 +623,13 @@ impl AsRef<str> for CreatePlanUsageType {
 
 impl std::fmt::Display for CreatePlanUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePlanUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePlanUsageType {

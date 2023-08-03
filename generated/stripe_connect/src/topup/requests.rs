@@ -1,51 +1,29 @@
 
 /// Top up the balance of an account.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateTopup,
-) -> stripe::Response<stripe_types::topup::Topup> {
+pub fn create(client: &stripe::Client, params: CreateTopup) -> stripe::Response<stripe_types::Topup> {
     client.send_form("/topups", params, http_types::Method::Post)
 }
 /// Returns a list of top-ups.
-pub fn list(
-    client: &stripe::Client,
-    params: ListTopup,
-) -> stripe::Response<stripe_types::List<stripe_types::topup::Topup>> {
+pub fn list(client: &stripe::Client, params: ListTopup) -> stripe::Response<stripe_types::List<stripe_types::Topup>> {
     client.get_query("/topups", params)
 }
 /// Retrieves the details of a top-up that has previously been created.
 ///
 /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-pub fn retrieve(
-    client: &stripe::Client,
-    topup: &stripe_types::topup::TopupId,
-    params: RetrieveTopup,
-) -> stripe::Response<stripe_types::topup::Topup> {
+pub fn retrieve(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: RetrieveTopup) -> stripe::Response<stripe_types::Topup> {
     client.get_query(&format!("/topups/{topup}", topup = topup), params)
 }
 /// Updates the metadata of a top-up.
 ///
 /// Other top-up details are not editable by design.
-pub fn update(
-    client: &stripe::Client,
-    topup: &stripe_types::topup::TopupId,
-    params: UpdateTopup,
-) -> stripe::Response<stripe_types::topup::Topup> {
+pub fn update(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: UpdateTopup) -> stripe::Response<stripe_types::Topup> {
     client.send_form(&format!("/topups/{topup}", topup = topup), params, http_types::Method::Post)
 }
 /// Cancels a top-up.
 ///
 /// Only pending top-ups can be canceled.
-pub fn cancel(
-    client: &stripe::Client,
-    topup: &stripe_types::topup::TopupId,
-    params: CancelTopup,
-) -> stripe::Response<stripe_types::topup::Topup> {
-    client.send_form(
-        &format!("/topups/{topup}/cancel", topup = topup),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: CancelTopup) -> stripe::Response<stripe_types::Topup> {
+    client.send_form(&format!("/topups/{topup}/cancel", topup = topup), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTopup<'a> {
@@ -87,16 +65,7 @@ pub struct CreateTopup<'a> {
 }
 impl<'a> CreateTopup<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self {
-            amount,
-            currency,
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            source: Default::default(),
-            statement_descriptor: Default::default(),
-            transfer_group: Default::default(),
-        }
+        Self { amount, currency, description: Default::default(), expand: Default::default(), metadata: Default::default(), source: Default::default(), statement_descriptor: Default::default(), transfer_group: Default::default() }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -143,7 +112,7 @@ impl<'a> ListTopup<'a> {
 /// Only return top-ups that have the given status.
 ///
 /// One of `canceled`, `failed`, `pending` or `succeeded`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListTopupStatus {
     Canceled,
     Failed,
@@ -185,7 +154,13 @@ impl AsRef<str> for ListTopupStatus {
 
 impl std::fmt::Display for ListTopupStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListTopupStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ListTopupStatus {

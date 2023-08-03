@@ -4,25 +4,13 @@ use indoc::formatdoc;
 
 use crate::crate_inference::Crate;
 
-const CORE_FEATURES: &[&str] = &[
-    "runtime-tokio-hyper",
-    "runtime-tokio-hyper-rustls",
-    "runtime-tokio-hyper-rustls-webpki",
-    "runtime-blocking",
-    "runtime-blocking-rustls",
-    "runtime-blocking-rustls-webpki",
-    "runtime-async-std-surf",
-];
+const CORE_FEATURES: &[&str] = &["runtime-tokio-hyper", "runtime-tokio-hyper-rustls", "runtime-tokio-hyper-rustls-webpki", "runtime-blocking", "runtime-blocking-rustls", "runtime-blocking-rustls-webpki", "runtime-async-std-surf"];
 
 pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>) -> String {
     let crate_name = krate.name();
     let mut crate_dep_section = String::new();
     for dep in crate_deps {
-        let dep_path = if dep == Crate::Types {
-            "../../stripe_types".into()
-        } else {
-            format!("../../generated/{}", dep.name())
-        };
+        let dep_path = if dep == Crate::Types { "../../stripe_types".into() } else { format!("../../generated/{}", dep.name()) };
         let _ = writeln!(crate_dep_section, r#"{} = {{path = "{}"}}"#, dep.name(), dep_path);
     }
     let mut feature_section = String::new();

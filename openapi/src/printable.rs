@@ -73,16 +73,7 @@ impl<'a> PrintableStructField<'a> {
                 skip_serializing = Some(skip);
             }
         }
-        Self {
-            doc_comment: field.doc_comment.as_deref(),
-            rename_as: field.rename_as.as_deref(),
-            deser_default,
-            skip_serializing,
-            field_name: &field.field_name,
-            rust_type: printable_type,
-            required: field.required,
-            vis: field.vis,
-        }
+        Self { doc_comment: field.doc_comment.as_deref(), rename_as: field.rename_as.as_deref(), deser_default, skip_serializing, field_name: &field.field_name, rust_type: printable_type, required: field.required, vis: field.vis }
     }
 }
 

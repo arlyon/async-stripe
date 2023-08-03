@@ -3,17 +3,11 @@
 ///
 /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
 /// to collect any required permissions to charge the payment method later.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
+pub fn create(client: &stripe::Client, params: CreateSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
     client.send_form("/setup_intents", params, http_types::Method::Post)
 }
 /// Returns a list of SetupIntents.
-pub fn list(
-    client: &stripe::Client,
-    params: ListSetupIntent,
-) -> stripe::Response<stripe_types::List<stripe_types::setup_intent::SetupIntent>> {
+pub fn list(client: &stripe::Client, params: ListSetupIntent) -> stripe::Response<stripe_types::List<stripe_types::SetupIntent>> {
     client.get_query("/setup_intents", params)
 }
 /// Retrieves the details of a SetupIntent that has previously been created.
@@ -21,66 +15,30 @@ pub fn list(
 /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
 /// When retrieved with a publishable key, only a subset of properties will be returned.
 /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-pub fn retrieve(
-    client: &stripe::Client,
-    intent: &stripe_types::setup_intent::SetupIntentId,
-    params: RetrieveSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
+pub fn retrieve(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: RetrieveSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
     client.get_query(&format!("/setup_intents/{intent}", intent = intent), params)
 }
 /// Updates a SetupIntent object.
-pub fn update(
-    client: &stripe::Client,
-    intent: &stripe_types::setup_intent::SetupIntentId,
-    params: UpdateSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
-    client.send_form(
-        &format!("/setup_intents/{intent}", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: UpdateSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
+    client.send_form(&format!("/setup_intents/{intent}", intent = intent), params, http_types::Method::Post)
 }
 /// Confirm that your customer intends to set up the current or
 /// provided payment method.
 ///
 /// For example, you would confirm a SetupIntent when a customer hits the “Save” button on a payment method management page on your website.  If the selected payment method does not require any additional steps from the customer, the SetupIntent will transition to the `succeeded` status.  Otherwise, it will transition to the `requires_action` status and suggest additional actions via `next_action`.
 /// If setup fails, the SetupIntent will transition to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
-pub fn confirm(
-    client: &stripe::Client,
-    intent: &stripe_types::setup_intent::SetupIntentId,
-    params: ConfirmSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
-    client.send_form(
-        &format!("/setup_intents/{intent}/confirm", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn confirm(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: ConfirmSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
+    client.send_form(&format!("/setup_intents/{intent}/confirm", intent = intent), params, http_types::Method::Post)
 }
 /// A SetupIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_confirmation`, or `requires_action`.
 ///
 /// Once canceled, setup is abandoned and any operations on the SetupIntent will fail with an error.
-pub fn cancel(
-    client: &stripe::Client,
-    intent: &stripe_types::setup_intent::SetupIntentId,
-    params: CancelSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
-    client.send_form(
-        &format!("/setup_intents/{intent}/cancel", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: CancelSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
+    client.send_form(&format!("/setup_intents/{intent}/cancel", intent = intent), params, http_types::Method::Post)
 }
 /// Verifies microdeposits on a SetupIntent object.
-pub fn verify_microdeposits(
-    client: &stripe::Client,
-    intent: &stripe_types::setup_intent::SetupIntentId,
-    params: VerifyMicrodepositsSetupIntent,
-) -> stripe::Response<stripe_types::setup_intent::SetupIntent> {
-    client.send_form(
-        &format!("/setup_intents/{intent}/verify_microdeposits", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn verify_microdeposits(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: VerifyMicrodepositsSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
+    client.send_form(&format!("/setup_intents/{intent}/verify_microdeposits", intent = intent), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSetupIntent<'a> {
@@ -200,7 +158,7 @@ impl CreateSetupIntentAutomaticPaymentMethods {
 /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
 ///
 /// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
     Always,
     Never,
@@ -236,7 +194,13 @@ impl AsRef<str> for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
 
 impl std::fmt::Display for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentAutomaticPaymentMethodsAllowRedirects {
@@ -280,12 +244,7 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance<'a> {
 }
 impl<'a> CreateSetupIntentMandateDataCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self {
-            accepted_at: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            type_,
-        }
+        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -527,7 +486,7 @@ impl CreateSetupIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -623,7 +582,13 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for CreateSetupIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentPaymentMethodDataFpxBank {
@@ -663,7 +628,7 @@ impl CreateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -735,7 +700,13 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for CreateSetupIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentPaymentMethodDataIdealBank {
@@ -791,7 +762,7 @@ impl CreateSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -896,7 +867,13 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for CreateSetupIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentPaymentMethodDataP24Bank {
@@ -943,7 +920,7 @@ impl CreateSetupIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -1063,7 +1040,13 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodDataType {
 
 impl std::fmt::Display for CreateSetupIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentPaymentMethodDataType {
@@ -1238,7 +1221,7 @@ impl CreateSetupIntentSingleUse {
 /// Indicates how the payment method is intended to be used in the future.
 ///
 /// If not provided, this value defaults to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentUsage {
     OffSession,
     OnSession,
@@ -1274,7 +1257,13 @@ impl AsRef<str> for CreateSetupIntentUsage {
 
 impl std::fmt::Display for CreateSetupIntentUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSetupIntentUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSetupIntentUsage {
@@ -1639,7 +1628,7 @@ impl UpdateSetupIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -1735,7 +1724,13 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateSetupIntentPaymentMethodDataFpxBank {
@@ -1775,7 +1770,7 @@ impl UpdateSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -1847,7 +1842,13 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateSetupIntentPaymentMethodDataIdealBank {
@@ -1903,7 +1904,7 @@ impl UpdateSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -2008,7 +2009,13 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateSetupIntentPaymentMethodDataP24Bank {
@@ -2055,7 +2062,7 @@ impl UpdateSetupIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -2175,7 +2182,13 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodDataType {
 
 impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateSetupIntentPaymentMethodDataType {
@@ -2362,7 +2375,7 @@ impl<'a> ConfirmSetupIntent<'a> {
 }
 /// This hash contains details about the Mandate to create.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum ConfirmSetupIntentMandateData<'a> {
     SecretKeyParam(ConfirmSetupIntentSecretKeyParam<'a>),
     ClientKeyParam(ConfirmSetupIntentClientKeyParam<'a>),
@@ -2374,9 +2387,7 @@ pub struct ConfirmSetupIntentSecretKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentSecretKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -2400,12 +2411,7 @@ pub struct ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
 }
 impl<'a> ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self {
-            accepted_at: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            type_,
-        }
+        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -2423,9 +2429,7 @@ pub struct ConfirmSetupIntentClientKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentClientKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -2439,10 +2443,7 @@ pub struct ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
     pub type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
-    pub fn new(
-        online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>,
-        type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
-    ) -> Self {
+    pub fn new(online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>, type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType) -> Self {
         Self { online, type_ }
     }
 }
@@ -2462,7 +2463,7 @@ impl<'a> ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a> {
     }
 }
 /// The type of customer acceptance information included with the Mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentClientKeyParamCustomerAcceptanceType {
     Online,
 }
@@ -2495,7 +2496,13 @@ impl AsRef<str> for ConfirmSetupIntentClientKeyParamCustomerAcceptanceType {
 
 impl std::fmt::Display for ConfirmSetupIntentClientKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentClientKeyParamCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmSetupIntentClientKeyParamCustomerAcceptanceType {
@@ -2737,7 +2744,7 @@ impl ConfirmSetupIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -2833,7 +2840,13 @@ impl AsRef<str> for ConfirmSetupIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for ConfirmSetupIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataFpxBank {
@@ -2873,7 +2886,7 @@ impl ConfirmSetupIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -2945,7 +2958,13 @@ impl AsRef<str> for ConfirmSetupIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for ConfirmSetupIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataIdealBank {
@@ -3001,7 +3020,7 @@ impl ConfirmSetupIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -3106,7 +3125,13 @@ impl AsRef<str> for ConfirmSetupIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for ConfirmSetupIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataP24Bank {
@@ -3153,7 +3178,7 @@ impl ConfirmSetupIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -3273,7 +3298,13 @@ impl AsRef<str> for ConfirmSetupIntentPaymentMethodDataType {
 
 impl std::fmt::Display for ConfirmSetupIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataType {
@@ -3445,7 +3476,7 @@ impl<'a> CancelSetupIntent<'a> {
 /// Reason for canceling this SetupIntent.
 ///
 /// Possible values are `abandoned`, `requested_by_customer`, or `duplicate`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancelSetupIntentCancellationReason {
     Abandoned,
     Duplicate,
@@ -3484,7 +3515,13 @@ impl AsRef<str> for CancelSetupIntentCancellationReason {
 
 impl std::fmt::Display for CancelSetupIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CancelSetupIntentCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CancelSetupIntentCancellationReason {
@@ -3512,7 +3549,7 @@ impl<'a> VerifyMicrodepositsSetupIntent<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FlowDirections {
     Inbound,
     Outbound,
@@ -3548,7 +3585,13 @@ impl AsRef<str> for FlowDirections {
 
 impl std::fmt::Display for FlowDirections {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FlowDirections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FlowDirections {
@@ -3571,7 +3614,7 @@ impl<'a> OnlineParam<'a> {
         Self { ip_address, user_agent }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     Offline,
     Online,
@@ -3607,7 +3650,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {
@@ -3628,11 +3677,7 @@ pub struct PaymentMethodParam<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> PaymentMethodParam<'a> {
-    pub fn new(
-        account_number: &'a str,
-        institution_number: &'a str,
-        transit_number: &'a str,
-    ) -> Self {
+    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -3700,7 +3745,7 @@ impl<'a> Boleto<'a> {
         Self { tax_id }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Bank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -3814,7 +3859,13 @@ impl AsRef<str> for Bank {
 
 impl std::fmt::Display for Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Bank {
@@ -3825,7 +3876,7 @@ impl serde::Serialize for Bank {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountHolderType {
     Company,
     Individual,
@@ -3861,7 +3912,13 @@ impl AsRef<str> for AccountHolderType {
 
 impl std::fmt::Display for AccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountHolderType {
@@ -3907,7 +3964,7 @@ impl<'a> SepaDebit<'a> {
         Self { iban }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Country {
     At,
     Be,
@@ -3955,7 +4012,13 @@ impl AsRef<str> for Country {
 
 impl std::fmt::Display for Country {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Country {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Country {
@@ -3966,7 +4029,7 @@ impl serde::Serialize for Country {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountType {
     Checking,
     Savings,
@@ -4002,7 +4065,13 @@ impl AsRef<str> for AccountType {
 
 impl std::fmt::Display for AccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountType {
@@ -4013,7 +4082,7 @@ impl serde::Serialize for AccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Currency {
     Cad,
     Usd,
@@ -4049,7 +4118,13 @@ impl AsRef<str> for Currency {
 
 impl std::fmt::Display for Currency {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Currency {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Currency {
@@ -4060,7 +4135,7 @@ impl serde::Serialize for Currency {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DefaultFor {
     Invoice,
     Subscription,
@@ -4096,7 +4171,13 @@ impl AsRef<str> for DefaultFor {
 
 impl std::fmt::Display for DefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DefaultFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for DefaultFor {
@@ -4107,7 +4188,7 @@ impl serde::Serialize for DefaultFor {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentSchedule {
     Combined,
     Interval,
@@ -4146,7 +4227,13 @@ impl AsRef<str> for PaymentSchedule {
 
 impl std::fmt::Display for PaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PaymentSchedule {
@@ -4157,7 +4244,7 @@ impl serde::Serialize for PaymentSchedule {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TransactionType {
     Business,
     Personal,
@@ -4193,7 +4280,13 @@ impl AsRef<str> for TransactionType {
 
 impl std::fmt::Display for TransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TransactionType {
@@ -4204,7 +4297,7 @@ impl serde::Serialize for TransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum VerificationMethod {
     Automatic,
     Instant,
@@ -4243,7 +4336,13 @@ impl AsRef<str> for VerificationMethod {
 
 impl std::fmt::Display for VerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for VerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for VerificationMethod {
@@ -4267,7 +4366,7 @@ impl<'a> SetupIntentPaymentMethodOptionsParam<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AmountType {
     Fixed,
     Maximum,
@@ -4303,7 +4402,13 @@ impl AsRef<str> for AmountType {
 
 impl std::fmt::Display for AmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AmountType {
@@ -4314,7 +4419,7 @@ impl serde::Serialize for AmountType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Day,
     Month,
@@ -4359,7 +4464,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -4370,7 +4481,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SupportedTypes {
     India,
 }
@@ -4403,7 +4514,13 @@ impl AsRef<str> for SupportedTypes {
 
 impl std::fmt::Display for SupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SupportedTypes {
@@ -4414,7 +4531,7 @@ impl serde::Serialize for SupportedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Network {
     Amex,
     CartesBancaires,
@@ -4477,7 +4594,13 @@ impl AsRef<str> for Network {
 
 impl std::fmt::Display for Network {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Network {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Network {
@@ -4488,7 +4611,7 @@ impl serde::Serialize for Network {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RequestThreeDSecure {
     Any,
     Automatic,
@@ -4524,7 +4647,13 @@ impl AsRef<str> for RequestThreeDSecure {
 
 impl std::fmt::Display for RequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RequestThreeDSecure {
@@ -4548,7 +4677,7 @@ impl<'a> PaymentMethodOptionsParam<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Permissions {
     Balances,
     Ownership,
@@ -4590,7 +4719,13 @@ impl AsRef<str> for Permissions {
 
 impl std::fmt::Display for Permissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Permissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Permissions {
@@ -4601,7 +4736,7 @@ impl serde::Serialize for Permissions {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Requested {
     Ach,
     UsDomesticWire,
@@ -4637,7 +4772,13 @@ impl AsRef<str> for Requested {
 
 impl std::fmt::Display for Requested {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Requested {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Requested {
@@ -4774,26 +4915,8 @@ pub struct SetupIntentMandateOptionsParam<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> SetupIntentMandateOptionsParam<'a> {
-    pub fn new(
-        amount: i64,
-        amount_type: AmountType,
-        currency: stripe_types::Currency,
-        interval: Interval,
-        reference: &'a str,
-        start_date: stripe_types::Timestamp,
-    ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            currency,
-            description: Default::default(),
-            end_date: Default::default(),
-            interval,
-            interval_count: Default::default(),
-            reference,
-            start_date,
-            supported_types: Default::default(),
-        }
+    pub fn new(amount: i64, amount_type: AmountType, currency: stripe_types::Currency, interval: Interval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
+        Self { amount, amount_type, currency, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

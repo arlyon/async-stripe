@@ -9,19 +9,19 @@
 pub struct Account {
     /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_profile: Option<stripe_types::business_profile::BusinessProfile>,
+    pub business_profile: Option<stripe_types::AccountBusinessProfile>,
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<AccountBusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<stripe_types::capabilities::Capabilities>,
+    pub capabilities: Option<stripe_types::AccountCapabilities>,
     /// Whether the account can create live charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charges_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<stripe_types::company::Company>,
+    pub company: Option<stripe_types::LegalEntityCompany>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub controller: Option<stripe_types::controller::Controller>,
+    pub controller: Option<stripe_types::AccountUnificationAccountController>,
     /// The account's country.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
@@ -47,13 +47,13 @@ pub struct Account {
     pub email: Option<String>,
     /// External accounts (bank accounts and debit cards) currently attached to this account.
     #[serde(default)]
-    pub external_accounts: stripe_types::List<stripe_types::external_account::ExternalAccount>,
+    pub external_accounts: stripe_types::List<stripe_types::ExternalAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<stripe_types::future_requirements::FutureRequirements>,
+    pub future_requirements: Option<stripe_types::AccountFutureRequirements>,
     /// Unique identifier for the object.
     pub id: stripe_types::account::AccountId,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<stripe_types::person::Person>,
+    pub individual: Option<stripe_types::Person>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -67,12 +67,12 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts_enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<stripe_types::requirements::Requirements>,
+    pub requirements: Option<stripe_types::AccountRequirements>,
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<stripe_types::settings::Settings>,
+    pub settings: Option<stripe_types::AccountSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_acceptance: Option<stripe_types::tos_acceptance::TosAcceptance>,
+    pub tos_acceptance: Option<stripe_types::AccountTosAcceptance>,
     /// The Stripe account type.
     ///
     /// Can be `standard`, `express`, or `custom`.
@@ -81,7 +81,7 @@ pub struct Account {
     pub type_: Option<AccountType>,
 }
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountBusinessType {
     Company,
     GovernmentEntity,
@@ -123,7 +123,13 @@ impl AsRef<str> for AccountBusinessType {
 
 impl std::fmt::Display for AccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountBusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountBusinessType {
@@ -138,14 +144,13 @@ impl<'de> serde::Deserialize<'de> for AccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
     }
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountObject {
     Account,
 }
@@ -178,7 +183,13 @@ impl AsRef<str> for AccountObject {
 
 impl std::fmt::Display for AccountObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountObject {
@@ -199,7 +210,7 @@ impl<'de> serde::Deserialize<'de> for AccountObject {
 /// The Stripe account type.
 ///
 /// Can be `standard`, `express`, or `custom`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountType {
     Custom,
     Express,
@@ -238,7 +249,13 @@ impl AsRef<str> for AccountType {
 
 impl std::fmt::Display for AccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountType {
@@ -263,5 +280,3 @@ impl stripe_types::Object for Account {
     }
 }
 stripe_types::def_id!(AccountId, "acct_");
-pub mod deleted;
-pub use deleted::DeletedAccount;

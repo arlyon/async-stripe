@@ -141,21 +141,11 @@ impl RustType {
     }
 
     pub fn component_path(path: ComponentPath) -> Self {
-        Self::Path {
-            path: PathToType::Component(path),
-            has_reference: false,
-            is_ref: false,
-            is_copy: false,
-        }
+        Self::Path { path: PathToType::Component(path), has_reference: false, is_ref: false, is_copy: false }
     }
 
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
-        Self::Path {
-            path: PathToType::ObjectId(id_path),
-            is_ref,
-            is_copy: false,
-            has_reference: false,
-        }
+        Self::Path { path: PathToType::ObjectId(id_path), is_ref, is_copy: false, has_reference: false }
     }
 
     pub fn into_nullable(self) -> Self {
@@ -194,9 +184,7 @@ impl RustType {
 
     pub fn as_deser_default(&self) -> Option<DeserDefault> {
         match self {
-            Self::Simple(SimpleType::Bool)
-            | Self::Container(Container::Vec(_))
-            | Self::Container(Container::List(_)) => Some(DeserDefault::Default),
+            Self::Simple(SimpleType::Bool) | Self::Container(Container::Vec(_)) | Self::Container(Container::List(_)) => Some(DeserDefault::Default),
             _ => None,
         }
     }

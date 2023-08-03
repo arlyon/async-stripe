@@ -7,6 +7,8 @@ mod pagination;
 pub mod params;
 
 pub use currency::Currency;
+pub use generated::account::AccountId;
+pub use generated::application::ApplicationId;
 pub use generated::*;
 pub use ids::*;
 pub use pagination::*;

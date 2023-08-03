@@ -9,7 +9,7 @@
 pub struct BankAccount {
     /// The ID of the account that the bank account is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<stripe_types::Expandable<stripe_types::account::Account>>,
+    pub account: Option<stripe_types::Expandable<stripe_types::Account>>,
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: Option<String>,
     /// The type of entity that holds the account.
@@ -34,7 +34,7 @@ pub struct BankAccount {
     pub currency: stripe_types::Currency,
     /// The ID of the customer that the bank account is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::Customer>>,
     /// Whether this bank account is the default external account for its currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_for_currency: Option<bool>,
@@ -44,8 +44,7 @@ pub struct BankAccount {
     pub fingerprint: Option<String>,
     /// Information about upcoming new requirements for the bank account, including what information needs to be collected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements:
-        Option<stripe_types::external_account_requirements::ExternalAccountRequirements>,
+    pub future_requirements: Option<stripe_types::ExternalAccountRequirements>,
     /// Unique identifier for the object.
     pub id: stripe_types::bank_account::BankAccountId,
     /// The last four digits of the bank account number.
@@ -61,8 +60,7 @@ pub struct BankAccount {
     pub object: BankAccountObject,
     /// Information about the requirements for the bank account, including what information needs to be collected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements:
-        Option<stripe_types::external_account_requirements::ExternalAccountRequirements>,
+    pub requirements: Option<stripe_types::ExternalAccountRequirements>,
     /// The routing transit number for the bank account.
     pub routing_number: Option<String>,
     /// For bank accounts, possible values are `new`, `validated`, `verified`, `verification_failed`, or `errored`.
@@ -82,7 +80,7 @@ pub struct BankAccount {
 /// A set of available payout methods for this bank account.
 ///
 /// Only values from this set should be passed as the `method` when creating a payout.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BankAccountAvailablePayoutMethods {
     Instant,
     Standard,
@@ -118,7 +116,13 @@ impl AsRef<str> for BankAccountAvailablePayoutMethods {
 
 impl std::fmt::Display for BankAccountAvailablePayoutMethods {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BankAccountAvailablePayoutMethods {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BankAccountAvailablePayoutMethods {
@@ -133,15 +137,13 @@ impl<'de> serde::Deserialize<'de> for BankAccountAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BankAccountAvailablePayoutMethods")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankAccountAvailablePayoutMethods"))
     }
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BankAccountObject {
     BankAccount,
 }
@@ -174,7 +176,13 @@ impl AsRef<str> for BankAccountObject {
 
 impl std::fmt::Display for BankAccountObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BankAccountObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BankAccountObject {
@@ -189,8 +197,7 @@ impl<'de> serde::Deserialize<'de> for BankAccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BankAccountObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankAccountObject"))
     }
 }
 impl stripe_types::Object for BankAccount {
@@ -200,5 +207,3 @@ impl stripe_types::Object for BankAccount {
     }
 }
 stripe_types::def_id!(BankAccountId, "ba_" | "card_");
-pub mod deleted;
-pub use deleted::DeletedBankAccount;

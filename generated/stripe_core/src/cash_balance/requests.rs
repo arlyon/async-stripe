@@ -1,23 +1,11 @@
 
 /// Retrieves a customer’s cash balance.
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: RetrieveCashBalance,
-) -> stripe::Response<stripe_types::cash_balance::CashBalance> {
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: RetrieveCashBalance) -> stripe::Response<stripe_types::CashBalance> {
     client.get_query(&format!("/customers/{customer}/cash_balance", customer = customer), params)
 }
 /// Changes the settings on a customer’s cash balance.
-pub fn update(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: UpdateCashBalance,
-) -> stripe::Response<stripe_types::cash_balance::CashBalance> {
-    client.send_form(
-        &format!("/customers/{customer}/cash_balance", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: UpdateCashBalance) -> stripe::Response<stripe_types::CashBalance> {
+    client.send_form(&format!("/customers/{customer}/cash_balance", customer = customer), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCashBalance<'a> {
@@ -63,7 +51,7 @@ impl UpdateCashBalanceSettings {
 ///
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
@@ -102,7 +90,13 @@ impl AsRef<str> for UpdateCashBalanceSettingsReconciliationMode {
 
 impl std::fmt::Display for UpdateCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {

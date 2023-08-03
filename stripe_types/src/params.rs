@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use serde::{Deserializer, Serialize, Serializer};
 
-use crate::{AccountId, ApiVersion, ApplicationId};
+use crate::account::AccountId;
+use crate::application::ApplicationId;
+use crate::ApiVersion;
 
 #[derive(Clone, Default)]
 pub struct AppInfo {
@@ -62,12 +64,7 @@ pub struct Headers {
 
 impl Headers {
     pub fn to_array(&self) -> [(&str, Option<&str>); 4] {
-        [
-            ("Client-Id", self.client_id.as_deref()),
-            ("Stripe-Account", self.stripe_account.as_deref()),
-            ("Stripe-Version", Some(self.stripe_version.as_str())),
-            ("User-Agent", Some(&self.user_agent)),
-        ]
+        [("Client-Id", self.client_id.as_deref()), ("Stripe-Account", self.stripe_account.as_deref()), ("Stripe-Version", Some(self.stripe_version.as_str())), ("User-Agent", Some(&self.user_agent))]
     }
 }
 
@@ -261,12 +258,7 @@ mod tests {
     fn serialize_range_query() {
         use stripe::{ListCustomers, RangeBounds, RangeQuery};
 
-        let query = RangeQuery::Bounds(RangeBounds {
-            gt: None,
-            gte: Some(1501598702),
-            lt: Some(1504233902),
-            lte: None,
-        });
+        let query = RangeQuery::Bounds(RangeBounds { gt: None, gte: Some(1501598702), lt: Some(1504233902), lte: None });
         assert_eq!(urldecode(serde_qs::to_string(&query).unwrap()), "gte=1501598702&lt=1504233902");
 
         let mut params = ListCustomers::new();
@@ -277,10 +269,7 @@ mod tests {
         let mut params = ListCustomers::new();
         params.created = Some(RangeQuery::gte(1501598702));
         params.limit = Some(3);
-        assert_eq!(
-            urldecode(serde_qs::to_string(&params).unwrap()),
-            "created[gte]=1501598702&limit=3"
-        );
+        assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created[gte]=1501598702&limit=3");
 
         let mut params = ListCustomers::new();
         params.created = Some(query);
@@ -297,18 +286,8 @@ mod tests {
     fn deserialize_payment_source_params() {
         use stripe::{PaymentSourceParams, SourceId, TokenId};
 
-        let examples = [
-            (
-                json!("src_xyzABC123"),
-                Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap())),
-            ),
-            (
-                json!("tok_189g322eZvKYlo2CeoPw2sdy"),
-                Some(PaymentSourceParams::Token(
-                    "tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap(),
-                )),
-            ),
-        ];
+        let examples =
+            [(json!("src_xyzABC123"), Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))), (json!("tok_189g322eZvKYlo2CeoPw2sdy"), Some(PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap())))];
 
         for (value, expected) in &examples {
             let input = serde_json::to_string(value).unwrap();
@@ -321,18 +300,7 @@ mod tests {
     fn serialize_payment_source_params() {
         use stripe::{PaymentSourceParams, SourceId, TokenId};
 
-        let examples = [
-            (
-                PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()),
-                json!("src_xyzABC123"),
-            ),
-            (
-                PaymentSourceParams::Token(
-                    "tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap(),
-                ),
-                json!("tok_189g322eZvKYlo2CeoPw2sdy"),
-            ),
-        ];
+        let examples = [(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()), json!("src_xyzABC123")), (PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()), json!("tok_189g322eZvKYlo2CeoPw2sdy"))];
 
         for (params, expected) in &examples {
             let value = serde_json::to_value(params).unwrap();

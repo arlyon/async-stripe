@@ -9,8 +9,7 @@ pub struct Topup {
     /// ID of the balance transaction that describes the impact of this top-up on your account balance.
     ///
     /// May not be specified depending on status of top-up.
-    pub balance_transaction:
-        Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
+    pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -47,7 +46,7 @@ pub struct Topup {
     /// For most Stripe users, the source of every top-up is a bank account.
     ///
     /// This hash is then the [source object](https://stripe.com/docs/api#source_object) describing that bank account.
-    pub source: Option<stripe_types::source::Source>,
+    pub source: Option<stripe_types::Source>,
     /// Extra information about a top-up.
     ///
     /// This will appear on your source's bank statement.
@@ -61,7 +60,7 @@ pub struct Topup {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TopupObject {
     Topup,
 }
@@ -94,7 +93,13 @@ impl AsRef<str> for TopupObject {
 
 impl std::fmt::Display for TopupObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TopupObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TopupObject {
@@ -113,7 +118,7 @@ impl<'de> serde::Deserialize<'de> for TopupObject {
     }
 }
 /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TopupStatus {
     Canceled,
     Failed,
@@ -158,7 +163,13 @@ impl AsRef<str> for TopupStatus {
 
 impl std::fmt::Display for TopupStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TopupStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TopupStatus {

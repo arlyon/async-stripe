@@ -5,10 +5,7 @@
 /// Under normal operating conditions, data is searchable in less than a minute.
 /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
 /// Search functionality is not available to merchants in India.
-pub fn search(
-    client: &stripe::Client,
-    params: SearchPaymentIntent,
-) -> stripe::Response<SearchReturned> {
+pub fn search(client: &stripe::Client, params: SearchPaymentIntent) -> stripe::Response<SearchReturned> {
     client.get_query("/payment_intents/search", params)
 }
 /// Creates a PaymentIntent object.
@@ -18,17 +15,11 @@ pub fn search(
 ///
 /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
 /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
+pub fn create(client: &stripe::Client, params: CreatePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
     client.send_form("/payment_intents", params, http_types::Method::Post)
 }
 /// Returns a list of PaymentIntents.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPaymentIntent,
-) -> stripe::Response<stripe_types::List<stripe_types::payment_intent::PaymentIntent>> {
+pub fn list(client: &stripe::Client, params: ListPaymentIntent) -> stripe::Response<stripe_types::List<stripe_types::PaymentIntent>> {
     client.get_query("/payment_intents", params)
 }
 /// Retrieves the details of a PaymentIntent that has previously been created.
@@ -36,11 +27,7 @@ pub fn list(
 /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
 /// When retrieved with a publishable key, only a subset of properties will be returned.
 /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-pub fn retrieve(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: RetrievePaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
+pub fn retrieve(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: RetrievePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
     client.get_query(&format!("/payment_intents/{intent}", intent = intent), params)
 }
 /// Updates properties on a PaymentIntent object without confirming.
@@ -50,16 +37,8 @@ pub fn retrieve(
 ///
 /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
 /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-pub fn update(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: UpdatePaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: UpdatePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}", intent = intent), params, http_types::Method::Post)
 }
 /// Confirm that your customer intends to pay with current or provided
 /// payment method.
@@ -69,16 +48,8 @@ pub fn update(
 /// If payment succeeds, the PaymentIntent will transition to the `succeeded` status (or `requires_capture`, if `capture_method` is set to `manual`). If the `confirmation_method` is `automatic`, payment may be attempted using our [client SDKs](https://stripe.com/docs/stripe-js/reference#stripe-handle-card-payment) and the PaymentIntent’s [client_secret](https://stripe.com/docs/api#payment_intent_object-client_secret). After `next_action`s are handled by the client, no additional confirmation is required to complete the payment. If the `confirmation_method` is `manual`, all payment attempts must be initiated using a secret key. If any actions are required for the payment, the PaymentIntent will return to the `requires_confirmation` state after those actions are completed.
 /// Your server needs to then explicitly re-confirm the PaymentIntent to initiate the next payment attempt.
 /// Read the [expanded documentation](https://stripe.com/docs/payments/payment-intents/web-manual) to learn more about manual confirmation.
-pub fn confirm(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: ConfirmPaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/confirm", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn confirm(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: ConfirmPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/confirm", intent = intent), params, http_types::Method::Post)
 }
 /// A PaymentIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` or, [in rare cases](https://stripe.com/docs/payments/intents), `processing`.
 ///
@@ -86,32 +57,16 @@ pub fn confirm(
 /// For PaymentIntents with a `status` of `requires_capture`, the remaining `amount_capturable` will automatically be refunded.
 /// You cannot cancel the PaymentIntent for a Checkout Session.
 /// [Expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
-pub fn cancel(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: CancelPaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/cancel", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: CancelPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/cancel", intent = intent), params, http_types::Method::Post)
 }
 /// Capture the funds of an existing uncaptured PaymentIntent when its status is `requires_capture`.
 ///
 /// Uncaptured PaymentIntents will be canceled a set number of days after they are created (7 by default).
 ///
 /// Learn more about [separate authorization and capture](https://stripe.com/docs/payments/capture-later).
-pub fn capture(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: CapturePaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/capture", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn capture(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: CapturePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/capture", intent = intent), params, http_types::Method::Post)
 }
 /// Perform an incremental authorization on an eligible
 /// [PaymentIntent](https://stripe.com/docs/api/payment_intents/object).
@@ -120,44 +75,20 @@ pub fn capture(
 /// As with the initial authorization, incremental authorizations may be declined.
 /// A single PaymentIntent can call this endpoint multiple times to further increase the authorized amount.  If the incremental authorization succeeds, the PaymentIntent object is returned with the updated [amount](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-amount). If the incremental authorization fails, a [card_declined](https://stripe.com/docs/error-codes#card-declined) error is returned, and no fields on the PaymentIntent or Charge are updated.
 /// The PaymentIntent object remains capturable for the previously authorized amount.  Each PaymentIntent can have a maximum of 10 incremental authorization attempts, including declines. Once captured, a PaymentIntent can no longer be incremented.  Learn more about [incremental authorizations](https://stripe.com/docs/terminal/features/incremental-authorizations).
-pub fn increment_authorization(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: IncrementAuthorizationPaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/increment_authorization", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn increment_authorization(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: IncrementAuthorizationPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/increment_authorization", intent = intent), params, http_types::Method::Post)
 }
 /// Verifies microdeposits on a PaymentIntent object.
-pub fn verify_microdeposits(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: VerifyMicrodepositsPaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/verify_microdeposits", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn verify_microdeposits(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: VerifyMicrodepositsPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/verify_microdeposits", intent = intent), params, http_types::Method::Post)
 }
 /// Manually reconcile the remaining amount for a customer_balance PaymentIntent.
-pub fn apply_customer_balance(
-    client: &stripe::Client,
-    intent: &stripe_types::payment_intent::PaymentIntentId,
-    params: ApplyCustomerBalancePaymentIntent,
-) -> stripe::Response<stripe_types::payment_intent::PaymentIntent> {
-    client.send_form(
-        &format!("/payment_intents/{intent}/apply_customer_balance", intent = intent),
-        params,
-        http_types::Method::Post,
-    )
+pub fn apply_customer_balance(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: ApplyCustomerBalancePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
+    client.send_form(&format!("/payment_intents/{intent}/apply_customer_balance", intent = intent), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
-    pub data: Vec<stripe_types::payment_intent::PaymentIntent>,
+    pub data: Vec<stripe_types::PaymentIntent>,
     pub has_more: bool,
     pub next_page: Option<String>,
     /// String representing the object's type.
@@ -172,7 +103,7 @@ pub struct SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -205,7 +136,13 @@ impl AsRef<str> for SearchReturnedObject {
 
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SearchReturnedObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SearchReturnedObject {
@@ -220,8 +157,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -247,12 +183,7 @@ pub struct SearchPaymentIntent<'a> {
 }
 impl<'a> SearchPaymentIntent<'a> {
     pub fn new(query: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            limit: Default::default(),
-            page: Default::default(),
-            query,
-        }
+        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -467,7 +398,7 @@ impl CreatePaymentIntentAutomaticPaymentMethods {
 /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
 ///
 /// To [confirm](https://stripe.com/docs/api/payment_intents/confirm) this PaymentIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the payment.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
     Always,
     Never,
@@ -503,7 +434,13 @@ impl AsRef<str> for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
 
 impl std::fmt::Display for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
@@ -514,7 +451,7 @@ impl serde::Serialize for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirec
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentConfirmationMethod {
     Automatic,
     Manual,
@@ -550,7 +487,13 @@ impl AsRef<str> for CreatePaymentIntentConfirmationMethod {
 
 impl std::fmt::Display for CreatePaymentIntentConfirmationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentConfirmationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentConfirmationMethod {
@@ -594,12 +537,7 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance<'a> {
 }
 impl<'a> CreatePaymentIntentMandateDataCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self {
-            accepted_at: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            type_,
-        }
+        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -842,7 +780,7 @@ impl CreatePaymentIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -938,7 +876,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxBank {
@@ -978,7 +922,7 @@ impl CreatePaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -1050,7 +994,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataIdealBank {
@@ -1106,7 +1056,7 @@ impl CreatePaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -1211,7 +1161,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataP24Bank {
@@ -1258,7 +1214,7 @@ impl CreatePaymentIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -1378,7 +1334,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataType {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataType {
@@ -1592,7 +1554,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsAffirm<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -1625,7 +1587,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -1641,7 +1609,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMe
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -1674,7 +1642,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -1694,8 +1668,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method:
-        Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -1708,8 +1681,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -1721,7 +1693,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -1754,7 +1726,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptu
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -1770,7 +1748,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpa
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -1803,7 +1781,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetup
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -1835,7 +1819,7 @@ impl CreatePaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -1871,7 +1855,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -1926,8 +1916,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl CreatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -1939,7 +1928,7 @@ impl CreatePaymentIntentPaymentMethodOptionsBancontact {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -1975,7 +1964,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFuture
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -2083,7 +2078,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -2116,7 +2111,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -2161,16 +2162,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(
-        count: u64,
-        interval: Interval,
-        type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
-    ) -> Self {
+    pub fn new(count: u64, interval: Interval, type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
         Self { count, interval, type_ }
     }
 }
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -2203,7 +2200,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanT
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -2257,30 +2260,14 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(
-        amount: i64,
-        amount_type: AmountType,
-        interval: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
-        reference: &'a str,
-        start_date: stripe_types::Timestamp,
-    ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            description: Default::default(),
-            end_date: Default::default(),
-            interval,
-            interval_count: Default::default(),
-            reference,
-            start_date,
-            supported_types: Default::default(),
-        }
+    pub fn new(amount: i64, amount_type: AmountType, interval: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
+        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
     }
 }
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -2325,7 +2312,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInt
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -2364,7 +2357,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCashapp {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     Manual,
 }
@@ -2397,7 +2390,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod 
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -2413,8 +2412,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappCaptureM
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -2426,8 +2424,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -2450,18 +2447,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
+    pub fn new(type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
+        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -2506,7 +2497,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTr
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -2522,7 +2519,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalance
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -2555,7 +2552,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupF
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -2587,7 +2590,7 @@ impl CreatePaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -2620,7 +2623,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -2652,7 +2661,7 @@ impl CreatePaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -2685,7 +2694,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -2717,7 +2732,7 @@ impl CreatePaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -2750,7 +2765,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsa
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -2782,7 +2803,7 @@ impl CreatePaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -2815,7 +2836,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsa
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -2847,7 +2874,7 @@ impl CreatePaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -2883,7 +2910,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -2933,7 +2966,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -2966,7 +2999,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -2982,7 +3021,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMe
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -3015,7 +3054,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -3067,7 +3112,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -3100,7 +3145,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsa
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -3142,7 +3193,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -3175,7 +3226,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -3191,7 +3248,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMeth
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -3227,7 +3284,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage 
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -3264,7 +3327,7 @@ impl CreatePaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -3297,7 +3360,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage 
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -3332,7 +3401,7 @@ impl CreatePaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -3365,7 +3434,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -3397,7 +3472,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -3430,7 +3505,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -3472,7 +3553,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsPaypal<'a> {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     Manual,
 }
@@ -3505,7 +3586,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -3517,7 +3604,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMe
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     CsMinusCz,
     DaMinusDk,
@@ -3610,7 +3697,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -3626,7 +3719,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalPreferred
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     None,
     OffSession,
@@ -3662,7 +3755,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -3704,7 +3803,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -3737,7 +3836,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -3757,8 +3862,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl CreatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -3770,7 +3874,7 @@ impl CreatePaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -3803,7 +3907,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureU
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -3861,7 +3971,7 @@ impl CreatePaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -3912,7 +4022,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLangua
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -3928,7 +4044,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortPreferred
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -3964,7 +4080,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsag
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -4016,8 +4138,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -4029,7 +4150,7 @@ impl<'a> CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -4062,7 +4183,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureU
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -4094,7 +4221,7 @@ impl CreatePaymentIntentPaymentMethodOptionsZip {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     None,
 }
@@ -4127,7 +4254,13 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -4143,7 +4276,7 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureU
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -4179,7 +4312,13 @@ impl AsRef<str> for CreatePaymentIntentSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentIntentSetupFutureUsage {
@@ -4604,7 +4743,7 @@ impl UpdatePaymentIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -4700,7 +4839,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxBank {
@@ -4740,7 +4885,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -4812,7 +4957,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataIdealBank {
@@ -4868,7 +5019,7 @@ impl UpdatePaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -4973,7 +5124,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataP24Bank {
@@ -5020,7 +5177,7 @@ impl UpdatePaymentIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -5140,7 +5297,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataType {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataType {
@@ -5354,7 +5517,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsAffirm<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -5387,7 +5550,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -5403,7 +5572,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMe
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -5436,7 +5605,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -5456,8 +5631,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method:
-        Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -5470,8 +5644,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -5483,7 +5656,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -5516,7 +5689,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptu
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -5532,7 +5711,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpa
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -5565,7 +5744,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetup
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -5597,7 +5782,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -5633,7 +5818,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -5688,8 +5879,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -5701,7 +5891,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsBancontact {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -5737,7 +5927,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFuture
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -5845,7 +6041,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -5878,7 +6074,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -5923,16 +6125,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(
-        count: u64,
-        interval: Interval,
-        type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
-    ) -> Self {
+    pub fn new(count: u64, interval: Interval, type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
         Self { count, interval, type_ }
     }
 }
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -5965,7 +6163,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanT
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -6019,30 +6223,14 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(
-        amount: i64,
-        amount_type: AmountType,
-        interval: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
-        reference: &'a str,
-        start_date: stripe_types::Timestamp,
-    ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            description: Default::default(),
-            end_date: Default::default(),
-            interval,
-            interval_count: Default::default(),
-            reference,
-            start_date,
-            supported_types: Default::default(),
-        }
+    pub fn new(amount: i64, amount_type: AmountType, interval: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
+        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
     }
 }
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -6087,7 +6275,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInt
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -6126,7 +6320,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCashapp {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     Manual,
 }
@@ -6159,7 +6353,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod 
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -6175,8 +6375,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureM
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -6188,8 +6387,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -6212,18 +6410,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
+    pub fn new(type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
+        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -6268,7 +6460,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTr
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -6284,7 +6482,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -6317,7 +6515,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupF
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -6349,7 +6553,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -6382,7 +6586,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -6414,7 +6624,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -6447,7 +6657,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -6479,7 +6695,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -6512,7 +6728,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsa
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -6544,7 +6766,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -6577,7 +6799,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsa
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -6609,7 +6837,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -6645,7 +6873,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -6695,7 +6929,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -6728,7 +6962,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -6744,7 +6984,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMe
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -6777,7 +7017,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -6829,7 +7075,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -6862,7 +7108,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsa
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -6904,7 +7156,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -6937,7 +7189,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -6953,7 +7211,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMeth
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -6989,7 +7247,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage 
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -7026,7 +7290,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -7059,7 +7323,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage 
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -7094,7 +7364,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -7127,7 +7397,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -7159,7 +7435,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -7192,7 +7468,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -7234,7 +7516,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsPaypal<'a> {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     Manual,
 }
@@ -7267,7 +7549,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -7279,7 +7567,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMe
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     CsMinusCz,
     DaMinusDk,
@@ -7372,7 +7660,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -7388,7 +7682,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferred
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     None,
     OffSession,
@@ -7424,7 +7718,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -7466,7 +7766,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -7499,7 +7799,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -7519,8 +7825,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -7532,7 +7837,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -7565,7 +7870,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureU
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -7623,7 +7934,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -7674,7 +7985,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLangua
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -7690,7 +8007,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortPreferred
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -7726,7 +8043,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsag
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -7778,8 +8101,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -7791,7 +8113,7 @@ impl<'a> UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -7824,7 +8146,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureU
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -7856,7 +8184,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsZip {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     None,
 }
@@ -7889,7 +8217,13 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -7905,7 +8239,7 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureU
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -7941,7 +8275,13 @@ impl AsRef<str> for UpdatePaymentIntentSetupFutureUsage {
 
 impl std::fmt::Display for UpdatePaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentIntentSetupFutureUsage {
@@ -8023,7 +8363,7 @@ impl<'a> ConfirmPaymentIntent<'a> {
 }
 /// This hash contains details about the Mandate to create.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum ConfirmPaymentIntentMandateData<'a> {
     SecretKeyParam(ConfirmPaymentIntentSecretKeyParam<'a>),
     ClientKeyParam(ConfirmPaymentIntentClientKeyParam<'a>),
@@ -8035,9 +8375,7 @@ pub struct ConfirmPaymentIntentSecretKeyParam<'a> {
     pub customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmPaymentIntentSecretKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -8061,12 +8399,7 @@ pub struct ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a> {
 }
 impl<'a> ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self {
-            accepted_at: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            type_,
-        }
+        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -8084,9 +8417,7 @@ pub struct ConfirmPaymentIntentClientKeyParam<'a> {
     pub customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmPaymentIntentClientKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -8100,10 +8431,7 @@ pub struct ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a> {
     pub type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a> {
-    pub fn new(
-        online: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a>,
-        type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType,
-    ) -> Self {
+    pub fn new(online: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a>, type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType) -> Self {
         Self { online, type_ }
     }
 }
@@ -8123,7 +8451,7 @@ impl<'a> ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a> {
     }
 }
 /// The type of customer acceptance information included with the Mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     Online,
 }
@@ -8156,7 +8484,13 @@ impl AsRef<str> for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
 
 impl std::fmt::Display for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
@@ -8399,7 +8733,7 @@ impl ConfirmPaymentIntentPaymentMethodDataFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
     Agrobank,
@@ -8495,7 +8829,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataFpxBank {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxBank {
@@ -8535,7 +8875,7 @@ impl ConfirmPaymentIntentPaymentMethodDataIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
     AsnBank,
@@ -8607,7 +8947,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataIdealBank {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataIdealBank {
@@ -8663,7 +9009,7 @@ impl ConfirmPaymentIntentPaymentMethodDataP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataP24Bank {
     AliorBank,
     BankMillennium,
@@ -8768,7 +9114,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataP24Bank {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataP24Bank {
@@ -8815,7 +9167,7 @@ impl ConfirmPaymentIntentPaymentMethodDataPromptpay {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataType {
     AcssDebit,
     Affirm,
@@ -8935,7 +9287,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodDataType {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataType {
@@ -9149,7 +9507,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAffirm<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     Manual,
 }
@@ -9182,7 +9540,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -9198,7 +9562,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureM
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     None,
 }
@@ -9231,7 +9595,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -9251,8 +9621,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -9265,8 +9634,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -9278,7 +9646,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     Manual,
 }
@@ -9311,7 +9679,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCapt
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -9327,7 +9701,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearp
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     None,
 }
@@ -9341,9 +9715,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     }
 }
 
-impl std::str::FromStr
-    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
-{
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
@@ -9360,11 +9732,15 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetu
     }
 }
 
-impl std::fmt::Display
-    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
-{
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -9396,7 +9772,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAlipay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     None,
     OffSession,
@@ -9432,7 +9808,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -9487,8 +9869,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -9500,7 +9881,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsBancontact {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
@@ -9536,7 +9917,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutur
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -9644,7 +10031,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCard<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
 }
@@ -9677,7 +10064,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -9722,16 +10115,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(
-        count: u64,
-        interval: Interval,
-        type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
-    ) -> Self {
+    pub fn new(count: u64, interval: Interval, type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
         Self { count, interval, type_ }
     }
 }
 /// Type of installment plan, one of `fixed_count`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     FixedCount,
 }
@@ -9764,7 +10153,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -9818,30 +10213,14 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(
-        amount: i64,
-        amount_type: AmountType,
-        interval: ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
-        reference: &'a str,
-        start_date: stripe_types::Timestamp,
-    ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            description: Default::default(),
-            end_date: Default::default(),
-            interval,
-            interval_count: Default::default(),
-            reference,
-            start_date,
-            supported_types: Default::default(),
-        }
+    pub fn new(amount: i64, amount_type: AmountType, interval: ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
+        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
     }
 }
 /// Specifies payment frequency.
 ///
 /// One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
@@ -9886,7 +10265,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsIn
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -9925,7 +10310,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCashapp {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     Manual,
 }
@@ -9958,7 +10343,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -9974,8 +10365,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappCapture
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -9987,8 +10377,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -10011,18 +10400,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
+    pub fn new(type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
+        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -10067,7 +10450,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankT
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -10083,7 +10472,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanc
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
 }
@@ -10116,7 +10505,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetup
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -10148,7 +10543,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsEps {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     None,
 }
@@ -10181,7 +10576,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -10213,7 +10614,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsFpx {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     None,
 }
@@ -10246,7 +10647,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -10278,7 +10685,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGiropay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     None,
 }
@@ -10311,7 +10718,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUs
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -10343,7 +10756,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     None,
 }
@@ -10376,7 +10789,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUs
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -10408,7 +10827,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsIdeal {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     None,
     OffSession,
@@ -10444,7 +10863,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsag
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -10494,7 +10919,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsKlarna {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     Manual,
 }
@@ -10527,7 +10952,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -10543,7 +10974,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureM
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     None,
 }
@@ -10576,7 +11007,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -10628,7 +11065,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsKonbini<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
 }
@@ -10661,7 +11098,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUs
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -10703,7 +11146,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsLink<'a> {
 /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
 ///
 /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     Manual,
 }
@@ -10736,7 +11179,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -10752,7 +11201,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMet
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     None,
     OffSession,
@@ -10788,7 +11237,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -10825,7 +11280,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsOxxo {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     None,
 }
@@ -10858,7 +11313,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -10893,7 +11354,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsP24 {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     None,
 }
@@ -10926,7 +11387,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -10958,7 +11425,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPaynow {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     None,
 }
@@ -10991,7 +11458,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -11033,7 +11506,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsPaypal<'a> {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     Manual,
 }
@@ -11066,7 +11539,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -11078,7 +11557,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureM
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     CsMinusCz,
     DaMinusDk,
@@ -11171,7 +11650,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocal
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -11187,7 +11672,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferre
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     None,
     OffSession,
@@ -11223,7 +11708,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -11265,7 +11756,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPix {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     None,
 }
@@ -11298,7 +11789,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -11318,8 +11815,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -11331,7 +11827,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     None,
 }
@@ -11364,7 +11860,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFuture
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -11422,7 +11924,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsSofort {
     }
 }
 /// Language shown to the payer on redirect.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     De,
     En,
@@ -11473,7 +11975,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLangu
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -11489,7 +11997,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferre
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     None,
     OffSession,
@@ -11525,7 +12033,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsa
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -11577,8 +12091,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -11590,7 +12103,7 @@ impl<'a> ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
 }
@@ -11623,7 +12136,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFuture
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -11655,7 +12174,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsZip {
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     None,
 }
@@ -11688,7 +12207,13 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage 
 
 impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -11704,7 +12229,7 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFuture
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
 ///
 /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentSetupFutureUsage {
     OffSession,
     OnSession,
@@ -11740,7 +12265,13 @@ impl AsRef<str> for ConfirmPaymentIntentSetupFutureUsage {
 
 impl std::fmt::Display for ConfirmPaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentSetupFutureUsage {
@@ -11770,7 +12301,7 @@ impl<'a> CancelPaymentIntent<'a> {
 /// Reason for canceling this PaymentIntent.
 ///
 /// Possible values are `duplicate`, `fraudulent`, `requested_by_customer`, or `abandoned`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancelPaymentIntentCancellationReason {
     Abandoned,
     Duplicate,
@@ -11812,7 +12343,13 @@ impl AsRef<str> for CancelPaymentIntentCancellationReason {
 
 impl std::fmt::Display for CancelPaymentIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CancelPaymentIntentCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CancelPaymentIntentCancellationReason {
@@ -11909,15 +12446,7 @@ pub struct IncrementAuthorizationPaymentIntent<'a> {
 }
 impl<'a> IncrementAuthorizationPaymentIntent<'a> {
     pub fn new(amount: i64) -> Self {
-        Self {
-            amount,
-            application_fee_amount: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            statement_descriptor: Default::default(),
-            transfer_data: Default::default(),
-        }
+        Self { amount, application_fee_amount: Default::default(), description: Default::default(), expand: Default::default(), metadata: Default::default(), statement_descriptor: Default::default(), transfer_data: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -11962,7 +12491,7 @@ impl<'a> ApplyCustomerBalancePaymentIntent<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CaptureMethod {
     Automatic,
     AutomaticAsync,
@@ -12001,7 +12530,13 @@ impl AsRef<str> for CaptureMethod {
 
 impl std::fmt::Display for CaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CaptureMethod {
@@ -12024,7 +12559,7 @@ impl<'a> OnlineParam<'a> {
         Self { ip_address, user_agent }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     Offline,
     Online,
@@ -12060,7 +12595,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {
@@ -12072,7 +12613,7 @@ impl serde::Serialize for Type {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum OffSession {
     Bool(bool),
     OneOff,
@@ -12088,11 +12629,7 @@ pub struct PaymentMethodParam<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> PaymentMethodParam<'a> {
-    pub fn new(
-        account_number: &'a str,
-        institution_number: &'a str,
-        transit_number: &'a str,
-    ) -> Self {
+    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -12160,7 +12697,7 @@ impl<'a> Boleto<'a> {
         Self { tax_id }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Bank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -12274,7 +12811,13 @@ impl AsRef<str> for Bank {
 
 impl std::fmt::Display for Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Bank {
@@ -12285,7 +12828,7 @@ impl serde::Serialize for Bank {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountHolderType {
     Company,
     Individual,
@@ -12321,7 +12864,13 @@ impl AsRef<str> for AccountHolderType {
 
 impl std::fmt::Display for AccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountHolderType {
@@ -12367,7 +12916,7 @@ impl<'a> SepaDebit<'a> {
         Self { iban }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Country {
     At,
     Be,
@@ -12415,7 +12964,13 @@ impl AsRef<str> for Country {
 
 impl std::fmt::Display for Country {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Country {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Country {
@@ -12426,7 +12981,7 @@ impl serde::Serialize for Country {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountType {
     Checking,
     Savings,
@@ -12462,7 +13017,13 @@ impl AsRef<str> for AccountType {
 
 impl std::fmt::Display for AccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountType {
@@ -12473,7 +13034,7 @@ impl serde::Serialize for AccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentSchedule {
     Combined,
     Interval,
@@ -12512,7 +13073,13 @@ impl AsRef<str> for PaymentSchedule {
 
 impl std::fmt::Display for PaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PaymentSchedule {
@@ -12523,7 +13090,7 @@ impl serde::Serialize for PaymentSchedule {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TransactionType {
     Business,
     Personal,
@@ -12559,7 +13126,13 @@ impl AsRef<str> for TransactionType {
 
 impl std::fmt::Display for TransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TransactionType {
@@ -12570,7 +13143,7 @@ impl serde::Serialize for TransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SetupFutureUsage {
     None,
     OffSession,
@@ -12609,7 +13182,13 @@ impl AsRef<str> for SetupFutureUsage {
 
 impl std::fmt::Display for SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SetupFutureUsage {
@@ -12620,7 +13199,7 @@ impl serde::Serialize for SetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum VerificationMethod {
     Automatic,
     Instant,
@@ -12659,7 +13238,13 @@ impl AsRef<str> for VerificationMethod {
 
 impl std::fmt::Display for VerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for VerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for VerificationMethod {
@@ -12670,7 +13255,7 @@ impl serde::Serialize for VerificationMethod {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PreferredLanguage {
     De,
     En,
@@ -12712,7 +13297,13 @@ impl AsRef<str> for PreferredLanguage {
 
 impl std::fmt::Display for PreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PreferredLanguage {
@@ -12736,7 +13327,7 @@ impl<'a> PaymentIntentPaymentMethodOptionsParam<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Month,
 }
@@ -12769,7 +13360,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -12780,7 +13377,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AmountType {
     Fixed,
     Maximum,
@@ -12816,7 +13413,13 @@ impl AsRef<str> for AmountType {
 
 impl std::fmt::Display for AmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AmountType {
@@ -12827,7 +13430,7 @@ impl serde::Serialize for AmountType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SupportedTypes {
     India,
 }
@@ -12860,7 +13463,13 @@ impl AsRef<str> for SupportedTypes {
 
 impl std::fmt::Display for SupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SupportedTypes {
@@ -12871,7 +13480,7 @@ impl serde::Serialize for SupportedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Network {
     Amex,
     CartesBancaires,
@@ -12934,7 +13543,13 @@ impl AsRef<str> for Network {
 
 impl std::fmt::Display for Network {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Network {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Network {
@@ -12945,7 +13560,7 @@ impl serde::Serialize for Network {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RequestThreeDSecure {
     Any,
     Automatic,
@@ -12981,7 +13596,13 @@ impl AsRef<str> for RequestThreeDSecure {
 
 impl std::fmt::Display for RequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RequestThreeDSecure {
@@ -13020,7 +13641,7 @@ impl<'a> EuBankTransferParams<'a> {
         Self { country }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RequestedAddressTypes {
     Aba,
     Iban,
@@ -13071,7 +13692,13 @@ impl AsRef<str> for RequestedAddressTypes {
 
 impl std::fmt::Display for RequestedAddressTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RequestedAddressTypes {
@@ -13082,7 +13709,7 @@ impl serde::Serialize for RequestedAddressTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FundingType {
     BankTransfer,
 }
@@ -13115,7 +13742,13 @@ impl AsRef<str> for FundingType {
 
 impl std::fmt::Display for FundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FundingType {
@@ -13126,7 +13759,7 @@ impl serde::Serialize for FundingType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PreferredLocale {
     CsMinusCz,
     DaMinusDk,
@@ -13288,7 +13921,13 @@ impl AsRef<str> for PreferredLocale {
 
 impl std::fmt::Display for PreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PreferredLocale {
@@ -13299,7 +13938,7 @@ impl serde::Serialize for PreferredLocale {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Permissions {
     Balances,
     Ownership,
@@ -13341,7 +13980,13 @@ impl AsRef<str> for Permissions {
 
 impl std::fmt::Display for Permissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Permissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Permissions {
@@ -13352,7 +13997,7 @@ impl serde::Serialize for Permissions {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Requested {
     Ach,
     UsDomesticWire,
@@ -13388,7 +14033,13 @@ impl AsRef<str> for Requested {
 
 impl std::fmt::Display for Requested {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Requested {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Requested {
@@ -13399,7 +14050,7 @@ impl serde::Serialize for Requested {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Client {
     Android,
     Ios,
@@ -13438,7 +14089,13 @@ impl AsRef<str> for Client {
 
 impl std::fmt::Display for Client {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Client {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Client {
@@ -13586,12 +14243,6 @@ pub struct OptionalFieldsShipping<'a> {
 }
 impl<'a> OptionalFieldsShipping<'a> {
     pub fn new(address: Address<'a>, name: &'a str) -> Self {
-        Self {
-            address,
-            carrier: Default::default(),
-            name,
-            phone: Default::default(),
-            tracking_number: Default::default(),
-        }
+        Self { address, carrier: Default::default(), name, phone: Default::default(), tracking_number: Default::default() }
     }
 }

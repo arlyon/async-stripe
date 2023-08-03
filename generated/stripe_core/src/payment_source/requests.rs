@@ -1,39 +1,19 @@
 
 /// List sources for a specified customer.
-pub fn list(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: ListPaymentSource,
-) -> stripe::Response<stripe_types::List<stripe_types::payment_source::PaymentSource>> {
+pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListPaymentSource) -> stripe::Response<stripe_types::List<stripe_types::PaymentSource>> {
     client.get_query(&format!("/customers/{customer}/sources", customer = customer), params)
 }
 /// Retrieve a specified source for a given customer.
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    id: &str,
-    params: RetrievePaymentSource,
-) -> stripe::Response<stripe_types::payment_source::PaymentSource> {
-    client.get_query(
-        &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: RetrievePaymentSource) -> stripe::Response<stripe_types::PaymentSource> {
+    client.get_query(&format!("/customers/{customer}/sources/{id}", customer = customer, id = id), params)
 }
 /// When you create a new credit card, you must specify a customer or recipient on which to create it.
 ///
 /// If the card’s owner has no default card, then the new card will become the default.
 /// However, if the owner already has a default, then it will not change.
 /// To change the default, you should [update the customer](https://stripe.com/docs/api#update_customer) to have a new `default_source`.
-pub fn create(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: CreatePaymentSource,
-) -> stripe::Response<stripe_types::payment_source::PaymentSource> {
-    client.send_form(
-        &format!("/customers/{customer}/sources", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreatePaymentSource) -> stripe::Response<stripe_types::PaymentSource> {
+    client.send_form(&format!("/customers/{customer}/sources", customer = customer), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentSource<'a> {
@@ -96,11 +76,6 @@ pub struct CreatePaymentSource<'a> {
 }
 impl<'a> CreatePaymentSource<'a> {
     pub fn new(source: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            metadata: Default::default(),
-            source,
-            validate: Default::default(),
-        }
+        Self { expand: Default::default(), metadata: Default::default(), source, validate: Default::default() }
     }
 }

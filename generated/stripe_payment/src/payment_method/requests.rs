@@ -2,46 +2,25 @@
 /// Creates a PaymentMethod object.
 ///
 /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePaymentMethod,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
+pub fn create(client: &stripe::Client, params: CreatePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
     client.send_form("/payment_methods", params, http_types::Method::Post)
 }
 /// Retrieves a PaymentMethod object attached to the StripeAccount.
 ///
 /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
-pub fn retrieve(
-    client: &stripe::Client,
-    payment_method: &stripe_types::payment_method::PaymentMethodId,
-    params: RetrievePaymentMethod,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
-    client.get_query(
-        &format!("/payment_methods/{payment_method}", payment_method = payment_method),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: RetrievePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
+    client.get_query(&format!("/payment_methods/{payment_method}", payment_method = payment_method), params)
 }
 /// Updates a PaymentMethod object.
 ///
 /// A PaymentMethod must be attached a customer to be updated.
-pub fn update(
-    client: &stripe::Client,
-    payment_method: &stripe_types::payment_method::PaymentMethodId,
-    params: UpdatePaymentMethod,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
-    client.send_form(
-        &format!("/payment_methods/{payment_method}", payment_method = payment_method),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: UpdatePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
+    client.send_form(&format!("/payment_methods/{payment_method}", payment_method = payment_method), params, http_types::Method::Post)
 }
 /// Returns a list of PaymentMethods for Treasury flows.
 ///
 /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPaymentMethod,
-) -> stripe::Response<stripe_types::List<stripe_types::payment_method::PaymentMethod>> {
+pub fn list(client: &stripe::Client, params: ListPaymentMethod) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
     client.get_query("/payment_methods", params)
 }
 /// Attaches a PaymentMethod object to a Customer.
@@ -51,30 +30,14 @@ pub fn list(
 /// These approaches will perform any necessary steps to set up the PaymentMethod for future payments.
 ///
 /// Using the `/v1/payment_methods/:id/attach` endpoint without first using a SetupIntent or PaymentIntent with `setup_future_usage` does not optimize the PaymentMethod for future use, which makes later declines and payment friction more likely. See [Optimizing cards for future payments](https://stripe.com/docs/payments/payment-intents#future-usage) for more information about setting up future payments.  To use this PaymentMethod as the default for invoice or subscription payments, set <a href="/docs/api/customers/update#update_customer-invoice_settings-default_payment_method">`invoice_settings.default_payment_method`</a>, on the Customer to the PaymentMethod’s ID.
-pub fn attach(
-    client: &stripe::Client,
-    payment_method: &stripe_types::payment_method::PaymentMethodId,
-    params: AttachPaymentMethod,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
-    client.send_form(
-        &format!("/payment_methods/{payment_method}/attach", payment_method = payment_method),
-        params,
-        http_types::Method::Post,
-    )
+pub fn attach(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: AttachPaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
+    client.send_form(&format!("/payment_methods/{payment_method}/attach", payment_method = payment_method), params, http_types::Method::Post)
 }
 /// Detaches a PaymentMethod object from a Customer.
 ///
 /// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
-pub fn detach(
-    client: &stripe::Client,
-    payment_method: &stripe_types::payment_method::PaymentMethodId,
-    params: DetachPaymentMethod,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
-    client.send_form(
-        &format!("/payment_methods/{payment_method}/detach", payment_method = payment_method),
-        params,
-        http_types::Method::Post,
-    )
+pub fn detach(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: DetachPaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
+    client.send_form(&format!("/payment_methods/{payment_method}/detach", payment_method = payment_method), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethod<'a> {
@@ -226,11 +189,7 @@ pub struct CreatePaymentMethodAcssDebit<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> CreatePaymentMethodAcssDebit<'a> {
-    pub fn new(
-        account_number: &'a str,
-        institution_number: &'a str,
-        transit_number: &'a str,
-    ) -> Self {
+    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -321,7 +280,7 @@ impl<'a> CreatePaymentMethodBoleto<'a> {
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreatePaymentMethodCard<'a> {
     CardDetailsParams(CreatePaymentMethodCardDetailsParams<'a>),
     TokenParams(CreatePaymentMethodTokenParams<'a>),
@@ -393,7 +352,7 @@ impl CreatePaymentMethodEps {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -507,7 +466,13 @@ impl AsRef<str> for CreatePaymentMethodEpsBank {
 
 impl std::fmt::Display for CreatePaymentMethodEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodEpsBank {
@@ -533,7 +498,7 @@ impl CreatePaymentMethodFpx {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
     Agrobank,
@@ -629,7 +594,13 @@ impl AsRef<str> for CreatePaymentMethodFpxBank {
 
 impl std::fmt::Display for CreatePaymentMethodFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodFpxBank {
@@ -669,7 +640,7 @@ impl CreatePaymentMethodIdeal {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodIdealBank {
     AbnAmro,
     AsnBank,
@@ -741,7 +712,13 @@ impl AsRef<str> for CreatePaymentMethodIdealBank {
 
 impl std::fmt::Display for CreatePaymentMethodIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodIdealBank {
@@ -824,7 +801,7 @@ impl CreatePaymentMethodP24 {
     }
 }
 /// The customer's bank.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodP24Bank {
     AliorBank,
     BankMillennium,
@@ -929,7 +906,13 @@ impl AsRef<str> for CreatePaymentMethodP24Bank {
 
 impl std::fmt::Display for CreatePaymentMethodP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodP24Bank {
@@ -1009,7 +992,7 @@ impl CreatePaymentMethodSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodSofortCountry {
     At,
     Be,
@@ -1057,7 +1040,13 @@ impl AsRef<str> for CreatePaymentMethodSofortCountry {
 
 impl std::fmt::Display for CreatePaymentMethodSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodSofortCountry {
@@ -1072,7 +1061,7 @@ impl serde::Serialize for CreatePaymentMethodSofortCountry {
 ///
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1195,7 +1184,13 @@ impl AsRef<str> for CreatePaymentMethodType {
 
 impl std::fmt::Display for CreatePaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodType {
@@ -1235,7 +1230,7 @@ impl<'a> CreatePaymentMethodUsBankAccount<'a> {
 /// Account type: checkings or savings.
 ///
 /// Defaults to checking if omitted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodUsBankAccountAccountType {
     Checking,
     Savings,
@@ -1271,7 +1266,13 @@ impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountType {
 
 impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
@@ -1536,7 +1537,7 @@ impl<'a> ListPaymentMethod<'a> {
 ///
 /// Without the filter, the list includes all current and future payment method types.
 /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListPaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1662,7 +1663,13 @@ impl AsRef<str> for ListPaymentMethodType {
 
 impl std::fmt::Display for ListPaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListPaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ListPaymentMethodType {
@@ -1723,7 +1730,7 @@ impl<'a> BillingDetailsAddress<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountHolderType {
     Company,
     Individual,
@@ -1759,7 +1766,13 @@ impl AsRef<str> for AccountHolderType {
 
 impl std::fmt::Display for AccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AccountHolderType {

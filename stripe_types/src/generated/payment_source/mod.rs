@@ -1,11 +1,11 @@
 /// The resource representing a Stripe Polymorphic.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum PaymentSource {
-    Account(stripe_types::account::Account),
-    BankAccount(stripe_types::bank_account::BankAccount),
-    Card(stripe_types::card::Card),
-    Source(stripe_types::source::Source),
+    Account(stripe_types::Account),
+    BankAccount(stripe_types::BankAccount),
+    Card(stripe_types::Card),
+    Source(stripe_types::Source),
 }
 impl stripe_types::Object for PaymentSource {
     type Id = String;
@@ -18,5 +18,3 @@ impl stripe_types::Object for PaymentSource {
         }
     }
 }
-pub mod deleted;
-pub use deleted::DeletedPaymentSource;

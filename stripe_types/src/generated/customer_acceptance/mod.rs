@@ -3,9 +3,9 @@ pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     pub accepted_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<stripe_types::offline::Offline>,
+    pub offline: Option<stripe_types::OfflineAcceptance>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<stripe_types::online::Online>,
+    pub online: Option<stripe_types::OnlineAcceptance>,
     /// The type of customer acceptance information included with the Mandate.
     ///
     /// One of `online` or `offline`.
@@ -15,7 +15,7 @@ pub struct CustomerAcceptance {
 /// The type of customer acceptance information included with the Mandate.
 ///
 /// One of `online` or `offline`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerAcceptanceType {
     Offline,
     Online,
@@ -51,7 +51,13 @@ impl AsRef<str> for CustomerAcceptanceType {
 
 impl std::fmt::Display for CustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerAcceptanceType {
@@ -66,7 +72,6 @@ impl<'de> serde::Deserialize<'de> for CustomerAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerAcceptanceType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerAcceptanceType"))
     }
 }

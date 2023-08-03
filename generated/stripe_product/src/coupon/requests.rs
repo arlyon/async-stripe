@@ -1,9 +1,6 @@
 
 /// Returns a list of your coupons.
-pub fn list(
-    client: &stripe::Client,
-    params: ListCoupon,
-) -> stripe::Response<stripe_types::List<stripe_types::coupon::Coupon>> {
+pub fn list(client: &stripe::Client, params: ListCoupon) -> stripe::Response<stripe_types::List<stripe_types::Coupon>> {
     client.get_query("/coupons", params)
 }
 /// You can create coupons easily via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
@@ -11,42 +8,24 @@ pub fn list(
 /// Coupon creation is also accessible via the API if you need to create coupons on the fly.  A coupon has either a `percent_off` or an `amount_off` and `currency`.
 /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
 /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateCoupon,
-) -> stripe::Response<stripe_types::coupon::Coupon> {
+pub fn create(client: &stripe::Client, params: CreateCoupon) -> stripe::Response<stripe_types::Coupon> {
     client.send_form("/coupons", params, http_types::Method::Post)
 }
 /// Retrieves the coupon with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    coupon: &stripe_types::coupon::CouponId,
-    params: RetrieveCoupon,
-) -> stripe::Response<stripe_types::coupon::Coupon> {
+pub fn retrieve(client: &stripe::Client, coupon: &stripe_types::coupon::CouponId, params: RetrieveCoupon) -> stripe::Response<stripe_types::Coupon> {
     client.get_query(&format!("/coupons/{coupon}", coupon = coupon), params)
 }
 /// Updates the metadata of a coupon.
 ///
 /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
-pub fn update(
-    client: &stripe::Client,
-    coupon: &stripe_types::coupon::CouponId,
-    params: UpdateCoupon,
-) -> stripe::Response<stripe_types::coupon::Coupon> {
-    client.send_form(
-        &format!("/coupons/{coupon}", coupon = coupon),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, coupon: &stripe_types::coupon::CouponId, params: UpdateCoupon) -> stripe::Response<stripe_types::Coupon> {
+    client.send_form(&format!("/coupons/{coupon}", coupon = coupon), params, http_types::Method::Post)
 }
 /// You can delete coupons via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
 ///
 /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
 /// You can also delete coupons via the API.
-pub fn delete(
-    client: &stripe::Client,
-    coupon: &stripe_types::coupon::CouponId,
-) -> stripe::Response<stripe_types::coupon::DeletedCoupon> {
+pub fn delete(client: &stripe::Client, coupon: &stripe_types::coupon::CouponId) -> stripe::Response<stripe_types::DeletedCoupon> {
     client.send(&format!("/coupons/{coupon}", coupon = coupon), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -97,8 +76,7 @@ pub struct CreateCoupon<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// Specifies how long the discount will be in effect if used on a subscription.
     ///
     /// Defaults to `once`.
@@ -161,7 +139,7 @@ impl<'a> CreateCouponAppliesTo<'a> {
 /// Specifies how long the discount will be in effect if used on a subscription.
 ///
 /// Defaults to `once`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCouponDuration {
     Forever,
     Once,
@@ -200,7 +178,13 @@ impl AsRef<str> for CreateCouponDuration {
 
 impl std::fmt::Display for CreateCouponDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCouponDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateCouponDuration {
@@ -228,8 +212,7 @@ pub struct UpdateCoupon<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,

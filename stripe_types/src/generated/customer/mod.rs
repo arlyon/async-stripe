@@ -5,7 +5,7 @@
 pub struct Customer {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<stripe_types::address::Address>,
+    pub address: Option<stripe_types::Address>,
     /// Current balance, if any, being stored on the customer.
     ///
     /// If negative, the customer has credit to apply to their next invoice.
@@ -19,7 +19,7 @@ pub struct Customer {
     /// These funds can be applied towards payment intents with source "cash_balance".
     /// The settings[reconciliation_mode] field describes whether these funds are applied to such payment intents manually or automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash_balance: Option<stripe_types::cash_balance::CashBalance>,
+    pub cash_balance: Option<stripe_types::CashBalance>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -30,8 +30,7 @@ pub struct Customer {
     /// ID of the default payment source for the customer.
     ///
     /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
-    pub default_source:
-        Option<stripe_types::Expandable<stripe_types::payment_source::PaymentSource>>,
+    pub default_source: Option<stripe_types::Expandable<stripe_types::PaymentSource>>,
     /// When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
     ///
     /// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't get reset to `false`.
@@ -43,7 +42,7 @@ pub struct Customer {
     pub description: Option<String>,
     /// Describes the current discount active on the customer, if there is one.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<stripe_types::discount::Discount>,
+    pub discount: Option<stripe_types::Discount>,
     /// The customer's email address.
     pub email: Option<String>,
     /// Unique identifier for the object.
@@ -61,7 +60,7 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<stripe_types::invoice_settings::InvoiceSettings>,
+    pub invoice_settings: Option<stripe_types::InvoiceSettingCustomerSetting>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -88,15 +87,15 @@ pub struct Customer {
     /// Mailing and shipping address for the customer.
     ///
     /// Appears on invoices emailed to this customer.
-    pub shipping: Option<stripe_types::shipping_details::ShippingDetails>,
+    pub shipping: Option<stripe_types::Shipping>,
     /// The customer's payment sources, if any.
     #[serde(default)]
-    pub sources: stripe_types::List<stripe_types::payment_source::PaymentSource>,
+    pub sources: stripe_types::List<stripe_types::PaymentSource>,
     /// The customer's current subscriptions, if any.
     #[serde(default)]
-    pub subscriptions: stripe_types::List<stripe_types::subscription::Subscription>,
+    pub subscriptions: stripe_types::List<stripe_types::Subscription>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<stripe_types::tax::Tax>,
+    pub tax: Option<stripe_types::CustomerTax>,
     /// Describes the customer's tax exemption status.
     ///
     /// One of `none`, `exempt`, or `reverse`.
@@ -105,16 +104,15 @@ pub struct Customer {
     pub tax_exempt: Option<CustomerTaxExempt>,
     /// The customer's tax IDs.
     #[serde(default)]
-    pub tax_ids: stripe_types::List<stripe_types::tax_id::TaxId>,
+    pub tax_ids: stripe_types::List<stripe_types::TaxId>,
     /// ID of the test clock this customer belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub test_clock:
-        Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
+    pub test_clock: Option<stripe_types::Expandable<stripe_types::TestClock>>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerObject {
     Customer,
 }
@@ -147,7 +145,13 @@ impl AsRef<str> for CustomerObject {
 
 impl std::fmt::Display for CustomerObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerObject {
@@ -169,7 +173,7 @@ impl<'de> serde::Deserialize<'de> for CustomerObject {
 ///
 /// One of `none`, `exempt`, or `reverse`.
 /// When set to `reverse`, invoice and receipt PDFs include the text **"Reverse charge"**.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerTaxExempt {
     Exempt,
     None,
@@ -208,7 +212,13 @@ impl AsRef<str> for CustomerTaxExempt {
 
 impl std::fmt::Display for CustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerTaxExempt {
@@ -223,8 +233,7 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
     }
 }
 impl stripe_types::Object for Customer {
@@ -234,5 +243,3 @@ impl stripe_types::Object for Customer {
     }
 }
 stripe_types::def_id!(CustomerId, "cus_");
-pub mod deleted;
-pub use deleted::DeletedCustomer;

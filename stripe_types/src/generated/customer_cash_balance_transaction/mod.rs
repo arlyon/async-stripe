@@ -6,7 +6,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CustomerCashBalanceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub applied_to_payment: Option<stripe_types::applied_to_payment::AppliedToPayment>,
+    pub applied_to_payment: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -16,13 +16,13 @@ pub struct CustomerCashBalanceTransaction {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// The customer whose available cash balance changed as a result of this transaction.
-    pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
+    pub customer: stripe_types::Expandable<stripe_types::Customer>,
     /// The total available cash balance for the specified currency after this transaction was applied.
     ///
     /// Represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub ending_balance: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub funded: Option<stripe_types::funded::Funded>,
+    pub funded: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction>,
     /// Unique identifier for the object.
     pub id: stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransactionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -36,7 +36,7 @@ pub struct CustomerCashBalanceTransaction {
     /// Objects of the same type share the same value.
     pub object: CustomerCashBalanceTransactionObject,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub refunded_from_payment: Option<stripe_types::refunded_from_payment::RefundedFromPayment>,
+    pub refunded_from_payment: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction>,
     /// The type of the cash balance transaction.
     ///
     /// New types may be added in future.
@@ -44,12 +44,12 @@ pub struct CustomerCashBalanceTransaction {
     #[serde(rename = "type")]
     pub type_: CustomerCashBalanceTransactionType,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unapplied_from_payment: Option<stripe_types::unapplied_from_payment::UnappliedFromPayment>,
+    pub unapplied_from_payment: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerCashBalanceTransactionObject {
     CustomerCashBalanceTransaction,
 }
@@ -82,7 +82,13 @@ impl AsRef<str> for CustomerCashBalanceTransactionObject {
 
 impl std::fmt::Display for CustomerCashBalanceTransactionObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerCashBalanceTransactionObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerCashBalanceTransactionObject {
@@ -97,16 +103,14 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionObject")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionObject"))
     }
 }
 /// The type of the cash balance transaction.
 ///
 /// New types may be added in future.
 /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerCashBalanceTransactionType {
     AppliedToPayment,
     Funded,
@@ -157,7 +161,13 @@ impl AsRef<str> for CustomerCashBalanceTransactionType {
 
 impl std::fmt::Display for CustomerCashBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CustomerCashBalanceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CustomerCashBalanceTransactionType {
@@ -172,9 +182,7 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionType")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionType"))
     }
 }
 impl stripe_types::Object for CustomerCashBalanceTransaction {

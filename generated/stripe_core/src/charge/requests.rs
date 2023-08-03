@@ -11,46 +11,28 @@ pub fn search(client: &stripe::Client, params: SearchCharge) -> stripe::Response
 /// Returns a list of charges you’ve previously created.
 ///
 /// The charges are returned in sorted order, with the most recent charges appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListCharge,
-) -> stripe::Response<stripe_types::List<stripe_types::charge::Charge>> {
+pub fn list(client: &stripe::Client, params: ListCharge) -> stripe::Response<stripe_types::List<stripe_types::Charge>> {
     client.get_query("/charges", params)
 }
 /// Use the [Payment Intents API](https://stripe.com/docs/api/payment_intents) to initiate a new payment instead
 /// of using this method.
 ///
 /// Confirmation of the PaymentIntent creates the `Charge` object used to request payment, so this method is limited to legacy integrations.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateCharge,
-) -> stripe::Response<stripe_types::charge::Charge> {
+pub fn create(client: &stripe::Client, params: CreateCharge) -> stripe::Response<stripe_types::Charge> {
     client.send_form("/charges", params, http_types::Method::Post)
 }
 /// Retrieves the details of a charge that has previously been created.
 ///
 /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
 /// The same information is returned when creating or refunding the charge.
-pub fn retrieve(
-    client: &stripe::Client,
-    charge: &stripe_types::charge::ChargeId,
-    params: RetrieveCharge,
-) -> stripe::Response<stripe_types::charge::Charge> {
+pub fn retrieve(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: RetrieveCharge) -> stripe::Response<stripe_types::Charge> {
     client.get_query(&format!("/charges/{charge}", charge = charge), params)
 }
 /// Updates the specified charge by setting the values of the parameters passed.
 ///
 /// Any parameters not provided will be left unchanged.
-pub fn update(
-    client: &stripe::Client,
-    charge: &stripe_types::charge::ChargeId,
-    params: UpdateCharge,
-) -> stripe::Response<stripe_types::charge::Charge> {
-    client.send_form(
-        &format!("/charges/{charge}", charge = charge),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: UpdateCharge) -> stripe::Response<stripe_types::Charge> {
+    client.send_form(&format!("/charges/{charge}", charge = charge), params, http_types::Method::Post)
 }
 /// Capture the payment of an existing, uncaptured charge that was created with the `capture` option set to false.
 ///
@@ -59,20 +41,12 @@ pub fn update(
 /// Don’t use this method to capture a PaymentIntent-initiated charge.
 ///
 /// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
-pub fn capture(
-    client: &stripe::Client,
-    charge: &stripe_types::charge::ChargeId,
-    params: CaptureCharge,
-) -> stripe::Response<stripe_types::charge::Charge> {
-    client.send_form(
-        &format!("/charges/{charge}/capture", charge = charge),
-        params,
-        http_types::Method::Post,
-    )
+pub fn capture(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: CaptureCharge) -> stripe::Response<stripe_types::Charge> {
+    client.send_form(&format!("/charges/{charge}/capture", charge = charge), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
-    pub data: Vec<stripe_types::charge::Charge>,
+    pub data: Vec<stripe_types::Charge>,
     pub has_more: bool,
     pub next_page: Option<String>,
     /// String representing the object's type.
@@ -87,7 +61,7 @@ pub struct SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -120,7 +94,13 @@ impl AsRef<str> for SearchReturnedObject {
 
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SearchReturnedObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SearchReturnedObject {
@@ -135,8 +115,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -162,12 +141,7 @@ pub struct SearchCharge<'a> {
 }
 impl<'a> SearchCharge<'a> {
     pub fn new(query: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            limit: Default::default(),
-            page: Default::default(),
-            query,
-        }
+        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -444,7 +418,7 @@ impl UpdateChargeFraudDetails {
     }
 }
 /// Either `safe` or `fraudulent`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateChargeFraudDetailsUserReport {
     Fraudulent,
     Safe,
@@ -480,7 +454,13 @@ impl AsRef<str> for UpdateChargeFraudDetailsUserReport {
 
 impl std::fmt::Display for UpdateChargeFraudDetailsUserReport {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateChargeFraudDetailsUserReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
@@ -604,12 +584,6 @@ pub struct OptionalFieldsShipping<'a> {
 }
 impl<'a> OptionalFieldsShipping<'a> {
     pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self {
-            address,
-            carrier: Default::default(),
-            name,
-            phone: Default::default(),
-            tracking_number: Default::default(),
-        }
+        Self { address, carrier: Default::default(), name, phone: Default::default(), tracking_number: Default::default() }
     }
 }

@@ -9,42 +9,28 @@ pub fn search(client: &stripe::Client, params: SearchPrice) -> stripe::Response<
     client.get_query("/prices/search", params)
 }
 /// Returns a list of your prices.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPrice,
-) -> stripe::Response<stripe_types::List<stripe_types::price::Price>> {
+pub fn list(client: &stripe::Client, params: ListPrice) -> stripe::Response<stripe_types::List<stripe_types::Price>> {
     client.get_query("/prices", params)
 }
 /// Creates a new price for an existing product.
 ///
 /// The price can be recurring or one-time.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePrice,
-) -> stripe::Response<stripe_types::price::Price> {
+pub fn create(client: &stripe::Client, params: CreatePrice) -> stripe::Response<stripe_types::Price> {
     client.send_form("/prices", params, http_types::Method::Post)
 }
 /// Retrieves the price with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    price: &stripe_types::price::PriceId,
-    params: RetrievePrice,
-) -> stripe::Response<stripe_types::price::Price> {
+pub fn retrieve(client: &stripe::Client, price: &stripe_types::price::PriceId, params: RetrievePrice) -> stripe::Response<stripe_types::Price> {
     client.get_query(&format!("/prices/{price}", price = price), params)
 }
 /// Updates the specified price by setting the values of the parameters passed.
 ///
 /// Any parameters not provided are left unchanged.
-pub fn update(
-    client: &stripe::Client,
-    price: &stripe_types::price::PriceId,
-    params: UpdatePrice,
-) -> stripe::Response<stripe_types::price::Price> {
+pub fn update(client: &stripe::Client, price: &stripe_types::price::PriceId, params: UpdatePrice) -> stripe::Response<stripe_types::Price> {
     client.send_form(&format!("/prices/{price}", price = price), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
-    pub data: Vec<stripe_types::price::Price>,
+    pub data: Vec<stripe_types::Price>,
     pub has_more: bool,
     pub next_page: Option<String>,
     /// String representing the object's type.
@@ -59,7 +45,7 @@ pub struct SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -92,7 +78,13 @@ impl AsRef<str> for SearchReturnedObject {
 
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SearchReturnedObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SearchReturnedObject {
@@ -107,8 +99,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -134,12 +125,7 @@ pub struct SearchPrice<'a> {
 }
 impl<'a> SearchPrice<'a> {
     pub fn new(query: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            limit: Default::default(),
-            page: Default::default(),
-            query,
-        }
+        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -214,7 +200,7 @@ impl ListPriceRecurring {
     }
 }
 /// Only return prices of type `recurring` or `one_time`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListPriceType {
     OneTime,
     Recurring,
@@ -250,7 +236,13 @@ impl AsRef<str> for ListPriceType {
 
 impl std::fmt::Display for ListPriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListPriceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ListPriceType {
@@ -283,8 +275,7 @@ pub struct CreatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
@@ -382,7 +373,7 @@ impl<'a> CreatePrice<'a> {
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceBillingScheme {
     PerUnit,
     Tiered,
@@ -418,7 +409,13 @@ impl AsRef<str> for CreatePriceBillingScheme {
 
 impl std::fmt::Display for CreatePriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePriceBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePriceBillingScheme {
@@ -470,15 +467,7 @@ pub struct CreatePriceProductData<'a> {
 }
 impl<'a> CreatePriceProductData<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self {
-            active: Default::default(),
-            id: Default::default(),
-            metadata: Default::default(),
-            name,
-            statement_descriptor: Default::default(),
-            tax_code: Default::default(),
-            unit_label: Default::default(),
-        }
+        Self { active: Default::default(), id: Default::default(), metadata: Default::default(), name, statement_descriptor: Default::default(), tax_code: Default::default(), unit_label: Default::default() }
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
@@ -514,20 +503,14 @@ pub struct CreatePriceRecurring {
 }
 impl CreatePriceRecurring {
     pub fn new(interval: Interval) -> Self {
-        Self {
-            aggregate_usage: Default::default(),
-            interval,
-            interval_count: Default::default(),
-            trial_period_days: Default::default(),
-            usage_type: Default::default(),
-        }
+        Self { aggregate_usage: Default::default(), interval, interval_count: Default::default(), trial_period_days: Default::default(), usage_type: Default::default() }
     }
 }
 /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceRecurringAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -569,7 +552,13 @@ impl AsRef<str> for CreatePriceRecurringAggregateUsage {
 
 impl std::fmt::Display for CreatePriceRecurringAggregateUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePriceRecurringAggregateUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePriceRecurringAggregateUsage {
@@ -610,19 +599,13 @@ pub struct CreatePriceTiers<'a> {
 }
 impl<'a> CreatePriceTiers<'a> {
     pub fn new(up_to: UpTo) -> Self {
-        Self {
-            flat_amount: Default::default(),
-            flat_amount_decimal: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-            up_to,
-        }
+        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceTiersMode {
     Graduated,
     Volume,
@@ -658,7 +641,13 @@ impl AsRef<str> for CreatePriceTiersMode {
 
 impl std::fmt::Display for CreatePriceTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePriceTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePriceTiersMode {
@@ -685,7 +674,7 @@ impl CreatePriceTransformQuantity {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceTransformQuantityRound {
     Down,
     Up,
@@ -721,7 +710,13 @@ impl AsRef<str> for CreatePriceTransformQuantityRound {
 
 impl std::fmt::Display for CreatePriceTransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePriceTransformQuantityRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePriceTransformQuantityRound {
@@ -754,8 +749,7 @@ pub struct UpdatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -805,7 +799,7 @@ impl UpdatePriceRecurring {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Day,
     Month,
@@ -847,7 +841,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -858,7 +858,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UsageType {
     Licensed,
     Metered,
@@ -894,7 +894,13 @@ impl AsRef<str> for UsageType {
 
 impl std::fmt::Display for UsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UsageType {
@@ -923,15 +929,10 @@ pub struct CustomUnitAmount {
 }
 impl CustomUnitAmount {
     pub fn new(enabled: bool) -> Self {
-        Self {
-            enabled,
-            maximum: Default::default(),
-            minimum: Default::default(),
-            preset: Default::default(),
-        }
+        Self { enabled, maximum: Default::default(), minimum: Default::default(), preset: Default::default() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -970,7 +971,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {
@@ -982,7 +989,7 @@ impl serde::Serialize for TaxBehavior {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum UpTo {
     Inf,
     I64(i64),
@@ -1013,13 +1020,7 @@ pub struct Tier {
 }
 impl Tier {
     pub fn new(up_to: UpTo) -> Self {
-        Self {
-            flat_amount: Default::default(),
-            flat_amount_decimal: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-            up_to,
-        }
+        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]

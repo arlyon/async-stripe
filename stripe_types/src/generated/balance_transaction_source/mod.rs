@@ -1,23 +1,23 @@
 /// The resource representing a Stripe Polymorphic.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum BalanceTransactionSource {
-    ApplicationFee(stripe_types::application_fee::ApplicationFee),
-    Charge(stripe_types::charge::Charge),
-    ConnectCollectionTransfer(stripe_types::connect_collection_transfer::ConnectCollectionTransfer),
-    Dispute(stripe_types::dispute::Dispute),
-    FeeRefund(stripe_types::fee_refund::FeeRefund),
-    IssuingAuthorization(stripe_types::issuing::authorization::Authorization),
-    IssuingDispute(stripe_types::issuing::dispute::Dispute),
-    IssuingTransaction(stripe_types::issuing::transaction::Transaction),
-    Payout(stripe_types::payout::Payout),
-    PlatformTaxFee(stripe_types::platform_tax_fee::PlatformTaxFee),
-    Refund(stripe_types::refund::Refund),
-    ReserveTransaction(stripe_types::reserve_transaction::ReserveTransaction),
-    TaxDeductedAtSource(stripe_types::tax_deducted_at_source::TaxDeductedAtSource),
-    Topup(stripe_types::topup::Topup),
-    Transfer(stripe_types::transfer::Transfer),
-    TransferReversal(stripe_types::transfer_reversal::TransferReversal),
+    ApplicationFee(stripe_types::PlatformFee),
+    Charge(stripe_types::Charge),
+    ConnectCollectionTransfer(stripe_types::ConnectCollectionTransfer),
+    Dispute(stripe_types::Dispute),
+    FeeRefund(stripe_types::FeeRefund),
+    IssuingAuthorization(stripe_types::IssuingAuthorization),
+    IssuingDispute(stripe_types::IssuingDispute),
+    IssuingTransaction(stripe_types::IssuingTransaction),
+    Payout(stripe_types::Payout),
+    PlatformTaxFee(stripe_types::PlatformTax),
+    Refund(stripe_types::Refund),
+    ReserveTransaction(stripe_types::ReserveTransaction),
+    TaxDeductedAtSource(stripe_types::TaxDeductedAtSource),
+    Topup(stripe_types::Topup),
+    Transfer(stripe_types::Transfer),
+    TransferReversal(stripe_types::TransferReversal),
 }
 impl stripe_types::Object for BalanceTransactionSource {
     type Id = String;

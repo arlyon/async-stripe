@@ -144,30 +144,13 @@ pub struct StructField {
 // Manually implemented to avoid printing the `doc_comment`.
 impl Debug for StructField {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("StructField")
-            .field("field_name", &self.field_name)
-            .field("rust_type", &self.rust_type)
-            .field("required", &self.required)
-            .field("vis", &self.vis)
-            .field("rename_as", &self.rename_as)
-            .finish()
+        f.debug_struct("StructField").field("field_name", &self.field_name).field("rust_type", &self.rust_type).field("required", &self.required).field("vis", &self.vis).field("rename_as", &self.rename_as).finish()
     }
 }
 
 impl StructField {
     pub fn new<T: Display>(field_name: T, rust_type: RustType, required: bool) -> Self {
-        Self {
-            field_name: field_name.to_string(),
-            doc_comment: None,
-            rename_as: None,
-            required,
-            vis: if rust_type.implies_private_field() {
-                Visibility::Private
-            } else {
-                Visibility::Public
-            },
-            rust_type,
-        }
+        Self { field_name: field_name.to_string(), doc_comment: None, rename_as: None, required, vis: if rust_type.implies_private_field() { Visibility::Private } else { Visibility::Public }, rust_type }
     }
 
     /// Rename the field when de/serializing.

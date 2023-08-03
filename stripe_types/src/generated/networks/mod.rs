@@ -1,63 +1,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Networks {
-    /// The preferred network.
+    /// All available networks for the card.
+    pub available: Vec<String>,
+    /// The preferred network for the card.
     pub preferred: Option<String>,
-    /// All supported networks.
-    pub supported: Vec<NetworksSupported>,
-}
-/// All supported networks.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum NetworksSupported {
-    Ach,
-    UsDomesticWire,
-}
-
-impl NetworksSupported {
-    pub fn as_str(self) -> &'static str {
-        use NetworksSupported::*;
-        match self {
-            Ach => "ach",
-            UsDomesticWire => "us_domestic_wire",
-        }
-    }
-}
-
-impl std::str::FromStr for NetworksSupported {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use NetworksSupported::*;
-        match s {
-            "ach" => Ok(Ach),
-            "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for NetworksSupported {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for NetworksSupported {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl serde::Serialize for NetworksSupported {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for NetworksSupported {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for NetworksSupported"))
-    }
 }

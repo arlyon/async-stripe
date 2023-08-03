@@ -5,54 +5,25 @@
 ///
 /// You can do so as many times as you wish until the entire transfer has been reversed.  Once entirely reversed, a transfer can’t be reversed again.
 /// This method will return an error when called on an already-reversed transfer, or when trying to reverse more money than is left on a transfer.
-pub fn create(
-    client: &stripe::Client,
-    id: &stripe_types::transfer_reversal::TransferReversalId,
-    params: CreateTransferReversal,
-) -> stripe::Response<stripe_types::transfer_reversal::TransferReversal> {
-    client.send_form(
-        &format!("/transfers/{id}/reversals", id = id),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create(client: &stripe::Client, id: &stripe_types::transfer_reversal::TransferReversalId, params: CreateTransferReversal) -> stripe::Response<stripe_types::TransferReversal> {
+    client.send_form(&format!("/transfers/{id}/reversals", id = id), params, http_types::Method::Post)
 }
 /// You can see a list of the reversals belonging to a specific transfer.
 ///
 /// Note that the 10 most recent reversals are always available by default on the transfer object.
 /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional reversals.
-pub fn list(
-    client: &stripe::Client,
-    id: &stripe_types::transfer_reversal::TransferReversalId,
-    params: ListTransferReversal,
-) -> stripe::Response<stripe_types::List<stripe_types::transfer_reversal::TransferReversal>> {
+pub fn list(client: &stripe::Client, id: &stripe_types::transfer_reversal::TransferReversalId, params: ListTransferReversal) -> stripe::Response<stripe_types::List<stripe_types::TransferReversal>> {
     client.get_query(&format!("/transfers/{id}/reversals", id = id), params)
 }
 /// By default, you can see the 10 most recent reversals stored directly on the transfer object, but you can also retrieve details about a specific reversal stored on the transfer.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &str,
-    transfer: &stripe_types::transfer::TransferId,
-    params: RetrieveTransferReversal,
-) -> stripe::Response<stripe_types::transfer_reversal::TransferReversal> {
-    client.get_query(
-        &format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, id: &str, transfer: &stripe_types::transfer::TransferId, params: RetrieveTransferReversal) -> stripe::Response<stripe_types::TransferReversal> {
+    client.get_query(&format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer), params)
 }
 /// Updates the specified reversal by setting the values of the parameters passed.
 ///
 /// Any parameters not provided will be left unchanged.  This request only accepts metadata and description as arguments.
-pub fn update(
-    client: &stripe::Client,
-    id: &str,
-    transfer: &stripe_types::transfer::TransferId,
-    params: UpdateTransferReversal,
-) -> stripe::Response<stripe_types::transfer_reversal::TransferReversal> {
-    client.send_form(
-        &format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, id: &str, transfer: &stripe_types::transfer::TransferId, params: UpdateTransferReversal) -> stripe::Response<stripe_types::TransferReversal> {
+    client.send_form(&format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTransferReversal<'a> {

@@ -13,8 +13,7 @@ pub struct Transfer {
     /// Amount in %s reversed (can be less than the amount attribute on the transfer if a partial reversal was issued).
     pub amount_reversed: i64,
     /// Balance transaction that describes the impact of this transfer on your account balance.
-    pub balance_transaction:
-        Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
+    pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Time that this record of the transfer was first created.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -26,10 +25,10 @@ pub struct Transfer {
     /// Often useful for displaying to users.
     pub description: Option<String>,
     /// ID of the Stripe account the transfer was sent to.
-    pub destination: Option<stripe_types::Expandable<stripe_types::account::Account>>,
+    pub destination: Option<stripe_types::Expandable<stripe_types::Account>>,
     /// If the destination is a Stripe account, this will be the ID of the payment that the destination account received for the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment: Option<stripe_types::Expandable<stripe_types::charge::Charge>>,
+    pub destination_payment: Option<stripe_types::Expandable<stripe_types::Charge>>,
     /// Unique identifier for the object.
     pub id: stripe_types::transfer::TransferId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -43,7 +42,7 @@ pub struct Transfer {
     /// Objects of the same type share the same value.
     pub object: TransferObject,
     /// A list of reversals that have been applied to the transfer.
-    pub reversals: stripe_types::List<stripe_types::transfer_reversal::TransferReversal>,
+    pub reversals: stripe_types::List<stripe_types::TransferReversal>,
     /// Whether the transfer has been fully reversed.
     ///
     /// If the transfer is only partially reversed, this attribute will still be false.
@@ -51,7 +50,7 @@ pub struct Transfer {
     /// ID of the charge or payment that was used to fund the transfer.
     ///
     /// If null, the transfer was funded from the available balance.
-    pub source_transaction: Option<stripe_types::Expandable<stripe_types::charge::Charge>>,
+    pub source_transaction: Option<stripe_types::Expandable<stripe_types::Charge>>,
     /// The source balance this transfer came from.
     ///
     /// One of `card`, `fpx`, or `bank_account`.
@@ -65,7 +64,7 @@ pub struct Transfer {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TransferObject {
     Transfer,
 }
@@ -98,7 +97,13 @@ impl AsRef<str> for TransferObject {
 
 impl std::fmt::Display for TransferObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TransferObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TransferObject {

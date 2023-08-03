@@ -57,13 +57,13 @@ pub struct Plan {
     /// Objects of the same type share the same value.
     pub object: PlanObject,
     /// The product whose pricing this plan determines.
-    pub product: Option<stripe_types::Expandable<stripe_types::product::Product>>,
+    pub product: Option<stripe_types::Expandable<stripe_types::Product>>,
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Vec<stripe_types::tier::Tier>>,
+    pub tiers: Option<Vec<stripe_types::PlanTier>>,
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -72,7 +72,7 @@ pub struct Plan {
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_usage: Option<stripe_types::transform_usage::TransformUsage>,
+    pub transform_usage: Option<stripe_types::TransformUsage>,
     /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     pub trial_period_days: Option<u32>,
     /// Configures how the quantity per period should be determined.
@@ -87,7 +87,7 @@ pub struct Plan {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -129,7 +129,13 @@ impl AsRef<str> for PlanAggregateUsage {
 
 impl std::fmt::Display for PlanAggregateUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanAggregateUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanAggregateUsage {
@@ -144,8 +150,7 @@ impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
 /// Describes how to compute the price per period.
@@ -153,7 +158,7 @@ impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanBillingScheme {
     PerUnit,
     Tiered,
@@ -189,7 +194,13 @@ impl AsRef<str> for PlanBillingScheme {
 
 impl std::fmt::Display for PlanBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanBillingScheme {
@@ -204,14 +215,13 @@ impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
     }
 }
 /// The frequency at which a subscription is billed.
 ///
 /// One of `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanInterval {
     Day,
     Month,
@@ -253,7 +263,13 @@ impl AsRef<str> for PlanInterval {
 
 impl std::fmt::Display for PlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanInterval {
@@ -274,7 +290,7 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanObject {
     Plan,
 }
@@ -307,7 +323,13 @@ impl AsRef<str> for PlanObject {
 
 impl std::fmt::Display for PlanObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanObject {
@@ -329,7 +351,7 @@ impl<'de> serde::Deserialize<'de> for PlanObject {
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
 /// In `graduated` tiering, pricing can change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanTiersMode {
     Graduated,
     Volume,
@@ -365,7 +387,13 @@ impl AsRef<str> for PlanTiersMode {
 
 impl std::fmt::Display for PlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanTiersMode {
@@ -389,7 +417,7 @@ impl<'de> serde::Deserialize<'de> for PlanTiersMode {
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanUsageType {
     Licensed,
     Metered,
@@ -425,7 +453,13 @@ impl AsRef<str> for PlanUsageType {
 
 impl std::fmt::Display for PlanUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PlanUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PlanUsageType {
@@ -450,5 +484,3 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-pub mod deleted;
-pub use deleted::DeletedPlan;

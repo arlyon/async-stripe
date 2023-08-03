@@ -7,8 +7,7 @@ pub struct FeeRefund {
     /// Amount, in %s.
     pub amount: i64,
     /// Balance transaction that describes the impact on your account balance.
-    pub balance_transaction:
-        Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
+    pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -18,7 +17,7 @@ pub struct FeeRefund {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// ID of the application fee that was refunded.
-    pub fee: stripe_types::Expandable<stripe_types::application_fee::ApplicationFee>,
+    pub fee: stripe_types::Expandable<stripe_types::PlatformFee>,
     /// Unique identifier for the object.
     pub id: stripe_types::fee_refund::FeeRefundId,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -33,7 +32,7 @@ pub struct FeeRefund {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FeeRefundObject {
     FeeRefund,
 }
@@ -66,7 +65,13 @@ impl AsRef<str> for FeeRefundObject {
 
 impl std::fmt::Display for FeeRefundObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FeeRefundObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FeeRefundObject {
@@ -91,4 +96,3 @@ impl stripe_types::Object for FeeRefund {
     }
 }
 stripe_types::def_id!(FeeRefundId);
-pub mod requests;

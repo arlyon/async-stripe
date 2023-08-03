@@ -5,5 +5,5 @@ pub mod price;
 pub mod product;
 pub mod promotion_code;
 pub mod shipping_rate;
-pub mod tax_code;
+pub mod tax_product_resource_tax_code;
 pub mod tax_rate;

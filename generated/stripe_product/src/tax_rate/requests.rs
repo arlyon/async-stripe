@@ -2,38 +2,20 @@
 /// Returns a list of your tax rates.
 ///
 /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListTaxRate,
-) -> stripe::Response<stripe_types::List<stripe_types::tax_rate::TaxRate>> {
+pub fn list(client: &stripe::Client, params: ListTaxRate) -> stripe::Response<stripe_types::List<stripe_types::TaxRate>> {
     client.get_query("/tax_rates", params)
 }
 /// Retrieves a tax rate with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    tax_rate: &stripe_types::tax_rate::TaxRateId,
-    params: RetrieveTaxRate,
-) -> stripe::Response<stripe_types::tax_rate::TaxRate> {
+pub fn retrieve(client: &stripe::Client, tax_rate: &stripe_types::tax_rate::TaxRateId, params: RetrieveTaxRate) -> stripe::Response<stripe_types::TaxRate> {
     client.get_query(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), params)
 }
 /// Creates a new tax rate.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateTaxRate,
-) -> stripe::Response<stripe_types::tax_rate::TaxRate> {
+pub fn create(client: &stripe::Client, params: CreateTaxRate) -> stripe::Response<stripe_types::TaxRate> {
     client.send_form("/tax_rates", params, http_types::Method::Post)
 }
 /// Updates an existing tax rate.
-pub fn update(
-    client: &stripe::Client,
-    tax_rate: &stripe_types::tax_rate::TaxRateId,
-    params: UpdateTaxRate,
-) -> stripe::Response<stripe_types::tax_rate::TaxRate> {
-    client.send_form(
-        &format!("/tax_rates/{tax_rate}", tax_rate = tax_rate),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, tax_rate: &stripe_types::tax_rate::TaxRateId, params: UpdateTaxRate) -> stripe::Response<stripe_types::TaxRate> {
+    client.send_form(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTaxRate<'a> {
@@ -194,7 +176,7 @@ impl<'a> UpdateTaxRate<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxType {
     AmusementTax,
     CommunicationsTax,
@@ -263,7 +245,13 @@ impl AsRef<str> for TaxType {
 
 impl std::fmt::Display for TaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxType {

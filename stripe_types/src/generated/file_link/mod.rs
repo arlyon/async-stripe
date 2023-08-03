@@ -13,7 +13,7 @@ pub struct FileLink {
     /// Time at which the link expires.
     pub expires_at: Option<stripe_types::Timestamp>,
     /// The file object this link points to.
-    pub file: stripe_types::Expandable<stripe_types::file::File>,
+    pub file: stripe_types::Expandable<stripe_types::File>,
     /// Unique identifier for the object.
     pub id: stripe_types::file_link::FileLinkId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -32,7 +32,7 @@ pub struct FileLink {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FileLinkObject {
     FileLink,
 }
@@ -65,7 +65,13 @@ impl AsRef<str> for FileLinkObject {
 
 impl std::fmt::Display for FileLinkObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FileLinkObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FileLinkObject {

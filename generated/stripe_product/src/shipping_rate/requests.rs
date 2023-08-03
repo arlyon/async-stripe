@@ -1,46 +1,19 @@
 
 /// Returns a list of your shipping rates.
-pub fn list(
-    client: &stripe::Client,
-    params: ListShippingRate,
-) -> stripe::Response<stripe_types::List<stripe_types::shipping_rate::ShippingRate>> {
+pub fn list(client: &stripe::Client, params: ListShippingRate) -> stripe::Response<stripe_types::List<stripe_types::ShippingRate>> {
     client.get_query("/shipping_rates", params)
 }
 /// Returns the shipping rate object with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId,
-    params: RetrieveShippingRate,
-) -> stripe::Response<stripe_types::shipping_rate::ShippingRate> {
-    client.get_query(
-        &format!(
-            "/shipping_rates/{shipping_rate_token}",
-            shipping_rate_token = shipping_rate_token
-        ),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId, params: RetrieveShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
+    client.get_query(&format!("/shipping_rates/{shipping_rate_token}", shipping_rate_token = shipping_rate_token), params)
 }
 /// Creates a new shipping rate object.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateShippingRate,
-) -> stripe::Response<stripe_types::shipping_rate::ShippingRate> {
+pub fn create(client: &stripe::Client, params: CreateShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
     client.send_form("/shipping_rates", params, http_types::Method::Post)
 }
 /// Updates an existing shipping rate object.
-pub fn update(
-    client: &stripe::Client,
-    shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId,
-    params: UpdateShippingRate,
-) -> stripe::Response<stripe_types::shipping_rate::ShippingRate> {
-    client.send_form(
-        &format!(
-            "/shipping_rates/{shipping_rate_token}",
-            shipping_rate_token = shipping_rate_token
-        ),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId, params: UpdateShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
+    client.send_form(&format!("/shipping_rates/{shipping_rate_token}", shipping_rate_token = shipping_rate_token), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListShippingRate<'a> {
@@ -137,16 +110,7 @@ pub struct CreateShippingRate<'a> {
 }
 impl<'a> CreateShippingRate<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self {
-            delivery_estimate: Default::default(),
-            display_name,
-            expand: Default::default(),
-            fixed_amount: Default::default(),
-            metadata: Default::default(),
-            tax_behavior: Default::default(),
-            tax_code: Default::default(),
-            type_: Default::default(),
-        }
+        Self { delivery_estimate: Default::default(), display_name, expand: Default::default(), fixed_amount: Default::default(), metadata: Default::default(), tax_behavior: Default::default(), tax_code: Default::default(), type_: Default::default() }
     }
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
@@ -185,12 +149,7 @@ pub struct CreateShippingRateFixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateShippingRateFixedAmountCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateShippingRateFixedAmountCurrencyOptions>>,
 }
 impl<'a> CreateShippingRateFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -218,7 +177,7 @@ impl CreateShippingRateFixedAmountCurrencyOptions {
 /// The type of calculation to use on the shipping rate.
 ///
 /// Can only be `fixed_amount` for now.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateShippingRateType {
     FixedAmount,
 }
@@ -251,7 +210,13 @@ impl AsRef<str> for CreateShippingRateType {
 
 impl std::fmt::Display for CreateShippingRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateShippingRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateShippingRateType {
@@ -304,12 +269,7 @@ pub struct UpdateShippingRateFixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            UpdateShippingRateFixedAmountCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, UpdateShippingRateFixedAmountCurrencyOptions>>,
 }
 impl<'a> UpdateShippingRateFixedAmount<'a> {
     pub fn new() -> Self {
@@ -335,7 +295,7 @@ impl UpdateShippingRateFixedAmountCurrencyOptions {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Unit {
     BusinessDay,
     Day,
@@ -380,7 +340,13 @@ impl AsRef<str> for Unit {
 
 impl std::fmt::Display for Unit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Unit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Unit {
@@ -391,7 +357,7 @@ impl serde::Serialize for Unit {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -430,7 +396,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {

@@ -45,10 +45,7 @@ fn infer_ident(meta: Vec<ObjectMetadata>) -> Option<RustIdent> {
 
     if let Some(desc) = &first.doc {
         if let Some(doc_name) = doc_implied_name(desc) {
-            if meta
-                .iter()
-                .all(|m| m.doc.as_ref().and_then(|m| doc_implied_name(m)) == Some(doc_name))
-            {
+            if meta.iter().all(|m| m.doc.as_ref().and_then(|m| doc_implied_name(m)) == Some(doc_name)) {
                 return Some(RustIdent::create(doc_name));
             }
         }
@@ -104,12 +101,7 @@ impl Dedupper {
                 let has_reference = obj.has_reference();
                 let is_copy = obj.is_copy();
                 if let Some(ident) = self.objs.get(obj) {
-                    *typ = RustType::Path {
-                        path: PathToType::IntraFile(RustIdent::create(ident)),
-                        is_ref: false,
-                        has_reference,
-                        is_copy,
-                    }
+                    *typ = RustType::Path { path: PathToType::IntraFile(RustIdent::create(ident)), is_ref: false, has_reference, is_copy }
                 } else {
                     self.replace_obj(obj);
                 }

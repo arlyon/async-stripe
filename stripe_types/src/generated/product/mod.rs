@@ -28,7 +28,7 @@ pub struct Product {
     pub deactivate_on: Option<Vec<String>>,
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_price: Option<stripe_types::Expandable<stripe_types::price::Price>>,
+    pub default_price: Option<stripe_types::Expandable<stripe_types::Price>>,
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -50,7 +50,7 @@ pub struct Product {
     /// Objects of the same type share the same value.
     pub object: ProductObject,
     /// The dimensions of this product for shipping purposes.
-    pub package_dimensions: Option<stripe_types::package_dimensions::PackageDimensions>,
+    pub package_dimensions: Option<stripe_types::PackageDimensions>,
     /// Whether this product is shipped (i.e., physical goods).
     pub shippable: Option<bool>,
     /// Extra information about a product which will appear on your customer's credit card statement.
@@ -59,7 +59,7 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
-    pub tax_code: Option<stripe_types::Expandable<stripe_types::tax_code::TaxCode>>,
+    pub tax_code: Option<stripe_types::Expandable<stripe_types::TaxProductResourceTaxCode>>,
     /// The type of the product.
     ///
     /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
@@ -80,7 +80,7 @@ pub struct Product {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ProductObject {
     Product,
 }
@@ -113,7 +113,13 @@ impl AsRef<str> for ProductObject {
 
 impl std::fmt::Display for ProductObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ProductObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ProductObject {
@@ -134,7 +140,7 @@ impl<'de> serde::Deserialize<'de> for ProductObject {
 /// The type of the product.
 ///
 /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ProductType {
     Good,
     Service,
@@ -170,7 +176,13 @@ impl AsRef<str> for ProductType {
 
 impl std::fmt::Display for ProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ProductType {
@@ -195,5 +207,3 @@ impl stripe_types::Object for Product {
     }
 }
 stripe_types::def_id!(ProductId);
-pub mod deleted;
-pub use deleted::DeletedProduct;

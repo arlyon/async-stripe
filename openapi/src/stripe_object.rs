@@ -3,18 +3,73 @@ use heck::SnakeCase;
 use openapiv3::Schema;
 use serde::{Deserialize, Serialize};
 
-use crate::components::ModuleName;
+use crate::crate_inference::Crate;
 use crate::rust_object::RustObject;
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::types::{ComponentPath, RustIdent};
+
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
+pub struct CrateInfo {
+    krate: Crate,
+    type_defs_in_stripe_types: bool,
+}
+
+impl CrateInfo {
+    pub fn new(krate: Crate) -> Self {
+        Self { krate, type_defs_in_stripe_types: false }
+    }
+
+    pub fn set_type_defs_in_types_crate(&mut self) {
+        self.type_defs_in_stripe_types = true;
+    }
+
+    pub fn are_type_defs_types_crate(&self) -> bool {
+        self.type_defs_in_stripe_types || self.krate == Crate::Types
+    }
+
+    pub fn for_types(&self) -> Crate {
+        if self.type_defs_in_stripe_types {
+            Crate::Types
+        } else {
+            self.krate
+        }
+    }
+
+    pub fn base(&self) -> Crate {
+        self.krate
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct StripeObject {
     pub requests: Vec<RequestSpec>,
     pub resource: StripeResource,
     pub data: StripeObjectData,
-    pub module: ModuleName,
+    pub krate: Option<CrateInfo>,
+}
+
+impl StripeObject {
+    pub fn krate(&self) -> Option<CrateInfo> {
+        self.krate
+    }
+
+    #[track_caller]
+    pub fn krate_unwrapped(&self) -> CrateInfo {
+        let Some(krate) = self.krate() else {
+            panic!("Has no crate assigned: \n{:?}", self);
+        };
+        krate
+    }
+
+    #[track_caller]
+    pub fn krate_unwrapped_mut(&mut self) -> &mut CrateInfo {
+        self.krate.as_mut().expect("No crate assigned")
+    }
+
+    pub fn assign_crate(&mut self, new_krate: Crate) {
+        self.krate = Some(CrateInfo::new(new_krate));
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -25,10 +80,6 @@ pub struct StripeObjectData {
 }
 
 impl StripeObject {
-    pub fn is_deleted_item(&self) -> bool {
-        self.path().is_deleted()
-    }
-
     pub fn mod_path(&self) -> String {
         self.resource.mod_path()
     }
@@ -60,11 +111,7 @@ impl StripeObject {
     }
 }
 
-pub fn parse_stripe_schema_as_rust_object(
-    schema: &Schema,
-    path: &ComponentPath,
-    ident: &RustIdent,
-) -> StripeObjectData {
+pub fn parse_stripe_schema_as_rust_object(schema: &Schema, path: &ComponentPath, ident: &RustIdent) -> StripeObjectData {
     let not_deleted_path = path.as_not_deleted();
     let infer_ctx = Inference::new(ident).id_path(&not_deleted_path);
     let typ = infer_ctx.infer_schema_type(schema);
@@ -78,9 +125,7 @@ pub fn parse_stripe_schema_as_rust_object(
                     id_type = Some(field.rust_type.clone());
                 }
                 if field.field_name == "object" {
-                    if let Some(RustObject::FieldlessEnum(variants)) =
-                        field.rust_type.as_rust_object()
-                    {
+                    if let Some(RustObject::FieldlessEnum(variants)) = field.rust_type.as_rust_object() {
                         if variants.len() == 1 {
                             let first = variants.first().unwrap();
                             object_name = Some(first.wire_name.clone());
@@ -155,12 +200,7 @@ impl StripeResource {
 
 impl StripeResource {
     pub fn from_schema(schema: &Schema, path: ComponentPath) -> anyhow::Result<Self> {
-        let resource: BaseResource = schema
-            .schema_data
-            .extensions
-            .get("x-stripeResource")
-            .context("No stripe resource")
-            .and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
+        let resource: BaseResource = schema.schema_data.extensions.get("x-stripeResource").context("No stripe resource").and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
 
         let mut in_package = None;
         if let Some(package) = resource.in_package {
@@ -169,15 +209,20 @@ impl StripeResource {
             }
         }
 
-        let class_ = &resource.class_name;
-        let ident = RustIdent::create(&schema.schema_data.title.as_ref().unwrap_or(class_));
-        let requests = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") {
-            serde_json::from_value(val.clone())?
-        } else {
-            vec![]
-        };
+        let ident = infer_object_ident(&path, &schema.schema_data.title, &resource.class_name);
+        let requests = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") { serde_json::from_value(val.clone())? } else { vec![] };
         Ok(StripeResource { base_ident: ident, in_package, requests, path })
     }
+}
+
+fn infer_object_ident(path: &ComponentPath, title: &Option<String>, class: &str) -> RustIdent {
+    let Some(title) = title else {
+        return RustIdent::create(path);
+    };
+    if title == "Polymorphic" {
+        return RustIdent::create(class);
+    }
+    RustIdent::create(title)
 }
 
 #[derive(Debug, Clone)]

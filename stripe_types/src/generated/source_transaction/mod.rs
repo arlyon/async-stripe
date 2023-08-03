@@ -6,11 +6,11 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SourceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach_credit_transfer: Option<stripe_types::ach_credit_transfer_data::AchCreditTransferData>,
+    pub ach_credit_transfer: Option<stripe_types::SourceTransactionAchCreditTransferData>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the amount your customer has pushed to the receiver.
     pub amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub chf_credit_transfer: Option<stripe_types::chf_credit_transfer_data::ChfCreditTransferData>,
+    pub chf_credit_transfer: Option<stripe_types::SourceTransactionChfCreditTransferData>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -20,7 +20,7 @@ pub struct SourceTransaction {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gbp_credit_transfer: Option<stripe_types::gbp_credit_transfer_data::GbpCreditTransferData>,
+    pub gbp_credit_transfer: Option<stripe_types::SourceTransactionGbpCreditTransferData>,
     /// Unique identifier for the object.
     pub id: stripe_types::source_transaction::SourceTransactionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -30,10 +30,9 @@ pub struct SourceTransaction {
     /// Objects of the same type share the same value.
     pub object: SourceTransactionObject,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paper_check: Option<stripe_types::paper_check_data::PaperCheckData>,
+    pub paper_check: Option<stripe_types::SourceTransactionPaperCheckData>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_credit_transfer:
-        Option<stripe_types::sepa_credit_transfer_data::SepaCreditTransferData>,
+    pub sepa_credit_transfer: Option<stripe_types::SourceTransactionSepaCreditTransferData>,
     /// The ID of the source this transaction is attached to.
     pub source: String,
     /// The status of the transaction, one of `succeeded`, `pending`, or `failed`.
@@ -45,7 +44,7 @@ pub struct SourceTransaction {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SourceTransactionObject {
     SourceTransaction,
 }
@@ -78,7 +77,13 @@ impl AsRef<str> for SourceTransactionObject {
 
 impl std::fmt::Display for SourceTransactionObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SourceTransactionObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SourceTransactionObject {
@@ -93,12 +98,11 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionObject"))
     }
 }
 /// The type of source this transaction is attached to.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SourceTransactionType {
     AchCreditTransfer,
     AchDebit,
@@ -176,7 +180,13 @@ impl AsRef<str> for SourceTransactionType {
 
 impl std::fmt::Display for SourceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SourceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SourceTransactionType {
@@ -191,8 +201,7 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionType"))
     }
 }
 impl stripe_types::Object for SourceTransaction {

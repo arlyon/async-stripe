@@ -16,17 +16,13 @@ pub struct CreditNote {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// ID of the customer.
-    pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
+    pub customer: stripe_types::Expandable<stripe_types::Customer>,
     /// Customer balance transaction related to this credit note.
-    pub customer_balance_transaction: Option<
-        stripe_types::Expandable<
-            stripe_types::customer_balance_transaction::CustomerBalanceTransaction,
-        >,
-    >,
+    pub customer_balance_transaction: Option<stripe_types::Expandable<stripe_types::CustomerBalanceTransaction>>,
     /// The integer amount in %s representing the total amount of discount that was credited.
     pub discount_amount: i64,
     /// The aggregate amounts calculated per discount for all line items.
-    pub discount_amounts: Vec<stripe_types::discount_amount::DiscountAmount>,
+    pub discount_amounts: Vec<stripe_types::DiscountsResourceDiscountAmount>,
     /// The date when this credit note is in effect.
     ///
     /// Same as `created` unless overwritten.
@@ -35,9 +31,9 @@ pub struct CreditNote {
     /// Unique identifier for the object.
     pub id: stripe_types::credit_note::CreditNoteId,
     /// ID of the invoice.
-    pub invoice: stripe_types::Expandable<stripe_types::invoice::Invoice>,
+    pub invoice: stripe_types::Expandable<stripe_types::Invoice>,
     /// Line items that make up the credit note.
-    pub lines: stripe_types::List<stripe_types::credit_note_line_item::CreditNoteLineItem>,
+    pub lines: stripe_types::List<stripe_types::CreditNoteLineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Customer-facing text that appears on the credit note PDF.
@@ -59,9 +55,9 @@ pub struct CreditNote {
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
     pub reason: Option<CreditNoteReason>,
     /// Refund related to this credit note.
-    pub refund: Option<stripe_types::Expandable<stripe_types::refund::Refund>>,
+    pub refund: Option<stripe_types::Expandable<stripe_types::Refund>>,
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
-    pub shipping_cost: Option<stripe_types::shipping_cost::ShippingCost>,
+    pub shipping_cost: Option<stripe_types::InvoicesShippingCost>,
     /// Status of this credit note, one of `issued` or `void`.
     ///
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
@@ -71,7 +67,7 @@ pub struct CreditNote {
     /// The integer amount in %s representing the amount of the credit note, excluding all tax and invoice level discounts.
     pub subtotal_excluding_tax: Option<i64>,
     /// The aggregate amounts calculated per tax rate for all line items.
-    pub tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
+    pub tax_amounts: Vec<stripe_types::CreditNoteTaxAmount>,
     /// The integer amount in %s representing the total amount of the credit note, including tax and all discount.
     pub total: i64,
     /// The integer amount in %s representing the total amount of the credit note, excluding tax, but including discounts.
@@ -88,7 +84,7 @@ pub struct CreditNote {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteObject {
     CreditNote,
 }
@@ -121,7 +117,13 @@ impl AsRef<str> for CreditNoteObject {
 
 impl std::fmt::Display for CreditNoteObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteObject {
@@ -136,12 +138,11 @@ impl<'de> serde::Deserialize<'de> for CreditNoteObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteObject"))
     }
 }
 /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteReason {
     Duplicate,
     Fraudulent,
@@ -183,7 +184,13 @@ impl AsRef<str> for CreditNoteReason {
 
 impl std::fmt::Display for CreditNoteReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteReason {
@@ -198,14 +205,13 @@ impl<'de> serde::Deserialize<'de> for CreditNoteReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
     }
 }
 /// Status of this credit note, one of `issued` or `void`.
 ///
 /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteStatus {
     Issued,
     Void,
@@ -241,7 +247,13 @@ impl AsRef<str> for CreditNoteStatus {
 
 impl std::fmt::Display for CreditNoteStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteStatus {
@@ -256,15 +268,14 @@ impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
     }
 }
 /// Type of this credit note, one of `pre_payment` or `post_payment`.
 ///
 /// A `pre_payment` credit note means it was issued when the invoice was open.
 /// A `post_payment` credit note means it was issued when the invoice was paid.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteType {
     PostPayment,
     PrePayment,
@@ -300,7 +311,13 @@ impl AsRef<str> for CreditNoteType {
 
 impl std::fmt::Display for CreditNoteType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteType {

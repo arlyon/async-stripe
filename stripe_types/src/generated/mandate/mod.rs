@@ -1,13 +1,13 @@
 /// A Mandate is a record of the permission a customer has given you to debit their payment method.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Mandate {
-    pub customer_acceptance: stripe_types::customer_acceptance::CustomerAcceptance,
+    pub customer_acceptance: stripe_types::CustomerAcceptance,
     /// Unique identifier for the object.
     pub id: stripe_types::mandate::MandateId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multi_use: Option<stripe_types::multi_use::MultiUse>,
+    pub multi_use: Option<stripe_types::MandateMultiUse>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -16,10 +16,10 @@ pub struct Mandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
     /// ID of the payment method associated with this mandate.
-    pub payment_method: stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>,
-    pub payment_method_details: stripe_types::payment_method_details::PaymentMethodDetails,
+    pub payment_method: stripe_types::Expandable<stripe_types::PaymentMethod>,
+    pub payment_method_details: stripe_types::MandatePaymentMethodDetails,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub single_use: Option<stripe_types::single_use::SingleUse>,
+    pub single_use: Option<stripe_types::MandateSingleUse>,
     /// The status of the mandate, which indicates whether it can be used to initiate a payment.
     pub status: MandateStatus,
     /// The type of the mandate.
@@ -29,7 +29,7 @@ pub struct Mandate {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MandateObject {
     Mandate,
 }
@@ -62,7 +62,13 @@ impl AsRef<str> for MandateObject {
 
 impl std::fmt::Display for MandateObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for MandateObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for MandateObject {
@@ -81,7 +87,7 @@ impl<'de> serde::Deserialize<'de> for MandateObject {
     }
 }
 /// The status of the mandate, which indicates whether it can be used to initiate a payment.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MandateStatus {
     Active,
     Inactive,
@@ -120,7 +126,13 @@ impl AsRef<str> for MandateStatus {
 
 impl std::fmt::Display for MandateStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for MandateStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for MandateStatus {
@@ -139,7 +151,7 @@ impl<'de> serde::Deserialize<'de> for MandateStatus {
     }
 }
 /// The type of the mandate.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MandateType {
     MultiUse,
     SingleUse,
@@ -175,7 +187,13 @@ impl AsRef<str> for MandateType {
 
 impl std::fmt::Display for MandateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for MandateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for MandateType {

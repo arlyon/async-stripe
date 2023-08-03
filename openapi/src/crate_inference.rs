@@ -9,8 +9,9 @@ use petgraph::Direction;
 use serde::{Deserialize, Serialize};
 use tracing::{debug, error};
 
-use crate::components::{Components, Module, ModuleName};
-use crate::graph::ModuleGraph;
+use crate::components::Components;
+use crate::graph::ComponentGraph;
+use crate::types::ComponentPath;
 
 // pub const PATHS_IN_TYPES: &[&str] = &[
 //     "account",
@@ -43,10 +44,7 @@ pub enum Crate {
 impl Crate {
     pub fn all() -> &'static [Crate] {
         use Crate::*;
-        &[
-            Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment,
-            Issuing, Fraud,
-        ]
+        &[Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment, Issuing, Fraud]
     }
 
     pub fn generate_to(self) -> String {
@@ -88,20 +86,26 @@ impl Crate {
         }
     }
 }
-fn load_crate_map() -> anyhow::Result<HashMap<Crate, Vec<String>>> {
+
+#[derive(Deserialize)]
+struct CrateMap {
+    components: HashMap<Crate, Vec<String>>,
+    packages: HashMap<String, Crate>,
+}
+
+fn load_crate_map() -> anyhow::Result<CrateMap> {
     let loaded = serde_json::from_reader(File::open("crate_map.json")?)?;
     Ok(loaded)
 }
 
 lazy_static! {
-    static ref CRATE_MAP: HashMap<Crate, Vec<String>> =
-        load_crate_map().expect("Could not load crate map");
+    static ref CRATE_MAP: CrateMap = load_crate_map().expect("Could not load crate map");
 }
 
 pub fn validate_crate_map(components: &Components) -> anyhow::Result<()> {
-    for members in CRATE_MAP.values() {
+    for members in CRATE_MAP.components.values() {
         for name in members {
-            if !components.modules.contains_key(name.as_str()) {
+            if !components.components.contains_key(name.as_str()) {
                 bail!("Crate map includes unrecognized {name}. Maybe it is misspelled?");
             }
         }
@@ -109,9 +113,20 @@ pub fn validate_crate_map(components: &Components) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn maybe_specified_crate(name: &str) -> Option<Crate> {
+pub fn maybe_infer_crate(path: &str, package: Option<&str>) -> Option<Crate> {
+    // Make sure deleted variants end up in the same place as the non-deleted version
+    let path = path.trim_start_matches("deleted_");
+    if let Some(package) = package {
+        let krate = CRATE_MAP.packages.get(package).unwrap_or_else(|| {
+            panic!("Package {} requires a mapping", package);
+        });
+        return Some(*krate);
+    }
     for krate in Crate::all() {
-        if CRATE_MAP[krate].iter().any(|c| c == name) {
+        let Some(members) = CRATE_MAP.components.get(krate) else {
+            continue;
+        };
+        if members.iter().any(|c| c == path) {
             return Some(*krate);
         }
     }
@@ -123,103 +138,87 @@ impl Components {
         // If a component includes requests that have URLs building off another component,
         // place with that component. This automates determinations like `external_account`
         // ending up in the same crate as `account` since all its requests start with `/account`.
-        let mut new_assignments: IndexMap<ModuleName, Crate> = IndexMap::new();
-        for (mod_name, module) in &self.modules {
-            match module {
-                Module::Package { .. } => {}
-                Module::Component { path, krate } => {
-                    if krate.is_some() {
-                        continue;
-                    }
-                    let this_obj = self.get(path);
-                    let words = mod_name.split('_');
-                    let first_two = words.take(2).collect::<Vec<_>>().join("_");
-                    let first_word = mod_name.split_once('_').map(|f| f.0);
-                    for (other_mod_name, other_module) in &self.modules {
-                        let Some(krate) = other_module.krate() else {
-                            continue;
-                        };
-                        if let Some(obj) = self.maybe_get(other_mod_name.as_ref()) {
-                            if this_obj.is_nested_resource_of(obj) {
-                                new_assignments.insert(mod_name.clone(), krate.base());
-                                break;
-                            }
-                        };
+        let mut new_assignments: IndexMap<ComponentPath, Crate> = IndexMap::new();
+        for (path, component) in &self.components {
+            let krate = component.krate();
+            if krate.is_some() {
+                continue;
+            }
+            let this_obj = self.get(path);
+            let words = path.split('_');
+            let first_two = words.take(2).collect::<Vec<_>>().join("_");
+            let first_word = path.split_once('_').map(|f| f.0);
+            for (other_path, other_component) in &self.components {
+                let Some(krate) = other_component.krate() else {
+                    continue;
+                };
+                if this_obj.is_nested_resource_of(other_component) {
+                    new_assignments.insert(path.clone(), krate.base());
+                    break;
+                }
 
-                        if other_mod_name.as_ref() == first_two {
-                            new_assignments.insert(mod_name.clone(), krate.base());
-                            break;
-                        }
-                        if first_word == Some(other_mod_name.as_ref()) {
-                            new_assignments.insert(mod_name.clone(), krate.base());
-                            break;
-                        }
-                    }
+                if other_path.as_ref() == first_two {
+                    new_assignments.insert(path.clone(), krate.base());
+                    break;
+                }
+                if first_word == Some(other_path.as_ref()) {
+                    new_assignments.insert(path.clone(), krate.base());
+                    break;
                 }
             }
         }
         debug!("Inferred {new_assignments:#?} based on naming");
-        for (mod_name, krate) in new_assignments {
-            self.get_module_mut(&mod_name).assign_crate(krate);
+        for (path, krate) in new_assignments {
+            self.get_mut(&path).assign_crate(krate);
         }
 
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_what_depends_on_it);
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_deps);
         self.assign_uninferrable_crates();
+        self.ensure_no_missing_crates()?;
         self.assign_paths_required_to_live_in_types_crate();
         self.validate_crate_assignment()
     }
 
     fn assign_uninferrable_crates(&mut self) {
-        let uninferrable = [
-            ("linked_account_options_us_bank_account", Crate::Core),
-            ("three_d_secure_details", Crate::Types),
-        ];
-        for (mod_name, krate) in uninferrable {
-            let module = self.modules.get_mut(mod_name).expect("Module not found");
-            if module.krate().is_some() {
-                panic!(
-                    "Module {} mod_name already had crate {:?}. Cannot assign {:?}",
-                    mod_name,
-                    module.krate().unwrap(),
-                    krate
-                );
+        let uninferrable = [("linked_account_options_us_bank_account", Crate::Core), ("three_d_secure_details", Crate::Types), ("radar_radar_options", Crate::Types)];
+        for (path, krate) in uninferrable {
+            let comp = self.components.get_mut(path).expect("Component not found");
+            if comp.krate().is_some() {
+                panic!("Component {} already had crate {:?}. Cannot assign {:?}", path, comp.krate().unwrap(), krate);
             }
-            module.assign_crate(krate);
+            comp.assign_crate(krate);
         }
     }
 
-    fn validate_crate_assignment(&self) -> anyhow::Result<()> {
-        let mods_missing_crates = self
-            .modules
-            .iter()
-            .filter(|(_, module)| module.krate().is_none())
-            .map(|(name, _)| name)
-            .collect::<Vec<_>>();
+    fn ensure_no_missing_crates(&self) -> anyhow::Result<()> {
+        let missing_crates = self.components.iter().filter(|(_, comp)| comp.krate().is_none()).map(|(name, _)| name).collect::<Vec<_>>();
 
-        if !mods_missing_crates.is_empty() {
-            let mod_graph = self.gen_module_dep_graph();
-            for missing_mod in &mods_missing_crates {
-                let depended_on = mod_graph
-                    .neighbors_directed(missing_mod, Direction::Incoming)
-                    .collect::<Vec<_>>();
-                let depended_crates =
-                    depended_on.iter().map(|m| self.get_module(m).krate()).collect::<IndexSet<_>>();
-                error!("Could not infer crate for {missing_mod}. Depended on by modules {depended_on:?}, crates {depended_crates:?}")
+        if !missing_crates.is_empty() {
+            let graph = self.gen_component_dep_graph();
+            for missing in &missing_crates {
+                let depended_on = graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
+                let depended_crates = depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
+                error!("Could not infer crate for {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}")
             }
-            bail!("Some modules could not have their crate inferred: {:#?}", mods_missing_crates);
+            bail!("Some components could not have their crate inferred: {:#?}", missing_crates);
         }
 
+        Ok(())
+    }
+
+    fn validate_crate_assignment(&self) -> anyhow::Result<()> {
         let graph = self.gen_crate_dep_graph();
         let deps_for_types_crate = graph.neighbors(Crate::Types).collect::<Vec<_>>();
         if !deps_for_types_crate.is_empty() {
-            bail!(
-                "Types crate should not have dependencies, but has dependencies {:#?}!",
-                deps_for_types_crate
-            );
+            bail!("Types crate should not have dependencies, but has dependencies {:#?}!", deps_for_types_crate);
         }
         if is_cyclic_directed(&graph) {
             bail!("Crate dependency graph contains a cycle!");
+        }
+        let requests_in_types = self.components.iter().filter(|(_, comp)| comp.krate_unwrapped().base() == Crate::Types && !comp.requests.is_empty()).map(|(path, _)| path).collect::<Vec<_>>();
+        if !requests_in_types.is_empty() {
+            bail!("Components have requests, not allowed in types crate: {requests_in_types:#?}");
         }
         Ok(())
     }
@@ -227,23 +226,16 @@ impl Components {
     fn assign_paths_required_to_live_in_types_crate(&mut self) {
         let mut required = vec![];
         loop {
-            let mod_graph = self.gen_module_dep_graph();
-            for (module_name, module) in &self.modules {
-                if module.krate_unwrapped().are_type_defs_types_crate() {
+            let graph = self.gen_component_dep_graph();
+            for (path, component) in &self.components {
+                if component.krate_unwrapped().are_type_defs_types_crate() {
                     continue;
                 }
-                let my_crate = module.krate_unwrapped().base();
-                let depended_on = mod_graph
-                    .neighbors_directed(module_name, Direction::Incoming)
-                    .collect::<Vec<_>>();
-                let depended_crates = depended_on
-                    .iter()
-                    .map(|m| self.get_module(m).krate_unwrapped().for_types())
-                    .filter(|c| *c != my_crate)
-                    .collect::<IndexSet<_>>();
-                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::Types)
-                {
-                    required.push(module_name.clone());
+                let my_crate = component.krate_unwrapped().base();
+                let depended_on = graph.neighbors_directed(path, Direction::Incoming).collect::<Vec<_>>();
+                let depended_crates = depended_on.iter().map(|m| self.get(m).krate_unwrapped().for_types()).filter(|c| *c != my_crate).collect::<IndexSet<_>>();
+                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::Types) {
+                    required.push(path.clone());
                 }
             }
 
@@ -253,20 +245,13 @@ impl Components {
                 break;
             }
             for req in required.drain(..) {
-                self.get_module_mut(&req).krate_unwrapped_mut().set_type_defs_in_types_crate();
+                self.get_mut(&req).krate_unwrapped_mut().set_type_defs_in_types_crate();
             }
         }
     }
 
-    fn maybe_infer_crate_by_what_depends_on_it(
-        &self,
-        mod_name: &ModuleName,
-        mod_graph: &ModuleGraph,
-    ) -> Option<Crate> {
-        let depended_on_by = mod_graph
-            .neighbors_directed(mod_name, Direction::Incoming)
-            .map(|n| self.get_module(n).krate().map(|krate| krate.base()))
-            .collect::<Option<Vec<_>>>()?;
+    fn maybe_infer_crate_by_what_depends_on_it(&self, path: &ComponentPath, graph: &ComponentGraph) -> Option<Crate> {
+        let depended_on_by = graph.neighbors_directed(path, Direction::Incoming).map(|n| self.get(n).krate().map(|krate| krate.base())).collect::<Option<Vec<_>>>()?;
 
         let first = depended_on_by.first()?;
         if depended_on_by.iter().all(|d| d == first) {
@@ -276,15 +261,8 @@ impl Components {
         }
     }
 
-    fn maybe_infer_crate_by_deps(
-        &self,
-        mod_name: &ModuleName,
-        mod_graph: &ModuleGraph,
-    ) -> Option<Crate> {
-        let known_dependents = mod_graph
-            .neighbors(mod_name)
-            .map(|n| self.get_module(n).krate().map(|krate| krate.base()))
-            .collect::<Option<IndexSet<_>>>()?;
+    fn maybe_infer_crate_by_deps(&self, path: &ComponentPath, graph: &ComponentGraph) -> Option<Crate> {
+        let known_dependents = graph.neighbors(path).map(|n| self.get(n).krate().map(|krate| krate.base())).collect::<Option<IndexSet<_>>>()?;
 
         let first = known_dependents.first()?;
         if known_dependents.iter().all(|d| d == first) {
@@ -297,24 +275,24 @@ impl Components {
 
 fn infer_crates_using_deps<F>(components: &mut Components, infer_test: F)
 where
-    F: Copy + FnOnce(&Components, &ModuleName, &ModuleGraph) -> Option<Crate>,
+    F: Copy + FnOnce(&Components, &ComponentPath, &ComponentGraph) -> Option<Crate>,
 {
-    let mut new_assignments: IndexMap<ModuleName, Crate> = IndexMap::new();
+    let mut new_assignments: IndexMap<ComponentPath, Crate> = IndexMap::new();
     loop {
-        let mod_graph = components.gen_module_dep_graph();
-        for (mod_name, module) in &components.modules {
-            if module.krate().is_some() {
+        let graph = components.gen_component_dep_graph();
+        for (path, component) in &components.components {
+            if component.krate().is_some() {
                 continue;
             }
-            if let Some(assignment) = infer_test(components, mod_name, &mod_graph) {
-                new_assignments.insert(mod_name.clone(), assignment);
+            if let Some(assignment) = infer_test(components, path, &graph) {
+                new_assignments.insert(path.clone(), assignment);
             }
         }
         let no_new_assignments = new_assignments.is_empty();
 
         debug!("Inferred {new_assignments:#?}");
         for (mod_name, krate) in new_assignments.drain(..) {
-            components.get_module_mut(&mod_name).assign_crate(krate);
+            components.get_mut(&mod_name).assign_crate(krate);
         }
         if no_new_assignments {
             break;

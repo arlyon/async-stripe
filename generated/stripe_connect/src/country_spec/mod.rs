@@ -28,12 +28,12 @@ pub struct CountrySpec {
     pub supported_payment_methods: Vec<String>,
     /// Countries that can accept transfers from the specified country.
     pub supported_transfer_countries: Vec<String>,
-    pub verification_fields: stripe_connect::verification_fields::VerificationFields,
+    pub verification_fields: stripe_connect::CountrySpecVerificationFields,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CountrySpecObject {
     CountrySpec,
 }
@@ -66,7 +66,13 @@ impl AsRef<str> for CountrySpecObject {
 
 impl std::fmt::Display for CountrySpecObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CountrySpecObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CountrySpecObject {
@@ -81,8 +87,7 @@ impl<'de> serde::Deserialize<'de> for CountrySpecObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CountrySpecObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CountrySpecObject"))
     }
 }
 impl stripe_types::Object for CountrySpec {

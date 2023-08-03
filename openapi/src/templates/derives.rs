@@ -1,8 +1,9 @@
 use std::fmt::Write;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Default)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub struct Derives {
     copy: bool,
+    debug: bool,
     default: bool,
     eq: bool,
     serialize: bool,
@@ -11,11 +12,16 @@ pub struct Derives {
 
 impl Derives {
     pub fn new() -> Self {
-        Default::default()
+        Self { debug: true, copy: false, default: false, eq: false, serialize: false, deserialize: false }
     }
 
     pub fn new_deser() -> Self {
-        Self { copy: false, default: false, eq: false, serialize: true, deserialize: true }
+        Self { serialize: true, deserialize: true, ..Derives::new() }
+    }
+
+    pub fn debug(mut self, debug: bool) -> Self {
+        self.debug = debug;
+        self
     }
 
     pub fn copy(mut self, copy: bool) -> Self {
@@ -61,7 +67,10 @@ pub fn write_derives_line(derives: Derives) -> String {
     if derives.copy {
         let _ = write!(out, "Copy,");
     }
-    let _ = write!(out, "Clone, Debug,");
+    let _ = write!(out, "Clone,");
+    if derives.debug {
+        let _ = write!(out, "Debug,");
+    }
     if derives.default {
         let _ = write!(out, "Default,");
     }

@@ -10,19 +10,19 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<stripe_types::address::Address>,
+    pub address: Option<stripe_types::Address>,
     /// The Kana variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kana: Option<stripe_types::japan_address::JapanAddress>,
+    pub address_kana: Option<stripe_types::LegalEntityJapanAddress>,
     /// The Kanji variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kanji: Option<stripe_types::japan_address::JapanAddress>,
+    pub address_kanji: Option<stripe_types::LegalEntityJapanAddress>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<stripe_types::date_of_birth::DateOfBirth>,
+    pub dob: Option<stripe_types::LegalEntityDob>,
     /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
@@ -40,7 +40,7 @@ pub struct Person {
     pub full_name_aliases: Option<Vec<String>>,
     /// Information about the upcoming new requirements for this person, including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<stripe_types::future_requirements::FutureRequirements>,
+    pub future_requirements: Option<stripe_types::PersonFutureRequirements>,
     /// The person's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
@@ -83,24 +83,24 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub political_exposure: Option<PersonPoliticalExposure>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registered_address: Option<stripe_types::address::Address>,
+    pub registered_address: Option<stripe_types::Address>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<stripe_types::relationship::Relationship>,
+    pub relationship: Option<stripe_types::PersonRelationship>,
     /// Information about the requirements for this person, including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<stripe_types::requirements::Requirements>,
+    pub requirements: Option<stripe_types::PersonRequirements>,
     /// Whether the last four digits of the person's Social Security number have been provided (U.S.
     ///
     /// only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4_provided: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<stripe_types::verification::Verification>,
+    pub verification: Option<stripe_types::LegalEntityPersonVerification>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PersonObject {
     Person,
 }
@@ -133,7 +133,13 @@ impl AsRef<str> for PersonObject {
 
 impl std::fmt::Display for PersonObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PersonObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PersonObject {
@@ -152,7 +158,7 @@ impl<'de> serde::Deserialize<'de> for PersonObject {
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PersonPoliticalExposure {
     Existing,
     None,
@@ -188,7 +194,13 @@ impl AsRef<str> for PersonPoliticalExposure {
 
 impl std::fmt::Display for PersonPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PersonPoliticalExposure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PersonPoliticalExposure {
@@ -203,8 +215,7 @@ impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
     }
 }
 impl stripe_types::Object for Person {
@@ -214,5 +225,3 @@ impl stripe_types::Object for Person {
     }
 }
 stripe_types::def_id!(PersonId, "person_");
-pub mod deleted;
-pub use deleted::DeletedPerson;

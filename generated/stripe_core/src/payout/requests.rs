@@ -2,76 +2,42 @@
 /// Retrieves the details of an existing payout.
 ///
 /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
-pub fn retrieve(
-    client: &stripe::Client,
-    payout: &stripe_types::payout::PayoutId,
-    params: RetrievePayout,
-) -> stripe::Response<stripe_types::payout::Payout> {
+pub fn retrieve(client: &stripe::Client, payout: &stripe_types::payout::PayoutId, params: RetrievePayout) -> stripe::Response<stripe_types::Payout> {
     client.get_query(&format!("/payouts/{payout}", payout = payout), params)
 }
 /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
 ///
 /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPayout,
-) -> stripe::Response<stripe_types::List<stripe_types::payout::Payout>> {
+pub fn list(client: &stripe::Client, params: ListPayout) -> stripe::Response<stripe_types::List<stripe_types::Payout>> {
     client.get_query("/payouts", params)
 }
 /// To send funds to your own bank account, you create a new payout object.
 ///
 /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
 /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePayout,
-) -> stripe::Response<stripe_types::payout::Payout> {
+pub fn create(client: &stripe::Client, params: CreatePayout) -> stripe::Response<stripe_types::Payout> {
     client.send_form("/payouts", params, http_types::Method::Post)
 }
 /// Updates the specified payout by setting the values of the parameters passed.
 ///
 /// Any parameters not provided will be left unchanged.
 /// This request accepts only the metadata as arguments.
-pub fn update(
-    client: &stripe::Client,
-    payout: &stripe_types::payout::PayoutId,
-    params: UpdatePayout,
-) -> stripe::Response<stripe_types::payout::Payout> {
-    client.send_form(
-        &format!("/payouts/{payout}", payout = payout),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, payout: &stripe_types::payout::PayoutId, params: UpdatePayout) -> stripe::Response<stripe_types::Payout> {
+    client.send_form(&format!("/payouts/{payout}", payout = payout), params, http_types::Method::Post)
 }
 /// A previously created payout can be canceled if it has not yet been paid out.
 ///
 /// Funds will be refunded to your available balance.
 /// You may not cancel automatic Stripe payouts.
-pub fn cancel(
-    client: &stripe::Client,
-    payout: &stripe_types::payout::PayoutId,
-    params: CancelPayout,
-) -> stripe::Response<stripe_types::payout::Payout> {
-    client.send_form(
-        &format!("/payouts/{payout}/cancel", payout = payout),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, payout: &stripe_types::payout::PayoutId, params: CancelPayout) -> stripe::Response<stripe_types::Payout> {
+    client.send_form(&format!("/payouts/{payout}/cancel", payout = payout), params, http_types::Method::Post)
 }
 /// Reverses a payout by debiting the destination bank account.
 ///
 /// Only payouts for connected accounts to US bank accounts may be reversed at this time.
 /// If the payout is in the `pending` status, `/v1/payouts/:id/cancel` should be used instead.  By requesting a reversal via `/v1/payouts/:id/reverse`, you confirm that the authorized signatory of the selected bank account has authorized the debit on the bank account and that no other authorization is required.
-pub fn reverse(
-    client: &stripe::Client,
-    payout: &stripe_types::payout::PayoutId,
-    params: ReversePayout,
-) -> stripe::Response<stripe_types::payout::Payout> {
-    client.send_form(
-        &format!("/payouts/{payout}/reverse", payout = payout),
-        params,
-        http_types::Method::Post,
-    )
+pub fn reverse(client: &stripe::Client, payout: &stripe_types::payout::PayoutId, params: ReversePayout) -> stripe::Response<stripe_types::Payout> {
+    client.send_form(&format!("/payouts/{payout}/reverse", payout = payout), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePayout<'a> {
@@ -174,24 +140,14 @@ pub struct CreatePayout<'a> {
 }
 impl<'a> CreatePayout<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self {
-            amount,
-            currency,
-            description: Default::default(),
-            destination: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            method: Default::default(),
-            source_type: Default::default(),
-            statement_descriptor: Default::default(),
-        }
+        Self { amount, currency, description: Default::default(), destination: Default::default(), expand: Default::default(), metadata: Default::default(), method: Default::default(), source_type: Default::default(), statement_descriptor: Default::default() }
     }
 }
 /// The method used to send this payout, which can be `standard` or `instant`.
 ///
 /// `instant` is only supported for payouts to debit cards.
 /// (See [Instant payouts for marketplaces for more information](https://stripe.com/blog/instant-payouts-for-marketplaces).).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePayoutMethod {
     Instant,
     Standard,
@@ -227,7 +183,13 @@ impl AsRef<str> for CreatePayoutMethod {
 
 impl std::fmt::Display for CreatePayoutMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePayoutMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePayoutMethod {
@@ -243,7 +205,7 @@ impl serde::Serialize for CreatePayoutMethod {
 /// Balances for different payment sources are kept separately.
 /// You can find the amounts with the balances API.
 /// One of `bank_account`, `card`, or `fpx`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePayoutSourceType {
     BankAccount,
     Card,
@@ -282,7 +244,13 @@ impl AsRef<str> for CreatePayoutSourceType {
 
 impl std::fmt::Display for CreatePayoutSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePayoutSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePayoutSourceType {

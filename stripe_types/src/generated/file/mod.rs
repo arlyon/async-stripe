@@ -15,7 +15,7 @@ pub struct File {
     pub id: stripe_types::file::FileId,
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
     #[serde(default)]
-    pub links: stripe_types::List<stripe_types::file_link::FileLink>,
+    pub links: stripe_types::List<stripe_types::FileLink>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.
@@ -35,7 +35,7 @@ pub struct File {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FileObject {
     File,
 }
@@ -68,7 +68,13 @@ impl AsRef<str> for FileObject {
 
 impl std::fmt::Display for FileObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FileObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FileObject {
@@ -87,7 +93,7 @@ impl<'de> serde::Deserialize<'de> for FileObject {
     }
 }
 /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FilePurpose {
     AccountRequirement,
     AdditionalVerification,
@@ -162,7 +168,13 @@ impl AsRef<str> for FilePurpose {
 
 impl std::fmt::Display for FilePurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FilePurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for FilePurpose {

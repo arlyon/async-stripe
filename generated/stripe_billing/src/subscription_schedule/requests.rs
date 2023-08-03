@@ -1,71 +1,36 @@
 
 /// Retrieves the list of your subscription schedules.
-pub fn list(
-    client: &stripe::Client,
-    params: ListSubscriptionSchedule,
-) -> stripe::Response<stripe_types::List<stripe_types::subscription_schedule::SubscriptionSchedule>>
-{
+pub fn list(client: &stripe::Client, params: ListSubscriptionSchedule) -> stripe::Response<stripe_types::List<stripe_types::SubscriptionSchedule>> {
     client.get_query("/subscription_schedules", params)
 }
 /// Creates a new subscription schedule object.
 ///
 /// Each customer can have up to 500 active or scheduled subscriptions.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateSubscriptionSchedule,
-) -> stripe::Response<stripe_types::subscription_schedule::SubscriptionSchedule> {
+pub fn create(client: &stripe::Client, params: CreateSubscriptionSchedule) -> stripe::Response<stripe_types::SubscriptionSchedule> {
     client.send_form("/subscription_schedules", params, http_types::Method::Post)
 }
 /// Retrieves the details of an existing subscription schedule.
 ///
 /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-pub fn retrieve(
-    client: &stripe::Client,
-    schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
-    params: RetrieveSubscriptionSchedule,
-) -> stripe::Response<stripe_types::subscription_schedule::SubscriptionSchedule> {
+pub fn retrieve(client: &stripe::Client, schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId, params: RetrieveSubscriptionSchedule) -> stripe::Response<stripe_types::SubscriptionSchedule> {
     client.get_query(&format!("/subscription_schedules/{schedule}", schedule = schedule), params)
 }
 /// Updates an existing subscription schedule.
-pub fn update(
-    client: &stripe::Client,
-    schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
-    params: UpdateSubscriptionSchedule,
-) -> stripe::Response<stripe_types::subscription_schedule::SubscriptionSchedule> {
-    client.send_form(
-        &format!("/subscription_schedules/{schedule}", schedule = schedule),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId, params: UpdateSubscriptionSchedule) -> stripe::Response<stripe_types::SubscriptionSchedule> {
+    client.send_form(&format!("/subscription_schedules/{schedule}", schedule = schedule), params, http_types::Method::Post)
 }
 /// Cancels a subscription schedule and its associated subscription immediately (if the subscription schedule has an active subscription).
 ///
 /// A subscription schedule can only be canceled if its status is `not_started` or `active`.
-pub fn cancel(
-    client: &stripe::Client,
-    schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
-    params: CancelSubscriptionSchedule,
-) -> stripe::Response<stripe_types::subscription_schedule::SubscriptionSchedule> {
-    client.send_form(
-        &format!("/subscription_schedules/{schedule}/cancel", schedule = schedule),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId, params: CancelSubscriptionSchedule) -> stripe::Response<stripe_types::SubscriptionSchedule> {
+    client.send_form(&format!("/subscription_schedules/{schedule}/cancel", schedule = schedule), params, http_types::Method::Post)
 }
 /// Releases the subscription schedule immediately, which will stop scheduling of its phases, but leave any existing subscription in place.
 ///
 /// A schedule can only be released if its status is `not_started` or `active`.
 /// If the subscription schedule is currently associated with a subscription, releasing it will remove its `subscription` property and set the subscription’s ID to the `released_subscription` property.
-pub fn release(
-    client: &stripe::Client,
-    schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
-    params: ReleaseSubscriptionSchedule,
-) -> stripe::Response<stripe_types::subscription_schedule::SubscriptionSchedule> {
-    client.send_form(
-        &format!("/subscription_schedules/{schedule}/release", schedule = schedule),
-        params,
-        http_types::Method::Post,
-    )
+pub fn release(client: &stripe::Client, schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId, params: ReleaseSubscriptionSchedule) -> stripe::Response<stripe_types::SubscriptionSchedule> {
+    client.send_form(&format!("/subscription_schedules/{schedule}/release", schedule = schedule), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListSubscriptionSchedule<'a> {
@@ -302,7 +267,7 @@ impl<'a> CreateSubscriptionSchedulePhases<'a> {
 /// We recommend using `now` so that it starts the subscription immediately.
 /// You can also use a Unix timestamp to backdate the subscription so that it starts on a past date, or set a future date for the subscription to start on.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreateSubscriptionScheduleStartDate {
     Timestamp(stripe_types::Timestamp),
     Now,
@@ -503,7 +468,7 @@ impl<'a> UpdateSubscriptionSchedulePhases<'a> {
 ///
 /// If set, `iterations` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesEndDate {
     Timestamp(stripe_types::Timestamp),
     Now,
@@ -512,7 +477,7 @@ pub enum UpdateSubscriptionSchedulePhasesEndDate {
 ///
 /// Must be set on the first phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesStartDate {
     Timestamp(stripe_types::Timestamp),
     Now,
@@ -521,7 +486,7 @@ pub enum UpdateSubscriptionSchedulePhasesStartDate {
 ///
 /// Must be before the phase end date, can not be combined with `trial`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
     I64(i64),
     Now,
@@ -571,7 +536,7 @@ impl AutomaticTaxConfig {
         Self { enabled }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BillingCycleAnchor {
     Automatic,
     PhaseStart,
@@ -607,7 +572,13 @@ impl AsRef<str> for BillingCycleAnchor {
 
 impl std::fmt::Display for BillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BillingCycleAnchor {
@@ -634,7 +605,7 @@ impl BillingThresholdsParam {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -670,7 +641,13 @@ impl AsRef<str> for CollectionMethod {
 
 impl std::fmt::Display for CollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CollectionMethod {
@@ -710,7 +687,7 @@ impl<'a> TransferDataSpecs<'a> {
         Self { amount_percent: Default::default(), destination }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum EndBehavior {
     Cancel,
     None,
@@ -752,7 +729,13 @@ impl AsRef<str> for EndBehavior {
 
 impl std::fmt::Display for EndBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for EndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for EndBehavior {
@@ -763,7 +746,7 @@ impl serde::Serialize for EndBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -802,7 +785,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {
@@ -836,7 +825,7 @@ impl ItemBillingThresholdsParam {
         Self { usage_gte }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Day,
     Month,
@@ -878,7 +867,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -889,7 +884,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
@@ -928,7 +923,13 @@ impl AsRef<str> for ProrationBehavior {
 
 impl std::fmt::Display for ProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ProrationBehavior {
@@ -1021,13 +1022,7 @@ pub struct OneTimePriceDataWithNegativeAmounts<'a> {
 }
 impl<'a> OneTimePriceDataWithNegativeAmounts<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self {
-            currency,
-            product,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+        Self { currency, product, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1099,19 +1094,8 @@ pub struct RecurringPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> RecurringPriceData<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: RecurringAdhoc,
-    ) -> Self {
-        Self {
-            currency,
-            product,
-            recurring,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: RecurringAdhoc) -> Self {
+        Self { currency, product, recurring, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

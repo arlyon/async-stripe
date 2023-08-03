@@ -1,10 +1,7 @@
 
 /// Retrieves the current account balance, based on the authentication that was used to make the request.
 ///  For a sample request, see [Accounting for negative balances](https://stripe.com/docs/connect/account-balances#accounting-for-negative-balances).
-pub fn retrieve_for_my_account(
-    client: &stripe::Client,
-    params: RetrieveForMyAccountBalance,
-) -> stripe::Response<stripe_core::balance::Balance> {
+pub fn retrieve_for_my_account(client: &stripe::Client, params: RetrieveForMyAccountBalance) -> stripe::Response<stripe_core::Balance> {
     client.get_query("/balance", params)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

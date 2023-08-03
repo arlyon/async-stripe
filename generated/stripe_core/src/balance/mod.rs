@@ -6,17 +6,17 @@ pub struct Balance {
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
     /// The available balance for each currency and payment type can be found in the `source_types` property.
-    pub available: Vec<stripe_core::money::Money>,
+    pub available: Vec<stripe_core::BalanceAmount>,
     /// Funds held due to negative balances on connected Custom accounts.
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect_reserved: Option<Vec<stripe_core::money::Money>>,
+    pub connect_reserved: Option<Vec<stripe_core::BalanceAmount>>,
     /// Funds that can be paid out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Vec<stripe_core::money::Money>>,
+    pub instant_available: Option<Vec<stripe_core::BalanceAmount>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing: Option<stripe_core::details::Details>,
+    pub issuing: Option<stripe_core::BalanceDetail>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// String representing the object's type.
@@ -26,12 +26,12 @@ pub struct Balance {
     /// Funds that are not yet available in the balance.
     ///
     /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
-    pub pending: Vec<stripe_core::money::Money>,
+    pub pending: Vec<stripe_core::BalanceAmount>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BalanceObject {
     Balance,
 }
@@ -64,7 +64,13 @@ impl AsRef<str> for BalanceObject {
 
 impl std::fmt::Display for BalanceObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BalanceObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BalanceObject {

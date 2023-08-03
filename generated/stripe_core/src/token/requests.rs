@@ -1,20 +1,13 @@
 
 /// Retrieves the token with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    token: &stripe_core::token::TokenId,
-    params: RetrieveToken,
-) -> stripe::Response<stripe_core::token::Token> {
+pub fn retrieve(client: &stripe::Client, token: &stripe_core::token::TokenId, params: RetrieveToken) -> stripe::Response<stripe_core::Token> {
     client.get_query(&format!("/tokens/{token}", token = token), params)
 }
 /// Creates a single-use token that represents a bank account’s details.
 /// This token can be used with any API method in place of a bank account dictionary.
 ///
 /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
-pub fn create(
-    client: &stripe::Client,
-    params: CreateToken,
-) -> stripe::Response<stripe_core::token::Token> {
+pub fn create(client: &stripe::Client, params: CreateToken) -> stripe::Response<stripe_core::Token> {
     client.send_form("/tokens", params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -86,7 +79,7 @@ impl<'a> CreateTokenAccount<'a> {
     }
 }
 /// The business type.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenAccountBusinessType {
     Company,
     GovernmentEntity,
@@ -128,7 +121,13 @@ impl AsRef<str> for CreateTokenAccountBusinessType {
 
 impl std::fmt::Display for CreateTokenAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTokenAccountBusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTokenAccountBusinessType {
@@ -302,7 +301,7 @@ impl<'a> CreateTokenAccountCompanyOwnershipDeclaration<'a> {
 /// The category identifying the legal structure of the company or legal entity.
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenAccountCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -392,7 +391,13 @@ impl AsRef<str> for CreateTokenAccountCompanyStructure {
 
 impl std::fmt::Display for CreateTokenAccountCompanyStructure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTokenAccountCompanyStructure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTokenAccountCompanyStructure {
@@ -582,7 +587,7 @@ impl<'a> CreateTokenAccountIndividualAddressKanji<'a> {
     }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenAccountIndividualPoliticalExposure {
     Existing,
     None,
@@ -618,7 +623,13 @@ impl AsRef<str> for CreateTokenAccountIndividualPoliticalExposure {
 
 impl std::fmt::Display for CreateTokenAccountIndividualPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTokenAccountIndividualPoliticalExposure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
@@ -667,22 +678,14 @@ pub struct CreateTokenBankAccount<'a> {
 }
 impl<'a> CreateTokenBankAccount<'a> {
     pub fn new(account_number: &'a str, country: &'a str) -> Self {
-        Self {
-            account_holder_name: Default::default(),
-            account_holder_type: Default::default(),
-            account_number,
-            account_type: Default::default(),
-            country,
-            currency: Default::default(),
-            routing_number: Default::default(),
-        }
+        Self { account_holder_name: Default::default(), account_holder_type: Default::default(), account_number, account_type: Default::default(), country, currency: Default::default(), routing_number: Default::default() }
     }
 }
 /// The type of entity that holds the account.
 ///
 /// It can be `company` or `individual`.
 /// This field is required when attaching the bank account to a `Customer` object.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenBankAccountAccountHolderType {
     Company,
     Individual,
@@ -718,7 +721,13 @@ impl AsRef<str> for CreateTokenBankAccountAccountHolderType {
 
 impl std::fmt::Display for CreateTokenBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTokenBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTokenBankAccountAccountHolderType {
@@ -733,7 +742,7 @@ impl serde::Serialize for CreateTokenBankAccountAccountHolderType {
 ///
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenBankAccountAccountType {
     Checking,
     Futsu,
@@ -775,7 +784,13 @@ impl AsRef<str> for CreateTokenBankAccountAccountType {
 
 impl std::fmt::Display for CreateTokenBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTokenBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTokenBankAccountAccountType {
@@ -787,7 +802,7 @@ impl serde::Serialize for CreateTokenBankAccountAccountType {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreateTokenCard<'a> {
     CreditCardSpecs(CreateTokenCreditCardSpecs<'a>),
     Str(&'a str),

@@ -6,7 +6,7 @@ pub struct TransformQuantity {
     pub round: TransformQuantityRound,
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TransformQuantityRound {
     Down,
     Up,
@@ -42,7 +42,13 @@ impl AsRef<str> for TransformQuantityRound {
 
 impl std::fmt::Display for TransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TransformQuantityRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TransformQuantityRound {
@@ -57,7 +63,6 @@ impl<'de> serde::Deserialize<'de> for TransformQuantityRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TransformQuantityRound"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TransformQuantityRound"))
     }
 }

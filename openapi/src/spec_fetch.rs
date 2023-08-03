@@ -40,10 +40,7 @@ fn get_latest_openapi_tag(client: &Client) -> anyhow::Result<String> {
         .send()?
         .error_for_status()?
         .json()?;
-    Ok(tags.as_object().context("Unexpected response format")?["tag_name"]
-        .as_str()
-        .context("Unexpected tag name")?
-        .to_string())
+    Ok(tags.as_object().context("Unexpected response format")?["tag_name"].as_str().context("Unexpected tag name")?.to_string())
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -53,8 +50,7 @@ struct VersionFile {
 
 fn get_current_openapi_tag() -> anyhow::Result<String> {
     let raw = fs::File::open(VERSION_FILE_PATH).context("Could not find version file")?;
-    let version_info: VersionFile =
-        serde_json::from_reader(&raw).context("Failed to read JSON from version file")?;
+    let version_info: VersionFile = serde_json::from_reader(&raw).context("Failed to read JSON from version file")?;
     Ok(version_info.version)
 }
 
@@ -69,11 +65,7 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
 
     tracing::info!("fetching OpenAPI spec version {}", desired_version);
 
-    if let Some(value) = fs::File::open(in_path)
-        .ok()
-        .and_then(|f| serde_json::from_reader(f).ok())
-        .filter(|value| read_x_stripe_tag(value) == Some(&desired_version))
-    {
+    if let Some(value) = fs::File::open(in_path).ok().and_then(|f| serde_json::from_reader(f).ok()).filter(|value| read_x_stripe_tag(value) == Some(&desired_version)) {
         return Ok(value);
     }
 
@@ -86,10 +78,7 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
         }
     }
 
-    let url = format!(
-        "https://raw.githubusercontent.com/stripe/openapi/{}/openapi/spec3.sdk.json",
-        &desired_version
-    );
+    let url = format!("https://raw.githubusercontent.com/stripe/openapi/{}/openapi/spec3.sdk.json", &desired_version);
 
     let mut spec: Value = client.get(url).send()?.error_for_status()?.json()?;
     write_x_stripe_tag(&mut spec, &desired_version)?;
@@ -105,13 +94,7 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
 }
 
 fn write_x_stripe_tag(spec: &mut Value, version: &str) -> anyhow::Result<()> {
-    spec.as_object_mut()
-        .context("must be an object")?
-        .get_mut("info")
-        .context("must have info field")?
-        .as_object_mut()
-        .context("must be an object")?
-        .insert("x-stripeTag".to_string(), version.into());
+    spec.as_object_mut().context("must be an object")?.get_mut("info").context("must have info field")?.as_object_mut().context("must be an object")?.insert("x-stripeTag".to_string(), version.into());
 
     Ok(())
 }

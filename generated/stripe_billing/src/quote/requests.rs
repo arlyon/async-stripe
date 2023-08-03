@@ -1,90 +1,44 @@
 
 /// Retrieves the quote with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: RetrieveQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
+pub fn retrieve(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: RetrieveQuote) -> stripe::Response<stripe_types::Quote> {
     client.get_query(&format!("/quotes/{quote}", quote = quote), params)
 }
 /// A quote models prices and services for a customer.
 ///
 /// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
-pub fn create(
-    client: &stripe::Client,
-    params: CreateQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
+pub fn create(client: &stripe::Client, params: CreateQuote) -> stripe::Response<stripe_types::Quote> {
     client.send_form("/quotes", params, http_types::Method::Post)
 }
 /// A quote models prices and services for a customer.
-pub fn update(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: UpdateQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
+pub fn update(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: UpdateQuote) -> stripe::Response<stripe_types::Quote> {
     client.send_form(&format!("/quotes/{quote}", quote = quote), params, http_types::Method::Post)
 }
 /// Cancels the quote.
-pub fn cancel(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: CancelQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
-    client.send_form(
-        &format!("/quotes/{quote}/cancel", quote = quote),
-        params,
-        http_types::Method::Post,
-    )
+pub fn cancel(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: CancelQuote) -> stripe::Response<stripe_types::Quote> {
+    client.send_form(&format!("/quotes/{quote}/cancel", quote = quote), params, http_types::Method::Post)
 }
 /// Finalizes the quote.
-pub fn finalize_quote(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: FinalizeQuoteQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
-    client.send_form(
-        &format!("/quotes/{quote}/finalize", quote = quote),
-        params,
-        http_types::Method::Post,
-    )
+pub fn finalize_quote(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: FinalizeQuoteQuote) -> stripe::Response<stripe_types::Quote> {
+    client.send_form(&format!("/quotes/{quote}/finalize", quote = quote), params, http_types::Method::Post)
 }
 /// Accepts the specified quote.
-pub fn accept(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: AcceptQuote,
-) -> stripe::Response<stripe_types::quote::Quote> {
-    client.send_form(
-        &format!("/quotes/{quote}/accept", quote = quote),
-        params,
-        http_types::Method::Post,
-    )
+pub fn accept(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: AcceptQuote) -> stripe::Response<stripe_types::Quote> {
+    client.send_form(&format!("/quotes/{quote}/accept", quote = quote), params, http_types::Method::Post)
 }
 /// Returns a list of your quotes.
-pub fn list(
-    client: &stripe::Client,
-    params: ListQuote,
-) -> stripe::Response<stripe_types::List<stripe_types::quote::Quote>> {
+pub fn list(client: &stripe::Client, params: ListQuote) -> stripe::Response<stripe_types::List<stripe_types::Quote>> {
     client.get_query("/quotes", params)
 }
 /// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
 ///
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list_line_items(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: ListLineItemsQuote,
-) -> stripe::Response<stripe_types::List<stripe_types::line_item::LineItem>> {
+pub fn list_line_items(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: ListLineItemsQuote) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
     client.get_query(&format!("/quotes/{quote}/line_items", quote = quote), params)
 }
 /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
 ///
 /// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
-pub fn list_computed_upfront_line_items(
-    client: &stripe::Client,
-    quote: &stripe_types::quote::QuoteId,
-    params: ListComputedUpfrontLineItemsQuote,
-) -> stripe::Response<stripe_types::List<stripe_types::line_item::LineItem>> {
+pub fn list_computed_upfront_line_items(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: ListComputedUpfrontLineItemsQuote) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
     client.get_query(&format!("/quotes/{quote}/computed_upfront_line_items", quote = quote), params)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -444,7 +398,7 @@ impl<'a> ListQuote<'a> {
     }
 }
 /// The status of the quote.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListQuoteStatus {
     Accepted,
     Canceled,
@@ -486,7 +440,13 @@ impl AsRef<str> for ListQuoteStatus {
 
 impl std::fmt::Display for ListQuoteStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListQuoteStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ListQuoteStatus {
@@ -563,7 +523,7 @@ impl AutomaticTaxParam {
         Self { enabled }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -599,7 +559,13 @@ impl AsRef<str> for CollectionMethod {
 
 impl std::fmt::Display for CollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CollectionMethod {
@@ -637,7 +603,7 @@ impl QuoteParam {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Day,
     Month,
@@ -679,7 +645,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -690,7 +662,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -729,7 +701,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {
@@ -741,7 +719,7 @@ impl serde::Serialize for TaxBehavior {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum EffectiveDate {
     CurrentPeriodEnd,
     Timestamp(stripe_types::Timestamp),
@@ -839,13 +817,6 @@ pub struct PriceData<'a> {
 }
 impl<'a> PriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self {
-            currency,
-            product,
-            recurring: Default::default(),
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+        Self { currency, product, recurring: Default::default(), tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }

@@ -1,9 +1,6 @@
 
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateAccountLink,
-) -> stripe::Response<stripe_connect::account_link::AccountLink> {
+pub fn create(client: &stripe::Client, params: CreateAccountLink) -> stripe::Response<stripe_connect::AccountLink> {
     client.send_form("/account_links", params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -36,21 +33,14 @@ pub struct CreateAccountLink<'a> {
 }
 impl<'a> CreateAccountLink<'a> {
     pub fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
-        Self {
-            account,
-            collect: Default::default(),
-            expand: Default::default(),
-            refresh_url: Default::default(),
-            return_url: Default::default(),
-            type_,
-        }
+        Self { account, collect: Default::default(), expand: Default::default(), refresh_url: Default::default(), return_url: Default::default(), type_ }
     }
 }
 /// Which information the platform needs to collect from the user.
 ///
 /// One of `currently_due` or `eventually_due`.
 /// Default is `currently_due`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateAccountLinkCollect {
     CurrentlyDue,
     EventuallyDue,
@@ -86,7 +76,13 @@ impl AsRef<str> for CreateAccountLinkCollect {
 
 impl std::fmt::Display for CreateAccountLinkCollect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountLinkCollect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateAccountLinkCollect {
@@ -100,7 +96,7 @@ impl serde::Serialize for CreateAccountLinkCollect {
 /// The type of account link the user is requesting.
 ///
 /// Possible values are `account_onboarding` or `account_update`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateAccountLinkType {
     AccountOnboarding,
     AccountUpdate,
@@ -142,7 +138,13 @@ impl AsRef<str> for CreateAccountLinkType {
 
 impl std::fmt::Display for CreateAccountLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountLinkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateAccountLinkType {

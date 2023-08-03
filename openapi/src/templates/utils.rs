@@ -60,8 +60,7 @@ fn format_doc_comment(doc: &str) -> String {
         static ref BR_TAG: Regex = Regex::new("<br ?/?>").unwrap();
         static ref A_DOC_TAG: Regex = Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
         static ref A_HASH_TAG: Regex = Regex::new("<a href=\"#([^\"]+)\">([^<]+)</a>").unwrap();
-        static ref A_HTTP_TAG: Regex =
-            Regex::new("<a href=\"(https?://[^\"]+)\">([^<]+)</a>").unwrap();
+        static ref A_HTTP_TAG: Regex = Regex::new("<a href=\"(https?://[^\"]+)\">([^<]+)</a>").unwrap();
         static ref CODE_TAG: Regex = Regex::new("<code>|</code>").unwrap();
         static ref EM_TAG: Regex = Regex::new("<em>|</em>|<i>|</i>").unwrap();
         static ref STRONG_TAG: Regex = Regex::new("<strong>|</strong>|<b>|</b>").unwrap();

@@ -11,13 +11,13 @@ pub struct PromotionCode {
     ///
     /// Regardless of case, this code must be unique across all active promotion codes for each customer.
     pub code: String,
-    pub coupon: stripe_types::coupon::Coupon,
+    pub coupon: stripe_types::Coupon,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The customer that this promotion code can be used by.
-    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::Customer>>,
     /// Date at which the promotion code can no longer be redeemed.
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
@@ -34,14 +34,14 @@ pub struct PromotionCode {
     ///
     /// Objects of the same type share the same value.
     pub object: PromotionCodeObject,
-    pub restrictions: stripe_types::restrictions::Restrictions,
+    pub restrictions: stripe_types::PromotionCodesResourceRestrictions,
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PromotionCodeObject {
     PromotionCode,
 }
@@ -74,7 +74,13 @@ impl AsRef<str> for PromotionCodeObject {
 
 impl std::fmt::Display for PromotionCodeObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PromotionCodeObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PromotionCodeObject {
@@ -89,8 +95,7 @@ impl<'de> serde::Deserialize<'de> for PromotionCodeObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PromotionCodeObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PromotionCodeObject"))
     }
 }
 impl stripe_types::Object for PromotionCode {

@@ -10,5 +10,5 @@ pub struct TransferData {
     /// The account (if any) the payment will be attributed to for tax
     /// reporting, and where funds from the payment will be transferred to upon
     /// payment success.
-    pub destination: stripe_types::Expandable<stripe_types::account::Account>,
+    pub destination: stripe_types::Expandable<stripe_types::Account>,
 }

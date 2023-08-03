@@ -3,7 +3,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-    pub billing_thresholds: Option<stripe_types::billing_thresholds::BillingThresholds>,
+    pub billing_thresholds: Option<stripe_types::SubscriptionItemBillingThresholds>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -18,8 +18,8 @@ pub struct SubscriptionItem {
     ///
     /// Objects of the same type share the same value.
     pub object: SubscriptionItemObject,
-    pub plan: stripe_types::plan::Plan,
-    pub price: stripe_types::price::Price,
+    pub plan: stripe_types::Plan,
+    pub price: stripe_types::Price,
     /// The [quantity](https://stripe.com/docs/subscriptions/quantities) of the plan to which the customer should be subscribed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -28,12 +28,12 @@ pub struct SubscriptionItem {
     /// The tax rates which apply to this `subscription_item`.
     ///
     /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
-    pub tax_rates: Option<Vec<stripe_types::tax_rate::TaxRate>>,
+    pub tax_rates: Option<Vec<stripe_types::TaxRate>>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionItemObject {
     SubscriptionItem,
 }
@@ -66,7 +66,13 @@ impl AsRef<str> for SubscriptionItemObject {
 
 impl std::fmt::Display for SubscriptionItemObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SubscriptionItemObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SubscriptionItemObject {
@@ -81,8 +87,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionItemObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionItemObject"))
     }
 }
 impl stripe_types::Object for SubscriptionItem {
@@ -92,5 +97,3 @@ impl stripe_types::Object for SubscriptionItem {
     }
 }
 stripe_types::def_id!(SubscriptionItemId, "si_");
-pub mod deleted;
-pub use deleted::DeletedSubscriptionItem;

@@ -1,22 +1,11 @@
 
 /// Creates a short-lived API key for a given resource.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateEphemeralKey,
-) -> stripe::Response<stripe_misc::ephemeral_key::EphemeralKey> {
+pub fn create(client: &stripe::Client, params: CreateEphemeralKey) -> stripe::Response<stripe_misc::EphemeralKey> {
     client.send_form("/ephemeral_keys", params, http_types::Method::Post)
 }
 /// Invalidates a short-lived API key for a given resource.
-pub fn delete(
-    client: &stripe::Client,
-    key: &stripe_misc::ephemeral_key::EphemeralKeyId,
-    params: DeleteEphemeralKey,
-) -> stripe::Response<stripe_misc::ephemeral_key::EphemeralKey> {
-    client.send_form(
-        &format!("/ephemeral_keys/{key}", key = key),
-        params,
-        http_types::Method::Delete,
-    )
+pub fn delete(client: &stripe::Client, key: &stripe_misc::ephemeral_key::EphemeralKeyId, params: DeleteEphemeralKey) -> stripe::Response<stripe_misc::EphemeralKey> {
+    client.send_form(&format!("/ephemeral_keys/{key}", key = key), params, http_types::Method::Delete)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateEphemeralKey<'a> {

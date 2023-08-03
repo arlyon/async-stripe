@@ -21,7 +21,7 @@ pub struct Invoice {
     /// The account tax IDs associated with the invoice.
     ///
     /// Only editable when the invoice is a draft.
-    pub account_tax_ids: Option<Vec<stripe_types::Expandable<stripe_types::tax_id::TaxId>>>,
+    pub account_tax_ids: Option<Vec<stripe_types::Expandable<stripe_types::TaxId>>>,
     /// Final amount due at this time for this invoice.
     ///
     /// If the invoice's total is smaller than the minimum charge amount, for example, or if there is account credit that can be applied to the invoice, the `amount_due` may be 0.
@@ -35,7 +35,7 @@ pub struct Invoice {
     /// This is the sum of all the shipping amounts.
     pub amount_shipping: i64,
     /// ID of the Connect Application that created the invoice.
-    pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
+    pub application: Option<stripe_types::Expandable<stripe_types::Application>>,
     /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
     pub application_fee_amount: Option<i64>,
     /// Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
@@ -52,7 +52,7 @@ pub struct Invoice {
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
-    pub automatic_tax: stripe_types::automatic_tax::AutomaticTax,
+    pub automatic_tax: stripe_types::AutomaticTax,
     /// Indicates the reason why the invoice was created.
     ///
     /// `subscription_cycle` indicates an invoice created by a subscription advancing into a new period.
@@ -64,7 +64,7 @@ pub struct Invoice {
     /// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
     pub billing_reason: Option<InvoiceBillingReason>,
     /// ID of the latest charge generated for this invoice, if any.
-    pub charge: Option<stripe_types::Expandable<stripe_types::charge::Charge>>,
+    pub charge: Option<stripe_types::Expandable<stripe_types::Charge>>,
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
@@ -79,14 +79,14 @@ pub struct Invoice {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// Custom fields displayed on the invoice.
-    pub custom_fields: Option<Vec<stripe_types::custom_field::CustomField>>,
+    pub custom_fields: Option<Vec<stripe_types::InvoiceSettingCustomField>>,
     /// The ID of the customer who will be billed.
-    pub customer: Option<stripe_types::Expandable<stripe_types::customer::Customer>>,
+    pub customer: Option<stripe_types::Expandable<stripe_types::Customer>>,
     /// The customer's address.
     ///
     /// Until the invoice is finalized, this field will equal `customer.address`.
     /// Once the invoice is finalized, this field will no longer be updated.
-    pub customer_address: Option<stripe_types::address::Address>,
+    pub customer_address: Option<stripe_types::Address>,
     /// The customer's email.
     ///
     /// Until the invoice is finalized, this field will equal `customer.email`.
@@ -106,7 +106,7 @@ pub struct Invoice {
     ///
     /// Until the invoice is finalized, this field will equal `customer.shipping`.
     /// Once the invoice is finalized, this field will no longer be updated.
-    pub customer_shipping: Option<stripe_types::shipping_details::ShippingDetails>,
+    pub customer_shipping: Option<stripe_types::Shipping>,
     /// The customer's tax exempt status.
     ///
     /// Until the invoice is finalized, this field will equal `customer.tax_exempt`.
@@ -117,21 +117,19 @@ pub struct Invoice {
     /// Until the invoice is finalized, this field will contain the same tax IDs as `customer.tax_ids`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_tax_ids: Option<Vec<stripe_types::customer_tax_id::CustomerTaxId>>,
+    pub customer_tax_ids: Option<Vec<stripe_types::InvoicesResourceInvoiceTaxId>>,
     /// ID of the default payment method for the invoice.
     ///
     /// It must belong to the customer associated with the invoice.
     /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
-    pub default_payment_method:
-        Option<stripe_types::Expandable<stripe_types::payment_method::PaymentMethod>>,
+    pub default_payment_method: Option<stripe_types::Expandable<stripe_types::PaymentMethod>>,
     /// ID of the default payment source for the invoice.
     ///
     /// It must belong to the customer associated with the invoice and be in a chargeable state.
     /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
-    pub default_source:
-        Option<stripe_types::Expandable<stripe_types::payment_source::PaymentSource>>,
+    pub default_source: Option<stripe_types::Expandable<stripe_types::PaymentSource>>,
     /// The tax rates applied to this invoice, if any.
-    pub default_tax_rates: Vec<stripe_types::tax_rate::TaxRate>,
+    pub default_tax_rates: Vec<stripe_types::TaxRate>,
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
@@ -140,12 +138,12 @@ pub struct Invoice {
     /// Describes the current discount applied to this invoice, if there is one.
     ///
     /// Not populated if there are multiple discounts.
-    pub discount: Option<stripe_types::discount::Discount>,
+    pub discount: Option<stripe_types::Discount>,
     /// The discounts applied to the invoice.
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Option<Vec<stripe_types::Expandable<stripe_types::discount::Discount>>>,
+    pub discounts: Option<Vec<stripe_types::Expandable<stripe_types::Discount>>>,
     /// The date on which payment for this invoice is due.
     ///
     /// This value will be `null` for invoices where `collection_method=charge_automatically`.
@@ -165,7 +163,7 @@ pub struct Invoice {
     /// Details of the invoice that was cloned.
     ///
     /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
-    pub from_invoice: Option<stripe_types::from_invoice::FromInvoice>,
+    pub from_invoice: Option<stripe_types::InvoicesFromInvoice>,
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     ///
     /// If the invoice has not been finalized yet, this will be null.
@@ -185,13 +183,13 @@ pub struct Invoice {
     /// The error encountered during the previous attempt to finalize the invoice.
     ///
     /// This field is cleared when the invoice is successfully finalized.
-    pub last_finalization_error: Option<Box<stripe_types::api_errors::ApiErrors>>,
+    pub last_finalization_error: Option<Box<stripe_types::ApiErrors>>,
     /// The ID of the most recent non-draft revision of this invoice.
-    pub latest_revision: Option<stripe_types::Expandable<stripe_types::invoice::Invoice>>,
+    pub latest_revision: Option<stripe_types::Expandable<stripe_types::Invoice>>,
     /// The individual line items that make up the invoice.
     ///
     /// `lines` is sorted as follows: (1) pending invoice items (including prorations) in reverse chronological order, (2) subscription items in reverse chronological order, and (3) invoice items added after invoice creation in chronological order.
-    pub lines: stripe_types::List<stripe_types::invoice_line_item::InvoiceLineItem>,
+    pub lines: stripe_types::List<stripe_types::InvoiceLineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -214,7 +212,7 @@ pub struct Invoice {
     ///
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
-    pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::account::Account>>,
+    pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::Account>>,
     /// Whether payment was successfully collected for this invoice.
     ///
     /// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
@@ -225,9 +223,8 @@ pub struct Invoice {
     ///
     /// The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.
     /// Note that voiding an invoice will cancel the PaymentIntent.
-    pub payment_intent:
-        Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
-    pub payment_settings: stripe_types::payment_settings::PaymentSettings,
+    pub payment_intent: Option<stripe_types::Expandable<stripe_types::PaymentIntent>>,
+    pub payment_settings: stripe_types::InvoicesPaymentSettings,
     /// End of the usage period during which invoice items were added to this invoice.
     pub period_end: stripe_types::Timestamp,
     /// Start of the usage period during which invoice items were added to this invoice.
@@ -237,17 +234,17 @@ pub struct Invoice {
     /// Total amount of all pre-payment credit notes issued for this invoice.
     pub pre_payment_credit_notes_amount: i64,
     /// The quote this invoice was generated from.
-    pub quote: Option<stripe_types::Expandable<stripe_types::quote::Quote>>,
+    pub quote: Option<stripe_types::Expandable<stripe_types::Quote>>,
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
     /// Options for invoice PDF rendering.
-    pub rendering_options: Option<stripe_types::rendering_options::RenderingOptions>,
+    pub rendering_options: Option<stripe_types::InvoiceSettingRenderingOptions>,
     /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
-    pub shipping_cost: Option<stripe_types::shipping_cost::ShippingCost>,
+    pub shipping_cost: Option<stripe_types::InvoicesShippingCost>,
     /// Shipping details for the invoice.
     ///
     /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
-    pub shipping_details: Option<stripe_types::shipping_details::ShippingDetails>,
+    pub shipping_details: Option<stripe_types::Shipping>,
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
@@ -259,13 +256,12 @@ pub struct Invoice {
     ///
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     pub status: Option<InvoiceStatus>,
-    pub status_transitions: stripe_types::status_transitions::StatusTransitions,
+    pub status_transitions: stripe_types::InvoicesStatusTransitions,
     /// The subscription that this invoice was prepared for, if any.
-    pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
+    pub subscription: Option<stripe_types::Expandable<stripe_types::Subscription>>,
     /// Details about the subscription that created this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_details:
-        Option<stripe_types::subscription_details_data::SubscriptionDetailsData>,
+    pub subscription_details: Option<stripe_types::SubscriptionDetailsData>,
     /// Only set for upcoming invoices that preview prorations.
     ///
     /// The time used to calculate prorations.
@@ -284,20 +280,19 @@ pub struct Invoice {
     /// This is the sum of all the tax amounts on this invoice.
     pub tax: Option<i64>,
     /// ID of the test clock this invoice belongs to.
-    pub test_clock:
-        Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
+    pub test_clock: Option<stripe_types::Expandable<stripe_types::TestClock>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub threshold_reason: Option<stripe_types::threshold_reason::ThresholdReason>,
+    pub threshold_reason: Option<stripe_types::InvoiceThresholdReason>,
     /// Total after discounts and taxes.
     pub total: i64,
     /// The aggregate amounts calculated per discount across all line items.
-    pub total_discount_amounts: Option<Vec<stripe_types::discount_amount::DiscountAmount>>,
+    pub total_discount_amounts: Option<Vec<stripe_types::DiscountsResourceDiscountAmount>>,
     /// The integer amount in %s representing the total amount of the invoice including all discounts but excluding all tax.
     pub total_excluding_tax: Option<i64>,
     /// The aggregate amounts calculated per tax rate for all line items.
-    pub total_tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
+    pub total_tax_amounts: Vec<stripe_types::InvoiceTaxAmount>,
     /// The account (if any) the payment will be attributed to for tax reporting, and where funds from the payment will be transferred to for the invoice.
-    pub transfer_data: Option<stripe_types::transfer_data::TransferData>,
+    pub transfer_data: Option<stripe_types::InvoiceTransferData>,
     /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
     ///
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
@@ -313,7 +308,7 @@ pub struct Invoice {
 /// `manual` is set for all invoices unrelated to a subscription (for example: created via the invoice editor).
 /// The `upcoming` value is reserved for simulated invoices per the upcoming invoice endpoint.
 /// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceBillingReason {
     AutomaticPendingInvoiceItemInvoice,
     Manual,
@@ -370,7 +365,13 @@ impl AsRef<str> for InvoiceBillingReason {
 
 impl std::fmt::Display for InvoiceBillingReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceBillingReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceBillingReason {
@@ -385,15 +386,14 @@ impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
 ///
 /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
 /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
@@ -429,7 +429,13 @@ impl AsRef<str> for InvoiceCollectionMethod {
 
 impl std::fmt::Display for InvoiceCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceCollectionMethod {
@@ -444,15 +450,14 @@ impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
     }
 }
 /// The customer's tax exempt status.
 ///
 /// Until the invoice is finalized, this field will equal `customer.tax_exempt`.
 /// Once the invoice is finalized, this field will no longer be updated.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceCustomerTaxExempt {
     Exempt,
     None,
@@ -491,7 +496,13 @@ impl AsRef<str> for InvoiceCustomerTaxExempt {
 
 impl std::fmt::Display for InvoiceCustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceCustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceCustomerTaxExempt {
@@ -506,14 +517,13 @@ impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
     }
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceObject {
     Invoice,
 }
@@ -546,7 +556,13 @@ impl AsRef<str> for InvoiceObject {
 
 impl std::fmt::Display for InvoiceObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceObject {
@@ -567,7 +583,7 @@ impl<'de> serde::Deserialize<'de> for InvoiceObject {
 /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
 ///
 /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceStatus {
     Draft,
     Open,
@@ -612,7 +628,13 @@ impl AsRef<str> for InvoiceStatus {
 
 impl std::fmt::Display for InvoiceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for InvoiceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for InvoiceStatus {
@@ -637,5 +659,3 @@ impl stripe_types::Object for Invoice {
     }
 }
 stripe_types::def_id!(InvoiceId, "in_");
-pub mod deleted;
-pub use deleted::DeletedInvoice;

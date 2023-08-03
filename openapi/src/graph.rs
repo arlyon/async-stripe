@@ -1,28 +1,27 @@
 use indexmap::IndexSet;
 use petgraph::prelude::DiGraphMap;
 
-use crate::components::{Components, ModuleName};
+use crate::components::Components;
 use crate::crate_inference::Crate;
+use crate::types::ComponentPath;
 
-pub type ModuleGraph<'a> = DiGraphMap<&'a ModuleName, ()>;
+pub type ComponentGraph<'a> = DiGraphMap<&'a ComponentPath, ()>;
 
 impl Components {
     /// Generate a dependency graph with an edge from A to B implying that A depends on B
-    pub fn gen_module_dep_graph(&self) -> ModuleGraph {
+    pub fn gen_component_dep_graph(&self) -> ComponentGraph {
         let mut graph = DiGraphMap::new();
-        for mod_name in self.modules.keys() {
-            graph.add_node(mod_name);
+        for path in self.components.keys() {
+            graph.add_node(path);
         }
 
-        for (mod_name, module) in &self.modules {
-            let deps = self.deps_for_module(module);
+        for path in self.components.keys() {
+            let deps = self.deps_for_component(path);
             for dep in deps {
-                let dependent_mod = self.containing_module(dep);
-
                 // Don't clutter with self edges since they aren't particularly meaningful
                 // in this context
-                if dependent_mod != mod_name {
-                    graph.add_edge(mod_name, dependent_mod, ());
+                if dep != path {
+                    graph.add_edge(path, dep, ());
                 }
             }
         }
@@ -39,16 +38,16 @@ impl Components {
                 graph.add_edge(*krate, Crate::Types, ());
             }
         }
+
         for krate in Crate::all().iter() {
             let members = self.get_crate_members(*krate);
             let mut deps = IndexSet::new();
             for member in members {
-                let module = self.modules.get(member).unwrap();
-                let module_deps = self.deps_for_module(module);
-                deps.extend(module_deps);
+                let comp_deps = self.deps_for_component(member);
+                deps.extend(comp_deps);
             }
             for dep in deps {
-                let dependent_crate = self.containing_crate(dep).for_types();
+                let dependent_crate = self.get(dep).krate_unwrapped().for_types();
                 // Don't clutter with self edges since they aren't particularly meaningful
                 // in this context
                 if dependent_crate != *krate {

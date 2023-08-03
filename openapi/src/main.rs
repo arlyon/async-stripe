@@ -5,6 +5,7 @@ use std::fs::File;
 use anyhow::{bail, Context, Result};
 use petgraph::dot::{Config, Dot};
 use structopt::StructOpt;
+use tracing::info;
 
 use crate::codegen::CodeGen;
 use crate::crate_inference::Crate;
@@ -69,7 +70,7 @@ fn main() -> Result<()> {
     fs::remove_dir_all(&out_path).context("could not remove out folder")?;
     fs::create_dir_all(&out_path).context("could not create out folder")?;
 
-    tracing::info!("generating code for {} to {}", in_path, out_path);
+    info!("generating code for {} to {}", in_path, out_path);
 
     let spec = if let Some(version) = args.fetch {
         let raw = fetch_spec(version, &in_path)?;
@@ -78,21 +79,17 @@ fn main() -> Result<()> {
         let raw = File::open(in_path).context("failed to load the specfile. does it exist?")?;
         Spec::new(serde_json::from_reader(&raw).context("failed to read json from specfile")?)
     };
-    tracing::info!("Finished parsing spec");
+    info!("Finished parsing spec");
 
-    let url_finder = if !args.stub_url_finder {
-        UrlFinder::new().context("couldn't initialize url finder")?
-    } else {
-        UrlFinder::stub()
-    };
-    tracing::info!("Initialized URL finder");
+    let url_finder = if !args.stub_url_finder { UrlFinder::new().context("couldn't initialize url finder")? } else { UrlFinder::stub() };
+    info!("Initialized URL finder");
 
     let codegen = CodeGen::new(spec, url_finder)?;
 
     if args.graph {
-        let mod_graph = codegen.components.gen_module_dep_graph();
-        let graph_txt = format!("{:?}", Dot::with_config(&mod_graph, &[Config::EdgeNoLabel]));
-        write_to_file(graph_txt, "graphs/mod_graph.txt")?;
+        let comp_graph = codegen.components.gen_component_dep_graph();
+        let graph_txt = format!("{:?}", Dot::with_config(&comp_graph, &[Config::EdgeNoLabel]));
+        write_to_file(graph_txt, "graphs/components_graph.txt")?;
 
         let crate_graph = codegen.components.gen_crate_dep_graph();
         let graph_txt = format!("{:?}", Dot::with_config(&crate_graph, &[Config::EdgeNoLabel]));
@@ -105,14 +102,7 @@ fn main() -> Result<()> {
     let mut fmt_cmd = std::process::Command::new("cargo");
     fmt_cmd.arg("+nightly").arg("fmt").arg("--");
     for krate in Crate::all() {
-        fmt_cmd.arg(format!(
-            "out/{}",
-            if *krate == Crate::Types {
-                format!("{}/mod.rs", krate.generated_out_path())
-            } else {
-                format!("{}/src/mod.rs", krate.generated_out_path())
-            }
-        ));
+        fmt_cmd.arg(format!("out/{}", if *krate == Crate::Types { format!("{}/mod.rs", krate.generated_out_path()) } else { format!("{}/src/mod.rs", krate.generated_out_path()) }));
     }
 
     let out = fmt_cmd.output()?;
@@ -129,12 +119,7 @@ fn main() -> Result<()> {
 // --delete-during so that generated files don't stick around when not
 // generated anymore, see https://github.com/arlyon/async-stripe/issues/229
 fn run_rsync(src: &str, dest: &str) -> Result<()> {
-    let out = std::process::Command::new("rsync")
-        .arg("-a")
-        .arg("--delete-during")
-        .arg(src)
-        .arg(dest)
-        .output()?;
+    let out = std::process::Command::new("rsync").arg("-a").arg("--delete-during").arg(src).arg(dest).output()?;
 
     if !out.status.success() {
         bail!("rsync failed with outputs {:?}", out);

@@ -1,46 +1,19 @@
 
 /// Creates a new `TaxID` object for a customer.
-pub fn create(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: CreateTaxId,
-) -> stripe::Response<stripe_types::tax_id::TaxId> {
-    client.send_form(
-        &format!("/customers/{customer}/tax_ids", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreateTaxId) -> stripe::Response<stripe_types::TaxId> {
+    client.send_form(&format!("/customers/{customer}/tax_ids", customer = customer), params, http_types::Method::Post)
 }
 /// Retrieves the `TaxID` object with the given identifier.
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    id: &str,
-    params: RetrieveTaxId,
-) -> stripe::Response<stripe_types::tax_id::TaxId> {
-    client.get_query(
-        &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: RetrieveTaxId) -> stripe::Response<stripe_types::TaxId> {
+    client.get_query(&format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id), params)
 }
 /// Returns a list of tax IDs for a customer.
-pub fn list(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: ListTaxId,
-) -> stripe::Response<stripe_types::List<stripe_types::tax_id::TaxId>> {
+pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListTaxId) -> stripe::Response<stripe_types::List<stripe_types::TaxId>> {
     client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), params)
 }
 /// Deletes an existing `TaxID` object.
-pub fn delete(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    id: &str,
-) -> stripe::Response<stripe_types::tax_id::DeletedTaxId> {
-    client.send(
-        &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
-        http_types::Method::Delete,
-    )
+pub fn delete(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str) -> stripe::Response<stripe_types::DeletedTaxId> {
+    client.send(&format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id), http_types::Method::Delete)
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxId<'a> {
@@ -59,7 +32,7 @@ impl<'a> CreateTaxId<'a> {
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxIdType {
     AdNrt,
     AeTrn,
@@ -287,7 +260,13 @@ impl AsRef<str> for CreateTaxIdType {
 
 impl std::fmt::Display for CreateTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateTaxIdType {

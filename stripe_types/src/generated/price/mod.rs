@@ -25,14 +25,9 @@ pub struct Price {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        std::collections::HashMap<
-            stripe_types::Currency,
-            stripe_types::currency_option::CurrencyOption,
-        >,
-    >,
+    pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, stripe_types::CurrencyOption>>,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
-    pub custom_unit_amount: Option<stripe_types::custom_unit_amount::CustomUnitAmount>,
+    pub custom_unit_amount: Option<stripe_types::CustomUnitAmount>,
     /// Unique identifier for the object.
     pub id: stripe_types::price::PriceId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -52,9 +47,9 @@ pub struct Price {
     /// Objects of the same type share the same value.
     pub object: PriceObject,
     /// The ID of the product this price is associated with.
-    pub product: stripe_types::Expandable<stripe_types::product::Product>,
+    pub product: stripe_types::Expandable<stripe_types::Product>,
     /// The recurring components of a price such as `interval` and `usage_type`.
-    pub recurring: Option<stripe_types::recurring::Recurring>,
+    pub recurring: Option<stripe_types::Recurring>,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -66,7 +61,7 @@ pub struct Price {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Vec<stripe_types::tier::Tier>>,
+    pub tiers: Option<Vec<stripe_types::PriceTier>>,
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -75,7 +70,7 @@ pub struct Price {
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_quantity: Option<stripe_types::transform_quantity::TransformQuantity>,
+    pub transform_quantity: Option<stripe_types::TransformQuantity>,
     /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
     #[serde(rename = "type")]
     pub type_: PriceType,
@@ -93,7 +88,7 @@ pub struct Price {
 /// Either `per_unit` or `tiered`.
 /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
 /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceBillingScheme {
     PerUnit,
     Tiered,
@@ -129,7 +124,13 @@ impl AsRef<str> for PriceBillingScheme {
 
 impl std::fmt::Display for PriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PriceBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PriceBillingScheme {
@@ -144,14 +145,13 @@ impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
     }
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceObject {
     Price,
 }
@@ -184,7 +184,13 @@ impl AsRef<str> for PriceObject {
 
 impl std::fmt::Display for PriceObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PriceObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PriceObject {
@@ -207,7 +213,7 @@ impl<'de> serde::Deserialize<'de> for PriceObject {
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceTaxBehavior {
     Exclusive,
     Inclusive,
@@ -246,7 +252,13 @@ impl AsRef<str> for PriceTaxBehavior {
 
 impl std::fmt::Display for PriceTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PriceTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PriceTaxBehavior {
@@ -261,15 +273,14 @@ impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
 ///
 /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
 /// In `graduated` tiering, pricing can change as the quantity grows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceTiersMode {
     Graduated,
     Volume,
@@ -305,7 +316,13 @@ impl AsRef<str> for PriceTiersMode {
 
 impl std::fmt::Display for PriceTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PriceTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PriceTiersMode {
@@ -324,7 +341,7 @@ impl<'de> serde::Deserialize<'de> for PriceTiersMode {
     }
 }
 /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceType {
     OneTime,
     Recurring,
@@ -360,7 +377,13 @@ impl AsRef<str> for PriceType {
 
 impl std::fmt::Display for PriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PriceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PriceType {
@@ -385,5 +408,3 @@ impl stripe_types::Object for Price {
     }
 }
 stripe_types::def_id!(PriceId, "price_");
-pub mod deleted;
-pub use deleted::DeletedPrice;

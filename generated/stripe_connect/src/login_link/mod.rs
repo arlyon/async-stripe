@@ -15,7 +15,7 @@ pub struct LoginLink {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum LoginLinkObject {
     LoginLink,
 }
@@ -48,7 +48,13 @@ impl AsRef<str> for LoginLinkObject {
 
 impl std::fmt::Display for LoginLinkObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for LoginLinkObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for LoginLinkObject {

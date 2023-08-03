@@ -8,19 +8,8 @@
 /// When there is more than one usage record with the same timestamp, Stripe adds the `quantity` values together.
 /// In most cases, this is the desired resolution, however, you can change this behavior with the `action` parameter.  The default pricing model for metered billing is [per-unit pricing](https://stripe.com/docs/api/plans/object#plan_object-billing_scheme).
 /// For finer granularity, you can configure metered billing to have a [tiered pricing](https://stripe.com/docs/billing/subscriptions/tiers) model.
-pub fn create(
-    client: &stripe::Client,
-    subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
-    params: CreateUsageRecord,
-) -> stripe::Response<stripe_billing::usage_record::UsageRecord> {
-    client.send_form(
-        &format!(
-            "/subscription_items/{subscription_item}/usage_records",
-            subscription_item = subscription_item
-        ),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create(client: &stripe::Client, subscription_item: &stripe_types::subscription_item::SubscriptionItemId, params: CreateUsageRecord) -> stripe::Response<stripe_billing::UsageRecord> {
+    client.send_form(&format!("/subscription_items/{subscription_item}/usage_records", subscription_item = subscription_item), params, http_types::Method::Post)
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateUsageRecord<'a> {
@@ -46,12 +35,7 @@ pub struct CreateUsageRecord<'a> {
 }
 impl<'a> CreateUsageRecord<'a> {
     pub fn new(quantity: u64) -> Self {
-        Self {
-            action: Default::default(),
-            expand: Default::default(),
-            quantity,
-            timestamp: Default::default(),
-        }
+        Self { action: Default::default(), expand: Default::default(), quantity, timestamp: Default::default() }
     }
 }
 /// Valid values are `increment` (default) or `set`.
@@ -59,7 +43,7 @@ impl<'a> CreateUsageRecord<'a> {
 /// When using `increment` the specified `quantity` will be added to the usage at the specified timestamp.
 /// The `set` action will overwrite the usage quantity at that timestamp.
 /// If the subscription has [billing thresholds](https://stripe.com/docs/api/subscriptions/object#subscription_object-billing_thresholds), `increment` is the only allowed value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateUsageRecordAction {
     Increment,
     Set,
@@ -95,7 +79,13 @@ impl AsRef<str> for CreateUsageRecordAction {
 
 impl std::fmt::Display for CreateUsageRecordAction {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateUsageRecordAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateUsageRecordAction {
@@ -112,7 +102,7 @@ impl serde::Serialize for CreateUsageRecordAction {
 /// When passing `"now"`, Stripe records usage for the current time.
 /// Default is `"now"` if a value is not provided.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreateUsageRecordTimestamp {
     Now,
     I64(i64),

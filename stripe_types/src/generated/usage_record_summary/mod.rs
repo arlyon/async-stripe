@@ -10,7 +10,7 @@ pub struct UsageRecordSummary {
     ///
     /// Objects of the same type share the same value.
     pub object: UsageRecordSummaryObject,
-    pub period: stripe_types::period::Period,
+    pub period: stripe_types::Period,
     /// The ID of the subscription item this summary is describing.
     pub subscription_item: String,
     /// The total usage within this usage period.
@@ -19,7 +19,7 @@ pub struct UsageRecordSummary {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UsageRecordSummaryObject {
     UsageRecordSummary,
 }
@@ -52,7 +52,13 @@ impl AsRef<str> for UsageRecordSummaryObject {
 
 impl std::fmt::Display for UsageRecordSummaryObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UsageRecordSummaryObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UsageRecordSummaryObject {
@@ -67,8 +73,7 @@ impl<'de> serde::Deserialize<'de> for UsageRecordSummaryObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for UsageRecordSummaryObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for UsageRecordSummaryObject"))
     }
 }
 impl stripe_types::Object for UsageRecordSummary {

@@ -1,33 +1,19 @@
 
 /// List apple pay domains.
-pub fn list(
-    client: &stripe::Client,
-    params: ListApplePayDomain,
-) -> stripe::Response<stripe_types::List<stripe_misc::apple_pay_domain::ApplePayDomain>> {
+pub fn list(client: &stripe::Client, params: ListApplePayDomain) -> stripe::Response<stripe_types::List<stripe_misc::ApplePayDomain>> {
     client.get_query("/apple_pay/domains", params)
 }
 /// Create an apple pay domain.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateApplePayDomain,
-) -> stripe::Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
+pub fn create(client: &stripe::Client, params: CreateApplePayDomain) -> stripe::Response<stripe_misc::ApplePayDomain> {
     client.send_form("/apple_pay/domains", params, http_types::Method::Post)
 }
 /// Retrieve an apple pay domain.
-pub fn retrieve(
-    client: &stripe::Client,
-    domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
-    params: RetrieveApplePayDomain,
-) -> stripe::Response<stripe_misc::apple_pay_domain::ApplePayDomain> {
+pub fn retrieve(client: &stripe::Client, domain: &stripe_misc::apple_pay_domain::ApplePayDomainId, params: RetrieveApplePayDomain) -> stripe::Response<stripe_misc::ApplePayDomain> {
     client.get_query(&format!("/apple_pay/domains/{domain}", domain = domain), params)
 }
 /// Delete an apple pay domain.
-pub fn delete(
-    client: &stripe::Client,
-    domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
-) -> stripe::Response<stripe_misc::apple_pay_domain::DeletedApplePayDomain> {
-    client
-        .send(&format!("/apple_pay/domains/{domain}", domain = domain), http_types::Method::Delete)
+pub fn delete(client: &stripe::Client, domain: &stripe_misc::apple_pay_domain::ApplePayDomainId) -> stripe::Response<stripe_misc::DeletedApplePayDomain> {
+    client.send(&format!("/apple_pay/domains/{domain}", domain = domain), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListApplePayDomain<'a> {

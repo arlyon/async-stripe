@@ -56,7 +56,7 @@ pub struct TaxRate {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxRateObject {
     TaxRate,
 }
@@ -89,7 +89,13 @@ impl AsRef<str> for TaxRateObject {
 
 impl std::fmt::Display for TaxRateObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxRateObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxRateObject {
@@ -108,7 +114,7 @@ impl<'de> serde::Deserialize<'de> for TaxRateObject {
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxRateTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -177,7 +183,13 @@ impl AsRef<str> for TaxRateTaxType {
 
 impl std::fmt::Display for TaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxRateTaxType {

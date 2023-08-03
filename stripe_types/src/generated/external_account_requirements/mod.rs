@@ -5,7 +5,7 @@ pub struct ExternalAccountRequirements {
     /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     pub currently_due: Option<Vec<String>>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
-    pub errors: Option<Vec<stripe_types::errors::Errors>>,
+    pub errors: Option<Vec<stripe_types::AccountRequirementsError>>,
     /// Fields that weren't collected by `current_deadline`.
     ///
     /// These fields need to be collected to enable the external account.

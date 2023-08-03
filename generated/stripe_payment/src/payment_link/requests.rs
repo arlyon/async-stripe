@@ -1,50 +1,25 @@
 
 /// Returns a list of your payment links.
-pub fn list(
-    client: &stripe::Client,
-    params: ListPaymentLink,
-) -> stripe::Response<stripe_types::List<stripe_types::payment_link::PaymentLink>> {
+pub fn list(client: &stripe::Client, params: ListPaymentLink) -> stripe::Response<stripe_types::List<stripe_types::PaymentLink>> {
     client.get_query("/payment_links", params)
 }
 /// Retrieve a payment link.
-pub fn retrieve(
-    client: &stripe::Client,
-    payment_link: &stripe_types::payment_link::PaymentLinkId,
-    params: RetrievePaymentLink,
-) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
+pub fn retrieve(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: RetrievePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
     client.get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), params)
 }
 /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
 ///
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list_line_items(
-    client: &stripe::Client,
-    payment_link: &stripe_types::payment_link::PaymentLinkId,
-    params: ListLineItemsPaymentLink,
-) -> stripe::Response<stripe_types::List<stripe_types::line_item::LineItem>> {
-    client.get_query(
-        &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
-        params,
-    )
+pub fn list_line_items(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: ListLineItemsPaymentLink) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
+    client.get_query(&format!("/payment_links/{payment_link}/line_items", payment_link = payment_link), params)
 }
 /// Creates a payment link.
-pub fn create(
-    client: &stripe::Client,
-    params: CreatePaymentLink,
-) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
+pub fn create(client: &stripe::Client, params: CreatePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
     client.send_form("/payment_links", params, http_types::Method::Post)
 }
 /// Updates a payment link.
-pub fn update(
-    client: &stripe::Client,
-    payment_link: &stripe_types::payment_link::PaymentLinkId,
-    params: UpdatePaymentLink,
-) -> stripe::Response<stripe_types::payment_link::PaymentLink> {
-    client.send_form(
-        &format!("/payment_links/{payment_link}", payment_link = payment_link),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: UpdatePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
+    client.send_form(&format!("/payment_links/{payment_link}", payment_link = payment_link), params, http_types::Method::Post)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentLink<'a> {
@@ -278,7 +253,7 @@ impl CreatePaymentLinkConsentCollection {
 ///
 /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
 /// Only available to US merchants.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkConsentCollectionPromotions {
     Auto,
     None,
@@ -314,7 +289,13 @@ impl AsRef<str> for CreatePaymentLinkConsentCollectionPromotions {
 
 impl std::fmt::Display for CreatePaymentLinkConsentCollectionPromotions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkConsentCollectionPromotions {
@@ -327,7 +308,7 @@ impl serde::Serialize for CreatePaymentLinkConsentCollectionPromotions {
 }
 /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
 /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkConsentCollectionTermsOfService {
     None,
     Required,
@@ -363,7 +344,13 @@ impl AsRef<str> for CreatePaymentLinkConsentCollectionTermsOfService {
 
 impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkConsentCollectionTermsOfService {
@@ -404,20 +391,8 @@ pub struct CreatePaymentLinkCustomFields<'a> {
     pub type_: CreatePaymentLinkCustomFieldsType,
 }
 impl<'a> CreatePaymentLinkCustomFields<'a> {
-    pub fn new(
-        key: &'a str,
-        label: CreatePaymentLinkCustomFieldsLabel<'a>,
-        type_: CreatePaymentLinkCustomFieldsType,
-    ) -> Self {
-        Self {
-            dropdown: Default::default(),
-            key,
-            label,
-            numeric: Default::default(),
-            optional: Default::default(),
-            text: Default::default(),
-            type_,
-        }
+    pub fn new(key: &'a str, label: CreatePaymentLinkCustomFieldsLabel<'a>, type_: CreatePaymentLinkCustomFieldsType) -> Self {
+        Self { dropdown: Default::default(), key, label, numeric: Default::default(), optional: Default::default(), text: Default::default(), type_ }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -437,7 +412,7 @@ impl<'a> CreatePaymentLinkCustomFieldsLabel<'a> {
     }
 }
 /// The type of the label.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkCustomFieldsLabelType {
     Custom,
 }
@@ -470,7 +445,13 @@ impl AsRef<str> for CreatePaymentLinkCustomFieldsLabelType {
 
 impl std::fmt::Display for CreatePaymentLinkCustomFieldsLabelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomFieldsLabelType {
@@ -512,7 +493,7 @@ impl CreatePaymentLinkCustomFieldsText {
     }
 }
 /// The type of the field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkCustomFieldsType {
     Dropdown,
     Numeric,
@@ -551,7 +532,13 @@ impl AsRef<str> for CreatePaymentLinkCustomFieldsType {
 
 impl std::fmt::Display for CreatePaymentLinkCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomFieldsType {
@@ -563,7 +550,7 @@ impl serde::Serialize for CreatePaymentLinkCustomFieldsType {
     }
 }
 /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkCustomerCreation {
     Always,
     IfRequired,
@@ -599,7 +586,13 @@ impl AsRef<str> for CreatePaymentLinkCustomerCreation {
 
 impl std::fmt::Display for CreatePaymentLinkCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomerCreation {
@@ -655,7 +648,7 @@ impl CreatePaymentLinkPaymentIntentData {
     }
 }
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkPaymentIntentDataCaptureMethod {
     Automatic,
     AutomaticAsync,
@@ -694,7 +687,13 @@ impl AsRef<str> for CreatePaymentLinkPaymentIntentDataCaptureMethod {
 
 impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentIntentDataCaptureMethod {
@@ -716,7 +715,7 @@ impl serde::Serialize for CreatePaymentLinkPaymentIntentDataCaptureMethod {
 /// If Checkout does not create a Customer, the payment method is not attached to a Customer.
 ///
 /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
     OffSession,
     OnSession,
@@ -752,7 +751,13 @@ impl AsRef<str> for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
 
 impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
@@ -766,7 +771,7 @@ impl serde::Serialize for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
 /// Specify whether Checkout should collect a payment method.
 ///
 /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkPaymentMethodCollection {
     Always,
     IfRequired,
@@ -802,7 +807,13 @@ impl AsRef<str> for CreatePaymentLinkPaymentMethodCollection {
 
 impl std::fmt::Display for CreatePaymentLinkPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentMethodCollection {
@@ -841,7 +852,7 @@ impl<'a> CreatePaymentLinkShippingOptions<'a> {
 /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
 ///
 /// Changing this value will also affect the hostname in the [url](https://stripe.com/docs/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkSubmitType {
     Auto,
     Book,
@@ -883,7 +894,13 @@ impl AsRef<str> for CreatePaymentLinkSubmitType {
 
 impl std::fmt::Display for CreatePaymentLinkSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentLinkSubmitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreatePaymentLinkSubmitType {
@@ -1043,20 +1060,8 @@ pub struct UpdatePaymentLinkCustomFields<'a> {
     pub type_: UpdatePaymentLinkCustomFieldsType,
 }
 impl<'a> UpdatePaymentLinkCustomFields<'a> {
-    pub fn new(
-        key: &'a str,
-        label: UpdatePaymentLinkCustomFieldsLabel<'a>,
-        type_: UpdatePaymentLinkCustomFieldsType,
-    ) -> Self {
-        Self {
-            dropdown: Default::default(),
-            key,
-            label,
-            numeric: Default::default(),
-            optional: Default::default(),
-            text: Default::default(),
-            type_,
-        }
+    pub fn new(key: &'a str, label: UpdatePaymentLinkCustomFieldsLabel<'a>, type_: UpdatePaymentLinkCustomFieldsType) -> Self {
+        Self { dropdown: Default::default(), key, label, numeric: Default::default(), optional: Default::default(), text: Default::default(), type_ }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -1076,7 +1081,7 @@ impl<'a> UpdatePaymentLinkCustomFieldsLabel<'a> {
     }
 }
 /// The type of the label.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentLinkCustomFieldsLabelType {
     Custom,
 }
@@ -1109,7 +1114,13 @@ impl AsRef<str> for UpdatePaymentLinkCustomFieldsLabelType {
 
 impl std::fmt::Display for UpdatePaymentLinkCustomFieldsLabelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomFieldsLabelType {
@@ -1151,7 +1162,7 @@ impl UpdatePaymentLinkCustomFieldsText {
     }
 }
 /// The type of the field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentLinkCustomFieldsType {
     Dropdown,
     Numeric,
@@ -1190,7 +1201,13 @@ impl AsRef<str> for UpdatePaymentLinkCustomFieldsType {
 
 impl std::fmt::Display for UpdatePaymentLinkCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomFieldsType {
@@ -1202,7 +1219,7 @@ impl serde::Serialize for UpdatePaymentLinkCustomFieldsType {
     }
 }
 /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentLinkCustomerCreation {
     Always,
     IfRequired,
@@ -1238,7 +1255,13 @@ impl AsRef<str> for UpdatePaymentLinkCustomerCreation {
 
 impl std::fmt::Display for UpdatePaymentLinkCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomerCreation {
@@ -1272,7 +1295,7 @@ impl<'a> UpdatePaymentLinkLineItems<'a> {
 /// Specify whether Checkout should collect a payment method.
 ///
 /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentLinkPaymentMethodCollection {
     Always,
     IfRequired,
@@ -1308,7 +1331,13 @@ impl AsRef<str> for UpdatePaymentLinkPaymentMethodCollection {
 
 impl std::fmt::Display for UpdatePaymentLinkPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
@@ -1342,7 +1371,7 @@ impl<'a> AfterCompletionRedirectParams<'a> {
         Self { url }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     HostedConfirmation,
     Redirect,
@@ -1378,7 +1407,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {
@@ -1399,7 +1434,7 @@ impl AutomaticTaxParams {
         Self { enabled }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BillingAddressCollection {
     Auto,
     Required,
@@ -1435,7 +1470,13 @@ impl AsRef<str> for BillingAddressCollection {
 
 impl std::fmt::Display for BillingAddressCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BillingAddressCollection {
@@ -1488,7 +1529,7 @@ impl<'a> CustomFieldParams<'a> {
         Self { name, value }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
@@ -1524,7 +1565,13 @@ impl AsRef<str> for AmountTaxDisplay {
 
 impl std::fmt::Display for AmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AmountTaxDisplay {
@@ -1557,7 +1604,7 @@ impl AdjustableQuantityParams {
         Self { enabled, maximum: Default::default(), minimum: Default::default() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
@@ -1671,7 +1718,13 @@ impl AsRef<str> for PaymentMethodTypes {
 
 impl std::fmt::Display for PaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PaymentMethodTypes {
@@ -1682,7 +1735,7 @@ impl serde::Serialize for PaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AllowedCountries {
     Ac,
     Ad,
@@ -2423,7 +2476,13 @@ impl AsRef<str> for AllowedCountries {
 
 impl std::fmt::Display for AllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AllowedCountries {

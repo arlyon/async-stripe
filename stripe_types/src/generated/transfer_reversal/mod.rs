@@ -9,8 +9,7 @@ pub struct TransferReversal {
     /// Amount, in %s.
     pub amount: i64,
     /// Balance transaction that describes the impact on your account balance.
-    pub balance_transaction:
-        Option<stripe_types::Expandable<stripe_types::balance_transaction::BalanceTransaction>>,
+    pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -20,7 +19,7 @@ pub struct TransferReversal {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// Linked payment refund for the transfer reversal.
-    pub destination_payment_refund: Option<stripe_types::Expandable<stripe_types::refund::Refund>>,
+    pub destination_payment_refund: Option<stripe_types::Expandable<stripe_types::Refund>>,
     /// Unique identifier for the object.
     pub id: stripe_types::transfer_reversal::TransferReversalId,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -32,14 +31,14 @@ pub struct TransferReversal {
     /// Objects of the same type share the same value.
     pub object: TransferReversalObject,
     /// ID of the refund responsible for the transfer reversal.
-    pub source_refund: Option<stripe_types::Expandable<stripe_types::refund::Refund>>,
+    pub source_refund: Option<stripe_types::Expandable<stripe_types::Refund>>,
     /// ID of the transfer that was reversed.
-    pub transfer: stripe_types::Expandable<stripe_types::transfer::Transfer>,
+    pub transfer: stripe_types::Expandable<stripe_types::Transfer>,
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TransferReversalObject {
     TransferReversal,
 }
@@ -72,7 +71,13 @@ impl AsRef<str> for TransferReversalObject {
 
 impl std::fmt::Display for TransferReversalObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TransferReversalObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TransferReversalObject {
@@ -87,8 +92,7 @@ impl<'de> serde::Deserialize<'de> for TransferReversalObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TransferReversalObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TransferReversalObject"))
     }
 }
 impl stripe_types::Object for TransferReversal {

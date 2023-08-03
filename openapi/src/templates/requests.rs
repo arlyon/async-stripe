@@ -35,19 +35,13 @@ impl<'a> PrintableRequestSpec<'a> {
         if let Some(param_typ) = &self.param_type {
             params.push(("params", param_typ.to_string()));
         }
-        let params_body =
-            params.into_iter().map(|p| format!("{}:{}", p.0, p.1)).collect::<Vec<_>>().join(",");
+        let params_body = params.into_iter().map(|p| format!("{}:{}", p.0, p.1)).collect::<Vec<_>>().join(",");
 
         let req_path = self.request_path;
 
         // Parameterized request path
         let path_arg = if !self.path_params.is_empty() {
-            let fmt_args = self
-                .path_params
-                .iter()
-                .map(|p| format!("{0}={0}", p.name))
-                .collect::<Vec<_>>()
-                .join(",");
+            let fmt_args = self.path_params.iter().map(|p| format!("{0}={0}", p.name)).collect::<Vec<_>>().join(",");
             format!(r#"&format!("{req_path}", {fmt_args})"#)
         } else {
             // Plain request path
@@ -67,16 +61,14 @@ impl<'a> PrintableRequestSpec<'a> {
                     format!("client.get({path_arg})")
                 }
             },
-            OperationType::Post | OperationType::Delete => {
-                match self.param_type.is_some() {
-                    true => {
-                        format!("client.send_form({path_arg}, params, http_types::Method::{method_enum})")
-                    }
-                    false => {
-                        format!("client.send({path_arg}, http_types::Method::{method_enum})")
-                    }
+            OperationType::Post | OperationType::Delete => match self.param_type.is_some() {
+                true => {
+                    format!("client.send_form({path_arg}, params, http_types::Method::{method_enum})")
                 }
-            }
+                false => {
+                    format!("client.send({path_arg}, http_types::Method::{method_enum})")
+                }
+            },
         };
         if let Some(doc) = self.doc_comment {
             let comment = write_doc_comment(doc, 2);

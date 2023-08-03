@@ -11,25 +11,15 @@ pub fn search(client: &stripe::Client, params: SearchCustomer) -> stripe::Respon
 /// Returns a list of your customers.
 ///
 /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListCustomer,
-) -> stripe::Response<stripe_types::List<stripe_types::customer::Customer>> {
+pub fn list(client: &stripe::Client, params: ListCustomer) -> stripe::Response<stripe_types::List<stripe_types::Customer>> {
     client.get_query("/customers", params)
 }
 /// Creates a new customer object.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateCustomer,
-) -> stripe::Response<stripe_types::customer::Customer> {
+pub fn create(client: &stripe::Client, params: CreateCustomer) -> stripe::Response<stripe_types::Customer> {
     client.send_form("/customers", params, http_types::Method::Post)
 }
 /// Retrieves a Customer object.
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: RetrieveCustomer,
-) -> stripe::Response<RetrieveReturned> {
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: RetrieveCustomer) -> stripe::Response<RetrieveReturned> {
     client.get_query(&format!("/customers/{customer}", customer = customer), params)
 }
 /// Updates the specified customer by setting the values of the parameters passed.
@@ -39,106 +29,47 @@ pub fn retrieve(
 /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
 /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
 /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
-pub fn update(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: UpdateCustomer,
-) -> stripe::Response<stripe_types::customer::Customer> {
-    client.send_form(
-        &format!("/customers/{customer}", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: UpdateCustomer) -> stripe::Response<stripe_types::Customer> {
+    client.send_form(&format!("/customers/{customer}", customer = customer), params, http_types::Method::Post)
 }
 /// Permanently deletes a customer.
 ///
 /// It cannot be undone.
 /// Also immediately cancels any active subscriptions on the customer.
-pub fn delete(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-) -> stripe::Response<stripe_types::customer::DeletedCustomer> {
+pub fn delete(client: &stripe::Client, customer: &stripe_types::customer::CustomerId) -> stripe::Response<stripe_types::DeletedCustomer> {
     client.send(&format!("/customers/{customer}", customer = customer), http_types::Method::Delete)
 }
 /// Returns a list of PaymentMethods for a given Customer.
-pub fn list_payment_methods(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: ListPaymentMethodsCustomer,
-) -> stripe::Response<stripe_types::List<stripe_types::payment_method::PaymentMethod>> {
+pub fn list_payment_methods(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListPaymentMethodsCustomer) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
     client.get_query(&format!("/customers/{customer}/payment_methods", customer = customer), params)
 }
 /// Retrieves a PaymentMethod object for a given Customer.
-pub fn retrieve_payment_method(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    payment_method: &stripe_types::payment_method::PaymentMethodId,
-    params: RetrievePaymentMethodCustomer,
-) -> stripe::Response<stripe_types::payment_method::PaymentMethod> {
-    client.get_query(
-        &format!(
-            "/customers/{customer}/payment_methods/{payment_method}",
-            customer = customer,
-            payment_method = payment_method
-        ),
-        params,
-    )
+pub fn retrieve_payment_method(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, payment_method: &stripe_types::payment_method::PaymentMethodId, params: RetrievePaymentMethodCustomer) -> stripe::Response<stripe_types::PaymentMethod> {
+    client.get_query(&format!("/customers/{customer}/payment_methods/{payment_method}", customer = customer, payment_method = payment_method), params)
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-pub fn balance_transactions(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: BalanceTransactionsCustomer,
-) -> stripe::Response<
-    stripe_types::List<stripe_types::customer_balance_transaction::CustomerBalanceTransaction>,
-> {
-    client.get_query(
-        &format!("/customers/{customer}/balance_transactions", customer = customer),
-        params,
-    )
+pub fn balance_transactions(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: BalanceTransactionsCustomer) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
+    client.get_query(&format!("/customers/{customer}/balance_transactions", customer = customer), params)
 }
 /// Create an incoming testmode bank transfer.
-pub fn fund_cash_balance(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: FundCashBalanceCustomer,
-) -> stripe::Response<stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
-{
-    client.send_form(
-        &format!("/test_helpers/customers/{customer}/fund_cash_balance", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn fund_cash_balance(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: FundCashBalanceCustomer) -> stripe::Response<stripe_types::CustomerCashBalanceTransaction> {
+    client.send_form(&format!("/test_helpers/customers/{customer}/fund_cash_balance", customer = customer), params, http_types::Method::Post)
 }
 /// Retrieve funding instructions for a customer cash balance.
 ///
 /// If funding instructions do not yet exist for the customer, new funding instructions will be created.
 /// If funding instructions have already been created for a given customer, the same funding instructions will be retrieved.
 /// In other words, we will return the same funding instructions each time.
-pub fn create_funding_instructions(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: CreateFundingInstructionsCustomer,
-) -> stripe::Response<stripe_types::funding_instructions::FundingInstructions> {
-    client.send_form(
-        &format!("/customers/{customer}/funding_instructions", customer = customer),
-        params,
-        http_types::Method::Post,
-    )
+pub fn create_funding_instructions(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreateFundingInstructionsCustomer) -> stripe::Response<stripe_types::CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions> {
+    client.send_form(&format!("/customers/{customer}/funding_instructions", customer = customer), params, http_types::Method::Post)
 }
 /// Removes the currently applied discount on a customer.
-pub fn delete_discount(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-) -> stripe::Response<stripe_types::discount::DeletedDiscount> {
-    client.send(
-        &format!("/customers/{customer}/discount", customer = customer),
-        http_types::Method::Delete,
-    )
+pub fn delete_discount(client: &stripe::Client, customer: &stripe_types::customer::CustomerId) -> stripe::Response<stripe_types::DeletedDiscount> {
+    client.send(&format!("/customers/{customer}/discount", customer = customer), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
-    pub data: Vec<stripe_types::customer::Customer>,
+    pub data: Vec<stripe_types::Customer>,
     pub has_more: bool,
     pub next_page: Option<String>,
     /// String representing the object's type.
@@ -153,7 +84,7 @@ pub struct SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -186,7 +117,13 @@ impl AsRef<str> for SearchReturnedObject {
 
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SearchReturnedObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SearchReturnedObject {
@@ -201,8 +138,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -228,12 +164,7 @@ pub struct SearchCustomer<'a> {
 }
 impl<'a> SearchCustomer<'a> {
     pub fn new(query: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            limit: Default::default(),
-            page: Default::default(),
-            query,
-        }
+        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -386,7 +317,7 @@ impl<'a> CreateCustomerTaxIdData<'a> {
     }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCustomerTaxIdDataType {
     AdNrt,
     AeTrn,
@@ -614,7 +545,13 @@ impl AsRef<str> for CreateCustomerTaxIdDataType {
 
 impl std::fmt::Display for CreateCustomerTaxIdDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateCustomerTaxIdDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateCustomerTaxIdDataType {
@@ -626,10 +563,10 @@ impl serde::Serialize for CreateCustomerTaxIdDataType {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum RetrieveReturned {
-    Customer(stripe_types::customer::Customer),
-    DeletedCustomer(stripe_types::customer::DeletedCustomer),
+    Customer(stripe_types::Customer),
+    DeletedCustomer(stripe_types::DeletedCustomer),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCustomer<'a> {
@@ -775,7 +712,7 @@ impl<'a> ListPaymentMethodsCustomer<'a> {
 ///
 /// Without the filter, the list includes all current and future payment method types.
 /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListPaymentMethodsCustomerType {
     AcssDebit,
     Affirm,
@@ -901,7 +838,13 @@ impl AsRef<str> for ListPaymentMethodsCustomerType {
 
 impl std::fmt::Display for ListPaymentMethodsCustomerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListPaymentMethodsCustomerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ListPaymentMethodsCustomerType {
@@ -991,11 +934,7 @@ pub struct CreateFundingInstructionsCustomer<'a> {
     pub funding_type: CreateFundingInstructionsCustomerFundingType,
 }
 impl<'a> CreateFundingInstructionsCustomer<'a> {
-    pub fn new(
-        bank_transfer: CreateFundingInstructionsCustomerBankTransfer<'a>,
-        currency: stripe_types::Currency,
-        funding_type: CreateFundingInstructionsCustomerFundingType,
-    ) -> Self {
+    pub fn new(bank_transfer: CreateFundingInstructionsCustomerBankTransfer<'a>, currency: stripe_types::Currency, funding_type: CreateFundingInstructionsCustomerFundingType) -> Self {
         Self { bank_transfer, currency, expand: Default::default(), funding_type }
     }
 }
@@ -1009,19 +948,14 @@ pub struct CreateFundingInstructionsCustomerBankTransfer<'a> {
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types:
-        Option<&'a [CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes]>,
+    pub requested_address_types: Option<&'a [CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes]>,
     /// The type of the `bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreateFundingInstructionsCustomerBankTransferType,
 }
 impl<'a> CreateFundingInstructionsCustomerBankTransfer<'a> {
     pub fn new(type_: CreateFundingInstructionsCustomerBankTransferType) -> Self {
-        Self {
-            eu_bank_transfer: Default::default(),
-            requested_address_types: Default::default(),
-            type_,
-        }
+        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
     }
 }
 /// Configuration for eu_bank_transfer funding type.
@@ -1040,7 +974,7 @@ impl<'a> CreateFundingInstructionsCustomerBankTransferEuBankTransfer<'a> {
 /// List of address types that should be returned in the financial_addresses response.
 ///
 /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     Iban,
     SortCode,
@@ -1082,7 +1016,13 @@ impl AsRef<str> for CreateFundingInstructionsCustomerBankTransferRequestedAddres
 
 impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
@@ -1094,7 +1034,7 @@ impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferRequested
     }
 }
 /// The type of the `bank_transfer`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
@@ -1139,7 +1079,13 @@ impl AsRef<str> for CreateFundingInstructionsCustomerBankTransferType {
 
 impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferType {
@@ -1151,7 +1097,7 @@ impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferType {
     }
 }
 /// The `funding_type` to get the instructions for.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerFundingType {
     BankTransfer,
 }
@@ -1184,7 +1130,13 @@ impl AsRef<str> for CreateFundingInstructionsCustomerFundingType {
 
 impl std::fmt::Display for CreateFundingInstructionsCustomerFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateFundingInstructionsCustomerFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerFundingType {
@@ -1221,7 +1173,7 @@ impl<'a> OptionalFieldsAddress<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ReconciliationMode {
     Automatic,
     Manual,
@@ -1260,7 +1212,13 @@ impl AsRef<str> for ReconciliationMode {
 
 impl std::fmt::Display for ReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ReconciliationMode {
@@ -1287,7 +1245,7 @@ impl<'a> CustomFieldParams<'a> {
         Self { name, value }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
@@ -1323,7 +1281,13 @@ impl AsRef<str> for AmountTaxDisplay {
 
 impl std::fmt::Display for AmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for AmountTaxDisplay {
@@ -1348,7 +1312,7 @@ impl<'a> TaxParam<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxExempt {
     Exempt,
     None,
@@ -1387,7 +1351,13 @@ impl AsRef<str> for TaxExempt {
 
 impl std::fmt::Display for TaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxExempt {

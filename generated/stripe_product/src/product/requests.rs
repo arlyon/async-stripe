@@ -9,54 +9,37 @@ pub fn search(client: &stripe::Client, params: SearchProduct) -> stripe::Respons
     client.get_query("/products/search", params)
 }
 /// Creates a new product object.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateProduct,
-) -> stripe::Response<stripe_types::product::Product> {
+pub fn create(client: &stripe::Client, params: CreateProduct) -> stripe::Response<stripe_types::Product> {
     client.send_form("/products", params, http_types::Method::Post)
 }
 /// Retrieves the details of an existing product.
 ///
 /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_types::product::ProductId,
-    params: RetrieveProduct,
-) -> stripe::Response<stripe_types::product::Product> {
+pub fn retrieve(client: &stripe::Client, id: &stripe_types::product::ProductId, params: RetrieveProduct) -> stripe::Response<stripe_types::Product> {
     client.get_query(&format!("/products/{id}", id = id), params)
 }
 /// Updates the specific product by setting the values of the parameters passed.
 ///
 /// Any parameters not provided will be left unchanged.
-pub fn update(
-    client: &stripe::Client,
-    id: &stripe_types::product::ProductId,
-    params: UpdateProduct,
-) -> stripe::Response<stripe_types::product::Product> {
+pub fn update(client: &stripe::Client, id: &stripe_types::product::ProductId, params: UpdateProduct) -> stripe::Response<stripe_types::Product> {
     client.send_form(&format!("/products/{id}", id = id), params, http_types::Method::Post)
 }
 /// Returns a list of your products.
 ///
 /// The products are returned sorted by creation date, with the most recently created products appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListProduct,
-) -> stripe::Response<stripe_types::List<stripe_types::product::Product>> {
+pub fn list(client: &stripe::Client, params: ListProduct) -> stripe::Response<stripe_types::List<stripe_types::Product>> {
     client.get_query("/products", params)
 }
 /// Delete a product.
 ///
 /// Deleting a product is only possible if it has no prices associated with it.
 /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-pub fn delete(
-    client: &stripe::Client,
-    id: &stripe_types::product::ProductId,
-) -> stripe::Response<stripe_types::product::DeletedProduct> {
+pub fn delete(client: &stripe::Client, id: &stripe_types::product::ProductId) -> stripe::Response<stripe_types::DeletedProduct> {
     client.send(&format!("/products/{id}", id = id), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
-    pub data: Vec<stripe_types::product::Product>,
+    pub data: Vec<stripe_types::Product>,
     pub has_more: bool,
     pub next_page: Option<String>,
     /// String representing the object's type.
@@ -71,7 +54,7 @@ pub struct SearchReturned {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SearchReturnedObject {
     SearchResult,
 }
@@ -104,7 +87,13 @@ impl AsRef<str> for SearchReturnedObject {
 
 impl std::fmt::Display for SearchReturnedObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SearchReturnedObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SearchReturnedObject {
@@ -119,8 +108,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -146,12 +134,7 @@ pub struct SearchProduct<'a> {
 }
 impl<'a> SearchProduct<'a> {
     pub fn new(query: &'a str) -> Self {
-        Self {
-            expand: Default::default(),
-            limit: Default::default(),
-            page: Default::default(),
-            query,
-        }
+        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -276,12 +259,7 @@ pub struct CreateProductDefaultPriceData<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateProductDefaultPriceDataCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateProductDefaultPriceDataCurrencyOptions>>,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
@@ -305,14 +283,7 @@ pub struct CreateProductDefaultPriceData<'a> {
 }
 impl<'a> CreateProductDefaultPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self {
-            currency,
-            currency_options: Default::default(),
-            recurring: Default::default(),
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+        Self { currency, currency_options: Default::default(), recurring: Default::default(), tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }
 /// Prices defined in each available currency option.
@@ -369,12 +340,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
     pub fn new(enabled: bool) -> Self {
-        Self {
-            enabled,
-            maximum: Default::default(),
-            minimum: Default::default(),
-            preset: Default::default(),
-        }
+        Self { enabled, maximum: Default::default(), minimum: Default::default(), preset: Default::default() }
     }
 }
 /// Each element represents a pricing tier.
@@ -407,13 +373,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
     pub fn new(up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo) -> Self {
-        Self {
-            flat_amount: Default::default(),
-            flat_amount_decimal: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-            up_to,
-        }
+        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -421,7 +381,7 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
     Inf,
     I64(i64),
@@ -448,7 +408,7 @@ impl CreateProductDefaultPriceDataRecurring {
 /// Specifies billing frequency.
 ///
 /// Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateProductDefaultPriceDataRecurringInterval {
     Day,
     Month,
@@ -490,7 +450,13 @@ impl AsRef<str> for CreateProductDefaultPriceDataRecurringInterval {
 
 impl std::fmt::Display for CreateProductDefaultPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateProductDefaultPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateProductDefaultPriceDataRecurringInterval {
@@ -638,7 +604,7 @@ impl<'a> ListProduct<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -677,7 +643,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {
@@ -712,7 +684,7 @@ impl PackageDimensionsSpecs {
         Self { height, length, weight, width }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     Good,
     Service,
@@ -748,7 +720,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {

@@ -18,14 +18,7 @@ impl UrlFinder {
         if resp.status().is_success() {
             let text = resp.text()?;
             if let Some(line) = text.lines().find(|l| l.contains("flattenedAPISections: {")) {
-                Ok(Self {
-                    flattened_api_sections: serde_json::from_str(
-                        line.trim()
-                            .trim_start_matches("flattenedAPISections: ")
-                            .trim_end_matches(','),
-                    )
-                    .expect("should be valid json"),
-                })
+                Ok(Self { flattened_api_sections: serde_json::from_str(line.trim().trim_start_matches("flattenedAPISections: ").trim_end_matches(',')).expect("should be valid json") })
             } else {
                 Err(anyhow!("stripe api returned unexpected document"))
             }
@@ -45,12 +38,7 @@ impl UrlFinder {
         let object_name = object.replace('.', "_").to_snake_case();
         let object_names = [format!("{}_object", object_name), object_name];
         for name in object_names {
-            if let Some(path) = self
-                .flattened_api_sections
-                .get(&name)
-                .and_then(|o| o.as_object().expect("this should be an object").get("path"))
-                .and_then(|s| s.as_str())
-            {
+            if let Some(path) = self.flattened_api_sections.get(&name).and_then(|o| o.as_object().expect("this should be an object").get("path")).and_then(|s| s.as_str()) {
                 return Some(format!("https://stripe.com/docs/api{}", path));
             }
         }

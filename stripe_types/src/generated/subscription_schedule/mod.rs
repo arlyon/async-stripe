@@ -4,7 +4,7 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SubscriptionSchedule {
     /// ID of the Connect Application that created the schedule.
-    pub application: Option<stripe_types::Expandable<stripe_types::application::Application>>,
+    pub application: Option<stripe_types::Expandable<stripe_types::Application>>,
     /// Time at which the subscription schedule was canceled.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -18,10 +18,10 @@ pub struct SubscriptionSchedule {
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
-    pub current_phase: Option<stripe_types::current_phase::CurrentPhase>,
+    pub current_phase: Option<stripe_types::SubscriptionScheduleCurrentPhase>,
     /// ID of the customer who owns the subscription schedule.
-    pub customer: stripe_types::Expandable<stripe_types::customer::Customer>,
-    pub default_settings: stripe_types::default_settings::DefaultSettings,
+    pub customer: stripe_types::Expandable<stripe_types::Customer>,
+    pub default_settings: stripe_types::SubscriptionSchedulesResourceDefaultSettings,
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
@@ -40,7 +40,7 @@ pub struct SubscriptionSchedule {
     /// Objects of the same type share the same value.
     pub object: SubscriptionScheduleObject,
     /// Configuration for the subscription schedule's phases.
-    pub phases: Vec<stripe_types::phase::Phase>,
+    pub phases: Vec<stripe_types::SubscriptionSchedulePhaseConfiguration>,
     /// Time at which the subscription schedule was released.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -53,16 +53,15 @@ pub struct SubscriptionSchedule {
     /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
     pub status: SubscriptionScheduleStatus,
     /// ID of the subscription managed by the subscription schedule.
-    pub subscription: Option<stripe_types::Expandable<stripe_types::subscription::Subscription>>,
+    pub subscription: Option<stripe_types::Expandable<stripe_types::Subscription>>,
     /// ID of the test clock this subscription schedule belongs to.
-    pub test_clock:
-        Option<stripe_types::Expandable<stripe_types::test_helpers::test_clock::TestClock>>,
+    pub test_clock: Option<stripe_types::Expandable<stripe_types::TestClock>>,
 }
 /// Behavior of the subscription schedule and underlying subscription when it ends.
 ///
 /// Possible values are `release` or `cancel` with the default being `release`.
 /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionScheduleEndBehavior {
     Cancel,
     None,
@@ -104,7 +103,13 @@ impl AsRef<str> for SubscriptionScheduleEndBehavior {
 
 impl std::fmt::Display for SubscriptionScheduleEndBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SubscriptionScheduleEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SubscriptionScheduleEndBehavior {
@@ -119,15 +124,13 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SubscriptionScheduleEndBehavior")
-        })
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleEndBehavior"))
     }
 }
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionScheduleObject {
     SubscriptionSchedule,
 }
@@ -160,7 +163,13 @@ impl AsRef<str> for SubscriptionScheduleObject {
 
 impl std::fmt::Display for SubscriptionScheduleObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SubscriptionScheduleObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SubscriptionScheduleObject {
@@ -175,15 +184,14 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleObject"))
     }
 }
 /// The present status of the subscription schedule.
 ///
 /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
 /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionScheduleStatus {
     Active,
     Canceled,
@@ -228,7 +236,13 @@ impl AsRef<str> for SubscriptionScheduleStatus {
 
 impl std::fmt::Display for SubscriptionScheduleStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SubscriptionScheduleStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for SubscriptionScheduleStatus {
@@ -243,8 +257,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
     }
 }
 impl stripe_types::Object for SubscriptionSchedule {

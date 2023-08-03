@@ -1,17 +1,10 @@
 
 /// Lists all Country Spec objects available in the API.
-pub fn list(
-    client: &stripe::Client,
-    params: ListCountrySpec,
-) -> stripe::Response<stripe_types::List<stripe_connect::country_spec::CountrySpec>> {
+pub fn list(client: &stripe::Client, params: ListCountrySpec) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
     client.get_query("/country_specs", params)
 }
 /// Returns a Country Spec for a given Country code.
-pub fn retrieve(
-    client: &stripe::Client,
-    country: &stripe_connect::country_spec::CountrySpecId,
-    params: RetrieveCountrySpec,
-) -> stripe::Response<stripe_connect::country_spec::CountrySpec> {
+pub fn retrieve(client: &stripe::Client, country: &stripe_connect::country_spec::CountrySpecId, params: RetrieveCountrySpec) -> stripe::Response<stripe_connect::CountrySpec> {
     client.get_query(&format!("/country_specs/{country}", country = country), params)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]

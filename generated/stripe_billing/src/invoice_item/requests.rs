@@ -2,54 +2,30 @@
 /// Returns a list of your invoice items.
 ///
 /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-pub fn list(
-    client: &stripe::Client,
-    params: ListInvoiceItem,
-) -> stripe::Response<stripe_types::List<stripe_types::invoice_item::InvoiceItem>> {
+pub fn list(client: &stripe::Client, params: ListInvoiceItem) -> stripe::Response<stripe_types::List<stripe_types::InvoiceItem>> {
     client.get_query("/invoiceitems", params)
 }
 /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
 ///
 /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateInvoiceItem,
-) -> stripe::Response<stripe_types::invoice_item::InvoiceItem> {
+pub fn create(client: &stripe::Client, params: CreateInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
     client.send_form("/invoiceitems", params, http_types::Method::Post)
 }
 /// Retrieves the invoice item with the given ID.
-pub fn retrieve(
-    client: &stripe::Client,
-    invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
-    params: RetrieveInvoiceItem,
-) -> stripe::Response<stripe_types::invoice_item::InvoiceItem> {
+pub fn retrieve(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId, params: RetrieveInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
     client.get_query(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), params)
 }
 /// Updates the amount or description of an invoice item on an upcoming invoice.
 ///
 /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-pub fn update(
-    client: &stripe::Client,
-    invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
-    params: UpdateInvoiceItem,
-) -> stripe::Response<stripe_types::invoice_item::InvoiceItem> {
-    client.send_form(
-        &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId, params: UpdateInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
+    client.send_form(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), params, http_types::Method::Post)
 }
 /// Deletes an invoice item, removing it from an invoice.
 ///
 /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-pub fn delete(
-    client: &stripe::Client,
-    invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
-) -> stripe::Response<stripe_types::invoice_item::DeletedInvoiceItem> {
-    client.send(
-        &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
-        http_types::Method::Delete,
-    )
+pub fn delete(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId) -> stripe::Response<stripe_types::DeletedInvoiceItem> {
+    client.send(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), http_types::Method::Delete)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListInvoiceItem<'a> {
@@ -345,7 +321,7 @@ impl Period {
         Self { end, start }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,
     Inclusive,
@@ -384,7 +360,13 @@ impl AsRef<str> for TaxBehavior {
 
 impl std::fmt::Display for TaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TaxBehavior {
@@ -421,12 +403,6 @@ pub struct OneTimePriceData<'a> {
 }
 impl<'a> OneTimePriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self {
-            currency,
-            product,
-            tax_behavior: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+        Self { currency, product, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }

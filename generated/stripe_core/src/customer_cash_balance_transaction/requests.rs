@@ -1,35 +1,11 @@
 
 /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-pub fn retrieve(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    transaction: &str,
-    params: RetrieveCustomerCashBalanceTransaction,
-) -> stripe::Response<stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction>
-{
-    client.get_query(
-        &format!(
-            "/customers/{customer}/cash_balance_transactions/{transaction}",
-            customer = customer,
-            transaction = transaction
-        ),
-        params,
-    )
+pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, transaction: &str, params: RetrieveCustomerCashBalanceTransaction) -> stripe::Response<stripe_types::CustomerCashBalanceTransaction> {
+    client.get_query(&format!("/customers/{customer}/cash_balance_transactions/{transaction}", customer = customer, transaction = transaction), params)
 }
 /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-pub fn list(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    params: ListCustomerCashBalanceTransaction,
-) -> stripe::Response<
-    stripe_types::List<
-        stripe_types::customer_cash_balance_transaction::CustomerCashBalanceTransaction,
-    >,
-> {
-    client.get_query(
-        &format!("/customers/{customer}/cash_balance_transactions", customer = customer),
-        params,
-    )
+pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListCustomerCashBalanceTransaction) -> stripe::Response<stripe_types::List<stripe_types::CustomerCashBalanceTransaction>> {
+    client.get_query(&format!("/customers/{customer}/cash_balance_transactions", customer = customer), params)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCustomerCashBalanceTransaction<'a> {

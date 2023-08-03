@@ -9,7 +9,7 @@ pub struct CreditNoteLineItem {
     /// The integer amount in %s representing the discount being credited for this line item.
     pub discount_amount: i64,
     /// The amount of discount calculated per discount for this line item.
-    pub discount_amounts: Vec<stripe_types::discount_amount::DiscountAmount>,
+    pub discount_amounts: Vec<stripe_types::DiscountsResourceDiscountAmount>,
     /// Unique identifier for the object.
     pub id: stripe_types::credit_note_line_item::CreditNoteLineItemId,
     /// ID of the invoice line item being credited.
@@ -24,9 +24,9 @@ pub struct CreditNoteLineItem {
     /// The number of units of product being credited.
     pub quantity: Option<u64>,
     /// The amount of tax calculated per tax rate for this line item.
-    pub tax_amounts: Vec<stripe_types::tax_amount::TaxAmount>,
+    pub tax_amounts: Vec<stripe_types::CreditNoteTaxAmount>,
     /// The tax rates which apply to the line item.
-    pub tax_rates: Vec<stripe_types::tax_rate::TaxRate>,
+    pub tax_rates: Vec<stripe_types::TaxRate>,
     /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
     ///
     /// When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.
@@ -42,7 +42,7 @@ pub struct CreditNoteLineItem {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteLineItemObject {
     CreditNoteLineItem,
 }
@@ -75,7 +75,13 @@ impl AsRef<str> for CreditNoteLineItemObject {
 
 impl std::fmt::Display for CreditNoteLineItemObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteLineItemObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteLineItemObject {
@@ -90,14 +96,13 @@ impl<'de> serde::Deserialize<'de> for CreditNoteLineItemObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemObject"))
     }
 }
 /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
 ///
 /// When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteLineItemType {
     CustomLineItem,
     InvoiceLineItem,
@@ -133,7 +138,13 @@ impl AsRef<str> for CreditNoteLineItemType {
 
 impl std::fmt::Display for CreditNoteLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreditNoteLineItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreditNoteLineItemType {
@@ -148,8 +159,7 @@ impl<'de> serde::Deserialize<'de> for CreditNoteLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemType"))
     }
 }
 impl stripe_types::Object for CreditNoteLineItem {

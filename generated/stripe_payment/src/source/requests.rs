@@ -1,32 +1,16 @@
 
 /// Delete a specified source for a given customer.
-pub fn detach(
-    client: &stripe::Client,
-    customer: &stripe_types::customer::CustomerId,
-    id: &str,
-    params: DetachSource,
-) -> stripe::Response<DetachReturned> {
-    client.send_form(
-        &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
-        params,
-        http_types::Method::Delete,
-    )
+pub fn detach(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: DetachSource) -> stripe::Response<DetachReturned> {
+    client.send_form(&format!("/customers/{customer}/sources/{id}", customer = customer, id = id), params, http_types::Method::Delete)
 }
 /// Retrieves an existing source object.
 ///
 /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-pub fn retrieve(
-    client: &stripe::Client,
-    source: &stripe_types::source::SourceId,
-    params: RetrieveSource,
-) -> stripe::Response<stripe_types::source::Source> {
+pub fn retrieve(client: &stripe::Client, source: &stripe_types::source::SourceId, params: RetrieveSource) -> stripe::Response<stripe_types::Source> {
     client.get_query(&format!("/sources/{source}", source = source), params)
 }
 /// Creates a new source object.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateSource,
-) -> stripe::Response<stripe_types::source::Source> {
+pub fn create(client: &stripe::Client, params: CreateSource) -> stripe::Response<stripe_types::Source> {
     client.send_form("/sources", params, http_types::Method::Post)
 }
 /// Updates the specified source by setting the values of the parameters passed.
@@ -34,42 +18,22 @@ pub fn create(
 /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
 /// It is also possible to update type specific information for selected payment methods.
 /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-pub fn update(
-    client: &stripe::Client,
-    source: &stripe_types::source::SourceId,
-    params: UpdateSource,
-) -> stripe::Response<stripe_types::source::Source> {
-    client.send_form(
-        &format!("/sources/{source}", source = source),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, source: &stripe_types::source::SourceId, params: UpdateSource) -> stripe::Response<stripe_types::Source> {
+    client.send_form(&format!("/sources/{source}", source = source), params, http_types::Method::Post)
 }
 /// Verify a given source.
-pub fn verify(
-    client: &stripe::Client,
-    source: &stripe_types::source::SourceId,
-    params: VerifySource,
-) -> stripe::Response<stripe_types::source::Source> {
-    client.send_form(
-        &format!("/sources/{source}/verify", source = source),
-        params,
-        http_types::Method::Post,
-    )
+pub fn verify(client: &stripe::Client, source: &stripe_types::source::SourceId, params: VerifySource) -> stripe::Response<stripe_types::Source> {
+    client.send_form(&format!("/sources/{source}/verify", source = source), params, http_types::Method::Post)
 }
 /// List source transactions for a given source.
-pub fn source_transactions(
-    client: &stripe::Client,
-    source: &stripe_types::source::SourceId,
-    params: SourceTransactionsSource,
-) -> stripe::Response<stripe_types::List<stripe_types::source_transaction::SourceTransaction>> {
+pub fn source_transactions(client: &stripe::Client, source: &stripe_types::source::SourceId, params: SourceTransactionsSource) -> stripe::Response<stripe_types::List<stripe_types::SourceTransaction>> {
     client.get_query(&format!("/sources/{source}/source_transactions", source = source), params)
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum DetachReturned {
-    PaymentSource(stripe_types::payment_source::PaymentSource),
-    DeletedPaymentSource(stripe_types::payment_source::DeletedPaymentSource),
+    PaymentSource(stripe_types::PaymentSource),
+    DeletedPaymentSource(stripe_types::DeletedPaymentSource),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DetachSource<'a> {
@@ -180,7 +144,7 @@ impl<'a> CreateSource<'a> {
 ///
 /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
 /// It is generally inferred unless a type supports multiple flows.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceFlow {
     CodeVerification,
     None,
@@ -222,7 +186,13 @@ impl AsRef<str> for CreateSourceFlow {
 
 impl std::fmt::Display for CreateSourceFlow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSourceFlow {
@@ -254,7 +224,7 @@ impl CreateSourceReceiver {
 ///
 /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
 /// Refer to each payment method's documentation to learn which refund attributes may be required.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceReceiverRefundAttributesMethod {
     Email,
     Manual,
@@ -293,7 +263,13 @@ impl AsRef<str> for CreateSourceReceiverRefundAttributesMethod {
 
 impl std::fmt::Display for CreateSourceReceiverRefundAttributesMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceReceiverRefundAttributesMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSourceReceiverRefundAttributesMethod {
@@ -364,7 +340,7 @@ impl<'a> CreateSourceSourceOrderItems<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceSourceOrderItemsType {
     Discount,
     Shipping,
@@ -406,7 +382,13 @@ impl AsRef<str> for CreateSourceSourceOrderItemsType {
 
 impl std::fmt::Display for CreateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceSourceOrderItemsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSourceSourceOrderItemsType {
@@ -417,7 +399,7 @@ impl serde::Serialize for CreateSourceSourceOrderItemsType {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceUsage {
     Reusable,
     SingleUse,
@@ -453,7 +435,13 @@ impl AsRef<str> for CreateSourceUsage {
 
 impl std::fmt::Display for CreateSourceUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateSourceUsage {
@@ -541,7 +529,7 @@ impl<'a> UpdateSourceSourceOrderItems<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSourceSourceOrderItemsType {
     Discount,
     Shipping,
@@ -583,7 +571,13 @@ impl AsRef<str> for UpdateSourceSourceOrderItemsType {
 
 impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSourceSourceOrderItemsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for UpdateSourceSourceOrderItemsType {
@@ -662,7 +656,7 @@ impl<'a> MandateOnlineAcceptanceParams<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Status {
     Accepted,
     Pending,
@@ -704,7 +698,13 @@ impl AsRef<str> for Status {
 
 impl std::fmt::Display for Status {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Status {
@@ -715,7 +715,7 @@ impl serde::Serialize for Status {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     Offline,
     Online,
@@ -751,7 +751,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {
@@ -762,7 +768,7 @@ impl serde::Serialize for Type {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     OneTime,
     Scheduled,
@@ -801,7 +807,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -812,7 +824,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum NotificationMethod {
     DeprecatedNone,
     Email,
@@ -857,7 +869,13 @@ impl AsRef<str> for NotificationMethod {
 
 impl std::fmt::Display for NotificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for NotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for NotificationMethod {
@@ -916,14 +934,7 @@ pub struct Address<'a> {
 }
 impl<'a> Address<'a> {
     pub fn new(line1: &'a str) -> Self {
-        Self {
-            city: Default::default(),
-            country: Default::default(),
-            line1,
-            line2: Default::default(),
-            postal_code: Default::default(),
-            state: Default::default(),
-        }
+        Self { city: Default::default(), country: Default::default(), line1, line2: Default::default(), postal_code: Default::default(), state: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -960,15 +971,7 @@ pub struct MandateAcceptanceParams<'a> {
 }
 impl<'a> MandateAcceptanceParams<'a> {
     pub fn new(status: Status) -> Self {
-        Self {
-            date: Default::default(),
-            ip: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            status,
-            type_: Default::default(),
-            user_agent: Default::default(),
-        }
+        Self { date: Default::default(), ip: Default::default(), offline: Default::default(), online: Default::default(), status, type_: Default::default(), user_agent: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1012,13 +1015,7 @@ pub struct OrderShipping<'a> {
 }
 impl<'a> OrderShipping<'a> {
     pub fn new(address: Address<'a>) -> Self {
-        Self {
-            address,
-            carrier: Default::default(),
-            name: Default::default(),
-            phone: Default::default(),
-            tracking_number: Default::default(),
-        }
+        Self { address, carrier: Default::default(), name: Default::default(), phone: Default::default(), tracking_number: Default::default() }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

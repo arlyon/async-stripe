@@ -10,9 +10,9 @@ pub struct Dispute {
     /// Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
     pub amount: i64,
     /// List of zero, one, or two balance transactions that show funds withdrawn and reinstated to your Stripe account as a result of this dispute.
-    pub balance_transactions: Vec<stripe_types::balance_transaction::BalanceTransaction>,
+    pub balance_transactions: Vec<stripe_types::BalanceTransaction>,
     /// ID of the charge that was disputed.
-    pub charge: stripe_types::Expandable<stripe_types::charge::Charge>,
+    pub charge: stripe_types::Expandable<stripe_types::Charge>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -21,8 +21,8 @@ pub struct Dispute {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    pub evidence: stripe_types::evidence::Evidence,
-    pub evidence_details: stripe_types::evidence_details::EvidenceDetails,
+    pub evidence: stripe_types::DisputeEvidence,
+    pub evidence_details: stripe_types::DisputeEvidenceDetails,
     /// Unique identifier for the object.
     pub id: stripe_types::dispute::DisputeId,
     /// If true, it is still possible to refund the disputed payment.
@@ -43,8 +43,7 @@ pub struct Dispute {
     /// Objects of the same type share the same value.
     pub object: DisputeObject,
     /// ID of the PaymentIntent that was disputed.
-    pub payment_intent:
-        Option<stripe_types::Expandable<stripe_types::payment_intent::PaymentIntent>>,
+    pub payment_intent: Option<stripe_types::Expandable<stripe_types::PaymentIntent>>,
     /// Reason given by cardholder for dispute.
     ///
     /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
@@ -58,7 +57,7 @@ pub struct Dispute {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputeObject {
     Dispute,
 }
@@ -91,7 +90,13 @@ impl AsRef<str> for DisputeObject {
 
 impl std::fmt::Display for DisputeObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DisputeObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for DisputeObject {
@@ -112,7 +117,7 @@ impl<'de> serde::Deserialize<'de> for DisputeObject {
 /// Current status of dispute.
 ///
 /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum DisputeStatus {
     ChargeRefunded,
     Lost,
@@ -166,7 +171,13 @@ impl AsRef<str> for DisputeStatus {
 
 impl std::fmt::Display for DisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DisputeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for DisputeStatus {

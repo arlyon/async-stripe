@@ -8,7 +8,7 @@ pub struct Coupon {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub applies_to: Option<stripe_types::applies_to::AppliesTo>,
+    pub applies_to: Option<stripe_types::CouponAppliesTo>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -19,12 +19,7 @@ pub struct Coupon {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        std::collections::HashMap<
-            stripe_types::Currency,
-            stripe_types::currency_option::CurrencyOption,
-        >,
-    >,
+    pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, stripe_types::CouponCurrencyOption>>,
     /// One of `forever`, `once`, and `repeating`.
     ///
     /// Describes how long a customer who applies this coupon will get the discount.
@@ -63,7 +58,7 @@ pub struct Coupon {
 /// One of `forever`, `once`, and `repeating`.
 ///
 /// Describes how long a customer who applies this coupon will get the discount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CouponDuration {
     Forever,
     Once,
@@ -102,7 +97,13 @@ impl AsRef<str> for CouponDuration {
 
 impl std::fmt::Display for CouponDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CouponDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CouponDuration {
@@ -123,7 +124,7 @@ impl<'de> serde::Deserialize<'de> for CouponDuration {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CouponObject {
     Coupon,
 }
@@ -156,7 +157,13 @@ impl AsRef<str> for CouponObject {
 
 impl std::fmt::Display for CouponObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CouponObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CouponObject {
@@ -181,5 +188,3 @@ impl stripe_types::Object for Coupon {
     }
 }
 stripe_types::def_id!(CouponId);
-pub mod deleted;
-pub use deleted::DeletedCoupon;

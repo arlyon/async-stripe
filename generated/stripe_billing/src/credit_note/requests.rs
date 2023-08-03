@@ -5,59 +5,35 @@
 /// For a `status=paid` invoice, a credit note does not affect its `amount_due`.
 /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
 /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateCreditNote,
-) -> stripe::Response<stripe_types::credit_note::CreditNote> {
+pub fn create(client: &stripe::Client, params: CreateCreditNote) -> stripe::Response<stripe_types::CreditNote> {
     client.send_form("/credit_notes", params, http_types::Method::Post)
 }
 /// Get a preview of a credit note without creating it.
-pub fn preview(
-    client: &stripe::Client,
-    params: PreviewCreditNote,
-) -> stripe::Response<stripe_types::credit_note::CreditNote> {
+pub fn preview(client: &stripe::Client, params: PreviewCreditNote) -> stripe::Response<stripe_types::CreditNote> {
     client.get_query("/credit_notes/preview", params)
 }
 /// Retrieves the credit note object with the given identifier.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_types::credit_note::CreditNoteId,
-    params: RetrieveCreditNote,
-) -> stripe::Response<stripe_types::credit_note::CreditNote> {
+pub fn retrieve(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: RetrieveCreditNote) -> stripe::Response<stripe_types::CreditNote> {
     client.get_query(&format!("/credit_notes/{id}", id = id), params)
 }
 /// Returns a list of credit notes.
-pub fn list(
-    client: &stripe::Client,
-    params: ListCreditNote,
-) -> stripe::Response<stripe_types::List<stripe_types::credit_note::CreditNote>> {
+pub fn list(client: &stripe::Client, params: ListCreditNote) -> stripe::Response<stripe_types::List<stripe_types::CreditNote>> {
     client.get_query("/credit_notes", params)
 }
 /// Updates an existing credit note.
-pub fn update(
-    client: &stripe::Client,
-    id: &stripe_types::credit_note::CreditNoteId,
-    params: UpdateCreditNote,
-) -> stripe::Response<stripe_types::credit_note::CreditNote> {
+pub fn update(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: UpdateCreditNote) -> stripe::Response<stripe_types::CreditNote> {
     client.send_form(&format!("/credit_notes/{id}", id = id), params, http_types::Method::Post)
 }
 /// Marks a credit note as void.
 ///
 /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
-pub fn void_credit_note(
-    client: &stripe::Client,
-    id: &stripe_types::credit_note::CreditNoteId,
-    params: VoidCreditNoteCreditNote,
-) -> stripe::Response<stripe_types::credit_note::CreditNote> {
+pub fn void_credit_note(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: VoidCreditNoteCreditNote) -> stripe::Response<stripe_types::CreditNote> {
     client.send_form(&format!("/credit_notes/{id}/void", id = id), params, http_types::Method::Post)
 }
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
 ///
 /// This URL you can retrieve the full (paginated) list of line items.
-pub fn preview_lines(
-    client: &stripe::Client,
-    params: PreviewLinesCreditNote,
-) -> stripe::Response<stripe_types::List<stripe_types::credit_note_line_item::CreditNoteLineItem>> {
+pub fn preview_lines(client: &stripe::Client, params: PreviewLinesCreditNote) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
     client.get_query("/credit_notes/preview/lines", params)
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -364,7 +340,7 @@ impl<'a> PreviewLinesCreditNote<'a> {
         }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     CustomLineItem,
     InvoiceLineItem,
@@ -400,7 +376,13 @@ impl AsRef<str> for Type {
 
 impl std::fmt::Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Type {
@@ -411,7 +393,7 @@ impl serde::Serialize for Type {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Reason {
     Duplicate,
     Fraudulent,
@@ -453,7 +435,13 @@ impl AsRef<str> for Reason {
 
 impl std::fmt::Display for Reason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Reason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Reason {
@@ -517,15 +505,6 @@ pub struct CreditNoteLineItemParams<'a> {
 }
 impl<'a> CreditNoteLineItemParams<'a> {
     pub fn new(type_: Type) -> Self {
-        Self {
-            amount: Default::default(),
-            description: Default::default(),
-            invoice_line_item: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-            type_,
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
+        Self { amount: Default::default(), description: Default::default(), invoice_line_item: Default::default(), quantity: Default::default(), tax_rates: Default::default(), type_, unit_amount: Default::default(), unit_amount_decimal: Default::default() }
     }
 }

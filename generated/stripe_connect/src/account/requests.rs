@@ -1,17 +1,10 @@
 
 /// Retrieves the details of an account.
-pub fn retrieve_for_my_account(
-    client: &stripe::Client,
-    params: RetrieveForMyAccountAccount,
-) -> stripe::Response<stripe_types::account::Account> {
+pub fn retrieve_for_my_account(client: &stripe::Client, params: RetrieveForMyAccountAccount) -> stripe::Response<stripe_types::Account> {
     client.get_query("/account", params)
 }
 /// Retrieves the details of an account.
-pub fn retrieve(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-    params: RetrieveAccount,
-) -> stripe::Response<stripe_types::account::Account> {
+pub fn retrieve(client: &stripe::Client, account: &stripe_types::account::AccountId, params: RetrieveAccount) -> stripe::Response<stripe_types::Account> {
     client.get_query(&format!("/accounts/{account}", account = account), params)
 }
 /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
@@ -21,24 +14,13 @@ pub fn retrieve(
 /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters can no longer be changed.
 /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
 /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
-pub fn update(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-    params: UpdateAccount,
-) -> stripe::Response<stripe_types::account::Account> {
-    client.send_form(
-        &format!("/accounts/{account}", account = account),
-        params,
-        http_types::Method::Post,
-    )
+pub fn update(client: &stripe::Client, account: &stripe_types::account::AccountId, params: UpdateAccount) -> stripe::Response<stripe_types::Account> {
+    client.send_form(&format!("/accounts/{account}", account = account), params, http_types::Method::Post)
 }
 /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
 ///
 /// If you’re not a platform, the list is empty.
-pub fn list(
-    client: &stripe::Client,
-    params: ListAccount,
-) -> stripe::Response<stripe_types::List<stripe_types::account::Account>> {
+pub fn list(client: &stripe::Client, params: ListAccount) -> stripe::Response<stripe_types::List<stripe_types::Account>> {
     client.get_query("/accounts", params)
 }
 /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
@@ -48,10 +30,7 @@ pub fn list(
 /// creating the account.
 ///
 /// Connect Onboarding won’t ask for the prefilled information during account onboarding. You can prefill any information on the account.
-pub fn create(
-    client: &stripe::Client,
-    params: CreateAccount,
-) -> stripe::Response<stripe_types::account::Account> {
+pub fn create(client: &stripe::Client, params: CreateAccount) -> stripe::Response<stripe_types::Account> {
     client.send_form("/accounts", params, http_types::Method::Post)
 }
 /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.
@@ -60,10 +39,7 @@ pub fn create(
 ///
 /// Standard accounts created using live-mode keys cannot be deleted.
 /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
-pub fn delete(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-) -> stripe::Response<stripe_types::account::DeletedAccount> {
+pub fn delete(client: &stripe::Client, account: &stripe_types::account::AccountId) -> stripe::Response<stripe_types::DeletedAccount> {
     client.send(&format!("/accounts/{account}", account = account), http_types::Method::Delete)
 }
 /// With [Connect](https://stripe.com/docs/connect), you may flag accounts as suspicious.
@@ -71,35 +47,19 @@ pub fn delete(
 /// Test-mode Custom and Express accounts can be rejected at any time.
 ///
 /// Accounts created using live-mode keys may only be rejected once all balances are zero.
-pub fn reject(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-    params: RejectAccount,
-) -> stripe::Response<stripe_types::account::Account> {
-    client.send_form(
-        &format!("/accounts/{account}/reject", account = account),
-        params,
-        http_types::Method::Post,
-    )
+pub fn reject(client: &stripe::Client, account: &stripe_types::account::AccountId, params: RejectAccount) -> stripe::Response<stripe_types::Account> {
+    client.send_form(&format!("/accounts/{account}/reject", account = account), params, http_types::Method::Post)
 }
 /// Returns a list of people associated with the account’s legal entity.
 ///
 /// The people are returned sorted by creation date, with the most recent people appearing first.
-pub fn persons(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-    params: PersonsAccount,
-) -> stripe::Response<stripe_types::List<stripe_types::person::Person>> {
+pub fn persons(client: &stripe::Client, account: &stripe_types::account::AccountId, params: PersonsAccount) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
     client.get_query(&format!("/accounts/{account}/persons", account = account), params)
 }
 /// Returns a list of capabilities associated with the account.
 ///
 /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
-pub fn capabilities(
-    client: &stripe::Client,
-    account: &stripe_types::account::AccountId,
-    params: CapabilitiesAccount,
-) -> stripe::Response<stripe_types::List<stripe_types::capability::Capability>> {
+pub fn capabilities(client: &stripe::Client, account: &stripe_types::account::AccountId, params: CapabilitiesAccount) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
     client.get_query(&format!("/accounts/{account}/capabilities", account = account), params)
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -892,7 +852,7 @@ impl<'a> CreateAccountIndividualAddressKanji<'a> {
 /// The type of Stripe account to create.
 ///
 /// May be one of `custom`, `express` or `standard`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateAccountType {
     Custom,
     Express,
@@ -931,7 +891,13 @@ impl AsRef<str> for CreateAccountType {
 
 impl std::fmt::Display for CreateAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for CreateAccountType {
@@ -1060,7 +1026,7 @@ impl<'a> AddressSpecs<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum BusinessType {
     Company,
     GovernmentEntity,
@@ -1102,7 +1068,13 @@ impl AsRef<str> for BusinessType {
 
 impl std::fmt::Display for BusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for BusinessType {
@@ -1144,7 +1116,7 @@ impl<'a> CompanyOwnershipDeclaration<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Structure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -1234,7 +1206,13 @@ impl AsRef<str> for Structure {
 
 impl std::fmt::Display for Structure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Structure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Structure {
@@ -1288,7 +1266,7 @@ impl DateOfBirthSpecs {
         Self { day, month, year }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PoliticalExposure {
     Existing,
     None,
@@ -1324,7 +1302,13 @@ impl AsRef<str> for PoliticalExposure {
 
 impl std::fmt::Display for PoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PoliticalExposure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for PoliticalExposure {
@@ -1432,12 +1416,12 @@ impl<'a> PaymentsSettingsSpecs<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
+#[serde(untagged)]
 pub enum DelayDays {
     Minimum,
     U32(u32),
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Interval {
     Daily,
     Manual,
@@ -1479,7 +1463,13 @@ impl AsRef<str> for Interval {
 
 impl std::fmt::Display for Interval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for Interval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for Interval {
@@ -1490,7 +1480,7 @@ impl serde::Serialize for Interval {
         serializer.serialize_str(self.as_str())
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum WeeklyAnchor {
     Friday,
     Monday,
@@ -1541,7 +1531,13 @@ impl AsRef<str> for WeeklyAnchor {
 
 impl std::fmt::Display for WeeklyAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for WeeklyAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for WeeklyAnchor {

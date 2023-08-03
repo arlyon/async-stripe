@@ -4,18 +4,8 @@
 /// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).  The list is sorted in reverse-chronological order (newest first).
 /// The first list item represents the most current usage period that hasn’t ended yet.
 /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
-pub fn list(
-    client: &stripe::Client,
-    subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
-    params: ListUsageRecordSummary,
-) -> stripe::Response<stripe_types::List<stripe_types::usage_record_summary::UsageRecordSummary>> {
-    client.get_query(
-        &format!(
-            "/subscription_items/{subscription_item}/usage_record_summaries",
-            subscription_item = subscription_item
-        ),
-        params,
-    )
+pub fn list(client: &stripe::Client, subscription_item: &stripe_types::subscription_item::SubscriptionItemId, params: ListUsageRecordSummary) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
+    client.get_query(&format!("/subscription_items/{subscription_item}/usage_record_summaries", subscription_item = subscription_item), params)
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListUsageRecordSummary<'a> {

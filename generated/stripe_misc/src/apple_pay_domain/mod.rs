@@ -17,7 +17,7 @@ pub struct ApplePayDomain {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ApplePayDomainObject {
     ApplePayDomain,
 }
@@ -50,7 +50,13 @@ impl AsRef<str> for ApplePayDomainObject {
 
 impl std::fmt::Display for ApplePayDomainObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ApplePayDomainObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for ApplePayDomainObject {
@@ -65,8 +71,7 @@ impl<'de> serde::Deserialize<'de> for ApplePayDomainObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ApplePayDomainObject"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ApplePayDomainObject"))
     }
 }
 impl stripe_types::Object for ApplePayDomain {
@@ -76,6 +81,4 @@ impl stripe_types::Object for ApplePayDomain {
     }
 }
 stripe_types::def_id!(ApplePayDomainId);
-pub mod deleted;
-pub use deleted::DeletedApplePayDomain;
 pub mod requests;

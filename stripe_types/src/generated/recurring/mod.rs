@@ -27,7 +27,7 @@ pub struct Recurring {
 ///
 /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
 /// Defaults to `sum`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RecurringAggregateUsage {
     LastDuringPeriod,
     LastEver,
@@ -69,7 +69,13 @@ impl AsRef<str> for RecurringAggregateUsage {
 
 impl std::fmt::Display for RecurringAggregateUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RecurringAggregateUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RecurringAggregateUsage {
@@ -84,14 +90,13 @@ impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
     }
 }
 /// The frequency at which a subscription is billed.
 ///
 /// One of `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RecurringInterval {
     Day,
     Month,
@@ -133,7 +138,13 @@ impl AsRef<str> for RecurringInterval {
 
 impl std::fmt::Display for RecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RecurringInterval {
@@ -148,8 +159,7 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -158,7 +168,7 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RecurringUsageType {
     Licensed,
     Metered,
@@ -194,7 +204,13 @@ impl AsRef<str> for RecurringUsageType {
 
 impl std::fmt::Display for RecurringUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for RecurringUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for RecurringUsageType {
@@ -209,7 +225,6 @@ impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
+        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
     }
 }

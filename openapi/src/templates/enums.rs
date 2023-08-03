@@ -7,13 +7,7 @@ use crate::rust_object::FieldlessVariant;
 use crate::templates::derives::{write_derives_line, Derives};
 use crate::types::RustIdent;
 
-pub fn write_enum_variants(
-    out: &mut String,
-    enum_name: &RustIdent,
-    variants: &[PrintableEnumVariant],
-    additional_derives: Derives,
-    lifetime: Option<Lifetime>,
-) {
+pub fn write_enum_variants(out: &mut String, enum_name: &RustIdent, variants: &[PrintableEnumVariant], additional_derives: Derives, lifetime: Option<Lifetime>) {
     let lifetime_str = lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
     // Build the body of the enum definition
     let mut enum_body = String::with_capacity(64);
@@ -30,7 +24,7 @@ pub fn write_enum_variants(
         out,
         r#"
             {derives}
-            #[serde(untagged, rename_all = "snake_case")]
+            #[serde(untagged)]
             pub enum {enum_name}{lifetime_str} {{
             {enum_body}
             }}
@@ -39,12 +33,7 @@ pub fn write_enum_variants(
 }
 /// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
 /// and `impl Default`.
-pub fn write_fieldless_enum_variants(
-    out: &mut String,
-    variants: &[FieldlessVariant],
-    enum_name: &RustIdent,
-    additional_derives: Derives,
-) {
+pub fn write_fieldless_enum_variants(out: &mut String, variants: &[FieldlessVariant], enum_name: &RustIdent, additional_derives: Derives) {
     // Build the body of the enum definition
     let mut enum_def_body = String::with_capacity(128);
     for FieldlessVariant { variant_name, .. } in variants {
@@ -67,10 +56,11 @@ pub fn write_fieldless_enum_variants(
     let derive_deser = additional_derives.derives_deserialize();
     let derive_serialize = additional_derives.derives_serialize();
 
-    // NB: we set serialize to false since we implement manually using `as_str` to avoid
-    // duplicating the `as_str` implementation. This also avoids generating some
-    // unnecessary serialization methods. The same logic applies for deserialization
-    let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false);
+    // NB: we unset the derive flags for serialize + deserialize + debug to avoid duplicating
+    // the (potentially many) strings in `as_str` and `from_str` through the default derive.
+    // These derived implementations often show up running `llvm-lines`, so easy
+    // binary size + compile time win by doing this.
+    let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false).debug(false);
 
     let derives = write_derives_line(derives);
     let _ = writedoc!(
@@ -108,7 +98,13 @@ pub fn write_fieldless_enum_variants(
 
             impl std::fmt::Display for {enum_name} {{
                 fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
-                    self.as_str().fmt(f)
+                    f.write_str(self.as_str())
+                }}
+            }}
+            
+            impl std::fmt::Debug for {enum_name} {{
+                fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
+                    f.write_str(self.as_str())
                 }}
             }}
         "#

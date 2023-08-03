@@ -12,9 +12,9 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Token {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<stripe_types::bank_account::BankAccount>,
+    pub bank_account: Option<stripe_types::BankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<stripe_types::card::Card>,
+    pub card: Option<stripe_types::Card>,
     /// IP address of the client that generated the token.
     pub client_ip: Option<String>,
     /// Time at which the object was created.
@@ -38,7 +38,7 @@ pub struct Token {
 /// String representing the object's type.
 ///
 /// Objects of the same type share the same value.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TokenObject {
     Token,
 }
@@ -71,7 +71,13 @@ impl AsRef<str> for TokenObject {
 
 impl std::fmt::Display for TokenObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TokenObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 impl serde::Serialize for TokenObject {
