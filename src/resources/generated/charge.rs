@@ -33,10 +33,10 @@ pub struct Charge {
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
 
-    /// Amount in %s captured (can be less than the amount attribute on the charge if a partial capture was made).
+    /// Amount in cents (or local equivalent) captured (can be less than the amount attribute on the charge if a partial capture was made).
     pub amount_captured: i64,
 
-    /// Amount in %s refunded (can be less than the amount attribute on the charge if a partial refund was issued).
+    /// Amount in cents (or local equivalent) refunded (can be less than the amount attribute on the charge if a partial refund was issued).
     pub amount_refunded: i64,
 
     /// ID of the Connect application that created the charge.

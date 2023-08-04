@@ -53,11 +53,11 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_due: Option<i64>,
 
-    /// The amount, in %s, that was paid.
+    /// The amount, in cents (or local equivalent), that was paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_paid: Option<i64>,
 
-    /// The difference between amount_due and amount_paid, in %s.
+    /// The difference between amount_due and amount_paid, in cents (or local equivalent).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_remaining: Option<i64>,
 
@@ -69,7 +69,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<Expandable<Application>>,
 
-    /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
+    /// The fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
@@ -398,6 +398,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Expandable<Subscription>>,
 
+    /// Details about the subscription that created this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_details: Option<SubscriptionDetailsData>,
+
     /// Only set for upcoming invoices that preview prorations.
     ///
     /// The time used to calculate prorations.
@@ -410,7 +414,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtotal: Option<i64>,
 
-    /// The integer amount in %s representing the subtotal of the invoice before any invoice level discount or tax is applied.
+    /// The integer amount in cents (or local equivalent) representing the subtotal of the invoice before any invoice level discount or tax is applied.
     ///
     /// Item discounts are already incorporated.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -437,7 +441,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
 
-    /// The integer amount in %s representing the total amount of the invoice including all discounts but excluding all tax.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the invoice including all discounts but excluding all tax.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_excluding_tax: Option<i64>,
 
@@ -509,7 +513,7 @@ pub struct AutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
+    /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
     /// The discount that was applied to get this discount amount.
@@ -527,7 +531,7 @@ pub struct InvoiceSettingCustomField {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
     /// Whether this tax amount is inclusive or exclusive.
@@ -541,7 +545,7 @@ pub struct TaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<TaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 
@@ -565,7 +569,7 @@ pub struct InvoiceItemThresholdReason {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceTransferData {
-    /// The amount in %s that will be transferred to the destination account when the invoice is paid.
+    /// The amount in cents (or local equivalent) that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
     pub amount: Option<i64>,
@@ -662,6 +666,15 @@ pub struct InvoicesStatusTransitions {
 
     /// The time that the invoice was voided.
     pub voided_at: Option<Timestamp>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SubscriptionDetailsData {
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will reflect the metadata of the subscription at the time of invoice creation.
+    ///
+    /// *Note: This attribute is populated only for invoices created on or after June 29, 2023.*.
+    #[serde(default)]
+    pub metadata: Metadata,
 }
 
 /// The parameters for `Invoice::create`.

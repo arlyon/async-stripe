@@ -949,6 +949,11 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections: Option<LinkedAccountOptionsUsBankAccount>,
 
+    /// Preferred transaction settlement speed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_settlement_speed:
+        Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -3329,6 +3334,11 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
 
+    /// Preferred transaction settlement speed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_settlement_speed:
+        Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4169,6 +4179,11 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for network related functions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
+
+    /// Preferred transaction settlement speed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_settlement_speed:
+        Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7411,6 +7426,44 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsUsBankAccount`'s `preferred_settlement_speed` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    Fastest,
+    Standard,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Fastest => "fastest",
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn default() -> Self {
+        Self::Fastest
+    }
+}
+
 /// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsUsBankAccount`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -8388,6 +8441,46 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsSepaDebitSetupFuture
 impl std::default::Default for PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn default() -> Self {
         Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsUsBankAccount`'s `preferred_settlement_speed` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    Fastest,
+    Standard,
+}
+
+impl PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Fastest => {
+                "fastest"
+            }
+            PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Standard => {
+                "standard"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn default() -> Self {
+        Self::Fastest
     }
 }
 
@@ -12569,6 +12662,44 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Ach
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsUsBankAccount`'s `preferred_settlement_speed` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    Fastest,
+    Standard,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Fastest => "fastest",
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn default() -> Self {
+        Self::Fastest
     }
 }
 

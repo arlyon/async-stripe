@@ -17,10 +17,10 @@ pub struct Transfer {
     /// Unique identifier for the object.
     pub id: TransferId,
 
-    /// Amount in %s to be transferred.
+    /// Amount in cents (or local equivalent) to be transferred.
     pub amount: i64,
 
-    /// Amount in %s reversed (can be less than the amount attribute on the transfer if a partial reversal was issued).
+    /// Amount in cents (or local equivalent) reversed (can be less than the amount attribute on the transfer if a partial reversal was issued).
     pub amount_reversed: i64,
 
     /// Balance transaction that describes the impact of this transfer on your account balance.

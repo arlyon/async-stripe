@@ -16,10 +16,10 @@ pub struct InvoiceLineItem {
     /// Unique identifier for the object.
     pub id: InvoiceLineItemId,
 
-    /// The amount, in %s.
+    /// The amount, in cents (or local equivalent).
     pub amount: i64,
 
-    /// The integer amount in %s representing the amount for this line item, excluding all tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount for this line item, excluding all tax and discounts.
     pub amount_excluding_tax: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -97,7 +97,7 @@ pub struct InvoiceLineItem {
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
 
-    /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
+    /// The amount in cents (or local equivalent) representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
 
@@ -113,7 +113,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
+    /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
     /// The discount that was applied to get this discount amount.
@@ -122,7 +122,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
     /// Whether this tax amount is inclusive or exclusive.
@@ -136,7 +136,7 @@ pub struct TaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<TaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 
