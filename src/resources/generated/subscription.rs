@@ -31,7 +31,7 @@ pub struct Subscription {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     pub application_fee_percent: Option<f64>,
 
     pub automatic_tax: SubscriptionAutomaticTax,
@@ -424,7 +424,7 @@ pub struct CreateSubscription<'a> {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -771,7 +771,7 @@ pub struct UpdateSubscription<'a> {
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// The request must be made by a platform account on a connected account in order to set an application fee percentage.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -845,7 +845,7 @@ pub struct UpdateSubscription<'a> {
     /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
     /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<&'a str>,
+    pub default_source: Option<String>,
 
     /// The tax rates that will apply to any subscription item that does not have `tax_rates` set.
     ///
@@ -858,7 +858,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -1107,7 +1107,7 @@ pub struct CreateSubscriptionPendingInvoiceItemInterval {
 pub struct CreateSubscriptionTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
@@ -1253,7 +1253,7 @@ pub struct UpdateSubscriptionPendingInvoiceItemInterval {
 pub struct UpdateSubscriptionTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,

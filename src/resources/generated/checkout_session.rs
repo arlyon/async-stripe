@@ -990,7 +990,7 @@ pub struct LineItemsTaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<LineItemsTaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 
@@ -1776,7 +1776,7 @@ pub struct CreateCheckoutSessionShippingOptions {
 pub struct CreateCheckoutSessionSubscriptionData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
     /// To use an application fee percent, the request must be made on behalf of another account, using the `Stripe-Account` header or an OAuth key.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1801,7 +1801,7 @@ pub struct CreateCheckoutSessionSubscriptionData {
 
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription
-    /// for rendering in Stripe hosted surfaces.
+    /// for rendering in the [customer portal](https://stripe.com/docs/customer-management).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -2546,7 +2546,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,

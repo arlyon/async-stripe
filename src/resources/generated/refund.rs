@@ -17,7 +17,7 @@ pub struct Refund {
     /// Unique identifier for the object.
     pub id: RefundId,
 
-    /// Amount, in %s.
+    /// Amount, in cents (or local equivalent).
     pub amount: i64,
 
     /// Balance transaction that describes the impact on your account balance.

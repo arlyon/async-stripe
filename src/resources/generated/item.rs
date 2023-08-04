@@ -86,7 +86,7 @@ pub struct LineItemsTaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<LineItemsTaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 

@@ -141,7 +141,7 @@ pub struct CreateWebhookEndpoint<'a> {
 
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -227,7 +227,7 @@ impl Paginable for ListWebhookEndpoints<'_> {
 pub struct UpdateWebhookEndpoint<'a> {
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// Disable the webhook endpoint if set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
