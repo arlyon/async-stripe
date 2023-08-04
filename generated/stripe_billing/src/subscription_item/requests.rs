@@ -1,36 +1,3 @@
-
-/// Returns a list of your subscription items for a given subscription.
-pub fn list(client: &stripe::Client, params: ListSubscriptionItem) -> stripe::Response<stripe_types::List<stripe_types::SubscriptionItem>> {
-    client.get_query("/subscription_items", params)
-}
-/// Retrieves the subscription item with the given ID.
-pub fn retrieve(client: &stripe::Client, item: &stripe_types::line_item::ItemId, params: RetrieveSubscriptionItem) -> stripe::Response<stripe_types::SubscriptionItem> {
-    client.get_query(&format!("/subscription_items/{item}", item = item), params)
-}
-/// Adds a new item to an existing subscription.
-///
-/// No existing items will be changed or replaced.
-pub fn create(client: &stripe::Client, params: CreateSubscriptionItem) -> stripe::Response<stripe_types::SubscriptionItem> {
-    client.send_form("/subscription_items", params, http_types::Method::Post)
-}
-/// Updates the plan or quantity of an item on a current subscription.
-pub fn update(client: &stripe::Client, item: &stripe_types::line_item::ItemId, params: UpdateSubscriptionItem) -> stripe::Response<stripe_types::SubscriptionItem> {
-    client.send_form(&format!("/subscription_items/{item}", item = item), params, http_types::Method::Post)
-}
-/// Deletes an item from the subscription.
-///
-/// Removing a subscription item from a subscription will not cancel the subscription.
-pub fn delete(client: &stripe::Client, item: &stripe_types::line_item::ItemId, params: DeleteSubscriptionItem) -> stripe::Response<stripe_types::DeletedSubscriptionItem> {
-    client.send_form(&format!("/subscription_items/{item}", item = item), params, http_types::Method::Delete)
-}
-/// For the specified subscription item, returns a list of summary objects.
-///
-/// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).  The list is sorted in reverse-chronological order (newest first).
-/// The first list item represents the most current usage period that hasn’t ended yet.
-/// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
-pub fn usage_record_summaries(client: &stripe::Client, subscription_item: &stripe_types::subscription_item::SubscriptionItemId, params: UsageRecordSummariesSubscriptionItem) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
-    client.get_query(&format!("/subscription_items/{subscription_item}/usage_record_summaries", subscription_item = subscription_item), params)
-}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListSubscriptionItem<'a> {
     /// A cursor for use in pagination.
@@ -58,7 +25,22 @@ pub struct ListSubscriptionItem<'a> {
 }
 impl<'a> ListSubscriptionItem<'a> {
     pub fn new(subscription: &'a str) -> Self {
-        Self { ending_before: Default::default(), expand: Default::default(), limit: Default::default(), starting_after: Default::default(), subscription }
+        Self {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            subscription,
+        }
+    }
+}
+impl<'a> ListSubscriptionItem<'a> {
+    /// Returns a list of your subscription items for a given subscription.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::SubscriptionItem>> {
+        client.get_query("/subscription_items", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -70,6 +52,16 @@ pub struct RetrieveSubscriptionItem<'a> {
 impl<'a> RetrieveSubscriptionItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveSubscriptionItem<'a> {
+    /// Retrieves the subscription item with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        item: &stripe_types::line_item::ItemId,
+    ) -> stripe::Response<stripe_types::SubscriptionItem> {
+        client.get_query(&format!("/subscription_items/{item}", item = item), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -152,6 +144,17 @@ impl<'a> CreateSubscriptionItem<'a> {
         }
     }
 }
+impl<'a> CreateSubscriptionItem<'a> {
+    /// Adds a new item to an existing subscription.
+    ///
+    /// No existing items will be changed or replaced.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::SubscriptionItem> {
+        client.send_form("/subscription_items", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionItem<'a> {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -222,6 +225,20 @@ impl<'a> UpdateSubscriptionItem<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateSubscriptionItem<'a> {
+    /// Updates the plan or quantity of an item on a current subscription.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        item: &stripe_types::line_item::ItemId,
+    ) -> stripe::Response<stripe_types::SubscriptionItem> {
+        client.send_form(
+            &format!("/subscription_items/{item}", item = item),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteSubscriptionItem {
     /// Delete all usage for the given subscription item.
@@ -243,6 +260,22 @@ pub struct DeleteSubscriptionItem {
 impl DeleteSubscriptionItem {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl DeleteSubscriptionItem {
+    /// Deletes an item from the subscription.
+    ///
+    /// Removing a subscription item from a subscription will not cancel the subscription.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        item: &stripe_types::line_item::ItemId,
+    ) -> stripe::Response<stripe_types::DeletedSubscriptionItem> {
+        client.send_form(
+            &format!("/subscription_items/{item}", item = item),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -271,6 +304,26 @@ pub struct UsageRecordSummariesSubscriptionItem<'a> {
 impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
+    /// For the specified subscription item, returns a list of summary objects.
+    ///
+    /// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).  The list is sorted in reverse-chronological order (newest first).
+    /// The first list item represents the most current usage period that hasn’t ended yet.
+    /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
+        client.get_query(
+            &format!(
+                "/subscription_items/{subscription_item}/usage_record_summaries",
+                subscription_item = subscription_item
+            ),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -558,7 +611,18 @@ pub struct RecurringPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> RecurringPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: RecurringAdhoc) -> Self {
-        Self { currency, product, recurring, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+    pub fn new(
+        currency: stripe_types::Currency,
+        product: &'a str,
+        recurring: RecurringAdhoc,
+    ) -> Self {
+        Self {
+            currency,
+            product,
+            recurring,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }

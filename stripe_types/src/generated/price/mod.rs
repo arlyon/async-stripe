@@ -25,7 +25,8 @@ pub struct Price {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, stripe_types::CurrencyOption>>,
+    pub currency_options:
+        Option<std::collections::HashMap<stripe_types::Currency, stripe_types::CurrencyOption>>,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     pub custom_unit_amount: Option<stripe_types::CustomUnitAmount>,
     /// Unique identifier for the object.
@@ -42,10 +43,6 @@ pub struct Price {
     pub metadata: std::collections::HashMap<String, String>,
     /// A brief description of the price, hidden from customers.
     pub nickname: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PriceObject,
     /// The ID of the product this price is associated with.
     pub product: stripe_types::Expandable<stripe_types::Product>,
     /// The recurring components of a price such as `interval` and `usage_type`.
@@ -145,67 +142,8 @@ impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PriceObject {
-    Price,
-}
-
-impl PriceObject {
-    pub fn as_str(self) -> &'static str {
-        use PriceObject::*;
-        match self {
-            Price => "price",
-        }
-    }
-}
-
-impl std::str::FromStr for PriceObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PriceObject::*;
-        match s {
-            "price" => Ok(Price),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PriceObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PriceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PriceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PriceObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PriceObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
@@ -273,7 +211,8 @@ impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.

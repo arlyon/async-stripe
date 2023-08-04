@@ -1,27 +1,3 @@
-
-/// Returns a list of Financial Connections `Account` objects.
-pub fn list(client: &stripe::Client, params: ListBankConnectionsResourceLinkedAccount) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceLinkedAccount>> {
-    client.get_query("/financial_connections/accounts", params)
-}
-/// Retrieves the details of an Financial Connections `Account`.
-pub fn retrieve(client: &stripe::Client, account: &stripe_types::account::AccountId, params: RetrieveBankConnectionsResourceLinkedAccount) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
-    client.get_query(&format!("/financial_connections/accounts/{account}", account = account), params)
-}
-/// Lists all owners for a given `Account`.
-pub fn list_owners(client: &stripe::Client, account: &stripe_types::account::AccountId, params: ListOwnersBankConnectionsResourceLinkedAccount) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceOwner>> {
-    client.get_query(&format!("/financial_connections/accounts/{account}/owners", account = account), params)
-}
-/// Refreshes the data associated with a Financial Connections `Account`.
-pub fn refresh(client: &stripe::Client, account: &stripe_types::account::AccountId, params: RefreshBankConnectionsResourceLinkedAccount) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
-    client.send_form(&format!("/financial_connections/accounts/{account}/refresh", account = account), params, http_types::Method::Post)
-}
-/// Disables your access to a Financial Connections `Account`.
-///
-/// You will no longer be able to access data associated with the account (e.g.
-/// balances, transactions).
-pub fn disconnect(client: &stripe::Client, account: &stripe_types::account::AccountId, params: DisconnectBankConnectionsResourceLinkedAccount) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
-    client.send_form(&format!("/financial_connections/accounts/{account}/disconnect", account = account), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListBankConnectionsResourceLinkedAccount<'a> {
     /// If present, only return accounts that belong to the specified account holder.
@@ -75,6 +51,16 @@ impl<'a> ListBankConnectionsResourceLinkedAccountAccountHolder<'a> {
         Self::default()
     }
 }
+impl<'a> ListBankConnectionsResourceLinkedAccount<'a> {
+    /// Returns a list of Financial Connections `Account` objects.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceLinkedAccount>>
+    {
+        client.get_query("/financial_connections/accounts", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveBankConnectionsResourceLinkedAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -84,6 +70,19 @@ pub struct RetrieveBankConnectionsResourceLinkedAccount<'a> {
 impl<'a> RetrieveBankConnectionsResourceLinkedAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveBankConnectionsResourceLinkedAccount<'a> {
+    /// Retrieves the details of an Financial Connections `Account`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
+        client.get_query(
+            &format!("/financial_connections/accounts/{account}", account = account),
+            self,
+        )
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -113,7 +112,26 @@ pub struct ListOwnersBankConnectionsResourceLinkedAccount<'a> {
 }
 impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
     pub fn new(ownership: &'a str) -> Self {
-        Self { ending_before: Default::default(), expand: Default::default(), limit: Default::default(), ownership, starting_after: Default::default() }
+        Self {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            ownership,
+            starting_after: Default::default(),
+        }
+    }
+}
+impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
+    /// Lists all owners for a given `Account`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceOwner>> {
+        client.get_query(
+            &format!("/financial_connections/accounts/{account}/owners", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -183,6 +201,20 @@ impl serde::Serialize for RefreshBankConnectionsResourceLinkedAccountFeatures {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> RefreshBankConnectionsResourceLinkedAccount<'a> {
+    /// Refreshes the data associated with a Financial Connections `Account`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
+        client.send_form(
+            &format!("/financial_connections/accounts/{account}/refresh", account = account),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DisconnectBankConnectionsResourceLinkedAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -192,5 +224,22 @@ pub struct DisconnectBankConnectionsResourceLinkedAccount<'a> {
 impl<'a> DisconnectBankConnectionsResourceLinkedAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> DisconnectBankConnectionsResourceLinkedAccount<'a> {
+    /// Disables your access to a Financial Connections `Account`.
+    ///
+    /// You will no longer be able to access data associated with the account (e.g.
+    /// balances, transactions).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkedAccount> {
+        client.send_form(
+            &format!("/financial_connections/accounts/{account}/disconnect", account = account),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

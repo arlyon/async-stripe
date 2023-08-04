@@ -60,14 +60,19 @@ fn infer_method_names<'a>(operations: &'a [RequestDetails]) -> HashMap<RequestKe
 
 /// `BankAccount` and `Card` require deduplication of the update and delete methods, so
 /// handle polymorphic cases like those here
-fn deduplicate_method_names<'a>(base_names: &HashMap<RequestKey<'a>, String>, reqs: &'a [RequestDetails]) -> HashMap<RequestKey<'a>, String> {
+fn deduplicate_method_names<'a>(
+    base_names: &HashMap<RequestKey<'a>, String>,
+    reqs: &'a [RequestDetails],
+) -> HashMap<RequestKey<'a>, String> {
     let mut dedupped = HashMap::new();
     for req in reqs {
         let req_key = RequestKey::from_op(req);
         let curr_name = &base_names[&req_key];
-        let has_dup_name = base_names.iter().any(|(&key, name)| key != req_key && name == curr_name);
+        let has_dup_name =
+            base_names.iter().any(|(&key, name)| key != req_key && name == curr_name);
         if has_dup_name {
-            let path_param = req.path_params.first().expect("Expected path parameter on duplicate method");
+            let path_param =
+                req.path_params.first().expect("Expected path parameter on duplicate method");
             dedupped.insert(req_key, format!("{curr_name}_{}", path_param.name));
         } else {
             dedupped.insert(req_key, curr_name.to_string());
@@ -76,8 +81,13 @@ fn deduplicate_method_names<'a>(base_names: &HashMap<RequestKey<'a>, String>, re
     dedupped
 }
 
-fn get_req_details<'a>(op: &'a StripeOperation, spec: &'a Spec) -> anyhow::Result<RequestDetails<'a>> {
-    let operation = spec.get_request_operation(&op.path, op.operation_type).context("Request path not found")?;
+fn get_req_details<'a>(
+    op: &'a StripeOperation,
+    spec: &'a Spec,
+) -> anyhow::Result<RequestDetails<'a>> {
+    let operation = spec
+        .get_request_operation(&op.path, op.operation_type)
+        .context("Request path not found")?;
     let mut path_params = vec![];
     let mut query_params = vec![];
     for param in &operation.parameters {
@@ -112,10 +122,24 @@ fn get_req_details<'a>(op: &'a StripeOperation, spec: &'a Spec) -> anyhow::Resul
     };
 
     let return_schema = get_ok_response_schema(operation).context("Expected schema")?;
-    Ok(RequestDetails { returned: return_schema, path_params, params, description: operation.description.as_deref(), operation_type: op.operation_type, path: &op.path, base_method_name: &op.method_name })
+    Ok(RequestDetails {
+        returned: return_schema,
+        path_params,
+        params,
+        description: operation.description.as_deref(),
+        operation_type: op.operation_type,
+        path: &op.path,
+        base_method_name: &op.method_name,
+    })
 }
 
-pub fn parse_requests(operations: Vec<StripeOperation>, spec: &Spec, ident: &RustIdent, component: &ComponentPath, path_id_map: &HashMap<String, ComponentPath>) -> anyhow::Result<Vec<RequestSpec>> {
+pub fn parse_requests(
+    operations: Vec<StripeOperation>,
+    spec: &Spec,
+    ident: &RustIdent,
+    component: &ComponentPath,
+    path_id_map: &HashMap<String, ComponentPath>,
+) -> anyhow::Result<Vec<RequestSpec>> {
     let mut req_details = Vec::with_capacity(operations.len());
     for op in &operations {
         if should_skip_request(op) {
@@ -129,7 +153,16 @@ pub fn parse_requests(operations: Vec<StripeOperation>, spec: &Spec, ident: &Rus
 
     let mut requests = Vec::with_capacity(operations.len());
     for req in &req_details {
-        requests.push(build_request(req, ident, &method_names[&RequestKey::from_op(req)], component, path_id_map).with_context(|| format!("Error generating request operation {req:?}"))?);
+        requests.push(
+            build_request(
+                req,
+                ident,
+                &method_names[&RequestKey::from_op(req)],
+                component,
+                path_id_map,
+            )
+            .with_context(|| format!("Error generating request operation {req:?}"))?,
+        );
     }
     Ok(requests)
 }
@@ -151,9 +184,16 @@ struct RequestDetails<'a> {
     base_method_name: &'a str,
 }
 
-fn build_request(req: &RequestDetails, parent_ident: &RustIdent, method_name: &str, component: &ComponentPath, path_id_map: &HashMap<String, ComponentPath>) -> anyhow::Result<RequestSpec> {
+fn build_request(
+    req: &RequestDetails,
+    parent_ident: &RustIdent,
+    method_name: &str,
+    component: &ComponentPath,
+    path_id_map: &HashMap<String, ComponentPath>,
+) -> anyhow::Result<RequestSpec> {
     let return_ident = RustIdent::joined(method_name, "returned");
-    let return_type = Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
+    let return_type =
+        Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
 
     let params_ident = RustIdent::joined(method_name, parent_ident);
     let param_inference = Inference::new(&params_ident).can_borrow(true).required(true);
@@ -169,20 +209,35 @@ fn build_request(req: &RequestDetails, parent_ident: &RustIdent, method_name: &s
                         bail!("Expected query parameter to follow schema format");
                     };
 
-                    let struct_field = param_inference.field_name(&param.name).maybe_description(param.description.as_deref()).required(param.required).build_struct_field(&param.name, schema);
+                    let struct_field = param_inference
+                        .field_name(&param.name)
+                        .maybe_description(param.description.as_deref())
+                        .required(param.required)
+                        .build_struct_field(&param.name, schema);
                     struct_fields.push(struct_field);
                 }
-                Some(RustType::Object(RustObject::Struct(struct_fields), ObjectMetadata::new(params_ident.clone())))
+                Some(RustType::Object(
+                    RustObject::Struct(struct_fields),
+                    ObjectMetadata::new(params_ident.clone()),
+                ))
             }
         },
-    };
+    }
+    .unwrap_or_else(|| {
+        RustType::Object(RustObject::Struct(vec![]), ObjectMetadata::new(params_ident.clone()))
+    });
     let mut path_params = vec![];
     let has_single_path_param = req.path_params.len() == 1;
     for param in &req.path_params {
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
         };
-        let mut rust_type = Inference::new(&params_ident).can_borrow(true).required(param.required).maybe_description(param.description.as_deref()).field_name(&param.name).infer_schema_or_ref_type(schema);
+        let mut rust_type = Inference::new(&params_ident)
+            .can_borrow(true)
+            .required(param.required)
+            .maybe_description(param.description.as_deref())
+            .field_name(&param.name)
+            .infer_schema_or_ref_type(schema);
 
         if rust_type != RustType::Simple(SimpleType::Str) {
             bail!("Expected path parameter to be a string");
@@ -199,5 +254,13 @@ fn build_request(req: &RequestDetails, parent_ident: &RustIdent, method_name: &s
 
         path_params.push(PathParam { name: param.name.clone(), rust_type })
     }
-    Ok(RequestSpec { path_params, params: param_typ, doc_comment: req.description.map(|d| d.to_string()), req_path: req.path.trim_start_matches("/v1").to_string(), returned: return_type, method_name: method_name.into(), method_type: req.operation_type })
+    Ok(RequestSpec {
+        path_params,
+        params: param_typ,
+        doc_comment: req.description.map(|d| d.to_string()),
+        req_path: req.path.trim_start_matches("/v1").to_string(),
+        returned: return_type,
+        method_name: method_name.into(),
+        method_type: req.operation_type,
+    })
 }

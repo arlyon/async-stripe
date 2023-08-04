@@ -16,10 +16,6 @@ pub struct File {
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
     #[serde(default)]
     pub links: stripe_types::List<stripe_types::FileLink>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: FileObject,
     /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: FilePurpose,
     /// The size in bytes of the file object.
@@ -31,66 +27,6 @@ pub struct File {
     pub type_: Option<String>,
     /// The URL from which the file can be downloaded using your live secret API key.
     pub url: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum FileObject {
-    File,
-}
-
-impl FileObject {
-    pub fn as_str(self) -> &'static str {
-        use FileObject::*;
-        match self {
-            File => "file",
-        }
-    }
-}
-
-impl std::str::FromStr for FileObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use FileObject::*;
-        match s {
-            "file" => Ok(File),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for FileObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for FileObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for FileObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for FileObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for FileObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FileObject"))
-    }
 }
 /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
 #[derive(Copy, Clone, Eq, PartialEq)]

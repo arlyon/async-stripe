@@ -1,16 +1,3 @@
-
-/// Returns a list of application fees you’ve previously collected.
-///
-/// The application fees are returned in sorted order, with the most recent fees appearing first.
-pub fn list(client: &stripe::Client, params: ListPlatformFee) -> stripe::Response<stripe_types::List<stripe_types::PlatformFee>> {
-    client.get_query("/application_fees", params)
-}
-/// Retrieves the details of an application fee that your account has collected.
-///
-/// The same information is returned when refunding the application fee.
-pub fn retrieve(client: &stripe::Client, id: &stripe_types::platform_fee::ApplicationFeeId, params: RetrievePlatformFee) -> stripe::Response<stripe_types::PlatformFee> {
-    client.get_query(&format!("/application_fees/{id}", id = id), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPlatformFee<'a> {
     /// Only return application fees for the charge specified by this charge ID.
@@ -44,6 +31,17 @@ impl<'a> ListPlatformFee<'a> {
         Self::default()
     }
 }
+impl<'a> ListPlatformFee<'a> {
+    /// Returns a list of application fees you’ve previously collected.
+    ///
+    /// The application fees are returned in sorted order, with the most recent fees appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PlatformFee>> {
+        client.get_query("/application_fees", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePlatformFee<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -53,5 +51,17 @@ pub struct RetrievePlatformFee<'a> {
 impl<'a> RetrievePlatformFee<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePlatformFee<'a> {
+    /// Retrieves the details of an application fee that your account has collected.
+    ///
+    /// The same information is returned when refunding the application fee.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::platform_fee::ApplicationFeeId,
+    ) -> stripe::Response<stripe_types::PlatformFee> {
+        client.get_query(&format!("/application_fees/{id}", id = id), self)
     }
 }

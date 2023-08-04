@@ -70,7 +70,11 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddres
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationVerificationDataAddressLine1Check"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingAuthorizationVerificationDataAddressLine1Check",
+            )
+        })
     }
 }
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
@@ -134,7 +138,11 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddres
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationVerificationDataAddressPostalCodeCheck"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingAuthorizationVerificationDataAddressPostalCodeCheck",
+            )
+        })
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
@@ -198,7 +206,11 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataCvcChe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationVerificationDataCvcCheck"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingAuthorizationVerificationDataCvcCheck",
+            )
+        })
     }
 }
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
@@ -262,6 +274,10 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataExpiry
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationVerificationDataExpiryCheck"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingAuthorizationVerificationDataExpiryCheck",
+            )
+        })
     }
 }

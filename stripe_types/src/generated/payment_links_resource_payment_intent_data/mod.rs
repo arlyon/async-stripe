@@ -66,7 +66,11 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataCaptu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourcePaymentIntentDataCaptureMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourcePaymentIntentDataCaptureMethod",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with the payment method collected during checkout.
@@ -127,6 +131,10 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataSetup
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourcePaymentIntentDataSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourcePaymentIntentDataSetupFutureUsage",
+            )
+        })
     }
 }

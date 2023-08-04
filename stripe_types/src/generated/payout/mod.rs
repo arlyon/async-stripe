@@ -31,7 +31,8 @@ pub struct Payout {
     /// ID of the bank account or card the payout was sent to.
     pub destination: Option<stripe_types::Expandable<stripe_types::ExternalAccount>>,
     /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
-    pub failure_balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
+    pub failure_balance_transaction:
+        Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Error code explaining reason for payout failure if available.
     ///
     /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
@@ -51,10 +52,6 @@ pub struct Payout {
     /// `instant` is only supported for payouts to debit cards.
     /// (See [Instant payouts for marketplaces](https://stripe.com/blog/instant-payouts-for-marketplaces) for more information.).
     pub method: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PayoutObject,
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<stripe_types::Expandable<stripe_types::Payout>>,
     /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
@@ -76,66 +73,6 @@ pub struct Payout {
     /// Can be `bank_account` or `card`.
     #[serde(rename = "type")]
     pub type_: PayoutType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PayoutObject {
-    Payout,
-}
-
-impl PayoutObject {
-    pub fn as_str(self) -> &'static str {
-        use PayoutObject::*;
-        match self {
-            Payout => "payout",
-        }
-    }
-}
-
-impl std::str::FromStr for PayoutObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PayoutObject::*;
-        match s {
-            "payout" => Ok(Payout),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PayoutObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PayoutObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PayoutObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PayoutObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PayoutObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutObject"))
-    }
 }
 /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -198,7 +135,8 @@ impl<'de> serde::Deserialize<'de> for PayoutReconciliationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutReconciliationStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PayoutReconciliationStatus"))
     }
 }
 /// Can be `bank_account` or `card`.

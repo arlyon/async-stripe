@@ -66,10 +66,6 @@ pub struct PaymentMethod {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PaymentMethodObject,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<stripe_types::PaymentMethodOxxo>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,66 +96,6 @@ pub struct PaymentMethod {
     pub wechat_pay: Option<stripe_types::PaymentMethodWechatPay>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip: Option<stripe_types::PaymentMethodZip>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PaymentMethodObject {
-    PaymentMethod,
-}
-
-impl PaymentMethodObject {
-    pub fn as_str(self) -> &'static str {
-        use PaymentMethodObject::*;
-        match self {
-            PaymentMethod => "payment_method",
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentMethodObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodObject::*;
-        match s {
-            "payment_method" => Ok(PaymentMethod),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PaymentMethodObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentMethodObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PaymentMethodObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PaymentMethodObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PaymentMethodObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodObject"))
-    }
 }
 /// The type of the PaymentMethod.
 ///
@@ -315,7 +251,8 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
     }
 }
 impl stripe_types::Object for PaymentMethod {

@@ -1,14 +1,3 @@
-
-/// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
-///
-/// Only shows the currencies for which Stripe supports.
-pub fn list(client: &stripe::Client, params: ListExchangeRate) -> stripe::Response<stripe_types::List<stripe_misc::ExchangeRate>> {
-    client.get_query("/exchange_rates", params)
-}
-/// Retrieves the exchange rates from the given currency to every supported currency.
-pub fn retrieve(client: &stripe::Client, rate_id: &stripe_misc::exchange_rate::ExchangeRateId, params: RetrieveExchangeRate) -> stripe::Response<stripe_misc::ExchangeRate> {
-    client.get_query(&format!("/exchange_rates/{rate_id}", rate_id = rate_id), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListExchangeRate<'a> {
     /// A cursor for use in pagination.
@@ -37,6 +26,17 @@ impl<'a> ListExchangeRate<'a> {
         Self::default()
     }
 }
+impl<'a> ListExchangeRate<'a> {
+    /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
+    ///
+    /// Only shows the currencies for which Stripe supports.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::ExchangeRate>> {
+        client.get_query("/exchange_rates", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveExchangeRate<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -46,5 +46,15 @@ pub struct RetrieveExchangeRate<'a> {
 impl<'a> RetrieveExchangeRate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveExchangeRate<'a> {
+    /// Retrieves the exchange rates from the given currency to every supported currency.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        rate_id: &stripe_misc::exchange_rate::ExchangeRateId,
+    ) -> stripe::Response<stripe_misc::ExchangeRate> {
+        client.get_query(&format!("/exchange_rates/{rate_id}", rate_id = rate_id), self)
     }
 }

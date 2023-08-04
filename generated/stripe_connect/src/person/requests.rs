@@ -1,29 +1,3 @@
-
-/// Returns a list of people associated with the account’s legal entity.
-///
-/// The people are returned sorted by creation date, with the most recent people appearing first.
-pub fn list(client: &stripe::Client, account: &stripe_types::account::AccountId, params: ListPerson) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
-    client.get_query(&format!("/accounts/{account}/persons", account = account), params)
-}
-/// Retrieves an existing person.
-pub fn retrieve(client: &stripe::Client, account: &stripe_types::account::AccountId, person: &stripe_types::person::PersonId, params: RetrievePerson) -> stripe::Response<stripe_types::Person> {
-    client.get_query(&format!("/accounts/{account}/persons/{person}", account = account, person = person), params)
-}
-/// Creates a new person.
-pub fn create(client: &stripe::Client, account: &stripe_types::account::AccountId, params: CreatePerson) -> stripe::Response<stripe_types::Person> {
-    client.send_form(&format!("/accounts/{account}/persons", account = account), params, http_types::Method::Post)
-}
-/// Updates an existing person.
-pub fn update(client: &stripe::Client, account: &stripe_types::account::AccountId, person: &stripe_types::person::PersonId, params: UpdatePerson) -> stripe::Response<stripe_types::Person> {
-    client.send_form(&format!("/accounts/{account}/persons/{person}", account = account, person = person), params, http_types::Method::Post)
-}
-/// Deletes an existing person’s relationship to the account’s legal entity.
-///
-/// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
-/// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
-pub fn delete(client: &stripe::Client, account: &stripe_types::account::AccountId, person: &stripe_types::person::PersonId) -> stripe::Response<stripe_types::DeletedPerson> {
-    client.send(&format!("/accounts/{account}/persons/{person}", account = account, person = person), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPerson<'a> {
     /// A cursor for use in pagination.
@@ -76,6 +50,18 @@ impl ListPersonRelationship {
         Self::default()
     }
 }
+impl<'a> ListPerson<'a> {
+    /// Returns a list of people associated with the account’s legal entity.
+    ///
+    /// The people are returned sorted by creation date, with the most recent people appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
+        client.get_query(&format!("/accounts/{account}/persons", account = account), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePerson<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -85,6 +71,20 @@ pub struct RetrievePerson<'a> {
 impl<'a> RetrievePerson<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePerson<'a> {
+    /// Retrieves an existing person.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        person: &stripe_types::person::PersonId,
+    ) -> stripe::Response<stripe_types::Person> {
+        client.get_query(
+            &format!("/accounts/{account}/persons/{person}", account = account, person = person),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -250,6 +250,20 @@ impl<'a> CreatePersonAddressKanji<'a> {
         Self::default()
     }
 }
+impl<'a> CreatePerson<'a> {
+    /// Creates a new person.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::Person> {
+        client.send_form(
+            &format!("/accounts/{account}/persons", account = account),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePerson<'a> {
     /// The person's address.
@@ -411,6 +425,46 @@ pub struct UpdatePersonAddressKanji<'a> {
 impl<'a> UpdatePersonAddressKanji<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdatePerson<'a> {
+    /// Updates an existing person.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        person: &stripe_types::person::PersonId,
+    ) -> stripe::Response<stripe_types::Person> {
+        client.send_form(
+            &format!("/accounts/{account}/persons/{person}", account = account, person = person),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeletePerson {}
+impl DeletePerson {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeletePerson {
+    /// Deletes an existing person’s relationship to the account’s legal entity.
+    ///
+    /// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
+    /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        person: &stripe_types::person::PersonId,
+    ) -> stripe::Response<stripe_types::DeletedPerson> {
+        client.send_form(
+            &format!("/accounts/{account}/persons/{person}", account = account, person = person),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

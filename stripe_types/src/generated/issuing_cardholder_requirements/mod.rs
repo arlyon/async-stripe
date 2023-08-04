@@ -69,7 +69,11 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsDisabledReaso
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderRequirementsDisabledReason"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingCardholderRequirementsDisabledReason",
+            )
+        })
     }
 }
 /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
@@ -91,8 +95,12 @@ impl IssuingCardholderRequirementsPastDue {
         use IssuingCardholderRequirementsPastDue::*;
         match self {
             CompanyTaxId => "company.tax_id",
-            IndividualCardIssuingUserTermsAcceptanceDate => "individual.card_issuing.user_terms_acceptance.date",
-            IndividualCardIssuingUserTermsAcceptanceIp => "individual.card_issuing.user_terms_acceptance.ip",
+            IndividualCardIssuingUserTermsAcceptanceDate => {
+                "individual.card_issuing.user_terms_acceptance.date"
+            }
+            IndividualCardIssuingUserTermsAcceptanceIp => {
+                "individual.card_issuing.user_terms_acceptance.ip"
+            }
             IndividualDobDay => "individual.dob.day",
             IndividualDobMonth => "individual.dob.month",
             IndividualDobYear => "individual.dob.year",
@@ -109,8 +117,12 @@ impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
         use IssuingCardholderRequirementsPastDue::*;
         match s {
             "company.tax_id" => Ok(CompanyTaxId),
-            "individual.card_issuing.user_terms_acceptance.date" => Ok(IndividualCardIssuingUserTermsAcceptanceDate),
-            "individual.card_issuing.user_terms_acceptance.ip" => Ok(IndividualCardIssuingUserTermsAcceptanceIp),
+            "individual.card_issuing.user_terms_acceptance.date" => {
+                Ok(IndividualCardIssuingUserTermsAcceptanceDate)
+            }
+            "individual.card_issuing.user_terms_acceptance.ip" => {
+                Ok(IndividualCardIssuingUserTermsAcceptanceIp)
+            }
             "individual.dob.day" => Ok(IndividualDobDay),
             "individual.dob.month" => Ok(IndividualDobMonth),
             "individual.dob.year" => Ok(IndividualDobYear),
@@ -151,6 +163,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsPastDue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderRequirementsPastDue"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for IssuingCardholderRequirementsPastDue")
+        })
     }
 }

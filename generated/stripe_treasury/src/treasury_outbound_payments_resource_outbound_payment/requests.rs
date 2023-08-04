@@ -1,58 +1,3 @@
-
-/// Creates an OutboundPayment.
-pub fn create(client: &stripe::Client, params: CreateTreasuryOutboundPaymentsResourceOutboundPayment) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.send_form("/treasury/outbound_payments", params, http_types::Method::Post)
-}
-/// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId,
-    params: RetrieveTreasuryOutboundPaymentsResourceOutboundPayment,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.get_query(&format!("/treasury/outbound_payments/{id}", id = id), params)
-}
-/// Returns a list of OutboundPayments sent from the specified FinancialAccount.
-pub fn list(client: &stripe::Client, params: ListTreasuryOutboundPaymentsResourceOutboundPayment) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment>> {
-    client.get_query("/treasury/outbound_payments", params)
-}
-/// Cancel an OutboundPayment.
-pub fn cancel(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId,
-    params: CancelTreasuryOutboundPaymentsResourceOutboundPayment,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.send_form(&format!("/treasury/outbound_payments/{id}/cancel", id = id), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundPayment to the `failed` status.
-///
-/// The OutboundPayment must already be in the `processing` state.
-pub fn fail(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId,
-    params: FailTreasuryOutboundPaymentsResourceOutboundPayment,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/fail", id = id), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundPayment to the `posted` status.
-///
-/// The OutboundPayment must already be in the `processing` state.
-pub fn post(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId,
-    params: PostTreasuryOutboundPaymentsResourceOutboundPayment,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/post", id = id), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundPayment to the `returned` status.
-///
-/// The OutboundPayment must already be in the `processing` state.
-pub fn return_outbound_payment(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId,
-    params: ReturnOutboundPaymentTreasuryOutboundPaymentsResourceOutboundPayment,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/return", id = id), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Amount (in cents) to be transferred.
@@ -500,6 +445,12 @@ impl<'a> CreateTreasuryOutboundPaymentsResourceOutboundPaymentEndUserDetails<'a>
         Self { ip_address: Default::default(), present }
     }
 }
+impl<'a> CreateTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Creates an OutboundPayment.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.send_form("/treasury/outbound_payments", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -509,6 +460,12 @@ pub struct RetrieveTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
 impl<'a> RetrieveTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.get_query(&format!("/treasury/outbound_payments/{id}", id = id), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -610,6 +567,12 @@ impl serde::Serialize for ListTreasuryOutboundPaymentsResourceOutboundPaymentSta
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment>> {
+        client.get_query("/treasury/outbound_payments", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -619,6 +582,12 @@ pub struct CancelTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
 impl<'a> CancelTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Cancel an OutboundPayment.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.send_form(&format!("/treasury/outbound_payments/{id}/cancel", id = id), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -632,6 +601,14 @@ impl<'a> FailTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
         Self::default()
     }
 }
+impl<'a> FailTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Transitions a test mode created OutboundPayment to the `failed` status.
+    ///
+    /// The OutboundPayment must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/fail", id = id), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct PostTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -641,6 +618,14 @@ pub struct PostTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
 impl<'a> PostTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> PostTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Transitions a test mode created OutboundPayment to the `posted` status.
+    ///
+    /// The OutboundPayment must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/post", id = id), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -745,5 +730,13 @@ impl serde::Serialize for ReturnOutboundPaymentTreasuryOutboundPaymentsResourceO
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ReturnOutboundPaymentTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
+    /// Transitions a test mode created OutboundPayment to the `returned` status.
+    ///
+    /// The OutboundPayment must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId) -> stripe::Response<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_payments/{id}/return", id = id), self, http_types::Method::Post)
     }
 }

@@ -70,7 +70,9 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsAuthenticationFlow"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ThreeDSecureDetailsAuthenticationFlow")
+        })
     }
 }
 /// Indicates the outcome of 3D Secure authentication.
@@ -143,7 +145,8 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResult"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResult"))
     }
 }
 /// Additional information about why 3D Secure succeeded or failed based
@@ -220,7 +223,9 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResultReason"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResultReason")
+        })
     }
 }
 /// The version of 3D Secure that was used.
@@ -284,6 +289,7 @@ impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsVersion"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsVersion"))
     }
 }

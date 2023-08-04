@@ -37,10 +37,6 @@ pub struct Transfer {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TransferObject,
     /// A list of reversals that have been applied to the transfer.
     pub reversals: stripe_types::List<stripe_types::TransferReversal>,
     /// Whether the transfer has been fully reversed.
@@ -60,66 +56,6 @@ pub struct Transfer {
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TransferObject {
-    Transfer,
-}
-
-impl TransferObject {
-    pub fn as_str(self) -> &'static str {
-        use TransferObject::*;
-        match self {
-            Transfer => "transfer",
-        }
-    }
-}
-
-impl std::str::FromStr for TransferObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TransferObject::*;
-        match s {
-            "transfer" => Ok(Transfer),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TransferObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TransferObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TransferObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TransferObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TransferObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TransferObject"))
-    }
 }
 impl stripe_types::Object for Transfer {
     type Id = stripe_types::transfer::TransferId;

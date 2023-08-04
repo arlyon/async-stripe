@@ -96,7 +96,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmou
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsCardMandateOptionsAmountType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsCardMandateOptionsAmountType",
+            )
+        })
     }
 }
 /// Specifies payment frequency.
@@ -168,7 +172,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInte
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsCardMandateOptionsInterval"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsCardMandateOptionsInterval",
+            )
+        })
     }
 }
 /// Specifies the type of mandates supported.
@@ -228,6 +236,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsCardMandateOptionsSupportedTypes"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsCardMandateOptionsSupportedTypes",
+            )
+        })
     }
 }

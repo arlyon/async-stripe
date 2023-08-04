@@ -24,76 +24,12 @@ pub struct Discount {
     pub invoice: Option<String>,
     /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
     pub invoice_item: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: DiscountObject,
     /// The promotion code applied to create this discount.
     pub promotion_code: Option<stripe_types::Expandable<stripe_types::PromotionCode>>,
     /// Date that the coupon was applied.
     pub start: stripe_types::Timestamp,
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum DiscountObject {
-    Discount,
-}
-
-impl DiscountObject {
-    pub fn as_str(self) -> &'static str {
-        use DiscountObject::*;
-        match self {
-            Discount => "discount",
-        }
-    }
-}
-
-impl std::str::FromStr for DiscountObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DiscountObject::*;
-        match s {
-            "discount" => Ok(Discount),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for DiscountObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for DiscountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for DiscountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for DiscountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for DiscountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DiscountObject"))
-    }
 }
 impl stripe_types::Object for Discount {
     type Id = stripe_types::discount::DiscountId;

@@ -5,7 +5,8 @@ pub struct SubscriptionSchedulesResourceDefaultSettings {
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account during this phase of the schedule.
     pub application_fee_percent: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<stripe_types::SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>,
+    pub automatic_tax:
+        Option<stripe_types::SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>,
     /// Possible values are `phase_start` or `automatic`.
     ///
     /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
@@ -94,11 +95,17 @@ impl serde::Serialize for SubscriptionSchedulesResourceDefaultSettingsBillingCyc
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
+impl<'de> serde::Deserialize<'de>
+    for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -162,6 +169,10 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulesResourceDefaultSettin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod",
+            )
+        })
     }
 }

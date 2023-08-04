@@ -90,7 +90,8 @@ impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
     }
 }
 /// The frequency at which a subscription is billed.
@@ -159,7 +160,8 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -225,6 +227,7 @@ impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
     }
 }

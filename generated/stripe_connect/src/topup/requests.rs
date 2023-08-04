@@ -1,30 +1,3 @@
-
-/// Top up the balance of an account.
-pub fn create(client: &stripe::Client, params: CreateTopup) -> stripe::Response<stripe_types::Topup> {
-    client.send_form("/topups", params, http_types::Method::Post)
-}
-/// Returns a list of top-ups.
-pub fn list(client: &stripe::Client, params: ListTopup) -> stripe::Response<stripe_types::List<stripe_types::Topup>> {
-    client.get_query("/topups", params)
-}
-/// Retrieves the details of a top-up that has previously been created.
-///
-/// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-pub fn retrieve(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: RetrieveTopup) -> stripe::Response<stripe_types::Topup> {
-    client.get_query(&format!("/topups/{topup}", topup = topup), params)
-}
-/// Updates the metadata of a top-up.
-///
-/// Other top-up details are not editable by design.
-pub fn update(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: UpdateTopup) -> stripe::Response<stripe_types::Topup> {
-    client.send_form(&format!("/topups/{topup}", topup = topup), params, http_types::Method::Post)
-}
-/// Cancels a top-up.
-///
-/// Only pending top-ups can be canceled.
-pub fn cancel(client: &stripe::Client, topup: &stripe_types::topup::TopupId, params: CancelTopup) -> stripe::Response<stripe_types::Topup> {
-    client.send_form(&format!("/topups/{topup}/cancel", topup = topup), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTopup<'a> {
     /// A positive integer representing how much to transfer.
@@ -65,7 +38,22 @@ pub struct CreateTopup<'a> {
 }
 impl<'a> CreateTopup<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, description: Default::default(), expand: Default::default(), metadata: Default::default(), source: Default::default(), statement_descriptor: Default::default(), transfer_group: Default::default() }
+        Self {
+            amount,
+            currency,
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            source: Default::default(),
+            statement_descriptor: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+impl<'a> CreateTopup<'a> {
+    /// Top up the balance of an account.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Topup> {
+        client.send_form("/topups", self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -171,6 +159,15 @@ impl serde::Serialize for ListTopupStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTopup<'a> {
+    /// Returns a list of top-ups.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Topup>> {
+        client.get_query("/topups", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTopup<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -180,6 +177,18 @@ pub struct RetrieveTopup<'a> {
 impl<'a> RetrieveTopup<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTopup<'a> {
+    /// Retrieves the details of a top-up that has previously been created.
+    ///
+    /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        topup: &stripe_types::topup::TopupId,
+    ) -> stripe::Response<stripe_types::Topup> {
+        client.get_query(&format!("/topups/{topup}", topup = topup), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -205,6 +214,18 @@ impl<'a> UpdateTopup<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateTopup<'a> {
+    /// Updates the metadata of a top-up.
+    ///
+    /// Other top-up details are not editable by design.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        topup: &stripe_types::topup::TopupId,
+    ) -> stripe::Response<stripe_types::Topup> {
+        client.send_form(&format!("/topups/{topup}", topup = topup), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelTopup<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -214,5 +235,21 @@ pub struct CancelTopup<'a> {
 impl<'a> CancelTopup<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelTopup<'a> {
+    /// Cancels a top-up.
+    ///
+    /// Only pending top-ups can be canceled.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        topup: &stripe_types::topup::TopupId,
+    ) -> stripe::Response<stripe_types::Topup> {
+        client.send_form(
+            &format!("/topups/{topup}/cancel", topup = topup),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

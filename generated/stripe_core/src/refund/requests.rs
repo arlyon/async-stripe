@@ -1,35 +1,3 @@
-
-/// Returns a list of all refunds you’ve previously created.
-///
-/// The refunds are returned in sorted order, with the most recent refunds appearing first.
-/// For convenience, the 10 most recent refunds are always available by default on the charge object.
-pub fn list(client: &stripe::Client, params: ListRefund) -> stripe::Response<stripe_types::List<stripe_types::Refund>> {
-    client.get_query("/refunds", params)
-}
-/// Create a refund.
-pub fn create(client: &stripe::Client, params: CreateRefund) -> stripe::Response<stripe_types::Refund> {
-    client.send_form("/refunds", params, http_types::Method::Post)
-}
-/// Retrieves the details of an existing refund.
-pub fn retrieve(client: &stripe::Client, refund: &stripe_types::refund::RefundId, params: RetrieveRefund) -> stripe::Response<stripe_types::Refund> {
-    client.get_query(&format!("/refunds/{refund}", refund = refund), params)
-}
-/// Updates the specified refund by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
-pub fn update(client: &stripe::Client, refund: &stripe_types::refund::RefundId, params: UpdateRefund) -> stripe::Response<stripe_types::Refund> {
-    client.send_form(&format!("/refunds/{refund}", refund = refund), params, http_types::Method::Post)
-}
-/// Cancels a refund with a status of `requires_action`.
-///
-/// Refunds in other states cannot be canceled, and only refunds for payment methods that require customer action will enter the `requires_action` state.
-pub fn cancel(client: &stripe::Client, refund: &stripe_types::refund::RefundId, params: CancelRefund) -> stripe::Response<stripe_types::Refund> {
-    client.send_form(&format!("/refunds/{refund}/cancel", refund = refund), params, http_types::Method::Post)
-}
-/// Expire a refund with a status of `requires_action`.
-pub fn expire(client: &stripe::Client, refund: &stripe_types::refund::RefundId, params: ExpireRefund) -> stripe::Response<stripe_types::Refund> {
-    client.send_form(&format!("/test_helpers/refunds/{refund}/expire", refund = refund), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListRefund<'a> {
     /// Only return refunds for the charge specified by this charge ID.
@@ -64,6 +32,18 @@ pub struct ListRefund<'a> {
 impl<'a> ListRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListRefund<'a> {
+    /// Returns a list of all refunds you’ve previously created.
+    ///
+    /// The refunds are returned in sorted order, with the most recent refunds appearing first.
+    /// For convenience, the 10 most recent refunds are always available by default on the charge object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Refund>> {
+        client.get_query("/refunds", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -218,6 +198,12 @@ impl serde::Serialize for CreateRefundReason {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateRefund<'a> {
+    /// Create a refund.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Refund> {
+        client.send_form("/refunds", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRefund<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -227,6 +213,16 @@ pub struct RetrieveRefund<'a> {
 impl<'a> RetrieveRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveRefund<'a> {
+    /// Retrieves the details of an existing refund.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        refund: &stripe_types::refund::RefundId,
+    ) -> stripe::Response<stripe_types::Refund> {
+        client.get_query(&format!("/refunds/{refund}", refund = refund), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -247,6 +243,22 @@ impl<'a> UpdateRefund<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateRefund<'a> {
+    /// Updates the specified refund by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        refund: &stripe_types::refund::RefundId,
+    ) -> stripe::Response<stripe_types::Refund> {
+        client.send_form(
+            &format!("/refunds/{refund}", refund = refund),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelRefund<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -258,6 +270,22 @@ impl<'a> CancelRefund<'a> {
         Self::default()
     }
 }
+impl<'a> CancelRefund<'a> {
+    /// Cancels a refund with a status of `requires_action`.
+    ///
+    /// Refunds in other states cannot be canceled, and only refunds for payment methods that require customer action will enter the `requires_action` state.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        refund: &stripe_types::refund::RefundId,
+    ) -> stripe::Response<stripe_types::Refund> {
+        client.send_form(
+            &format!("/refunds/{refund}/cancel", refund = refund),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ExpireRefund<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -267,5 +295,19 @@ pub struct ExpireRefund<'a> {
 impl<'a> ExpireRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ExpireRefund<'a> {
+    /// Expire a refund with a status of `requires_action`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        refund: &stripe_types::refund::RefundId,
+    ) -> stripe::Response<stripe_types::Refund> {
+        client.send_form(
+            &format!("/test_helpers/refunds/{refund}/expire", refund = refund),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

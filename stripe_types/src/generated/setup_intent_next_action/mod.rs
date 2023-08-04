@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SetupIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp_handle_redirect_or_display_qr_code: Option<stripe_types::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
+    pub cashapp_handle_redirect_or_display_qr_code:
+        Option<stripe_types::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_to_url: Option<stripe_types::SetupIntentNextActionRedirectToUrl>,
     /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
@@ -13,7 +14,8 @@ pub struct SetupIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub use_stripe_sdk: Option<SetupIntentNextActionUseStripeSdk>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verify_with_microdeposits: Option<stripe_types::SetupIntentNextActionVerifyWithMicrodeposits>,
+    pub verify_with_microdeposits:
+        Option<stripe_types::SetupIntentNextActionVerifyWithMicrodeposits>,
 }
 /// When confirming a SetupIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
 ///

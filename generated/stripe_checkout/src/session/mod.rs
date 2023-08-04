@@ -83,10 +83,6 @@ pub struct Session {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The mode of the Checkout Session.
     pub mode: SessionMode,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: SessionObject,
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     pub payment_intent: Option<stripe_types::Expandable<stripe_types::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
@@ -103,13 +99,15 @@ pub struct Session {
     /// You can use this value to decide when to fulfill your customer's order.
     pub payment_status: SessionPaymentStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone_number_collection: Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>,
+    pub phone_number_collection:
+        Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     pub setup_intent: Option<stripe_types::Expandable<stripe_types::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
-    pub shipping_address_collection: Option<stripe_checkout::PaymentPagesCheckoutSessionShippingAddressCollection>,
+    pub shipping_address_collection:
+        Option<stripe_checkout::PaymentPagesCheckoutSessionShippingAddressCollection>,
     /// The details of the customer cost of shipping, including the customer chosen ShippingRate.
     pub shipping_cost: Option<stripe_checkout::PaymentPagesCheckoutSessionShippingCost>,
     /// Shipping information for this Checkout Session.
@@ -197,7 +195,9 @@ impl<'de> serde::Deserialize<'de> for SessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionBillingAddressCollection"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SessionBillingAddressCollection")
+        })
     }
 }
 /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
@@ -258,7 +258,8 @@ impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionCustomerCreation"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionCustomerCreation"))
     }
 }
 /// The IETF language tag of the locale Checkout is displayed in.
@@ -505,66 +506,6 @@ impl<'de> serde::Deserialize<'de> for SessionMode {
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
     }
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum SessionObject {
-    CheckoutSession,
-}
-
-impl SessionObject {
-    pub fn as_str(self) -> &'static str {
-        use SessionObject::*;
-        match self {
-            CheckoutSession => "checkout.session",
-        }
-    }
-}
-
-impl std::str::FromStr for SessionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SessionObject::*;
-        match s {
-            "checkout.session" => Ok(CheckoutSession),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for SessionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for SessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for SessionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for SessionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionObject"))
-    }
-}
 /// Configure whether a Checkout Session should collect a payment method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SessionPaymentMethodCollection {
@@ -623,7 +564,9 @@ impl<'de> serde::Deserialize<'de> for SessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentMethodCollection"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SessionPaymentMethodCollection")
+        })
     }
 }
 /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
@@ -688,7 +631,8 @@ impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
     }
 }
 /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
@@ -822,7 +766,8 @@ impl<'de> serde::Deserialize<'de> for SessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
     }
 }
 impl stripe_types::Object for Session {
@@ -832,4 +777,7 @@ impl stripe_types::Object for Session {
     }
 }
 stripe_types::def_id!(CheckoutSessionId, "cs_");
-pub mod requests;
+#[cfg(feature = "session")]
+mod requests;
+#[cfg(feature = "session")]
+pub use requests::*;

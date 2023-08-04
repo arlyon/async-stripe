@@ -32,7 +32,9 @@ impl InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
     }
 }
 
-impl std::str::FromStr for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+impl std::str::FromStr
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::*;
@@ -54,18 +56,24 @@ impl AsRef<str> for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBank
     }
 }
 
-impl std::fmt::Display for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+impl std::fmt::Display
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+impl std::fmt::Debug
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+impl serde::Serialize
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -73,7 +81,9 @@ impl serde::Serialize for InvoicePaymentMethodOptionsCustomerBalanceBankTransfer
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+impl<'de> serde::Deserialize<'de>
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

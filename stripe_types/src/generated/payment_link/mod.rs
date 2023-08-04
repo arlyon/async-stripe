@@ -44,10 +44,6 @@ pub struct PaymentLink {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PaymentLinkObject,
     /// The account on behalf of which to charge.
     ///
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
@@ -62,7 +58,8 @@ pub struct PaymentLink {
     pub payment_method_types: Option<Vec<PaymentLinkPaymentMethodTypes>>,
     pub phone_number_collection: stripe_types::PaymentLinksResourcePhoneNumberCollection,
     /// Configuration for collecting the customer's shipping address.
-    pub shipping_address_collection: Option<stripe_types::PaymentLinksResourceShippingAddressCollection>,
+    pub shipping_address_collection:
+        Option<stripe_types::PaymentLinksResourceShippingAddressCollection>,
     /// The shipping rate options applied to the session.
     pub shipping_options: Vec<stripe_types::PaymentLinksResourceShippingOption>,
     /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
@@ -135,7 +132,9 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection")
+        })
     }
 }
 /// Configuration for Customer creation during checkout.
@@ -196,67 +195,8 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PaymentLinkObject {
-    PaymentLink,
-}
-
-impl PaymentLinkObject {
-    pub fn as_str(self) -> &'static str {
-        use PaymentLinkObject::*;
-        match self {
-            PaymentLink => "payment_link",
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentLinkObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentLinkObject::*;
-        match s {
-            "payment_link" => Ok(PaymentLink),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PaymentLinkObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentLinkObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PaymentLinkObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PaymentLinkObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PaymentLinkObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
     }
 }
 /// Configuration for collecting a payment method during checkout.
@@ -317,7 +257,9 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection")
+        })
     }
 }
 /// The list of payment method types that customers can use.
@@ -458,7 +400,9 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes")
+        })
     }
 }
 /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
@@ -525,7 +469,8 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
     }
 }
 impl stripe_types::Object for PaymentLink {

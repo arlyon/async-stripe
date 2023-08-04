@@ -1,10 +1,3 @@
-
-/// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list(client: &stripe::Client, credit_note: &stripe_types::credit_note::CreditNoteId, params: ListCreditNoteLineItem) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
-    client.get_query(&format!("/credit_notes/{credit_note}/lines", credit_note = credit_note), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListCreditNoteLineItem<'a> {
     /// A cursor for use in pagination.
@@ -31,5 +24,20 @@ pub struct ListCreditNoteLineItem<'a> {
 impl<'a> ListCreditNoteLineItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListCreditNoteLineItem<'a> {
+    /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        credit_note: &stripe_types::credit_note::CreditNoteId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
+        client.get_query(
+            &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
+            self,
+        )
     }
 }

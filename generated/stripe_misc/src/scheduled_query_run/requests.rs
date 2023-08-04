@@ -1,12 +1,3 @@
-
-/// Returns a list of scheduled query runs.
-pub fn list(client: &stripe::Client, params: ListScheduledQueryRun) -> stripe::Response<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
-    client.get_query("/sigma/scheduled_query_runs", params)
-}
-/// Retrieves the details of an scheduled query run.
-pub fn retrieve(client: &stripe::Client, scheduled_query_run: &stripe_misc::scheduled_query_run::ScheduledQueryRunId, params: RetrieveScheduledQueryRun) -> stripe::Response<stripe_misc::ScheduledQueryRun> {
-    client.get_query(&format!("/sigma/scheduled_query_runs/{scheduled_query_run}", scheduled_query_run = scheduled_query_run), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListScheduledQueryRun<'a> {
     /// A cursor for use in pagination.
@@ -35,6 +26,15 @@ impl<'a> ListScheduledQueryRun<'a> {
         Self::default()
     }
 }
+impl<'a> ListScheduledQueryRun<'a> {
+    /// Returns a list of scheduled query runs.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
+        client.get_query("/sigma/scheduled_query_runs", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveScheduledQueryRun<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -44,5 +44,21 @@ pub struct RetrieveScheduledQueryRun<'a> {
 impl<'a> RetrieveScheduledQueryRun<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveScheduledQueryRun<'a> {
+    /// Retrieves the details of an scheduled query run.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        scheduled_query_run: &stripe_misc::scheduled_query_run::ScheduledQueryRunId,
+    ) -> stripe::Response<stripe_misc::ScheduledQueryRun> {
+        client.get_query(
+            &format!(
+                "/sigma/scheduled_query_runs/{scheduled_query_run}",
+                scheduled_query_run = scheduled_query_run
+            ),
+            self,
+        )
     }
 }

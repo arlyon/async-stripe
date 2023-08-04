@@ -7,5 +7,6 @@ pub struct PaymentPagesCheckoutSessionTotalDetails {
     /// This is the sum of all the tax amounts.
     pub amount_tax: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub breakdown: Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>,
+    pub breakdown:
+        Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>,
 }

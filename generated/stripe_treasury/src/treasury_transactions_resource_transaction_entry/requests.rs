@@ -1,16 +1,3 @@
-
-/// Retrieves a TransactionEntry object.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_transactions_resource_transaction_entry::TreasuryTransactionEntryId,
-    params: RetrieveTreasuryTransactionsResourceTransactionEntry,
-) -> stripe::Response<stripe_treasury::TreasuryTransactionsResourceTransactionEntry> {
-    client.get_query(&format!("/treasury/transaction_entries/{id}", id = id), params)
-}
-/// Retrieves a list of TransactionEntry objects.
-pub fn list(client: &stripe::Client, params: ListTreasuryTransactionsResourceTransactionEntry) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransactionEntry>> {
-    client.get_query("/treasury/transaction_entries", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryTransactionsResourceTransactionEntry<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -20,6 +7,12 @@ pub struct RetrieveTreasuryTransactionsResourceTransactionEntry<'a> {
 impl<'a> RetrieveTreasuryTransactionsResourceTransactionEntry<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryTransactionsResourceTransactionEntry<'a> {
+    /// Retrieves a TransactionEntry object.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_transactions_resource_transaction_entry::TreasuryTransactionEntryId) -> stripe::Response<stripe_treasury::TreasuryTransactionsResourceTransactionEntry> {
+        client.get_query(&format!("/treasury/transaction_entries/{id}", id = id), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -128,5 +121,11 @@ impl serde::Serialize for ListTreasuryTransactionsResourceTransactionEntryOrderB
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ListTreasuryTransactionsResourceTransactionEntry<'a> {
+    /// Retrieves a list of TransactionEntry objects.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransactionEntry>> {
+        client.get_query("/treasury/transaction_entries", self)
     }
 }

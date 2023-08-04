@@ -6,7 +6,8 @@ pub struct PortalFlowsFlow {
     /// Configuration when `flow.type=subscription_update`.
     pub subscription_update: Option<stripe_billing::PortalFlowsFlowSubscriptionUpdate>,
     /// Configuration when `flow.type=subscription_update_confirm`.
-    pub subscription_update_confirm: Option<stripe_billing::PortalFlowsFlowSubscriptionUpdateConfirm>,
+    pub subscription_update_confirm:
+        Option<stripe_billing::PortalFlowsFlowSubscriptionUpdateConfirm>,
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
     pub type_: PortalFlowsFlowType,
@@ -75,6 +76,7 @@ impl<'de> serde::Deserialize<'de> for PortalFlowsFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PortalFlowsFlowType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PortalFlowsFlowType"))
     }
 }

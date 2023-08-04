@@ -95,7 +95,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingCarrier"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingCarrier"))
     }
 }
 /// Shipment service, such as `standard` or `express`.
@@ -159,7 +160,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingService"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingService"))
     }
 }
 /// The delivery status of the card.
@@ -232,7 +234,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingStatus"))
     }
 }
 /// Packaging options.
@@ -293,6 +296,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingType"))
     }
 }

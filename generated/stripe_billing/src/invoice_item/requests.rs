@@ -1,32 +1,3 @@
-
-/// Returns a list of your invoice items.
-///
-/// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-pub fn list(client: &stripe::Client, params: ListInvoiceItem) -> stripe::Response<stripe_types::List<stripe_types::InvoiceItem>> {
-    client.get_query("/invoiceitems", params)
-}
-/// Creates an item to be added to a draft invoice (up to 250 items per invoice).
-///
-/// If no invoice is specified, the item will be on the next invoice created for the customer specified.
-pub fn create(client: &stripe::Client, params: CreateInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
-    client.send_form("/invoiceitems", params, http_types::Method::Post)
-}
-/// Retrieves the invoice item with the given ID.
-pub fn retrieve(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId, params: RetrieveInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
-    client.get_query(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), params)
-}
-/// Updates the amount or description of an invoice item on an upcoming invoice.
-///
-/// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-pub fn update(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId, params: UpdateInvoiceItem) -> stripe::Response<stripe_types::InvoiceItem> {
-    client.send_form(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), params, http_types::Method::Post)
-}
-/// Deletes an invoice item, removing it from an invoice.
-///
-/// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-pub fn delete(client: &stripe::Client, invoiceitem: &stripe_types::invoice_item::InvoiceitemId) -> stripe::Response<stripe_types::DeletedInvoiceItem> {
-    client.send(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -72,6 +43,17 @@ pub struct ListInvoiceItem<'a> {
 impl<'a> ListInvoiceItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListInvoiceItem<'a> {
+    /// Returns a list of your invoice items.
+    ///
+    /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceItem>> {
+        client.get_query("/invoiceitems", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -195,6 +177,14 @@ impl<'a> CreateInvoiceItem<'a> {
         }
     }
 }
+impl<'a> CreateInvoiceItem<'a> {
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::InvoiceItem> {
+        client.send_form("/invoiceitems", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveInvoiceItem<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -204,6 +194,16 @@ pub struct RetrieveInvoiceItem<'a> {
 impl<'a> RetrieveInvoiceItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveInvoiceItem<'a> {
+    /// Retrieves the invoice item with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
+    ) -> stripe::Response<stripe_types::InvoiceItem> {
+        client.get_query(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -289,6 +289,45 @@ pub struct UpdateInvoiceItem<'a> {
 impl<'a> UpdateInvoiceItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateInvoiceItem<'a> {
+    /// Updates the amount or description of an invoice item on an upcoming invoice.
+    ///
+    /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
+    ) -> stripe::Response<stripe_types::InvoiceItem> {
+        client.send_form(
+            &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteInvoiceItem {}
+impl DeleteInvoiceItem {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteInvoiceItem {
+    /// Deletes an invoice item, removing it from an invoice.
+    ///
+    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
+    ) -> stripe::Response<stripe_types::DeletedInvoiceItem> {
+        client.send_form(
+            &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -403,6 +442,12 @@ pub struct OneTimePriceData<'a> {
 }
 impl<'a> OneTimePriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            product,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }

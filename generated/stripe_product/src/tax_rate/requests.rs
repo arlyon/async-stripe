@@ -1,22 +1,3 @@
-
-/// Returns a list of your tax rates.
-///
-/// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-pub fn list(client: &stripe::Client, params: ListTaxRate) -> stripe::Response<stripe_types::List<stripe_types::TaxRate>> {
-    client.get_query("/tax_rates", params)
-}
-/// Retrieves a tax rate with the given ID.
-pub fn retrieve(client: &stripe::Client, tax_rate: &stripe_types::tax_rate::TaxRateId, params: RetrieveTaxRate) -> stripe::Response<stripe_types::TaxRate> {
-    client.get_query(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), params)
-}
-/// Creates a new tax rate.
-pub fn create(client: &stripe::Client, params: CreateTaxRate) -> stripe::Response<stripe_types::TaxRate> {
-    client.send_form("/tax_rates", params, http_types::Method::Post)
-}
-/// Updates an existing tax rate.
-pub fn update(client: &stripe::Client, tax_rate: &stripe_types::tax_rate::TaxRateId, params: UpdateTaxRate) -> stripe::Response<stripe_types::TaxRate> {
-    client.send_form(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTaxRate<'a> {
     /// Optional flag to filter by tax rates that are either active or inactive (archived).
@@ -54,6 +35,17 @@ impl<'a> ListTaxRate<'a> {
         Self::default()
     }
 }
+impl<'a> ListTaxRate<'a> {
+    /// Returns a list of your tax rates.
+    ///
+    /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::TaxRate>> {
+        client.get_query("/tax_rates", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxRate<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -63,6 +55,16 @@ pub struct RetrieveTaxRate<'a> {
 impl<'a> RetrieveTaxRate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTaxRate<'a> {
+    /// Retrieves a tax rate with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        tax_rate: &stripe_types::tax_rate::TaxRateId,
+    ) -> stripe::Response<stripe_types::TaxRate> {
+        client.get_query(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -128,6 +130,12 @@ impl<'a> CreateTaxRate<'a> {
         }
     }
 }
+impl<'a> CreateTaxRate<'a> {
+    /// Creates a new tax rate.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::TaxRate> {
+        client.send_form("/tax_rates", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateTaxRate<'a> {
     /// Flag determining whether the tax rate is active or inactive (archived).
@@ -174,6 +182,20 @@ pub struct UpdateTaxRate<'a> {
 impl<'a> UpdateTaxRate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateTaxRate<'a> {
+    /// Updates an existing tax rate.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        tax_rate: &stripe_types::tax_rate::TaxRateId,
+    ) -> stripe::Response<stripe_types::TaxRate> {
+        client.send_form(
+            &format!("/tax_rates/{tax_rate}", tax_rate = tax_rate),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

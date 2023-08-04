@@ -11,7 +11,8 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method:
+        Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
@@ -74,11 +75,17 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFut
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage",
+            )
+        })
     }
 }
 /// Bank account verification method.
@@ -138,7 +145,9 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsUsBankAccountVerifica
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

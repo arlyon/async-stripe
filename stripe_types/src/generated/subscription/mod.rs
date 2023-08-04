@@ -94,10 +94,6 @@ pub struct Subscription {
     pub metadata: std::collections::HashMap<String, String>,
     /// Specifies the approximate timestamp on which any pending invoice items will be billed according to the schedule provided at `pending_invoice_item_interval`.
     pub next_pending_invoice_item_invoice: Option<stripe_types::Timestamp>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: SubscriptionObject,
     /// The account (if any) the charge was made on behalf of for charges associated with this subscription.
     ///
     /// See the Connect documentation for details.
@@ -208,67 +204,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum SubscriptionObject {
-    Subscription,
-}
-
-impl SubscriptionObject {
-    pub fn as_str(self) -> &'static str {
-        use SubscriptionObject::*;
-        match self {
-            Subscription => "subscription",
-        }
-    }
-}
-
-impl std::str::FromStr for SubscriptionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SubscriptionObject::*;
-        match s {
-            "subscription" => Ok(Subscription),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for SubscriptionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for SubscriptionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for SubscriptionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
     }
 }
 /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
@@ -359,7 +296,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
     }
 }
 impl stripe_types::Object for Subscription {

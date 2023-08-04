@@ -93,7 +93,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedNetworkCo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedNetworkCode"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodUsBankAccountBlockedNetworkCode",
+            )
+        })
     }
 }
 /// The reason why this PaymentMethod's fingerprint has been blocked.
@@ -166,6 +170,8 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedReason"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedReason")
+        })
     }
 }

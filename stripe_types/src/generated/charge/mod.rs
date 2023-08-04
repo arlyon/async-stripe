@@ -59,7 +59,8 @@ pub struct Charge {
     /// Whether the charge has been disputed.
     pub disputed: bool,
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
-    pub failure_balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
+    pub failure_balance_transaction:
+        Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/error-codes) for a list of codes).
     pub failure_code: Option<String>,
     /// Message to user further explaining reason for charge failure if available.
@@ -78,10 +79,6 @@ pub struct Charge {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: ChargeObject,
     /// The account (if any) the charge was made on behalf of without triggering an automatic transfer.
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
@@ -154,66 +151,6 @@ pub struct Charge {
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ChargeObject {
-    Charge,
-}
-
-impl ChargeObject {
-    pub fn as_str(self) -> &'static str {
-        use ChargeObject::*;
-        match self {
-            Charge => "charge",
-        }
-    }
-}
-
-impl std::str::FromStr for ChargeObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ChargeObject::*;
-        match s {
-            "charge" => Ok(Charge),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for ChargeObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ChargeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ChargeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ChargeObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for ChargeObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeObject"))
-    }
 }
 /// The status of the payment is either `succeeded`, `pending`, or `failed`.
 #[derive(Copy, Clone, Eq, PartialEq)]

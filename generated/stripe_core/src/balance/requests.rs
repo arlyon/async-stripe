@@ -1,9 +1,3 @@
-
-/// Retrieves the current account balance, based on the authentication that was used to make the request.
-///  For a sample request, see [Accounting for negative balances](https://stripe.com/docs/connect/account-balances#accounting-for-negative-balances).
-pub fn retrieve_for_my_account(client: &stripe::Client, params: RetrieveForMyAccountBalance) -> stripe::Response<stripe_core::Balance> {
-    client.get_query("/balance", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveForMyAccountBalance<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -13,5 +7,12 @@ pub struct RetrieveForMyAccountBalance<'a> {
 impl<'a> RetrieveForMyAccountBalance<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveForMyAccountBalance<'a> {
+    /// Retrieves the current account balance, based on the authentication that was used to make the request.
+    ///  For a sample request, see [Accounting for negative balances](https://stripe.com/docs/connect/account-balances#accounting-for-negative-balances).
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_core::Balance> {
+        client.get_query("/balance", self)
     }
 }

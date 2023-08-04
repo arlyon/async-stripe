@@ -78,7 +78,11 @@ impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsS
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage",
+            )
+        })
     }
 }
 /// Bank account verification method.
@@ -139,6 +143,10 @@ impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsV
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod",
+            )
+        })
     }
 }

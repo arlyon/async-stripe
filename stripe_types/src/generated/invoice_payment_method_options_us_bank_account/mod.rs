@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct InvoicePaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections: Option<stripe_types::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
+    pub financial_connections:
+        Option<stripe_types::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -67,6 +68,10 @@ impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsUsBankAccountVe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoicePaymentMethodOptionsUsBankAccountVerificationMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for InvoicePaymentMethodOptionsUsBankAccountVerificationMethod",
+            )
+        })
     }
 }

@@ -1,40 +1,3 @@
-
-/// Delete a specified source for a given customer.
-pub fn detach(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: DetachSource) -> stripe::Response<DetachReturned> {
-    client.send_form(&format!("/customers/{customer}/sources/{id}", customer = customer, id = id), params, http_types::Method::Delete)
-}
-/// Retrieves an existing source object.
-///
-/// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-pub fn retrieve(client: &stripe::Client, source: &stripe_types::source::SourceId, params: RetrieveSource) -> stripe::Response<stripe_types::Source> {
-    client.get_query(&format!("/sources/{source}", source = source), params)
-}
-/// Creates a new source object.
-pub fn create(client: &stripe::Client, params: CreateSource) -> stripe::Response<stripe_types::Source> {
-    client.send_form("/sources", params, http_types::Method::Post)
-}
-/// Updates the specified source by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
-/// It is also possible to update type specific information for selected payment methods.
-/// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-pub fn update(client: &stripe::Client, source: &stripe_types::source::SourceId, params: UpdateSource) -> stripe::Response<stripe_types::Source> {
-    client.send_form(&format!("/sources/{source}", source = source), params, http_types::Method::Post)
-}
-/// Verify a given source.
-pub fn verify(client: &stripe::Client, source: &stripe_types::source::SourceId, params: VerifySource) -> stripe::Response<stripe_types::Source> {
-    client.send_form(&format!("/sources/{source}/verify", source = source), params, http_types::Method::Post)
-}
-/// List source transactions for a given source.
-pub fn source_transactions(client: &stripe::Client, source: &stripe_types::source::SourceId, params: SourceTransactionsSource) -> stripe::Response<stripe_types::List<stripe_types::SourceTransaction>> {
-    client.get_query(&format!("/sources/{source}/source_transactions", source = source), params)
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum DetachReturned {
-    PaymentSource(stripe_types::PaymentSource),
-    DeletedPaymentSource(stripe_types::DeletedPaymentSource),
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DetachSource<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -45,6 +8,27 @@ impl<'a> DetachSource<'a> {
     pub fn new() -> Self {
         Self::default()
     }
+}
+impl<'a> DetachSource<'a> {
+    /// Delete a specified source for a given customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        id: &str,
+    ) -> stripe::Response<DetachReturned> {
+        client.send_form(
+            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            self,
+            http_types::Method::Delete,
+        )
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum DetachReturned {
+    PaymentSource(stripe_types::PaymentSource),
+    DeletedPaymentSource(stripe_types::DeletedPaymentSource),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSource<'a> {
@@ -60,6 +44,18 @@ pub struct RetrieveSource<'a> {
 impl<'a> RetrieveSource<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveSource<'a> {
+    /// Retrieves an existing source object.
+    ///
+    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        source: &stripe_types::source::SourceId,
+    ) -> stripe::Response<stripe_types::Source> {
+        client.get_query(&format!("/sources/{source}", source = source), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -452,6 +448,12 @@ impl serde::Serialize for CreateSourceUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateSource<'a> {
+    /// Creates a new source object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Source> {
+        client.send_form("/sources", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSource<'a> {
     /// Amount associated with the source.
@@ -588,6 +590,24 @@ impl serde::Serialize for UpdateSourceSourceOrderItemsType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> UpdateSource<'a> {
+    /// Updates the specified source by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
+    /// It is also possible to update type specific information for selected payment methods.
+    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        source: &stripe_types::source::SourceId,
+    ) -> stripe::Response<stripe_types::Source> {
+        client.send_form(
+            &format!("/sources/{source}", source = source),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct VerifySource<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -599,6 +619,20 @@ pub struct VerifySource<'a> {
 impl<'a> VerifySource<'a> {
     pub fn new(values: &'a [&'a str]) -> Self {
         Self { expand: Default::default(), values }
+    }
+}
+impl<'a> VerifySource<'a> {
+    /// Verify a given source.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        source: &stripe_types::source::SourceId,
+    ) -> stripe::Response<stripe_types::Source> {
+        client.send_form(
+            &format!("/sources/{source}/verify", source = source),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -627,6 +661,16 @@ pub struct SourceTransactionsSource<'a> {
 impl<'a> SourceTransactionsSource<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> SourceTransactionsSource<'a> {
+    /// List source transactions for a given source.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        source: &stripe_types::source::SourceId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::SourceTransaction>> {
+        client.get_query(&format!("/sources/{source}/source_transactions", source = source), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -934,7 +978,14 @@ pub struct Address<'a> {
 }
 impl<'a> Address<'a> {
     pub fn new(line1: &'a str) -> Self {
-        Self { city: Default::default(), country: Default::default(), line1, line2: Default::default(), postal_code: Default::default(), state: Default::default() }
+        Self {
+            city: Default::default(),
+            country: Default::default(),
+            line1,
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -971,7 +1022,15 @@ pub struct MandateAcceptanceParams<'a> {
 }
 impl<'a> MandateAcceptanceParams<'a> {
     pub fn new(status: Status) -> Self {
-        Self { date: Default::default(), ip: Default::default(), offline: Default::default(), online: Default::default(), status, type_: Default::default(), user_agent: Default::default() }
+        Self {
+            date: Default::default(),
+            ip: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            status,
+            type_: Default::default(),
+            user_agent: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1015,7 +1074,13 @@ pub struct OrderShipping<'a> {
 }
 impl<'a> OrderShipping<'a> {
     pub fn new(address: Address<'a>) -> Self {
-        Self { address, carrier: Default::default(), name: Default::default(), phone: Default::default(), tracking_number: Default::default() }
+        Self {
+            address,
+            carrier: Default::default(),
+            name: Default::default(),
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

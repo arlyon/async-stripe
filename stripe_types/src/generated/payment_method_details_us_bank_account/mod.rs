@@ -75,7 +75,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsUsBankAccountAccountHo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsUsBankAccountAccountHolderType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodDetailsUsBankAccountAccountHolderType",
+            )
+        })
     }
 }
 /// Account type: checkings or savings.
@@ -138,6 +142,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsUsBankAccountAccountTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsUsBankAccountAccountType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodDetailsUsBankAccountAccountType",
+            )
+        })
     }
 }

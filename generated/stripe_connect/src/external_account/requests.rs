@@ -1,26 +1,3 @@
-
-/// List external accounts for an account.
-pub fn list(client: &stripe::Client, account: &stripe_types::account::AccountId, params: ListExternalAccount) -> stripe::Response<stripe_types::List<stripe_types::ExternalAccount>> {
-    client.get_query(&format!("/accounts/{account}/external_accounts", account = account), params)
-}
-/// Retrieve a specified external account for a given account.
-pub fn retrieve(client: &stripe::Client, account: &stripe_types::account::AccountId, id: &str, params: RetrieveExternalAccount) -> stripe::Response<stripe_types::ExternalAccount> {
-    client.get_query(&format!("/accounts/{account}/external_accounts/{id}", account = account, id = id), params)
-}
-/// Create an external account for a given account.
-pub fn create(client: &stripe::Client, account: &stripe_types::account::AccountId, params: CreateExternalAccount) -> stripe::Response<stripe_types::ExternalAccount> {
-    client.send_form(&format!("/accounts/{account}/external_accounts", account = account), params, http_types::Method::Post)
-}
-/// Updates the metadata, account holder name, account holder type of a bank account belonging to a [Custom account](https://stripe.com/docs/connect/custom-accounts), and optionally sets it as the default for its currency.
-///
-/// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
-pub fn update(client: &stripe::Client, account: &stripe_types::account::AccountId, id: &str, params: UpdateExternalAccount) -> stripe::Response<stripe_types::ExternalAccount> {
-    client.send_form(&format!("/accounts/{account}/external_accounts/{id}", account = account, id = id), params, http_types::Method::Post)
-}
-/// Delete a specified external account for a given account.
-pub fn delete(client: &stripe::Client, account: &stripe_types::account::AccountId, id: &str) -> stripe::Response<stripe_types::DeletedExternalAccount> {
-    client.send(&format!("/accounts/{account}/external_accounts/{id}", account = account, id = id), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListExternalAccount<'a> {
     /// A cursor for use in pagination.
@@ -49,6 +26,16 @@ impl<'a> ListExternalAccount<'a> {
         Self::default()
     }
 }
+impl<'a> ListExternalAccount<'a> {
+    /// List external accounts for an account.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::ExternalAccount>> {
+        client.get_query(&format!("/accounts/{account}/external_accounts", account = account), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveExternalAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -58,6 +45,20 @@ pub struct RetrieveExternalAccount<'a> {
 impl<'a> RetrieveExternalAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveExternalAccount<'a> {
+    /// Retrieve a specified external account for a given account.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::ExternalAccount> {
+        client.get_query(
+            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -80,7 +81,26 @@ pub struct CreateExternalAccount<'a> {
 }
 impl<'a> CreateExternalAccount<'a> {
     pub fn new(external_account: &'a str) -> Self {
-        Self { default_for_currency: Default::default(), expand: Default::default(), external_account, metadata: Default::default() }
+        Self {
+            default_for_currency: Default::default(),
+            expand: Default::default(),
+            external_account,
+            metadata: Default::default(),
+        }
+    }
+}
+impl<'a> CreateExternalAccount<'a> {
+    /// Create an external account for a given account.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::ExternalAccount> {
+        client.send_form(
+            &format!("/accounts/{account}/external_accounts", account = account),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -274,7 +294,8 @@ pub struct UpdateExternalAccountDocuments<'a> {
     ///
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification: Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a>>,
+    pub bank_account_ownership_verification:
+        Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a>>,
 }
 impl<'a> UpdateExternalAccountDocuments<'a> {
     pub fn new() -> Self {
@@ -293,5 +314,44 @@ pub struct UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a> {
 impl<'a> UpdateExternalAccountDocumentsBankAccountOwnershipVerification<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateExternalAccount<'a> {
+    /// Updates the metadata, account holder name, account holder type of a bank account belonging to a [Custom account](https://stripe.com/docs/connect/custom-accounts), and optionally sets it as the default for its currency.
+    ///
+    /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::ExternalAccount> {
+        client.send_form(
+            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteExternalAccount {}
+impl DeleteExternalAccount {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteExternalAccount {
+    /// Delete a specified external account for a given account.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::DeletedExternalAccount> {
+        client.send_form(
+            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }

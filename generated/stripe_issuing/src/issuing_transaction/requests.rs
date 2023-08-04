@@ -1,20 +1,3 @@
-
-/// Returns a list of Issuing `Transaction` objects.
-///
-/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-pub fn list(client: &stripe::Client, params: ListIssuingTransaction) -> stripe::Response<stripe_types::List<stripe_types::IssuingTransaction>> {
-    client.get_query("/issuing/transactions", params)
-}
-/// Retrieves an Issuing `Transaction` object.
-pub fn retrieve(client: &stripe::Client, transaction: &stripe_types::issuing_transaction::IssuingTransactionId, params: RetrieveIssuingTransaction) -> stripe::Response<stripe_types::IssuingTransaction> {
-    client.get_query(&format!("/issuing/transactions/{transaction}", transaction = transaction), params)
-}
-/// Updates the specified Issuing `Transaction` object by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-pub fn update(client: &stripe::Client, transaction: &stripe_types::issuing_transaction::IssuingTransactionId, params: UpdateIssuingTransaction) -> stripe::Response<stripe_types::IssuingTransaction> {
-    client.send_form(&format!("/issuing/transactions/{transaction}", transaction = transaction), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListIssuingTransaction<'a> {
     /// Only return transactions that belong to the given card.
@@ -114,6 +97,17 @@ impl serde::Serialize for ListIssuingTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListIssuingTransaction<'a> {
+    /// Returns a list of Issuing `Transaction` objects.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::IssuingTransaction>> {
+        client.get_query("/issuing/transactions", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveIssuingTransaction<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -123,6 +117,19 @@ pub struct RetrieveIssuingTransaction<'a> {
 impl<'a> RetrieveIssuingTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveIssuingTransaction<'a> {
+    /// Retrieves an Issuing `Transaction` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transaction: &stripe_types::issuing_transaction::IssuingTransactionId,
+    ) -> stripe::Response<stripe_types::IssuingTransaction> {
+        client.get_query(
+            &format!("/issuing/transactions/{transaction}", transaction = transaction),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -141,5 +148,21 @@ pub struct UpdateIssuingTransaction<'a> {
 impl<'a> UpdateIssuingTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateIssuingTransaction<'a> {
+    /// Updates the specified Issuing `Transaction` object by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transaction: &stripe_types::issuing_transaction::IssuingTransactionId,
+    ) -> stripe::Response<stripe_types::IssuingTransaction> {
+        client.send_form(
+            &format!("/issuing/transactions/{transaction}", transaction = transaction),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

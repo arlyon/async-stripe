@@ -1,41 +1,3 @@
-
-/// Issue a credit note to adjust the amount of a finalized invoice.
-///
-/// For a `status=open` invoice, a credit note reduces its `amount_due`.
-/// For a `status=paid` invoice, a credit note does not affect its `amount_due`.
-/// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
-/// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
-pub fn create(client: &stripe::Client, params: CreateCreditNote) -> stripe::Response<stripe_types::CreditNote> {
-    client.send_form("/credit_notes", params, http_types::Method::Post)
-}
-/// Get a preview of a credit note without creating it.
-pub fn preview(client: &stripe::Client, params: PreviewCreditNote) -> stripe::Response<stripe_types::CreditNote> {
-    client.get_query("/credit_notes/preview", params)
-}
-/// Retrieves the credit note object with the given identifier.
-pub fn retrieve(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: RetrieveCreditNote) -> stripe::Response<stripe_types::CreditNote> {
-    client.get_query(&format!("/credit_notes/{id}", id = id), params)
-}
-/// Returns a list of credit notes.
-pub fn list(client: &stripe::Client, params: ListCreditNote) -> stripe::Response<stripe_types::List<stripe_types::CreditNote>> {
-    client.get_query("/credit_notes", params)
-}
-/// Updates an existing credit note.
-pub fn update(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: UpdateCreditNote) -> stripe::Response<stripe_types::CreditNote> {
-    client.send_form(&format!("/credit_notes/{id}", id = id), params, http_types::Method::Post)
-}
-/// Marks a credit note as void.
-///
-/// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
-pub fn void_credit_note(client: &stripe::Client, id: &stripe_types::credit_note::CreditNoteId, params: VoidCreditNoteCreditNote) -> stripe::Response<stripe_types::CreditNote> {
-    client.send_form(&format!("/credit_notes/{id}/void", id = id), params, http_types::Method::Post)
-}
-/// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
-///
-/// This URL you can retrieve the full (paginated) list of line items.
-pub fn preview_lines(client: &stripe::Client, params: PreviewLinesCreditNote) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
-    client.get_query("/credit_notes/preview/lines", params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
@@ -103,6 +65,17 @@ impl<'a> CreateCreditNote<'a> {
             refund_amount: Default::default(),
             shipping_cost: Default::default(),
         }
+    }
+}
+impl<'a> CreateCreditNote<'a> {
+    /// Issue a credit note to adjust the amount of a finalized invoice.
+    ///
+    /// For a `status=open` invoice, a credit note reduces its `amount_due`.
+    /// For a `status=paid` invoice, a credit note does not affect its `amount_due`.
+    /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
+    /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::CreditNote> {
+        client.send_form("/credit_notes", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -174,6 +147,12 @@ impl<'a> PreviewCreditNote<'a> {
         }
     }
 }
+impl<'a> PreviewCreditNote<'a> {
+    /// Get a preview of a credit note without creating it.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::CreditNote> {
+        client.get_query("/credit_notes/preview", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCreditNote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -183,6 +162,16 @@ pub struct RetrieveCreditNote<'a> {
 impl<'a> RetrieveCreditNote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveCreditNote<'a> {
+    /// Retrieves the credit note object with the given identifier.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::credit_note::CreditNoteId,
+    ) -> stripe::Response<stripe_types::CreditNote> {
+        client.get_query(&format!("/credit_notes/{id}", id = id), self)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -219,6 +208,15 @@ impl<'a> ListCreditNote<'a> {
         Self::default()
     }
 }
+impl<'a> ListCreditNote<'a> {
+    /// Returns a list of credit notes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::CreditNote>> {
+        client.get_query("/credit_notes", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCreditNote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -240,6 +238,16 @@ impl<'a> UpdateCreditNote<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateCreditNote<'a> {
+    /// Updates an existing credit note.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::credit_note::CreditNoteId,
+    ) -> stripe::Response<stripe_types::CreditNote> {
+        client.send_form(&format!("/credit_notes/{id}", id = id), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct VoidCreditNoteCreditNote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -249,6 +257,22 @@ pub struct VoidCreditNoteCreditNote<'a> {
 impl<'a> VoidCreditNoteCreditNote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> VoidCreditNoteCreditNote<'a> {
+    /// Marks a credit note as void.
+    ///
+    /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::credit_note::CreditNoteId,
+    ) -> stripe::Response<stripe_types::CreditNote> {
+        client.send_form(
+            &format!("/credit_notes/{id}/void", id = id),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -338,6 +362,17 @@ impl<'a> PreviewLinesCreditNote<'a> {
             shipping_cost: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+impl<'a> PreviewLinesCreditNote<'a> {
+    /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
+    ///
+    /// This URL you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
+        client.get_query("/credit_notes/preview/lines", self)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -505,6 +540,15 @@ pub struct CreditNoteLineItemParams<'a> {
 }
 impl<'a> CreditNoteLineItemParams<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { amount: Default::default(), description: Default::default(), invoice_line_item: Default::default(), quantity: Default::default(), tax_rates: Default::default(), type_, unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            amount: Default::default(),
+            description: Default::default(),
+            invoice_line_item: Default::default(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+            type_,
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }

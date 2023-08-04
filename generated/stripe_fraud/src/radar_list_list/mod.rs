@@ -27,10 +27,6 @@ pub struct RadarListList {
     pub metadata: std::collections::HashMap<String, String>,
     /// The name of the value list.
     pub name: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: RadarListListObject,
 }
 /// The type of items in the value list.
 ///
@@ -110,67 +106,8 @@ impl<'de> serde::Deserialize<'de> for RadarListListItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RadarListListItemType"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum RadarListListObject {
-    RadarValueList,
-}
-
-impl RadarListListObject {
-    pub fn as_str(self) -> &'static str {
-        use RadarListListObject::*;
-        match self {
-            RadarValueList => "radar.value_list",
-        }
-    }
-}
-
-impl std::str::FromStr for RadarListListObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RadarListListObject::*;
-        match s {
-            "radar.value_list" => Ok(RadarValueList),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for RadarListListObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for RadarListListObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for RadarListListObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for RadarListListObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for RadarListListObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RadarListListObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for RadarListListItemType"))
     }
 }
 impl stripe_types::Object for RadarListList {
@@ -180,4 +117,7 @@ impl stripe_types::Object for RadarListList {
     }
 }
 stripe_types::def_id!(RadarValueListId);
-pub mod requests;
+#[cfg(feature = "radar_list_list")]
+mod requests;
+#[cfg(feature = "radar_list_list")]
+pub use requests::*;

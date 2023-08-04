@@ -1,90 +1,44 @@
-
-/// Search for PaymentIntents you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchPaymentIntent) -> stripe::Response<SearchReturned> {
-    client.get_query("/payment_intents/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchPaymentIntent<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for payment intents](https://stripe.com/docs/search#query-fields-for-payment-intents).
+    pub query: &'a str,
 }
-/// Creates a PaymentIntent object.
-///
-/// After the PaymentIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/payment_intents/confirm)
-/// to continue the payment.
-///
-/// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
-/// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
-pub fn create(client: &stripe::Client, params: CreatePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form("/payment_intents", params, http_types::Method::Post)
+impl<'a> SearchPaymentIntent<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Returns a list of PaymentIntents.
-pub fn list(client: &stripe::Client, params: ListPaymentIntent) -> stripe::Response<stripe_types::List<stripe_types::PaymentIntent>> {
-    client.get_query("/payment_intents", params)
-}
-/// Retrieves the details of a PaymentIntent that has previously been created.
-///
-/// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
-/// When retrieved with a publishable key, only a subset of properties will be returned.
-/// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-pub fn retrieve(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: RetrievePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.get_query(&format!("/payment_intents/{intent}", intent = intent), params)
-}
-/// Updates properties on a PaymentIntent object without confirming.
-///
-/// Depending on which properties you update, you may need to confirm the
-/// PaymentIntent again.
-///
-/// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
-/// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-pub fn update(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: UpdatePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}", intent = intent), params, http_types::Method::Post)
-}
-/// Confirm that your customer intends to pay with current or provided
-/// payment method.
-///
-/// Upon confirmation, the PaymentIntent will attempt to initiate a payment. If the selected payment method requires additional authentication steps, the PaymentIntent will transition to the `requires_action` status and suggest additional actions via `next_action`.
-/// If payment fails, the PaymentIntent transitions to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
-/// If payment succeeds, the PaymentIntent will transition to the `succeeded` status (or `requires_capture`, if `capture_method` is set to `manual`). If the `confirmation_method` is `automatic`, payment may be attempted using our [client SDKs](https://stripe.com/docs/stripe-js/reference#stripe-handle-card-payment) and the PaymentIntent’s [client_secret](https://stripe.com/docs/api#payment_intent_object-client_secret). After `next_action`s are handled by the client, no additional confirmation is required to complete the payment. If the `confirmation_method` is `manual`, all payment attempts must be initiated using a secret key. If any actions are required for the payment, the PaymentIntent will return to the `requires_confirmation` state after those actions are completed.
-/// Your server needs to then explicitly re-confirm the PaymentIntent to initiate the next payment attempt.
-/// Read the [expanded documentation](https://stripe.com/docs/payments/payment-intents/web-manual) to learn more about manual confirmation.
-pub fn confirm(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: ConfirmPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/confirm", intent = intent), params, http_types::Method::Post)
-}
-/// A PaymentIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` or, [in rare cases](https://stripe.com/docs/payments/intents), `processing`.
-///
-/// Once canceled, no additional charges will be made by the PaymentIntent and any operations on the PaymentIntent will fail with an error.
-/// For PaymentIntents with a `status` of `requires_capture`, the remaining `amount_capturable` will automatically be refunded.
-/// You cannot cancel the PaymentIntent for a Checkout Session.
-/// [Expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
-pub fn cancel(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: CancelPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/cancel", intent = intent), params, http_types::Method::Post)
-}
-/// Capture the funds of an existing uncaptured PaymentIntent when its status is `requires_capture`.
-///
-/// Uncaptured PaymentIntents will be canceled a set number of days after they are created (7 by default).
-///
-/// Learn more about [separate authorization and capture](https://stripe.com/docs/payments/capture-later).
-pub fn capture(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: CapturePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/capture", intent = intent), params, http_types::Method::Post)
-}
-/// Perform an incremental authorization on an eligible
-/// [PaymentIntent](https://stripe.com/docs/api/payment_intents/object).
-///
-/// To be eligible, the PaymentIntent’s status must be `requires_capture` and [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) must be `true`.  Incremental authorizations attempt to increase the authorized amount on your customer’s card to the new, higher `amount` provided.
-/// As with the initial authorization, incremental authorizations may be declined.
-/// A single PaymentIntent can call this endpoint multiple times to further increase the authorized amount.  If the incremental authorization succeeds, the PaymentIntent object is returned with the updated [amount](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-amount). If the incremental authorization fails, a [card_declined](https://stripe.com/docs/error-codes#card-declined) error is returned, and no fields on the PaymentIntent or Charge are updated.
-/// The PaymentIntent object remains capturable for the previously authorized amount.  Each PaymentIntent can have a maximum of 10 incremental authorization attempts, including declines. Once captured, a PaymentIntent can no longer be incremented.  Learn more about [incremental authorizations](https://stripe.com/docs/terminal/features/incremental-authorizations).
-pub fn increment_authorization(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: IncrementAuthorizationPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/increment_authorization", intent = intent), params, http_types::Method::Post)
-}
-/// Verifies microdeposits on a PaymentIntent object.
-pub fn verify_microdeposits(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: VerifyMicrodepositsPaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/verify_microdeposits", intent = intent), params, http_types::Method::Post)
-}
-/// Manually reconcile the remaining amount for a customer_balance PaymentIntent.
-pub fn apply_customer_balance(client: &stripe::Client, intent: &stripe_types::payment_intent::PaymentIntentId, params: ApplyCustomerBalancePaymentIntent) -> stripe::Response<stripe_types::PaymentIntent> {
-    client.send_form(&format!("/payment_intents/{intent}/apply_customer_balance", intent = intent), params, http_types::Method::Post)
+impl<'a> SearchPaymentIntent<'a> {
+    /// Search for PaymentIntents you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/payment_intents/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -157,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchPaymentIntent<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for payment intents](https://stripe.com/docs/search#query-fields-for-payment-intents).
-    pub query: &'a str,
-}
-impl<'a> SearchPaymentIntent<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -537,7 +466,12 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance<'a> {
 }
 impl<'a> CreatePaymentIntentMandateDataCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
+        Self {
+            accepted_at: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            type_,
+        }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -1668,7 +1602,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method:
+        Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -1681,7 +1616,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -1916,7 +1852,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl CreatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -2162,7 +2099,11 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(count: u64, interval: Interval, type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
+    pub fn new(
+        count: u64,
+        interval: Interval,
+        type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+    ) -> Self {
         Self { count, interval, type_ }
     }
 }
@@ -2260,8 +2201,24 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(amount: i64, amount_type: AmountType, interval: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
-        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
+    pub fn new(
+        amount: i64,
+        amount_type: AmountType,
+        interval: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
+        reference: &'a str,
+        start_date: stripe_types::Timestamp,
+    ) -> Self {
+        Self {
+            amount,
+            amount_type,
+            description: Default::default(),
+            end_date: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            reference,
+            start_date,
+            supported_types: Default::default(),
+        }
     }
 }
 /// Specifies payment frequency.
@@ -2412,7 +2369,8 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappCaptureM
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer:
+        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -2424,7 +2382,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -2447,8 +2406,14 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
-        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
+    pub fn new(
+        type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+    ) -> Self {
+        Self {
+            eu_bank_transfer: Default::default(),
+            requested_address_types: Default::default(),
+            type_,
+        }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -3862,7 +3827,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl CreatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -4138,7 +4104,8 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -4354,6 +4321,18 @@ impl<'a> CreatePaymentIntentTransferData<'a> {
         Self { amount: Default::default(), destination }
     }
 }
+impl<'a> CreatePaymentIntent<'a> {
+    /// Creates a PaymentIntent object.
+    ///
+    /// After the PaymentIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/payment_intents/confirm)
+    /// to continue the payment.
+    ///
+    /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
+    /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form("/payment_intents", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentIntent<'a> {
     /// A filter on the list, based on the object `created` field.
@@ -4390,6 +4369,15 @@ impl<'a> ListPaymentIntent<'a> {
         Self::default()
     }
 }
+impl<'a> ListPaymentIntent<'a> {
+    /// Returns a list of PaymentIntents.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PaymentIntent>> {
+        client.get_query("/payment_intents", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentIntent<'a> {
     /// The client secret of the PaymentIntent.
@@ -4404,6 +4392,20 @@ pub struct RetrievePaymentIntent<'a> {
 impl<'a> RetrievePaymentIntent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePaymentIntent<'a> {
+    /// Retrieves the details of a PaymentIntent that has previously been created.
+    ///
+    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
+    /// When retrieved with a publishable key, only a subset of properties will be returned.
+    /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.get_query(&format!("/payment_intents/{intent}", intent = intent), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5631,7 +5633,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -5644,7 +5647,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -5879,7 +5883,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -6125,7 +6130,11 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(count: u64, interval: Interval, type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
+    pub fn new(
+        count: u64,
+        interval: Interval,
+        type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+    ) -> Self {
         Self { count, interval, type_ }
     }
 }
@@ -6223,8 +6232,24 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(amount: i64, amount_type: AmountType, interval: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
-        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
+    pub fn new(
+        amount: i64,
+        amount_type: AmountType,
+        interval: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
+        reference: &'a str,
+        start_date: stripe_types::Timestamp,
+    ) -> Self {
+        Self {
+            amount,
+            amount_type,
+            description: Default::default(),
+            end_date: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            reference,
+            start_date,
+            supported_types: Default::default(),
+        }
     }
 }
 /// Specifies payment frequency.
@@ -6375,7 +6400,8 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureM
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -6387,7 +6413,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -6410,8 +6437,14 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
-        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
+    pub fn new(
+        type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+    ) -> Self {
+        Self {
+            eu_bank_transfer: Default::default(),
+            requested_address_types: Default::default(),
+            type_,
+        }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -7825,7 +7858,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -8101,7 +8135,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -8292,6 +8327,26 @@ impl serde::Serialize for UpdatePaymentIntentSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> UpdatePaymentIntent<'a> {
+    /// Updates properties on a PaymentIntent object without confirming.
+    ///
+    /// Depending on which properties you update, you may need to confirm the
+    /// PaymentIntent again.
+    ///
+    /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
+    /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntent<'a> {
     /// Controls when the funds will be captured from the customer's account.
@@ -8375,7 +8430,9 @@ pub struct ConfirmPaymentIntentSecretKeyParam<'a> {
     pub customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmPaymentIntentSecretKeyParam<'a> {
-    pub fn new(customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>) -> Self {
+    pub fn new(
+        customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>,
+    ) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -8399,7 +8456,12 @@ pub struct ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a> {
 }
 impl<'a> ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
+        Self {
+            accepted_at: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            type_,
+        }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -8417,7 +8479,9 @@ pub struct ConfirmPaymentIntentClientKeyParam<'a> {
     pub customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmPaymentIntentClientKeyParam<'a> {
-    pub fn new(customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>) -> Self {
+    pub fn new(
+        customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a>,
+    ) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -8431,7 +8495,10 @@ pub struct ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a> {
     pub type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmPaymentIntentClientKeyParamCustomerAcceptance<'a> {
-    pub fn new(online: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a>, type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType) -> Self {
+    pub fn new(
+        online: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline<'a>,
+        type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType,
+    ) -> Self {
         Self { online, type_ }
     }
 }
@@ -9621,7 +9688,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
+    pub capture_method:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
     /// Order identifier shown to the customer in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -9634,7 +9702,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay<'a> {
     pub fn new() -> Self {
@@ -9715,7 +9784,9 @@ impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     }
 }
 
-impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+impl std::str::FromStr
+    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
@@ -9732,7 +9803,9 @@ impl AsRef<str> for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetu
     }
 }
 
-impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+impl std::fmt::Display
+    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -9869,7 +9942,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -10115,7 +10189,11 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(count: u64, interval: Interval, type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
+    pub fn new(
+        count: u64,
+        interval: Interval,
+        type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+    ) -> Self {
         Self { count, interval, type_ }
     }
 }
@@ -10213,8 +10291,24 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions<'a> {
-    pub fn new(amount: i64, amount_type: AmountType, interval: ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
-        Self { amount, amount_type, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
+    pub fn new(
+        amount: i64,
+        amount_type: AmountType,
+        interval: ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
+        reference: &'a str,
+        start_date: stripe_types::Timestamp,
+    ) -> Self {
+        Self {
+            amount,
+            amount_type,
+            description: Default::default(),
+            end_date: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            reference,
+            start_date,
+            supported_types: Default::default(),
+        }
     }
 }
 /// Specifies payment frequency.
@@ -10365,7 +10459,8 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappCapture
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer: Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -10377,7 +10472,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -10400,8 +10496,14 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
-        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
+    pub fn new(
+        type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+    ) -> Self {
+        Self {
+            eu_bank_transfer: Default::default(),
+            requested_address_types: Default::default(),
+            type_,
+        }
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -11815,7 +11917,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -12091,7 +12194,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: Client) -> Self {
@@ -12282,6 +12386,27 @@ impl serde::Serialize for ConfirmPaymentIntentSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ConfirmPaymentIntent<'a> {
+    /// Confirm that your customer intends to pay with current or provided
+    /// payment method.
+    ///
+    /// Upon confirmation, the PaymentIntent will attempt to initiate a payment. If the selected payment method requires additional authentication steps, the PaymentIntent will transition to the `requires_action` status and suggest additional actions via `next_action`.
+    /// If payment fails, the PaymentIntent transitions to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
+    /// If payment succeeds, the PaymentIntent will transition to the `succeeded` status (or `requires_capture`, if `capture_method` is set to `manual`). If the `confirmation_method` is `automatic`, payment may be attempted using our [client SDKs](https://stripe.com/docs/stripe-js/reference#stripe-handle-card-payment) and the PaymentIntent’s [client_secret](https://stripe.com/docs/api#payment_intent_object-client_secret). After `next_action`s are handled by the client, no additional confirmation is required to complete the payment. If the `confirmation_method` is `manual`, all payment attempts must be initiated using a secret key. If any actions are required for the payment, the PaymentIntent will return to the `requires_confirmation` state after those actions are completed.
+    /// Your server needs to then explicitly re-confirm the PaymentIntent to initiate the next payment attempt.
+    /// Read the [expanded documentation](https://stripe.com/docs/payments/payment-intents/web-manual) to learn more about manual confirmation.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/confirm", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelPaymentIntent<'a> {
     /// Reason for canceling this PaymentIntent.
@@ -12360,6 +12485,25 @@ impl serde::Serialize for CancelPaymentIntentCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CancelPaymentIntent<'a> {
+    /// A PaymentIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` or, [in rare cases](https://stripe.com/docs/payments/intents), `processing`.
+    ///
+    /// Once canceled, no additional charges will be made by the PaymentIntent and any operations on the PaymentIntent will fail with an error.
+    /// For PaymentIntents with a `status` of `requires_capture`, the remaining `amount_capturable` will automatically be refunded.
+    /// You cannot cancel the PaymentIntent for a Checkout Session.
+    /// [Expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/cancel", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CapturePaymentIntent<'a> {
     /// The amount to capture from the PaymentIntent, which must be less than or equal to the original amount.
@@ -12407,6 +12551,24 @@ impl<'a> CapturePaymentIntent<'a> {
         Self::default()
     }
 }
+impl<'a> CapturePaymentIntent<'a> {
+    /// Capture the funds of an existing uncaptured PaymentIntent when its status is `requires_capture`.
+    ///
+    /// Uncaptured PaymentIntents will be canceled a set number of days after they are created (7 by default).
+    ///
+    /// Learn more about [separate authorization and capture](https://stripe.com/docs/payments/capture-later).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/capture", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntent<'a> {
     /// The updated total amount you intend to collect from the cardholder.
@@ -12446,7 +12608,35 @@ pub struct IncrementAuthorizationPaymentIntent<'a> {
 }
 impl<'a> IncrementAuthorizationPaymentIntent<'a> {
     pub fn new(amount: i64) -> Self {
-        Self { amount, application_fee_amount: Default::default(), description: Default::default(), expand: Default::default(), metadata: Default::default(), statement_descriptor: Default::default(), transfer_data: Default::default() }
+        Self {
+            amount,
+            application_fee_amount: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            statement_descriptor: Default::default(),
+            transfer_data: Default::default(),
+        }
+    }
+}
+impl<'a> IncrementAuthorizationPaymentIntent<'a> {
+    /// Perform an incremental authorization on an eligible
+    /// [PaymentIntent](https://stripe.com/docs/api/payment_intents/object).
+    ///
+    /// To be eligible, the PaymentIntent’s status must be `requires_capture` and [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) must be `true`.  Incremental authorizations attempt to increase the authorized amount on your customer’s card to the new, higher `amount` provided.
+    /// As with the initial authorization, incremental authorizations may be declined.
+    /// A single PaymentIntent can call this endpoint multiple times to further increase the authorized amount.  If the incremental authorization succeeds, the PaymentIntent object is returned with the updated [amount](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-amount). If the incremental authorization fails, a [card_declined](https://stripe.com/docs/error-codes#card-declined) error is returned, and no fields on the PaymentIntent or Charge are updated.
+    /// The PaymentIntent object remains capturable for the previously authorized amount.  Each PaymentIntent can have a maximum of 10 incremental authorization attempts, including declines. Once captured, a PaymentIntent can no longer be incremented.  Learn more about [incremental authorizations](https://stripe.com/docs/terminal/features/incremental-authorizations).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/increment_authorization", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -12464,6 +12654,20 @@ pub struct VerifyMicrodepositsPaymentIntent<'a> {
 impl<'a> VerifyMicrodepositsPaymentIntent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> VerifyMicrodepositsPaymentIntent<'a> {
+    /// Verifies microdeposits on a PaymentIntent object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/verify_microdeposits", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -12489,6 +12693,20 @@ pub struct ApplyCustomerBalancePaymentIntent<'a> {
 impl<'a> ApplyCustomerBalancePaymentIntent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ApplyCustomerBalancePaymentIntent<'a> {
+    /// Manually reconcile the remaining amount for a customer_balance PaymentIntent.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::payment_intent::PaymentIntentId,
+    ) -> stripe::Response<stripe_types::PaymentIntent> {
+        client.send_form(
+            &format!("/payment_intents/{intent}/apply_customer_balance", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -12629,7 +12847,11 @@ pub struct PaymentMethodParam<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> PaymentMethodParam<'a> {
-    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
+    pub fn new(
+        account_number: &'a str,
+        institution_number: &'a str,
+        transit_number: &'a str,
+    ) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -14243,6 +14465,12 @@ pub struct OptionalFieldsShipping<'a> {
 }
 impl<'a> OptionalFieldsShipping<'a> {
     pub fn new(address: Address<'a>, name: &'a str) -> Self {
-        Self { address, carrier: Default::default(), name, phone: Default::default(), tracking_number: Default::default() }
+        Self {
+            address,
+            carrier: Default::default(),
+            name,
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
     }
 }

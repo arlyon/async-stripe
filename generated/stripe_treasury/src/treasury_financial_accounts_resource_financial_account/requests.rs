@@ -1,46 +1,3 @@
-
-/// Creates a new FinancialAccount.
-///
-/// For now, each connected account can only have one FinancialAccount.
-pub fn create(client: &stripe::Client, params: CreateTreasuryFinancialAccountsResourceFinancialAccount) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
-    client.send_form("/treasury/financial_accounts", params, http_types::Method::Post)
-}
-/// Updates the details of a FinancialAccount.
-pub fn update(
-    client: &stripe::Client,
-    financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    params: UpdateTreasuryFinancialAccountsResourceFinancialAccount,
-) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
-    client.send_form(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), params, http_types::Method::Post)
-}
-/// Updates the Features associated with a FinancialAccount.
-pub fn update_features(
-    client: &stripe::Client,
-    financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    params: UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccount,
-) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
-    client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), params, http_types::Method::Post)
-}
-/// Returns a list of FinancialAccounts.
-pub fn list(client: &stripe::Client, params: ListTreasuryFinancialAccountsResourceFinancialAccount) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount>> {
-    client.get_query("/treasury/financial_accounts", params)
-}
-/// Retrieves the details of a FinancialAccount.
-pub fn retrieve(
-    client: &stripe::Client,
-    financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    params: RetrieveTreasuryFinancialAccountsResourceFinancialAccount,
-) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
-    client.get_query(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), params)
-}
-/// Retrieves Features information associated with the FinancialAccount.
-pub fn retrieve_features(
-    client: &stripe::Client,
-    financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    params: RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount,
-) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
-    client.get_query(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -381,6 +338,14 @@ impl serde::Serialize for CreateTreasuryFinancialAccountsResourceFinancialAccoun
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Creates a new FinancialAccount.
+    ///
+    /// For now, each connected account can only have one FinancialAccount.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        client.send_form("/treasury/financial_accounts", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -719,6 +684,12 @@ impl serde::Serialize for UpdateTreasuryFinancialAccountsResourceFinancialAccoun
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> UpdateTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Updates the details of a FinancialAccount.
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
@@ -908,6 +879,16 @@ impl UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTran
         Self { requested }
     }
 }
+impl<'a> UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Updates the Features associated with a FinancialAccount.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
+    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -930,6 +911,12 @@ impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         Self::default()
     }
 }
+impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Returns a list of FinancialAccounts.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount>> {
+        client.get_query("/treasury/financial_accounts", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -941,6 +928,12 @@ impl<'a> RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         Self::default()
     }
 }
+impl<'a> RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Retrieves the details of a FinancialAccount.
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -950,5 +943,15 @@ pub struct RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a>
 impl<'a> RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
+    /// Retrieves Features information associated with the FinancialAccount.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
+    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), self)
     }
 }

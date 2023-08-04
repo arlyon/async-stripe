@@ -24,4 +24,8 @@ runtime-blocking = ["async-stripe/runtime-blocking"]
 runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls"]
 runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
 runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
+terminal_configuration_configuration = []
+terminal_connection_token = []
+terminal_location_location = []
+terminal_reader_reader = []
 

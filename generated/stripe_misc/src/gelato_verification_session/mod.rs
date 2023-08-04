@@ -24,17 +24,14 @@ pub struct GelatoVerificationSession {
     /// ID of the most recent VerificationReport.
     ///
     /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
-    pub last_verification_report: Option<stripe_types::Expandable<stripe_misc::GelatoVerificationReport>>,
+    pub last_verification_report:
+        Option<stripe_types::Expandable<stripe_misc::GelatoVerificationReport>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: GelatoVerificationSessionObject,
     /// A set of options for the session’s verification checks.
     pub options: Option<stripe_misc::GelatoVerificationSessionOptions>,
     /// Redaction status of this VerificationSession.
@@ -56,66 +53,6 @@ pub struct GelatoVerificationSession {
     pub url: Option<String>,
     /// The user’s verified data.
     pub verified_outputs: Option<stripe_misc::GelatoVerifiedOutputs>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum GelatoVerificationSessionObject {
-    IdentityVerificationSession,
-}
-
-impl GelatoVerificationSessionObject {
-    pub fn as_str(self) -> &'static str {
-        use GelatoVerificationSessionObject::*;
-        match self {
-            IdentityVerificationSession => "identity.verification_session",
-        }
-    }
-}
-
-impl std::str::FromStr for GelatoVerificationSessionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use GelatoVerificationSessionObject::*;
-        match s {
-            "identity.verification_session" => Ok(IdentityVerificationSession),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for GelatoVerificationSessionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for GelatoVerificationSessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for GelatoVerificationSessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for GelatoVerificationSessionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for GelatoVerificationSessionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerificationSessionObject"))
-    }
 }
 /// Status of this VerificationSession.
 ///
@@ -183,7 +120,9 @@ impl<'de> serde::Deserialize<'de> for GelatoVerificationSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerificationSessionStatus"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for GelatoVerificationSessionStatus")
+        })
     }
 }
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
@@ -244,7 +183,9 @@ impl<'de> serde::Deserialize<'de> for GelatoVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerificationSessionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for GelatoVerificationSessionType")
+        })
     }
 }
 impl stripe_types::Object for GelatoVerificationSession {
@@ -254,4 +195,7 @@ impl stripe_types::Object for GelatoVerificationSession {
     }
 }
 stripe_types::def_id!(IdentityVerificationSessionId);
-pub mod requests;
+#[cfg(feature = "gelato_verification_session")]
+mod requests;
+#[cfg(feature = "gelato_verification_session")]
+pub use requests::*;

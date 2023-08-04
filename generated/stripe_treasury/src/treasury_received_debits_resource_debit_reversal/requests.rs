@@ -1,20 +1,3 @@
-
-/// Reverses a ReceivedDebit and creates a DebitReversal object.
-pub fn create(client: &stripe::Client, params: CreateTreasuryReceivedDebitsResourceDebitReversal) -> stripe::Response<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal> {
-    client.send_form("/treasury/debit_reversals", params, http_types::Method::Post)
-}
-/// Retrieves a DebitReversal object.
-pub fn retrieve(
-    client: &stripe::Client,
-    debit_reversal: &stripe_treasury::treasury_received_debits_resource_debit_reversal::TreasuryDebitReversalId,
-    params: RetrieveTreasuryReceivedDebitsResourceDebitReversal,
-) -> stripe::Response<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal> {
-    client.get_query(&format!("/treasury/debit_reversals/{debit_reversal}", debit_reversal = debit_reversal), params)
-}
-/// Returns a list of DebitReversals.
-pub fn list(client: &stripe::Client, params: ListTreasuryReceivedDebitsResourceDebitReversal) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal>> {
-    client.get_query("/treasury/debit_reversals", params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryReceivedDebitsResourceDebitReversal<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -35,6 +18,12 @@ impl<'a> CreateTreasuryReceivedDebitsResourceDebitReversal<'a> {
         Self { expand: Default::default(), metadata: Default::default(), received_debit }
     }
 }
+impl<'a> CreateTreasuryReceivedDebitsResourceDebitReversal<'a> {
+    /// Reverses a ReceivedDebit and creates a DebitReversal object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal> {
+        client.send_form("/treasury/debit_reversals", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryReceivedDebitsResourceDebitReversal<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -44,6 +33,12 @@ pub struct RetrieveTreasuryReceivedDebitsResourceDebitReversal<'a> {
 impl<'a> RetrieveTreasuryReceivedDebitsResourceDebitReversal<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryReceivedDebitsResourceDebitReversal<'a> {
+    /// Retrieves a DebitReversal object.
+    pub fn send(&self, client: &stripe::Client, debit_reversal: &stripe_treasury::treasury_received_debits_resource_debit_reversal::TreasuryDebitReversalId) -> stripe::Response<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal> {
+        client.get_query(&format!("/treasury/debit_reversals/{debit_reversal}", debit_reversal = debit_reversal), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -194,5 +189,11 @@ impl serde::Serialize for ListTreasuryReceivedDebitsResourceDebitReversalStatus 
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ListTreasuryReceivedDebitsResourceDebitReversal<'a> {
+    /// Returns a list of DebitReversals.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal>> {
+        client.get_query("/treasury/debit_reversals", self)
     }
 }

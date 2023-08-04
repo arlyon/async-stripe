@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentMethodDetailsCardWallet {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amex_express_checkout: Option<stripe_types::PaymentMethodDetailsCardWalletAmexExpressCheckout>,
+    pub amex_express_checkout:
+        Option<stripe_types::PaymentMethodDetailsCardWalletAmexExpressCheckout>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_pay: Option<stripe_types::PaymentMethodDetailsCardWalletApplePay>,
     /// (For tokenized numbers only.) The last four digits of the device account number.
@@ -99,6 +100,8 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardWalletType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardWalletType")
+        })
     }
 }

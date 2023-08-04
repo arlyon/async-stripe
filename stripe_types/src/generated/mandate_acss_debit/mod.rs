@@ -70,7 +70,8 @@ impl<'de> serde::Deserialize<'de> for MandateAcssDebitDefaultFor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateAcssDebitDefaultFor"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for MandateAcssDebitDefaultFor"))
     }
 }
 /// Payment schedule for the mandate.
@@ -134,7 +135,9 @@ impl<'de> serde::Deserialize<'de> for MandateAcssDebitPaymentSchedule {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateAcssDebitPaymentSchedule"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for MandateAcssDebitPaymentSchedule")
+        })
     }
 }
 /// Transaction type of the mandate.
@@ -195,6 +198,8 @@ impl<'de> serde::Deserialize<'de> for MandateAcssDebitTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateAcssDebitTransactionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for MandateAcssDebitTransactionType")
+        })
     }
 }

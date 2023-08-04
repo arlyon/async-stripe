@@ -8,10 +8,6 @@ pub struct Mandate {
     pub livemode: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multi_use: Option<stripe_types::MandateMultiUse>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: MandateObject,
     /// The account (if any) for which the mandate is intended.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
@@ -25,66 +21,6 @@ pub struct Mandate {
     /// The type of the mandate.
     #[serde(rename = "type")]
     pub type_: MandateType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum MandateObject {
-    Mandate,
-}
-
-impl MandateObject {
-    pub fn as_str(self) -> &'static str {
-        use MandateObject::*;
-        match self {
-            Mandate => "mandate",
-        }
-    }
-}
-
-impl std::str::FromStr for MandateObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use MandateObject::*;
-        match s {
-            "mandate" => Ok(Mandate),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for MandateObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for MandateObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for MandateObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for MandateObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for MandateObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateObject"))
-    }
 }
 /// The status of the mandate, which indicates whether it can be used to initiate a payment.
 #[derive(Copy, Clone, Eq, PartialEq)]

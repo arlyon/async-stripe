@@ -1,89 +1,44 @@
-
-/// Search for invoices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchInvoice) -> stripe::Response<SearchReturned> {
-    client.get_query("/invoices/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchInvoice<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for invoices](https://stripe.com/docs/search#query-fields-for-invoices).
+    pub query: &'a str,
 }
-/// At any time, you can preview the upcoming invoice for a customer.
-///
-/// This will show you all the charges that are pending, including subscription renewal charges, invoice item charges, etc.
-/// It will also show you any discounts that are applicable to the invoice.  Note that when you are viewing an upcoming invoice, you are simply viewing a preview – the invoice has not yet been created.
-/// As such, the upcoming invoice will not show up in invoice listing calls, and you cannot use the API to pay or edit the invoice.
-/// If you want to change the amount that your customer will be billed, you can add, remove, or update pending invoice items, or update the customer’s discount.  You can preview the effects of updating a subscription, including a preview of what proration will take place.
-/// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass a `proration_date` parameter when doing the actual subscription update.
-/// The value passed in should be the same as the `subscription_proration_date` returned on the upcoming invoice resource.
-/// The recommended way to get only the prorations being previewed is to consider only proration line items where `period[start]` is equal to the `subscription_proration_date` on the upcoming invoice resource.
-pub fn upcoming(client: &stripe::Client, params: UpcomingInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.get_query("/invoices/upcoming", params)
+impl<'a> SearchInvoice<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Draft invoices are fully editable.
-///
-/// Once an invoice is [finalized](https://stripe.com/docs/billing/invoices/workflow#finalized), monetary values, as well as `collection_method`, become uneditable.  If you would like to stop the Stripe Billing engine from automatically finalizing, reattempting payments on, sending reminders for, or [automatically reconciling](https://stripe.com/docs/billing/invoices/reconciliation) invoices, pass `auto_advance=false`.
-pub fn update(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: UpdateInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}", invoice = invoice), params, http_types::Method::Post)
-}
-/// Stripe automatically creates and then attempts to collect payment on invoices for customers on subscriptions according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
-///
-/// However, if you’d like to attempt payment on an invoice out of the normal collection schedule or for some other reason, you can do so.
-pub fn pay(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: PayInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}/pay", invoice = invoice), params, http_types::Method::Post)
-}
-/// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn upcoming_lines(client: &stripe::Client, params: UpcomingLinesInvoice) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
-    client.get_query("/invoices/upcoming/lines", params)
-}
-/// This endpoint creates a draft invoice for a given customer.
-///
-/// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
-pub fn create(client: &stripe::Client, params: CreateInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form("/invoices", params, http_types::Method::Post)
-}
-/// You can list all invoices, or list the invoices for a specific customer.
-///
-/// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-pub fn list(client: &stripe::Client, params: ListInvoice) -> stripe::Response<stripe_types::List<stripe_types::Invoice>> {
-    client.get_query("/invoices", params)
-}
-/// Retrieves the invoice with the given ID.
-pub fn retrieve(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: RetrieveInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.get_query(&format!("/invoices/{invoice}", invoice = invoice), params)
-}
-/// Permanently deletes a one-off invoice draft.
-///
-/// This cannot be undone.
-/// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
-pub fn delete(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId) -> stripe::Response<stripe_types::DeletedInvoice> {
-    client.send(&format!("/invoices/{invoice}", invoice = invoice), http_types::Method::Delete)
-}
-/// Stripe automatically finalizes drafts before sending and attempting payment on invoices.
-///
-/// However, if you’d like to finalize a draft invoice manually, you can do so using this method.
-pub fn finalize_invoice(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: FinalizeInvoiceInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}/finalize", invoice = invoice), params, http_types::Method::Post)
-}
-/// Stripe will automatically send invoices to customers according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
-///
-/// However, if you’d like to manually send an invoice to your customer out of the normal schedule, you can do so.
-/// When sending invoices that have already been paid, there will be no reference to the payment in the email.  Requests made in test-mode result in no emails being sent, despite sending an `invoice.sent` event.
-pub fn send_invoice(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: SendInvoiceInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}/send", invoice = invoice), params, http_types::Method::Post)
-}
-/// Marking an invoice as uncollectible is useful for keeping track of bad debts that can be written off for accounting purposes.
-pub fn mark_uncollectible(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: MarkUncollectibleInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}/mark_uncollectible", invoice = invoice), params, http_types::Method::Post)
-}
-/// Mark a finalized invoice as void.
-///
-/// This cannot be undone.
-/// Voiding an invoice is similar to [deletion](https://stripe.com/docs/api#delete_invoice), however it only applies to finalized invoices and maintains a papertrail where the invoice can still be found.
-pub fn void_invoice(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: VoidInvoiceInvoice) -> stripe::Response<stripe_types::Invoice> {
-    client.send_form(&format!("/invoices/{invoice}/void", invoice = invoice), params, http_types::Method::Post)
+impl<'a> SearchInvoice<'a> {
+    /// Search for invoices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/invoices/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -156,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchInvoice<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for invoices](https://stripe.com/docs/search#query-fields-for-invoices).
-    pub query: &'a str,
-}
-impl<'a> SearchInvoice<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -293,6 +223,20 @@ pub struct UpcomingInvoice<'a> {
 impl<'a> UpcomingInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpcomingInvoice<'a> {
+    /// At any time, you can preview the upcoming invoice for a customer.
+    ///
+    /// This will show you all the charges that are pending, including subscription renewal charges, invoice item charges, etc.
+    /// It will also show you any discounts that are applicable to the invoice.  Note that when you are viewing an upcoming invoice, you are simply viewing a preview – the invoice has not yet been created.
+    /// As such, the upcoming invoice will not show up in invoice listing calls, and you cannot use the API to pay or edit the invoice.
+    /// If you want to change the amount that your customer will be billed, you can add, remove, or update pending invoice items, or update the customer’s discount.  You can preview the effects of updating a subscription, including a preview of what proration will take place.
+    /// To ensure that the actual proration is calculated exactly the same as the previewed proration, you should pass a `proration_date` parameter when doing the actual subscription update.
+    /// The value passed in should be the same as the `subscription_proration_date` returned on the upcoming invoice resource.
+    /// The recommended way to get only the prorations being previewed is to consider only proration line items where `period[start]` is equal to the `subscription_proration_date` on the upcoming invoice resource.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Invoice> {
+        client.get_query("/invoices/upcoming", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -458,7 +402,8 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCard>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
+    pub customer_balance:
+        Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsParam>,
@@ -549,7 +494,11 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
     pub type_: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(count: u64, interval: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval, type_: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
+    pub fn new(
+        count: u64,
+        interval: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
+        type_: UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
+    ) -> Self {
         Self { count, interval, type_ }
     }
 }
@@ -569,7 +518,9 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterva
     }
 }
 
-impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::str::FromStr
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval::*;
@@ -586,18 +537,24 @@ impl AsRef<str> for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallm
     }
 }
 
-impl std::fmt::Display for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::fmt::Display
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::fmt::Debug
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl serde::Serialize
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -620,7 +577,9 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
     }
 }
 
-impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+impl std::str::FromStr
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
@@ -637,7 +596,9 @@ impl AsRef<str> for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallm
     }
 }
 
-impl std::fmt::Display for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+impl std::fmt::Display
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -746,7 +707,15 @@ pub struct UpdateInvoiceShippingCostShippingRateData<'a> {
 }
 impl<'a> UpdateInvoiceShippingCostShippingRateData<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self { delivery_estimate: Default::default(), display_name, fixed_amount: Default::default(), metadata: Default::default(), tax_behavior: Default::default(), tax_code: Default::default(), type_: Default::default() }
+        Self {
+            delivery_estimate: Default::default(),
+            display_name,
+            fixed_amount: Default::default(),
+            metadata: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+            type_: Default::default(),
+        }
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -802,6 +771,22 @@ impl serde::Serialize for UpdateInvoiceShippingCostShippingRateDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> UpdateInvoice<'a> {
+    /// Draft invoices are fully editable.
+    ///
+    /// Once an invoice is [finalized](https://stripe.com/docs/billing/invoices/workflow#finalized), monetary values, as well as `collection_method`, become uneditable.  If you would like to stop the Stripe Billing engine from automatically finalizing, reattempting payments on, sending reminders for, or [automatically reconciling](https://stripe.com/docs/billing/invoices/reconciliation) invoices, pass `auto_advance=false`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct PayInvoice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -845,6 +830,22 @@ pub struct PayInvoice<'a> {
 impl<'a> PayInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> PayInvoice<'a> {
+    /// Stripe automatically creates and then attempts to collect payment on invoices for customers on subscriptions according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
+    ///
+    /// However, if you’d like to attempt payment on an invoice out of the normal collection schedule or for some other reason, you can do so.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}/pay", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -972,6 +973,17 @@ pub struct UpcomingLinesInvoice<'a> {
 impl<'a> UpcomingLinesInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpcomingLinesInvoice<'a> {
+    /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
+        client.get_query("/invoices/upcoming/lines", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1232,7 +1244,8 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
+    pub customer_balance:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsParam>,
@@ -1323,7 +1336,11 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
     pub type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
-    pub fn new(count: u64, interval: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval, type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType) -> Self {
+    pub fn new(
+        count: u64,
+        interval: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
+        type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
+    ) -> Self {
         Self { count, interval, type_ }
     }
 }
@@ -1343,7 +1360,9 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterva
     }
 }
 
-impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::str::FromStr
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval::*;
@@ -1360,18 +1379,24 @@ impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallm
     }
 }
 
-impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl std::fmt::Debug
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+impl serde::Serialize
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1394,7 +1419,9 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
     }
 }
 
-impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+impl std::str::FromStr
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
@@ -1411,7 +1438,9 @@ impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallm
     }
 }
 
-impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -1582,7 +1611,15 @@ pub struct CreateInvoiceShippingCostShippingRateData<'a> {
 }
 impl<'a> CreateInvoiceShippingCostShippingRateData<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self { delivery_estimate: Default::default(), display_name, fixed_amount: Default::default(), metadata: Default::default(), tax_behavior: Default::default(), tax_code: Default::default(), type_: Default::default() }
+        Self {
+            delivery_estimate: Default::default(),
+            display_name,
+            fixed_amount: Default::default(),
+            metadata: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+            type_: Default::default(),
+        }
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -1636,6 +1673,14 @@ impl serde::Serialize for CreateInvoiceShippingCostShippingRateDataType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> CreateInvoice<'a> {
+    /// This endpoint creates a draft invoice for a given customer.
+    ///
+    /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form("/invoices", self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -1751,6 +1796,17 @@ impl serde::Serialize for ListInvoiceStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListInvoice<'a> {
+    /// You can list all invoices, or list the invoices for a specific customer.
+    ///
+    /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Invoice>> {
+        client.get_query("/invoices", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveInvoice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1760,6 +1816,40 @@ pub struct RetrieveInvoice<'a> {
 impl<'a> RetrieveInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveInvoice<'a> {
+    /// Retrieves the invoice with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.get_query(&format!("/invoices/{invoice}", invoice = invoice), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteInvoice {}
+impl DeleteInvoice {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteInvoice {
+    /// Permanently deletes a one-off invoice draft.
+    ///
+    /// This cannot be undone.
+    /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::DeletedInvoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}", invoice = invoice),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1778,6 +1868,22 @@ impl<'a> FinalizeInvoiceInvoice<'a> {
         Self::default()
     }
 }
+impl<'a> FinalizeInvoiceInvoice<'a> {
+    /// Stripe automatically finalizes drafts before sending and attempting payment on invoices.
+    ///
+    /// However, if you’d like to finalize a draft invoice manually, you can do so using this method.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}/finalize", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct SendInvoiceInvoice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1787,6 +1893,23 @@ pub struct SendInvoiceInvoice<'a> {
 impl<'a> SendInvoiceInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> SendInvoiceInvoice<'a> {
+    /// Stripe will automatically send invoices to customers according to your [subscriptions settings](https://dashboard.stripe.com/account/billing/automatic).
+    ///
+    /// However, if you’d like to manually send an invoice to your customer out of the normal schedule, you can do so.
+    /// When sending invoices that have already been paid, there will be no reference to the payment in the email.  Requests made in test-mode result in no emails being sent, despite sending an `invoice.sent` event.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}/send", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1800,6 +1923,20 @@ impl<'a> MarkUncollectibleInvoice<'a> {
         Self::default()
     }
 }
+impl<'a> MarkUncollectibleInvoice<'a> {
+    /// Marking an invoice as uncollectible is useful for keeping track of bad debts that can be written off for accounting purposes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}/mark_uncollectible", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct VoidInvoiceInvoice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1809,6 +1946,23 @@ pub struct VoidInvoiceInvoice<'a> {
 impl<'a> VoidInvoiceInvoice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> VoidInvoiceInvoice<'a> {
+    /// Mark a finalized invoice as void.
+    ///
+    /// This cannot be undone.
+    /// Voiding an invoice is similar to [deletion](https://stripe.com/docs/api#delete_invoice), however it only applies to finalized invoices and maintains a papertrail where the invoice can still be found.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::Invoice> {
+        client.send_form(
+            &format!("/invoices/{invoice}/void", invoice = invoice),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -3109,7 +3263,13 @@ pub struct OneTimePriceData<'a> {
 }
 impl<'a> OneTimePriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            product,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -3369,8 +3529,19 @@ pub struct RecurringPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> RecurringPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: RecurringAdhoc) -> Self {
-        Self { currency, product, recurring, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+    pub fn new(
+        currency: stripe_types::Currency,
+        product: &'a str,
+        recurring: RecurringAdhoc,
+    ) -> Self {
+        Self {
+            currency,
+            product,
+            recurring,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3403,7 +3574,8 @@ pub struct FixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
 }
 impl<'a> FixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {

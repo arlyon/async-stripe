@@ -57,7 +57,9 @@ impl serde::Serialize for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTran
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl<'de> serde::Deserialize<'de>
+    for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

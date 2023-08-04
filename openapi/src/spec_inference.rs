@@ -3,11 +3,16 @@ use std::fmt::Write;
 
 use anyhow::bail;
 use heck::SnakeCase;
-use openapiv3::{AdditionalProperties, IntegerFormat, ObjectType, ReferenceOr, Schema, SchemaKind, StringType, Type, VariantOrUnknownOrEmpty};
+use openapiv3::{
+    AdditionalProperties, IntegerFormat, ObjectType, ReferenceOr, Schema, SchemaKind, StringType,
+    Type, VariantOrUnknownOrEmpty,
+};
 
 use crate::rust_object::{EnumVariant, FieldlessVariant, ObjectMetadata, RustObject, StructField};
 use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
-use crate::spec::{as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string, ExpansionResources};
+use crate::spec::{
+    as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string, ExpansionResources,
+};
 use crate::types::{ComponentPath, RustIdent};
 
 #[derive(Copy, Clone, Debug)]
@@ -23,7 +28,15 @@ pub struct Inference<'a> {
 
 impl<'a> Inference<'a> {
     pub fn new(ident: &'a RustIdent) -> Self {
-        Self { can_borrow: false, field_name: None, description: None, required: false, curr_ident: ident, id_path: None, title: None }
+        Self {
+            can_borrow: false,
+            field_name: None,
+            description: None,
+            required: false,
+            curr_ident: ident,
+            id_path: None,
+            title: None,
+        }
     }
 
     pub fn can_borrow(mut self, can_borrow: bool) -> Self {
@@ -70,7 +83,15 @@ impl<'a> Inference<'a> {
     }
 
     fn build_object_type(self, data: RustObject, ident: RustIdent) -> RustType {
-        RustType::Object(data, ObjectMetadata { ident, doc: self.description.map(|d| d.to_string()), title: self.title.map(|t| t.to_string()), field_name: self.field_name.map(|t| t.to_string()) })
+        RustType::Object(
+            data,
+            ObjectMetadata {
+                ident,
+                doc: self.description.map(|d| d.to_string()),
+                title: self.title.map(|t| t.to_string()),
+                field_name: self.field_name.map(|t| t.to_string()),
+            },
+        )
     }
 
     pub fn infer_schema_type(&self, schema: &Schema) -> RustType {
@@ -87,10 +108,17 @@ impl<'a> Inference<'a> {
         let Some(desc) = self.description else {
             return false;
         };
-        if desc.starts_with("A cursor for use in pagination") || desc.starts_with("An object ID cursor") {
+        if desc.starts_with("A cursor for use in pagination")
+            || desc.starts_with("An object ID cursor")
+        {
             return true;
         }
-        if self.field_name == Some("id") && (desc.starts_with("Unique identifier") || desc.starts_with("The ID of the") || desc.starts_with("The identifier for the") || desc.starts_with("The [ID of the")) {
+        if self.field_name == Some("id")
+            && (desc.starts_with("Unique identifier")
+                || desc.starts_with("The ID of the")
+                || desc.starts_with("The identifier for the")
+                || desc.starts_with("The [ID of the"))
+        {
             return true;
         }
 
@@ -125,7 +153,9 @@ impl<'a> Inference<'a> {
                 }
             }
             SchemaKind::Type(Type::Object(typ)) => self.infer_object_typ(typ, field),
-            SchemaKind::AnyOf { any_of: fields } | SchemaKind::OneOf { one_of: fields } => self.infer_any_or_one_of(fields, field),
+            SchemaKind::AnyOf { any_of: fields } | SchemaKind::OneOf { one_of: fields } => {
+                self.infer_any_or_one_of(fields, field)
+            }
             _ => {
                 panic!("unhandled field type");
             }
@@ -146,7 +176,8 @@ impl<'a> Inference<'a> {
         // owned. This can be removed with cleverer codegen, but likely
         // best to wait until issues like https://github.com/arlyon/async-stripe/issues/246
         // resolved
-        let for_pagination = self.field_name == Some("ending_before") || self.field_name == Some("starting_after");
+        let for_pagination =
+            self.field_name == Some("ending_before") || self.field_name == Some("starting_after");
         if for_pagination {
             return RustType::string();
         }
@@ -166,33 +197,51 @@ impl<'a> Inference<'a> {
 
     fn infer_object_typ(&self, typ: &ObjectType, field: &Schema) -> RustType {
         if as_object_enum_name(field).as_deref() == Some("list") {
-            let element = as_data_array_item(typ).unwrap_or_else(|| panic!("Expected to find array item but found {:?}", field.schema_kind));
+            let element = as_data_array_item(typ).unwrap_or_else(|| {
+                panic!("Expected to find array item but found {:?}", field.schema_kind)
+            });
             let element_type = self.required(true).infer_schema_or_ref_type(element);
             return RustType::list(element_type);
         }
 
         if let Some(AdditionalProperties::Schema(additional)) = &typ.additional_properties {
-            let map_value_typ = self.required(true).can_borrow(false).infer_schema_or_ref_type(additional);
-            return if should_infer_currency_key_from_desc(self.description) { RustType::currency_map(map_value_typ, self.can_borrow) } else { RustType::str_map(map_value_typ, self.can_borrow) };
+            let map_value_typ =
+                self.required(true).can_borrow(false).infer_schema_or_ref_type(additional);
+            return if should_infer_currency_key_from_desc(self.description) {
+                RustType::currency_map(map_value_typ, self.can_borrow)
+            } else {
+                RustType::str_map(map_value_typ, self.can_borrow)
+            };
         }
         // Generate the struct type
         let mut fields = vec![];
         let next_ident = self.next_ident();
         for (prop_field_name, field_spec) in &typ.properties {
             let is_required = typ.required.contains(prop_field_name);
-            let field_desc = field_spec.as_item().and_then(|i| i.schema_data.description.as_deref());
-            fields.push(self.required(is_required).curr_ident(&next_ident).maybe_description(field_desc).build_struct_field(prop_field_name, field_spec));
+            let field_desc =
+                field_spec.as_item().and_then(|i| i.schema_data.description.as_deref());
+            fields.push(
+                self.required(is_required)
+                    .curr_ident(&next_ident)
+                    .maybe_description(field_desc)
+                    .build_struct_field(prop_field_name, field_spec),
+            );
         }
         self.build_object_type(RustObject::Struct(fields), next_ident)
     }
 
     fn infer_any_or_one_of(&self, fields: &[ReferenceOr<Schema>], field: &Schema) -> RustType {
-        let fields = fields.iter().filter(|field| !is_enum_with_just_empty_string(field)).collect::<Vec<_>>();
+        let fields = fields
+            .iter()
+            .filter(|field| !is_enum_with_just_empty_string(field))
+            .collect::<Vec<_>>();
         if fields.len() == 1 {
             self.infer_schema_or_ref_type(fields[0])
         } else if let Some(resources) = field.schema_data.extensions.get("x-expansionResources") {
             parse_expansion_resources(resources).expect("Failed to parse expansion resources")
-        } else if fields[0].as_item().and_then(|s| s.schema_data.title.as_deref()) == Some("range_query_specs") {
+        } else if fields[0].as_item().and_then(|s| s.schema_data.title.as_deref())
+            == Some("range_query_specs")
+        {
             RustType::ext(ExtType::RangeQueryTs)
         } else {
             let enum_ = self.build_enum_variants(fields).expect("Could not build enum with fields");
@@ -224,7 +273,11 @@ impl<'a> Inference<'a> {
         }
     }
 
-    pub fn build_struct_field<T: Borrow<Schema>>(&self, field_name: &str, field: &ReferenceOr<T>) -> StructField {
+    pub fn build_struct_field<T: Borrow<Schema>>(
+        &self,
+        field_name: &str,
+        field: &ReferenceOr<T>,
+    ) -> StructField {
         let rust_type = self.field_name(field_name).infer_schema_or_ref_type(field);
         let mut field_rename = field_name.to_snake_case();
         if field_rename == "type" {
@@ -240,13 +293,19 @@ impl<'a> Inference<'a> {
         struct_field
     }
 
-    fn build_enum_variants(&self, fields: Vec<&ReferenceOr<Schema>>) -> anyhow::Result<Vec<EnumVariant>> {
+    fn build_enum_variants(
+        &self,
+        fields: Vec<&ReferenceOr<Schema>>,
+    ) -> anyhow::Result<Vec<EnumVariant>> {
         let mut variants = Vec::with_capacity(fields.len());
         for option in fields {
             match option.borrow() {
                 ReferenceOr::Reference { reference } => {
                     let schema_path = ComponentPath::from_reference(reference);
-                    variants.push(EnumVariant::new(RustIdent::create(&schema_path), RustType::component_path(schema_path)));
+                    variants.push(EnumVariant::new(
+                        RustIdent::create(&schema_path),
+                        RustType::component_path(schema_path),
+                    ));
                 }
                 ReferenceOr::Item(item) => {
                     let mut ctx = self.required(true);
@@ -255,7 +314,9 @@ impl<'a> Inference<'a> {
                         ctx = ctx.field_name(name);
                     }
                     let rust_type = ctx.required(true).infer_schema_type(item);
-                    if let Some(RustObject::FieldlessEnum(fieldless_variants)) = rust_type.as_rust_object() {
+                    if let Some(RustObject::FieldlessEnum(fieldless_variants)) =
+                        rust_type.as_rust_object()
+                    {
                         for variant in fieldless_variants {
                             variants.push(EnumVariant::fieldless(variant.variant_name.clone()));
                         }
@@ -265,7 +326,10 @@ impl<'a> Inference<'a> {
                         } else if let RustType::Simple(typ) = &rust_type {
                             RustIdent::create(typ.ident())
                         } else {
-                            bail!("Could not infer a variant name for {item:?} and type {:?}", rust_type);
+                            bail!(
+                                "Could not infer a variant name for {item:?} and type {:?}",
+                                rust_type
+                            );
                         };
                         variants.push(EnumVariant::new(variant_ident, rust_type));
                     }
@@ -291,7 +355,10 @@ impl<'a> Inference<'a> {
             RustType::int(IntType::U8)
         } else if name_words.contains(&"days") {
             RustType::int(IntType::U32)
-        } else if name_words.contains(&"count") || name_words.contains(&"size") || name_words.contains(&"quantity") {
+        } else if name_words.contains(&"count")
+            || name_words.contains(&"size")
+            || name_words.contains(&"quantity")
+        {
             RustType::int(IntType::U64)
         } else {
             RustType::int(IntType::I64)

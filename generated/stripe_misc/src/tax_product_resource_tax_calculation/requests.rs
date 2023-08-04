@@ -1,16 +1,3 @@
-
-/// Calculates tax based on input and returns a Tax `Calculation` object.
-pub fn create(client: &stripe::Client, params: CreateTaxProductResourceTaxCalculation) -> stripe::Response<stripe_misc::TaxProductResourceTaxCalculation> {
-    client.send_form("/tax/calculations", params, http_types::Method::Post)
-}
-/// Retrieves the line items of a persisted tax calculation as a collection.
-pub fn list_line_items(
-    client: &stripe::Client,
-    calculation: &stripe_misc::tax_product_resource_tax_calculation::TaxCalculationId,
-    params: ListLineItemsTaxProductResourceTaxCalculation,
-) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxCalculationLineItem>> {
-    client.get_query(&format!("/tax/calculations/{calculation}/line_items", calculation = calculation), params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxProductResourceTaxCalculation<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -41,8 +28,19 @@ pub struct CreateTaxProductResourceTaxCalculation<'a> {
     pub tax_date: Option<stripe_types::Timestamp>,
 }
 impl<'a> CreateTaxProductResourceTaxCalculation<'a> {
-    pub fn new(currency: stripe_types::Currency, line_items: &'a [CreateTaxProductResourceTaxCalculationLineItems<'a>]) -> Self {
-        Self { currency, customer: Default::default(), customer_details: Default::default(), expand: Default::default(), line_items, shipping_cost: Default::default(), tax_date: Default::default() }
+    pub fn new(
+        currency: stripe_types::Currency,
+        line_items: &'a [CreateTaxProductResourceTaxCalculationLineItems<'a>],
+    ) -> Self {
+        Self {
+            currency,
+            customer: Default::default(),
+            customer_details: Default::default(),
+            expand: Default::default(),
+            line_items,
+            shipping_cost: Default::default(),
+            tax_date: Default::default(),
+        }
     }
 }
 /// Details about the customer, including address and tax IDs.
@@ -65,7 +63,8 @@ pub struct CreateTaxProductResourceTaxCalculationCustomerDetails<'a> {
     /// Use this if you've manually checked your customer's tax exemptions.
     /// Prefer providing the customer's `tax_ids` where possible, which automatically determines whether `reverse_charge` applies.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxability_override: Option<CreateTaxProductResourceTaxCalculationCustomerDetailsTaxabilityOverride>,
+    pub taxability_override:
+        Option<CreateTaxProductResourceTaxCalculationCustomerDetailsTaxabilityOverride>,
 }
 impl<'a> CreateTaxProductResourceTaxCalculationCustomerDetails<'a> {
     pub fn new() -> Self {
@@ -97,7 +96,14 @@ pub struct CreateTaxProductResourceTaxCalculationCustomerDetailsAddress<'a> {
 }
 impl<'a> CreateTaxProductResourceTaxCalculationCustomerDetailsAddress<'a> {
     pub fn new(country: &'a str) -> Self {
-        Self { city: Default::default(), country, line1: Default::default(), line2: Default::default(), postal_code: Default::default(), state: Default::default() }
+        Self {
+            city: Default::default(),
+            country,
+            line1: Default::default(),
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
     }
 }
 /// The type of customer address provided.
@@ -164,7 +170,10 @@ pub struct CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIds<'a> {
     pub value: &'a str,
 }
 impl<'a> CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIds<'a> {
-    pub fn new(type_: CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType, value: &'a str) -> Self {
+    pub fn new(
+        type_: CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType,
+        value: &'a str,
+    ) -> Self {
         Self { type_, value }
     }
 }
@@ -510,7 +519,14 @@ pub struct CreateTaxProductResourceTaxCalculationLineItems<'a> {
 }
 impl<'a> CreateTaxProductResourceTaxCalculationLineItems<'a> {
     pub fn new(amount: i64) -> Self {
-        Self { amount, product: Default::default(), quantity: Default::default(), reference: Default::default(), tax_behavior: Default::default(), tax_code: Default::default() }
+        Self {
+            amount,
+            product: Default::default(),
+            quantity: Default::default(),
+            reference: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+        }
     }
 }
 /// Shipping cost details to be used for the calculation.
@@ -544,6 +560,15 @@ impl<'a> CreateTaxProductResourceTaxCalculationShippingCost<'a> {
         Self::default()
     }
 }
+impl<'a> CreateTaxProductResourceTaxCalculation<'a> {
+    /// Calculates tax based on input and returns a Tax `Calculation` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxCalculation> {
+        client.send_form("/tax/calculations", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsTaxProductResourceTaxCalculation<'a> {
     /// A cursor for use in pagination.
@@ -570,6 +595,20 @@ pub struct ListLineItemsTaxProductResourceTaxCalculation<'a> {
 impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
+    /// Retrieves the line items of a persisted tax calculation as a collection.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        calculation: &stripe_misc::tax_product_resource_tax_calculation::TaxCalculationId,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxCalculationLineItem>>
+    {
+        client.get_query(
+            &format!("/tax/calculations/{calculation}/line_items", calculation = calculation),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

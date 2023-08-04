@@ -1,32 +1,44 @@
-
-/// Search for prices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchPrice) -> stripe::Response<SearchReturned> {
-    client.get_query("/prices/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchPrice<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for prices](https://stripe.com/docs/search#query-fields-for-prices).
+    pub query: &'a str,
 }
-/// Returns a list of your prices.
-pub fn list(client: &stripe::Client, params: ListPrice) -> stripe::Response<stripe_types::List<stripe_types::Price>> {
-    client.get_query("/prices", params)
+impl<'a> SearchPrice<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Creates a new price for an existing product.
-///
-/// The price can be recurring or one-time.
-pub fn create(client: &stripe::Client, params: CreatePrice) -> stripe::Response<stripe_types::Price> {
-    client.send_form("/prices", params, http_types::Method::Post)
-}
-/// Retrieves the price with the given ID.
-pub fn retrieve(client: &stripe::Client, price: &stripe_types::price::PriceId, params: RetrievePrice) -> stripe::Response<stripe_types::Price> {
-    client.get_query(&format!("/prices/{price}", price = price), params)
-}
-/// Updates the specified price by setting the values of the parameters passed.
-///
-/// Any parameters not provided are left unchanged.
-pub fn update(client: &stripe::Client, price: &stripe_types::price::PriceId, params: UpdatePrice) -> stripe::Response<stripe_types::Price> {
-    client.send_form(&format!("/prices/{price}", price = price), params, http_types::Method::Post)
+impl<'a> SearchPrice<'a> {
+    /// Search for prices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/prices/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -99,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchPrice<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for prices](https://stripe.com/docs/search#query-fields-for-prices).
-    pub query: &'a str,
-}
-impl<'a> SearchPrice<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -253,6 +240,15 @@ impl serde::Serialize for ListPriceType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListPrice<'a> {
+    /// Returns a list of your prices.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Price>> {
+        client.get_query("/prices", self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePrice<'a> {
     /// Whether the price can be used for new purchases.
@@ -275,7 +271,8 @@ pub struct CreatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
@@ -467,7 +464,15 @@ pub struct CreatePriceProductData<'a> {
 }
 impl<'a> CreatePriceProductData<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self { active: Default::default(), id: Default::default(), metadata: Default::default(), name, statement_descriptor: Default::default(), tax_code: Default::default(), unit_label: Default::default() }
+        Self {
+            active: Default::default(),
+            id: Default::default(),
+            metadata: Default::default(),
+            name,
+            statement_descriptor: Default::default(),
+            tax_code: Default::default(),
+            unit_label: Default::default(),
+        }
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
@@ -503,7 +508,13 @@ pub struct CreatePriceRecurring {
 }
 impl CreatePriceRecurring {
     pub fn new(interval: Interval) -> Self {
-        Self { aggregate_usage: Default::default(), interval, interval_count: Default::default(), trial_period_days: Default::default(), usage_type: Default::default() }
+        Self {
+            aggregate_usage: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            trial_period_days: Default::default(),
+            usage_type: Default::default(),
+        }
     }
 }
 /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
@@ -599,7 +610,13 @@ pub struct CreatePriceTiers<'a> {
 }
 impl<'a> CreatePriceTiers<'a> {
     pub fn new(up_to: UpTo) -> Self {
-        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
+        Self {
+            flat_amount: Default::default(),
+            flat_amount_decimal: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+            up_to,
+        }
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
@@ -727,6 +744,14 @@ impl serde::Serialize for CreatePriceTransformQuantityRound {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreatePrice<'a> {
+    /// Creates a new price for an existing product.
+    ///
+    /// The price can be recurring or one-time.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Price> {
+        client.send_form("/prices", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePrice<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -736,6 +761,16 @@ pub struct RetrievePrice<'a> {
 impl<'a> RetrievePrice<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePrice<'a> {
+    /// Retrieves the price with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        price: &stripe_types::price::PriceId,
+    ) -> stripe::Response<stripe_types::Price> {
+        client.get_query(&format!("/prices/{price}", price = price), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -749,7 +784,8 @@ pub struct UpdatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -797,6 +833,18 @@ pub struct UpdatePriceRecurring {
 impl UpdatePriceRecurring {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdatePrice<'a> {
+    /// Updates the specified price by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        price: &stripe_types::price::PriceId,
+    ) -> stripe::Response<stripe_types::Price> {
+        client.send_form(&format!("/prices/{price}", price = price), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -929,7 +977,12 @@ pub struct CustomUnitAmount {
 }
 impl CustomUnitAmount {
     pub fn new(enabled: bool) -> Self {
-        Self { enabled, maximum: Default::default(), minimum: Default::default(), preset: Default::default() }
+        Self {
+            enabled,
+            maximum: Default::default(),
+            minimum: Default::default(),
+            preset: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -1020,7 +1073,13 @@ pub struct Tier {
 }
 impl Tier {
     pub fn new(up_to: UpTo) -> Self {
-        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
+        Self {
+            flat_amount: Default::default(),
+            flat_amount_decimal: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+            up_to,
+        }
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]

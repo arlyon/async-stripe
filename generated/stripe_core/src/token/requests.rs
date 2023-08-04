@@ -1,15 +1,3 @@
-
-/// Retrieves the token with the given ID.
-pub fn retrieve(client: &stripe::Client, token: &stripe_core::token::TokenId, params: RetrieveToken) -> stripe::Response<stripe_core::Token> {
-    client.get_query(&format!("/tokens/{token}", token = token), params)
-}
-/// Creates a single-use token that represents a bank account’s details.
-/// This token can be used with any API method in place of a bank account dictionary.
-///
-/// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
-pub fn create(client: &stripe::Client, params: CreateToken) -> stripe::Response<stripe_core::Token> {
-    client.send_form("/tokens", params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveToken<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -19,6 +7,16 @@ pub struct RetrieveToken<'a> {
 impl<'a> RetrieveToken<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveToken<'a> {
+    /// Retrieves the token with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        token: &stripe_core::token::TokenId,
+    ) -> stripe::Response<stripe_core::Token> {
+        client.get_query(&format!("/tokens/{token}", token = token), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -678,7 +676,15 @@ pub struct CreateTokenBankAccount<'a> {
 }
 impl<'a> CreateTokenBankAccount<'a> {
     pub fn new(account_number: &'a str, country: &'a str) -> Self {
-        Self { account_holder_name: Default::default(), account_holder_type: Default::default(), account_number, account_type: Default::default(), country, currency: Default::default(), routing_number: Default::default() }
+        Self {
+            account_holder_name: Default::default(),
+            account_holder_type: Default::default(),
+            account_number,
+            account_type: Default::default(),
+            country,
+            currency: Default::default(),
+            routing_number: Default::default(),
+        }
     }
 }
 /// The type of entity that holds the account.
@@ -1079,6 +1085,15 @@ pub struct CreateTokenPii<'a> {
 impl<'a> CreateTokenPii<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CreateToken<'a> {
+    /// Creates a single-use token that represents a bank account’s details.
+    /// This token can be used with any API method in place of a bank account dictionary.
+    ///
+    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_core::Token> {
+        client.send_form("/tokens", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

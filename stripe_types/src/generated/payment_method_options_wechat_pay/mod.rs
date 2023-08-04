@@ -75,7 +75,9 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsWechatPayClient"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodOptionsWechatPayClient")
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -137,6 +139,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPaySetupFutureUs
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsWechatPaySetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsWechatPaySetupFutureUsage",
+            )
+        })
     }
 }

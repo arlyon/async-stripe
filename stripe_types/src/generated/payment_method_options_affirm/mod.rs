@@ -69,7 +69,9 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAffirmCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsAffirmCaptureMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodOptionsAffirmCaptureMethod")
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -131,6 +133,8 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAffirmSetupFutureUsage
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsAffirmSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentMethodOptionsAffirmSetupFutureUsage")
+        })
     }
 }

@@ -1,18 +1,33 @@
 use std::fmt::Write as _;
 
+use indexmap::IndexSet;
 use indoc::writedoc;
 
 use crate::printable::{Lifetime, PrintableEnumVariant, PrintableWithLifetime};
 use crate::rust_object::FieldlessVariant;
 use crate::templates::derives::{write_derives_line, Derives};
+use crate::templates::utils::write_serde_rename;
 use crate::types::RustIdent;
 
-pub fn write_enum_variants(out: &mut String, enum_name: &RustIdent, variants: &[PrintableEnumVariant], additional_derives: Derives, lifetime: Option<Lifetime>) {
+pub fn write_enum_variants(
+    out: &mut String,
+    enum_name: &RustIdent,
+    variants: &[PrintableEnumVariant],
+    additional_derives: Derives,
+    lifetime: Option<Lifetime>,
+    object_names: Vec<Option<&str>>,
+) {
     let lifetime_str = lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
+    let deser_names = as_object_names_for_deserialization(object_names);
+
     // Build the body of the enum definition
     let mut enum_body = String::with_capacity(64);
-    for PrintableEnumVariant { variant, rust_type } in variants {
+    for (ind, PrintableEnumVariant { variant, rust_type }) in variants.iter().enumerate() {
         if let Some(typ) = rust_type {
+            if let Some(names) = &deser_names {
+                let rename_to = names.get_index(ind).unwrap();
+                write_serde_rename(&mut enum_body, rename_to);
+            }
             let typ = PrintableWithLifetime::new(typ, lifetime);
             let _ = writeln!(enum_body, "{variant}({typ}),");
         } else {
@@ -20,20 +35,37 @@ pub fn write_enum_variants(out: &mut String, enum_name: &RustIdent, variants: &[
         }
     }
     let derives = write_derives_line(additional_derives);
+    let serde_tag_line = if deser_names.is_some() { r#"tag = "object""# } else { "untagged" };
     let _ = writedoc!(
         out,
         r#"
             {derives}
-            #[serde(untagged)]
+            #[serde({serde_tag_line})]
             pub enum {enum_name}{lifetime_str} {{
             {enum_body}
             }}
         "#
     );
 }
+
+fn as_object_names_for_deserialization(names: Vec<Option<&str>>) -> Option<IndexSet<&str>> {
+    let orig_names_len = names.len();
+    let flat_set = names.into_iter().flatten().collect::<IndexSet<_>>();
+    if flat_set.len() == orig_names_len {
+        Some(flat_set)
+    } else {
+        None
+    }
+}
+
 /// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
 /// and `impl Default`.
-pub fn write_fieldless_enum_variants(out: &mut String, variants: &[FieldlessVariant], enum_name: &RustIdent, additional_derives: Derives) {
+pub fn write_fieldless_enum_variants(
+    out: &mut String,
+    variants: &[FieldlessVariant],
+    enum_name: &RustIdent,
+    additional_derives: Derives,
+) {
     // Build the body of the enum definition
     let mut enum_def_body = String::with_capacity(128);
     for FieldlessVariant { variant_name, .. } in variants {
@@ -60,7 +92,8 @@ pub fn write_fieldless_enum_variants(out: &mut String, variants: &[FieldlessVari
     // the (potentially many) strings in `as_str` and `from_str` through the default derive.
     // These derived implementations often show up running `llvm-lines`, so easy
     // binary size + compile time win by doing this.
-    let derives = additional_derives.copy(true).eq(true).serialize(false).deserialize(false).debug(false);
+    let derives =
+        additional_derives.copy(true).eq(true).serialize(false).deserialize(false).debug(false);
 
     let derives = write_derives_line(derives);
     let _ = writedoc!(

@@ -1,33 +1,3 @@
-
-/// Refunds an application fee that has previously been collected but not yet refunded.
-/// Funds will be refunded to the Stripe account from which the fee was originally collected.
-///
-/// You can optionally refund only part of an application fee.
-/// You can do so multiple times, until the entire fee has been refunded.
-///
-/// Once entirely refunded, an application fee can’t be refunded again.
-/// This method will raise an error when called on an already-refunded application fee,
-/// or when trying to refund more money than is left on an application fee.
-pub fn create(client: &stripe::Client, id: &stripe_types::fee_refund::FeeRefundId, params: CreateFeeRefund) -> stripe::Response<stripe_types::FeeRefund> {
-    client.send_form(&format!("/application_fees/{id}/refunds", id = id), params, http_types::Method::Post)
-}
-/// You can see a list of the refunds belonging to a specific application fee.
-///
-/// Note that the 10 most recent refunds are always available by default on the application fee object.
-/// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional refunds.
-pub fn list(client: &stripe::Client, id: &stripe_types::fee_refund::FeeRefundId, params: ListFeeRefund) -> stripe::Response<stripe_types::List<stripe_types::FeeRefund>> {
-    client.get_query(&format!("/application_fees/{id}/refunds", id = id), params)
-}
-/// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
-pub fn retrieve(client: &stripe::Client, fee: &str, id: &str, params: RetrieveFeeRefund) -> stripe::Response<stripe_types::FeeRefund> {
-    client.get_query(&format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id), params)
-}
-/// Updates the specified application fee refund by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.  This request only accepts metadata as an argument.
-pub fn update(client: &stripe::Client, fee: &str, id: &str, params: UpdateFeeRefund) -> stripe::Response<stripe_types::FeeRefund> {
-    client.send_form(&format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateFeeRefund<'a> {
     /// A positive integer, in _cents (or local equivalent)_, representing how much of this fee to refund.
@@ -49,6 +19,28 @@ pub struct CreateFeeRefund<'a> {
 impl<'a> CreateFeeRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CreateFeeRefund<'a> {
+    /// Refunds an application fee that has previously been collected but not yet refunded.
+    /// Funds will be refunded to the Stripe account from which the fee was originally collected.
+    ///
+    /// You can optionally refund only part of an application fee.
+    /// You can do so multiple times, until the entire fee has been refunded.
+    ///
+    /// Once entirely refunded, an application fee can’t be refunded again.
+    /// This method will raise an error when called on an already-refunded application fee,
+    /// or when trying to refund more money than is left on an application fee.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::fee_refund::FeeRefundId,
+    ) -> stripe::Response<stripe_types::FeeRefund> {
+        client.send_form(
+            &format!("/application_fees/{id}/refunds", id = id),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -79,6 +71,19 @@ impl<'a> ListFeeRefund<'a> {
         Self::default()
     }
 }
+impl<'a> ListFeeRefund<'a> {
+    /// You can see a list of the refunds belonging to a specific application fee.
+    ///
+    /// Note that the 10 most recent refunds are always available by default on the application fee object.
+    /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional refunds.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::fee_refund::FeeRefundId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::FeeRefund>> {
+        client.get_query(&format!("/application_fees/{id}/refunds", id = id), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFeeRefund<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -88,6 +93,17 @@ pub struct RetrieveFeeRefund<'a> {
 impl<'a> RetrieveFeeRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveFeeRefund<'a> {
+    /// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        fee: &str,
+        id: &str,
+    ) -> stripe::Response<stripe_types::FeeRefund> {
+        client.get_query(&format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -106,5 +122,22 @@ pub struct UpdateFeeRefund<'a> {
 impl<'a> UpdateFeeRefund<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateFeeRefund<'a> {
+    /// Updates the specified application fee refund by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request only accepts metadata as an argument.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        fee: &str,
+        id: &str,
+    ) -> stripe::Response<stripe_types::FeeRefund> {
+        client.send_form(
+            &format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

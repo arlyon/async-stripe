@@ -11,10 +11,6 @@ pub struct TaxProductResourceTaxCalculationLineItem {
     pub id: stripe_misc::tax_product_resource_tax_calculation_line_item::TaxCalculationLineItemId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TaxProductResourceTaxCalculationLineItemObject,
     /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
     pub product: Option<String>,
     /// The number of units of the item being purchased.
@@ -31,66 +27,6 @@ pub struct TaxProductResourceTaxCalculationLineItem {
     pub tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>,
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) ID used for this resource.
     pub tax_code: String,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TaxProductResourceTaxCalculationLineItemObject {
-    TaxCalculationLineItem,
-}
-
-impl TaxProductResourceTaxCalculationLineItemObject {
-    pub fn as_str(self) -> &'static str {
-        use TaxProductResourceTaxCalculationLineItemObject::*;
-        match self {
-            TaxCalculationLineItem => "tax.calculation_line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxCalculationLineItemObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxCalculationLineItemObject::*;
-        match s {
-            "tax.calculation_line_item" => Ok(TaxCalculationLineItem),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TaxProductResourceTaxCalculationLineItemObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxProductResourceTaxCalculationLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TaxProductResourceTaxCalculationLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TaxProductResourceTaxCalculationLineItemObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxCalculationLineItemObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxCalculationLineItemObject"))
-    }
 }
 /// Specifies whether the `amount` includes taxes.
 ///
@@ -152,7 +88,11 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxCalculationLineItemTa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxCalculationLineItemTaxBehavior"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceTaxCalculationLineItemTaxBehavior",
+            )
+        })
     }
 }
 impl stripe_types::Object for TaxProductResourceTaxCalculationLineItem {

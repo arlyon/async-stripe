@@ -81,7 +81,11 @@ fn main() -> Result<()> {
     };
     info!("Finished parsing spec");
 
-    let url_finder = if !args.stub_url_finder { UrlFinder::new().context("couldn't initialize url finder")? } else { UrlFinder::stub() };
+    let url_finder = if !args.stub_url_finder {
+        UrlFinder::new().context("couldn't initialize url finder")?
+    } else {
+        UrlFinder::stub()
+    };
     info!("Initialized URL finder");
 
     let codegen = CodeGen::new(spec, url_finder)?;
@@ -102,7 +106,14 @@ fn main() -> Result<()> {
     let mut fmt_cmd = std::process::Command::new("cargo");
     fmt_cmd.arg("+nightly").arg("fmt").arg("--");
     for krate in Crate::all() {
-        fmt_cmd.arg(format!("out/{}", if *krate == Crate::Types { format!("{}/mod.rs", krate.generated_out_path()) } else { format!("{}/src/mod.rs", krate.generated_out_path()) }));
+        fmt_cmd.arg(format!(
+            "out/{}",
+            if *krate == Crate::Types {
+                format!("{}/mod.rs", krate.generated_out_path())
+            } else {
+                format!("{}/src/mod.rs", krate.generated_out_path())
+            }
+        ));
     }
 
     let out = fmt_cmd.output()?;
@@ -119,7 +130,12 @@ fn main() -> Result<()> {
 // --delete-during so that generated files don't stick around when not
 // generated anymore, see https://github.com/arlyon/async-stripe/issues/229
 fn run_rsync(src: &str, dest: &str) -> Result<()> {
-    let out = std::process::Command::new("rsync").arg("-a").arg("--delete-during").arg(src).arg(dest).output()?;
+    let out = std::process::Command::new("rsync")
+        .arg("-a")
+        .arg("--delete-during")
+        .arg(src)
+        .arg(dest)
+        .output()?;
 
     if !out.status.success() {
         bail!("rsync failed with outputs {:?}", out);

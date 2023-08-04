@@ -1,20 +1,3 @@
-
-/// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, transaction: &str, params: RetrieveCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
-    client.get_query(&format!("/customers/{customer}/balance_transactions/{transaction}", customer = customer, transaction = transaction), params)
-}
-/// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListCustomerBalanceTransaction) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
-    client.get_query(&format!("/customers/{customer}/balance_transactions", customer = customer), params)
-}
-/// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
-pub fn create(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreateCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
-    client.send_form(&format!("/customers/{customer}/balance_transactions", customer = customer), params, http_types::Method::Post)
-}
-/// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
-pub fn update(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, transaction: &str, params: UpdateCustomerBalanceTransaction) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
-    client.send_form(&format!("/customers/{customer}/balance_transactions/{transaction}", customer = customer, transaction = transaction), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCustomerBalanceTransaction<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -24,6 +7,24 @@ pub struct RetrieveCustomerBalanceTransaction<'a> {
 impl<'a> RetrieveCustomerBalanceTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveCustomerBalanceTransaction<'a> {
+    /// Retrieves a specific customer balance transaction that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        transaction: &str,
+    ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+        client.get_query(
+            &format!(
+                "/customers/{customer}/balance_transactions/{transaction}",
+                customer = customer,
+                transaction = transaction
+            ),
+            self,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -54,6 +55,19 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         Self::default()
     }
 }
+impl<'a> ListCustomerBalanceTransaction<'a> {
+    /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
+        client.get_query(
+            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            self,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerBalanceTransaction<'a> {
     /// The integer amount in **cents (or local equivalent)** to apply to the customer's credit balance.
@@ -82,7 +96,27 @@ pub struct CreateCustomerBalanceTransaction<'a> {
 }
 impl<'a> CreateCustomerBalanceTransaction<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self { amount, currency, description: Default::default(), expand: Default::default(), metadata: Default::default() }
+        Self {
+            amount,
+            currency,
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
+    }
+}
+impl<'a> CreateCustomerBalanceTransaction<'a> {
+    /// Creates an immutable transaction that updates the customer’s credit [balance](https://stripe.com/docs/billing/customer/balance).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+        client.send_form(
+            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -106,5 +140,24 @@ pub struct UpdateCustomerBalanceTransaction<'a> {
 impl<'a> UpdateCustomerBalanceTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateCustomerBalanceTransaction<'a> {
+    /// Most credit balance transaction fields are immutable, but you may update its `description` and `metadata`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        transaction: &str,
+    ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
+        client.send_form(
+            &format!(
+                "/customers/{customer}/balance_transactions/{transaction}",
+                customer = customer,
+                transaction = transaction
+            ),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

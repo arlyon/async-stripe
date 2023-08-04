@@ -59,10 +59,6 @@ pub struct Account {
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: AccountObject,
     /// Whether Stripe can send payouts to this account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts_enabled: Option<bool>,
@@ -144,67 +140,8 @@ impl<'de> serde::Deserialize<'de> for AccountBusinessType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AccountObject {
-    Account,
-}
-
-impl AccountObject {
-    pub fn as_str(self) -> &'static str {
-        use AccountObject::*;
-        match self {
-            Account => "account",
-        }
-    }
-}
-
-impl std::str::FromStr for AccountObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountObject::*;
-        match s {
-            "account" => Ok(Account),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AccountObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AccountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for AccountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountBusinessType"))
     }
 }
 /// The Stripe account type.

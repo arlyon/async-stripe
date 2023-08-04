@@ -23,73 +23,9 @@ pub struct SecretServiceResourceSecret {
     pub livemode: bool,
     /// A name for the secret that's unique within the scope.
     pub name: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: SecretServiceResourceSecretObject,
     /// The plaintext secret value to be stored.
     pub payload: Option<String>,
     pub scope: stripe_connect::SecretServiceResourceScope,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum SecretServiceResourceSecretObject {
-    AppsSecret,
-}
-
-impl SecretServiceResourceSecretObject {
-    pub fn as_str(self) -> &'static str {
-        use SecretServiceResourceSecretObject::*;
-        match self {
-            AppsSecret => "apps.secret",
-        }
-    }
-}
-
-impl std::str::FromStr for SecretServiceResourceSecretObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SecretServiceResourceSecretObject::*;
-        match s {
-            "apps.secret" => Ok(AppsSecret),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for SecretServiceResourceSecretObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SecretServiceResourceSecretObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for SecretServiceResourceSecretObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for SecretServiceResourceSecretObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for SecretServiceResourceSecretObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SecretServiceResourceSecretObject"))
-    }
 }
 impl stripe_types::Object for SecretServiceResourceSecret {
     type Id = stripe_connect::secret_service_resource_secret::AppsSecretId;
@@ -98,4 +34,7 @@ impl stripe_types::Object for SecretServiceResourceSecret {
     }
 }
 stripe_types::def_id!(AppsSecretId);
-pub mod requests;
+#[cfg(feature = "secret_service_resource_secret")]
+mod requests;
+#[cfg(feature = "secret_service_resource_secret")]
+pub use requests::*;

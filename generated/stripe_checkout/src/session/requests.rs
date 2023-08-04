@@ -1,28 +1,3 @@
-
-/// Returns a list of Checkout Sessions.
-pub fn list(client: &stripe::Client, params: ListSession) -> stripe::Response<stripe_types::List<stripe_checkout::Session>> {
-    client.get_query("/checkout/sessions", params)
-}
-/// Retrieves a Session object.
-pub fn retrieve(client: &stripe::Client, session: &stripe_checkout::session::CheckoutSessionId, params: RetrieveSession) -> stripe::Response<stripe_checkout::Session> {
-    client.get_query(&format!("/checkout/sessions/{session}", session = session), params)
-}
-/// Creates a Session object.
-pub fn create(client: &stripe::Client, params: CreateSession) -> stripe::Response<stripe_checkout::Session> {
-    client.send_form("/checkout/sessions", params, http_types::Method::Post)
-}
-/// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list_line_items(client: &stripe::Client, session: &stripe_checkout::session::CheckoutSessionId, params: ListLineItemsSession) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-    client.get_query(&format!("/checkout/sessions/{session}/line_items", session = session), params)
-}
-/// A Session can be expired when it is in one of these statuses: `open`
-///
-/// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
-pub fn expire(client: &stripe::Client, session: &stripe_checkout::session::CheckoutSessionId, params: ExpireSession) -> stripe::Response<stripe_checkout::Session> {
-    client.send_form(&format!("/checkout/sessions/{session}/expire", session = session), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListSession<'a> {
     /// Only return the Checkout Sessions for the Customer specified.
@@ -77,6 +52,15 @@ impl<'a> ListSessionCustomerDetails<'a> {
         Self { email }
     }
 }
+impl<'a> ListSession<'a> {
+    /// Returns a list of Checkout Sessions.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_checkout::Session>> {
+        client.get_query("/checkout/sessions", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -86,6 +70,16 @@ pub struct RetrieveSession<'a> {
 impl<'a> RetrieveSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveSession<'a> {
+    /// Retrieves a Session object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_checkout::session::CheckoutSessionId,
+    ) -> stripe::Response<stripe_checkout::Session> {
+        client.get_query(&format!("/checkout/sessions/{session}", session = session), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -559,8 +553,20 @@ pub struct CreateSessionCustomFields<'a> {
     pub type_: CreateSessionCustomFieldsType,
 }
 impl<'a> CreateSessionCustomFields<'a> {
-    pub fn new(key: &'a str, label: CreateSessionCustomFieldsLabel<'a>, type_: CreateSessionCustomFieldsType) -> Self {
-        Self { dropdown: Default::default(), key, label, numeric: Default::default(), optional: Default::default(), text: Default::default(), type_ }
+    pub fn new(
+        key: &'a str,
+        label: CreateSessionCustomFieldsLabel<'a>,
+        type_: CreateSessionCustomFieldsType,
+    ) -> Self {
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// Configuration for `type=dropdown` fields.
@@ -1114,7 +1120,8 @@ pub struct CreateSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
     /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display: Option<CreateSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    pub amount_tax_display:
+        Option<CreateSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 impl CreateSessionInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
@@ -1283,7 +1290,15 @@ pub struct CreateSessionLineItemsPriceData<'a> {
 }
 impl<'a> CreateSessionLineItemsPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self { currency, product: Default::default(), product_data: Default::default(), recurring: Default::default(), tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            product: Default::default(),
+            product_data: Default::default(),
+            recurring: Default::default(),
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 /// Data used to generate a new product object inline.
@@ -1314,7 +1329,13 @@ pub struct CreateSessionLineItemsPriceDataProductData<'a> {
 }
 impl<'a> CreateSessionLineItemsPriceDataProductData<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self { description: Default::default(), images: Default::default(), metadata: Default::default(), name, tax_code: Default::default() }
+        Self {
+            description: Default::default(),
+            images: Default::default(),
+            metadata: Default::default(),
+            name,
+            tax_code: Default::default(),
+        }
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
@@ -1790,7 +1811,13 @@ pub struct CreateSessionPaymentIntentDataShipping<'a> {
 }
 impl<'a> CreateSessionPaymentIntentDataShipping<'a> {
     pub fn new(address: CreateSessionPaymentIntentDataShippingAddress<'a>, name: &'a str) -> Self {
-        Self { address, carrier: Default::default(), name, phone: Default::default(), tracking_number: Default::default() }
+        Self {
+            address,
+            carrier: Default::default(),
+            name,
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
     }
 }
 /// Shipping address.
@@ -1816,7 +1843,14 @@ pub struct CreateSessionPaymentIntentDataShippingAddress<'a> {
 }
 impl<'a> CreateSessionPaymentIntentDataShippingAddress<'a> {
     pub fn new(line1: &'a str) -> Self {
-        Self { city: Default::default(), country: Default::default(), line1, line2: Default::default(), postal_code: Default::default(), state: Default::default() }
+        Self {
+            city: Default::default(),
+            country: Default::default(),
+            line1,
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
     }
 }
 /// The parameters used to automatically create a Transfer when the payment succeeds.
@@ -2084,7 +2118,8 @@ pub struct CreateSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     ///
     /// Only usable in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for: Option<&'a [CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
+    pub default_for:
+        Option<&'a [CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
     /// Description of the mandate interval.
     ///
     /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
@@ -2092,10 +2127,12 @@ pub struct CreateSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub interval_description: Option<&'a str>,
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<CreateSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 impl<'a> CreateSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
@@ -2467,7 +2504,8 @@ pub struct CreateSessionPaymentMethodOptionsAfterpayClearpay {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreateSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreateSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl CreateSessionPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -3041,7 +3079,8 @@ pub struct CreateSessionPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<CreateSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage:
+        Option<CreateSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> CreateSessionPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -3053,12 +3092,15 @@ impl<'a> CreateSessionPaymentMethodOptionsCustomerBalance<'a> {
 pub struct CreateSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
     /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
+    pub eu_bank_transfer:
+        Option<CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
     /// List of address types that should be returned in the financial_addresses response.
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<&'a [CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes]>,
+    pub requested_address_types: Option<
+        &'a [CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes],
+    >,
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
     ///
     /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
@@ -3067,7 +3109,11 @@ pub struct CreateSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
 }
 impl<'a> CreateSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
     pub fn new(type_: CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
-        Self { eu_bank_transfer: Default::default(), requested_address_types: Default::default(), type_ }
+        Self {
+            eu_bank_transfer: Default::default(),
+            requested_address_types: Default::default(),
+            type_,
+        }
     }
 }
 /// Configuration for eu_bank_transfer funding type.
@@ -3112,7 +3158,9 @@ impl CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddres
     }
 }
 
-impl std::str::FromStr for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl std::str::FromStr
+    for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
@@ -3129,24 +3177,32 @@ impl std::str::FromStr for CreateSessionPaymentMethodOptionsCustomerBalanceBankT
     }
 }
 
-impl AsRef<str> for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl AsRef<str>
+    for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl std::fmt::Display
+    for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl std::fmt::Debug
+    for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl serde::Serialize
+    for CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -4542,7 +4598,8 @@ impl serde::Serialize for CreateSessionPaymentMethodOptionsSofortSetupFutureUsag
 pub struct CreateSessionPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections: Option<CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
+    pub financial_connections:
+        Option<CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4552,7 +4609,8 @@ pub struct CreateSessionPaymentMethodOptionsUsBankAccount<'a> {
     pub setup_future_usage: Option<CreateSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
     /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<CreateSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method:
+        Option<CreateSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 impl<'a> CreateSessionPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
@@ -4567,7 +4625,8 @@ pub struct CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<&'a [CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    pub permissions:
+        Option<&'a [CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
 }
 impl<'a> CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
     pub fn new() -> Self {
@@ -4598,7 +4657,9 @@ impl CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissio
     }
 }
 
-impl std::str::FromStr for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+impl std::str::FromStr
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
@@ -4618,18 +4679,24 @@ impl AsRef<str> for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConne
     }
 }
 
-impl std::fmt::Display for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+impl std::fmt::Display
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+impl std::fmt::Debug
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+impl serde::Serialize
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5088,7 +5155,9 @@ pub struct CreateSessionShippingAddressCollection<'a> {
     pub allowed_countries: &'a [CreateSessionShippingAddressCollectionAllowedCountries],
 }
 impl<'a> CreateSessionShippingAddressCollection<'a> {
-    pub fn new(allowed_countries: &'a [CreateSessionShippingAddressCollectionAllowedCountries]) -> Self {
+    pub fn new(
+        allowed_countries: &'a [CreateSessionShippingAddressCollectionAllowedCountries],
+    ) -> Self {
         Self { allowed_countries }
     }
 }
@@ -5912,7 +5981,15 @@ pub struct CreateSessionShippingOptionsShippingRateData<'a> {
 }
 impl<'a> CreateSessionShippingOptionsShippingRateData<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self { delivery_estimate: Default::default(), display_name, fixed_amount: Default::default(), metadata: Default::default(), tax_behavior: Default::default(), tax_code: Default::default(), type_: Default::default() }
+        Self {
+            delivery_estimate: Default::default(),
+            display_name,
+            fixed_amount: Default::default(),
+            metadata: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+            type_: Default::default(),
+        }
     }
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
@@ -5951,7 +6028,12 @@ pub struct CreateSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions,
+        >,
+    >,
 }
 impl<'a> CreateSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -6254,10 +6336,13 @@ impl CreateSessionSubscriptionDataTrialSettings {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSessionSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method: CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+    pub missing_payment_method:
+        CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 impl CreateSessionSubscriptionDataTrialSettingsEndBehavior {
-    pub fn new(missing_payment_method: CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod) -> Self {
+    pub fn new(
+        missing_payment_method: CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+    ) -> Self {
         Self { missing_payment_method }
     }
 }
@@ -6280,7 +6365,9 @@ impl CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
     }
 }
 
-impl std::str::FromStr for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+impl std::str::FromStr
+    for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
@@ -6299,7 +6386,9 @@ impl AsRef<str> for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissing
     }
 }
 
-impl std::fmt::Display for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+impl std::fmt::Display
+    for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -6310,7 +6399,9 @@ impl std::fmt::Debug for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMi
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+impl serde::Serialize
+    for CreateSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6327,6 +6418,12 @@ pub struct CreateSessionTaxIdCollection {
 impl CreateSessionTaxIdCollection {
     pub fn new(enabled: bool) -> Self {
         Self { enabled }
+    }
+}
+impl<'a> CreateSession<'a> {
+    /// Creates a Session object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_checkout::Session> {
+        client.send_form("/checkout/sessions", self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -6357,6 +6454,19 @@ impl<'a> ListLineItemsSession<'a> {
         Self::default()
     }
 }
+impl<'a> ListLineItemsSession<'a> {
+    /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_checkout::session::CheckoutSessionId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
+        client
+            .get_query(&format!("/checkout/sessions/{session}/line_items", session = session), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ExpireSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -6366,6 +6476,22 @@ pub struct ExpireSession<'a> {
 impl<'a> ExpireSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ExpireSession<'a> {
+    /// A Session can be expired when it is in one of these statuses: `open`
+    ///
+    /// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_checkout::session::CheckoutSessionId,
+    ) -> stripe::Response<stripe_checkout::Session> {
+        client.send_form(
+            &format!("/checkout/sessions/{session}/expire", session = session),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

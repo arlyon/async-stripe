@@ -44,7 +44,10 @@ pub enum Crate {
 impl Crate {
     pub fn all() -> &'static [Crate] {
         use Crate::*;
-        &[Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment, Issuing, Fraud]
+        &[
+            Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment,
+            Issuing, Fraud,
+        ]
     }
 
     pub fn generate_to(self) -> String {
@@ -181,24 +184,40 @@ impl Components {
     }
 
     fn assign_uninferrable_crates(&mut self) {
-        let uninferrable = [("linked_account_options_us_bank_account", Crate::Core), ("three_d_secure_details", Crate::Types), ("radar_radar_options", Crate::Types)];
+        let uninferrable = [
+            ("linked_account_options_us_bank_account", Crate::Core),
+            ("three_d_secure_details", Crate::Types),
+            ("radar_radar_options", Crate::Types),
+        ];
         for (path, krate) in uninferrable {
             let comp = self.components.get_mut(path).expect("Component not found");
             if comp.krate().is_some() {
-                panic!("Component {} already had crate {:?}. Cannot assign {:?}", path, comp.krate().unwrap(), krate);
+                panic!(
+                    "Component {} already had crate {:?}. Cannot assign {:?}",
+                    path,
+                    comp.krate().unwrap(),
+                    krate
+                );
             }
             comp.assign_crate(krate);
         }
     }
 
     fn ensure_no_missing_crates(&self) -> anyhow::Result<()> {
-        let missing_crates = self.components.iter().filter(|(_, comp)| comp.krate().is_none()).map(|(name, _)| name).collect::<Vec<_>>();
+        let missing_crates = self
+            .components
+            .iter()
+            .filter(|(_, comp)| comp.krate().is_none())
+            .map(|(name, _)| name)
+            .collect::<Vec<_>>();
 
         if !missing_crates.is_empty() {
             let graph = self.gen_component_dep_graph();
             for missing in &missing_crates {
-                let depended_on = graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
-                let depended_crates = depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
+                let depended_on =
+                    graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
+                let depended_crates =
+                    depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
                 error!("Could not infer crate for {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}")
             }
             bail!("Some components could not have their crate inferred: {:#?}", missing_crates);
@@ -211,12 +230,22 @@ impl Components {
         let graph = self.gen_crate_dep_graph();
         let deps_for_types_crate = graph.neighbors(Crate::Types).collect::<Vec<_>>();
         if !deps_for_types_crate.is_empty() {
-            bail!("Types crate should not have dependencies, but has dependencies {:#?}!", deps_for_types_crate);
+            bail!(
+                "Types crate should not have dependencies, but has dependencies {:#?}!",
+                deps_for_types_crate
+            );
         }
         if is_cyclic_directed(&graph) {
             bail!("Crate dependency graph contains a cycle!");
         }
-        let requests_in_types = self.components.iter().filter(|(_, comp)| comp.krate_unwrapped().base() == Crate::Types && !comp.requests.is_empty()).map(|(path, _)| path).collect::<Vec<_>>();
+        let requests_in_types = self
+            .components
+            .iter()
+            .filter(|(_, comp)| {
+                comp.krate_unwrapped().base() == Crate::Types && !comp.requests.is_empty()
+            })
+            .map(|(path, _)| path)
+            .collect::<Vec<_>>();
         if !requests_in_types.is_empty() {
             bail!("Components have requests, not allowed in types crate: {requests_in_types:#?}");
         }
@@ -232,9 +261,15 @@ impl Components {
                     continue;
                 }
                 let my_crate = component.krate_unwrapped().base();
-                let depended_on = graph.neighbors_directed(path, Direction::Incoming).collect::<Vec<_>>();
-                let depended_crates = depended_on.iter().map(|m| self.get(m).krate_unwrapped().for_types()).filter(|c| *c != my_crate).collect::<IndexSet<_>>();
-                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::Types) {
+                let depended_on =
+                    graph.neighbors_directed(path, Direction::Incoming).collect::<Vec<_>>();
+                let depended_crates = depended_on
+                    .iter()
+                    .map(|m| self.get(m).krate_unwrapped().for_types())
+                    .filter(|c| *c != my_crate)
+                    .collect::<IndexSet<_>>();
+                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::Types)
+                {
                     required.push(path.clone());
                 }
             }
@@ -250,8 +285,15 @@ impl Components {
         }
     }
 
-    fn maybe_infer_crate_by_what_depends_on_it(&self, path: &ComponentPath, graph: &ComponentGraph) -> Option<Crate> {
-        let depended_on_by = graph.neighbors_directed(path, Direction::Incoming).map(|n| self.get(n).krate().map(|krate| krate.base())).collect::<Option<Vec<_>>>()?;
+    fn maybe_infer_crate_by_what_depends_on_it(
+        &self,
+        path: &ComponentPath,
+        graph: &ComponentGraph,
+    ) -> Option<Crate> {
+        let depended_on_by = graph
+            .neighbors_directed(path, Direction::Incoming)
+            .map(|n| self.get(n).krate().map(|krate| krate.base()))
+            .collect::<Option<Vec<_>>>()?;
 
         let first = depended_on_by.first()?;
         if depended_on_by.iter().all(|d| d == first) {
@@ -261,8 +303,15 @@ impl Components {
         }
     }
 
-    fn maybe_infer_crate_by_deps(&self, path: &ComponentPath, graph: &ComponentGraph) -> Option<Crate> {
-        let known_dependents = graph.neighbors(path).map(|n| self.get(n).krate().map(|krate| krate.base())).collect::<Option<IndexSet<_>>>()?;
+    fn maybe_infer_crate_by_deps(
+        &self,
+        path: &ComponentPath,
+        graph: &ComponentGraph,
+    ) -> Option<Crate> {
+        let known_dependents = graph
+            .neighbors(path)
+            .map(|n| self.get(n).krate().map(|krate| krate.base()))
+            .collect::<Option<IndexSet<_>>>()?;
 
         let first = known_dependents.first()?;
         if known_dependents.iter().all(|d| d == first) {

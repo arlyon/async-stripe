@@ -101,7 +101,11 @@ impl<'de> serde::Deserialize<'de> for SubscriptionPaymentMethodOptionsCardNetwor
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionPaymentMethodOptionsCardNetwork"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionPaymentMethodOptionsCardNetwork",
+            )
+        })
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -165,6 +169,10 @@ impl<'de> serde::Deserialize<'de> for SubscriptionPaymentMethodOptionsCardReques
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure",
+            )
+        })
     }
 }

@@ -1,24 +1,3 @@
-
-/// Retrieves a Tax `Transaction` object.
-pub fn retrieve(client: &stripe::Client, transaction: &stripe_misc::tax_product_resource_tax_transaction::TaxTransactionId, params: RetrieveTaxProductResourceTaxTransaction) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
-    client.get_query(&format!("/tax/transactions/{transaction}", transaction = transaction), params)
-}
-/// Partially or fully reverses a previously created `Transaction`.
-pub fn create_reversal(client: &stripe::Client, params: CreateReversalTaxProductResourceTaxTransaction) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
-    client.send_form("/tax/transactions/create_reversal", params, http_types::Method::Post)
-}
-/// Creates a Tax `Transaction` from a calculation.
-pub fn create_from_calculation(client: &stripe::Client, params: CreateFromCalculationTaxProductResourceTaxTransaction) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
-    client.send_form("/tax/transactions/create_from_calculation", params, http_types::Method::Post)
-}
-/// Retrieves the line items of a committed standalone transaction as a collection.
-pub fn list_line_items(
-    client: &stripe::Client,
-    transaction: &stripe_misc::tax_product_resource_tax_transaction::TaxTransactionId,
-    params: ListLineItemsTaxProductResourceTaxTransaction,
-) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxTransactionLineItem>> {
-    client.get_query(&format!("/tax/transactions/{transaction}/line_items", transaction = transaction), params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxProductResourceTaxTransaction<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -28,6 +7,17 @@ pub struct RetrieveTaxProductResourceTaxTransaction<'a> {
 impl<'a> RetrieveTaxProductResourceTaxTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTaxProductResourceTaxTransaction<'a> {
+    /// Retrieves a Tax `Transaction` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transaction: &stripe_misc::tax_product_resource_tax_transaction::TaxTransactionId,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
+        client
+            .get_query(&format!("/tax/transactions/{transaction}", transaction = transaction), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -60,8 +50,20 @@ pub struct CreateReversalTaxProductResourceTaxTransaction<'a> {
     pub shipping_cost: Option<CreateReversalTaxProductResourceTaxTransactionShippingCost>,
 }
 impl<'a> CreateReversalTaxProductResourceTaxTransaction<'a> {
-    pub fn new(mode: CreateReversalTaxProductResourceTaxTransactionMode, original_transaction: &'a str, reference: &'a str) -> Self {
-        Self { expand: Default::default(), line_items: Default::default(), metadata: Default::default(), mode, original_transaction, reference, shipping_cost: Default::default() }
+    pub fn new(
+        mode: CreateReversalTaxProductResourceTaxTransactionMode,
+        original_transaction: &'a str,
+        reference: &'a str,
+    ) -> Self {
+        Self {
+            expand: Default::default(),
+            line_items: Default::default(),
+            metadata: Default::default(),
+            mode,
+            original_transaction,
+            reference,
+            shipping_cost: Default::default(),
+        }
     }
 }
 /// The line item amounts to reverse.
@@ -87,8 +89,20 @@ pub struct CreateReversalTaxProductResourceTaxTransactionLineItems<'a> {
     pub reference: &'a str,
 }
 impl<'a> CreateReversalTaxProductResourceTaxTransactionLineItems<'a> {
-    pub fn new(amount: i64, amount_tax: i64, original_line_item: &'a str, reference: &'a str) -> Self {
-        Self { amount, amount_tax, metadata: Default::default(), original_line_item, quantity: Default::default(), reference }
+    pub fn new(
+        amount: i64,
+        amount_tax: i64,
+        original_line_item: &'a str,
+        reference: &'a str,
+    ) -> Self {
+        Self {
+            amount,
+            amount_tax,
+            metadata: Default::default(),
+            original_line_item,
+            quantity: Default::default(),
+            reference,
+        }
     }
 }
 /// If `partial`, the provided line item or shipping cost amounts are reversed.
@@ -160,6 +174,15 @@ impl CreateReversalTaxProductResourceTaxTransactionShippingCost {
         Self { amount, amount_tax }
     }
 }
+impl<'a> CreateReversalTaxProductResourceTaxTransaction<'a> {
+    /// Partially or fully reverses a previously created `Transaction`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
+        client.send_form("/tax/transactions/create_reversal", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateFromCalculationTaxProductResourceTaxTransaction<'a> {
     /// Tax Calculation ID to be used as input when creating the transaction.
@@ -182,6 +205,19 @@ pub struct CreateFromCalculationTaxProductResourceTaxTransaction<'a> {
 impl<'a> CreateFromCalculationTaxProductResourceTaxTransaction<'a> {
     pub fn new(calculation: &'a str, reference: &'a str) -> Self {
         Self { calculation, expand: Default::default(), metadata: Default::default(), reference }
+    }
+}
+impl<'a> CreateFromCalculationTaxProductResourceTaxTransaction<'a> {
+    /// Creates a Tax `Transaction` from a calculation.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxTransaction> {
+        client.send_form(
+            "/tax/transactions/create_from_calculation",
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -210,5 +246,19 @@ pub struct ListLineItemsTaxProductResourceTaxTransaction<'a> {
 impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
+    /// Retrieves the line items of a committed standalone transaction as a collection.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transaction: &stripe_misc::tax_product_resource_tax_transaction::TaxTransactionId,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxTransactionLineItem>>
+    {
+        client.get_query(
+            &format!("/tax/transactions/{transaction}/line_items", transaction = transaction),
+            self,
+        )
     }
 }

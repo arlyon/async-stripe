@@ -49,10 +49,6 @@ pub struct IssuingAuthorization {
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about the authorization, such as identifiers, set by the card network.
     pub network_data: Option<stripe_types::IssuingAuthorizationNetworkData>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: IssuingAuthorizationObject,
     /// The pending authorization request.
     ///
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
@@ -144,67 +140,9 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthorizationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationAuthorizationMethod"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum IssuingAuthorizationObject {
-    IssuingAuthorization,
-}
-
-impl IssuingAuthorizationObject {
-    pub fn as_str(self) -> &'static str {
-        use IssuingAuthorizationObject::*;
-        match self {
-            IssuingAuthorization => "issuing.authorization",
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingAuthorizationObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingAuthorizationObject::*;
-        match s {
-            "issuing.authorization" => Ok(IssuingAuthorization),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for IssuingAuthorizationObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingAuthorizationObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for IssuingAuthorizationObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for IssuingAuthorizationObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for IssuingAuthorizationObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for IssuingAuthorizationAuthorizationMethod")
+        })
     }
 }
 /// The current status of the authorization in its lifecycle.
@@ -268,7 +206,8 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationStatus"))
     }
 }
 impl stripe_types::Object for IssuingAuthorization {

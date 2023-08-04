@@ -1,24 +1,3 @@
-
-/// Creates a new `Configuration` object.
-pub fn create(client: &stripe::Client, params: CreateTerminalConfigurationConfiguration) -> stripe::Response<stripe_terminal::TerminalConfigurationConfiguration> {
-    client.send_form("/terminal/configurations", params, http_types::Method::Post)
-}
-/// Returns a list of `Configuration` objects.
-pub fn list(client: &stripe::Client, params: ListTerminalConfigurationConfiguration) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfigurationConfiguration>> {
-    client.get_query("/terminal/configurations", params)
-}
-/// Retrieves a `Configuration` object.
-pub fn retrieve(client: &stripe::Client, configuration: &stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId, params: RetrieveTerminalConfigurationConfiguration) -> stripe::Response<RetrieveReturned> {
-    client.get_query(&format!("/terminal/configurations/{configuration}", configuration = configuration), params)
-}
-/// Updates a new `Configuration` object.
-pub fn update(client: &stripe::Client, configuration: &stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId, params: UpdateTerminalConfigurationConfiguration) -> stripe::Response<UpdateReturned> {
-    client.send_form(&format!("/terminal/configurations/{configuration}", configuration = configuration), params, http_types::Method::Post)
-}
-/// Deletes a `Configuration` object.
-pub fn delete(client: &stripe::Client, configuration: &stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId) -> stripe::Response<stripe_terminal::TerminalConfigurationDeletedConfiguration> {
-    client.send(&format!("/terminal/configurations/{configuration}", configuration = configuration), http_types::Method::Delete)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTerminalConfigurationConfiguration<'a> {
     /// An object containing device type specific settings for BBPOS WisePOS E readers.
@@ -63,6 +42,15 @@ impl<'a> CreateTerminalConfigurationConfigurationVerifoneP400<'a> {
         Self::default()
     }
 }
+impl<'a> CreateTerminalConfigurationConfiguration<'a> {
+    /// Creates a new `Configuration` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_terminal::TerminalConfigurationConfiguration> {
+        client.send_form("/terminal/configurations", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTerminalConfigurationConfiguration<'a> {
     /// A cursor for use in pagination.
@@ -94,11 +82,15 @@ impl<'a> ListTerminalConfigurationConfiguration<'a> {
         Self::default()
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum RetrieveReturned {
-    TerminalConfiguration(stripe_terminal::TerminalConfigurationConfiguration),
-    DeletedTerminalConfiguration(stripe_terminal::TerminalConfigurationDeletedConfiguration),
+impl<'a> ListTerminalConfigurationConfiguration<'a> {
+    /// Returns a list of `Configuration` objects.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfigurationConfiguration>>
+    {
+        client.get_query("/terminal/configurations", self)
+    }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTerminalConfigurationConfiguration<'a> {
@@ -111,9 +103,22 @@ impl<'a> RetrieveTerminalConfigurationConfiguration<'a> {
         Self::default()
     }
 }
+impl<'a> RetrieveTerminalConfigurationConfiguration<'a> {
+    /// Retrieves a `Configuration` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+    ) -> stripe::Response<RetrieveReturned> {
+        client.get_query(
+            &format!("/terminal/configurations/{configuration}", configuration = configuration),
+            self,
+        )
+    }
+}
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
-pub enum UpdateReturned {
+pub enum RetrieveReturned {
     TerminalConfiguration(stripe_terminal::TerminalConfigurationConfiguration),
     DeletedTerminalConfiguration(stripe_terminal::TerminalConfigurationDeletedConfiguration),
 }
@@ -159,6 +164,47 @@ pub struct UpdateTerminalConfigurationConfigurationVerifoneP400<'a> {
 impl<'a> UpdateTerminalConfigurationConfigurationVerifoneP400<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateTerminalConfigurationConfiguration<'a> {
+    /// Updates a new `Configuration` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+    ) -> stripe::Response<UpdateReturned> {
+        client.send_form(
+            &format!("/terminal/configurations/{configuration}", configuration = configuration),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum UpdateReturned {
+    TerminalConfiguration(stripe_terminal::TerminalConfigurationConfiguration),
+    DeletedTerminalConfiguration(stripe_terminal::TerminalConfigurationDeletedConfiguration),
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteTerminalConfigurationConfiguration {}
+impl DeleteTerminalConfigurationConfiguration {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteTerminalConfigurationConfiguration {
+    /// Deletes a `Configuration` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+    ) -> stripe::Response<stripe_terminal::TerminalConfigurationDeletedConfiguration> {
+        client.send_form(
+            &format!("/terminal/configurations/{configuration}", configuration = configuration),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

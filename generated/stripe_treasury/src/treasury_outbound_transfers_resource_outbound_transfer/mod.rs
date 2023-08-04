@@ -38,10 +38,6 @@ pub struct TreasuryOutboundTransfersResourceOutboundTransfer {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TreasuryOutboundTransfersResourceOutboundTransferObject,
     /// Details about a returned OutboundTransfer.
     ///
     /// Only set when the status is `returned`.
@@ -57,66 +53,6 @@ pub struct TreasuryOutboundTransfersResourceOutboundTransfer {
     pub status_transitions: stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions,
     /// The Transaction associated with this object.
     pub transaction: stripe_types::Expandable<stripe_treasury::TreasuryTransactionsResourceTransaction>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TreasuryOutboundTransfersResourceOutboundTransferObject {
-    TreasuryOutboundTransfer,
-}
-
-impl TreasuryOutboundTransfersResourceOutboundTransferObject {
-    pub fn as_str(self) -> &'static str {
-        use TreasuryOutboundTransfersResourceOutboundTransferObject::*;
-        match self {
-            TreasuryOutboundTransfer => "treasury.outbound_transfer",
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryOutboundTransfersResourceOutboundTransferObject::*;
-        match s {
-            "treasury.outbound_transfer" => Ok(TreasuryOutboundTransfer),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransfersResourceOutboundTransferObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryOutboundTransfersResourceOutboundTransferObject"))
-    }
 }
 /// Current status of the OutboundTransfer: `processing`, `failed`, `canceled`, `posted`, `returned`.
 ///
@@ -199,4 +135,7 @@ impl stripe_types::Object for TreasuryOutboundTransfersResourceOutboundTransfer 
     }
 }
 stripe_types::def_id!(TreasuryOutboundTransferId);
-pub mod requests;
+#[cfg(feature = "treasury_outbound_transfers_resource_outbound_transfer")]
+mod requests;
+#[cfg(feature = "treasury_outbound_transfers_resource_outbound_transfer")]
+pub use requests::*;

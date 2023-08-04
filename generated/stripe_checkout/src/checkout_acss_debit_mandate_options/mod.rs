@@ -77,7 +77,9 @@ impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsDefaultFor 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutAcssDebitMandateOptionsDefaultFor"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CheckoutAcssDebitMandateOptionsDefaultFor")
+        })
     }
 }
 /// Payment schedule for the mandate.
@@ -141,7 +143,11 @@ impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsPaymentSche
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutAcssDebitMandateOptionsPaymentSchedule"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutAcssDebitMandateOptionsPaymentSchedule",
+            )
+        })
     }
 }
 /// Transaction type of the mandate.
@@ -202,6 +208,10 @@ impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitMandateOptionsTransaction
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutAcssDebitMandateOptionsTransactionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutAcssDebitMandateOptionsTransactionType",
+            )
+        })
     }
 }

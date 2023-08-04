@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct CheckoutCustomerBalancePaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer: Option<stripe_checkout::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>,
+    pub bank_transfer:
+        Option<stripe_checkout::CheckoutCustomerBalanceBankTransferPaymentMethodOptions>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
@@ -71,7 +72,11 @@ impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOption
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutCustomerBalancePaymentMethodOptionsFundingType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutCustomerBalancePaymentMethodOptionsFundingType",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -133,6 +138,10 @@ impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOption
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage",
+            )
+        })
     }
 }

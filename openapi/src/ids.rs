@@ -86,7 +86,8 @@ pub fn complex_id_prefixes() -> HashMap<&'static str, &'static [&'static str]> {
 
 lazy_static! {
     pub static ref ID_PREFIXES: HashMap<&'static str, &'static str> = id_prefixes();
-    pub static ref COMPLEX_ID_PREFIXES: HashMap<&'static str, &'static [&'static str]> = complex_id_prefixes();
+    pub static ref COMPLEX_ID_PREFIXES: HashMap<&'static str, &'static [&'static str]> =
+        complex_id_prefixes();
 }
 
 pub fn write_object_id(out: &mut String, path: &ComponentPath) {
@@ -95,7 +96,8 @@ pub fn write_object_id(out: &mut String, path: &ComponentPath) {
     if let Some(prefix) = ID_PREFIXES.get(path.as_ref()) {
         let _ = writeln!(out, r#"{crate_name}::def_id!({ident}, "{prefix}_");"#);
     } else if let Some(multi_prefix) = COMPLEX_ID_PREFIXES.get(path.as_ref()) {
-        let prefix_arg = multi_prefix.iter().map(|p| format!(r#""{p}_""#)).collect::<Vec<_>>().join("|");
+        let prefix_arg =
+            multi_prefix.iter().map(|p| format!(r#""{p}_""#)).collect::<Vec<_>>().join("|");
         let _ = writeln!(out, "{crate_name}::def_id!({ident}, {prefix_arg});");
     } else {
         let _ = writeln!(out, "{crate_name}::def_id!({ident});");

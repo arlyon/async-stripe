@@ -10,13 +10,10 @@ pub struct BankConnectionsResourceLinkAccountSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filters: Option<stripe_misc::BankConnectionsResourceLinkAccountSessionFilters>,
     /// Unique identifier for the object.
-    pub id: stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId,
+    pub id:
+        stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: BankConnectionsResourceLinkAccountSessionObject,
     /// Permissions requested for accounts collected during this session.
     pub permissions: Vec<BankConnectionsResourceLinkAccountSessionPermissions>,
     /// For webview integrations only.
@@ -24,66 +21,6 @@ pub struct BankConnectionsResourceLinkAccountSession {
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum BankConnectionsResourceLinkAccountSessionObject {
-    FinancialConnectionsSession,
-}
-
-impl BankConnectionsResourceLinkAccountSessionObject {
-    pub fn as_str(self) -> &'static str {
-        use BankConnectionsResourceLinkAccountSessionObject::*;
-        match self {
-            FinancialConnectionsSession => "financial_connections.session",
-        }
-    }
-}
-
-impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BankConnectionsResourceLinkAccountSessionObject::*;
-        match s {
-            "financial_connections.session" => Ok(FinancialConnectionsSession),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for BankConnectionsResourceLinkAccountSessionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BankConnectionsResourceLinkAccountSessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for BankConnectionsResourceLinkAccountSessionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for BankConnectionsResourceLinkAccountSessionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkAccountSessionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkAccountSessionObject"))
-    }
 }
 /// Permissions requested for accounts collected during this session.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -149,14 +86,22 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkAccountSessionP
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkAccountSessionPermissions"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkAccountSessionPermissions",
+            )
+        })
     }
 }
 impl stripe_types::Object for BankConnectionsResourceLinkAccountSession {
-    type Id = stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId;
+    type Id =
+        stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);
-pub mod requests;
+#[cfg(feature = "bank_connections_resource_link_account_session")]
+mod requests;
+#[cfg(feature = "bank_connections_resource_link_account_session")]
+pub use requests::*;

@@ -18,7 +18,8 @@ pub struct CreditNote {
     /// ID of the customer.
     pub customer: stripe_types::Expandable<stripe_types::Customer>,
     /// Customer balance transaction related to this credit note.
-    pub customer_balance_transaction: Option<stripe_types::Expandable<stripe_types::CustomerBalanceTransaction>>,
+    pub customer_balance_transaction:
+        Option<stripe_types::Expandable<stripe_types::CustomerBalanceTransaction>>,
     /// The integer amount in %s representing the total amount of discount that was credited.
     pub discount_amount: i64,
     /// The aggregate amounts calculated per discount for all line items.
@@ -44,10 +45,6 @@ pub struct CreditNote {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// A unique number that identifies this particular credit note and appears on the PDF of the credit note and its associated invoice.
     pub number: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: CreditNoteObject,
     /// Amount that was credited outside of Stripe.
     pub out_of_band_amount: Option<i64>,
     /// The link to download the PDF of the credit note.
@@ -80,66 +77,6 @@ pub struct CreditNote {
     pub type_: CreditNoteType,
     /// The time that the credit note was voided.
     pub voided_at: Option<stripe_types::Timestamp>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreditNoteObject {
-    CreditNote,
-}
-
-impl CreditNoteObject {
-    pub fn as_str(self) -> &'static str {
-        use CreditNoteObject::*;
-        match self {
-            CreditNote => "credit_note",
-        }
-    }
-}
-
-impl std::str::FromStr for CreditNoteObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreditNoteObject::*;
-        match s {
-            "credit_note" => Ok(CreditNote),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CreditNoteObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreditNoteObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreditNoteObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreditNoteObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for CreditNoteObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteObject"))
-    }
 }
 /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -205,7 +142,8 @@ impl<'de> serde::Deserialize<'de> for CreditNoteReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
     }
 }
 /// Status of this credit note, one of `issued` or `void`.
@@ -268,7 +206,8 @@ impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
     }
 }
 /// Type of this credit note, one of `pre_payment` or `post_payment`.

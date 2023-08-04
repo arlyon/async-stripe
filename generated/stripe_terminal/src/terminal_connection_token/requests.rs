@@ -1,10 +1,3 @@
-
-/// To connect to a reader the Stripe Terminal SDK needs to retrieve a short-lived connection token from Stripe, proxied through your server.
-///
-/// On your backend, add an endpoint that creates and returns a connection token.
-pub fn create(client: &stripe::Client, params: CreateTerminalConnectionToken) -> stripe::Response<stripe_terminal::TerminalConnectionToken> {
-    client.send_form("/terminal/connection_tokens", params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTerminalConnectionToken<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -21,5 +14,16 @@ pub struct CreateTerminalConnectionToken<'a> {
 impl<'a> CreateTerminalConnectionToken<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CreateTerminalConnectionToken<'a> {
+    /// To connect to a reader the Stripe Terminal SDK needs to retrieve a short-lived connection token from Stripe, proxied through your server.
+    ///
+    /// On your backend, add an endpoint that creates and returns a connection token.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_terminal::TerminalConnectionToken> {
+        client.send_form("/terminal/connection_tokens", self, http_types::Method::Post)
     }
 }

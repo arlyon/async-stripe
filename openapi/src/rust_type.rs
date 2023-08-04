@@ -100,6 +100,14 @@ impl RustType {
         }
     }
 
+    pub fn as_component_path(&self) -> Option<&ComponentPath> {
+        match self {
+            RustType::Path { path: PathToType::Component(path), .. } => Some(path),
+            RustType::Container(typ) => typ.value_typ().as_component_path(),
+            _ => None,
+        }
+    }
+
     pub fn implies_private_field(&self) -> bool {
         matches!(self, Self::Simple(SimpleType::Ext(ExtType::AlwaysTrue)))
     }
@@ -141,11 +149,21 @@ impl RustType {
     }
 
     pub fn component_path(path: ComponentPath) -> Self {
-        Self::Path { path: PathToType::Component(path), has_reference: false, is_ref: false, is_copy: false }
+        Self::Path {
+            path: PathToType::Component(path),
+            has_reference: false,
+            is_ref: false,
+            is_copy: false,
+        }
     }
 
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
-        Self::Path { path: PathToType::ObjectId(id_path), is_ref, is_copy: false, has_reference: false }
+        Self::Path {
+            path: PathToType::ObjectId(id_path),
+            is_ref,
+            is_copy: false,
+            has_reference: false,
+        }
     }
 
     pub fn into_nullable(self) -> Self {
@@ -170,6 +188,14 @@ impl RustType {
         }
     }
 
+    pub fn as_object_mut(&mut self) -> Option<(&mut RustObject, &ObjectMetadata)> {
+        match self {
+            Self::Object(obj, meta) => Some((obj, meta)),
+            Self::Simple(_) | Self::Path { .. } => None,
+            Self::Container(typ) => typ.value_typ_mut().as_object_mut(),
+        }
+    }
+
     pub fn into_object(self) -> Option<(RustObject, ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
@@ -178,13 +204,19 @@ impl RustType {
         }
     }
 
+    pub fn as_rust_object_mut(&mut self) -> Option<&mut RustObject> {
+        self.as_object_mut().map(|r| r.0)
+    }
+
     pub fn as_rust_object(&self) -> Option<&RustObject> {
         self.as_object().map(|r| r.0)
     }
 
     pub fn as_deser_default(&self) -> Option<DeserDefault> {
         match self {
-            Self::Simple(SimpleType::Bool) | Self::Container(Container::Vec(_)) | Self::Container(Container::List(_)) => Some(DeserDefault::Default),
+            Self::Simple(SimpleType::Bool)
+            | Self::Container(Container::Vec(_))
+            | Self::Container(Container::List(_)) => Some(DeserDefault::Default),
             _ => None,
         }
     }

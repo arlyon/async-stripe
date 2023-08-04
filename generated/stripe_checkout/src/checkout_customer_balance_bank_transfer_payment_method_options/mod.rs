@@ -6,7 +6,8 @@ pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
+    pub requested_address_types:
+        Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
@@ -40,7 +41,9 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressType
     }
 }
 
-impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+impl std::str::FromStr
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
@@ -63,18 +66,24 @@ impl AsRef<str> for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsReque
     }
 }
 
-impl std::fmt::Display for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+impl std::fmt::Display
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+impl std::fmt::Debug
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+impl serde::Serialize
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -82,7 +91,9 @@ impl serde::Serialize for CheckoutCustomerBalanceBankTransferPaymentMethodOption
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+impl<'de> serde::Deserialize<'de>
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -156,6 +167,10 @@ impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalanceBankTransferPayment
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType",
+            )
+        })
     }
 }

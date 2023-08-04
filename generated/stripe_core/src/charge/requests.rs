@@ -1,48 +1,44 @@
-
-/// Search for charges you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchCharge) -> stripe::Response<SearchReturned> {
-    client.get_query("/charges/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchCharge<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for charges](https://stripe.com/docs/search#query-fields-for-charges).
+    pub query: &'a str,
 }
-/// Returns a list of charges you’ve previously created.
-///
-/// The charges are returned in sorted order, with the most recent charges appearing first.
-pub fn list(client: &stripe::Client, params: ListCharge) -> stripe::Response<stripe_types::List<stripe_types::Charge>> {
-    client.get_query("/charges", params)
+impl<'a> SearchCharge<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Use the [Payment Intents API](https://stripe.com/docs/api/payment_intents) to initiate a new payment instead
-/// of using this method.
-///
-/// Confirmation of the PaymentIntent creates the `Charge` object used to request payment, so this method is limited to legacy integrations.
-pub fn create(client: &stripe::Client, params: CreateCharge) -> stripe::Response<stripe_types::Charge> {
-    client.send_form("/charges", params, http_types::Method::Post)
-}
-/// Retrieves the details of a charge that has previously been created.
-///
-/// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
-/// The same information is returned when creating or refunding the charge.
-pub fn retrieve(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: RetrieveCharge) -> stripe::Response<stripe_types::Charge> {
-    client.get_query(&format!("/charges/{charge}", charge = charge), params)
-}
-/// Updates the specified charge by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-pub fn update(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: UpdateCharge) -> stripe::Response<stripe_types::Charge> {
-    client.send_form(&format!("/charges/{charge}", charge = charge), params, http_types::Method::Post)
-}
-/// Capture the payment of an existing, uncaptured charge that was created with the `capture` option set to false.
-///
-/// Uncaptured payments expire a set number of days after they are created ([7 by default](https://stripe.com/docs/charges/placing-a-hold)), after which they are marked as refunded and capture attempts will fail.
-///
-/// Don’t use this method to capture a PaymentIntent-initiated charge.
-///
-/// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
-pub fn capture(client: &stripe::Client, charge: &stripe_types::charge::ChargeId, params: CaptureCharge) -> stripe::Response<stripe_types::Charge> {
-    client.send_form(&format!("/charges/{charge}/capture", charge = charge), params, http_types::Method::Post)
+impl<'a> SearchCharge<'a> {
+    /// Search for charges you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/charges/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -115,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchCharge<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for charges](https://stripe.com/docs/search#query-fields-for-charges).
-    pub query: &'a str,
-}
-impl<'a> SearchCharge<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -181,6 +152,17 @@ pub struct ListCharge<'a> {
 impl<'a> ListCharge<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListCharge<'a> {
+    /// Returns a list of charges you’ve previously created.
+    ///
+    /// The charges are returned in sorted order, with the most recent charges appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Charge>> {
+        client.get_query("/charges", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -339,6 +321,15 @@ impl<'a> CreateChargeTransferData<'a> {
         Self { amount: Default::default(), destination }
     }
 }
+impl<'a> CreateCharge<'a> {
+    /// Use the [Payment Intents API](https://stripe.com/docs/api/payment_intents) to initiate a new payment instead
+    /// of using this method.
+    ///
+    /// Confirmation of the PaymentIntent creates the `Charge` object used to request payment, so this method is limited to legacy integrations.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Charge> {
+        client.send_form("/charges", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCharge<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -348,6 +339,19 @@ pub struct RetrieveCharge<'a> {
 impl<'a> RetrieveCharge<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveCharge<'a> {
+    /// Retrieves the details of a charge that has previously been created.
+    ///
+    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
+    /// The same information is returned when creating or refunding the charge.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        charge: &stripe_types::charge::ChargeId,
+    ) -> stripe::Response<stripe_types::Charge> {
+        client.get_query(&format!("/charges/{charge}", charge = charge), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -471,6 +475,22 @@ impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> UpdateCharge<'a> {
+    /// Updates the specified charge by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        charge: &stripe_types::charge::ChargeId,
+    ) -> stripe::Response<stripe_types::Charge> {
+        client.send_form(
+            &format!("/charges/{charge}", charge = charge),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CaptureCharge<'a> {
     /// The amount to capture, which must be less than or equal to the original amount.
@@ -538,6 +558,26 @@ impl CaptureChargeTransferData {
         Self::default()
     }
 }
+impl<'a> CaptureCharge<'a> {
+    /// Capture the payment of an existing, uncaptured charge that was created with the `capture` option set to false.
+    ///
+    /// Uncaptured payments expire a set number of days after they are created ([7 by default](https://stripe.com/docs/charges/placing-a-hold)), after which they are marked as refunded and capture attempts will fail.
+    ///
+    /// Don’t use this method to capture a PaymentIntent-initiated charge.
+    ///
+    /// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        charge: &stripe_types::charge::ChargeId,
+    ) -> stripe::Response<stripe_types::Charge> {
+        client.send_form(
+            &format!("/charges/{charge}/capture", charge = charge),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct OptionalFieldsAddress<'a> {
     /// City, district, suburb, town, or village.
@@ -584,6 +624,12 @@ pub struct OptionalFieldsShipping<'a> {
 }
 impl<'a> OptionalFieldsShipping<'a> {
     pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self { address, carrier: Default::default(), name, phone: Default::default(), tracking_number: Default::default() }
+        Self {
+            address,
+            carrier: Default::default(),
+            name,
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
     }
 }

@@ -98,7 +98,11 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardCaptu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardCaptureMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsCardCaptureMethod",
+            )
+        })
     }
 }
 /// Selected network to process this payment intent on.
@@ -189,7 +193,11 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardNetwo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardNetwork"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsCardNetwork",
+            )
+        })
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -258,7 +266,11 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -326,6 +338,10 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetup
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
+            )
+        })
     }
 }

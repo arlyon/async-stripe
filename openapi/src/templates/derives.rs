@@ -12,7 +12,14 @@ pub struct Derives {
 
 impl Derives {
     pub fn new() -> Self {
-        Self { debug: true, copy: false, default: false, eq: false, serialize: false, deserialize: false }
+        Self {
+            debug: true,
+            copy: false,
+            default: false,
+            eq: false,
+            serialize: false,
+            deserialize: false,
+        }
     }
 
     pub fn new_deser() -> Self {

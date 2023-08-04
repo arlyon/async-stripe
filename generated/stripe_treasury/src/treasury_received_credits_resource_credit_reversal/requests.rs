@@ -1,20 +1,3 @@
-
-/// Returns a list of CreditReversals.
-pub fn list(client: &stripe::Client, params: ListTreasuryReceivedCreditsResourceCreditReversal) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal>> {
-    client.get_query("/treasury/credit_reversals", params)
-}
-/// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
-pub fn retrieve(
-    client: &stripe::Client,
-    credit_reversal: &stripe_treasury::treasury_received_credits_resource_credit_reversal::TreasuryCreditReversalId,
-    params: RetrieveTreasuryReceivedCreditsResourceCreditReversal,
-) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
-    client.get_query(&format!("/treasury/credit_reversals/{credit_reversal}", credit_reversal = credit_reversal), params)
-}
-/// Reverses a ReceivedCredit and creates a CreditReversal object.
-pub fn create(client: &stripe::Client, params: CreateTreasuryReceivedCreditsResourceCreditReversal) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
-    client.send_form("/treasury/credit_reversals", params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryReceivedCreditsResourceCreditReversal<'a> {
     /// A cursor for use in pagination.
@@ -108,6 +91,12 @@ impl serde::Serialize for ListTreasuryReceivedCreditsResourceCreditReversalStatu
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTreasuryReceivedCreditsResourceCreditReversal<'a> {
+    /// Returns a list of CreditReversals.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal>> {
+        client.get_query("/treasury/credit_reversals", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -117,6 +106,12 @@ pub struct RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
 impl<'a> RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
+    /// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
+    pub fn send(&self, client: &stripe::Client, credit_reversal: &stripe_treasury::treasury_received_credits_resource_credit_reversal::TreasuryCreditReversalId) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
+        client.get_query(&format!("/treasury/credit_reversals/{credit_reversal}", credit_reversal = credit_reversal), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -137,5 +132,11 @@ pub struct CreateTreasuryReceivedCreditsResourceCreditReversal<'a> {
 impl<'a> CreateTreasuryReceivedCreditsResourceCreditReversal<'a> {
     pub fn new(received_credit: &'a str) -> Self {
         Self { expand: Default::default(), metadata: Default::default(), received_credit }
+    }
+}
+impl<'a> CreateTreasuryReceivedCreditsResourceCreditReversal<'a> {
+    /// Reverses a ReceivedCredit and creates a CreditReversal object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
+        client.send_form("/treasury/credit_reversals", self, http_types::Method::Post)
     }
 }

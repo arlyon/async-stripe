@@ -1,30 +1,3 @@
-
-/// Returns a list of your webhook endpoints.
-pub fn list(client: &stripe::Client, params: ListNotificationWebhookEndpoint) -> stripe::Response<stripe_types::List<stripe_misc::NotificationWebhookEndpoint>> {
-    client.get_query("/webhook_endpoints", params)
-}
-/// Retrieves the webhook endpoint with the given ID.
-pub fn retrieve(client: &stripe::Client, webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId, params: RetrieveNotificationWebhookEndpoint) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
-    client.get_query(&format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint), params)
-}
-/// A webhook endpoint must have a `url` and a list of `enabled_events`.
-///
-/// You may optionally specify the Boolean `connect` parameter.
-/// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
-/// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
-pub fn create(client: &stripe::Client, params: CreateNotificationWebhookEndpoint) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
-    client.send_form("/webhook_endpoints", params, http_types::Method::Post)
-}
-/// Updates the webhook endpoint.
-///
-/// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-pub fn update(client: &stripe::Client, webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId, params: UpdateNotificationWebhookEndpoint) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
-    client.send_form(&format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint), params, http_types::Method::Post)
-}
-/// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-pub fn delete(client: &stripe::Client, webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId) -> stripe::Response<stripe_misc::NotificationWebhookEndpointDeleted> {
-    client.send(&format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListNotificationWebhookEndpoint<'a> {
     /// A cursor for use in pagination.
@@ -53,6 +26,15 @@ impl<'a> ListNotificationWebhookEndpoint<'a> {
         Self::default()
     }
 }
+impl<'a> ListNotificationWebhookEndpoint<'a> {
+    /// Returns a list of your webhook endpoints.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::NotificationWebhookEndpoint>> {
+        client.get_query("/webhook_endpoints", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveNotificationWebhookEndpoint<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -62,6 +44,19 @@ pub struct RetrieveNotificationWebhookEndpoint<'a> {
 impl<'a> RetrieveNotificationWebhookEndpoint<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveNotificationWebhookEndpoint<'a> {
+    /// Retrieves the webhook endpoint with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
+    ) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
+        client.get_query(
+            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -96,7 +91,28 @@ pub struct CreateNotificationWebhookEndpoint<'a> {
 }
 impl<'a> CreateNotificationWebhookEndpoint<'a> {
     pub fn new(enabled_events: &'a [EnabledEvents], url: &'a str) -> Self {
-        Self { api_version: Default::default(), connect: Default::default(), description: Default::default(), enabled_events, expand: Default::default(), metadata: Default::default(), url }
+        Self {
+            api_version: Default::default(),
+            connect: Default::default(),
+            description: Default::default(),
+            enabled_events,
+            expand: Default::default(),
+            metadata: Default::default(),
+            url,
+        }
+    }
+}
+impl<'a> CreateNotificationWebhookEndpoint<'a> {
+    /// A webhook endpoint must have a `url` and a list of `enabled_events`.
+    ///
+    /// You may optionally specify the Boolean `connect` parameter.
+    /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
+    /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
+        client.send_form("/webhook_endpoints", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -129,6 +145,43 @@ pub struct UpdateNotificationWebhookEndpoint<'a> {
 impl<'a> UpdateNotificationWebhookEndpoint<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateNotificationWebhookEndpoint<'a> {
+    /// Updates the webhook endpoint.
+    ///
+    /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
+    ) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
+        client.send_form(
+            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteNotificationWebhookEndpoint {}
+impl DeleteNotificationWebhookEndpoint {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteNotificationWebhookEndpoint {
+    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
+    ) -> stripe::Response<stripe_misc::NotificationWebhookEndpointDeleted> {
+        client.send_form(
+            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -414,8 +467,12 @@ impl EnabledEvents {
             CustomerSubscriptionCreated => "customer.subscription.created",
             CustomerSubscriptionDeleted => "customer.subscription.deleted",
             CustomerSubscriptionPaused => "customer.subscription.paused",
-            CustomerSubscriptionPendingUpdateApplied => "customer.subscription.pending_update_applied",
-            CustomerSubscriptionPendingUpdateExpired => "customer.subscription.pending_update_expired",
+            CustomerSubscriptionPendingUpdateApplied => {
+                "customer.subscription.pending_update_applied"
+            }
+            CustomerSubscriptionPendingUpdateExpired => {
+                "customer.subscription.pending_update_expired"
+            }
             CustomerSubscriptionResumed => "customer.subscription.resumed",
             CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             CustomerSubscriptionUpdated => "customer.subscription.updated",
@@ -429,12 +486,16 @@ impl EnabledEvents {
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
-            FinancialConnectionsAccountRefreshedBalance => "financial_connections.account.refreshed_balance",
+            FinancialConnectionsAccountRefreshedBalance => {
+                "financial_connections.account.refreshed_balance"
+            }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
             IdentityVerificationSessionProcessing => "identity.verification_session.processing",
             IdentityVerificationSessionRedacted => "identity.verification_session.redacted",
-            IdentityVerificationSessionRequiresInput => "identity.verification_session.requires_input",
+            IdentityVerificationSessionRequiresInput => {
+                "identity.verification_session.requires_input"
+            }
             IdentityVerificationSessionVerified => "identity.verification_session.verified",
             InvoiceCreated => "invoice.created",
             InvoiceDeleted => "invoice.deleted",
@@ -563,23 +624,31 @@ impl EnabledEvents {
             TreasuryCreditReversalPosted => "treasury.credit_reversal.posted",
             TreasuryDebitReversalCompleted => "treasury.debit_reversal.completed",
             TreasuryDebitReversalCreated => "treasury.debit_reversal.created",
-            TreasuryDebitReversalInitialCreditGranted => "treasury.debit_reversal.initial_credit_granted",
+            TreasuryDebitReversalInitialCreditGranted => {
+                "treasury.debit_reversal.initial_credit_granted"
+            }
             TreasuryFinancialAccountClosed => "treasury.financial_account.closed",
             TreasuryFinancialAccountCreated => "treasury.financial_account.created",
-            TreasuryFinancialAccountFeaturesStatusUpdated => "treasury.financial_account.features_status_updated",
+            TreasuryFinancialAccountFeaturesStatusUpdated => {
+                "treasury.financial_account.features_status_updated"
+            }
             TreasuryInboundTransferCanceled => "treasury.inbound_transfer.canceled",
             TreasuryInboundTransferCreated => "treasury.inbound_transfer.created",
             TreasuryInboundTransferFailed => "treasury.inbound_transfer.failed",
             TreasuryInboundTransferSucceeded => "treasury.inbound_transfer.succeeded",
             TreasuryOutboundPaymentCanceled => "treasury.outbound_payment.canceled",
             TreasuryOutboundPaymentCreated => "treasury.outbound_payment.created",
-            TreasuryOutboundPaymentExpectedArrivalDateUpdated => "treasury.outbound_payment.expected_arrival_date_updated",
+            TreasuryOutboundPaymentExpectedArrivalDateUpdated => {
+                "treasury.outbound_payment.expected_arrival_date_updated"
+            }
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
-            TreasuryOutboundTransferExpectedArrivalDateUpdated => "treasury.outbound_transfer.expected_arrival_date_updated",
+            TreasuryOutboundTransferExpectedArrivalDateUpdated => {
+                "treasury.outbound_transfer.expected_arrival_date_updated"
+            }
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
@@ -647,8 +716,12 @@ impl std::str::FromStr for EnabledEvents {
             "customer.subscription.created" => Ok(CustomerSubscriptionCreated),
             "customer.subscription.deleted" => Ok(CustomerSubscriptionDeleted),
             "customer.subscription.paused" => Ok(CustomerSubscriptionPaused),
-            "customer.subscription.pending_update_applied" => Ok(CustomerSubscriptionPendingUpdateApplied),
-            "customer.subscription.pending_update_expired" => Ok(CustomerSubscriptionPendingUpdateExpired),
+            "customer.subscription.pending_update_applied" => {
+                Ok(CustomerSubscriptionPendingUpdateApplied)
+            }
+            "customer.subscription.pending_update_expired" => {
+                Ok(CustomerSubscriptionPendingUpdateExpired)
+            }
             "customer.subscription.resumed" => Ok(CustomerSubscriptionResumed),
             "customer.subscription.trial_will_end" => Ok(CustomerSubscriptionTrialWillEnd),
             "customer.subscription.updated" => Ok(CustomerSubscriptionUpdated),
@@ -656,18 +729,30 @@ impl std::str::FromStr for EnabledEvents {
             "customer.tax_id.deleted" => Ok(CustomerTaxIdDeleted),
             "customer.tax_id.updated" => Ok(CustomerTaxIdUpdated),
             "customer.updated" => Ok(CustomerUpdated),
-            "customer_cash_balance_transaction.created" => Ok(CustomerCashBalanceTransactionCreated),
+            "customer_cash_balance_transaction.created" => {
+                Ok(CustomerCashBalanceTransactionCreated)
+            }
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
-            "financial_connections.account.deactivated" => Ok(FinancialConnectionsAccountDeactivated),
-            "financial_connections.account.disconnected" => Ok(FinancialConnectionsAccountDisconnected),
-            "financial_connections.account.reactivated" => Ok(FinancialConnectionsAccountReactivated),
-            "financial_connections.account.refreshed_balance" => Ok(FinancialConnectionsAccountRefreshedBalance),
+            "financial_connections.account.deactivated" => {
+                Ok(FinancialConnectionsAccountDeactivated)
+            }
+            "financial_connections.account.disconnected" => {
+                Ok(FinancialConnectionsAccountDisconnected)
+            }
+            "financial_connections.account.reactivated" => {
+                Ok(FinancialConnectionsAccountReactivated)
+            }
+            "financial_connections.account.refreshed_balance" => {
+                Ok(FinancialConnectionsAccountRefreshedBalance)
+            }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),
             "identity.verification_session.processing" => Ok(IdentityVerificationSessionProcessing),
             "identity.verification_session.redacted" => Ok(IdentityVerificationSessionRedacted),
-            "identity.verification_session.requires_input" => Ok(IdentityVerificationSessionRequiresInput),
+            "identity.verification_session.requires_input" => {
+                Ok(IdentityVerificationSessionRequiresInput)
+            }
             "identity.verification_session.verified" => Ok(IdentityVerificationSessionVerified),
             "invoice.created" => Ok(InvoiceCreated),
             "invoice.deleted" => Ok(InvoiceDeleted),
@@ -796,23 +881,31 @@ impl std::str::FromStr for EnabledEvents {
             "treasury.credit_reversal.posted" => Ok(TreasuryCreditReversalPosted),
             "treasury.debit_reversal.completed" => Ok(TreasuryDebitReversalCompleted),
             "treasury.debit_reversal.created" => Ok(TreasuryDebitReversalCreated),
-            "treasury.debit_reversal.initial_credit_granted" => Ok(TreasuryDebitReversalInitialCreditGranted),
+            "treasury.debit_reversal.initial_credit_granted" => {
+                Ok(TreasuryDebitReversalInitialCreditGranted)
+            }
             "treasury.financial_account.closed" => Ok(TreasuryFinancialAccountClosed),
             "treasury.financial_account.created" => Ok(TreasuryFinancialAccountCreated),
-            "treasury.financial_account.features_status_updated" => Ok(TreasuryFinancialAccountFeaturesStatusUpdated),
+            "treasury.financial_account.features_status_updated" => {
+                Ok(TreasuryFinancialAccountFeaturesStatusUpdated)
+            }
             "treasury.inbound_transfer.canceled" => Ok(TreasuryInboundTransferCanceled),
             "treasury.inbound_transfer.created" => Ok(TreasuryInboundTransferCreated),
             "treasury.inbound_transfer.failed" => Ok(TreasuryInboundTransferFailed),
             "treasury.inbound_transfer.succeeded" => Ok(TreasuryInboundTransferSucceeded),
             "treasury.outbound_payment.canceled" => Ok(TreasuryOutboundPaymentCanceled),
             "treasury.outbound_payment.created" => Ok(TreasuryOutboundPaymentCreated),
-            "treasury.outbound_payment.expected_arrival_date_updated" => Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated),
+            "treasury.outbound_payment.expected_arrival_date_updated" => {
+                Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated)
+            }
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
-            "treasury.outbound_transfer.expected_arrival_date_updated" => Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated),
+            "treasury.outbound_transfer.expected_arrival_date_updated" => {
+                Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated)
+            }
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),

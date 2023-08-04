@@ -66,10 +66,6 @@ pub struct Source {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<stripe_types::SourceTypeMultibanco>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: SourceObject,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     pub owner: Option<stripe_types::SourceOwner>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -111,66 +107,6 @@ pub struct Source {
     pub usage: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<stripe_types::SourceTypeWechat>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum SourceObject {
-    Source,
-}
-
-impl SourceObject {
-    pub fn as_str(self) -> &'static str {
-        use SourceObject::*;
-        match self {
-            Source => "source",
-        }
-    }
-}
-
-impl std::str::FromStr for SourceObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use SourceObject::*;
-        match s {
-            "source" => Ok(Source),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for SourceObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SourceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for SourceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for SourceObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for SourceObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SourceObject"))
-    }
 }
 /// The `type` of the source.
 ///

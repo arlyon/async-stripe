@@ -1,28 +1,3 @@
-
-/// To send funds from your Stripe account to a connected account, you create a new transfer object.
-///
-/// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
-pub fn create(client: &stripe::Client, params: CreateTransfer) -> stripe::Response<stripe_types::Transfer> {
-    client.send_form("/transfers", params, http_types::Method::Post)
-}
-/// Returns a list of existing transfers sent to connected accounts.
-///
-/// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-pub fn list(client: &stripe::Client, params: ListTransfer) -> stripe::Response<stripe_types::List<stripe_types::Transfer>> {
-    client.get_query("/transfers", params)
-}
-/// Retrieves the details of an existing transfer.
-///
-/// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
-pub fn retrieve(client: &stripe::Client, transfer: &stripe_types::transfer::TransferId, params: RetrieveTransfer) -> stripe::Response<stripe_types::Transfer> {
-    client.get_query(&format!("/transfers/{transfer}", transfer = transfer), params)
-}
-/// Updates the specified transfer by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
-pub fn update(client: &stripe::Client, transfer: &stripe_types::transfer::TransferId, params: UpdateTransfer) -> stripe::Response<stripe_types::Transfer> {
-    client.send_form(&format!("/transfers/{transfer}", transfer = transfer), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTransfer<'a> {
     /// A positive integer in cents (or local equivalent) representing how much to transfer.
@@ -142,6 +117,14 @@ impl serde::Serialize for CreateTransferSourceType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateTransfer<'a> {
+    /// To send funds from your Stripe account to a connected account, you create a new transfer object.
+    ///
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Transfer> {
+        client.send_form("/transfers", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTransfer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -178,6 +161,17 @@ impl<'a> ListTransfer<'a> {
         Self::default()
     }
 }
+impl<'a> ListTransfer<'a> {
+    /// Returns a list of existing transfers sent to connected accounts.
+    ///
+    /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Transfer>> {
+        client.get_query("/transfers", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -187,6 +181,18 @@ pub struct RetrieveTransfer<'a> {
 impl<'a> RetrieveTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTransfer<'a> {
+    /// Retrieves the details of an existing transfer.
+    ///
+    /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transfer: &stripe_types::transfer::TransferId,
+    ) -> stripe::Response<stripe_types::Transfer> {
+        client.get_query(&format!("/transfers/{transfer}", transfer = transfer), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -210,5 +216,21 @@ pub struct UpdateTransfer<'a> {
 impl<'a> UpdateTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateTransfer<'a> {
+    /// Updates the specified transfer by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        transfer: &stripe_types::transfer::TransferId,
+    ) -> stripe::Response<stripe_types::Transfer> {
+        client.send_form(
+            &format!("/transfers/{transfer}", transfer = transfer),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

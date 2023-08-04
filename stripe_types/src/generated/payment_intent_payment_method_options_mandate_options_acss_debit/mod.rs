@@ -8,9 +8,11 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     pub interval_description: Option<String>,
     /// Payment schedule for the mandate.
-    pub payment_schedule: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    pub payment_schedule:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
     /// Transaction type of the mandate.
-    pub transaction_type: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+    pub transaction_type:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 /// Payment schedule for the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -69,7 +71,9 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDeb
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -130,7 +134,9 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDeb
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

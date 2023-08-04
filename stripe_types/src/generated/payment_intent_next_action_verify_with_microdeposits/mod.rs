@@ -65,10 +65,16 @@ impl serde::Serialize for PaymentIntentNextActionVerifyWithMicrodepositsMicrodep
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType",
+            )
+        })
     }
 }

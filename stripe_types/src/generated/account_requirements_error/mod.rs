@@ -74,7 +74,9 @@ impl AccountRequirementsErrorCode {
             VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
             VerificationDocumentAddressMissing => "verification_document_address_missing",
             VerificationDocumentCorrupt => "verification_document_corrupt",
-            VerificationDocumentCountryNotSupported => "verification_document_country_not_supported",
+            VerificationDocumentCountryNotSupported => {
+                "verification_document_country_not_supported"
+            }
             VerificationDocumentDobMismatch => "verification_document_dob_mismatch",
             VerificationDocumentDuplicateType => "verification_document_duplicate_type",
             VerificationDocumentExpired => "verification_document_expired",
@@ -87,7 +89,9 @@ impl AccountRequirementsErrorCode {
             VerificationDocumentIdNumberMissing => "verification_document_id_number_missing",
             VerificationDocumentIncomplete => "verification_document_incomplete",
             VerificationDocumentInvalid => "verification_document_invalid",
-            VerificationDocumentIssueOrExpiryDateMissing => "verification_document_issue_or_expiry_date_missing",
+            VerificationDocumentIssueOrExpiryDateMissing => {
+                "verification_document_issue_or_expiry_date_missing"
+            }
             VerificationDocumentManipulated => "verification_document_manipulated",
             VerificationDocumentMissingBack => "verification_document_missing_back",
             VerificationDocumentMissingFront => "verification_document_missing_front",
@@ -113,7 +117,9 @@ impl AccountRequirementsErrorCode {
             VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
             VerificationMissingExecutives => "verification_missing_executives",
             VerificationMissingOwners => "verification_missing_owners",
-            VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
+            VerificationRequiresAdditionalMemorandumOfAssociations => {
+                "verification_requires_additional_memorandum_of_associations"
+            }
         }
     }
 }
@@ -132,7 +138,9 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_document_address_mismatch" => Ok(VerificationDocumentAddressMismatch),
             "verification_document_address_missing" => Ok(VerificationDocumentAddressMissing),
             "verification_document_corrupt" => Ok(VerificationDocumentCorrupt),
-            "verification_document_country_not_supported" => Ok(VerificationDocumentCountryNotSupported),
+            "verification_document_country_not_supported" => {
+                Ok(VerificationDocumentCountryNotSupported)
+            }
             "verification_document_dob_mismatch" => Ok(VerificationDocumentDobMismatch),
             "verification_document_duplicate_type" => Ok(VerificationDocumentDuplicateType),
             "verification_document_expired" => Ok(VerificationDocumentExpired),
@@ -145,13 +153,17 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_document_id_number_missing" => Ok(VerificationDocumentIdNumberMissing),
             "verification_document_incomplete" => Ok(VerificationDocumentIncomplete),
             "verification_document_invalid" => Ok(VerificationDocumentInvalid),
-            "verification_document_issue_or_expiry_date_missing" => Ok(VerificationDocumentIssueOrExpiryDateMissing),
+            "verification_document_issue_or_expiry_date_missing" => {
+                Ok(VerificationDocumentIssueOrExpiryDateMissing)
+            }
             "verification_document_manipulated" => Ok(VerificationDocumentManipulated),
             "verification_document_missing_back" => Ok(VerificationDocumentMissingBack),
             "verification_document_missing_front" => Ok(VerificationDocumentMissingFront),
             "verification_document_name_mismatch" => Ok(VerificationDocumentNameMismatch),
             "verification_document_name_missing" => Ok(VerificationDocumentNameMissing),
-            "verification_document_nationality_mismatch" => Ok(VerificationDocumentNationalityMismatch),
+            "verification_document_nationality_mismatch" => {
+                Ok(VerificationDocumentNationalityMismatch)
+            }
             "verification_document_not_readable" => Ok(VerificationDocumentNotReadable),
             "verification_document_not_signed" => Ok(VerificationDocumentNotSigned),
             "verification_document_not_uploaded" => Ok(VerificationDocumentNotUploaded),
@@ -171,7 +183,9 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_failed_tax_id_not_issued" => Ok(VerificationFailedTaxIdNotIssued),
             "verification_missing_executives" => Ok(VerificationMissingExecutives),
             "verification_missing_owners" => Ok(VerificationMissingOwners),
-            "verification_requires_additional_memorandum_of_associations" => Ok(VerificationRequiresAdditionalMemorandumOfAssociations),
+            "verification_requires_additional_memorandum_of_associations" => {
+                Ok(VerificationRequiresAdditionalMemorandumOfAssociations)
+            }
             _ => Err(()),
         }
     }
@@ -206,6 +220,7 @@ impl<'de> serde::Deserialize<'de> for AccountRequirementsErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountRequirementsErrorCode"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountRequirementsErrorCode"))
     }
 }

@@ -8,7 +8,8 @@ pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
     pub currency: Option<stripe_types::Currency>,
     /// A list of financial addresses that can be used to fund the customer balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_addresses: Option<Vec<stripe_types::FundingInstructionsBankTransferFinancialAddress>>,
+    pub financial_addresses:
+        Option<Vec<stripe_types::FundingInstructionsBankTransferFinancialAddress>>,
     /// A link to a hosted page that guides your customer through completing the transfer.
     pub hosted_instructions_url: Option<String>,
     /// A string identifying this payment.
@@ -86,6 +87,10 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentNextActionDisplayBankTransfer
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentNextActionDisplayBankTransferInstructionsType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentNextActionDisplayBankTransferInstructionsType",
+            )
+        })
     }
 }

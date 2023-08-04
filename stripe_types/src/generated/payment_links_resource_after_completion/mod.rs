@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentLinksResourceAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<stripe_types::PaymentLinksResourceCompletionBehaviorConfirmationPage>,
+    pub hosted_confirmation:
+        Option<stripe_types::PaymentLinksResourceCompletionBehaviorConfirmationPage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<stripe_types::PaymentLinksResourceCompletionBehaviorRedirect>,
     /// The specified behavior after the purchase is complete.
@@ -66,6 +67,8 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceAfterCompletionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourceAfterCompletionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentLinksResourceAfterCompletionType")
+        })
     }
 }

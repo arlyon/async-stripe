@@ -8,7 +8,14 @@ use crate::templates::derives::{write_derives_line, Derives};
 use crate::templates::utils::{write_doc_comment, write_serde_rename};
 use crate::types::RustIdent;
 
-pub fn write_struct(out: &mut String, name: &RustIdent, additional_derives: Derives, fields: &[PrintableStructField], include_constructor: bool, opt_lifetime: Option<Lifetime>) {
+pub fn write_struct(
+    out: &mut String,
+    name: &RustIdent,
+    additional_derives: Derives,
+    fields: &[PrintableStructField],
+    include_constructor: bool,
+    opt_lifetime: Option<Lifetime>,
+) {
     let derives = write_derives_line(additional_derives);
     let lifetime_str = opt_lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
 

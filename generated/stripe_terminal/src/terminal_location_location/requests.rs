@@ -1,33 +1,3 @@
-
-/// Retrieves a `Location` object.
-pub fn retrieve(client: &stripe::Client, location: &stripe_terminal::terminal_location_location::TerminalLocationId, params: RetrieveTerminalLocationLocation) -> stripe::Response<RetrieveReturned> {
-    client.get_query(&format!("/terminal/locations/{location}", location = location), params)
-}
-/// Creates a new `Location` object.
-/// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
-pub fn create(client: &stripe::Client, params: CreateTerminalLocationLocation) -> stripe::Response<stripe_terminal::TerminalLocationLocation> {
-    client.send_form("/terminal/locations", params, http_types::Method::Post)
-}
-/// Updates a `Location` object by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-pub fn update(client: &stripe::Client, location: &stripe_terminal::terminal_location_location::TerminalLocationId, params: UpdateTerminalLocationLocation) -> stripe::Response<UpdateReturned> {
-    client.send_form(&format!("/terminal/locations/{location}", location = location), params, http_types::Method::Post)
-}
-/// Returns a list of `Location` objects.
-pub fn list(client: &stripe::Client, params: ListTerminalLocationLocation) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalLocationLocation>> {
-    client.get_query("/terminal/locations", params)
-}
-/// Deletes a `Location` object.
-pub fn delete(client: &stripe::Client, location: &stripe_terminal::terminal_location_location::TerminalLocationId) -> stripe::Response<stripe_terminal::TerminalLocationDeletedLocation> {
-    client.send(&format!("/terminal/locations/{location}", location = location), http_types::Method::Delete)
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum RetrieveReturned {
-    TerminalLocation(stripe_terminal::TerminalLocationLocation),
-    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTerminalLocationLocation<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -38,6 +8,22 @@ impl<'a> RetrieveTerminalLocationLocation<'a> {
     pub fn new() -> Self {
         Self::default()
     }
+}
+impl<'a> RetrieveTerminalLocationLocation<'a> {
+    /// Retrieves a `Location` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+    ) -> stripe::Response<RetrieveReturned> {
+        client.get_query(&format!("/terminal/locations/{location}", location = location), self)
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum RetrieveReturned {
+    TerminalLocation(stripe_terminal::TerminalLocationLocation),
+    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalLocationLocation<'a> {
@@ -61,7 +47,13 @@ pub struct CreateTerminalLocationLocation<'a> {
 }
 impl<'a> CreateTerminalLocationLocation<'a> {
     pub fn new(address: CreateTerminalLocationLocationAddress<'a>, display_name: &'a str) -> Self {
-        Self { address, configuration_overrides: Default::default(), display_name, expand: Default::default(), metadata: Default::default() }
+        Self {
+            address,
+            configuration_overrides: Default::default(),
+            display_name,
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
     }
 }
 /// The full address of the location.
@@ -87,14 +79,25 @@ pub struct CreateTerminalLocationLocationAddress<'a> {
 }
 impl<'a> CreateTerminalLocationLocationAddress<'a> {
     pub fn new(country: &'a str) -> Self {
-        Self { city: Default::default(), country, line1: Default::default(), line2: Default::default(), postal_code: Default::default(), state: Default::default() }
+        Self {
+            city: Default::default(),
+            country,
+            line1: Default::default(),
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum UpdateReturned {
-    TerminalLocation(stripe_terminal::TerminalLocationLocation),
-    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
+impl<'a> CreateTerminalLocationLocation<'a> {
+    /// Creates a new `Location` object.
+    /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_terminal::TerminalLocationLocation> {
+        client.send_form("/terminal/locations", self, http_types::Method::Post)
+    }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateTerminalLocationLocation<'a> {
@@ -150,6 +153,28 @@ impl<'a> UpdateTerminalLocationLocationAddress<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateTerminalLocationLocation<'a> {
+    /// Updates a `Location` object by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+    ) -> stripe::Response<UpdateReturned> {
+        client.send_form(
+            &format!("/terminal/locations/{location}", location = location),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum UpdateReturned {
+    TerminalLocation(stripe_terminal::TerminalLocationLocation),
+    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTerminalLocationLocation<'a> {
     /// A cursor for use in pagination.
@@ -176,5 +201,35 @@ pub struct ListTerminalLocationLocation<'a> {
 impl<'a> ListTerminalLocationLocation<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListTerminalLocationLocation<'a> {
+    /// Returns a list of `Location` objects.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalLocationLocation>> {
+        client.get_query("/terminal/locations", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteTerminalLocationLocation {}
+impl DeleteTerminalLocationLocation {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteTerminalLocationLocation {
+    /// Deletes a `Location` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+    ) -> stripe::Response<stripe_terminal::TerminalLocationDeletedLocation> {
+        client.send_form(
+            &format!("/terminal/locations/{location}", location = location),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }

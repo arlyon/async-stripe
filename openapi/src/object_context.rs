@@ -1,5 +1,7 @@
 use std::fmt::{Debug, Write};
 
+use indoc::writedoc;
+
 use crate::components::Components;
 use crate::dedup::deduplicate_types;
 use crate::ids::write_object_id;
@@ -39,7 +41,13 @@ impl Components {
         self.write_object(obj, meta, info, out);
     }
 
-    pub fn write_object(&self, obj: &RustObject, metadata: &ObjectMetadata, info: ObjectGenInfo, out: &mut String) {
+    pub fn write_object(
+        &self,
+        obj: &RustObject,
+        metadata: &ObjectMetadata,
+        info: ObjectGenInfo,
+        out: &mut String,
+    ) {
         // If the object contains any references, we'll need to print with a lifetime
         let has_ref = obj.has_reference();
         let lifetime = if has_ref { Some(Lifetime::new()) } else { None };
@@ -60,9 +68,17 @@ impl Components {
                         PrintableStructField::from_field(f, printable)
                     })
                     .collect::<Vec<_>>();
-                let struct_derives = info.derives.copy(should_derive_copy).default(should_derive_default);
+                let struct_derives =
+                    info.derives.copy(should_derive_copy).default(should_derive_default);
 
-                write_struct(out, ident, struct_derives, &printable_fields, info.include_constructor, lifetime);
+                write_struct(
+                    out,
+                    ident,
+                    struct_derives,
+                    &printable_fields,
+                    info.include_constructor,
+                    lifetime,
+                );
 
                 for field in fields {
                     if let Some((obj, meta)) = field.rust_type.as_object() {
@@ -70,17 +86,31 @@ impl Components {
                     }
                 }
             }
-            RustObject::FieldlessEnum(variants) => write_fieldless_enum_variants(out, variants, ident, info.derives),
+            RustObject::FieldlessEnum(variants) => {
+                write_fieldless_enum_variants(out, variants, ident, info.derives)
+            }
             RustObject::Enum(variants) => {
+                let object_names = variants
+                    .iter()
+                    .map(|v| v.rust_type.as_ref().and_then(|t| extract_object_name(t, self)))
+                    .collect::<Vec<_>>();
                 let printable_variants = variants
                     .iter()
                     .map(|v| {
-                        let printable = v.rust_type.as_ref().map(|typ| self.construct_printable_type(typ));
+                        let printable =
+                            v.rust_type.as_ref().map(|typ| self.construct_printable_type(typ));
                         PrintableEnumVariant { rust_type: printable, variant: v.variant.clone() }
                     })
                     .collect::<Vec<_>>();
                 let enum_derives = info.derives.copy(should_derive_copy);
-                write_enum_variants(out, ident, &printable_variants, enum_derives, lifetime);
+                write_enum_variants(
+                    out,
+                    ident,
+                    &printable_variants,
+                    enum_derives,
+                    lifetime,
+                    object_names,
+                );
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         if let Some((obj, meta)) = typ.as_object() {
@@ -93,7 +123,18 @@ impl Components {
     }
 }
 
-pub fn gen_obj(obj: &RustObject, meta: &ObjectMetadata, comp: &StripeObject, components: &Components) -> String {
+fn extract_object_name<'a>(typ: &'a RustType, components: &'a Components) -> Option<&'a str> {
+    let path = typ.as_component_path()?;
+    let obj = components.get(path);
+    obj.data.object_name.as_deref()
+}
+
+pub fn gen_obj(
+    obj: &RustObject,
+    meta: &ObjectMetadata,
+    comp: &StripeObject,
+    components: &Components,
+) -> String {
     let gen_info = ObjectGenInfo::new(Derives::new_deser());
     let mut out = String::with_capacity(128);
 
@@ -115,7 +156,9 @@ pub fn gen_obj(obj: &RustObject, meta: &ObjectMetadata, comp: &StripeObject, com
         let id_type = components.construct_printable_type(id_typ);
         match &obj {
             RustObject::Struct(_) => write_object_trait(&mut out, ident, &id_type),
-            RustObject::Enum(variants) => write_object_trait_for_enum(&mut out, ident, &id_type, variants),
+            RustObject::Enum(variants) => {
+                write_object_trait_for_enum(&mut out, ident, &id_type, variants)
+            }
             RustObject::FieldlessEnum(_) => {
                 panic!("Did not expect enum to have an id");
             }
@@ -138,33 +181,50 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
     let mut specs = Vec::from(specs);
     let mut req_typs = vec![];
     for spec in &mut specs {
-        if let Some(param_typ) = &mut spec.params {
-            req_typs.push(param_typ);
+        if let Some(rust_obj) = spec.params.as_rust_object_mut() {
+            req_typs.extend(rust_obj.typs_mut());
         }
     }
 
     let dedupped_objs = deduplicate_types(&mut req_typs);
-
-    for req in &specs {
-        let printable = PrintableRequestSpec {
-            path_params: req.path_params.iter().map(|p| PrintablePathParam { typ: components.construct_printable_type(&p.rust_type), name: &p.name }).collect(),
-            doc_comment: req.doc_comment.as_deref(),
-            method_name: &req.method_name,
-            request_path: &req.req_path,
-            param_type: req.params.as_ref().map(|typ| components.construct_printable_type(typ)),
-            returned: components.construct_printable_type(&req.returned),
-            method_type: req.method_type,
-        };
-        printable.gen_code(&mut out);
-    }
-
     let params_gen_info = ObjectGenInfo::new(Derives::new().serialize(true)).include_constructor();
 
     for req in &specs {
-        components.write_rust_type_objs(&req.returned, ObjectGenInfo::new(Derives::new_deser()), &mut out);
-        if let Some(typ) = &req.params {
-            components.write_rust_type_objs(typ, params_gen_info, &mut out);
-        }
+        components.write_rust_type_objs(&req.params, params_gen_info, &mut out);
+
+        let printable = PrintableRequestSpec {
+            path_params: req
+                .path_params
+                .iter()
+                .map(|p| PrintablePathParam {
+                    typ: components.construct_printable_type(&p.rust_type),
+                    name: &p.name,
+                })
+                .collect(),
+            doc_comment: req.doc_comment.as_deref(),
+            request_path: &req.req_path,
+            param_type: components.construct_printable_type(&req.params),
+            returned: components.construct_printable_type(&req.returned),
+            method_type: req.method_type,
+        };
+        let mut req_out = String::with_capacity(128);
+        printable.gen_code(&mut req_out);
+        let lifetime_str = if req.params.has_reference() { "<'a>" } else { "" };
+        let impl_for = &printable.param_type;
+        let _ = writedoc!(
+            out,
+            r#"
+            impl{lifetime_str} {impl_for}{lifetime_str} {{
+                {req_out}
+            }}
+        "#
+        );
+
+        components.write_rust_type_objs(
+            &req.returned,
+            ObjectGenInfo::new(Derives::new_deser()),
+            &mut out,
+        );
     }
     for (obj, ident) in dedupped_objs {
         let typ = RustType::Object(obj, ObjectMetadata::new(ident));

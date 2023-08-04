@@ -1,14 +1,3 @@
-
-/// Returns a list of early fraud warnings.
-pub fn list(client: &stripe::Client, params: ListRadarEarlyFraudWarning) -> stripe::Response<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
-    client.get_query("/radar/early_fraud_warnings", params)
-}
-/// Retrieves the details of an early fraud warning that has previously been created.
-///
-/// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
-pub fn retrieve(client: &stripe::Client, early_fraud_warning: &stripe_fraud::radar_early_fraud_warning::RadarEarlyFraudWarningId, params: RetrieveRadarEarlyFraudWarning) -> stripe::Response<stripe_fraud::RadarEarlyFraudWarning> {
-    client.get_query(&format!("/radar/early_fraud_warnings/{early_fraud_warning}", early_fraud_warning = early_fraud_warning), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListRadarEarlyFraudWarning<'a> {
     /// Only return early fraud warnings for the charge specified by this charge ID.
@@ -43,6 +32,15 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
         Self::default()
     }
 }
+impl<'a> ListRadarEarlyFraudWarning<'a> {
+    /// Returns a list of early fraud warnings.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
+        client.get_query("/radar/early_fraud_warnings", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarEarlyFraudWarning<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -52,5 +50,23 @@ pub struct RetrieveRadarEarlyFraudWarning<'a> {
 impl<'a> RetrieveRadarEarlyFraudWarning<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveRadarEarlyFraudWarning<'a> {
+    /// Retrieves the details of an early fraud warning that has previously been created.
+    ///
+    /// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        early_fraud_warning: &stripe_fraud::radar_early_fraud_warning::RadarEarlyFraudWarningId,
+    ) -> stripe::Response<stripe_fraud::RadarEarlyFraudWarning> {
+        client.get_query(
+            &format!(
+                "/radar/early_fraud_warnings/{early_fraud_warning}",
+                early_fraud_warning = early_fraud_warning
+            ),
+            self,
+        )
     }
 }

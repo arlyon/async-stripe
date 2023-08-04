@@ -52,10 +52,6 @@ pub struct Plan {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// A brief description of the plan, hidden from customers.
     pub nickname: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PlanObject,
     /// The product whose pricing this plan determines.
     pub product: Option<stripe_types::Expandable<stripe_types::Product>>,
     /// Each element represents a pricing tier.
@@ -150,7 +146,8 @@ impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
 /// Describes how to compute the price per period.
@@ -215,7 +212,8 @@ impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
     }
 }
 /// The frequency at which a subscription is billed.
@@ -285,66 +283,6 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PlanObject {
-    Plan,
-}
-
-impl PlanObject {
-    pub fn as_str(self) -> &'static str {
-        use PlanObject::*;
-        match self {
-            Plan => "plan",
-        }
-    }
-}
-
-impl std::str::FromStr for PlanObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlanObject::*;
-        match s {
-            "plan" => Ok(Plan),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PlanObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PlanObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PlanObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PlanObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PlanObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanObject"))
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.

@@ -83,7 +83,8 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
     }
 }
 /// Why this subscription was cancelled.
@@ -147,6 +148,7 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsReason"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsReason"))
     }
 }

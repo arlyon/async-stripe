@@ -1,58 +1,3 @@
-
-/// Cancels an InboundTransfer.
-pub fn cancel(
-    client: &stripe::Client,
-    inbound_transfer: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId,
-    params: CancelTreasuryInboundTransfersResourceInboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.send_form(&format!("/treasury/inbound_transfers/{inbound_transfer}/cancel", inbound_transfer = inbound_transfer), params, http_types::Method::Post)
-}
-/// Creates an InboundTransfer.
-pub fn create(client: &stripe::Client, params: CreateTreasuryInboundTransfersResourceInboundTransfer) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.send_form("/treasury/inbound_transfers", params, http_types::Method::Post)
-}
-/// Retrieves the details of an existing InboundTransfer.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId,
-    params: RetrieveTreasuryInboundTransfersResourceInboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.get_query(&format!("/treasury/inbound_transfers/{id}", id = id), params)
-}
-/// Returns a list of InboundTransfers sent from the specified FinancialAccount.
-pub fn list(client: &stripe::Client, params: ListTreasuryInboundTransfersResourceInboundTransfer) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer>> {
-    client.get_query("/treasury/inbound_transfers", params)
-}
-/// Transitions a test mode created InboundTransfer to the `succeeded` status.
-///
-/// The InboundTransfer must already be in the `processing` state.
-pub fn succeed(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId,
-    params: SucceedTreasuryInboundTransfersResourceInboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/succeed", id = id), params, http_types::Method::Post)
-}
-/// Transitions a test mode created InboundTransfer to the `failed` status.
-///
-/// The InboundTransfer must already be in the `processing` state.
-pub fn fail(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId,
-    params: FailTreasuryInboundTransfersResourceInboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/fail", id = id), params, http_types::Method::Post)
-}
-/// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
-///
-/// The InboundTransfer must already be in the `succeeded` state.
-pub fn return_inbound_transfer(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId,
-    params: ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/return", id = id), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -62,6 +7,12 @@ pub struct CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
 impl<'a> CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Cancels an InboundTransfer.
+    pub fn send(&self, client: &stripe::Client, inbound_transfer: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form(&format!("/treasury/inbound_transfers/{inbound_transfer}/cancel", inbound_transfer = inbound_transfer), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -102,6 +53,12 @@ impl<'a> CreateTreasuryInboundTransfersResourceInboundTransfer<'a> {
         Self { amount, currency, description: Default::default(), expand: Default::default(), financial_account, metadata: Default::default(), origin_payment_method, statement_descriptor: Default::default() }
     }
 }
+impl<'a> CreateTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Creates an InboundTransfer.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form("/treasury/inbound_transfers", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -111,6 +68,12 @@ pub struct RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
 impl<'a> RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Retrieves the details of an existing InboundTransfer.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.get_query(&format!("/treasury/inbound_transfers/{id}", id = id), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -206,6 +169,12 @@ impl serde::Serialize for ListTreasuryInboundTransfersResourceInboundTransferSta
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer>> {
+        client.get_query("/treasury/inbound_transfers", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct SucceedTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -215,6 +184,14 @@ pub struct SucceedTreasuryInboundTransfersResourceInboundTransfer<'a> {
 impl<'a> SucceedTreasuryInboundTransfersResourceInboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> SucceedTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Transitions a test mode created InboundTransfer to the `succeeded` status.
+    ///
+    /// The InboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/succeed", id = id), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -330,6 +307,14 @@ impl serde::Serialize for FailTreasuryInboundTransfersResourceInboundTransferFai
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> FailTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Transitions a test mode created InboundTransfer to the `failed` status.
+    ///
+    /// The InboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/fail", id = id), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -339,5 +324,13 @@ pub struct ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer<
 impl<'a> ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer<'a> {
+    /// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
+    ///
+    /// The InboundTransfer must already be in the `succeeded` state.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/return", id = id), self, http_types::Method::Post)
     }
 }

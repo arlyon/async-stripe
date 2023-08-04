@@ -1,20 +1,3 @@
-
-/// Returns a list of your shipping rates.
-pub fn list(client: &stripe::Client, params: ListShippingRate) -> stripe::Response<stripe_types::List<stripe_types::ShippingRate>> {
-    client.get_query("/shipping_rates", params)
-}
-/// Returns the shipping rate object with the given ID.
-pub fn retrieve(client: &stripe::Client, shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId, params: RetrieveShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
-    client.get_query(&format!("/shipping_rates/{shipping_rate_token}", shipping_rate_token = shipping_rate_token), params)
-}
-/// Creates a new shipping rate object.
-pub fn create(client: &stripe::Client, params: CreateShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
-    client.send_form("/shipping_rates", params, http_types::Method::Post)
-}
-/// Updates an existing shipping rate object.
-pub fn update(client: &stripe::Client, shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId, params: UpdateShippingRate) -> stripe::Response<stripe_types::ShippingRate> {
-    client.send_form(&format!("/shipping_rates/{shipping_rate_token}", shipping_rate_token = shipping_rate_token), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListShippingRate<'a> {
     /// Only return shipping rates that are active or inactive.
@@ -54,6 +37,15 @@ impl<'a> ListShippingRate<'a> {
         Self::default()
     }
 }
+impl<'a> ListShippingRate<'a> {
+    /// Returns a list of your shipping rates.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::ShippingRate>> {
+        client.get_query("/shipping_rates", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveShippingRate<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -63,6 +55,22 @@ pub struct RetrieveShippingRate<'a> {
 impl<'a> RetrieveShippingRate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveShippingRate<'a> {
+    /// Returns the shipping rate object with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId,
+    ) -> stripe::Response<stripe_types::ShippingRate> {
+        client.get_query(
+            &format!(
+                "/shipping_rates/{shipping_rate_token}",
+                shipping_rate_token = shipping_rate_token
+            ),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -110,7 +118,16 @@ pub struct CreateShippingRate<'a> {
 }
 impl<'a> CreateShippingRate<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self { delivery_estimate: Default::default(), display_name, expand: Default::default(), fixed_amount: Default::default(), metadata: Default::default(), tax_behavior: Default::default(), tax_code: Default::default(), type_: Default::default() }
+        Self {
+            delivery_estimate: Default::default(),
+            display_name,
+            expand: Default::default(),
+            fixed_amount: Default::default(),
+            metadata: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+            type_: Default::default(),
+        }
     }
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
@@ -149,7 +166,12 @@ pub struct CreateShippingRateFixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateShippingRateFixedAmountCurrencyOptions,
+        >,
+    >,
 }
 impl<'a> CreateShippingRateFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -227,6 +249,12 @@ impl serde::Serialize for CreateShippingRateType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateShippingRate<'a> {
+    /// Creates a new shipping rate object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::ShippingRate> {
+        client.send_form("/shipping_rates", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateShippingRate<'a> {
     /// Whether the shipping rate can be used for new purchases.
@@ -269,7 +297,12 @@ pub struct UpdateShippingRateFixedAmount<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, UpdateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            UpdateShippingRateFixedAmountCurrencyOptions,
+        >,
+    >,
 }
 impl<'a> UpdateShippingRateFixedAmount<'a> {
     pub fn new() -> Self {
@@ -293,6 +326,23 @@ pub struct UpdateShippingRateFixedAmountCurrencyOptions {
 impl UpdateShippingRateFixedAmountCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateShippingRate<'a> {
+    /// Updates an existing shipping rate object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        shipping_rate_token: &stripe_types::shipping_rate::ShippingRateId,
+    ) -> stripe::Response<stripe_types::ShippingRate> {
+        client.send_form(
+            &format!(
+                "/shipping_rates/{shipping_rate_token}",
+                shipping_rate_token = shipping_rate_token
+            ),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

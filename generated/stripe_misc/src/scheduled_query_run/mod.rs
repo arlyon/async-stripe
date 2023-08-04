@@ -19,10 +19,6 @@ pub struct ScheduledQueryRun {
     pub id: stripe_misc::scheduled_query_run::ScheduledQueryRunId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: ScheduledQueryRunObject,
     /// Time at which the result expires and is no longer available for download.
     pub result_available_until: stripe_types::Timestamp,
     /// SQL for the query.
@@ -32,66 +28,6 @@ pub struct ScheduledQueryRun {
     /// Title of the query.
     pub title: String,
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ScheduledQueryRunObject {
-    ScheduledQueryRun,
-}
-
-impl ScheduledQueryRunObject {
-    pub fn as_str(self) -> &'static str {
-        use ScheduledQueryRunObject::*;
-        match self {
-            ScheduledQueryRun => "scheduled_query_run",
-        }
-    }
-}
-
-impl std::str::FromStr for ScheduledQueryRunObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ScheduledQueryRunObject::*;
-        match s {
-            "scheduled_query_run" => Ok(ScheduledQueryRun),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for ScheduledQueryRunObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ScheduledQueryRunObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ScheduledQueryRunObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ScheduledQueryRunObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for ScheduledQueryRunObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ScheduledQueryRunObject"))
-    }
-}
 impl stripe_types::Object for ScheduledQueryRun {
     type Id = stripe_misc::scheduled_query_run::ScheduledQueryRunId;
     fn id(&self) -> Self::Id {
@@ -99,4 +35,7 @@ impl stripe_types::Object for ScheduledQueryRun {
     }
 }
 stripe_types::def_id!(ScheduledQueryRunId, "sqr_");
-pub mod requests;
+#[cfg(feature = "scheduled_query_run")]
+mod requests;
+#[cfg(feature = "scheduled_query_run")]
+pub use requests::*;

@@ -1,45 +1,3 @@
-
-/// Creates a SetupIntent object.
-///
-/// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
-/// to collect any required permissions to charge the payment method later.
-pub fn create(client: &stripe::Client, params: CreateSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.send_form("/setup_intents", params, http_types::Method::Post)
-}
-/// Returns a list of SetupIntents.
-pub fn list(client: &stripe::Client, params: ListSetupIntent) -> stripe::Response<stripe_types::List<stripe_types::SetupIntent>> {
-    client.get_query("/setup_intents", params)
-}
-/// Retrieves the details of a SetupIntent that has previously been created.
-///
-/// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
-/// When retrieved with a publishable key, only a subset of properties will be returned.
-/// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-pub fn retrieve(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: RetrieveSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.get_query(&format!("/setup_intents/{intent}", intent = intent), params)
-}
-/// Updates a SetupIntent object.
-pub fn update(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: UpdateSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.send_form(&format!("/setup_intents/{intent}", intent = intent), params, http_types::Method::Post)
-}
-/// Confirm that your customer intends to set up the current or
-/// provided payment method.
-///
-/// For example, you would confirm a SetupIntent when a customer hits the “Save” button on a payment method management page on your website.  If the selected payment method does not require any additional steps from the customer, the SetupIntent will transition to the `succeeded` status.  Otherwise, it will transition to the `requires_action` status and suggest additional actions via `next_action`.
-/// If setup fails, the SetupIntent will transition to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
-pub fn confirm(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: ConfirmSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.send_form(&format!("/setup_intents/{intent}/confirm", intent = intent), params, http_types::Method::Post)
-}
-/// A SetupIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_confirmation`, or `requires_action`.
-///
-/// Once canceled, setup is abandoned and any operations on the SetupIntent will fail with an error.
-pub fn cancel(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: CancelSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.send_form(&format!("/setup_intents/{intent}/cancel", intent = intent), params, http_types::Method::Post)
-}
-/// Verifies microdeposits on a SetupIntent object.
-pub fn verify_microdeposits(client: &stripe::Client, intent: &stripe_types::setup_intent::SetupIntentId, params: VerifyMicrodepositsSetupIntent) -> stripe::Response<stripe_types::SetupIntent> {
-    client.send_form(&format!("/setup_intents/{intent}/verify_microdeposits", intent = intent), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSetupIntent<'a> {
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
@@ -244,7 +202,12 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance<'a> {
 }
 impl<'a> CreateSetupIntentMandateDataCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
+        Self {
+            accepted_at: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            type_,
+        }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -1274,6 +1237,15 @@ impl serde::Serialize for CreateSetupIntentUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateSetupIntent<'a> {
+    /// Creates a SetupIntent object.
+    ///
+    /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
+    /// to collect any required permissions to charge the payment method later.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::SetupIntent> {
+        client.send_form("/setup_intents", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListSetupIntent<'a> {
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
@@ -1320,6 +1292,15 @@ impl<'a> ListSetupIntent<'a> {
         Self::default()
     }
 }
+impl<'a> ListSetupIntent<'a> {
+    /// Returns a list of SetupIntents.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::SetupIntent>> {
+        client.get_query("/setup_intents", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSetupIntent<'a> {
     /// The client secret of the SetupIntent.
@@ -1334,6 +1315,20 @@ pub struct RetrieveSetupIntent<'a> {
 impl<'a> RetrieveSetupIntent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveSetupIntent<'a> {
+    /// Retrieves the details of a SetupIntent that has previously been created.
+    ///
+    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
+    /// When retrieved with a publishable key, only a subset of properties will be returned.
+    /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::setup_intent::SetupIntentId,
+    ) -> stripe::Response<stripe_types::SetupIntent> {
+        client.get_query(&format!("/setup_intents/{intent}", intent = intent), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2341,6 +2336,20 @@ impl<'a> UpdateSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateSetupIntent<'a> {
+    /// Updates a SetupIntent object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::setup_intent::SetupIntentId,
+    ) -> stripe::Response<stripe_types::SetupIntent> {
+        client.send_form(
+            &format!("/setup_intents/{intent}", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmSetupIntent<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -2387,7 +2396,9 @@ pub struct ConfirmSetupIntentSecretKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentSecretKeyParam<'a> {
-    pub fn new(customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>) -> Self {
+    pub fn new(
+        customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
+    ) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -2411,7 +2422,12 @@ pub struct ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
 }
 impl<'a> ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { accepted_at: Default::default(), offline: Default::default(), online: Default::default(), type_ }
+        Self {
+            accepted_at: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            type_,
+        }
     }
 }
 /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
@@ -2429,7 +2445,9 @@ pub struct ConfirmSetupIntentClientKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentClientKeyParam<'a> {
-    pub fn new(customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>) -> Self {
+    pub fn new(
+        customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
+    ) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -2443,7 +2461,10 @@ pub struct ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
     pub type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
-    pub fn new(online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>, type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType) -> Self {
+    pub fn new(
+        online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>,
+        type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
+    ) -> Self {
         Self { online, type_ }
     }
 }
@@ -3457,6 +3478,24 @@ impl<'a> ConfirmSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
         Self::default()
     }
 }
+impl<'a> ConfirmSetupIntent<'a> {
+    /// Confirm that your customer intends to set up the current or
+    /// provided payment method.
+    ///
+    /// For example, you would confirm a SetupIntent when a customer hits the “Save” button on a payment method management page on your website.  If the selected payment method does not require any additional steps from the customer, the SetupIntent will transition to the `succeeded` status.  Otherwise, it will transition to the `requires_action` status and suggest additional actions via `next_action`.
+    /// If setup fails, the SetupIntent will transition to the `requires_payment_method` status or the `canceled` status if the confirmation limit is reached.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::setup_intent::SetupIntentId,
+    ) -> stripe::Response<stripe_types::SetupIntent> {
+        client.send_form(
+            &format!("/setup_intents/{intent}/confirm", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelSetupIntent<'a> {
     /// Reason for canceling this SetupIntent.
@@ -3532,6 +3571,22 @@ impl serde::Serialize for CancelSetupIntentCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CancelSetupIntent<'a> {
+    /// A SetupIntent object can be canceled when it is in one of these statuses: `requires_payment_method`, `requires_confirmation`, or `requires_action`.
+    ///
+    /// Once canceled, setup is abandoned and any operations on the SetupIntent will fail with an error.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::setup_intent::SetupIntentId,
+    ) -> stripe::Response<stripe_types::SetupIntent> {
+        client.send_form(
+            &format!("/setup_intents/{intent}/cancel", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct VerifyMicrodepositsSetupIntent<'a> {
     /// Two positive integers, in *cents*, equal to the values of the microdeposits sent to the bank account.
@@ -3547,6 +3602,20 @@ pub struct VerifyMicrodepositsSetupIntent<'a> {
 impl<'a> VerifyMicrodepositsSetupIntent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> VerifyMicrodepositsSetupIntent<'a> {
+    /// Verifies microdeposits on a SetupIntent object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        intent: &stripe_types::setup_intent::SetupIntentId,
+    ) -> stripe::Response<stripe_types::SetupIntent> {
+        client.send_form(
+            &format!("/setup_intents/{intent}/verify_microdeposits", intent = intent),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -3677,7 +3746,11 @@ pub struct PaymentMethodParam<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> PaymentMethodParam<'a> {
-    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
+    pub fn new(
+        account_number: &'a str,
+        institution_number: &'a str,
+        transit_number: &'a str,
+    ) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -4915,8 +4988,26 @@ pub struct SetupIntentMandateOptionsParam<'a> {
     pub supported_types: Option<&'a [SupportedTypes]>,
 }
 impl<'a> SetupIntentMandateOptionsParam<'a> {
-    pub fn new(amount: i64, amount_type: AmountType, currency: stripe_types::Currency, interval: Interval, reference: &'a str, start_date: stripe_types::Timestamp) -> Self {
-        Self { amount, amount_type, currency, description: Default::default(), end_date: Default::default(), interval, interval_count: Default::default(), reference, start_date, supported_types: Default::default() }
+    pub fn new(
+        amount: i64,
+        amount_type: AmountType,
+        currency: stripe_types::Currency,
+        interval: Interval,
+        reference: &'a str,
+        start_date: stripe_types::Timestamp,
+    ) -> Self {
+        Self {
+            amount,
+            amount_type,
+            currency,
+            description: Default::default(),
+            end_date: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            reference,
+            start_date,
+            supported_types: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

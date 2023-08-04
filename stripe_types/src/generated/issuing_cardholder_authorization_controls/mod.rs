@@ -360,7 +360,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             BusLines => "bus_lines",
             BusinessSecretarialSchools => "business_secretarial_schools",
             BuyingShoppingServices => "buying_shopping_services",
-            CableSatelliteAndOtherPayTelevisionAndRadio => "cable_satellite_and_other_pay_television_and_radio",
+            CableSatelliteAndOtherPayTelevisionAndRadio => {
+                "cable_satellite_and_other_pay_television_and_radio"
+            }
             CameraAndPhotographicSupplyStores => "camera_and_photographic_supply_stores",
             CandyNutAndConfectioneryStores => "candy_nut_and_confectionery_stores",
             CarAndTruckDealersNewUsed => "car_and_truck_dealers_new_used",
@@ -370,7 +372,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             CarpentryServices => "carpentry_services",
             CarpetUpholsteryCleaning => "carpet_upholstery_cleaning",
             Caterers => "caterers",
-            CharitableAndSocialServiceOrganizationsFundraising => "charitable_and_social_service_organizations_fundraising",
+            CharitableAndSocialServiceOrganizationsFundraising => {
+                "charitable_and_social_service_organizations_fundraising"
+            }
             ChemicalsAndAlliedProducts => "chemicals_and_allied_products",
             ChildCareServices => "child_care_services",
             ChildrensAndInfantsWearStores => "childrens_and_infants_wear_stores",
@@ -412,7 +416,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             DigitalGoodsLargeVolume => "digital_goods_large_volume",
             DigitalGoodsMedia => "digital_goods_media",
             DirectMarketingCatalogMerchant => "direct_marketing_catalog_merchant",
-            DirectMarketingCombinationCatalogAndRetailMerchant => "direct_marketing_combination_catalog_and_retail_merchant",
+            DirectMarketingCombinationCatalogAndRetailMerchant => {
+                "direct_marketing_combination_catalog_and_retail_merchant"
+            }
             DirectMarketingInboundTelemarketing => "direct_marketing_inbound_telemarketing",
             DirectMarketingInsuranceServices => "direct_marketing_insurance_services",
             DirectMarketingOther => "direct_marketing_other",
@@ -422,10 +428,14 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             DiscountStores => "discount_stores",
             Doctors => "doctors",
             DoorToDoorSales => "door_to_door_sales",
-            DraperyWindowCoveringAndUpholsteryStores => "drapery_window_covering_and_upholstery_stores",
+            DraperyWindowCoveringAndUpholsteryStores => {
+                "drapery_window_covering_and_upholstery_stores"
+            }
             DrinkingPlaces => "drinking_places",
             DrugStoresAndPharmacies => "drug_stores_and_pharmacies",
-            DrugsDrugProprietariesAndDruggistSundries => "drugs_drug_proprietaries_and_druggist_sundries",
+            DrugsDrugProprietariesAndDruggistSundries => {
+                "drugs_drug_proprietaries_and_druggist_sundries"
+            }
             DryCleaners => "dry_cleaners",
             DurableGoods => "durable_goods",
             DutyFreeStores => "duty_free_stores",
@@ -446,14 +456,18 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             FastFoodRestaurants => "fast_food_restaurants",
             FinancialInstitutions => "financial_institutions",
             FinesGovernmentAdministrativeEntities => "fines_government_administrative_entities",
-            FireplaceFireplaceScreensAndAccessoriesStores => "fireplace_fireplace_screens_and_accessories_stores",
+            FireplaceFireplaceScreensAndAccessoriesStores => {
+                "fireplace_fireplace_screens_and_accessories_stores"
+            }
             FloorCoveringStores => "floor_covering_stores",
             Florists => "florists",
             FloristsSuppliesNurseryStockAndFlowers => "florists_supplies_nursery_stock_and_flowers",
             FreezerAndLockerMeatProvisioners => "freezer_and_locker_meat_provisioners",
             FuelDealersNonAutomotive => "fuel_dealers_non_automotive",
             FuneralServicesCrematories => "funeral_services_crematories",
-            FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances => "furniture_home_furnishings_and_equipment_stores_except_appliances",
+            FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances => {
+                "furniture_home_furnishings_and_equipment_stores_except_appliances"
+            }
             FurnitureRepairRefinishing => "furniture_repair_refinishing",
             FurriersAndFurShops => "furriers_and_fur_shops",
             GeneralServices => "general_services",
@@ -461,8 +475,12 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             GlassPaintAndWallpaperStores => "glass_paint_and_wallpaper_stores",
             GlasswareCrystalStores => "glassware_crystal_stores",
             GolfCoursesPublic => "golf_courses_public",
-            GovernmentLicensedHorseDogRacingUsRegionOnly => "government_licensed_horse_dog_racing_us_region_only",
-            GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly => "government_licensed_online_casions_online_gambling_us_region_only",
+            GovernmentLicensedHorseDogRacingUsRegionOnly => {
+                "government_licensed_horse_dog_racing_us_region_only"
+            }
+            GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly => {
+                "government_licensed_online_casions_online_gambling_us_region_only"
+            }
             GovernmentOwnedLotteriesNonUsRegion => "government_owned_lotteries_non_us_region",
             GovernmentOwnedLotteriesUsRegionOnly => "government_owned_lotteries_us_region_only",
             GovernmentServices => "government_services",
@@ -482,7 +500,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             InsuranceDefault => "insurance_default",
             InsuranceUnderwritingPremiums => "insurance_underwriting_premiums",
             IntraCompanyPurchases => "intra_company_purchases",
-            JewelryStoresWatchesClocksAndSilverwareStores => "jewelry_stores_watches_clocks_and_silverware_stores",
+            JewelryStoresWatchesClocksAndSilverwareStores => {
+                "jewelry_stores_watches_clocks_and_silverware_stores"
+            }
             LandscapingServices => "landscaping_services",
             Laundries => "laundries",
             LaundryCleaningServices => "laundry_cleaning_services",
@@ -495,10 +515,14 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             MasonryStoneworkAndPlaster => "masonry_stonework_and_plaster",
             MassageParlors => "massage_parlors",
             MedicalAndDentalLabs => "medical_and_dental_labs",
-            MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies => "medical_dental_ophthalmic_and_hospital_equipment_and_supplies",
+            MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies => {
+                "medical_dental_ophthalmic_and_hospital_equipment_and_supplies"
+            }
             MedicalServices => "medical_services",
             MembershipOrganizations => "membership_organizations",
-            MensAndBoysClothingAndAccessoriesStores => "mens_and_boys_clothing_and_accessories_stores",
+            MensAndBoysClothingAndAccessoriesStores => {
+                "mens_and_boys_clothing_and_accessories_stores"
+            }
             MensWomensClothingStores => "mens_womens_clothing_stores",
             MetalServiceCenters => "metal_service_centers",
             Miscellaneous => "miscellaneous",
@@ -508,7 +532,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             MiscellaneousFoodStores => "miscellaneous_food_stores",
             MiscellaneousGeneralMerchandise => "miscellaneous_general_merchandise",
             MiscellaneousGeneralServices => "miscellaneous_general_services",
-            MiscellaneousHomeFurnishingSpecialtyStores => "miscellaneous_home_furnishing_specialty_stores",
+            MiscellaneousHomeFurnishingSpecialtyStores => {
+                "miscellaneous_home_furnishing_specialty_stores"
+            }
             MiscellaneousPublishingAndPrinting => "miscellaneous_publishing_and_printing",
             MiscellaneousRecreationServices => "miscellaneous_recreation_services",
             MiscellaneousRepairShops => "miscellaneous_repair_shops",
@@ -520,7 +546,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             MotorVehicleSuppliesAndNewParts => "motor_vehicle_supplies_and_new_parts",
             MotorcycleShopsAndDealers => "motorcycle_shops_and_dealers",
             MotorcycleShopsDealers => "motorcycle_shops_dealers",
-            MusicStoresMusicalInstrumentsPianosAndSheetMusic => "music_stores_musical_instruments_pianos_and_sheet_music",
+            MusicStoresMusicalInstrumentsPianosAndSheetMusic => {
+                "music_stores_musical_instruments_pianos_and_sheet_music"
+            }
             NewsDealersAndNewsstands => "news_dealers_and_newsstands",
             NonFiMoneyOrders => "non_fi_money_orders",
             NonFiStoredValueCardPurchaseLoad => "non_fi_stored_value_card_purchase_load",
@@ -540,14 +568,18 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             PetShopsPetFoodAndSupplies => "pet_shops_pet_food_and_supplies",
             PetroleumAndPetroleumProducts => "petroleum_and_petroleum_products",
             PhotoDeveloping => "photo_developing",
-            PhotographicPhotocopyMicrofilmEquipmentAndSupplies => "photographic_photocopy_microfilm_equipment_and_supplies",
+            PhotographicPhotocopyMicrofilmEquipmentAndSupplies => {
+                "photographic_photocopy_microfilm_equipment_and_supplies"
+            }
             PhotographicStudios => "photographic_studios",
             PictureVideoProduction => "picture_video_production",
             PieceGoodsNotionsAndOtherDryGoods => "piece_goods_notions_and_other_dry_goods",
             PlumbingHeatingEquipmentAndSupplies => "plumbing_heating_equipment_and_supplies",
             PoliticalOrganizations => "political_organizations",
             PostalServicesGovernmentOnly => "postal_services_government_only",
-            PreciousStonesAndMetalsWatchesAndJewelry => "precious_stones_and_metals_watches_and_jewelry",
+            PreciousStonesAndMetalsWatchesAndJewelry => {
+                "precious_stones_and_metals_watches_and_jewelry"
+            }
             ProfessionalServices => "professional_services",
             PublicWarehousingAndStorage => "public_warehousing_and_storage",
             QuickCopyReproAndBlueprint => "quick_copy_repro_and_blueprint",
@@ -561,7 +593,9 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             SecretarialSupportServices => "secretarial_support_services",
             SecurityBrokersDealers => "security_brokers_dealers",
             ServiceStations => "service_stations",
-            SewingNeedleworkFabricAndPieceGoodsStores => "sewing_needlework_fabric_and_piece_goods_stores",
+            SewingNeedleworkFabricAndPieceGoodsStores => {
+                "sewing_needlework_fabric_and_piece_goods_stores"
+            }
             ShoeRepairHatCleaning => "shoe_repair_hat_cleaning",
             ShoeStores => "shoe_stores",
             SmallApplianceRepair => "small_appliance_repair",
@@ -573,15 +607,21 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             SportsAndRidingApparelStores => "sports_and_riding_apparel_stores",
             SportsClubsFields => "sports_clubs_fields",
             StampAndCoinStores => "stamp_and_coin_stores",
-            StationaryOfficeSuppliesPrintingAndWritingPaper => "stationary_office_supplies_printing_and_writing_paper",
-            StationeryStoresOfficeAndSchoolSupplyStores => "stationery_stores_office_and_school_supply_stores",
+            StationaryOfficeSuppliesPrintingAndWritingPaper => {
+                "stationary_office_supplies_printing_and_writing_paper"
+            }
+            StationeryStoresOfficeAndSchoolSupplyStores => {
+                "stationery_stores_office_and_school_supply_stores"
+            }
             SwimmingPoolsSales => "swimming_pools_sales",
             TUiTravelGermany => "t_ui_travel_germany",
             TailorsAlterations => "tailors_alterations",
             TaxPaymentsGovernmentAgencies => "tax_payments_government_agencies",
             TaxPreparationServices => "tax_preparation_services",
             TaxicabsLimousines => "taxicabs_limousines",
-            TelecommunicationEquipmentAndTelephoneSales => "telecommunication_equipment_and_telephone_sales",
+            TelecommunicationEquipmentAndTelephoneSales => {
+                "telecommunication_equipment_and_telephone_sales"
+            }
             TelecommunicationServices => "telecommunication_services",
             TelegraphServices => "telegraph_services",
             TentAndAwningShops => "tent_and_awning_shops",
@@ -597,9 +637,13 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
             TravelAgenciesTourOperators => "travel_agencies_tour_operators",
             TruckStopIteration => "truck_stop_iteration",
             TruckUtilityTrailerRentals => "truck_utility_trailer_rentals",
-            TypesettingPlateMakingAndRelatedServices => "typesetting_plate_making_and_related_services",
+            TypesettingPlateMakingAndRelatedServices => {
+                "typesetting_plate_making_and_related_services"
+            }
             TypewriterStores => "typewriter_stores",
-            USFederalGovernmentAgenciesOrDepartments => "u_s_federal_government_agencies_or_departments",
+            USFederalGovernmentAgenciesOrDepartments => {
+                "u_s_federal_government_agencies_or_departments"
+            }
             UniformsCommercialClothing => "uniforms_commercial_clothing",
             UsedMerchandiseAndSecondhandStores => "used_merchandise_and_secondhand_stores",
             Utilities => "utilities",
@@ -664,7 +708,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "bus_lines" => Ok(BusLines),
             "business_secretarial_schools" => Ok(BusinessSecretarialSchools),
             "buying_shopping_services" => Ok(BuyingShoppingServices),
-            "cable_satellite_and_other_pay_television_and_radio" => Ok(CableSatelliteAndOtherPayTelevisionAndRadio),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
             "camera_and_photographic_supply_stores" => Ok(CameraAndPhotographicSupplyStores),
             "candy_nut_and_confectionery_stores" => Ok(CandyNutAndConfectioneryStores),
             "car_and_truck_dealers_new_used" => Ok(CarAndTruckDealersNewUsed),
@@ -674,7 +720,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "carpentry_services" => Ok(CarpentryServices),
             "carpet_upholstery_cleaning" => Ok(CarpetUpholsteryCleaning),
             "caterers" => Ok(Caterers),
-            "charitable_and_social_service_organizations_fundraising" => Ok(CharitableAndSocialServiceOrganizationsFundraising),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(CharitableAndSocialServiceOrganizationsFundraising)
+            }
             "chemicals_and_allied_products" => Ok(ChemicalsAndAlliedProducts),
             "child_care_services" => Ok(ChildCareServices),
             "childrens_and_infants_wear_stores" => Ok(ChildrensAndInfantsWearStores),
@@ -716,7 +764,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "digital_goods_large_volume" => Ok(DigitalGoodsLargeVolume),
             "digital_goods_media" => Ok(DigitalGoodsMedia),
             "direct_marketing_catalog_merchant" => Ok(DirectMarketingCatalogMerchant),
-            "direct_marketing_combination_catalog_and_retail_merchant" => Ok(DirectMarketingCombinationCatalogAndRetailMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
             "direct_marketing_inbound_telemarketing" => Ok(DirectMarketingInboundTelemarketing),
             "direct_marketing_insurance_services" => Ok(DirectMarketingInsuranceServices),
             "direct_marketing_other" => Ok(DirectMarketingOther),
@@ -726,10 +776,14 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "discount_stores" => Ok(DiscountStores),
             "doctors" => Ok(Doctors),
             "door_to_door_sales" => Ok(DoorToDoorSales),
-            "drapery_window_covering_and_upholstery_stores" => Ok(DraperyWindowCoveringAndUpholsteryStores),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(DraperyWindowCoveringAndUpholsteryStores)
+            }
             "drinking_places" => Ok(DrinkingPlaces),
             "drug_stores_and_pharmacies" => Ok(DrugStoresAndPharmacies),
-            "drugs_drug_proprietaries_and_druggist_sundries" => Ok(DrugsDrugProprietariesAndDruggistSundries),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(DrugsDrugProprietariesAndDruggistSundries)
+            }
             "dry_cleaners" => Ok(DryCleaners),
             "durable_goods" => Ok(DurableGoods),
             "duty_free_stores" => Ok(DutyFreeStores),
@@ -750,14 +804,20 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "fast_food_restaurants" => Ok(FastFoodRestaurants),
             "financial_institutions" => Ok(FinancialInstitutions),
             "fines_government_administrative_entities" => Ok(FinesGovernmentAdministrativeEntities),
-            "fireplace_fireplace_screens_and_accessories_stores" => Ok(FireplaceFireplaceScreensAndAccessoriesStores),
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(FireplaceFireplaceScreensAndAccessoriesStores)
+            }
             "floor_covering_stores" => Ok(FloorCoveringStores),
             "florists" => Ok(Florists),
-            "florists_supplies_nursery_stock_and_flowers" => Ok(FloristsSuppliesNurseryStockAndFlowers),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(FloristsSuppliesNurseryStockAndFlowers)
+            }
             "freezer_and_locker_meat_provisioners" => Ok(FreezerAndLockerMeatProvisioners),
             "fuel_dealers_non_automotive" => Ok(FuelDealersNonAutomotive),
             "funeral_services_crematories" => Ok(FuneralServicesCrematories),
-            "furniture_home_furnishings_and_equipment_stores_except_appliances" => Ok(FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
             "furniture_repair_refinishing" => Ok(FurnitureRepairRefinishing),
             "furriers_and_fur_shops" => Ok(FurriersAndFurShops),
             "general_services" => Ok(GeneralServices),
@@ -765,8 +825,12 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "glass_paint_and_wallpaper_stores" => Ok(GlassPaintAndWallpaperStores),
             "glassware_crystal_stores" => Ok(GlasswareCrystalStores),
             "golf_courses_public" => Ok(GolfCoursesPublic),
-            "government_licensed_horse_dog_racing_us_region_only" => Ok(GovernmentLicensedHorseDogRacingUsRegionOnly),
-            "government_licensed_online_casions_online_gambling_us_region_only" => Ok(GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly),
+            "government_licensed_horse_dog_racing_us_region_only" => {
+                Ok(GovernmentLicensedHorseDogRacingUsRegionOnly)
+            }
+            "government_licensed_online_casions_online_gambling_us_region_only" => {
+                Ok(GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly)
+            }
             "government_owned_lotteries_non_us_region" => Ok(GovernmentOwnedLotteriesNonUsRegion),
             "government_owned_lotteries_us_region_only" => Ok(GovernmentOwnedLotteriesUsRegionOnly),
             "government_services" => Ok(GovernmentServices),
@@ -786,7 +850,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "insurance_default" => Ok(InsuranceDefault),
             "insurance_underwriting_premiums" => Ok(InsuranceUnderwritingPremiums),
             "intra_company_purchases" => Ok(IntraCompanyPurchases),
-            "jewelry_stores_watches_clocks_and_silverware_stores" => Ok(JewelryStoresWatchesClocksAndSilverwareStores),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(JewelryStoresWatchesClocksAndSilverwareStores)
+            }
             "landscaping_services" => Ok(LandscapingServices),
             "laundries" => Ok(Laundries),
             "laundry_cleaning_services" => Ok(LaundryCleaningServices),
@@ -799,20 +865,28 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "masonry_stonework_and_plaster" => Ok(MasonryStoneworkAndPlaster),
             "massage_parlors" => Ok(MassageParlors),
             "medical_and_dental_labs" => Ok(MedicalAndDentalLabs),
-            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => Ok(MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
             "medical_services" => Ok(MedicalServices),
             "membership_organizations" => Ok(MembershipOrganizations),
-            "mens_and_boys_clothing_and_accessories_stores" => Ok(MensAndBoysClothingAndAccessoriesStores),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(MensAndBoysClothingAndAccessoriesStores)
+            }
             "mens_womens_clothing_stores" => Ok(MensWomensClothingStores),
             "metal_service_centers" => Ok(MetalServiceCenters),
             "miscellaneous" => Ok(Miscellaneous),
-            "miscellaneous_apparel_and_accessory_shops" => Ok(MiscellaneousApparelAndAccessoryShops),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(MiscellaneousApparelAndAccessoryShops)
+            }
             "miscellaneous_auto_dealers" => Ok(MiscellaneousAutoDealers),
             "miscellaneous_business_services" => Ok(MiscellaneousBusinessServices),
             "miscellaneous_food_stores" => Ok(MiscellaneousFoodStores),
             "miscellaneous_general_merchandise" => Ok(MiscellaneousGeneralMerchandise),
             "miscellaneous_general_services" => Ok(MiscellaneousGeneralServices),
-            "miscellaneous_home_furnishing_specialty_stores" => Ok(MiscellaneousHomeFurnishingSpecialtyStores),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(MiscellaneousHomeFurnishingSpecialtyStores)
+            }
             "miscellaneous_publishing_and_printing" => Ok(MiscellaneousPublishingAndPrinting),
             "miscellaneous_recreation_services" => Ok(MiscellaneousRecreationServices),
             "miscellaneous_repair_shops" => Ok(MiscellaneousRepairShops),
@@ -824,7 +898,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "motor_vehicle_supplies_and_new_parts" => Ok(MotorVehicleSuppliesAndNewParts),
             "motorcycle_shops_and_dealers" => Ok(MotorcycleShopsAndDealers),
             "motorcycle_shops_dealers" => Ok(MotorcycleShopsDealers),
-            "music_stores_musical_instruments_pianos_and_sheet_music" => Ok(MusicStoresMusicalInstrumentsPianosAndSheetMusic),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
             "news_dealers_and_newsstands" => Ok(NewsDealersAndNewsstands),
             "non_fi_money_orders" => Ok(NonFiMoneyOrders),
             "non_fi_stored_value_card_purchase_load" => Ok(NonFiStoredValueCardPurchaseLoad),
@@ -844,14 +920,18 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "pet_shops_pet_food_and_supplies" => Ok(PetShopsPetFoodAndSupplies),
             "petroleum_and_petroleum_products" => Ok(PetroleumAndPetroleumProducts),
             "photo_developing" => Ok(PhotoDeveloping),
-            "photographic_photocopy_microfilm_equipment_and_supplies" => Ok(PhotographicPhotocopyMicrofilmEquipmentAndSupplies),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
             "photographic_studios" => Ok(PhotographicStudios),
             "picture_video_production" => Ok(PictureVideoProduction),
             "piece_goods_notions_and_other_dry_goods" => Ok(PieceGoodsNotionsAndOtherDryGoods),
             "plumbing_heating_equipment_and_supplies" => Ok(PlumbingHeatingEquipmentAndSupplies),
             "political_organizations" => Ok(PoliticalOrganizations),
             "postal_services_government_only" => Ok(PostalServicesGovernmentOnly),
-            "precious_stones_and_metals_watches_and_jewelry" => Ok(PreciousStonesAndMetalsWatchesAndJewelry),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(PreciousStonesAndMetalsWatchesAndJewelry)
+            }
             "professional_services" => Ok(ProfessionalServices),
             "public_warehousing_and_storage" => Ok(PublicWarehousingAndStorage),
             "quick_copy_repro_and_blueprint" => Ok(QuickCopyReproAndBlueprint),
@@ -865,7 +945,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "secretarial_support_services" => Ok(SecretarialSupportServices),
             "security_brokers_dealers" => Ok(SecurityBrokersDealers),
             "service_stations" => Ok(ServiceStations),
-            "sewing_needlework_fabric_and_piece_goods_stores" => Ok(SewingNeedleworkFabricAndPieceGoodsStores),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(SewingNeedleworkFabricAndPieceGoodsStores)
+            }
             "shoe_repair_hat_cleaning" => Ok(ShoeRepairHatCleaning),
             "shoe_stores" => Ok(ShoeStores),
             "small_appliance_repair" => Ok(SmallApplianceRepair),
@@ -877,15 +959,21 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "sports_and_riding_apparel_stores" => Ok(SportsAndRidingApparelStores),
             "sports_clubs_fields" => Ok(SportsClubsFields),
             "stamp_and_coin_stores" => Ok(StampAndCoinStores),
-            "stationary_office_supplies_printing_and_writing_paper" => Ok(StationaryOfficeSuppliesPrintingAndWritingPaper),
-            "stationery_stores_office_and_school_supply_stores" => Ok(StationeryStoresOfficeAndSchoolSupplyStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(StationeryStoresOfficeAndSchoolSupplyStores)
+            }
             "swimming_pools_sales" => Ok(SwimmingPoolsSales),
             "t_ui_travel_germany" => Ok(TUiTravelGermany),
             "tailors_alterations" => Ok(TailorsAlterations),
             "tax_payments_government_agencies" => Ok(TaxPaymentsGovernmentAgencies),
             "tax_preparation_services" => Ok(TaxPreparationServices),
             "taxicabs_limousines" => Ok(TaxicabsLimousines),
-            "telecommunication_equipment_and_telephone_sales" => Ok(TelecommunicationEquipmentAndTelephoneSales),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(TelecommunicationEquipmentAndTelephoneSales)
+            }
             "telecommunication_services" => Ok(TelecommunicationServices),
             "telegraph_services" => Ok(TelegraphServices),
             "tent_and_awning_shops" => Ok(TentAndAwningShops),
@@ -901,9 +989,13 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "travel_agencies_tour_operators" => Ok(TravelAgenciesTourOperators),
             "truck_stop_iteration" => Ok(TruckStopIteration),
             "truck_utility_trailer_rentals" => Ok(TruckUtilityTrailerRentals),
-            "typesetting_plate_making_and_related_services" => Ok(TypesettingPlateMakingAndRelatedServices),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(TypesettingPlateMakingAndRelatedServices)
+            }
             "typewriter_stores" => Ok(TypewriterStores),
-            "u_s_federal_government_agencies_or_departments" => Ok(USFederalGovernmentAgenciesOrDepartments),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(USFederalGovernmentAgenciesOrDepartments)
+            }
             "uniforms_commercial_clothing" => Ok(UniformsCommercialClothing),
             "used_merchandise_and_secondhand_stores" => Ok(UsedMerchandiseAndSecondhandStores),
             "utilities" => Ok(Utilities),
@@ -955,7 +1047,11 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsAllo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderAuthorizationControlsAllowedCategories"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingCardholderAuthorizationControlsAllowedCategories",
+            )
+        })
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -1303,7 +1399,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             BusLines => "bus_lines",
             BusinessSecretarialSchools => "business_secretarial_schools",
             BuyingShoppingServices => "buying_shopping_services",
-            CableSatelliteAndOtherPayTelevisionAndRadio => "cable_satellite_and_other_pay_television_and_radio",
+            CableSatelliteAndOtherPayTelevisionAndRadio => {
+                "cable_satellite_and_other_pay_television_and_radio"
+            }
             CameraAndPhotographicSupplyStores => "camera_and_photographic_supply_stores",
             CandyNutAndConfectioneryStores => "candy_nut_and_confectionery_stores",
             CarAndTruckDealersNewUsed => "car_and_truck_dealers_new_used",
@@ -1313,7 +1411,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             CarpentryServices => "carpentry_services",
             CarpetUpholsteryCleaning => "carpet_upholstery_cleaning",
             Caterers => "caterers",
-            CharitableAndSocialServiceOrganizationsFundraising => "charitable_and_social_service_organizations_fundraising",
+            CharitableAndSocialServiceOrganizationsFundraising => {
+                "charitable_and_social_service_organizations_fundraising"
+            }
             ChemicalsAndAlliedProducts => "chemicals_and_allied_products",
             ChildCareServices => "child_care_services",
             ChildrensAndInfantsWearStores => "childrens_and_infants_wear_stores",
@@ -1355,7 +1455,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             DigitalGoodsLargeVolume => "digital_goods_large_volume",
             DigitalGoodsMedia => "digital_goods_media",
             DirectMarketingCatalogMerchant => "direct_marketing_catalog_merchant",
-            DirectMarketingCombinationCatalogAndRetailMerchant => "direct_marketing_combination_catalog_and_retail_merchant",
+            DirectMarketingCombinationCatalogAndRetailMerchant => {
+                "direct_marketing_combination_catalog_and_retail_merchant"
+            }
             DirectMarketingInboundTelemarketing => "direct_marketing_inbound_telemarketing",
             DirectMarketingInsuranceServices => "direct_marketing_insurance_services",
             DirectMarketingOther => "direct_marketing_other",
@@ -1365,10 +1467,14 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             DiscountStores => "discount_stores",
             Doctors => "doctors",
             DoorToDoorSales => "door_to_door_sales",
-            DraperyWindowCoveringAndUpholsteryStores => "drapery_window_covering_and_upholstery_stores",
+            DraperyWindowCoveringAndUpholsteryStores => {
+                "drapery_window_covering_and_upholstery_stores"
+            }
             DrinkingPlaces => "drinking_places",
             DrugStoresAndPharmacies => "drug_stores_and_pharmacies",
-            DrugsDrugProprietariesAndDruggistSundries => "drugs_drug_proprietaries_and_druggist_sundries",
+            DrugsDrugProprietariesAndDruggistSundries => {
+                "drugs_drug_proprietaries_and_druggist_sundries"
+            }
             DryCleaners => "dry_cleaners",
             DurableGoods => "durable_goods",
             DutyFreeStores => "duty_free_stores",
@@ -1389,14 +1495,18 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             FastFoodRestaurants => "fast_food_restaurants",
             FinancialInstitutions => "financial_institutions",
             FinesGovernmentAdministrativeEntities => "fines_government_administrative_entities",
-            FireplaceFireplaceScreensAndAccessoriesStores => "fireplace_fireplace_screens_and_accessories_stores",
+            FireplaceFireplaceScreensAndAccessoriesStores => {
+                "fireplace_fireplace_screens_and_accessories_stores"
+            }
             FloorCoveringStores => "floor_covering_stores",
             Florists => "florists",
             FloristsSuppliesNurseryStockAndFlowers => "florists_supplies_nursery_stock_and_flowers",
             FreezerAndLockerMeatProvisioners => "freezer_and_locker_meat_provisioners",
             FuelDealersNonAutomotive => "fuel_dealers_non_automotive",
             FuneralServicesCrematories => "funeral_services_crematories",
-            FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances => "furniture_home_furnishings_and_equipment_stores_except_appliances",
+            FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances => {
+                "furniture_home_furnishings_and_equipment_stores_except_appliances"
+            }
             FurnitureRepairRefinishing => "furniture_repair_refinishing",
             FurriersAndFurShops => "furriers_and_fur_shops",
             GeneralServices => "general_services",
@@ -1404,8 +1514,12 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             GlassPaintAndWallpaperStores => "glass_paint_and_wallpaper_stores",
             GlasswareCrystalStores => "glassware_crystal_stores",
             GolfCoursesPublic => "golf_courses_public",
-            GovernmentLicensedHorseDogRacingUsRegionOnly => "government_licensed_horse_dog_racing_us_region_only",
-            GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly => "government_licensed_online_casions_online_gambling_us_region_only",
+            GovernmentLicensedHorseDogRacingUsRegionOnly => {
+                "government_licensed_horse_dog_racing_us_region_only"
+            }
+            GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly => {
+                "government_licensed_online_casions_online_gambling_us_region_only"
+            }
             GovernmentOwnedLotteriesNonUsRegion => "government_owned_lotteries_non_us_region",
             GovernmentOwnedLotteriesUsRegionOnly => "government_owned_lotteries_us_region_only",
             GovernmentServices => "government_services",
@@ -1425,7 +1539,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             InsuranceDefault => "insurance_default",
             InsuranceUnderwritingPremiums => "insurance_underwriting_premiums",
             IntraCompanyPurchases => "intra_company_purchases",
-            JewelryStoresWatchesClocksAndSilverwareStores => "jewelry_stores_watches_clocks_and_silverware_stores",
+            JewelryStoresWatchesClocksAndSilverwareStores => {
+                "jewelry_stores_watches_clocks_and_silverware_stores"
+            }
             LandscapingServices => "landscaping_services",
             Laundries => "laundries",
             LaundryCleaningServices => "laundry_cleaning_services",
@@ -1438,10 +1554,14 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             MasonryStoneworkAndPlaster => "masonry_stonework_and_plaster",
             MassageParlors => "massage_parlors",
             MedicalAndDentalLabs => "medical_and_dental_labs",
-            MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies => "medical_dental_ophthalmic_and_hospital_equipment_and_supplies",
+            MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies => {
+                "medical_dental_ophthalmic_and_hospital_equipment_and_supplies"
+            }
             MedicalServices => "medical_services",
             MembershipOrganizations => "membership_organizations",
-            MensAndBoysClothingAndAccessoriesStores => "mens_and_boys_clothing_and_accessories_stores",
+            MensAndBoysClothingAndAccessoriesStores => {
+                "mens_and_boys_clothing_and_accessories_stores"
+            }
             MensWomensClothingStores => "mens_womens_clothing_stores",
             MetalServiceCenters => "metal_service_centers",
             Miscellaneous => "miscellaneous",
@@ -1451,7 +1571,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             MiscellaneousFoodStores => "miscellaneous_food_stores",
             MiscellaneousGeneralMerchandise => "miscellaneous_general_merchandise",
             MiscellaneousGeneralServices => "miscellaneous_general_services",
-            MiscellaneousHomeFurnishingSpecialtyStores => "miscellaneous_home_furnishing_specialty_stores",
+            MiscellaneousHomeFurnishingSpecialtyStores => {
+                "miscellaneous_home_furnishing_specialty_stores"
+            }
             MiscellaneousPublishingAndPrinting => "miscellaneous_publishing_and_printing",
             MiscellaneousRecreationServices => "miscellaneous_recreation_services",
             MiscellaneousRepairShops => "miscellaneous_repair_shops",
@@ -1463,7 +1585,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             MotorVehicleSuppliesAndNewParts => "motor_vehicle_supplies_and_new_parts",
             MotorcycleShopsAndDealers => "motorcycle_shops_and_dealers",
             MotorcycleShopsDealers => "motorcycle_shops_dealers",
-            MusicStoresMusicalInstrumentsPianosAndSheetMusic => "music_stores_musical_instruments_pianos_and_sheet_music",
+            MusicStoresMusicalInstrumentsPianosAndSheetMusic => {
+                "music_stores_musical_instruments_pianos_and_sheet_music"
+            }
             NewsDealersAndNewsstands => "news_dealers_and_newsstands",
             NonFiMoneyOrders => "non_fi_money_orders",
             NonFiStoredValueCardPurchaseLoad => "non_fi_stored_value_card_purchase_load",
@@ -1483,14 +1607,18 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             PetShopsPetFoodAndSupplies => "pet_shops_pet_food_and_supplies",
             PetroleumAndPetroleumProducts => "petroleum_and_petroleum_products",
             PhotoDeveloping => "photo_developing",
-            PhotographicPhotocopyMicrofilmEquipmentAndSupplies => "photographic_photocopy_microfilm_equipment_and_supplies",
+            PhotographicPhotocopyMicrofilmEquipmentAndSupplies => {
+                "photographic_photocopy_microfilm_equipment_and_supplies"
+            }
             PhotographicStudios => "photographic_studios",
             PictureVideoProduction => "picture_video_production",
             PieceGoodsNotionsAndOtherDryGoods => "piece_goods_notions_and_other_dry_goods",
             PlumbingHeatingEquipmentAndSupplies => "plumbing_heating_equipment_and_supplies",
             PoliticalOrganizations => "political_organizations",
             PostalServicesGovernmentOnly => "postal_services_government_only",
-            PreciousStonesAndMetalsWatchesAndJewelry => "precious_stones_and_metals_watches_and_jewelry",
+            PreciousStonesAndMetalsWatchesAndJewelry => {
+                "precious_stones_and_metals_watches_and_jewelry"
+            }
             ProfessionalServices => "professional_services",
             PublicWarehousingAndStorage => "public_warehousing_and_storage",
             QuickCopyReproAndBlueprint => "quick_copy_repro_and_blueprint",
@@ -1504,7 +1632,9 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             SecretarialSupportServices => "secretarial_support_services",
             SecurityBrokersDealers => "security_brokers_dealers",
             ServiceStations => "service_stations",
-            SewingNeedleworkFabricAndPieceGoodsStores => "sewing_needlework_fabric_and_piece_goods_stores",
+            SewingNeedleworkFabricAndPieceGoodsStores => {
+                "sewing_needlework_fabric_and_piece_goods_stores"
+            }
             ShoeRepairHatCleaning => "shoe_repair_hat_cleaning",
             ShoeStores => "shoe_stores",
             SmallApplianceRepair => "small_appliance_repair",
@@ -1516,15 +1646,21 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             SportsAndRidingApparelStores => "sports_and_riding_apparel_stores",
             SportsClubsFields => "sports_clubs_fields",
             StampAndCoinStores => "stamp_and_coin_stores",
-            StationaryOfficeSuppliesPrintingAndWritingPaper => "stationary_office_supplies_printing_and_writing_paper",
-            StationeryStoresOfficeAndSchoolSupplyStores => "stationery_stores_office_and_school_supply_stores",
+            StationaryOfficeSuppliesPrintingAndWritingPaper => {
+                "stationary_office_supplies_printing_and_writing_paper"
+            }
+            StationeryStoresOfficeAndSchoolSupplyStores => {
+                "stationery_stores_office_and_school_supply_stores"
+            }
             SwimmingPoolsSales => "swimming_pools_sales",
             TUiTravelGermany => "t_ui_travel_germany",
             TailorsAlterations => "tailors_alterations",
             TaxPaymentsGovernmentAgencies => "tax_payments_government_agencies",
             TaxPreparationServices => "tax_preparation_services",
             TaxicabsLimousines => "taxicabs_limousines",
-            TelecommunicationEquipmentAndTelephoneSales => "telecommunication_equipment_and_telephone_sales",
+            TelecommunicationEquipmentAndTelephoneSales => {
+                "telecommunication_equipment_and_telephone_sales"
+            }
             TelecommunicationServices => "telecommunication_services",
             TelegraphServices => "telegraph_services",
             TentAndAwningShops => "tent_and_awning_shops",
@@ -1540,9 +1676,13 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
             TravelAgenciesTourOperators => "travel_agencies_tour_operators",
             TruckStopIteration => "truck_stop_iteration",
             TruckUtilityTrailerRentals => "truck_utility_trailer_rentals",
-            TypesettingPlateMakingAndRelatedServices => "typesetting_plate_making_and_related_services",
+            TypesettingPlateMakingAndRelatedServices => {
+                "typesetting_plate_making_and_related_services"
+            }
             TypewriterStores => "typewriter_stores",
-            USFederalGovernmentAgenciesOrDepartments => "u_s_federal_government_agencies_or_departments",
+            USFederalGovernmentAgenciesOrDepartments => {
+                "u_s_federal_government_agencies_or_departments"
+            }
             UniformsCommercialClothing => "uniforms_commercial_clothing",
             UsedMerchandiseAndSecondhandStores => "used_merchandise_and_secondhand_stores",
             Utilities => "utilities",
@@ -1607,7 +1747,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "bus_lines" => Ok(BusLines),
             "business_secretarial_schools" => Ok(BusinessSecretarialSchools),
             "buying_shopping_services" => Ok(BuyingShoppingServices),
-            "cable_satellite_and_other_pay_television_and_radio" => Ok(CableSatelliteAndOtherPayTelevisionAndRadio),
+            "cable_satellite_and_other_pay_television_and_radio" => {
+                Ok(CableSatelliteAndOtherPayTelevisionAndRadio)
+            }
             "camera_and_photographic_supply_stores" => Ok(CameraAndPhotographicSupplyStores),
             "candy_nut_and_confectionery_stores" => Ok(CandyNutAndConfectioneryStores),
             "car_and_truck_dealers_new_used" => Ok(CarAndTruckDealersNewUsed),
@@ -1617,7 +1759,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "carpentry_services" => Ok(CarpentryServices),
             "carpet_upholstery_cleaning" => Ok(CarpetUpholsteryCleaning),
             "caterers" => Ok(Caterers),
-            "charitable_and_social_service_organizations_fundraising" => Ok(CharitableAndSocialServiceOrganizationsFundraising),
+            "charitable_and_social_service_organizations_fundraising" => {
+                Ok(CharitableAndSocialServiceOrganizationsFundraising)
+            }
             "chemicals_and_allied_products" => Ok(ChemicalsAndAlliedProducts),
             "child_care_services" => Ok(ChildCareServices),
             "childrens_and_infants_wear_stores" => Ok(ChildrensAndInfantsWearStores),
@@ -1659,7 +1803,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "digital_goods_large_volume" => Ok(DigitalGoodsLargeVolume),
             "digital_goods_media" => Ok(DigitalGoodsMedia),
             "direct_marketing_catalog_merchant" => Ok(DirectMarketingCatalogMerchant),
-            "direct_marketing_combination_catalog_and_retail_merchant" => Ok(DirectMarketingCombinationCatalogAndRetailMerchant),
+            "direct_marketing_combination_catalog_and_retail_merchant" => {
+                Ok(DirectMarketingCombinationCatalogAndRetailMerchant)
+            }
             "direct_marketing_inbound_telemarketing" => Ok(DirectMarketingInboundTelemarketing),
             "direct_marketing_insurance_services" => Ok(DirectMarketingInsuranceServices),
             "direct_marketing_other" => Ok(DirectMarketingOther),
@@ -1669,10 +1815,14 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "discount_stores" => Ok(DiscountStores),
             "doctors" => Ok(Doctors),
             "door_to_door_sales" => Ok(DoorToDoorSales),
-            "drapery_window_covering_and_upholstery_stores" => Ok(DraperyWindowCoveringAndUpholsteryStores),
+            "drapery_window_covering_and_upholstery_stores" => {
+                Ok(DraperyWindowCoveringAndUpholsteryStores)
+            }
             "drinking_places" => Ok(DrinkingPlaces),
             "drug_stores_and_pharmacies" => Ok(DrugStoresAndPharmacies),
-            "drugs_drug_proprietaries_and_druggist_sundries" => Ok(DrugsDrugProprietariesAndDruggistSundries),
+            "drugs_drug_proprietaries_and_druggist_sundries" => {
+                Ok(DrugsDrugProprietariesAndDruggistSundries)
+            }
             "dry_cleaners" => Ok(DryCleaners),
             "durable_goods" => Ok(DurableGoods),
             "duty_free_stores" => Ok(DutyFreeStores),
@@ -1693,14 +1843,20 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "fast_food_restaurants" => Ok(FastFoodRestaurants),
             "financial_institutions" => Ok(FinancialInstitutions),
             "fines_government_administrative_entities" => Ok(FinesGovernmentAdministrativeEntities),
-            "fireplace_fireplace_screens_and_accessories_stores" => Ok(FireplaceFireplaceScreensAndAccessoriesStores),
+            "fireplace_fireplace_screens_and_accessories_stores" => {
+                Ok(FireplaceFireplaceScreensAndAccessoriesStores)
+            }
             "floor_covering_stores" => Ok(FloorCoveringStores),
             "florists" => Ok(Florists),
-            "florists_supplies_nursery_stock_and_flowers" => Ok(FloristsSuppliesNurseryStockAndFlowers),
+            "florists_supplies_nursery_stock_and_flowers" => {
+                Ok(FloristsSuppliesNurseryStockAndFlowers)
+            }
             "freezer_and_locker_meat_provisioners" => Ok(FreezerAndLockerMeatProvisioners),
             "fuel_dealers_non_automotive" => Ok(FuelDealersNonAutomotive),
             "funeral_services_crematories" => Ok(FuneralServicesCrematories),
-            "furniture_home_furnishings_and_equipment_stores_except_appliances" => Ok(FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances),
+            "furniture_home_furnishings_and_equipment_stores_except_appliances" => {
+                Ok(FurnitureHomeFurnishingsAndEquipmentStoresExceptAppliances)
+            }
             "furniture_repair_refinishing" => Ok(FurnitureRepairRefinishing),
             "furriers_and_fur_shops" => Ok(FurriersAndFurShops),
             "general_services" => Ok(GeneralServices),
@@ -1708,8 +1864,12 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "glass_paint_and_wallpaper_stores" => Ok(GlassPaintAndWallpaperStores),
             "glassware_crystal_stores" => Ok(GlasswareCrystalStores),
             "golf_courses_public" => Ok(GolfCoursesPublic),
-            "government_licensed_horse_dog_racing_us_region_only" => Ok(GovernmentLicensedHorseDogRacingUsRegionOnly),
-            "government_licensed_online_casions_online_gambling_us_region_only" => Ok(GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly),
+            "government_licensed_horse_dog_racing_us_region_only" => {
+                Ok(GovernmentLicensedHorseDogRacingUsRegionOnly)
+            }
+            "government_licensed_online_casions_online_gambling_us_region_only" => {
+                Ok(GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly)
+            }
             "government_owned_lotteries_non_us_region" => Ok(GovernmentOwnedLotteriesNonUsRegion),
             "government_owned_lotteries_us_region_only" => Ok(GovernmentOwnedLotteriesUsRegionOnly),
             "government_services" => Ok(GovernmentServices),
@@ -1729,7 +1889,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "insurance_default" => Ok(InsuranceDefault),
             "insurance_underwriting_premiums" => Ok(InsuranceUnderwritingPremiums),
             "intra_company_purchases" => Ok(IntraCompanyPurchases),
-            "jewelry_stores_watches_clocks_and_silverware_stores" => Ok(JewelryStoresWatchesClocksAndSilverwareStores),
+            "jewelry_stores_watches_clocks_and_silverware_stores" => {
+                Ok(JewelryStoresWatchesClocksAndSilverwareStores)
+            }
             "landscaping_services" => Ok(LandscapingServices),
             "laundries" => Ok(Laundries),
             "laundry_cleaning_services" => Ok(LaundryCleaningServices),
@@ -1742,20 +1904,28 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "masonry_stonework_and_plaster" => Ok(MasonryStoneworkAndPlaster),
             "massage_parlors" => Ok(MassageParlors),
             "medical_and_dental_labs" => Ok(MedicalAndDentalLabs),
-            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => Ok(MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies),
+            "medical_dental_ophthalmic_and_hospital_equipment_and_supplies" => {
+                Ok(MedicalDentalOphthalmicAndHospitalEquipmentAndSupplies)
+            }
             "medical_services" => Ok(MedicalServices),
             "membership_organizations" => Ok(MembershipOrganizations),
-            "mens_and_boys_clothing_and_accessories_stores" => Ok(MensAndBoysClothingAndAccessoriesStores),
+            "mens_and_boys_clothing_and_accessories_stores" => {
+                Ok(MensAndBoysClothingAndAccessoriesStores)
+            }
             "mens_womens_clothing_stores" => Ok(MensWomensClothingStores),
             "metal_service_centers" => Ok(MetalServiceCenters),
             "miscellaneous" => Ok(Miscellaneous),
-            "miscellaneous_apparel_and_accessory_shops" => Ok(MiscellaneousApparelAndAccessoryShops),
+            "miscellaneous_apparel_and_accessory_shops" => {
+                Ok(MiscellaneousApparelAndAccessoryShops)
+            }
             "miscellaneous_auto_dealers" => Ok(MiscellaneousAutoDealers),
             "miscellaneous_business_services" => Ok(MiscellaneousBusinessServices),
             "miscellaneous_food_stores" => Ok(MiscellaneousFoodStores),
             "miscellaneous_general_merchandise" => Ok(MiscellaneousGeneralMerchandise),
             "miscellaneous_general_services" => Ok(MiscellaneousGeneralServices),
-            "miscellaneous_home_furnishing_specialty_stores" => Ok(MiscellaneousHomeFurnishingSpecialtyStores),
+            "miscellaneous_home_furnishing_specialty_stores" => {
+                Ok(MiscellaneousHomeFurnishingSpecialtyStores)
+            }
             "miscellaneous_publishing_and_printing" => Ok(MiscellaneousPublishingAndPrinting),
             "miscellaneous_recreation_services" => Ok(MiscellaneousRecreationServices),
             "miscellaneous_repair_shops" => Ok(MiscellaneousRepairShops),
@@ -1767,7 +1937,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "motor_vehicle_supplies_and_new_parts" => Ok(MotorVehicleSuppliesAndNewParts),
             "motorcycle_shops_and_dealers" => Ok(MotorcycleShopsAndDealers),
             "motorcycle_shops_dealers" => Ok(MotorcycleShopsDealers),
-            "music_stores_musical_instruments_pianos_and_sheet_music" => Ok(MusicStoresMusicalInstrumentsPianosAndSheetMusic),
+            "music_stores_musical_instruments_pianos_and_sheet_music" => {
+                Ok(MusicStoresMusicalInstrumentsPianosAndSheetMusic)
+            }
             "news_dealers_and_newsstands" => Ok(NewsDealersAndNewsstands),
             "non_fi_money_orders" => Ok(NonFiMoneyOrders),
             "non_fi_stored_value_card_purchase_load" => Ok(NonFiStoredValueCardPurchaseLoad),
@@ -1787,14 +1959,18 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "pet_shops_pet_food_and_supplies" => Ok(PetShopsPetFoodAndSupplies),
             "petroleum_and_petroleum_products" => Ok(PetroleumAndPetroleumProducts),
             "photo_developing" => Ok(PhotoDeveloping),
-            "photographic_photocopy_microfilm_equipment_and_supplies" => Ok(PhotographicPhotocopyMicrofilmEquipmentAndSupplies),
+            "photographic_photocopy_microfilm_equipment_and_supplies" => {
+                Ok(PhotographicPhotocopyMicrofilmEquipmentAndSupplies)
+            }
             "photographic_studios" => Ok(PhotographicStudios),
             "picture_video_production" => Ok(PictureVideoProduction),
             "piece_goods_notions_and_other_dry_goods" => Ok(PieceGoodsNotionsAndOtherDryGoods),
             "plumbing_heating_equipment_and_supplies" => Ok(PlumbingHeatingEquipmentAndSupplies),
             "political_organizations" => Ok(PoliticalOrganizations),
             "postal_services_government_only" => Ok(PostalServicesGovernmentOnly),
-            "precious_stones_and_metals_watches_and_jewelry" => Ok(PreciousStonesAndMetalsWatchesAndJewelry),
+            "precious_stones_and_metals_watches_and_jewelry" => {
+                Ok(PreciousStonesAndMetalsWatchesAndJewelry)
+            }
             "professional_services" => Ok(ProfessionalServices),
             "public_warehousing_and_storage" => Ok(PublicWarehousingAndStorage),
             "quick_copy_repro_and_blueprint" => Ok(QuickCopyReproAndBlueprint),
@@ -1808,7 +1984,9 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "secretarial_support_services" => Ok(SecretarialSupportServices),
             "security_brokers_dealers" => Ok(SecurityBrokersDealers),
             "service_stations" => Ok(ServiceStations),
-            "sewing_needlework_fabric_and_piece_goods_stores" => Ok(SewingNeedleworkFabricAndPieceGoodsStores),
+            "sewing_needlework_fabric_and_piece_goods_stores" => {
+                Ok(SewingNeedleworkFabricAndPieceGoodsStores)
+            }
             "shoe_repair_hat_cleaning" => Ok(ShoeRepairHatCleaning),
             "shoe_stores" => Ok(ShoeStores),
             "small_appliance_repair" => Ok(SmallApplianceRepair),
@@ -1820,15 +1998,21 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "sports_and_riding_apparel_stores" => Ok(SportsAndRidingApparelStores),
             "sports_clubs_fields" => Ok(SportsClubsFields),
             "stamp_and_coin_stores" => Ok(StampAndCoinStores),
-            "stationary_office_supplies_printing_and_writing_paper" => Ok(StationaryOfficeSuppliesPrintingAndWritingPaper),
-            "stationery_stores_office_and_school_supply_stores" => Ok(StationeryStoresOfficeAndSchoolSupplyStores),
+            "stationary_office_supplies_printing_and_writing_paper" => {
+                Ok(StationaryOfficeSuppliesPrintingAndWritingPaper)
+            }
+            "stationery_stores_office_and_school_supply_stores" => {
+                Ok(StationeryStoresOfficeAndSchoolSupplyStores)
+            }
             "swimming_pools_sales" => Ok(SwimmingPoolsSales),
             "t_ui_travel_germany" => Ok(TUiTravelGermany),
             "tailors_alterations" => Ok(TailorsAlterations),
             "tax_payments_government_agencies" => Ok(TaxPaymentsGovernmentAgencies),
             "tax_preparation_services" => Ok(TaxPreparationServices),
             "taxicabs_limousines" => Ok(TaxicabsLimousines),
-            "telecommunication_equipment_and_telephone_sales" => Ok(TelecommunicationEquipmentAndTelephoneSales),
+            "telecommunication_equipment_and_telephone_sales" => {
+                Ok(TelecommunicationEquipmentAndTelephoneSales)
+            }
             "telecommunication_services" => Ok(TelecommunicationServices),
             "telegraph_services" => Ok(TelegraphServices),
             "tent_and_awning_shops" => Ok(TentAndAwningShops),
@@ -1844,9 +2028,13 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "travel_agencies_tour_operators" => Ok(TravelAgenciesTourOperators),
             "truck_stop_iteration" => Ok(TruckStopIteration),
             "truck_utility_trailer_rentals" => Ok(TruckUtilityTrailerRentals),
-            "typesetting_plate_making_and_related_services" => Ok(TypesettingPlateMakingAndRelatedServices),
+            "typesetting_plate_making_and_related_services" => {
+                Ok(TypesettingPlateMakingAndRelatedServices)
+            }
             "typewriter_stores" => Ok(TypewriterStores),
-            "u_s_federal_government_agencies_or_departments" => Ok(USFederalGovernmentAgenciesOrDepartments),
+            "u_s_federal_government_agencies_or_departments" => {
+                Ok(USFederalGovernmentAgenciesOrDepartments)
+            }
             "uniforms_commercial_clothing" => Ok(UniformsCommercialClothing),
             "used_merchandise_and_secondhand_stores" => Ok(UsedMerchandiseAndSecondhandStores),
             "utilities" => Ok(Utilities),
@@ -1898,6 +2086,10 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsBloc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderAuthorizationControlsBlockedCategories"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for IssuingCardholderAuthorizationControlsBlockedCategories",
+            )
+        })
     }
 }

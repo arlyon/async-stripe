@@ -1,14 +1,3 @@
-
-/// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
-pub fn list(client: &stripe::Client, params: ListTaxProductResourceTaxCode) -> stripe::Response<stripe_types::List<stripe_types::TaxProductResourceTaxCode>> {
-    client.get_query("/tax_codes", params)
-}
-/// Retrieves the details of an existing tax code.
-///
-/// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
-pub fn retrieve(client: &stripe::Client, id: &stripe_types::tax_product_resource_tax_code::TaxCodeId, params: RetrieveTaxProductResourceTaxCode) -> stripe::Response<stripe_types::TaxProductResourceTaxCode> {
-    client.get_query(&format!("/tax_codes/{id}", id = id), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListTaxProductResourceTaxCode<'a> {
     /// A cursor for use in pagination.
@@ -37,6 +26,15 @@ impl<'a> ListTaxProductResourceTaxCode<'a> {
         Self::default()
     }
 }
+impl<'a> ListTaxProductResourceTaxCode<'a> {
+    /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::TaxProductResourceTaxCode>> {
+        client.get_query("/tax_codes", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxProductResourceTaxCode<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -46,5 +44,17 @@ pub struct RetrieveTaxProductResourceTaxCode<'a> {
 impl<'a> RetrieveTaxProductResourceTaxCode<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTaxProductResourceTaxCode<'a> {
+    /// Retrieves the details of an existing tax code.
+    ///
+    /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::tax_product_resource_tax_code::TaxCodeId,
+    ) -> stripe::Response<stripe_types::TaxProductResourceTaxCode> {
+        client.get_query(&format!("/tax_codes/{id}", id = id), self)
     }
 }

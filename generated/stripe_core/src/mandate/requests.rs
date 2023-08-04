@@ -1,8 +1,3 @@
-
-/// Retrieves a Mandate object.
-pub fn retrieve(client: &stripe::Client, mandate: &stripe_types::mandate::MandateId, params: RetrieveMandate) -> stripe::Response<stripe_types::Mandate> {
-    client.get_query(&format!("/mandates/{mandate}", mandate = mandate), params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveMandate<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -12,5 +7,15 @@ pub struct RetrieveMandate<'a> {
 impl<'a> RetrieveMandate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveMandate<'a> {
+    /// Retrieves a Mandate object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        mandate: &stripe_types::mandate::MandateId,
+    ) -> stripe::Response<stripe_types::Mandate> {
+        client.get_query(&format!("/mandates/{mandate}", mandate = mandate), self)
     }
 }

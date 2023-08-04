@@ -9,7 +9,8 @@ pub struct SubscriptionsResourcePaymentSettings {
     /// Either `off`, or `on_subscription`.
     ///
     /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
-    pub save_default_payment_method: Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>,
+    pub save_default_payment_method:
+        Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>,
 }
 /// The list of payment method types to provide to every invoice created by the subscription.
 ///
@@ -137,7 +138,11 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionsResourcePaymentSettingsPaymentMethodTypes"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionsResourcePaymentSettingsPaymentMethodTypes",
+            )
+        })
     }
 }
 /// Either `off`, or `on_subscription`.
@@ -200,6 +205,10 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsSaveDe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod",
+            )
+        })
     }
 }

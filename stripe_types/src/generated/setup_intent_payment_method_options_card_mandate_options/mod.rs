@@ -37,7 +37,8 @@ pub struct SetupIntentPaymentMethodOptionsCardMandateOptions {
     /// Specifies the type of mandates supported.
     ///
     /// Possible values are `india`.
-    pub supported_types: Option<Vec<SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+    pub supported_types:
+        Option<Vec<SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
 }
 /// One of `fixed` or `maximum`.
 ///
@@ -100,7 +101,11 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardMandate
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsAmountType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsAmountType",
+            )
+        })
     }
 }
 /// Specifies payment frequency.
@@ -172,7 +177,11 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardMandate
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsInterval"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsInterval",
+            )
+        })
     }
 }
 /// Specifies the type of mandates supported.
@@ -228,10 +237,16 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsCardMandateOptionsSuppo
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+impl<'de> serde::Deserialize<'de>
+    for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes",
+            )
+        })
     }
 }

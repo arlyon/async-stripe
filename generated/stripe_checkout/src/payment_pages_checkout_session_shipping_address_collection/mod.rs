@@ -4,7 +4,8 @@ pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
     /// shipping locations.
     ///
     /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-    pub allowed_countries: Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
+    pub allowed_countries:
+        Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
 /// shipping locations.
@@ -768,7 +769,9 @@ impl serde::Serialize for PaymentPagesCheckoutSessionShippingAddressCollectionAl
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+impl<'de> serde::Deserialize<'de>
+    for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

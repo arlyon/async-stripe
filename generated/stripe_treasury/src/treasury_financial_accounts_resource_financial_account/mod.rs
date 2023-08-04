@@ -24,10 +24,6 @@ pub struct TreasuryFinancialAccountsResourceFinancialAccount {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TreasuryFinancialAccountsResourceFinancialAccountObject,
     /// The array of paths to pending Features in the Features hash.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_features: Option<Vec<Array>>,
@@ -44,66 +40,6 @@ pub struct TreasuryFinancialAccountsResourceFinancialAccount {
     ///
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     pub supported_currencies: Vec<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TreasuryFinancialAccountsResourceFinancialAccountObject {
-    TreasuryFinancialAccount,
-}
-
-impl TreasuryFinancialAccountsResourceFinancialAccountObject {
-    pub fn as_str(self) -> &'static str {
-        use TreasuryFinancialAccountsResourceFinancialAccountObject::*;
-        match self {
-            TreasuryFinancialAccount => "treasury.financial_account",
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryFinancialAccountsResourceFinancialAccountObject::*;
-        match s {
-            "treasury.financial_account" => Ok(TreasuryFinancialAccount),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceFinancialAccountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceFinancialAccountObject"))
-    }
 }
 /// The enum specifying what state the account is in.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -257,4 +193,7 @@ impl stripe_types::Object for TreasuryFinancialAccountsResourceFinancialAccount 
     }
 }
 stripe_types::def_id!(TreasuryFinancialAccountId);
-pub mod requests;
+#[cfg(feature = "treasury_financial_accounts_resource_financial_account")]
+mod requests;
+#[cfg(feature = "treasury_financial_accounts_resource_financial_account")]
+pub use requests::*;

@@ -6,75 +6,11 @@ pub struct UsageRecordSummary {
     pub invoice: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: UsageRecordSummaryObject,
     pub period: stripe_types::Period,
     /// The ID of the subscription item this summary is describing.
     pub subscription_item: String,
     /// The total usage within this usage period.
     pub total_usage: i64,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UsageRecordSummaryObject {
-    UsageRecordSummary,
-}
-
-impl UsageRecordSummaryObject {
-    pub fn as_str(self) -> &'static str {
-        use UsageRecordSummaryObject::*;
-        match self {
-            UsageRecordSummary => "usage_record_summary",
-        }
-    }
-}
-
-impl std::str::FromStr for UsageRecordSummaryObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UsageRecordSummaryObject::*;
-        match s {
-            "usage_record_summary" => Ok(UsageRecordSummary),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for UsageRecordSummaryObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UsageRecordSummaryObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for UsageRecordSummaryObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for UsageRecordSummaryObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for UsageRecordSummaryObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for UsageRecordSummaryObject"))
-    }
 }
 impl stripe_types::Object for UsageRecordSummary {
     type Id = stripe_types::usage_record_summary::UsageRecordSummaryId;

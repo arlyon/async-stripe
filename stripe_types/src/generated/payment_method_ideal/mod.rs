@@ -103,7 +103,8 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBank"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBank"))
     }
 }
 /// The Bank Identifier Code of the customer's bank, if the bank was provided.
@@ -203,6 +204,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBic"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBic"))
     }
 }

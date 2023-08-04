@@ -1,46 +1,3 @@
-
-/// Retrieves the quote with the given ID.
-pub fn retrieve(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: RetrieveQuote) -> stripe::Response<stripe_types::Quote> {
-    client.get_query(&format!("/quotes/{quote}", quote = quote), params)
-}
-/// A quote models prices and services for a customer.
-///
-/// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
-pub fn create(client: &stripe::Client, params: CreateQuote) -> stripe::Response<stripe_types::Quote> {
-    client.send_form("/quotes", params, http_types::Method::Post)
-}
-/// A quote models prices and services for a customer.
-pub fn update(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: UpdateQuote) -> stripe::Response<stripe_types::Quote> {
-    client.send_form(&format!("/quotes/{quote}", quote = quote), params, http_types::Method::Post)
-}
-/// Cancels the quote.
-pub fn cancel(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: CancelQuote) -> stripe::Response<stripe_types::Quote> {
-    client.send_form(&format!("/quotes/{quote}/cancel", quote = quote), params, http_types::Method::Post)
-}
-/// Finalizes the quote.
-pub fn finalize_quote(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: FinalizeQuoteQuote) -> stripe::Response<stripe_types::Quote> {
-    client.send_form(&format!("/quotes/{quote}/finalize", quote = quote), params, http_types::Method::Post)
-}
-/// Accepts the specified quote.
-pub fn accept(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: AcceptQuote) -> stripe::Response<stripe_types::Quote> {
-    client.send_form(&format!("/quotes/{quote}/accept", quote = quote), params, http_types::Method::Post)
-}
-/// Returns a list of your quotes.
-pub fn list(client: &stripe::Client, params: ListQuote) -> stripe::Response<stripe_types::List<stripe_types::Quote>> {
-    client.get_query("/quotes", params)
-}
-/// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list_line_items(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: ListLineItemsQuote) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-    client.get_query(&format!("/quotes/{quote}/line_items", quote = quote), params)
-}
-/// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
-pub fn list_computed_upfront_line_items(client: &stripe::Client, quote: &stripe_types::quote::QuoteId, params: ListComputedUpfrontLineItemsQuote) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-    client.get_query(&format!("/quotes/{quote}/computed_upfront_line_items", quote = quote), params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveQuote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -50,6 +7,16 @@ pub struct RetrieveQuote<'a> {
 impl<'a> RetrieveQuote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveQuote<'a> {
+    /// Retrieves the quote with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::Quote> {
+        client.get_query(&format!("/quotes/{quote}", quote = quote), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -201,6 +168,14 @@ impl<'a> CreateQuoteLineItems<'a> {
         Self::default()
     }
 }
+impl<'a> CreateQuote<'a> {
+    /// A quote models prices and services for a customer.
+    ///
+    /// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Quote> {
+        client.send_form("/quotes", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateQuote<'a> {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
@@ -320,6 +295,16 @@ impl<'a> UpdateQuoteLineItems<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateQuote<'a> {
+    /// A quote models prices and services for a customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::Quote> {
+        client.send_form(&format!("/quotes/{quote}", quote = quote), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelQuote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -329,6 +314,20 @@ pub struct CancelQuote<'a> {
 impl<'a> CancelQuote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelQuote<'a> {
+    /// Cancels the quote.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::Quote> {
+        client.send_form(
+            &format!("/quotes/{quote}/cancel", quote = quote),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -347,6 +346,20 @@ impl<'a> FinalizeQuoteQuote<'a> {
         Self::default()
     }
 }
+impl<'a> FinalizeQuoteQuote<'a> {
+    /// Finalizes the quote.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::Quote> {
+        client.send_form(
+            &format!("/quotes/{quote}/finalize", quote = quote),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct AcceptQuote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -356,6 +369,20 @@ pub struct AcceptQuote<'a> {
 impl<'a> AcceptQuote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> AcceptQuote<'a> {
+    /// Accepts the specified quote.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::Quote> {
+        client.send_form(
+            &format!("/quotes/{quote}/accept", quote = quote),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -457,6 +484,15 @@ impl serde::Serialize for ListQuoteStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListQuote<'a> {
+    /// Returns a list of your quotes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Quote>> {
+        client.get_query("/quotes", self)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsQuote<'a> {
     /// A cursor for use in pagination.
@@ -485,6 +521,18 @@ impl<'a> ListLineItemsQuote<'a> {
         Self::default()
     }
 }
+impl<'a> ListLineItemsQuote<'a> {
+    /// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
+        client.get_query(&format!("/quotes/{quote}/line_items", quote = quote), self)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote<'a> {
     /// A cursor for use in pagination.
@@ -511,6 +559,19 @@ pub struct ListComputedUpfrontLineItemsQuote<'a> {
 impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
+    /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        quote: &stripe_types::quote::QuoteId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
+        client
+            .get_query(&format!("/quotes/{quote}/computed_upfront_line_items", quote = quote), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -817,6 +878,13 @@ pub struct PriceData<'a> {
 }
 impl<'a> PriceData<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, recurring: Default::default(), tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            product,
+            recurring: Default::default(),
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }

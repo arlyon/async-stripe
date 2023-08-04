@@ -1,44 +1,3 @@
-
-/// Creates a PaymentMethod object.
-///
-/// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
-pub fn create(client: &stripe::Client, params: CreatePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
-    client.send_form("/payment_methods", params, http_types::Method::Post)
-}
-/// Retrieves a PaymentMethod object attached to the StripeAccount.
-///
-/// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
-pub fn retrieve(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: RetrievePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
-    client.get_query(&format!("/payment_methods/{payment_method}", payment_method = payment_method), params)
-}
-/// Updates a PaymentMethod object.
-///
-/// A PaymentMethod must be attached a customer to be updated.
-pub fn update(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: UpdatePaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
-    client.send_form(&format!("/payment_methods/{payment_method}", payment_method = payment_method), params, http_types::Method::Post)
-}
-/// Returns a list of PaymentMethods for Treasury flows.
-///
-/// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
-pub fn list(client: &stripe::Client, params: ListPaymentMethod) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
-    client.get_query("/payment_methods", params)
-}
-/// Attaches a PaymentMethod object to a Customer.
-///
-/// To attach a new PaymentMethod to a customer for future payments, we recommend you use a [SetupIntent](https://stripe.com/docs/api/setup_intents)
-/// or a PaymentIntent with [setup_future_usage](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-setup_future_usage).
-/// These approaches will perform any necessary steps to set up the PaymentMethod for future payments.
-///
-/// Using the `/v1/payment_methods/:id/attach` endpoint without first using a SetupIntent or PaymentIntent with `setup_future_usage` does not optimize the PaymentMethod for future use, which makes later declines and payment friction more likely. See [Optimizing cards for future payments](https://stripe.com/docs/payments/payment-intents#future-usage) for more information about setting up future payments.  To use this PaymentMethod as the default for invoice or subscription payments, set <a href="/docs/api/customers/update#update_customer-invoice_settings-default_payment_method">`invoice_settings.default_payment_method`</a>, on the Customer to the PaymentMethod’s ID.
-pub fn attach(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: AttachPaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
-    client.send_form(&format!("/payment_methods/{payment_method}/attach", payment_method = payment_method), params, http_types::Method::Post)
-}
-/// Detaches a PaymentMethod object from a Customer.
-///
-/// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
-pub fn detach(client: &stripe::Client, payment_method: &stripe_types::payment_method::PaymentMethodId, params: DetachPaymentMethod) -> stripe::Response<stripe_types::PaymentMethod> {
-    client.send_form(&format!("/payment_methods/{payment_method}/detach", payment_method = payment_method), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethod<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
@@ -189,7 +148,11 @@ pub struct CreatePaymentMethodAcssDebit<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> CreatePaymentMethodAcssDebit<'a> {
-    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
+    pub fn new(
+        account_number: &'a str,
+        institution_number: &'a str,
+        transit_number: &'a str,
+    ) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -1299,6 +1262,14 @@ impl CreatePaymentMethodZip {
         Self::default()
     }
 }
+impl<'a> CreatePaymentMethod<'a> {
+    /// Creates a PaymentMethod object.
+    ///
+    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::PaymentMethod> {
+        client.send_form("/payment_methods", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentMethod<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1308,6 +1279,21 @@ pub struct RetrievePaymentMethod<'a> {
 impl<'a> RetrievePaymentMethod<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePaymentMethod<'a> {
+    /// Retrieves a PaymentMethod object attached to the StripeAccount.
+    ///
+    /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_method: &stripe_types::payment_method::PaymentMethodId,
+    ) -> stripe::Response<stripe_types::PaymentMethod> {
+        client.get_query(
+            &format!("/payment_methods/{payment_method}", payment_method = payment_method),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1495,6 +1481,22 @@ impl UpdatePaymentMethodZip {
         Self::default()
     }
 }
+impl<'a> UpdatePaymentMethod<'a> {
+    /// Updates a PaymentMethod object.
+    ///
+    /// A PaymentMethod must be attached a customer to be updated.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_method: &stripe_types::payment_method::PaymentMethodId,
+    ) -> stripe::Response<stripe_types::PaymentMethod> {
+        client.send_form(
+            &format!("/payment_methods/{payment_method}", payment_method = payment_method),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentMethod<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
@@ -1680,6 +1682,17 @@ impl serde::Serialize for ListPaymentMethodType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListPaymentMethod<'a> {
+    /// Returns a list of PaymentMethods for Treasury flows.
+    ///
+    /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
+        client.get_query("/payment_methods", self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AttachPaymentMethod<'a> {
     /// The ID of the customer to which to attach the PaymentMethod.
@@ -1693,6 +1706,26 @@ impl<'a> AttachPaymentMethod<'a> {
         Self { customer, expand: Default::default() }
     }
 }
+impl<'a> AttachPaymentMethod<'a> {
+    /// Attaches a PaymentMethod object to a Customer.
+    ///
+    /// To attach a new PaymentMethod to a customer for future payments, we recommend you use a [SetupIntent](https://stripe.com/docs/api/setup_intents)
+    /// or a PaymentIntent with [setup_future_usage](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-setup_future_usage).
+    /// These approaches will perform any necessary steps to set up the PaymentMethod for future payments.
+    ///
+    /// Using the `/v1/payment_methods/:id/attach` endpoint without first using a SetupIntent or PaymentIntent with `setup_future_usage` does not optimize the PaymentMethod for future use, which makes later declines and payment friction more likely. See [Optimizing cards for future payments](https://stripe.com/docs/payments/payment-intents#future-usage) for more information about setting up future payments.  To use this PaymentMethod as the default for invoice or subscription payments, set <a href="/docs/api/customers/update#update_customer-invoice_settings-default_payment_method">`invoice_settings.default_payment_method`</a>, on the Customer to the PaymentMethod’s ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_method: &stripe_types::payment_method::PaymentMethodId,
+    ) -> stripe::Response<stripe_types::PaymentMethod> {
+        client.send_form(
+            &format!("/payment_methods/{payment_method}/attach", payment_method = payment_method),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DetachPaymentMethod<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1702,6 +1735,22 @@ pub struct DetachPaymentMethod<'a> {
 impl<'a> DetachPaymentMethod<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> DetachPaymentMethod<'a> {
+    /// Detaches a PaymentMethod object from a Customer.
+    ///
+    /// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_method: &stripe_types::payment_method::PaymentMethodId,
+    ) -> stripe::Response<stripe_types::PaymentMethod> {
+        client.send_form(
+            &format!("/payment_methods/{payment_method}/detach", payment_method = payment_method),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

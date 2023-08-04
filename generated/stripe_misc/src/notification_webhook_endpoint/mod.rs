@@ -29,10 +29,6 @@ pub struct NotificationWebhookEndpoint {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: NotificationWebhookEndpointObject,
     /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
     ///
     /// Only returned at creation.
@@ -45,66 +41,6 @@ pub struct NotificationWebhookEndpoint {
     /// The URL of the webhook endpoint.
     pub url: String,
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum NotificationWebhookEndpointObject {
-    WebhookEndpoint,
-}
-
-impl NotificationWebhookEndpointObject {
-    pub fn as_str(self) -> &'static str {
-        use NotificationWebhookEndpointObject::*;
-        match self {
-            WebhookEndpoint => "webhook_endpoint",
-        }
-    }
-}
-
-impl std::str::FromStr for NotificationWebhookEndpointObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use NotificationWebhookEndpointObject::*;
-        match s {
-            "webhook_endpoint" => Ok(WebhookEndpoint),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for NotificationWebhookEndpointObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for NotificationWebhookEndpointObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for NotificationWebhookEndpointObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for NotificationWebhookEndpointObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for NotificationWebhookEndpointObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for NotificationWebhookEndpointObject"))
-    }
-}
 impl stripe_types::Object for NotificationWebhookEndpoint {
     type Id = stripe_misc::notification_webhook_endpoint::WebhookEndpointId;
     fn id(&self) -> Self::Id {
@@ -112,4 +48,7 @@ impl stripe_types::Object for NotificationWebhookEndpoint {
     }
 }
 stripe_types::def_id!(WebhookEndpointId, "we_");
-pub mod requests;
+#[cfg(feature = "notification_webhook_endpoint")]
+mod requests;
+#[cfg(feature = "notification_webhook_endpoint")]
+pub use requests::*;

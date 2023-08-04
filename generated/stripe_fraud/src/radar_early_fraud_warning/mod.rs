@@ -22,73 +22,9 @@ pub struct RadarEarlyFraudWarning {
     pub id: stripe_fraud::radar_early_fraud_warning::RadarEarlyFraudWarningId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: RadarEarlyFraudWarningObject,
     /// ID of the Payment Intent this early fraud warning is for, optionally expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<stripe_types::Expandable<stripe_types::PaymentIntent>>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum RadarEarlyFraudWarningObject {
-    RadarEarlyFraudWarning,
-}
-
-impl RadarEarlyFraudWarningObject {
-    pub fn as_str(self) -> &'static str {
-        use RadarEarlyFraudWarningObject::*;
-        match self {
-            RadarEarlyFraudWarning => "radar.early_fraud_warning",
-        }
-    }
-}
-
-impl std::str::FromStr for RadarEarlyFraudWarningObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use RadarEarlyFraudWarningObject::*;
-        match s {
-            "radar.early_fraud_warning" => Ok(RadarEarlyFraudWarning),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for RadarEarlyFraudWarningObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for RadarEarlyFraudWarningObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for RadarEarlyFraudWarningObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for RadarEarlyFraudWarningObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for RadarEarlyFraudWarningObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for RadarEarlyFraudWarningObject"))
-    }
 }
 impl stripe_types::Object for RadarEarlyFraudWarning {
     type Id = stripe_fraud::radar_early_fraud_warning::RadarEarlyFraudWarningId;
@@ -97,4 +33,7 @@ impl stripe_types::Object for RadarEarlyFraudWarning {
     }
 }
 stripe_types::def_id!(RadarEarlyFraudWarningId);
-pub mod requests;
+#[cfg(feature = "radar_early_fraud_warning")]
+mod requests;
+#[cfg(feature = "radar_early_fraud_warning")]
+pub use requests::*;

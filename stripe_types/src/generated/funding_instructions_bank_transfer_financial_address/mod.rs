@@ -9,7 +9,8 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
     pub spei: Option<stripe_types::FundingInstructionsBankTransferSpeiRecord>,
     /// The payment networks supported by this FinancialAddress.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks: Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
+    pub supported_networks:
+        Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
     /// The type of financial address.
     #[serde(rename = "type")]
     pub type_: FundingInstructionsBankTransferFinancialAddressType,
@@ -79,7 +80,9 @@ impl serde::Serialize for FundingInstructionsBankTransferFinancialAddressSupport
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+impl<'de> serde::Deserialize<'de>
+    for FundingInstructionsBankTransferFinancialAddressSupportedNetworks
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -150,6 +153,10 @@ impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for FundingInstructionsBankTransferFinancialAddressType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for FundingInstructionsBankTransferFinancialAddressType",
+            )
+        })
     }
 }

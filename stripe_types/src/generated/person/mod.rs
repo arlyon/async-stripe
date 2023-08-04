@@ -72,10 +72,6 @@ pub struct Person {
     /// The country where the person is a national.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nationality: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PersonObject,
     /// The person's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -96,66 +92,6 @@ pub struct Person {
     pub ssn_last_4_provided: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<stripe_types::LegalEntityPersonVerification>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PersonObject {
-    Person,
-}
-
-impl PersonObject {
-    pub fn as_str(self) -> &'static str {
-        use PersonObject::*;
-        match self {
-            Person => "person",
-        }
-    }
-}
-
-impl std::str::FromStr for PersonObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PersonObject::*;
-        match s {
-            "person" => Ok(Person),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PersonObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PersonObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PersonObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PersonObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PersonObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PersonObject"))
-    }
 }
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -215,7 +151,8 @@ impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
     }
 }
 impl stripe_types::Object for Person {

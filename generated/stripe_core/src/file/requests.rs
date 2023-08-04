@@ -1,17 +1,3 @@
-
-/// Returns a list of the files that your account has access to.
-///
-/// The files are returned sorted by creation date, with the most recently created files appearing first.
-pub fn list(client: &stripe::Client, params: ListFile) -> stripe::Response<stripe_types::List<stripe_types::File>> {
-    client.get_query("/files", params)
-}
-/// Retrieves the details of an existing file object.
-///
-/// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
-/// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
-pub fn retrieve(client: &stripe::Client, file: &stripe_types::file::FileId, params: RetrieveFile) -> stripe::Response<stripe_types::File> {
-    client.get_query(&format!("/files/{file}", file = file), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListFile<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -142,6 +128,17 @@ impl serde::Serialize for ListFilePurpose {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListFile<'a> {
+    /// Returns a list of the files that your account has access to.
+    ///
+    /// The files are returned sorted by creation date, with the most recently created files appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::File>> {
+        client.get_query("/files", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFile<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -151,5 +148,18 @@ pub struct RetrieveFile<'a> {
 impl<'a> RetrieveFile<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveFile<'a> {
+    /// Retrieves the details of an existing file object.
+    ///
+    /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
+    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        file: &stripe_types::file::FileId,
+    ) -> stripe::Response<stripe_types::File> {
+        client.get_query(&format!("/files/{file}", file = file), self)
     }
 }

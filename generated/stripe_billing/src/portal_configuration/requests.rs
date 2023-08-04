@@ -1,20 +1,3 @@
-
-/// Returns a list of configurations that describe the functionality of the customer portal.
-pub fn list(client: &stripe::Client, params: ListPortalConfiguration) -> stripe::Response<stripe_types::List<stripe_billing::PortalConfiguration>> {
-    client.get_query("/billing_portal/configurations", params)
-}
-/// Creates a configuration that describes the functionality and behavior of a PortalSession.
-pub fn create(client: &stripe::Client, params: CreatePortalConfiguration) -> stripe::Response<stripe_billing::PortalConfiguration> {
-    client.send_form("/billing_portal/configurations", params, http_types::Method::Post)
-}
-/// Updates a configuration that describes the functionality of the customer portal.
-pub fn update(client: &stripe::Client, configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId, params: UpdatePortalConfiguration) -> stripe::Response<stripe_billing::PortalConfiguration> {
-    client.send_form(&format!("/billing_portal/configurations/{configuration}", configuration = configuration), params, http_types::Method::Post)
-}
-/// Retrieves a configuration that describes the functionality of the customer portal.
-pub fn retrieve(client: &stripe::Client, configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId, params: RetrievePortalConfiguration) -> stripe::Response<stripe_billing::PortalConfiguration> {
-    client.get_query(&format!("/billing_portal/configurations/{configuration}", configuration = configuration), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPortalConfiguration<'a> {
     /// Only return configurations that are active or inactive (e.g., pass `true` to only list active configurations).
@@ -49,6 +32,15 @@ impl<'a> ListPortalConfiguration<'a> {
         Self::default()
     }
 }
+impl<'a> ListPortalConfiguration<'a> {
+    /// Returns a list of configurations that describe the functionality of the customer portal.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_billing::PortalConfiguration>> {
+        client.get_query("/billing_portal/configurations", self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalConfiguration<'a> {
     /// The business information shown to customers in the portal.
@@ -77,8 +69,18 @@ pub struct CreatePortalConfiguration<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> CreatePortalConfiguration<'a> {
-    pub fn new(business_profile: BusinessProfile<'a>, features: CreatePortalConfigurationFeatures<'a>) -> Self {
-        Self { business_profile, default_return_url: Default::default(), expand: Default::default(), features, login_page: Default::default(), metadata: Default::default() }
+    pub fn new(
+        business_profile: BusinessProfile<'a>,
+        features: CreatePortalConfigurationFeatures<'a>,
+    ) -> Self {
+        Self {
+            business_profile,
+            default_return_url: Default::default(),
+            expand: Default::default(),
+            features,
+            login_page: Default::default(),
+            metadata: Default::default(),
+        }
     }
 }
 /// Information about the features available in the portal.
@@ -151,7 +153,8 @@ impl CreatePortalConfigurationFeaturesPaymentMethodUpdate {
 pub struct CreatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+    pub cancellation_reason:
+        Option<CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
@@ -166,7 +169,12 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionCancel<'a> {
 }
 impl<'a> CreatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub fn new(enabled: bool) -> Self {
-        Self { cancellation_reason: Default::default(), enabled, mode: Default::default(), proration_behavior: Default::default() }
+        Self {
+            cancellation_reason: Default::default(),
+            enabled,
+            mode: Default::default(),
+            proration_behavior: Default::default(),
+        }
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
@@ -200,7 +208,11 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     pub proration_behavior: Option<ProrationBehavior>,
 }
 impl<'a> CreatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
-    pub fn new(default_allowed_updates: &'a [DefaultAllowedUpdates], enabled: bool, products: &'a [SubscriptionUpdateProductParam<'a>]) -> Self {
+    pub fn new(
+        default_allowed_updates: &'a [DefaultAllowedUpdates],
+        enabled: bool,
+        products: &'a [SubscriptionUpdateProductParam<'a>],
+    ) -> Self {
         Self { default_allowed_updates, enabled, products, proration_behavior: Default::default() }
     }
 }
@@ -215,6 +227,15 @@ pub struct CreatePortalConfigurationLoginPage {
 impl CreatePortalConfigurationLoginPage {
     pub fn new(enabled: bool) -> Self {
         Self { enabled }
+    }
+}
+impl<'a> CreatePortalConfiguration<'a> {
+    /// Creates a configuration that describes the functionality and behavior of a PortalSession.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_billing::PortalConfiguration> {
+        client.send_form("/billing_portal/configurations", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -325,7 +346,8 @@ impl UpdatePortalConfigurationFeaturesPaymentMethodUpdate {
 pub struct UpdatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+    pub cancellation_reason:
+        Option<UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -398,6 +420,23 @@ impl UpdatePortalConfigurationLoginPage {
         Self { enabled }
     }
 }
+impl<'a> UpdatePortalConfiguration<'a> {
+    /// Updates a configuration that describes the functionality of the customer portal.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId,
+    ) -> stripe::Response<stripe_billing::PortalConfiguration> {
+        client.send_form(
+            &format!(
+                "/billing_portal/configurations/{configuration}",
+                configuration = configuration
+            ),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePortalConfiguration<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -407,6 +446,22 @@ pub struct RetrievePortalConfiguration<'a> {
 impl<'a> RetrievePortalConfiguration<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePortalConfiguration<'a> {
+    /// Retrieves a configuration that describes the functionality of the customer portal.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId,
+    ) -> stripe::Response<stripe_billing::PortalConfiguration> {
+        client.get_query(
+            &format!(
+                "/billing_portal/configurations/{configuration}",
+                configuration = configuration
+            ),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

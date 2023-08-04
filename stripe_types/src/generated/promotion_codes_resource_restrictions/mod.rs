@@ -4,7 +4,12 @@ pub struct PromotionCodesResourceRestrictions {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, stripe_types::PromotionCodeCurrencyOption>>,
+    pub currency_options: Option<
+        std::collections::HashMap<
+            stripe_types::Currency,
+            stripe_types::PromotionCodeCurrencyOption,
+        >,
+    >,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     pub first_time_transaction: bool,
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).

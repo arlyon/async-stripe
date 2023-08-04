@@ -19,73 +19,12 @@ pub struct Balance {
     pub issuing: Option<stripe_core::BalanceDetail>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: BalanceObject,
     /// Funds that are not yet available in the balance.
     ///
     /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
     pub pending: Vec<stripe_core::BalanceAmount>,
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum BalanceObject {
-    Balance,
-}
-
-impl BalanceObject {
-    pub fn as_str(self) -> &'static str {
-        use BalanceObject::*;
-        match self {
-            Balance => "balance",
-        }
-    }
-}
-
-impl std::str::FromStr for BalanceObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BalanceObject::*;
-        match s {
-            "balance" => Ok(Balance),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for BalanceObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BalanceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for BalanceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for BalanceObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for BalanceObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceObject"))
-    }
-}
-pub mod requests;
+#[cfg(feature = "balance")]
+mod requests;
+#[cfg(feature = "balance")]
+pub use requests::*;

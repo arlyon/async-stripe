@@ -38,10 +38,6 @@ pub struct Dispute {
     /// Network-dependent reason code for the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_reason_code: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: DisputeObject,
     /// ID of the PaymentIntent that was disputed.
     pub payment_intent: Option<stripe_types::Expandable<stripe_types::PaymentIntent>>,
     /// Reason given by cardholder for dispute.
@@ -53,66 +49,6 @@ pub struct Dispute {
     ///
     /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
     pub status: DisputeStatus,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum DisputeObject {
-    Dispute,
-}
-
-impl DisputeObject {
-    pub fn as_str(self) -> &'static str {
-        use DisputeObject::*;
-        match self {
-            Dispute => "dispute",
-        }
-    }
-}
-
-impl std::str::FromStr for DisputeObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DisputeObject::*;
-        match s {
-            "dispute" => Ok(Dispute),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for DisputeObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for DisputeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for DisputeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for DisputeObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for DisputeObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeObject"))
-    }
 }
 /// Current status of dispute.
 ///

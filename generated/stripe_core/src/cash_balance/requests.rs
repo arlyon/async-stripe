@@ -1,12 +1,3 @@
-
-/// Retrieves a customer’s cash balance.
-pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: RetrieveCashBalance) -> stripe::Response<stripe_types::CashBalance> {
-    client.get_query(&format!("/customers/{customer}/cash_balance", customer = customer), params)
-}
-/// Changes the settings on a customer’s cash balance.
-pub fn update(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: UpdateCashBalance) -> stripe::Response<stripe_types::CashBalance> {
-    client.send_form(&format!("/customers/{customer}/cash_balance", customer = customer), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCashBalance<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -16,6 +7,16 @@ pub struct RetrieveCashBalance<'a> {
 impl<'a> RetrieveCashBalance<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveCashBalance<'a> {
+    /// Retrieves a customer’s cash balance.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::CashBalance> {
+        client.get_query(&format!("/customers/{customer}/cash_balance", customer = customer), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -105,5 +106,19 @@ impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> UpdateCashBalance<'a> {
+    /// Changes the settings on a customer’s cash balance.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::CashBalance> {
+        client.send_form(
+            &format!("/customers/{customer}/cash_balance", customer = customer),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

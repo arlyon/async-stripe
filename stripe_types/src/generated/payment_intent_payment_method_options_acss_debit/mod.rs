@@ -1,7 +1,8 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<stripe_types::PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
+    pub mandate_options:
+        Option<stripe_types::PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -78,7 +79,11 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsAcssDebit
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage",
+            )
+        })
     }
 }
 /// Bank account verification method.
@@ -142,6 +147,10 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsAcssDebit
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod",
+            )
+        })
     }
 }

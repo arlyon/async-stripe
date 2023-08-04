@@ -1,29 +1,3 @@
-
-/// Update a specified source for a given customer.
-pub fn update_customer(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: UpdateCustomerCard) -> stripe::Response<UpdateCustomerReturned> {
-    client.send_form(&format!("/customers/{customer}/sources/{id}", customer = customer, id = id), params, http_types::Method::Post)
-}
-/// Delete a specified source for a given customer.
-pub fn delete_customer(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: DeleteCustomerCard) -> stripe::Response<DeleteCustomerReturned> {
-    client.send_form(&format!("/customers/{customer}/sources/{id}", customer = customer, id = id), params, http_types::Method::Delete)
-}
-/// Updates the metadata, account holder name, account holder type of a bank account belonging to a [Custom account](https://stripe.com/docs/connect/custom-accounts), and optionally sets it as the default for its currency.
-///
-/// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
-pub fn update_account(client: &stripe::Client, account: &stripe_types::account::AccountId, id: &str, params: UpdateAccountCard) -> stripe::Response<stripe_types::ExternalAccount> {
-    client.send_form(&format!("/accounts/{account}/external_accounts/{id}", account = account, id = id), params, http_types::Method::Post)
-}
-/// Delete a specified external account for a given account.
-pub fn delete_account(client: &stripe::Client, account: &stripe_types::account::AccountId, id: &str) -> stripe::Response<stripe_types::DeletedExternalAccount> {
-    client.send(&format!("/accounts/{account}/external_accounts/{id}", account = account, id = id), http_types::Method::Delete)
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum UpdateCustomerReturned {
-    Card(stripe_types::Card),
-    BankAccount(stripe_types::BankAccount),
-    Source(stripe_types::Source),
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCustomerCard<'a> {
     /// The name of the person or business that owns the bank account.
@@ -126,11 +100,30 @@ impl<'a> UpdateCustomerCardOwnerAddress<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateCustomerCard<'a> {
+    /// Update a specified source for a given customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        id: &str,
+    ) -> stripe::Response<UpdateCustomerReturned> {
+        client.send_form(
+            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum DeleteCustomerReturned {
-    PaymentSource(stripe_types::PaymentSource),
-    DeletedPaymentSource(stripe_types::DeletedPaymentSource),
+#[serde(tag = "object")]
+pub enum UpdateCustomerReturned {
+    #[serde(rename = "card")]
+    Card(stripe_types::Card),
+    #[serde(rename = "bank_account")]
+    BankAccount(stripe_types::BankAccount),
+    #[serde(rename = "source")]
+    Source(stripe_types::Source),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteCustomerCard<'a> {
@@ -142,6 +135,27 @@ impl<'a> DeleteCustomerCard<'a> {
     pub fn new() -> Self {
         Self::default()
     }
+}
+impl<'a> DeleteCustomerCard<'a> {
+    /// Delete a specified source for a given customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        id: &str,
+    ) -> stripe::Response<DeleteCustomerReturned> {
+        client.send_form(
+            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            self,
+            http_types::Method::Delete,
+        )
+    }
+}
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum DeleteCustomerReturned {
+    PaymentSource(stripe_types::PaymentSource),
+    DeletedPaymentSource(stripe_types::DeletedPaymentSource),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateAccountCard<'a> {
@@ -278,7 +292,8 @@ pub struct UpdateAccountCardDocuments<'a> {
     ///
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification: Option<UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a>>,
+    pub bank_account_ownership_verification:
+        Option<UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a>>,
 }
 impl<'a> UpdateAccountCardDocuments<'a> {
     pub fn new() -> Self {
@@ -297,6 +312,45 @@ pub struct UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a> {
 impl<'a> UpdateAccountCardDocumentsBankAccountOwnershipVerification<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateAccountCard<'a> {
+    /// Updates the metadata, account holder name, account holder type of a bank account belonging to a [Custom account](https://stripe.com/docs/connect/custom-accounts), and optionally sets it as the default for its currency.
+    ///
+    /// Other bank account details are not editable by design.  You can re-enable a disabled bank account by performing an update call without providing any arguments or changes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::ExternalAccount> {
+        client.send_form(
+            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteAccountCard {}
+impl DeleteAccountCard {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteAccountCard {
+    /// Delete a specified external account for a given account.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::DeletedExternalAccount> {
+        client.send_form(
+            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

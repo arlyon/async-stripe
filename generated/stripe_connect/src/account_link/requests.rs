@@ -1,8 +1,3 @@
-
-/// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-pub fn create(client: &stripe::Client, params: CreateAccountLink) -> stripe::Response<stripe_connect::AccountLink> {
-    client.send_form("/account_links", params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountLink<'a> {
     /// The identifier of the account to create an account link for.
@@ -33,7 +28,14 @@ pub struct CreateAccountLink<'a> {
 }
 impl<'a> CreateAccountLink<'a> {
     pub fn new(account: &'a str, type_: CreateAccountLinkType) -> Self {
-        Self { account, collect: Default::default(), expand: Default::default(), refresh_url: Default::default(), return_url: Default::default(), type_ }
+        Self {
+            account,
+            collect: Default::default(),
+            expand: Default::default(),
+            refresh_url: Default::default(),
+            return_url: Default::default(),
+            type_,
+        }
     }
 }
 /// Which information the platform needs to collect from the user.
@@ -153,5 +155,11 @@ impl serde::Serialize for CreateAccountLinkType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> CreateAccountLink<'a> {
+    /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_connect::AccountLink> {
+        client.send_form("/account_links", self, http_types::Method::Post)
     }
 }

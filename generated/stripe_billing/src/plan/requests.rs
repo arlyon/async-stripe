@@ -1,31 +1,3 @@
-
-/// Returns a list of your plans.
-pub fn list(client: &stripe::Client, params: ListPlan) -> stripe::Response<stripe_types::List<stripe_types::Plan>> {
-    client.get_query("/plans", params)
-}
-/// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
-///
-/// It replaces the Plans API and is backwards compatible to simplify your migration.
-pub fn create(client: &stripe::Client, params: CreatePlan) -> stripe::Response<stripe_types::Plan> {
-    client.send_form("/plans", params, http_types::Method::Post)
-}
-/// Retrieves the plan with the given ID.
-pub fn retrieve(client: &stripe::Client, plan: &stripe_types::plan::PlanId, params: RetrievePlan) -> stripe::Response<stripe_types::Plan> {
-    client.get_query(&format!("/plans/{plan}", plan = plan), params)
-}
-/// Updates the specified plan by setting the values of the parameters passed.
-///
-/// Any parameters not provided are left unchanged.
-/// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-pub fn update(client: &stripe::Client, plan: &stripe_types::plan::PlanId, params: UpdatePlan) -> stripe::Response<stripe_types::Plan> {
-    client.send_form(&format!("/plans/{plan}", plan = plan), params, http_types::Method::Post)
-}
-/// Deleting plans means new subscribers can’t be added.
-///
-/// Existing subscribers aren’t affected.
-pub fn delete(client: &stripe::Client, plan: &stripe_types::plan::PlanId) -> stripe::Response<stripe_types::DeletedPlan> {
-    client.send(&format!("/plans/{plan}", plan = plan), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPlan<'a> {
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
@@ -63,6 +35,15 @@ pub struct ListPlan<'a> {
 impl<'a> ListPlan<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListPlan<'a> {
+    /// Returns a list of your plans.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Plan>> {
+        client.get_query("/plans", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -410,7 +391,15 @@ pub struct CreatePlanInlineProductParams<'a> {
 }
 impl<'a> CreatePlanInlineProductParams<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self { active: Default::default(), id: Default::default(), metadata: Default::default(), name, statement_descriptor: Default::default(), tax_code: Default::default(), unit_label: Default::default() }
+        Self {
+            active: Default::default(),
+            id: Default::default(),
+            metadata: Default::default(),
+            name,
+            statement_descriptor: Default::default(),
+            tax_code: Default::default(),
+            unit_label: Default::default(),
+        }
     }
 }
 /// Each element represents a pricing tier.
@@ -443,7 +432,13 @@ pub struct CreatePlanTiers<'a> {
 }
 impl<'a> CreatePlanTiers<'a> {
     pub fn new(up_to: CreatePlanTiersUpTo) -> Self {
-        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
+        Self {
+            flat_amount: Default::default(),
+            flat_amount_decimal: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+            up_to,
+        }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -640,6 +635,14 @@ impl serde::Serialize for CreatePlanUsageType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreatePlan<'a> {
+    /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
+    ///
+    /// It replaces the Plans API and is backwards compatible to simplify your migration.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Plan> {
+        client.send_form("/plans", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePlan<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -649,6 +652,16 @@ pub struct RetrievePlan<'a> {
 impl<'a> RetrievePlan<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePlan<'a> {
+    /// Retrieves the plan with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        plan: &stripe_types::plan::PlanId,
+    ) -> stripe::Response<stripe_types::Plan> {
+        client.get_query(&format!("/plans/{plan}", plan = plan), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -681,5 +694,37 @@ pub struct UpdatePlan<'a> {
 impl<'a> UpdatePlan<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdatePlan<'a> {
+    /// Updates the specified plan by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        plan: &stripe_types::plan::PlanId,
+    ) -> stripe::Response<stripe_types::Plan> {
+        client.send_form(&format!("/plans/{plan}", plan = plan), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeletePlan {}
+impl DeletePlan {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeletePlan {
+    /// Deleting plans means new subscribers can’t be added.
+    ///
+    /// Existing subscribers aren’t affected.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        plan: &stripe_types::plan::PlanId,
+    ) -> stripe::Response<stripe_types::DeletedPlan> {
+        client.send_form(&format!("/plans/{plan}", plan = plan), self, http_types::Method::Delete)
     }
 }

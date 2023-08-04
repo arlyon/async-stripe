@@ -1,16 +1,3 @@
-
-/// List events, going back up to 30 days.
-///
-/// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
-pub fn list(client: &stripe::Client, params: ListNotificationEvent) -> stripe::Response<stripe_types::List<stripe_core::NotificationEvent>> {
-    client.get_query("/events", params)
-}
-/// Retrieves the details of an event.
-///
-/// Supply the unique identifier of the event, which you might have received in a webhook.
-pub fn retrieve(client: &stripe::Client, id: &stripe_core::notification_event::EventId, params: RetrieveNotificationEvent) -> stripe::Response<stripe_core::NotificationEvent> {
-    client.get_query(&format!("/events/{id}", id = id), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListNotificationEvent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -58,6 +45,17 @@ impl<'a> ListNotificationEvent<'a> {
         Self::default()
     }
 }
+impl<'a> ListNotificationEvent<'a> {
+    /// List events, going back up to 30 days.
+    ///
+    /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_core::NotificationEvent>> {
+        client.get_query("/events", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveNotificationEvent<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -67,5 +65,17 @@ pub struct RetrieveNotificationEvent<'a> {
 impl<'a> RetrieveNotificationEvent<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveNotificationEvent<'a> {
+    /// Retrieves the details of an event.
+    ///
+    /// Supply the unique identifier of the event, which you might have received in a webhook.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_core::notification_event::EventId,
+    ) -> stripe::Response<stripe_core::NotificationEvent> {
+        client.get_query(&format!("/events/{id}", id = id), self)
     }
 }

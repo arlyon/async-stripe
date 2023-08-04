@@ -23,10 +23,6 @@ pub struct ReportingReportType {
     pub livemode: bool,
     /// Human-readable name of the Report Type.
     pub name: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: ReportingReportTypeObject,
     /// When this Report Type was latest updated.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -36,66 +32,6 @@ pub struct ReportingReportType {
     /// Different versions report with the same ID will have the same purpose, but may take different run parameters or have different result schemas.
     pub version: i64,
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ReportingReportTypeObject {
-    ReportingReportType,
-}
-
-impl ReportingReportTypeObject {
-    pub fn as_str(self) -> &'static str {
-        use ReportingReportTypeObject::*;
-        match self {
-            ReportingReportType => "reporting.report_type",
-        }
-    }
-}
-
-impl std::str::FromStr for ReportingReportTypeObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ReportingReportTypeObject::*;
-        match s {
-            "reporting.report_type" => Ok(ReportingReportType),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for ReportingReportTypeObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ReportingReportTypeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ReportingReportTypeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ReportingReportTypeObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for ReportingReportTypeObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for ReportingReportTypeObject"))
-    }
-}
 impl stripe_types::Object for ReportingReportType {
     type Id = stripe_misc::reporting_report_type::ReportingReportTypeId;
     fn id(&self) -> Self::Id {
@@ -103,4 +39,7 @@ impl stripe_types::Object for ReportingReportType {
     }
 }
 stripe_types::def_id!(ReportingReportTypeId);
-pub mod requests;
+#[cfg(feature = "reporting_report_type")]
+mod requests;
+#[cfg(feature = "reporting_report_type")]
+pub use requests::*;

@@ -11,9 +11,11 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     pub interval_description: Option<String>,
     /// Payment schedule for the mandate.
-    pub payment_schedule: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    pub payment_schedule:
+        Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
     /// Transaction type of the mandate.
-    pub transaction_type: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+    pub transaction_type:
+        Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 /// List of Stripe products where this mandate can be selected automatically.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -69,7 +71,9 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
+impl<'de> serde::Deserialize<'de>
+    for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -133,7 +137,9 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+impl<'de> serde::Deserialize<'de>
+    for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -194,7 +200,9 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+impl<'de> serde::Deserialize<'de>
+    for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

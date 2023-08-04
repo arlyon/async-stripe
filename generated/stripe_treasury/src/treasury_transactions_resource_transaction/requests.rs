@@ -1,16 +1,3 @@
-
-/// Retrieves the details of an existing Transaction.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_transactions_resource_transaction::TreasuryTransactionId,
-    params: RetrieveTreasuryTransactionsResourceTransaction,
-) -> stripe::Response<stripe_treasury::TreasuryTransactionsResourceTransaction> {
-    client.get_query(&format!("/treasury/transactions/{id}", id = id), params)
-}
-/// Retrieves a list of Transaction objects.
-pub fn list(client: &stripe::Client, params: ListTreasuryTransactionsResourceTransaction) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransaction>> {
-    client.get_query("/treasury/transactions", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryTransactionsResourceTransaction<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -20,6 +7,12 @@ pub struct RetrieveTreasuryTransactionsResourceTransaction<'a> {
 impl<'a> RetrieveTreasuryTransactionsResourceTransaction<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryTransactionsResourceTransaction<'a> {
+    /// Retrieves the details of an existing Transaction.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_transactions_resource_transaction::TreasuryTransactionId) -> stripe::Response<stripe_treasury::TreasuryTransactionsResourceTransaction> {
+        client.get_query(&format!("/treasury/transactions/{id}", id = id), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -202,5 +195,11 @@ pub struct ListTreasuryTransactionsResourceTransactionStatusTransitions {
 impl ListTreasuryTransactionsResourceTransactionStatusTransitions {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListTreasuryTransactionsResourceTransaction<'a> {
+    /// Retrieves a list of Transaction objects.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransaction>> {
+        client.get_query("/treasury/transactions", self)
     }
 }

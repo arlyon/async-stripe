@@ -1,41 +1,44 @@
-
-/// Search for products you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchProduct) -> stripe::Response<SearchReturned> {
-    client.get_query("/products/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchProduct<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for products](https://stripe.com/docs/search#query-fields-for-products).
+    pub query: &'a str,
 }
-/// Creates a new product object.
-pub fn create(client: &stripe::Client, params: CreateProduct) -> stripe::Response<stripe_types::Product> {
-    client.send_form("/products", params, http_types::Method::Post)
+impl<'a> SearchProduct<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Retrieves the details of an existing product.
-///
-/// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
-pub fn retrieve(client: &stripe::Client, id: &stripe_types::product::ProductId, params: RetrieveProduct) -> stripe::Response<stripe_types::Product> {
-    client.get_query(&format!("/products/{id}", id = id), params)
-}
-/// Updates the specific product by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-pub fn update(client: &stripe::Client, id: &stripe_types::product::ProductId, params: UpdateProduct) -> stripe::Response<stripe_types::Product> {
-    client.send_form(&format!("/products/{id}", id = id), params, http_types::Method::Post)
-}
-/// Returns a list of your products.
-///
-/// The products are returned sorted by creation date, with the most recently created products appearing first.
-pub fn list(client: &stripe::Client, params: ListProduct) -> stripe::Response<stripe_types::List<stripe_types::Product>> {
-    client.get_query("/products", params)
-}
-/// Delete a product.
-///
-/// Deleting a product is only possible if it has no prices associated with it.
-/// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-pub fn delete(client: &stripe::Client, id: &stripe_types::product::ProductId) -> stripe::Response<stripe_types::DeletedProduct> {
-    client.send(&format!("/products/{id}", id = id), http_types::Method::Delete)
+impl<'a> SearchProduct<'a> {
+    /// Search for products you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/products/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -108,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchProduct<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for products](https://stripe.com/docs/search#query-fields-for-products).
-    pub query: &'a str,
-}
-impl<'a> SearchProduct<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -259,7 +237,12 @@ pub struct CreateProductDefaultPriceData<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateProductDefaultPriceDataCurrencyOptions>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateProductDefaultPriceDataCurrencyOptions,
+        >,
+    >,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
@@ -283,7 +266,14 @@ pub struct CreateProductDefaultPriceData<'a> {
 }
 impl<'a> CreateProductDefaultPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self { currency, currency_options: Default::default(), recurring: Default::default(), tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            currency_options: Default::default(),
+            recurring: Default::default(),
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 /// Prices defined in each available currency option.
@@ -340,7 +330,12 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
     pub fn new(enabled: bool) -> Self {
-        Self { enabled, maximum: Default::default(), minimum: Default::default(), preset: Default::default() }
+        Self {
+            enabled,
+            maximum: Default::default(),
+            minimum: Default::default(),
+            preset: Default::default(),
+        }
     }
 }
 /// Each element represents a pricing tier.
@@ -373,7 +368,13 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
     pub fn new(up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo) -> Self {
-        Self { flat_amount: Default::default(), flat_amount_decimal: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default(), up_to }
+        Self {
+            flat_amount: Default::default(),
+            flat_amount_decimal: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+            up_to,
+        }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -467,6 +468,12 @@ impl serde::Serialize for CreateProductDefaultPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateProduct<'a> {
+    /// Creates a new product object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Product> {
+        client.send_form("/products", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveProduct<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -476,6 +483,18 @@ pub struct RetrieveProduct<'a> {
 impl<'a> RetrieveProduct<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveProduct<'a> {
+    /// Retrieves the details of an existing product.
+    ///
+    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::product::ProductId,
+    ) -> stripe::Response<stripe_types::Product> {
+        client.get_query(&format!("/products/{id}", id = id), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -555,6 +574,18 @@ impl<'a> UpdateProduct<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateProduct<'a> {
+    /// Updates the specific product by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::product::ProductId,
+    ) -> stripe::Response<stripe_types::Product> {
+        client.send_form(&format!("/products/{id}", id = id), self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListProduct<'a> {
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
@@ -602,6 +633,37 @@ pub struct ListProduct<'a> {
 impl<'a> ListProduct<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListProduct<'a> {
+    /// Returns a list of your products.
+    ///
+    /// The products are returned sorted by creation date, with the most recently created products appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Product>> {
+        client.get_query("/products", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteProduct {}
+impl DeleteProduct {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteProduct {
+    /// Delete a product.
+    ///
+    /// Deleting a product is only possible if it has no prices associated with it.
+    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        id: &stripe_types::product::ProductId,
+    ) -> stripe::Response<stripe_types::DeletedProduct> {
+        client.send_form(&format!("/products/{id}", id = id), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

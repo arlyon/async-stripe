@@ -1,31 +1,3 @@
-
-/// Returns a list of `ValueList` objects.
-///
-/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-pub fn list(client: &stripe::Client, params: ListRadarListList) -> stripe::Response<stripe_types::List<stripe_fraud::RadarListList>> {
-    client.get_query("/radar/value_lists", params)
-}
-/// Retrieves a `ValueList` object.
-pub fn retrieve(client: &stripe::Client, value_list: &stripe_fraud::radar_list_list::RadarValueListId, params: RetrieveRadarListList) -> stripe::Response<stripe_fraud::RadarListList> {
-    client.get_query(&format!("/radar/value_lists/{value_list}", value_list = value_list), params)
-}
-/// Creates a new `ValueList` object, which can then be referenced in rules.
-pub fn create(client: &stripe::Client, params: CreateRadarListList) -> stripe::Response<stripe_fraud::RadarListList> {
-    client.send_form("/radar/value_lists", params, http_types::Method::Post)
-}
-/// Updates a `ValueList` object by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-/// Note that `item_type` is immutable.
-pub fn update(client: &stripe::Client, value_list: &stripe_fraud::radar_list_list::RadarValueListId, params: UpdateRadarListList) -> stripe::Response<stripe_fraud::RadarListList> {
-    client.send_form(&format!("/radar/value_lists/{value_list}", value_list = value_list), params, http_types::Method::Post)
-}
-/// Deletes a `ValueList` object, also deleting any items contained within the value list.
-///
-/// To be deleted, a value list must not be referenced in any rules.
-pub fn delete(client: &stripe::Client, value_list: &stripe_fraud::radar_list_list::RadarValueListId) -> stripe::Response<stripe_fraud::RadarListDeletedList> {
-    client.send(&format!("/radar/value_lists/{value_list}", value_list = value_list), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListRadarListList<'a> {
     /// The alias used to reference the value list when writing rules.
@@ -62,6 +34,17 @@ impl<'a> ListRadarListList<'a> {
         Self::default()
     }
 }
+impl<'a> ListRadarListList<'a> {
+    /// Returns a list of `ValueList` objects.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarListList>> {
+        client.get_query("/radar/value_lists", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarListList<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -71,6 +54,16 @@ pub struct RetrieveRadarListList<'a> {
 impl<'a> RetrieveRadarListList<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveRadarListList<'a> {
+    /// Retrieves a `ValueList` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        value_list: &stripe_fraud::radar_list_list::RadarValueListId,
+    ) -> stripe::Response<stripe_fraud::RadarListList> {
+        client.get_query(&format!("/radar/value_lists/{value_list}", value_list = value_list), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -98,7 +91,13 @@ pub struct CreateRadarListList<'a> {
 }
 impl<'a> CreateRadarListList<'a> {
     pub fn new(alias: &'a str, name: &'a str) -> Self {
-        Self { alias, expand: Default::default(), item_type: Default::default(), metadata: Default::default(), name }
+        Self {
+            alias,
+            expand: Default::default(),
+            item_type: Default::default(),
+            metadata: Default::default(),
+            name,
+        }
     }
 }
 /// Type of the items in the value list.
@@ -176,6 +175,12 @@ impl serde::Serialize for CreateRadarListListItemType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateRadarListList<'a> {
+    /// Creates a new `ValueList` object, which can then be referenced in rules.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_fraud::RadarListList> {
+        client.send_form("/radar/value_lists", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateRadarListList<'a> {
     /// The name of the value list for use in rules.
@@ -198,5 +203,45 @@ pub struct UpdateRadarListList<'a> {
 impl<'a> UpdateRadarListList<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateRadarListList<'a> {
+    /// Updates a `ValueList` object by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    /// Note that `item_type` is immutable.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        value_list: &stripe_fraud::radar_list_list::RadarValueListId,
+    ) -> stripe::Response<stripe_fraud::RadarListList> {
+        client.send_form(
+            &format!("/radar/value_lists/{value_list}", value_list = value_list),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteRadarListList {}
+impl DeleteRadarListList {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteRadarListList {
+    /// Deletes a `ValueList` object, also deleting any items contained within the value list.
+    ///
+    /// To be deleted, a value list must not be referenced in any rules.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        value_list: &stripe_fraud::radar_list_list::RadarValueListId,
+    ) -> stripe::Response<stripe_fraud::RadarListDeletedList> {
+        client.send_form(
+            &format!("/radar/value_lists/{value_list}", value_list = value_list),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }

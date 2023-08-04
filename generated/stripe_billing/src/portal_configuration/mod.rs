@@ -28,74 +28,10 @@ pub struct PortalConfiguration {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PortalConfigurationObject,
     /// Time at which the object was last updated.
     ///
     /// Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PortalConfigurationObject {
-    BillingPortalConfiguration,
-}
-
-impl PortalConfigurationObject {
-    pub fn as_str(self) -> &'static str {
-        use PortalConfigurationObject::*;
-        match self {
-            BillingPortalConfiguration => "billing_portal.configuration",
-        }
-    }
-}
-
-impl std::str::FromStr for PortalConfigurationObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PortalConfigurationObject::*;
-        match s {
-            "billing_portal.configuration" => Ok(BillingPortalConfiguration),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PortalConfigurationObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PortalConfigurationObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PortalConfigurationObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PortalConfigurationObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PortalConfigurationObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PortalConfigurationObject"))
-    }
 }
 impl stripe_types::Object for PortalConfiguration {
     type Id = stripe_billing::portal_configuration::BillingPortalConfigurationId;
@@ -104,4 +40,7 @@ impl stripe_types::Object for PortalConfiguration {
     }
 }
 stripe_types::def_id!(BillingPortalConfigurationId, "bpc_");
-pub mod requests;
+#[cfg(feature = "portal_configuration")]
+mod requests;
+#[cfg(feature = "portal_configuration")]
+pub use requests::*;

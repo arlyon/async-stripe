@@ -30,10 +30,6 @@ pub struct PaymentFlowsSetupIntentSetupAttempt {
     pub id: stripe_types::payment_flows_setup_intent_setup_attempt::SetupAttemptId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PaymentFlowsSetupIntentSetupAttemptObject,
     /// The value of [on_behalf_of](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-on_behalf_of) on the SetupIntent at the time of this confirmation.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::Account>>,
     /// ID of the payment method used with this SetupAttempt.
@@ -111,67 +107,11 @@ impl<'de> serde::Deserialize<'de> for PaymentFlowsSetupIntentSetupAttemptFlowDir
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentFlowsSetupIntentSetupAttemptFlowDirections"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PaymentFlowsSetupIntentSetupAttemptObject {
-    SetupAttempt,
-}
-
-impl PaymentFlowsSetupIntentSetupAttemptObject {
-    pub fn as_str(self) -> &'static str {
-        use PaymentFlowsSetupIntentSetupAttemptObject::*;
-        match self {
-            SetupAttempt => "setup_attempt",
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentFlowsSetupIntentSetupAttemptObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentFlowsSetupIntentSetupAttemptObject::*;
-        match s {
-            "setup_attempt" => Ok(SetupAttempt),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PaymentFlowsSetupIntentSetupAttemptObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentFlowsSetupIntentSetupAttemptObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PaymentFlowsSetupIntentSetupAttemptObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PaymentFlowsSetupIntentSetupAttemptObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PaymentFlowsSetupIntentSetupAttemptObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentFlowsSetupIntentSetupAttemptObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentFlowsSetupIntentSetupAttemptFlowDirections",
+            )
+        })
     }
 }
 impl stripe_types::Object for PaymentFlowsSetupIntentSetupAttempt {

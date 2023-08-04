@@ -65,7 +65,11 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionPromo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourceConsentCollectionPromotions"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourceConsentCollectionPromotions",
+            )
+        })
     }
 }
 /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
@@ -128,6 +132,10 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionTerms
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourceConsentCollectionTermsOfService"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourceConsentCollectionTermsOfService",
+            )
+        })
     }
 }

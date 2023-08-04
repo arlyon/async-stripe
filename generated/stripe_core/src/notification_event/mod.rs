@@ -28,10 +28,6 @@ pub struct NotificationEvent {
     pub id: stripe_core::notification_event::EventId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: NotificationEventObject,
     /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
     pub pending_webhooks: i64,
     /// Information on the API request that instigated the event.
@@ -40,66 +36,6 @@ pub struct NotificationEvent {
     #[serde(rename = "type")]
     pub type_: String,
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum NotificationEventObject {
-    Event,
-}
-
-impl NotificationEventObject {
-    pub fn as_str(self) -> &'static str {
-        use NotificationEventObject::*;
-        match self {
-            Event => "event",
-        }
-    }
-}
-
-impl std::str::FromStr for NotificationEventObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use NotificationEventObject::*;
-        match s {
-            "event" => Ok(Event),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for NotificationEventObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for NotificationEventObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for NotificationEventObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for NotificationEventObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for NotificationEventObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for NotificationEventObject"))
-    }
-}
 impl stripe_types::Object for NotificationEvent {
     type Id = stripe_core::notification_event::EventId;
     fn id(&self) -> Self::Id {
@@ -107,4 +43,7 @@ impl stripe_types::Object for NotificationEvent {
     }
 }
 stripe_types::def_id!(EventId, "evt_");
-pub mod requests;
+#[cfg(feature = "notification_event")]
+mod requests;
+#[cfg(feature = "notification_event")]
+pub use requests::*;

@@ -13,7 +13,10 @@ use crate::rust_object::RustObject;
 use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::{as_object_properties, get_request_form_parameters, Spec};
 use crate::spec_inference::{infer_id_name, Inference};
-use crate::stripe_object::{parse_stripe_schema_as_rust_object, CrateInfo, OperationType, StripeObject, StripeOperation, StripeResource};
+use crate::stripe_object::{
+    parse_stripe_schema_as_rust_object, CrateInfo, OperationType, StripeObject, StripeOperation,
+    StripeResource,
+};
 use crate::types::{ComponentPath, RustIdent};
 
 pub struct Components {
@@ -65,13 +68,21 @@ impl Components {
 
     pub fn construct_printable_type(&self, typ: &RustType) -> PrintableType {
         match typ {
-            RustType::Object(obj, metadata) => PrintableType::QualifiedPath { path: None, has_ref: obj.has_reference(), is_ref: false, ident: metadata.ident.clone() },
+            RustType::Object(obj, metadata) => PrintableType::QualifiedPath {
+                path: None,
+                has_ref: obj.has_reference(),
+                is_ref: false,
+                ident: metadata.ident.clone(),
+            },
 
             RustType::Path { path, has_reference, is_ref, .. } => {
                 let (path, ident) = match path {
                     PathToType::Component(path) => {
                         let comp = self.get(path);
-                        (Some(PathInfo::with_crate(comp.krate_unwrapped().for_types())), comp.ident().clone())
+                        (
+                            Some(PathInfo::with_crate(comp.krate_unwrapped().for_types())),
+                            comp.ident().clone(),
+                        )
                     }
                     PathToType::IntraFile(ident) => (None, ident.clone()),
                     PathToType::ObjectId(path) => {
@@ -79,9 +90,16 @@ impl Components {
                         let path_info = self.resolve_path(path);
                         (Some(path_info), ident)
                     }
-                    PathToType::Types(ident) => (Some(PathInfo { krate: Some(Crate::Types), path: None }), ident.clone()),
+                    PathToType::Types(ident) => {
+                        (Some(PathInfo { krate: Some(Crate::Types), path: None }), ident.clone())
+                    }
                 };
-                PrintableType::QualifiedPath { path, has_ref: *has_reference, is_ref: *is_ref, ident }
+                PrintableType::QualifiedPath {
+                    path,
+                    has_ref: *has_reference,
+                    is_ref: *is_ref,
+                    ident,
+                }
             }
             RustType::Simple(typ) => PrintableType::Simple(*typ),
             RustType::Container(typ) => {
@@ -93,23 +111,27 @@ impl Components {
                     Container::Expandable(_) => PrintableContainer::Expandable(inner),
                     Container::Option(_) => PrintableContainer::Option(inner),
                     Container::Box(_) => PrintableContainer::Box(inner),
-                    Container::Map { key, is_ref, .. } => PrintableContainer::Map { key: *key, is_ref: *is_ref, value: inner },
+                    Container::Map { key, is_ref, .. } => {
+                        PrintableContainer::Map { key: *key, is_ref: *is_ref, value: inner }
+                    }
                 };
                 PrintableType::Container(printable)
             }
         }
     }
 
-    pub fn add_component_deps<'a>(&'a self, deps: &mut IndexSet<&'a ComponentPath>, path: &'a ComponentPath) {
+    pub fn add_component_deps<'a>(
+        &'a self,
+        deps: &mut IndexSet<&'a ComponentPath>,
+        path: &'a ComponentPath,
+    ) {
         let component = self.get(path);
         let base_type = component.rust_obj();
         self.add_deps_from_obj(deps, base_type);
         let reqs = &component.requests;
         let mut typs = vec![];
         for req in reqs {
-            if let Some(params) = &req.params {
-                typs.push(params);
-            }
+            typs.push(&req.params);
             typs.push(&req.returned);
             for path_param in &req.path_params {
                 typs.push(&path_param.rust_type);
@@ -120,7 +142,11 @@ impl Components {
         }
     }
 
-    pub fn add_deps_from_obj<'a>(&'a self, deps: &mut IndexSet<&'a ComponentPath>, obj: &'a RustObject) {
+    pub fn add_deps_from_obj<'a>(
+        &'a self,
+        deps: &mut IndexSet<&'a ComponentPath>,
+        obj: &'a RustObject,
+    ) {
         match obj {
             RustObject::Struct(fields) => {
                 for field in fields {
@@ -138,7 +164,11 @@ impl Components {
         }
     }
 
-    pub fn add_deps_from_typ<'a>(&'a self, deps: &mut IndexSet<&'a ComponentPath>, typ: &'a RustType) {
+    pub fn add_deps_from_typ<'a>(
+        &'a self,
+        deps: &mut IndexSet<&'a ComponentPath>,
+        typ: &'a RustType,
+    ) {
         match typ {
             RustType::Object(obj, _) => self.add_deps_from_obj(deps, obj),
             RustType::Path { path: PathToType::Component(path), .. } => {
@@ -149,7 +179,10 @@ impl Components {
         }
     }
 
-    pub fn deps_for_component<'a>(&'a self, path: &'a ComponentPath) -> IndexSet<&'a ComponentPath> {
+    pub fn deps_for_component<'a>(
+        &'a self,
+        path: &'a ComponentPath,
+    ) -> IndexSet<&'a ComponentPath> {
         let mut deps = IndexSet::new();
         self.add_component_deps(&mut deps, path);
         deps
@@ -166,7 +199,9 @@ impl Components {
                 if path.as_ref() == "error" {
                     continue;
                 }
-                if component.requests.is_empty() && graph.neighbors_directed(path, Direction::Incoming).count() == 0 {
+                if component.requests.is_empty()
+                    && graph.neighbors_directed(path, Direction::Incoming).count() == 0
+                {
                     unused.push(path.clone());
                 }
             }
@@ -206,11 +241,24 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     for (path, data) in obj_map {
         let resource = resource_map.get(&path).unwrap();
         let schema = spec.get_component_schema(&path);
-        let stripe_reqs: Vec<StripeOperation> = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") { serde_json::from_value(val.clone())? } else { vec![] };
+        let stripe_reqs: Vec<StripeOperation> =
+            if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") {
+                serde_json::from_value(val.clone())?
+            } else {
+                vec![]
+            };
 
         let inferred_krate = maybe_infer_crate(&path, resource.in_package.as_deref());
         let reqs = parse_requests(stripe_reqs, spec, &resource.base_ident, &path, &id_map)?;
-        components.insert(path, StripeObject { requests: reqs, resource: resource.clone(), data, krate: inferred_krate.map(CrateInfo::new) });
+        components.insert(
+            path,
+            StripeObject {
+                requests: reqs,
+                resource: resource.clone(),
+                data,
+                krate: inferred_krate.map(CrateInfo::new),
+            },
+        );
     }
 
     let mut components = Components { components };
@@ -252,18 +300,45 @@ pub enum OverrideSource {
     Request(RequestOverrideSource),
 }
 
-const OVERRIDES: &[OverrideData] = &[OverrideData { doc: "", mod_path: "api_version", ident: "ApiVersion", source: OverrideSource::Request(RequestOverrideSource { path: "/v1/webhook_endpoints", op: OperationType::Post, field_name: "api_version" }) }];
+const OVERRIDES: &[OverrideData] = &[OverrideData {
+    doc: "",
+    mod_path: "api_version",
+    ident: "ApiVersion",
+    source: OverrideSource::Request(RequestOverrideSource {
+        path: "/v1/webhook_endpoints",
+        op: OperationType::Post,
+        field_name: "api_version",
+    }),
+}];
 
-fn get_override_object(spec: &Spec, data: &OverrideData) -> anyhow::Result<(RustObject, OverrideMetadata)> {
+fn get_override_object(
+    spec: &Spec,
+    data: &OverrideData,
+) -> anyhow::Result<(RustObject, OverrideMetadata)> {
     match data.source {
         OverrideSource::Request(req_src) => {
-            let op = spec.get_request_operation(req_src.path, req_src.op).context("Request not found")?;
-            let form_params = get_request_form_parameters(op).context("No form params")?.as_item().context("Was a ref")?;
+            let op = spec
+                .get_request_operation(req_src.path, req_src.op)
+                .context("Request not found")?;
+            let form_params = get_request_form_parameters(op)
+                .context("No form params")?
+                .as_item()
+                .context("Was a ref")?;
             let typ = as_object_properties(form_params).context("Not an object")?;
             let schema = typ.get(req_src.field_name).context("Field not found")?;
             let ident = RustIdent::create(data.ident);
-            let (obj, _) = Inference::new(&ident).infer_schema_or_ref_type(schema).into_object().context("Expected object type to be inferred")?;
-            Ok((obj, OverrideMetadata { ident, doc: data.doc.to_string(), mod_path: data.mod_path.to_string() }))
+            let (obj, _) = Inference::new(&ident)
+                .infer_schema_or_ref_type(schema)
+                .into_object()
+                .context("Expected object type to be inferred")?;
+            Ok((
+                obj,
+                OverrideMetadata {
+                    ident,
+                    doc: data.doc.to_string(),
+                    mod_path: data.mod_path.to_string(),
+                },
+            ))
         }
     }
 }
@@ -271,7 +346,8 @@ fn get_override_object(spec: &Spec, data: &OverrideData) -> anyhow::Result<(Rust
 pub fn build_field_overrides(spec: &Spec) -> anyhow::Result<Overrides> {
     let mut overrides = IndexMap::new();
     for override_ in OVERRIDES {
-        let (obj, meta) = get_override_object(spec, override_).with_context(|| format!("Failed to construct override for source {override_:?}"))?;
+        let (obj, meta) = get_override_object(spec, override_)
+            .with_context(|| format!("Failed to construct override for source {override_:?}"))?;
         overrides.insert(obj, meta);
     }
     Ok(Overrides { overrides })
@@ -282,7 +358,12 @@ impl Overrides {
         match typ {
             RustType::Object(obj, _) => {
                 if let Some(meta) = self.overrides.get(obj) {
-                    *typ = RustType::Path { path: PathToType::Types(meta.ident.clone()), is_ref: false, has_reference: obj.has_reference(), is_copy: obj.is_copy() }
+                    *typ = RustType::Path {
+                        path: PathToType::Types(meta.ident.clone()),
+                        is_ref: false,
+                        has_reference: obj.has_reference(),
+                        is_copy: obj.is_copy(),
+                    }
                 } else {
                     self.replace_obj(obj);
                 }
@@ -321,9 +402,7 @@ impl Components {
             overrides.replace_obj(obj_typ);
 
             for req in &mut obj.requests {
-                if let Some(typ) = &mut req.params {
-                    overrides.replace_typ(typ);
-                }
+                overrides.replace_typ(&mut req.params);
                 overrides.replace_typ(&mut req.returned);
             }
         }

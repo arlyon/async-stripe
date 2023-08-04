@@ -3,7 +3,8 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     /// Currency supported by the bank account.
     pub currency: Option<SetupIntentPaymentMethodOptionsAcssDebitCurrency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<stripe_types::SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
+    pub mandate_options:
+        Option<stripe_types::SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -66,7 +67,11 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsAcssDebitCu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsAcssDebitCurrency"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SetupIntentPaymentMethodOptionsAcssDebitCurrency",
+            )
+        })
     }
 }
 /// Bank account verification method.
@@ -130,6 +135,10 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsAcssDebitVe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod",
+            )
+        })
     }
 }

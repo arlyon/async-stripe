@@ -71,7 +71,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAfterpayClearpayCaptur
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsAfterpayClearpayCaptureMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsAfterpayClearpayCaptureMethod",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -133,6 +137,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsAfterpayClearpaySetupF
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsAfterpayClearpaySetupFutureUsage",
+            )
+        })
     }
 }

@@ -1,14 +1,3 @@
-
-/// Retrieves Tax `Settings` for a merchant.
-pub fn retrieve_for_my_account(client: &stripe::Client, params: RetrieveForMyAccountTaxProductResourceTaxSettings) -> stripe::Response<stripe_misc::TaxProductResourceTaxSettings> {
-    client.get_query("/tax/settings", params)
-}
-/// Updates Tax `Settings` parameters used in tax calculations.
-///
-/// All parameters are editable but none can be removed once set.
-pub fn update(client: &stripe::Client, params: UpdateTaxProductResourceTaxSettings) -> stripe::Response<stripe_misc::TaxProductResourceTaxSettings> {
-    client.send_form("/tax/settings", params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveForMyAccountTaxProductResourceTaxSettings<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -18,6 +7,15 @@ pub struct RetrieveForMyAccountTaxProductResourceTaxSettings<'a> {
 impl<'a> RetrieveForMyAccountTaxProductResourceTaxSettings<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveForMyAccountTaxProductResourceTaxSettings<'a> {
+    /// Retrieves Tax `Settings` for a merchant.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxSettings> {
+        client.get_query("/tax/settings", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -153,5 +151,16 @@ pub struct UpdateTaxProductResourceTaxSettingsHeadOfficeAddress<'a> {
 impl<'a> UpdateTaxProductResourceTaxSettingsHeadOfficeAddress<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateTaxProductResourceTaxSettings<'a> {
+    /// Updates Tax `Settings` parameters used in tax calculations.
+    ///
+    /// All parameters are editable but none can be removed once set.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::TaxProductResourceTaxSettings> {
+        client.send_form("/tax/settings", self, http_types::Method::Post)
     }
 }

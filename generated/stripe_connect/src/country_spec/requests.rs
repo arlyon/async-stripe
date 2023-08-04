@@ -1,12 +1,3 @@
-
-/// Lists all Country Spec objects available in the API.
-pub fn list(client: &stripe::Client, params: ListCountrySpec) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
-    client.get_query("/country_specs", params)
-}
-/// Returns a Country Spec for a given Country code.
-pub fn retrieve(client: &stripe::Client, country: &stripe_connect::country_spec::CountrySpecId, params: RetrieveCountrySpec) -> stripe::Response<stripe_connect::CountrySpec> {
-    client.get_query(&format!("/country_specs/{country}", country = country), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListCountrySpec<'a> {
     /// A cursor for use in pagination.
@@ -35,6 +26,15 @@ impl<'a> ListCountrySpec<'a> {
         Self::default()
     }
 }
+impl<'a> ListCountrySpec<'a> {
+    /// Lists all Country Spec objects available in the API.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
+        client.get_query("/country_specs", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCountrySpec<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -44,5 +44,15 @@ pub struct RetrieveCountrySpec<'a> {
 impl<'a> RetrieveCountrySpec<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveCountrySpec<'a> {
+    /// Returns a Country Spec for a given Country code.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        country: &stripe_connect::country_spec::CountrySpecId,
+    ) -> stripe::Response<stripe_connect::CountrySpec> {
+        client.get_query(&format!("/country_specs/{country}", country = country), self)
     }
 }

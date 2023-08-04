@@ -6,7 +6,8 @@ pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+    pub requested_address_types:
+        Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
@@ -82,7 +83,9 @@ impl serde::Serialize for PaymentMethodOptionsCustomerBalanceBankTransferRequest
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl<'de> serde::Deserialize<'de>
+    for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
@@ -156,6 +159,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCustomerBalanceBankTra
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodOptionsCustomerBalanceBankTransferType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodOptionsCustomerBalanceBankTransferType",
+            )
+        })
     }
 }

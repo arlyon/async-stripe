@@ -9,10 +9,6 @@ pub struct AccountCapability {
     pub future_requirements: Option<stripe_types::AccountCapabilityFutureRequirements>,
     /// The identifier for the capability.
     pub id: stripe_types::account_capability::CapabilityId,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: AccountCapabilityObject,
     /// Whether the capability has been requested.
     pub requested: bool,
     /// Time at which the capability was requested.
@@ -25,66 +21,6 @@ pub struct AccountCapability {
     ///
     /// Can be `active`, `inactive`, `pending`, or `unrequested`.
     pub status: AccountCapabilityStatus,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AccountCapabilityObject {
-    Capability,
-}
-
-impl AccountCapabilityObject {
-    pub fn as_str(self) -> &'static str {
-        use AccountCapabilityObject::*;
-        match self {
-            Capability => "capability",
-        }
-    }
-}
-
-impl std::str::FromStr for AccountCapabilityObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountCapabilityObject::*;
-        match s {
-            "capability" => Ok(Capability),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AccountCapabilityObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountCapabilityObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AccountCapabilityObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AccountCapabilityObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for AccountCapabilityObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountCapabilityObject"))
-    }
 }
 /// The status of the capability.
 ///
@@ -155,7 +91,8 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilityStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for AccountCapabilityStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for AccountCapabilityStatus"))
     }
 }
 impl stripe_types::Object for AccountCapability {

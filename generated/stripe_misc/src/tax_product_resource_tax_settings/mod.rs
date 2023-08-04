@@ -8,75 +8,11 @@ pub struct TaxProductResourceTaxSettings {
     pub head_office: Option<stripe_misc::TaxProductResourceTaxSettingsHeadOffice>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TaxProductResourceTaxSettingsObject,
     /// The `active` status indicates you have all required settings to calculate tax.
     ///
     /// A status can transition out of `active` when new required settings are introduced.
     pub status: TaxProductResourceTaxSettingsStatus,
     pub status_details: stripe_misc::TaxProductResourceTaxSettingsStatusDetails,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TaxProductResourceTaxSettingsObject {
-    TaxSettings,
-}
-
-impl TaxProductResourceTaxSettingsObject {
-    pub fn as_str(self) -> &'static str {
-        use TaxProductResourceTaxSettingsObject::*;
-        match self {
-            TaxSettings => "tax.settings",
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxSettingsObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxSettingsObject::*;
-        match s {
-            "tax.settings" => Ok(TaxSettings),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TaxProductResourceTaxSettingsObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxProductResourceTaxSettingsObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TaxProductResourceTaxSettingsObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TaxProductResourceTaxSettingsObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxSettingsObject"))
-    }
 }
 /// The `active` status indicates you have all required settings to calculate tax.
 ///
@@ -138,7 +74,12 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxSettingsStatus"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for TaxProductResourceTaxSettingsStatus")
+        })
     }
 }
-pub mod requests;
+#[cfg(feature = "tax_product_resource_tax_settings")]
+mod requests;
+#[cfg(feature = "tax_product_resource_tax_settings")]
+pub use requests::*;

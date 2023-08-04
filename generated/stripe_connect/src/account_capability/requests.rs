@@ -1,18 +1,3 @@
-
-/// Returns a list of capabilities associated with the account.
-///
-/// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
-pub fn list(client: &stripe::Client, account: &stripe_types::account::AccountId, params: ListAccountCapability) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
-    client.get_query(&format!("/accounts/{account}/capabilities", account = account), params)
-}
-/// Retrieves information about the specified Account Capability.
-pub fn retrieve(client: &stripe::Client, account: &stripe_types::account::AccountId, capability: &stripe_types::account_capability::CapabilityId, params: RetrieveAccountCapability) -> stripe::Response<stripe_types::AccountCapability> {
-    client.get_query(&format!("/accounts/{account}/capabilities/{capability}", account = account, capability = capability), params)
-}
-/// Updates an existing Account Capability.
-pub fn update(client: &stripe::Client, account: &stripe_types::account::AccountId, capability: &stripe_types::account_capability::CapabilityId, params: UpdateAccountCapability) -> stripe::Response<stripe_types::AccountCapability> {
-    client.send_form(&format!("/accounts/{account}/capabilities/{capability}", account = account, capability = capability), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListAccountCapability<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -24,6 +9,18 @@ impl<'a> ListAccountCapability<'a> {
         Self::default()
     }
 }
+impl<'a> ListAccountCapability<'a> {
+    /// Returns a list of capabilities associated with the account.
+    ///
+    /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
+        client.get_query(&format!("/accounts/{account}/capabilities", account = account), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveAccountCapability<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -33,6 +30,24 @@ pub struct RetrieveAccountCapability<'a> {
 impl<'a> RetrieveAccountCapability<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveAccountCapability<'a> {
+    /// Retrieves information about the specified Account Capability.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        capability: &stripe_types::account_capability::CapabilityId,
+    ) -> stripe::Response<stripe_types::AccountCapability> {
+        client.get_query(
+            &format!(
+                "/accounts/{account}/capabilities/{capability}",
+                account = account,
+                capability = capability
+            ),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -50,5 +65,24 @@ pub struct UpdateAccountCapability<'a> {
 impl<'a> UpdateAccountCapability<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateAccountCapability<'a> {
+    /// Updates an existing Account Capability.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        account: &stripe_types::account::AccountId,
+        capability: &stripe_types::account_capability::CapabilityId,
+    ) -> stripe::Response<stripe_types::AccountCapability> {
+        client.send_form(
+            &format!(
+                "/accounts/{account}/capabilities/{capability}",
+                account = account,
+                capability = capability
+            ),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

@@ -7,7 +7,8 @@ pub struct IssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fraudulent: Option<stripe_types::IssuingDisputeFraudulentEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described: Option<stripe_types::IssuingDisputeMerchandiseNotAsDescribedEvidence>,
+    pub merchandise_not_as_described:
+        Option<stripe_types::IssuingDisputeMerchandiseNotAsDescribedEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<stripe_types::IssuingDisputeNotReceivedEvidence>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -94,6 +95,7 @@ impl<'de> serde::Deserialize<'de> for IssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingDisputeEvidenceReason"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingDisputeEvidenceReason"))
     }
 }

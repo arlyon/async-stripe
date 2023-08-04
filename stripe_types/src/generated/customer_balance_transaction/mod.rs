@@ -41,75 +41,11 @@ pub struct CustomerBalanceTransaction {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: CustomerBalanceTransactionObject,
     /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
     ///
     /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
     #[serde(rename = "type")]
     pub type_: CustomerBalanceTransactionType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CustomerBalanceTransactionObject {
-    CustomerBalanceTransaction,
-}
-
-impl CustomerBalanceTransactionObject {
-    pub fn as_str(self) -> &'static str {
-        use CustomerBalanceTransactionObject::*;
-        match self {
-            CustomerBalanceTransaction => "customer_balance_transaction",
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerBalanceTransactionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerBalanceTransactionObject::*;
-        match s {
-            "customer_balance_transaction" => Ok(CustomerBalanceTransaction),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CustomerBalanceTransactionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CustomerBalanceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CustomerBalanceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CustomerBalanceTransactionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceTransactionObject"))
-    }
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
 ///
@@ -195,7 +131,9 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType")
+        })
     }
 }
 impl stripe_types::Object for CustomerBalanceTransaction {

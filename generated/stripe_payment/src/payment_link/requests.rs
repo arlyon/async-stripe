@@ -1,26 +1,3 @@
-
-/// Returns a list of your payment links.
-pub fn list(client: &stripe::Client, params: ListPaymentLink) -> stripe::Response<stripe_types::List<stripe_types::PaymentLink>> {
-    client.get_query("/payment_links", params)
-}
-/// Retrieve a payment link.
-pub fn retrieve(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: RetrievePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
-    client.get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), params)
-}
-/// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list_line_items(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: ListLineItemsPaymentLink) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-    client.get_query(&format!("/payment_links/{payment_link}/line_items", payment_link = payment_link), params)
-}
-/// Creates a payment link.
-pub fn create(client: &stripe::Client, params: CreatePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
-    client.send_form("/payment_links", params, http_types::Method::Post)
-}
-/// Updates a payment link.
-pub fn update(client: &stripe::Client, payment_link: &stripe_types::payment_link::PaymentLinkId, params: UpdatePaymentLink) -> stripe::Response<stripe_types::PaymentLink> {
-    client.send_form(&format!("/payment_links/{payment_link}", payment_link = payment_link), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentLink<'a> {
     /// Only return payment links that are active or inactive (e.g., pass `false` to list all inactive payment links).
@@ -52,6 +29,15 @@ impl<'a> ListPaymentLink<'a> {
         Self::default()
     }
 }
+impl<'a> ListPaymentLink<'a> {
+    /// Returns a list of your payment links.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PaymentLink>> {
+        client.get_query("/payment_links", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentLink<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -61,6 +47,17 @@ pub struct RetrievePaymentLink<'a> {
 impl<'a> RetrievePaymentLink<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePaymentLink<'a> {
+    /// Retrieve a payment link.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_link: &stripe_types::payment_link::PaymentLinkId,
+    ) -> stripe::Response<stripe_types::PaymentLink> {
+        client
+            .get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), self)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -89,6 +86,21 @@ pub struct ListLineItemsPaymentLink<'a> {
 impl<'a> ListLineItemsPaymentLink<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListLineItemsPaymentLink<'a> {
+    /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_link: &stripe_types::payment_link::PaymentLinkId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
+        client.get_query(
+            &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -391,8 +403,20 @@ pub struct CreatePaymentLinkCustomFields<'a> {
     pub type_: CreatePaymentLinkCustomFieldsType,
 }
 impl<'a> CreatePaymentLinkCustomFields<'a> {
-    pub fn new(key: &'a str, label: CreatePaymentLinkCustomFieldsLabel<'a>, type_: CreatePaymentLinkCustomFieldsType) -> Self {
-        Self { dropdown: Default::default(), key, label, numeric: Default::default(), optional: Default::default(), text: Default::default(), type_ }
+    pub fn new(
+        key: &'a str,
+        label: CreatePaymentLinkCustomFieldsLabel<'a>,
+        type_: CreatePaymentLinkCustomFieldsType,
+    ) -> Self {
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -961,6 +985,12 @@ impl<'a> CreatePaymentLinkTransferData<'a> {
         Self { amount: Default::default(), destination }
     }
 }
+impl<'a> CreatePaymentLink<'a> {
+    /// Creates a payment link.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::PaymentLink> {
+        client.send_form("/payment_links", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentLink<'a> {
     /// Whether the payment link's `url` is active.
@@ -1060,8 +1090,20 @@ pub struct UpdatePaymentLinkCustomFields<'a> {
     pub type_: UpdatePaymentLinkCustomFieldsType,
 }
 impl<'a> UpdatePaymentLinkCustomFields<'a> {
-    pub fn new(key: &'a str, label: UpdatePaymentLinkCustomFieldsLabel<'a>, type_: UpdatePaymentLinkCustomFieldsType) -> Self {
-        Self { dropdown: Default::default(), key, label, numeric: Default::default(), optional: Default::default(), text: Default::default(), type_ }
+    pub fn new(
+        key: &'a str,
+        label: UpdatePaymentLinkCustomFieldsLabel<'a>,
+        type_: UpdatePaymentLinkCustomFieldsType,
+    ) -> Self {
+        Self {
+            dropdown: Default::default(),
+            key,
+            label,
+            numeric: Default::default(),
+            optional: Default::default(),
+            text: Default::default(),
+            type_,
+        }
     }
 }
 /// The label for the field, displayed to the customer.
@@ -1346,6 +1388,20 @@ impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> UpdatePaymentLink<'a> {
+    /// Updates a payment link.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        payment_link: &stripe_types::payment_link::PaymentLinkId,
+    ) -> stripe::Response<stripe_types::PaymentLink> {
+        client.send_form(
+            &format!("/payment_links/{payment_link}", payment_link = payment_link),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

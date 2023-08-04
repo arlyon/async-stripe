@@ -1,20 +1,3 @@
-
-/// Finds a secret in the secret store by name and scope.
-pub fn find(client: &stripe::Client, params: FindSecretServiceResourceSecret) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
-    client.get_query("/apps/secrets/find", params)
-}
-/// Create or replace a secret in the secret store.
-pub fn create(client: &stripe::Client, params: CreateSecretServiceResourceSecret) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
-    client.send_form("/apps/secrets", params, http_types::Method::Post)
-}
-/// Deletes a secret from the secret store by name and scope.
-pub fn delete_where(client: &stripe::Client, params: DeleteWhereSecretServiceResourceSecret) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
-    client.send_form("/apps/secrets/delete", params, http_types::Method::Post)
-}
-/// List all secrets stored on the given scope.
-pub fn list(client: &stripe::Client, params: ListSecretServiceResourceSecret) -> stripe::Response<stripe_types::List<stripe_connect::SecretServiceResourceSecret>> {
-    client.get_query("/apps/secrets", params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct FindSecretServiceResourceSecret<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -30,6 +13,15 @@ pub struct FindSecretServiceResourceSecret<'a> {
 impl<'a> FindSecretServiceResourceSecret<'a> {
     pub fn new(name: &'a str, scope: ScopeParam<'a>) -> Self {
         Self { expand: Default::default(), name, scope }
+    }
+}
+impl<'a> FindSecretServiceResourceSecret<'a> {
+    /// Finds a secret in the secret store by name and scope.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
+        client.get_query("/apps/secrets/find", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -54,6 +46,15 @@ impl<'a> CreateSecretServiceResourceSecret<'a> {
         Self { expand: Default::default(), expires_at: Default::default(), name, payload, scope }
     }
 }
+impl<'a> CreateSecretServiceResourceSecret<'a> {
+    /// Create or replace a secret in the secret store.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
+        client.send_form("/apps/secrets", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct DeleteWhereSecretServiceResourceSecret<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -69,6 +70,15 @@ pub struct DeleteWhereSecretServiceResourceSecret<'a> {
 impl<'a> DeleteWhereSecretServiceResourceSecret<'a> {
     pub fn new(name: &'a str, scope: ScopeParam<'a>) -> Self {
         Self { expand: Default::default(), name, scope }
+    }
+}
+impl<'a> DeleteWhereSecretServiceResourceSecret<'a> {
+    /// Deletes a secret from the secret store by name and scope.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_connect::SecretServiceResourceSecret> {
+        client.send_form("/apps/secrets/delete", self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -100,7 +110,22 @@ pub struct ListSecretServiceResourceSecret<'a> {
 }
 impl<'a> ListSecretServiceResourceSecret<'a> {
     pub fn new(scope: ScopeParam<'a>) -> Self {
-        Self { ending_before: Default::default(), expand: Default::default(), limit: Default::default(), scope, starting_after: Default::default() }
+        Self {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            scope,
+            starting_after: Default::default(),
+        }
+    }
+}
+impl<'a> ListSecretServiceResourceSecret<'a> {
+    /// List all secrets stored on the given scope.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_connect::SecretServiceResourceSecret>> {
+        client.get_query("/apps/secrets", self)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

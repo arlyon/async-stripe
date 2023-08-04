@@ -1,52 +1,3 @@
-
-/// Creates a VerificationSession object.
-///
-/// After the VerificationSession is created, display a verification modal using the session `client_secret` or send your users to the session’s `url`.
-///
-/// If your API key is in test mode, verification checks won’t actually process, though everything else will occur as if in live mode.
-///
-/// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
-pub fn create(client: &stripe::Client, params: CreateGelatoVerificationSession) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-    client.send_form("/identity/verification_sessions", params, http_types::Method::Post)
-}
-/// Retrieves the details of a VerificationSession that was previously created.
-///
-/// When the session status is `requires_input`, you can use this method to retrieve a valid
-/// `client_secret` or `url` to allow re-submission.
-pub fn retrieve(client: &stripe::Client, session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId, params: RetrieveGelatoVerificationSession) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-    client.get_query(&format!("/identity/verification_sessions/{session}", session = session), params)
-}
-/// Returns a list of VerificationSessions.
-pub fn list(client: &stripe::Client, params: ListGelatoVerificationSession) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationSession>> {
-    client.get_query("/identity/verification_sessions", params)
-}
-/// A VerificationSession object can be canceled when it is in `requires_input` [status](https://stripe.com/docs/identity/how-sessions-work).
-///
-/// Once canceled, future submission attempts are disabled.
-///
-/// This cannot be undone.
-/// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
-pub fn cancel(client: &stripe::Client, session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId, params: CancelGelatoVerificationSession) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-    client.send_form(&format!("/identity/verification_sessions/{session}/cancel", session = session), params, http_types::Method::Post)
-}
-/// Redact a VerificationSession to remove all collected information from Stripe.
-///
-/// This will redact the VerificationSession and all objects related to it, including VerificationReports, Events, request logs, etc.  A VerificationSession object can be redacted when it is in `requires_input` or `verified` [status](https://stripe.com/docs/identity/how-sessions-work).
-/// Redacting a VerificationSession in `requires_action` state will automatically cancel it.  The redaction process may take up to four days.
-/// When the redaction process is in progress, the VerificationSession’s `redaction.status` field will be set to `processing`; when the process is finished, it will change to `redacted` and an `identity.verification_session.redacted` event will be emitted.  Redaction is irreversible.
-/// Redacted objects are still accessible in the Stripe API, but all the fields that contain personal data will be replaced by the string `[redacted]` or a similar placeholder.
-/// The `metadata` field will also be erased.
-/// Redacted objects cannot be updated or used for any purpose.  [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
-pub fn redact(client: &stripe::Client, session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId, params: RedactGelatoVerificationSession) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-    client.send_form(&format!("/identity/verification_sessions/{session}/redact", session = session), params, http_types::Method::Post)
-}
-/// Updates a VerificationSession object.
-///
-/// When the session status is `requires_input`, you can use this method to update the
-/// verification check and options.
-pub fn update(client: &stripe::Client, session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId, params: UpdateGelatoVerificationSession) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-    client.send_form(&format!("/identity/verification_sessions/{session}", session = session), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateGelatoVerificationSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -71,7 +22,28 @@ pub struct CreateGelatoVerificationSession<'a> {
 }
 impl<'a> CreateGelatoVerificationSession<'a> {
     pub fn new(type_: Type) -> Self {
-        Self { expand: Default::default(), metadata: Default::default(), options: Default::default(), return_url: Default::default(), type_ }
+        Self {
+            expand: Default::default(),
+            metadata: Default::default(),
+            options: Default::default(),
+            return_url: Default::default(),
+            type_,
+        }
+    }
+}
+impl<'a> CreateGelatoVerificationSession<'a> {
+    /// Creates a VerificationSession object.
+    ///
+    /// After the VerificationSession is created, display a verification modal using the session `client_secret` or send your users to the session’s `url`.
+    ///
+    /// If your API key is in test mode, verification checks won’t actually process, though everything else will occur as if in live mode.
+    ///
+    /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
+        client.send_form("/identity/verification_sessions", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -83,6 +55,22 @@ pub struct RetrieveGelatoVerificationSession<'a> {
 impl<'a> RetrieveGelatoVerificationSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveGelatoVerificationSession<'a> {
+    /// Retrieves the details of a VerificationSession that was previously created.
+    ///
+    /// When the session status is `requires_input`, you can use this method to retrieve a valid
+    /// `client_secret` or `url` to allow re-submission.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
+        client.get_query(
+            &format!("/identity/verification_sessions/{session}", session = session),
+            self,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -182,6 +170,15 @@ impl serde::Serialize for ListGelatoVerificationSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListGelatoVerificationSession<'a> {
+    /// Returns a list of VerificationSessions.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationSession>> {
+        client.get_query("/identity/verification_sessions", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelGelatoVerificationSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -193,6 +190,25 @@ impl<'a> CancelGelatoVerificationSession<'a> {
         Self::default()
     }
 }
+impl<'a> CancelGelatoVerificationSession<'a> {
+    /// A VerificationSession object can be canceled when it is in `requires_input` [status](https://stripe.com/docs/identity/how-sessions-work).
+    ///
+    /// Once canceled, future submission attempts are disabled.
+    ///
+    /// This cannot be undone.
+    /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
+        client.send_form(
+            &format!("/identity/verification_sessions/{session}/cancel", session = session),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RedactGelatoVerificationSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -202,6 +218,27 @@ pub struct RedactGelatoVerificationSession<'a> {
 impl<'a> RedactGelatoVerificationSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RedactGelatoVerificationSession<'a> {
+    /// Redact a VerificationSession to remove all collected information from Stripe.
+    ///
+    /// This will redact the VerificationSession and all objects related to it, including VerificationReports, Events, request logs, etc.  A VerificationSession object can be redacted when it is in `requires_input` or `verified` [status](https://stripe.com/docs/identity/how-sessions-work).
+    /// Redacting a VerificationSession in `requires_action` state will automatically cancel it.  The redaction process may take up to four days.
+    /// When the redaction process is in progress, the VerificationSession’s `redaction.status` field will be set to `processing`; when the process is finished, it will change to `redacted` and an `identity.verification_session.redacted` event will be emitted.  Redaction is irreversible.
+    /// Redacted objects are still accessible in the Stripe API, but all the fields that contain personal data will be replaced by the string `[redacted]` or a similar placeholder.
+    /// The `metadata` field will also be erased.
+    /// Redacted objects cannot be updated or used for any purpose.  [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
+        client.send_form(
+            &format!("/identity/verification_sessions/{session}/redact", session = session),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -227,6 +264,23 @@ pub struct UpdateGelatoVerificationSession<'a> {
 impl<'a> UpdateGelatoVerificationSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdateGelatoVerificationSession<'a> {
+    /// Updates a VerificationSession object.
+    ///
+    /// When the session status is `requires_input`, you can use this method to update the
+    /// verification check and options.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
+        client.send_form(
+            &format!("/identity/verification_sessions/{session}", session = session),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

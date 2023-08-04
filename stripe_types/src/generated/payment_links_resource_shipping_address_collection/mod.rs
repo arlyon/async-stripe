@@ -766,10 +766,16 @@ impl serde::Serialize for PaymentLinksResourceShippingAddressCollectionAllowedCo
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for PaymentLinksResourceShippingAddressCollectionAllowedCountries {
+impl<'de> serde::Deserialize<'de>
+    for PaymentLinksResourceShippingAddressCollectionAllowedCountries
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinksResourceShippingAddressCollectionAllowedCountries"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentLinksResourceShippingAddressCollectionAllowedCountries",
+            )
+        })
     }
 }

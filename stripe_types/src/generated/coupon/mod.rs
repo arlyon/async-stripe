@@ -19,7 +19,9 @@ pub struct Coupon {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, stripe_types::CouponCurrencyOption>>,
+    pub currency_options: Option<
+        std::collections::HashMap<stripe_types::Currency, stripe_types::CouponCurrencyOption>,
+    >,
     /// One of `forever`, `once`, and `repeating`.
     ///
     /// Describes how long a customer who applies this coupon will get the discount.
@@ -40,10 +42,6 @@ pub struct Coupon {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Name of the coupon displayed to customers on for instance invoices or receipts.
     pub name: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: CouponObject,
     /// Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon.
     ///
     /// For example, a coupon with percent_off of 50 will make a %s100 invoice %s50 instead.
@@ -119,66 +117,6 @@ impl<'de> serde::Deserialize<'de> for CouponDuration {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CouponDuration"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CouponObject {
-    Coupon,
-}
-
-impl CouponObject {
-    pub fn as_str(self) -> &'static str {
-        use CouponObject::*;
-        match self {
-            Coupon => "coupon",
-        }
-    }
-}
-
-impl std::str::FromStr for CouponObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CouponObject::*;
-        match s {
-            "coupon" => Ok(Coupon),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CouponObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CouponObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CouponObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CouponObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for CouponObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CouponObject"))
     }
 }
 impl stripe_types::Object for Coupon {

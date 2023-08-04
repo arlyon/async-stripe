@@ -65,7 +65,11 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentPromotio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesCheckoutSessionConsentPromotions"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentPagesCheckoutSessionConsentPromotions",
+            )
+        })
     }
 }
 /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
@@ -123,6 +127,10 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentTermsOfS
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesCheckoutSessionConsentTermsOfService"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentPagesCheckoutSessionConsentTermsOfService",
+            )
+        })
     }
 }

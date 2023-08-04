@@ -1,8 +1,3 @@
-
-/// Returns a list of SetupAttempts associated with a provided SetupIntent.
-pub fn list(client: &stripe::Client, params: ListPaymentFlowsSetupIntentSetupAttempt) -> stripe::Response<stripe_types::List<stripe_types::PaymentFlowsSetupIntentSetupAttempt>> {
-    client.get_query("/setup_attempts", params)
-}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListPaymentFlowsSetupIntentSetupAttempt<'a> {
     /// A filter on the list, based on the object `created` field.
@@ -36,6 +31,23 @@ pub struct ListPaymentFlowsSetupIntentSetupAttempt<'a> {
 }
 impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
     pub fn new(setup_intent: &'a str) -> Self {
-        Self { created: Default::default(), ending_before: Default::default(), expand: Default::default(), limit: Default::default(), setup_intent, starting_after: Default::default() }
+        Self {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            setup_intent,
+            starting_after: Default::default(),
+        }
+    }
+}
+impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
+    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PaymentFlowsSetupIntentSetupAttempt>>
+    {
+        client.get_query("/setup_attempts", self)
     }
 }

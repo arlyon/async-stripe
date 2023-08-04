@@ -1,18 +1,3 @@
-
-/// Retrieves the details of an existing Report Run.
-pub fn retrieve(client: &stripe::Client, report_run: &stripe_misc::reporting_report_run::ReportingReportRunId, params: RetrieveReportingReportRun) -> stripe::Response<stripe_misc::ReportingReportRun> {
-    client.get_query(&format!("/reporting/report_runs/{report_run}", report_run = report_run), params)
-}
-/// Creates a new object and begin running the report.
-///
-/// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
-pub fn create(client: &stripe::Client, params: CreateReportingReportRun) -> stripe::Response<stripe_misc::ReportingReportRun> {
-    client.send_form("/reporting/report_runs", params, http_types::Method::Post)
-}
-/// Returns a list of Report Runs, with the most recent appearing first.
-pub fn list(client: &stripe::Client, params: ListReportingReportRun) -> stripe::Response<stripe_types::List<stripe_misc::ReportingReportRun>> {
-    client.get_query("/reporting/report_runs", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveReportingReportRun<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -22,6 +7,19 @@ pub struct RetrieveReportingReportRun<'a> {
 impl<'a> RetrieveReportingReportRun<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveReportingReportRun<'a> {
+    /// Retrieves the details of an existing Report Run.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        report_run: &stripe_misc::reporting_report_run::ReportingReportRunId,
+    ) -> stripe::Response<stripe_misc::ReportingReportRun> {
+        client.get_query(
+            &format!("/reporting/report_runs/{report_run}", report_run = report_run),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2079,6 +2077,17 @@ impl serde::Serialize for CreateReportingReportRunParametersTimezone {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateReportingReportRun<'a> {
+    /// Creates a new object and begin running the report.
+    ///
+    /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::ReportingReportRun> {
+        client.send_form("/reporting/report_runs", self, http_types::Method::Post)
+    }
+}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListReportingReportRun<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2107,5 +2116,14 @@ pub struct ListReportingReportRun<'a> {
 impl<'a> ListReportingReportRun<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListReportingReportRun<'a> {
+    /// Returns a list of Report Runs, with the most recent appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::ReportingReportRun>> {
+        client.get_query("/reporting/report_runs", self)
     }
 }

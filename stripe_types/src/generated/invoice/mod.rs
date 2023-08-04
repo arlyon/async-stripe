@@ -204,10 +204,6 @@ pub struct Invoice {
     ///
     /// This starts with the customer's unique invoice_prefix if it is specified.
     pub number: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: InvoiceObject,
     /// The account (if any) for which the funds of the invoice payment are intended.
     ///
     /// If set, the invoice will be presented with the branding and support information of the specified account.
@@ -386,7 +382,8 @@ impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -450,7 +447,8 @@ impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
     }
 }
 /// The customer's tax exempt status.
@@ -517,67 +515,8 @@ impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum InvoiceObject {
-    Invoice,
-}
-
-impl InvoiceObject {
-    pub fn as_str(self) -> &'static str {
-        use InvoiceObject::*;
-        match self {
-            Invoice => "invoice",
-        }
-    }
-}
-
-impl std::str::FromStr for InvoiceObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoiceObject::*;
-        match s {
-            "invoice" => Ok(Invoice),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for InvoiceObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for InvoiceObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for InvoiceObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceObject"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
     }
 }
 /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.

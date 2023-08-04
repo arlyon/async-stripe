@@ -1,26 +1,3 @@
-
-/// Retrieves the promotion code with the given ID.
-///
-/// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
-pub fn retrieve(client: &stripe::Client, promotion_code: &stripe_types::promotion_code::PromotionCodeId, params: RetrievePromotionCode) -> stripe::Response<stripe_types::PromotionCode> {
-    client.get_query(&format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code), params)
-}
-/// A promotion code points to a coupon.
-///
-/// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
-pub fn create(client: &stripe::Client, params: CreatePromotionCode) -> stripe::Response<stripe_types::PromotionCode> {
-    client.send_form("/promotion_codes", params, http_types::Method::Post)
-}
-/// Updates the specified promotion code by setting the values of the parameters passed.
-///
-/// Most fields are, by design, not editable.
-pub fn update(client: &stripe::Client, promotion_code: &stripe_types::promotion_code::PromotionCodeId, params: UpdatePromotionCode) -> stripe::Response<stripe_types::PromotionCode> {
-    client.send_form(&format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code), params, http_types::Method::Post)
-}
-/// Returns a list of your promotion codes.
-pub fn list(client: &stripe::Client, params: ListPromotionCode) -> stripe::Response<stripe_types::List<stripe_types::PromotionCode>> {
-    client.get_query("/promotion_codes", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePromotionCode<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -30,6 +7,21 @@ pub struct RetrievePromotionCode<'a> {
 impl<'a> RetrievePromotionCode<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrievePromotionCode<'a> {
+    /// Retrieves the promotion code with the given ID.
+    ///
+    /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        promotion_code: &stripe_types::promotion_code::PromotionCodeId,
+    ) -> stripe::Response<stripe_types::PromotionCode> {
+        client.get_query(
+            &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -96,7 +88,8 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_time_transaction: Option<bool>,
@@ -110,6 +103,14 @@ pub struct CreatePromotionCodeRestrictions<'a> {
 impl<'a> CreatePromotionCodeRestrictions<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CreatePromotionCode<'a> {
+    /// A promotion code points to a coupon.
+    ///
+    /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::PromotionCode> {
+        client.send_form("/promotion_codes", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -145,11 +146,28 @@ pub struct UpdatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
 }
 impl<'a> UpdatePromotionCodeRestrictions<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> UpdatePromotionCode<'a> {
+    /// Updates the specified promotion code by setting the values of the parameters passed.
+    ///
+    /// Most fields are, by design, not editable.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        promotion_code: &stripe_types::promotion_code::PromotionCodeId,
+    ) -> stripe::Response<stripe_types::PromotionCode> {
+        client.send_form(
+            &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -195,6 +213,15 @@ pub struct ListPromotionCode<'a> {
 impl<'a> ListPromotionCode<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListPromotionCode<'a> {
+    /// Returns a list of your promotion codes.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::PromotionCode>> {
+        client.get_query("/promotion_codes", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

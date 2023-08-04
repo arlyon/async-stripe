@@ -128,7 +128,11 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationBill
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -192,7 +196,11 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationColl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulePhaseConfigurationCollectionMethod"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionSchedulePhaseConfigurationCollectionMethod",
+            )
+        })
     }
 }
 /// If the subscription schedule will prorate when transitioning to this phase.
@@ -258,6 +266,10 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationPror
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulePhaseConfigurationProrationBehavior"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscriptionSchedulePhaseConfigurationProrationBehavior",
+            )
+        })
     }
 }

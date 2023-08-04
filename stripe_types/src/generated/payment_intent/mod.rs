@@ -25,7 +25,8 @@ pub struct PaymentIntent {
     /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
     pub application_fee_amount: Option<i64>,
     /// Settings to configure compatible payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-    pub automatic_payment_methods: Option<stripe_types::PaymentFlowsAutomaticPaymentMethodsPaymentIntent>,
+    pub automatic_payment_methods:
+        Option<stripe_types::PaymentFlowsAutomaticPaymentMethodsPaymentIntent>,
     /// Populated when `status` is `canceled`, this is the time at which the PaymentIntent was canceled.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -80,10 +81,6 @@ pub struct PaymentIntent {
     pub metadata: std::collections::HashMap<String, String>,
     /// If present, this property tells you what actions you need to take in order for your customer to fulfill a payment using the provided source.
     pub next_action: Option<stripe_types::PaymentIntentNextAction>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PaymentIntentObject,
     /// The account (if any) for which the funds of the PaymentIntent are intended.
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
@@ -211,7 +208,9 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentCancellationReason"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentIntentCancellationReason")
+        })
     }
 }
 /// Controls when the funds will be captured from the customer's account.
@@ -275,7 +274,8 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentCaptureMethod"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentCaptureMethod"))
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -335,67 +335,9 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentConfirmationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentConfirmationMethod"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PaymentIntentObject {
-    PaymentIntent,
-}
-
-impl PaymentIntentObject {
-    pub fn as_str(self) -> &'static str {
-        use PaymentIntentObject::*;
-        match self {
-            PaymentIntent => "payment_intent",
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentIntentObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentIntentObject::*;
-        match s {
-            "payment_intent" => Ok(PaymentIntent),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PaymentIntentObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentIntentObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PaymentIntentObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PaymentIntentObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PaymentIntentObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentIntentConfirmationMethod")
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -460,7 +402,9 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentSetupFutureUsage"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PaymentIntentSetupFutureUsage")
+        })
     }
 }
 /// Status of this PaymentIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `requires_capture`, `canceled`, or `succeeded`.
@@ -538,7 +482,8 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentStatus"))
     }
 }
 impl stripe_types::Object for PaymentIntent {

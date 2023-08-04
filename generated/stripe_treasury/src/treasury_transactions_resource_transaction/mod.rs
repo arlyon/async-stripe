@@ -32,10 +32,6 @@ pub struct TreasuryTransactionsResourceTransaction {
     pub id: stripe_treasury::treasury_transactions_resource_transaction::TreasuryTransactionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TreasuryTransactionsResourceTransactionObject,
     /// Status of the Transaction.
     pub status: TreasuryTransactionsResourceTransactionStatus,
     pub status_transitions: stripe_treasury::TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
@@ -122,66 +118,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionFlo
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionFlowType"))
     }
 }
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TreasuryTransactionsResourceTransactionObject {
-    TreasuryTransaction,
-}
-
-impl TreasuryTransactionsResourceTransactionObject {
-    pub fn as_str(self) -> &'static str {
-        use TreasuryTransactionsResourceTransactionObject::*;
-        match self {
-            TreasuryTransaction => "treasury.transaction",
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryTransactionsResourceTransactionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryTransactionsResourceTransactionObject::*;
-        match s {
-            "treasury.transaction" => Ok(TreasuryTransaction),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TreasuryTransactionsResourceTransactionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TreasuryTransactionsResourceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TreasuryTransactionsResourceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TreasuryTransactionsResourceTransactionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionObject"))
-    }
-}
 /// Status of the Transaction.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TreasuryTransactionsResourceTransactionStatus {
@@ -253,4 +189,7 @@ impl stripe_types::Object for TreasuryTransactionsResourceTransaction {
     }
 }
 stripe_types::def_id!(TreasuryTransactionId);
-pub mod requests;
+#[cfg(feature = "treasury_transactions_resource_transaction")]
+mod requests;
+#[cfg(feature = "treasury_transactions_resource_transaction")]
+pub use requests::*;

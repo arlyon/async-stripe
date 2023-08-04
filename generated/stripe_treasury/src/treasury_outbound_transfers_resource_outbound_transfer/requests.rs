@@ -1,58 +1,3 @@
-
-/// Creates an OutboundTransfer.
-pub fn create(client: &stripe::Client, params: CreateTreasuryOutboundTransfersResourceOutboundTransfer) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.send_form("/treasury/outbound_transfers", params, http_types::Method::Post)
-}
-/// Retrieves the details of an existing OutboundTransfer by passing the unique OutboundTransfer ID from either the OutboundTransfer creation request or OutboundTransfer list.
-pub fn retrieve(
-    client: &stripe::Client,
-    outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId,
-    params: RetrieveTreasuryOutboundTransfersResourceOutboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.get_query(&format!("/treasury/outbound_transfers/{outbound_transfer}", outbound_transfer = outbound_transfer), params)
-}
-/// Returns a list of OutboundTransfers sent from the specified FinancialAccount.
-pub fn list(client: &stripe::Client, params: ListTreasuryOutboundTransfersResourceOutboundTransfer) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer>> {
-    client.get_query("/treasury/outbound_transfers", params)
-}
-/// An OutboundTransfer can be canceled if the funds have not yet been paid out.
-pub fn cancel(
-    client: &stripe::Client,
-    outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId,
-    params: CancelTreasuryOutboundTransfersResourceOutboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.send_form(&format!("/treasury/outbound_transfers/{outbound_transfer}/cancel", outbound_transfer = outbound_transfer), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundTransfer to the `failed` status.
-///
-/// The OutboundTransfer must already be in the `processing` state.
-pub fn fail(
-    client: &stripe::Client,
-    outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId,
-    params: FailTreasuryOutboundTransfersResourceOutboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/fail", outbound_transfer = outbound_transfer), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundTransfer to the `posted` status.
-///
-/// The OutboundTransfer must already be in the `processing` state.
-pub fn post(
-    client: &stripe::Client,
-    outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId,
-    params: PostTreasuryOutboundTransfersResourceOutboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/post", outbound_transfer = outbound_transfer), params, http_types::Method::Post)
-}
-/// Transitions a test mode created OutboundTransfer to the `returned` status.
-///
-/// The OutboundTransfer must already be in the `processing` state.
-pub fn return_outbound_transfer(
-    client: &stripe::Client,
-    outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId,
-    params: ReturnOutboundTransferTreasuryOutboundTransfersResourceOutboundTransfer,
-) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
-    client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/return", outbound_transfer = outbound_transfer), params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     /// Amount (in cents) to be transferred.
@@ -184,6 +129,12 @@ impl serde::Serialize for CreateTreasuryOutboundTransfersResourceOutboundTransfe
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Creates an OutboundTransfer.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.send_form("/treasury/outbound_transfers", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -193,6 +144,12 @@ pub struct RetrieveTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
 impl<'a> RetrieveTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Retrieves the details of an existing OutboundTransfer by passing the unique OutboundTransfer ID from either the OutboundTransfer creation request or OutboundTransfer list.
+    pub fn send(&self, client: &stripe::Client, outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.get_query(&format!("/treasury/outbound_transfers/{outbound_transfer}", outbound_transfer = outbound_transfer), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -291,6 +248,12 @@ impl serde::Serialize for ListTreasuryOutboundTransfersResourceOutboundTransferS
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Returns a list of OutboundTransfers sent from the specified FinancialAccount.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer>> {
+        client.get_query("/treasury/outbound_transfers", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -300,6 +263,12 @@ pub struct CancelTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
 impl<'a> CancelTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// An OutboundTransfer can be canceled if the funds have not yet been paid out.
+    pub fn send(&self, client: &stripe::Client, outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.send_form(&format!("/treasury/outbound_transfers/{outbound_transfer}/cancel", outbound_transfer = outbound_transfer), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -313,6 +282,14 @@ impl<'a> FailTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
         Self::default()
     }
 }
+impl<'a> FailTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Transitions a test mode created OutboundTransfer to the `failed` status.
+    ///
+    /// The OutboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/fail", outbound_transfer = outbound_transfer), self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct PostTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -322,6 +299,14 @@ pub struct PostTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
 impl<'a> PostTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> PostTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Transitions a test mode created OutboundTransfer to the `posted` status.
+    ///
+    /// The OutboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/post", outbound_transfer = outbound_transfer), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -426,5 +411,13 @@ impl serde::Serialize for ReturnOutboundTransferTreasuryOutboundTransfersResourc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ReturnOutboundTransferTreasuryOutboundTransfersResourceOutboundTransfer<'a> {
+    /// Transitions a test mode created OutboundTransfer to the `returned` status.
+    ///
+    /// The OutboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, outbound_transfer: &stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId) -> stripe::Response<stripe_treasury::TreasuryOutboundTransfersResourceOutboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/outbound_transfers/{outbound_transfer}/return", outbound_transfer = outbound_transfer), self, http_types::Method::Post)
     }
 }

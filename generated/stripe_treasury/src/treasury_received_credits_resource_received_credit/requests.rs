@@ -1,22 +1,3 @@
-
-/// Returns a list of ReceivedCredits.
-pub fn list(client: &stripe::Client, params: ListTreasuryReceivedCreditsResourceReceivedCredit) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit>> {
-    client.get_query("/treasury/received_credits", params)
-}
-/// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
-pub fn retrieve(
-    client: &stripe::Client,
-    id: &stripe_treasury::treasury_received_credits_resource_received_credit::TreasuryReceivedCreditId,
-    params: RetrieveTreasuryReceivedCreditsResourceReceivedCredit,
-) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
-    client.get_query(&format!("/treasury/received_credits/{id}", id = id), params)
-}
-/// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
-///
-/// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
-pub fn create(client: &stripe::Client, params: CreateTreasuryReceivedCreditsResourceReceivedCredit) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
-    client.send_form("/test_helpers/treasury/received_credits", params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryReceivedCreditsResourceReceivedCredit<'a> {
     /// A cursor for use in pagination.
@@ -178,6 +159,12 @@ impl serde::Serialize for ListTreasuryReceivedCreditsResourceReceivedCreditStatu
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListTreasuryReceivedCreditsResourceReceivedCredit<'a> {
+    /// Returns a list of ReceivedCredits.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit>> {
+        client.get_query("/treasury/received_credits", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -187,6 +174,12 @@ pub struct RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
 impl<'a> RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
+    /// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_received_credits_resource_received_credit::TreasuryReceivedCreditId) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
+        client.get_query(&format!("/treasury/received_credits/{id}", id = id), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -354,5 +347,13 @@ impl serde::Serialize for CreateTreasuryReceivedCreditsResourceReceivedCreditNet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> CreateTreasuryReceivedCreditsResourceReceivedCredit<'a> {
+    /// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
+    ///
+    /// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
+        client.send_form("/test_helpers/treasury/received_credits", self, http_types::Method::Post)
     }
 }

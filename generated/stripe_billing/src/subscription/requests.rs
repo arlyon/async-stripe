@@ -1,58 +1,44 @@
-
-/// Search for subscriptions you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-/// Don’t use search in read-after-write flows where strict consistency is necessary.
-///
-/// Under normal operating conditions, data is searchable in less than a minute.
-/// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
-/// Search functionality is not available to merchants in India.
-pub fn search(client: &stripe::Client, params: SearchSubscription) -> stripe::Response<SearchReturned> {
-    client.get_query("/subscriptions/search", params)
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchSubscription<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    ///
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    ///
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for subscriptions](https://stripe.com/docs/search#query-fields-for-subscriptions).
+    pub query: &'a str,
 }
-/// By default, returns a list of subscriptions that have not been canceled.
-///
-/// In order to list canceled subscriptions, specify `status=canceled`.
-pub fn list(client: &stripe::Client, params: ListSubscription) -> stripe::Response<stripe_types::List<stripe_types::Subscription>> {
-    client.get_query("/subscriptions", params)
+impl<'a> SearchSubscription<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self {
+            expand: Default::default(),
+            limit: Default::default(),
+            page: Default::default(),
+            query,
+        }
+    }
 }
-/// Creates a new subscription on an existing customer.
-///
-/// Each customer can have up to 500 active or scheduled subscriptions.  When you create a subscription with `collection_method=charge_automatically`, the first invoice is finalized as part of the request. The `payment_behavior` parameter determines the exact behavior of the initial payment.  To start subscriptions where the first invoice always begins in a `draft` status, use [subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules#managing) instead. Schedules provide the flexibility to model more complex billing configurations that change over time.
-pub fn create(client: &stripe::Client, params: CreateSubscription) -> stripe::Response<stripe_types::Subscription> {
-    client.send_form("/subscriptions", params, http_types::Method::Post)
-}
-/// Updates an existing subscription on a customer to match the specified parameters.
-///
-/// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
-/// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
-pub fn update(client: &stripe::Client, subscription_exposed_id: &stripe_types::subscription::SubscriptionId, params: UpdateSubscription) -> stripe::Response<stripe_types::Subscription> {
-    client.send_form(&format!("/subscriptions/{subscription_exposed_id}", subscription_exposed_id = subscription_exposed_id), params, http_types::Method::Post)
-}
-/// Retrieves the subscription with the given ID.
-pub fn retrieve(client: &stripe::Client, subscription_exposed_id: &stripe_types::subscription::SubscriptionId, params: RetrieveSubscription) -> stripe::Response<stripe_types::Subscription> {
-    client.get_query(&format!("/subscriptions/{subscription_exposed_id}", subscription_exposed_id = subscription_exposed_id), params)
-}
-/// Cancels a customer’s subscription immediately.
-///
-/// The customer will not be charged again for the subscription.  Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
-/// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
-/// But if the subscription is set to cancel immediately, pending prorations will be removed.  By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
-/// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
-/// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
-/// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
-pub fn cancel(client: &stripe::Client, subscription_exposed_id: &stripe_types::subscription::SubscriptionId, params: CancelSubscription) -> stripe::Response<stripe_types::Subscription> {
-    client.send_form(&format!("/subscriptions/{subscription_exposed_id}", subscription_exposed_id = subscription_exposed_id), params, http_types::Method::Delete)
-}
-/// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
-///
-/// If a resumption invoice is generated, it must be paid or marked uncollectible before the subscription will be unpaused.
-/// If payment succeeds the subscription will become `active`, and if payment fails the subscription will be `past_due`.
-/// The resumption invoice will void automatically if not paid by the expiration date.
-pub fn resume(client: &stripe::Client, subscription: &stripe_types::subscription::SubscriptionId, params: ResumeSubscription) -> stripe::Response<stripe_types::Subscription> {
-    client.send_form(&format!("/subscriptions/{subscription}/resume", subscription = subscription), params, http_types::Method::Post)
-}
-/// Removes the currently applied discount on a subscription.
-pub fn delete_discount(client: &stripe::Client, subscription_exposed_id: &stripe_types::subscription::SubscriptionId) -> stripe::Response<stripe_types::DeletedDiscount> {
-    client.send(&format!("/subscriptions/{subscription_exposed_id}/discount", subscription_exposed_id = subscription_exposed_id), http_types::Method::Delete)
+impl<'a> SearchSubscription<'a> {
+    /// Search for subscriptions you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    ///
+    /// Under normal operating conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up to an hour behind during outages.
+    /// Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<SearchReturned> {
+        client.get_query("/subscriptions/search", self)
+    }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SearchReturned {
@@ -125,33 +111,8 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchSubscription<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    ///
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    ///
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    ///
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for subscriptions](https://stripe.com/docs/search#query-fields-for-subscriptions).
-    pub query: &'a str,
-}
-impl<'a> SearchSubscription<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: Default::default(), limit: Default::default(), page: Default::default(), query }
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -299,6 +260,17 @@ impl serde::Serialize for ListSubscriptionStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ListSubscription<'a> {
+    /// By default, returns a list of subscriptions that have not been canceled.
+    ///
+    /// In order to list canceled subscriptions, specify `status=canceled`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::Subscription>> {
+        client.get_query("/subscriptions", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -590,13 +562,15 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a>>,
     /// This sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
+    pub customer_balance:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsParam>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
+    pub us_bank_account:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
 }
 impl<'a> CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub fn new() -> Self {
@@ -635,7 +609,8 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a> {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions<'a>>,
+    pub mandate_options:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions<'a>>,
     /// Selected network to process this Subscription on.
     ///
     /// Depends on the available networks of the card attached to the Subscription.
@@ -705,6 +680,14 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a
 impl<'a> CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CreateSubscription<'a> {
+    /// Creates a new subscription on an existing customer.
+    ///
+    /// Each customer can have up to 500 active or scheduled subscriptions.  When you create a subscription with `collection_method=charge_automatically`, the first invoice is finalized as part of the request. The `payment_behavior` parameter determines the exact behavior of the initial payment.  To start subscriptions where the first invoice always begins in a `draft` status, use [subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules#managing) instead. Schedules provide the flexibility to model more complex billing configurations that change over time.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Subscription> {
+        client.send_form("/subscriptions", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1044,13 +1027,15 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a>>,
     /// This sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
+    pub customer_balance:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsParam>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
+    pub us_bank_account:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a>>,
 }
 impl<'a> UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub fn new() -> Self {
@@ -1089,7 +1074,8 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a> {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions<'a>>,
+    pub mandate_options:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions<'a>>,
     /// Selected network to process this Subscription on.
     ///
     /// Depends on the available networks of the card attached to the Subscription.
@@ -1161,6 +1147,26 @@ impl<'a> UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount<'a> 
         Self::default()
     }
 }
+impl<'a> UpdateSubscription<'a> {
+    /// Updates an existing subscription on a customer to match the specified parameters.
+    ///
+    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
+    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+    ) -> stripe::Response<stripe_types::Subscription> {
+        client.send_form(
+            &format!(
+                "/subscriptions/{subscription_exposed_id}",
+                subscription_exposed_id = subscription_exposed_id
+            ),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSubscription<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1170,6 +1176,22 @@ pub struct RetrieveSubscription<'a> {
 impl<'a> RetrieveSubscription<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveSubscription<'a> {
+    /// Retrieves the subscription with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+    ) -> stripe::Response<stripe_types::Subscription> {
+        client.get_query(
+            &format!(
+                "/subscriptions/{subscription_exposed_id}",
+                subscription_exposed_id = subscription_exposed_id
+            ),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1190,6 +1212,30 @@ pub struct CancelSubscription<'a> {
 impl<'a> CancelSubscription<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> CancelSubscription<'a> {
+    /// Cancels a customer’s subscription immediately.
+    ///
+    /// The customer will not be charged again for the subscription.  Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
+    /// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
+    /// But if the subscription is set to cancel immediately, pending prorations will be removed.  By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
+    /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
+    /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
+    /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+    ) -> stripe::Response<stripe_types::Subscription> {
+        client.send_form(
+            &format!(
+                "/subscriptions/{subscription_exposed_id}",
+                subscription_exposed_id = subscription_exposed_id
+            ),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1218,6 +1264,48 @@ pub struct ResumeSubscription<'a> {
 impl<'a> ResumeSubscription<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ResumeSubscription<'a> {
+    /// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
+    ///
+    /// If a resumption invoice is generated, it must be paid or marked uncollectible before the subscription will be unpaused.
+    /// If payment succeeds the subscription will become `active`, and if payment fails the subscription will be `past_due`.
+    /// The resumption invoice will void automatically if not paid by the expiration date.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription: &stripe_types::subscription::SubscriptionId,
+    ) -> stripe::Response<stripe_types::Subscription> {
+        client.send_form(
+            &format!("/subscriptions/{subscription}/resume", subscription = subscription),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteDiscountSubscription {}
+impl DeleteDiscountSubscription {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteDiscountSubscription {
+    /// Removes the currently applied discount on a subscription.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+    ) -> stripe::Response<stripe_types::DeletedDiscount> {
+        client.send_form(
+            &format!(
+                "/subscriptions/{subscription_exposed_id}/discount",
+                subscription_exposed_id = subscription_exposed_id
+            ),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2371,7 +2459,13 @@ pub struct OneTimePriceDataWithNegativeAmounts<'a> {
 }
 impl<'a> OneTimePriceDataWithNegativeAmounts<'a> {
     pub fn new(currency: stripe_types::Currency, product: &'a str) -> Self {
-        Self { currency, product, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+        Self {
+            currency,
+            product,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2527,8 +2621,19 @@ pub struct RecurringPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> RecurringPriceData<'a> {
-    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: RecurringAdhoc) -> Self {
-        Self { currency, product, recurring, tax_behavior: Default::default(), unit_amount: Default::default(), unit_amount_decimal: Default::default() }
+    pub fn new(
+        currency: stripe_types::Currency,
+        product: &'a str,
+        recurring: RecurringAdhoc,
+    ) -> Self {
+        Self {
+            currency,
+            product,
+            recurring,
+            tax_behavior: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

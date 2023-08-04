@@ -27,10 +27,6 @@ pub struct BankConnectionsResourceLinkedAccount {
     pub last4: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: BankConnectionsResourceLinkedAccountObject,
     /// The most recent information about the account's owners.
     pub ownership: Option<stripe_types::Expandable<stripe_misc::BankConnectionsResourceOwnership>>,
     /// The state of the most recent attempt to refresh the account owners.
@@ -55,7 +51,8 @@ pub struct BankConnectionsResourceLinkedAccount {
     /// If `category` is `investment` or `other`, this will be `other`.
     pub subcategory: BankConnectionsResourceLinkedAccountSubcategory,
     /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
-    pub supported_payment_method_types: Vec<BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes>,
+    pub supported_payment_method_types:
+        Vec<BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes>,
 }
 /// The type of the account.
 ///
@@ -123,67 +120,11 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountCatego
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountCategory"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum BankConnectionsResourceLinkedAccountObject {
-    FinancialConnectionsAccount,
-}
-
-impl BankConnectionsResourceLinkedAccountObject {
-    pub fn as_str(self) -> &'static str {
-        use BankConnectionsResourceLinkedAccountObject::*;
-        match self {
-            FinancialConnectionsAccount => "financial_connections.account",
-        }
-    }
-}
-
-impl std::str::FromStr for BankConnectionsResourceLinkedAccountObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BankConnectionsResourceLinkedAccountObject::*;
-        match s {
-            "financial_connections.account" => Ok(FinancialConnectionsAccount),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for BankConnectionsResourceLinkedAccountObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BankConnectionsResourceLinkedAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for BankConnectionsResourceLinkedAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for BankConnectionsResourceLinkedAccountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkedAccountCategory",
+            )
+        })
     }
 }
 /// The list of permissions granted by this account.
@@ -250,7 +191,11 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountPermis
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountPermissions"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkedAccountPermissions",
+            )
+        })
     }
 }
 /// The status of the link to the account.
@@ -314,7 +259,9 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountStatus
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountStatus"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountStatus")
+        })
     }
 }
 /// If `category` is `cash`, one of:
@@ -400,7 +347,11 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountSubcat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountSubcategory"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkedAccountSubcategory",
+            )
+        })
     }
 }
 /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
@@ -457,11 +408,17 @@ impl serde::Serialize for BankConnectionsResourceLinkedAccountSupportedPaymentMe
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes {
+impl<'de> serde::Deserialize<'de>
+    for BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes",
+            )
+        })
     }
 }
 impl stripe_types::Object for BankConnectionsResourceLinkedAccount {
@@ -471,4 +428,7 @@ impl stripe_types::Object for BankConnectionsResourceLinkedAccount {
     }
 }
 stripe_types::def_id!(FinancialConnectionsAccountId);
-pub mod requests;
+#[cfg(feature = "bank_connections_resource_linked_account")]
+mod requests;
+#[cfg(feature = "bank_connections_resource_linked_account")]
+pub use requests::*;

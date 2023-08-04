@@ -1,14 +1,16 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer {
     /// The banking network used for this funding.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub network: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork>,
     /// The full name of the sender, as supplied by the sending bank.
-    pub sender_name: Option<String>,
+pub sender_name: Option<String>,
+
 }
 /// The banking network used for this funding.
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork
+{
     Ach,
     DomesticWireUs,
     Swift,
@@ -18,9 +20,10 @@ impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResou
     pub fn as_str(self) -> &'static str {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::*;
         match self {
-            Ach => "ach",
-            DomesticWireUs => "domestic_wire_us",
-            Swift => "swift",
+Ach => "ach",
+DomesticWireUs => "domestic_wire_us",
+Swift => "swift",
+
         }
     }
 }
@@ -30,10 +33,11 @@ impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResource
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::*;
         match s {
-            "ach" => Ok(Ach),
-            "domestic_wire_us" => Ok(DomesticWireUs),
-            "swift" => Ok(Swift),
-            _ => Err(()),
+    "ach" => Ok(Ach),
+"domestic_wire_us" => Ok(DomesticWireUs),
+"swift" => Ok(Swift),
+_ => Err(())
+
         }
     }
 }
@@ -56,10 +60,7 @@ impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceFu
     }
 }
 impl serde::Serialize for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
     }
 }

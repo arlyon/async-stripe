@@ -65,7 +65,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanIn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardInstallmentsPlanInterval"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodDetailsCardInstallmentsPlanInterval",
+            )
+        })
     }
 }
 /// Type of installment plan, one of `fixed_count`.
@@ -123,6 +127,10 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardInstallmentsPlanType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for PaymentMethodDetailsCardInstallmentsPlanType",
+            )
+        })
     }
 }

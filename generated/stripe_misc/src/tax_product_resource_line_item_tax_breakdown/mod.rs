@@ -74,7 +74,11 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxBreakdownSour
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceLineItemTaxBreakdownSourcing"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceLineItemTaxBreakdownSourcing",
+            )
+        })
     }
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -176,6 +180,10 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxBreakdownTaxa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceLineItemTaxBreakdownTaxabilityReason"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceLineItemTaxBreakdownTaxabilityReason",
+            )
+        })
     }
 }

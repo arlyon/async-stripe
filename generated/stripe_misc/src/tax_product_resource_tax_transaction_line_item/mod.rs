@@ -15,10 +15,6 @@ pub struct TaxProductResourceTaxTransactionLineItem {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TaxProductResourceTaxTransactionLineItemObject,
     /// The ID of an existing [Product](https://stripe.com/docs/api/products/object).
     pub product: Option<String>,
     /// The number of units of the item being purchased.
@@ -38,66 +34,6 @@ pub struct TaxProductResourceTaxTransactionLineItem {
     /// If `reversal`, this line item reverses an earlier transaction.
     #[serde(rename = "type")]
     pub type_: TaxProductResourceTaxTransactionLineItemType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TaxProductResourceTaxTransactionLineItemObject {
-    TaxTransactionLineItem,
-}
-
-impl TaxProductResourceTaxTransactionLineItemObject {
-    pub fn as_str(self) -> &'static str {
-        use TaxProductResourceTaxTransactionLineItemObject::*;
-        match self {
-            TaxTransactionLineItem => "tax.transaction_line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for TaxProductResourceTaxTransactionLineItemObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxProductResourceTaxTransactionLineItemObject::*;
-        match s {
-            "tax.transaction_line_item" => Ok(TaxTransactionLineItem),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TaxProductResourceTaxTransactionLineItemObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxProductResourceTaxTransactionLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TaxProductResourceTaxTransactionLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TaxProductResourceTaxTransactionLineItemObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxTransactionLineItemObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxTransactionLineItemObject"))
-    }
 }
 /// Specifies whether the `amount` includes taxes.
 ///
@@ -159,7 +95,11 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxTransactionLineItemTa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxTransactionLineItemTaxBehavior"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceTaxTransactionLineItemTaxBehavior",
+            )
+        })
     }
 }
 /// If `reversal`, this line item reverses an earlier transaction.
@@ -220,7 +160,11 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxTransactionLineItemTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxTransactionLineItemType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TaxProductResourceTaxTransactionLineItemType",
+            )
+        })
     }
 }
 impl stripe_types::Object for TaxProductResourceTaxTransactionLineItem {

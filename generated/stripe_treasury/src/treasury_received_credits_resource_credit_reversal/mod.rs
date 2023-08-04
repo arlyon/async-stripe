@@ -27,10 +27,6 @@ pub struct TreasuryReceivedCreditsResourceCreditReversal {
     pub metadata: std::collections::HashMap<String, String>,
     /// The rails used to reverse the funds.
     pub network: TreasuryReceivedCreditsResourceCreditReversalNetwork,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: TreasuryReceivedCreditsResourceCreditReversalObject,
     /// The ReceivedCredit being reversed.
     pub received_credit: String,
     /// Status of the CreditReversal.
@@ -98,66 +94,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditsResourceCreditRever
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedCreditsResourceCreditReversalNetwork"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TreasuryReceivedCreditsResourceCreditReversalObject {
-    TreasuryCreditReversal,
-}
-
-impl TreasuryReceivedCreditsResourceCreditReversalObject {
-    pub fn as_str(self) -> &'static str {
-        use TreasuryReceivedCreditsResourceCreditReversalObject::*;
-        match self {
-            TreasuryCreditReversal => "treasury.credit_reversal",
-        }
-    }
-}
-
-impl std::str::FromStr for TreasuryReceivedCreditsResourceCreditReversalObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TreasuryReceivedCreditsResourceCreditReversalObject::*;
-        match s {
-            "treasury.credit_reversal" => Ok(TreasuryCreditReversal),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TreasuryReceivedCreditsResourceCreditReversalObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TreasuryReceivedCreditsResourceCreditReversalObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TreasuryReceivedCreditsResourceCreditReversalObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TreasuryReceivedCreditsResourceCreditReversalObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditsResourceCreditReversalObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedCreditsResourceCreditReversalObject"))
     }
 }
 /// Status of the CreditReversal.
@@ -231,4 +167,7 @@ impl stripe_types::Object for TreasuryReceivedCreditsResourceCreditReversal {
     }
 }
 stripe_types::def_id!(TreasuryCreditReversalId);
-pub mod requests;
+#[cfg(feature = "treasury_received_credits_resource_credit_reversal")]
+mod requests;
+#[cfg(feature = "treasury_received_credits_resource_credit_reversal")]
+pub use requests::*;

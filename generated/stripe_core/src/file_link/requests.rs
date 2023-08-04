@@ -1,22 +1,3 @@
-
-/// Retrieves the file link with the given ID.
-pub fn retrieve(client: &stripe::Client, link: &stripe_types::file_link::FileLinkId, params: RetrieveFileLink) -> stripe::Response<stripe_types::FileLink> {
-    client.get_query(&format!("/file_links/{link}", link = link), params)
-}
-/// Creates a new file link object.
-pub fn create(client: &stripe::Client, params: CreateFileLink) -> stripe::Response<stripe_types::FileLink> {
-    client.send_form("/file_links", params, http_types::Method::Post)
-}
-/// Updates an existing file link object.
-///
-/// Expired links can no longer be updated.
-pub fn update(client: &stripe::Client, link: &stripe_types::file_link::FileLinkId, params: UpdateFileLink) -> stripe::Response<stripe_types::FileLink> {
-    client.send_form(&format!("/file_links/{link}", link = link), params, http_types::Method::Post)
-}
-/// Returns a list of file links.
-pub fn list(client: &stripe::Client, params: ListFileLink) -> stripe::Response<stripe_types::List<stripe_types::FileLink>> {
-    client.get_query("/file_links", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -26,6 +7,16 @@ pub struct RetrieveFileLink<'a> {
 impl<'a> RetrieveFileLink<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveFileLink<'a> {
+    /// Retrieves the file link with the given ID.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        link: &stripe_types::file_link::FileLinkId,
+    ) -> stripe::Response<stripe_types::FileLink> {
+        client.get_query(&format!("/file_links/{link}", link = link), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -50,7 +41,18 @@ pub struct CreateFileLink<'a> {
 }
 impl<'a> CreateFileLink<'a> {
     pub fn new(file: &'a str) -> Self {
-        Self { expand: Default::default(), expires_at: Default::default(), file, metadata: Default::default() }
+        Self {
+            expand: Default::default(),
+            expires_at: Default::default(),
+            file,
+            metadata: Default::default(),
+        }
+    }
+}
+impl<'a> CreateFileLink<'a> {
+    /// Creates a new file link object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::FileLink> {
+        client.send_form("/file_links", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -80,6 +82,22 @@ impl<'a> UpdateFileLink<'a> {
 pub enum UpdateFileLinkExpiresAt {
     Now,
     Timestamp(stripe_types::Timestamp),
+}
+impl<'a> UpdateFileLink<'a> {
+    /// Updates an existing file link object.
+    ///
+    /// Expired links can no longer be updated.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        link: &stripe_types::file_link::FileLinkId,
+    ) -> stripe::Response<stripe_types::FileLink> {
+        client.send_form(
+            &format!("/file_links/{link}", link = link),
+            self,
+            http_types::Method::Post,
+        )
+    }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListFileLink<'a> {
@@ -117,5 +135,14 @@ pub struct ListFileLink<'a> {
 impl<'a> ListFileLink<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListFileLink<'a> {
+    /// Returns a list of file links.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::FileLink>> {
+        client.get_query("/file_links", self)
     }
 }

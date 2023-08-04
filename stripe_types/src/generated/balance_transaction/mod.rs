@@ -36,10 +36,6 @@ pub struct BalanceTransaction {
     pub id: stripe_types::balance_transaction::BalanceTransactionId,
     /// Net amount of the transaction, in %s.
     pub net: i64,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: BalanceTransactionObject,
     /// [Learn more](https://stripe.com/docs/reports/reporting-categories) about how reporting categories can help you understand balance transactions from an accounting perspective.
     pub reporting_category: String,
     /// The Stripe object to which this transaction is related.
@@ -54,66 +50,6 @@ pub struct BalanceTransaction {
     /// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
     #[serde(rename = "type")]
     pub type_: BalanceTransactionType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum BalanceTransactionObject {
-    BalanceTransaction,
-}
-
-impl BalanceTransactionObject {
-    pub fn as_str(self) -> &'static str {
-        use BalanceTransactionObject::*;
-        match self {
-            BalanceTransaction => "balance_transaction",
-        }
-    }
-}
-
-impl std::str::FromStr for BalanceTransactionObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BalanceTransactionObject::*;
-        match s {
-            "balance_transaction" => Ok(BalanceTransaction),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for BalanceTransactionObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BalanceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for BalanceTransactionObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for BalanceTransactionObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for BalanceTransactionObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionObject"))
-    }
 }
 /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
 ///
@@ -266,7 +202,8 @@ impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionType"))
     }
 }
 impl stripe_types::Object for BalanceTransaction {

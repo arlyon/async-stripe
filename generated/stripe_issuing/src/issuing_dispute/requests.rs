@@ -1,36 +1,3 @@
-
-/// Returns a list of Issuing `Dispute` objects.
-///
-/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-pub fn list(client: &stripe::Client, params: ListIssuingDispute) -> stripe::Response<stripe_types::List<stripe_types::IssuingDispute>> {
-    client.get_query("/issuing/disputes", params)
-}
-/// Creates an Issuing `Dispute` object.
-///
-/// Individual pieces of evidence within the `evidence` object are optional at this point.
-/// Stripe only validates that required evidence is present during submission.
-/// Refer to [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence) for more details about evidence requirements.
-pub fn create(client: &stripe::Client, params: CreateIssuingDispute) -> stripe::Response<stripe_types::IssuingDispute> {
-    client.send_form("/issuing/disputes", params, http_types::Method::Post)
-}
-/// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.
-///
-/// Any parameters not provided will be left unchanged.
-/// Properties on the `evidence` object can be unset by passing in an empty string.
-pub fn update(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: UpdateIssuingDispute) -> stripe::Response<stripe_types::IssuingDispute> {
-    client.send_form(&format!("/issuing/disputes/{dispute}", dispute = dispute), params, http_types::Method::Post)
-}
-/// Retrieves an Issuing `Dispute` object.
-pub fn retrieve(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: RetrieveIssuingDispute) -> stripe::Response<stripe_types::IssuingDispute> {
-    client.get_query(&format!("/issuing/disputes/{dispute}", dispute = dispute), params)
-}
-/// Submits an Issuing `Dispute` to the card network.
-///
-/// Stripe validates that all evidence fields required for the dispute’s reason are present.
-/// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
-pub fn submit(client: &stripe::Client, dispute: &stripe_types::dispute::DisputeId, params: SubmitIssuingDispute) -> stripe::Response<stripe_types::IssuingDispute> {
-    client.send_form(&format!("/issuing/disputes/{dispute}/submit", dispute = dispute), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListIssuingDispute<'a> {
     /// Select Issuing disputes that were created during the given date interval.
@@ -131,6 +98,17 @@ impl serde::Serialize for ListIssuingDisputeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> ListIssuingDispute<'a> {
+    /// Returns a list of Issuing `Dispute` objects.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::IssuingDispute>> {
+        client.get_query("/issuing/disputes", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIssuingDispute<'a> {
     /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -176,6 +154,16 @@ impl<'a> CreateIssuingDisputeTreasury<'a> {
         Self { received_debit }
     }
 }
+impl<'a> CreateIssuingDispute<'a> {
+    /// Creates an Issuing `Dispute` object.
+    ///
+    /// Individual pieces of evidence within the `evidence` object are optional at this point.
+    /// Stripe only validates that required evidence is present during submission.
+    /// Refer to [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence) for more details about evidence requirements.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::IssuingDispute> {
+        client.send_form("/issuing/disputes", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateIssuingDispute<'a> {
     /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -200,6 +188,23 @@ impl<'a> UpdateIssuingDispute<'a> {
         Self::default()
     }
 }
+impl<'a> UpdateIssuingDispute<'a> {
+    /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    /// Properties on the `evidence` object can be unset by passing in an empty string.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        dispute: &stripe_types::dispute::DisputeId,
+    ) -> stripe::Response<stripe_types::IssuingDispute> {
+        client.send_form(
+            &format!("/issuing/disputes/{dispute}", dispute = dispute),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveIssuingDispute<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -209,6 +214,16 @@ pub struct RetrieveIssuingDispute<'a> {
 impl<'a> RetrieveIssuingDispute<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveIssuingDispute<'a> {
+    /// Retrieves an Issuing `Dispute` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        dispute: &stripe_types::dispute::DisputeId,
+    ) -> stripe::Response<stripe_types::IssuingDispute> {
+        client.get_query(&format!("/issuing/disputes/{dispute}", dispute = dispute), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -227,6 +242,23 @@ pub struct SubmitIssuingDispute<'a> {
 impl<'a> SubmitIssuingDispute<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> SubmitIssuingDispute<'a> {
+    /// Submits an Issuing `Dispute` to the card network.
+    ///
+    /// Stripe validates that all evidence fields required for the dispute’s reason are present.
+    /// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        dispute: &stripe_types::dispute::DisputeId,
+    ) -> stripe::Response<stripe_types::IssuingDispute> {
+        client.send_form(
+            &format!("/issuing/disputes/{dispute}/submit", dispute = dispute),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

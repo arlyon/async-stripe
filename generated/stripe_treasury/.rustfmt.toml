@@ -1,0 +1,7 @@
+
+use_small_heuristics = "Max"
+reorder_imports = true
+group_imports = "StdExternalCrate"
+error_on_line_overflow = true
+max_width = 260
+                    

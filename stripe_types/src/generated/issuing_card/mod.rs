@@ -43,10 +43,6 @@ pub struct IssuingCard {
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: IssuingCardObject,
     /// The latest card that replaces this card, if any.
     pub replaced_by: Option<stripe_types::Expandable<stripe_types::IssuingCard>>,
     /// The card this card replaces, if any.
@@ -128,67 +124,9 @@ impl<'de> serde::Deserialize<'de> for IssuingCardCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardCancellationReason"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum IssuingCardObject {
-    IssuingCard,
-}
-
-impl IssuingCardObject {
-    pub fn as_str(self) -> &'static str {
-        use IssuingCardObject::*;
-        match self {
-            IssuingCard => "issuing.card",
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingCardObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingCardObject::*;
-        match s {
-            "issuing.card" => Ok(IssuingCard),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for IssuingCardObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingCardObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for IssuingCardObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for IssuingCardObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for IssuingCardObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for IssuingCardCancellationReason")
+        })
     }
 }
 /// The reason why the previous card needed to be replaced.
@@ -255,7 +193,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardReplacementReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardReplacementReason"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardReplacementReason"))
     }
 }
 /// Whether authorizations can be approved on this card.
@@ -322,7 +261,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardStatus"))
     }
 }
 /// The type of the card.

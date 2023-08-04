@@ -26,10 +26,6 @@ pub struct IssuingCardholder {
     ///
     /// This will be printed on cards issued to them.
     pub name: String,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: IssuingCardholderObject,
     /// The cardholder's phone number.
     ///
     /// This is required for all cardholders who will be creating EU cards.
@@ -51,66 +47,6 @@ pub struct IssuingCardholder {
     /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
     #[serde(rename = "type")]
     pub type_: IssuingCardholderType,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum IssuingCardholderObject {
-    IssuingCardholder,
-}
-
-impl IssuingCardholderObject {
-    pub fn as_str(self) -> &'static str {
-        use IssuingCardholderObject::*;
-        match self {
-            IssuingCardholder => "issuing.cardholder",
-        }
-    }
-}
-
-impl std::str::FromStr for IssuingCardholderObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use IssuingCardholderObject::*;
-        match s {
-            "issuing.cardholder" => Ok(IssuingCardholder),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for IssuingCardholderObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingCardholderObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for IssuingCardholderObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for IssuingCardholderObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for IssuingCardholderObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderObject"))
-    }
 }
 /// The cardholder’s preferred locales (languages), ordered by preference.
 ///
@@ -181,7 +117,9 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderPreferredLocales {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderPreferredLocales"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for IssuingCardholderPreferredLocales")
+        })
     }
 }
 /// Specifies whether to permit authorizations on this cardholder's cards.
@@ -245,7 +183,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderStatus"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderStatus"))
     }
 }
 /// One of `individual` or `company`.
@@ -308,7 +247,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardholderType"))
     }
 }
 impl stripe_types::Object for IssuingCardholder {

@@ -1,20 +1,3 @@
-
-/// List apple pay domains.
-pub fn list(client: &stripe::Client, params: ListApplePayDomain) -> stripe::Response<stripe_types::List<stripe_misc::ApplePayDomain>> {
-    client.get_query("/apple_pay/domains", params)
-}
-/// Create an apple pay domain.
-pub fn create(client: &stripe::Client, params: CreateApplePayDomain) -> stripe::Response<stripe_misc::ApplePayDomain> {
-    client.send_form("/apple_pay/domains", params, http_types::Method::Post)
-}
-/// Retrieve an apple pay domain.
-pub fn retrieve(client: &stripe::Client, domain: &stripe_misc::apple_pay_domain::ApplePayDomainId, params: RetrieveApplePayDomain) -> stripe::Response<stripe_misc::ApplePayDomain> {
-    client.get_query(&format!("/apple_pay/domains/{domain}", domain = domain), params)
-}
-/// Delete an apple pay domain.
-pub fn delete(client: &stripe::Client, domain: &stripe_misc::apple_pay_domain::ApplePayDomainId) -> stripe::Response<stripe_misc::DeletedApplePayDomain> {
-    client.send(&format!("/apple_pay/domains/{domain}", domain = domain), http_types::Method::Delete)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListApplePayDomain<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,6 +28,15 @@ impl<'a> ListApplePayDomain<'a> {
         Self::default()
     }
 }
+impl<'a> ListApplePayDomain<'a> {
+    /// List apple pay domains.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::ApplePayDomain>> {
+        client.get_query("/apple_pay/domains", self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateApplePayDomain<'a> {
     pub domain_name: &'a str,
@@ -57,6 +49,12 @@ impl<'a> CreateApplePayDomain<'a> {
         Self { domain_name, expand: Default::default() }
     }
 }
+impl<'a> CreateApplePayDomain<'a> {
+    /// Create an apple pay domain.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::ApplePayDomain> {
+        client.send_form("/apple_pay/domains", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveApplePayDomain<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -66,5 +64,36 @@ pub struct RetrieveApplePayDomain<'a> {
 impl<'a> RetrieveApplePayDomain<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveApplePayDomain<'a> {
+    /// Retrieve an apple pay domain.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
+    ) -> stripe::Response<stripe_misc::ApplePayDomain> {
+        client.get_query(&format!("/apple_pay/domains/{domain}", domain = domain), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteApplePayDomain {}
+impl DeleteApplePayDomain {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteApplePayDomain {
+    /// Delete an apple pay domain.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
+    ) -> stripe::Response<stripe_misc::DeletedApplePayDomain> {
+        client.send_form(
+            &format!("/apple_pay/domains/{domain}", domain = domain),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }

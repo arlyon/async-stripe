@@ -1,26 +1,3 @@
-
-/// Retrieves a test clock.
-pub fn retrieve(client: &stripe::Client, test_clock: &stripe_types::test_clock::TestHelpersTestClockId, params: RetrieveTestClock) -> stripe::Response<stripe_types::TestClock> {
-    client.get_query(&format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock), params)
-}
-/// Creates a new test clock that can be attached to new customers and quotes.
-pub fn create(client: &stripe::Client, params: CreateTestClock) -> stripe::Response<stripe_types::TestClock> {
-    client.send_form("/test_helpers/test_clocks", params, http_types::Method::Post)
-}
-/// Deletes a test clock.
-pub fn delete(client: &stripe::Client, test_clock: &stripe_types::test_clock::TestHelpersTestClockId) -> stripe::Response<stripe_types::DeletedTestClock> {
-    client.send(&format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock), http_types::Method::Delete)
-}
-/// Starts advancing a test clock to a specified time in the future.
-///
-/// Advancement is done when status changes to `Ready`.
-pub fn advance(client: &stripe::Client, test_clock: &stripe_types::test_clock::TestHelpersTestClockId, params: AdvanceTestClock) -> stripe::Response<stripe_types::TestClock> {
-    client.send_form(&format!("/test_helpers/test_clocks/{test_clock}/advance", test_clock = test_clock), params, http_types::Method::Post)
-}
-/// Returns a list of your test clocks.
-pub fn list(client: &stripe::Client, params: ListTestClock) -> stripe::Response<stripe_types::List<stripe_types::TestClock>> {
-    client.get_query("/test_helpers/test_clocks", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTestClock<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -30,6 +7,19 @@ pub struct RetrieveTestClock<'a> {
 impl<'a> RetrieveTestClock<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTestClock<'a> {
+    /// Retrieves a test clock.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+    ) -> stripe::Response<stripe_types::TestClock> {
+        client.get_query(
+            &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -48,6 +38,33 @@ impl<'a> CreateTestClock<'a> {
         Self { expand: Default::default(), frozen_time, name: Default::default() }
     }
 }
+impl<'a> CreateTestClock<'a> {
+    /// Creates a new test clock that can be attached to new customers and quotes.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::TestClock> {
+        client.send_form("/test_helpers/test_clocks", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteTestClock {}
+impl DeleteTestClock {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteTestClock {
+    /// Deletes a test clock.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+    ) -> stripe::Response<stripe_types::DeletedTestClock> {
+        client.send_form(
+            &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
+            self,
+            http_types::Method::Delete,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AdvanceTestClock<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -63,6 +80,22 @@ pub struct AdvanceTestClock<'a> {
 impl<'a> AdvanceTestClock<'a> {
     pub fn new(frozen_time: stripe_types::Timestamp) -> Self {
         Self { expand: Default::default(), frozen_time }
+    }
+}
+impl<'a> AdvanceTestClock<'a> {
+    /// Starts advancing a test clock to a specified time in the future.
+    ///
+    /// Advancement is done when status changes to `Ready`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+    ) -> stripe::Response<stripe_types::TestClock> {
+        client.send_form(
+            &format!("/test_helpers/test_clocks/{test_clock}/advance", test_clock = test_clock),
+            self,
+            http_types::Method::Post,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -91,5 +124,14 @@ pub struct ListTestClock<'a> {
 impl<'a> ListTestClock<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListTestClock<'a> {
+    /// Returns a list of your test clocks.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::TestClock>> {
+        client.get_query("/test_helpers/test_clocks", self)
     }
 }

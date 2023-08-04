@@ -1,20 +1,3 @@
-
-/// Creates a new `TaxID` object for a customer.
-pub fn create(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: CreateTaxId) -> stripe::Response<stripe_types::TaxId> {
-    client.send_form(&format!("/customers/{customer}/tax_ids", customer = customer), params, http_types::Method::Post)
-}
-/// Retrieves the `TaxID` object with the given identifier.
-pub fn retrieve(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str, params: RetrieveTaxId) -> stripe::Response<stripe_types::TaxId> {
-    client.get_query(&format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id), params)
-}
-/// Returns a list of tax IDs for a customer.
-pub fn list(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, params: ListTaxId) -> stripe::Response<stripe_types::List<stripe_types::TaxId>> {
-    client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), params)
-}
-/// Deletes an existing `TaxID` object.
-pub fn delete(client: &stripe::Client, customer: &stripe_types::customer::CustomerId, id: &str) -> stripe::Response<stripe_types::DeletedTaxId> {
-    client.send(&format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id), http_types::Method::Delete)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxId<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -277,6 +260,20 @@ impl serde::Serialize for CreateTaxIdType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateTaxId<'a> {
+    /// Creates a new `TaxID` object for a customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::TaxId> {
+        client.send_form(
+            &format!("/customers/{customer}/tax_ids", customer = customer),
+            self,
+            http_types::Method::Post,
+        )
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxId<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -286,6 +283,20 @@ pub struct RetrieveTaxId<'a> {
 impl<'a> RetrieveTaxId<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveTaxId<'a> {
+    /// Retrieves the `TaxID` object with the given identifier.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::TaxId> {
+        client.get_query(
+            &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
+            self,
+        )
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -314,5 +325,37 @@ pub struct ListTaxId<'a> {
 impl<'a> ListTaxId<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListTaxId<'a> {
+    /// Returns a list of tax IDs for a customer.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::TaxId>> {
+        client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteTaxId {}
+impl DeleteTaxId {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteTaxId {
+    /// Deletes an existing `TaxID` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        customer: &stripe_types::customer::CustomerId,
+        id: &str,
+    ) -> stripe::Response<stripe_types::DeletedTaxId> {
+        client.send_form(
+            &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
+            self,
+            http_types::Method::Delete,
+        )
     }
 }

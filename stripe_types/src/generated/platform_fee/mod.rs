@@ -24,10 +24,6 @@ pub struct PlatformFee {
     pub id: stripe_types::platform_fee::ApplicationFeeId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: PlatformFeeObject,
     /// ID of the corresponding charge on the platform account, if this fee was the result of a charge using the `destination` parameter.
     pub originating_transaction: Option<stripe_types::Expandable<stripe_types::Charge>>,
     /// Whether the fee has been fully refunded.
@@ -36,66 +32,6 @@ pub struct PlatformFee {
     pub refunded: bool,
     /// A list of refunds that have been applied to the fee.
     pub refunds: stripe_types::List<stripe_types::FeeRefund>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PlatformFeeObject {
-    ApplicationFee,
-}
-
-impl PlatformFeeObject {
-    pub fn as_str(self) -> &'static str {
-        use PlatformFeeObject::*;
-        match self {
-            ApplicationFee => "application_fee",
-        }
-    }
-}
-
-impl std::str::FromStr for PlatformFeeObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PlatformFeeObject::*;
-        match s {
-            "application_fee" => Ok(ApplicationFee),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PlatformFeeObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PlatformFeeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PlatformFeeObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PlatformFeeObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for PlatformFeeObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlatformFeeObject"))
-    }
 }
 impl stripe_types::Object for PlatformFee {
     type Id = stripe_types::platform_fee::ApplicationFeeId;

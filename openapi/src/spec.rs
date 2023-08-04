@@ -1,5 +1,8 @@
 use indexmap::IndexMap;
-use openapiv3::{Components, ObjectType, OpenAPI, Operation, PathItem, ReferenceOr, Response, Schema, SchemaKind, StatusCode, Type};
+use openapiv3::{
+    Components, ObjectType, OpenAPI, Operation, PathItem, ReferenceOr, Response, Schema,
+    SchemaKind, StatusCode, Type,
+};
 
 use crate::stripe_object::OperationType;
 use crate::types::ComponentPath;
@@ -21,7 +24,8 @@ impl Spec {
     }
 
     pub fn get_component_schema(&self, path: &ComponentPath) -> &Schema {
-        let schema_or_ref = &self.components().schemas.get(path.as_ref()).expect("Schema not found");
+        let schema_or_ref =
+            &self.components().schemas.get(path.as_ref()).expect("Schema not found");
         schema_or_ref.as_item().expect("Expected top level component to be an item")
     }
 
@@ -53,7 +57,9 @@ pub fn as_object_type(schema: &Schema) -> Option<&ObjectType> {
     }
 }
 
-pub fn as_object_properties(schema: &Schema) -> Option<&IndexMap<String, ReferenceOr<Box<Schema>>>> {
+pub fn as_object_properties(
+    schema: &Schema,
+) -> Option<&IndexMap<String, ReferenceOr<Box<Schema>>>> {
     Some(&as_object_type(schema)?.properties)
 }
 
@@ -107,7 +113,14 @@ pub fn get_ok_response_schema(operation: &Operation) -> Option<&ReferenceOr<Sche
 }
 
 pub fn get_request_form_parameters(operation: &Operation) -> Option<&ReferenceOr<Schema>> {
-    let schema = operation.request_body.as_ref()?.as_item()?.content.get("application/x-www-form-urlencoded")?.schema.as_ref();
+    let schema = operation
+        .request_body
+        .as_ref()?
+        .as_item()?
+        .content
+        .get("application/x-www-form-urlencoded")?
+        .schema
+        .as_ref();
 
     // Treat empty object as `None`
     if let Some(obj_type) = schema.and_then(|s| s.as_item().and_then(as_object_type)) {
@@ -132,6 +145,13 @@ pub struct PathRef {
 
 impl ExpansionResources {
     pub fn into_schema_kind(self) -> SchemaKind {
-        SchemaKind::OneOf { one_of: self.one_of.into_iter().filter(|r| !r.reference.starts_with("#/components/schemas/deleted_")).map(|r| ReferenceOr::Reference { reference: r.reference }).collect() }
+        SchemaKind::OneOf {
+            one_of: self
+                .one_of
+                .into_iter()
+                .filter(|r| !r.reference.starts_with("#/components/schemas/deleted_"))
+                .map(|r| ReferenceOr::Reference { reference: r.reference })
+                .collect(),
+        }
     }
 }

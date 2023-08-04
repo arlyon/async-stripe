@@ -35,10 +35,6 @@ pub struct InvoiceLineItem {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
     pub metadata: std::collections::HashMap<String, String>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: InvoiceLineItemObject,
     pub period: stripe_types::InvoiceLineItemPeriod,
     /// The plan of the subscription, if the line item is a subscription or a proration.
     pub plan: Option<stripe_types::Plan>,
@@ -68,66 +64,6 @@ pub struct InvoiceLineItem {
     pub type_: InvoiceLineItemType,
     /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum InvoiceLineItemObject {
-    LineItem,
-}
-
-impl InvoiceLineItemObject {
-    pub fn as_str(self) -> &'static str {
-        use InvoiceLineItemObject::*;
-        match self {
-            LineItem => "line_item",
-        }
-    }
-}
-
-impl std::str::FromStr for InvoiceLineItemObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use InvoiceLineItemObject::*;
-        match s {
-            "line_item" => Ok(LineItem),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceLineItemObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for InvoiceLineItemObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for InvoiceLineItemObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for InvoiceLineItemObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemObject"))
-    }
 }
 /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -187,7 +123,8 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
     }
 }
 impl stripe_types::Object for InvoiceLineItem {

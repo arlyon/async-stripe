@@ -1,10 +1,3 @@
-
-/// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
-///
-/// There is also a URL where you can retrieve the full (paginated) list of line items.
-pub fn list(client: &stripe::Client, invoice: &stripe_types::invoice::InvoiceId, params: ListInvoiceLineItem) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
-    client.get_query(&format!("/invoices/{invoice}/lines", invoice = invoice), params)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListInvoiceLineItem<'a> {
     /// A cursor for use in pagination.
@@ -31,5 +24,17 @@ pub struct ListInvoiceLineItem<'a> {
 impl<'a> ListInvoiceLineItem<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ListInvoiceLineItem<'a> {
+    /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
+    ///
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
+        client.get_query(&format!("/invoices/{invoice}/lines", invoice = invoice), self)
     }
 }

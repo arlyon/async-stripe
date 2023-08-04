@@ -6,13 +6,16 @@ pub struct TerminalReaderReaderResourceReaderAction {
     /// Detailed failure message, only set if status is `failed`.
     pub failure_message: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub process_payment_intent: Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>,
+    pub process_payment_intent:
+        Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub process_setup_intent: Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupIntentAction>,
+    pub process_setup_intent:
+        Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupIntentAction>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_payment: Option<stripe_terminal::TerminalReaderReaderResourceRefundPaymentAction>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub set_reader_display: Option<stripe_terminal::TerminalReaderReaderResourceSetReaderDisplayAction>,
+    pub set_reader_display:
+        Option<stripe_terminal::TerminalReaderReaderResourceSetReaderDisplayAction>,
     /// Status of the action performed by the reader.
     pub status: TerminalReaderReaderResourceReaderActionStatus,
     /// Type of action performed by the reader.
@@ -80,7 +83,11 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionSt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TerminalReaderReaderResourceReaderActionStatus"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TerminalReaderReaderResourceReaderActionStatus",
+            )
+        })
     }
 }
 /// Type of action performed by the reader.
@@ -147,6 +154,10 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TerminalReaderReaderResourceReaderActionType"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for TerminalReaderReaderResourceReaderActionType",
+            )
+        })
     }
 }

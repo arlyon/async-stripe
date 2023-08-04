@@ -1,18 +1,3 @@
-
-/// To launch the Financial Connections authorization flow, create a `Session`.
-///
-/// The session’s `client_secret` can be used to launch the flow using Stripe.js.
-pub fn create(client: &stripe::Client, params: CreateBankConnectionsResourceLinkAccountSession) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkAccountSession> {
-    client.send_form("/financial_connections/sessions", params, http_types::Method::Post)
-}
-/// Retrieves the details of a Financial Connections `Session`.
-pub fn retrieve(
-    client: &stripe::Client,
-    session: &stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId,
-    params: RetrieveBankConnectionsResourceLinkAccountSession,
-) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkAccountSession> {
-    client.get_query(&format!("/financial_connections/sessions/{session}", session = session), params)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBankConnectionsResourceLinkAccountSession<'a> {
     /// The account holder to link accounts for.
@@ -34,8 +19,17 @@ pub struct CreateBankConnectionsResourceLinkAccountSession<'a> {
     pub return_url: Option<&'a str>,
 }
 impl<'a> CreateBankConnectionsResourceLinkAccountSession<'a> {
-    pub fn new(account_holder: CreateBankConnectionsResourceLinkAccountSessionAccountHolder<'a>, permissions: &'a [CreateBankConnectionsResourceLinkAccountSessionPermissions]) -> Self {
-        Self { account_holder, expand: Default::default(), filters: Default::default(), permissions, return_url: Default::default() }
+    pub fn new(
+        account_holder: CreateBankConnectionsResourceLinkAccountSessionAccountHolder<'a>,
+        permissions: &'a [CreateBankConnectionsResourceLinkAccountSessionPermissions],
+    ) -> Self {
+        Self {
+            account_holder,
+            expand: Default::default(),
+            filters: Default::default(),
+            permissions,
+            return_url: Default::default(),
+        }
     }
 }
 /// The account holder to link accounts for.
@@ -187,6 +181,17 @@ impl serde::Serialize for CreateBankConnectionsResourceLinkAccountSessionPermiss
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> CreateBankConnectionsResourceLinkAccountSession<'a> {
+    /// To launch the Financial Connections authorization flow, create a `Session`.
+    ///
+    /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkAccountSession> {
+        client.send_form("/financial_connections/sessions", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveBankConnectionsResourceLinkAccountSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -196,5 +201,18 @@ pub struct RetrieveBankConnectionsResourceLinkAccountSession<'a> {
 impl<'a> RetrieveBankConnectionsResourceLinkAccountSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveBankConnectionsResourceLinkAccountSession<'a> {
+    /// Retrieves the details of a Financial Connections `Session`.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        session:&stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId,
+    ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkAccountSession> {
+        client.get_query(
+            &format!("/financial_connections/sessions/{session}", session = session),
+            self,
+        )
     }
 }

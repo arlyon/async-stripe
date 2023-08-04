@@ -1,8 +1,3 @@
-
-/// Creates a session of the customer portal.
-pub fn create(client: &stripe::Client, params: CreatePortalSession) -> stripe::Response<stripe_billing::PortalSession> {
-    client.send_form("/billing_portal/sessions", params, http_types::Method::Post)
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalSession<'a> {
     /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
@@ -38,7 +33,15 @@ pub struct CreatePortalSession<'a> {
 }
 impl<'a> CreatePortalSession<'a> {
     pub fn new(customer: &'a str) -> Self {
-        Self { configuration: Default::default(), customer, expand: Default::default(), flow_data: Default::default(), locale: Default::default(), on_behalf_of: Default::default(), return_url: Default::default() }
+        Self {
+            configuration: Default::default(),
+            customer,
+            expand: Default::default(),
+            flow_data: Default::default(),
+            locale: Default::default(),
+            on_behalf_of: Default::default(),
+            return_url: Default::default(),
+        }
     }
 }
 /// Information about a specific flow for the customer to go through.
@@ -57,14 +60,21 @@ pub struct CreatePortalSessionFlowData<'a> {
     pub subscription_update: Option<CreatePortalSessionFlowDataSubscriptionUpdate<'a>>,
     /// Configuration when `flow_data.type=subscription_update_confirm`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_update_confirm: Option<CreatePortalSessionFlowDataSubscriptionUpdateConfirm<'a>>,
+    pub subscription_update_confirm:
+        Option<CreatePortalSessionFlowDataSubscriptionUpdateConfirm<'a>>,
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
     pub type_: CreatePortalSessionFlowDataType,
 }
 impl<'a> CreatePortalSessionFlowData<'a> {
     pub fn new(type_: CreatePortalSessionFlowDataType) -> Self {
-        Self { after_completion: Default::default(), subscription_cancel: Default::default(), subscription_update: Default::default(), subscription_update_confirm: Default::default(), type_ }
+        Self {
+            after_completion: Default::default(),
+            subscription_cancel: Default::default(),
+            subscription_update: Default::default(),
+            subscription_update_confirm: Default::default(),
+            type_,
+        }
     }
 }
 /// Behavior after the flow is completed.
@@ -72,7 +82,8 @@ impl<'a> CreatePortalSessionFlowData<'a> {
 pub struct CreatePortalSessionFlowDataAfterCompletion<'a> {
     /// Configuration when `after_completion.type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<CreatePortalSessionFlowDataAfterCompletionHostedConfirmation<'a>>,
+    pub hosted_confirmation:
+        Option<CreatePortalSessionFlowDataAfterCompletionHostedConfirmation<'a>>,
     /// Configuration when `after_completion.type=redirect`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<CreatePortalSessionFlowDataAfterCompletionRedirect<'a>>,
@@ -203,7 +214,10 @@ pub struct CreatePortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
     pub subscription: &'a str,
 }
 impl<'a> CreatePortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
-    pub fn new(items: &'a [CreatePortalSessionFlowDataSubscriptionUpdateConfirmItems<'a>], subscription: &'a str) -> Self {
+    pub fn new(
+        items: &'a [CreatePortalSessionFlowDataSubscriptionUpdateConfirmItems<'a>],
+        subscription: &'a str,
+    ) -> Self {
         Self { discounts: Default::default(), items, subscription }
     }
 }
@@ -494,5 +508,11 @@ impl serde::Serialize for CreatePortalSessionLocale {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> CreatePortalSession<'a> {
+    /// Creates a session of the customer portal.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_billing::PortalSession> {
+        client.send_form("/billing_portal/sessions", self, http_types::Method::Post)
     }
 }

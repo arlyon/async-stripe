@@ -7,9 +7,11 @@ pub struct PaymentIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_await_notification: Option<stripe_types::PaymentIntentNextActionCardAwaitNotification>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp_handle_redirect_or_display_qr_code: Option<stripe_types::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
+    pub cashapp_handle_redirect_or_display_qr_code:
+        Option<stripe_types::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub display_bank_transfer_instructions: Option<stripe_types::PaymentIntentNextActionDisplayBankTransferInstructions>,
+    pub display_bank_transfer_instructions:
+        Option<stripe_types::PaymentIntentNextActionDisplayBankTransferInstructions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini_display_details: Option<stripe_types::PaymentIntentNextActionKonbini>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19,7 +21,8 @@ pub struct PaymentIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix_display_qr_code: Option<stripe_types::PaymentIntentNextActionPixDisplayQrCode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay_display_qr_code: Option<stripe_types::PaymentIntentNextActionPromptpayDisplayQrCode>,
+    pub promptpay_display_qr_code:
+        Option<stripe_types::PaymentIntentNextActionPromptpayDisplayQrCode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_to_url: Option<stripe_types::PaymentIntentNextActionRedirectToUrl>,
     /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
@@ -31,13 +34,17 @@ pub struct PaymentIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub use_stripe_sdk: Option<PaymentIntentNextActionUseStripeSdk>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verify_with_microdeposits: Option<stripe_types::PaymentIntentNextActionVerifyWithMicrodeposits>,
+    pub verify_with_microdeposits:
+        Option<stripe_types::PaymentIntentNextActionVerifyWithMicrodeposits>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay_display_qr_code: Option<stripe_types::PaymentIntentNextActionWechatPayDisplayQrCode>,
+    pub wechat_pay_display_qr_code:
+        Option<stripe_types::PaymentIntentNextActionWechatPayDisplayQrCode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay_redirect_to_android_app: Option<stripe_types::PaymentIntentNextActionWechatPayRedirectToAndroidApp>,
+    pub wechat_pay_redirect_to_android_app:
+        Option<stripe_types::PaymentIntentNextActionWechatPayRedirectToAndroidApp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay_redirect_to_ios_app: Option<stripe_types::PaymentIntentNextActionWechatPayRedirectToIosApp>,
+    pub wechat_pay_redirect_to_ios_app:
+        Option<stripe_types::PaymentIntentNextActionWechatPayRedirectToIosApp>,
 }
 /// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
 ///

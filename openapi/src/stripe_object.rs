@@ -111,28 +111,38 @@ impl StripeObject {
     }
 }
 
-pub fn parse_stripe_schema_as_rust_object(schema: &Schema, path: &ComponentPath, ident: &RustIdent) -> StripeObjectData {
+pub fn parse_stripe_schema_as_rust_object(
+    schema: &Schema,
+    path: &ComponentPath,
+    ident: &RustIdent,
+) -> StripeObjectData {
     let not_deleted_path = path.as_not_deleted();
     let infer_ctx = Inference::new(ident).id_path(&not_deleted_path);
     let typ = infer_ctx.infer_schema_type(schema);
-    let (rust_obj, _) = typ.into_object().expect("Unexpected top level schema type");
-    match &rust_obj {
+    let (mut rust_obj, _) = typ.into_object().expect("Unexpected top level schema type");
+    match &mut rust_obj {
         RustObject::Struct(fields) => {
             let mut id_type = None;
             let mut object_name = None;
-            for field in fields {
+            fields.retain(|field| {
                 if field.field_name == "id" {
                     id_type = Some(field.rust_type.clone());
                 }
                 if field.field_name == "object" {
-                    if let Some(RustObject::FieldlessEnum(variants)) = field.rust_type.as_rust_object() {
+                    if let Some(RustObject::FieldlessEnum(variants)) =
+                        field.rust_type.as_rust_object()
+                    {
                         if variants.len() == 1 {
                             let first = variants.first().unwrap();
                             object_name = Some(first.wire_name.clone());
+                            // The object name is used purely as a discriminant, so is
+                            // unnecessary to generate 1-enum type for.
+                            return false;
                         }
                     }
                 }
-            }
+                true
+            });
             StripeObjectData { obj: rust_obj, object_name, id_type }
         }
         RustObject::Enum(_) => {
@@ -200,7 +210,12 @@ impl StripeResource {
 
 impl StripeResource {
     pub fn from_schema(schema: &Schema, path: ComponentPath) -> anyhow::Result<Self> {
-        let resource: BaseResource = schema.schema_data.extensions.get("x-stripeResource").context("No stripe resource").and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
+        let resource: BaseResource = schema
+            .schema_data
+            .extensions
+            .get("x-stripeResource")
+            .context("No stripe resource")
+            .and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
 
         let mut in_package = None;
         if let Some(package) = resource.in_package {
@@ -210,7 +225,11 @@ impl StripeResource {
         }
 
         let ident = infer_object_ident(&path, &schema.schema_data.title, &resource.class_name);
-        let requests = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") { serde_json::from_value(val.clone())? } else { vec![] };
+        let requests = if let Some(val) = schema.schema_data.extensions.get("x-stripeOperations") {
+            serde_json::from_value(val.clone())?
+        } else {
+            vec![]
+        };
         Ok(StripeResource { base_ident: ident, in_package, requests, path })
     }
 }
@@ -228,7 +247,7 @@ fn infer_object_ident(path: &ComponentPath, title: &Option<String>, class: &str)
 #[derive(Debug, Clone)]
 pub struct RequestSpec {
     pub path_params: Vec<PathParam>,
-    pub params: Option<RustType>,
+    pub params: RustType,
     pub method_type: OperationType,
     pub returned: RustType,
     pub doc_comment: Option<String>,

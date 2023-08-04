@@ -1,18 +1,3 @@
-
-/// Returns a list of `Review` objects that have `open` set to `true`.
-///
-/// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-pub fn list(client: &stripe::Client, params: ListRadarReview) -> stripe::Response<stripe_types::List<stripe_types::RadarReview>> {
-    client.get_query("/reviews", params)
-}
-/// Retrieves a `Review` object.
-pub fn retrieve(client: &stripe::Client, review: &stripe_types::radar_review::ReviewId, params: RetrieveRadarReview) -> stripe::Response<stripe_types::RadarReview> {
-    client.get_query(&format!("/reviews/{review}", review = review), params)
-}
-/// Approves a `Review` object, closing it and removing it from the list of reviews.
-pub fn approve(client: &stripe::Client, review: &stripe_types::radar_review::ReviewId, params: ApproveRadarReview) -> stripe::Response<stripe_types::RadarReview> {
-    client.send_form(&format!("/reviews/{review}/approve", review = review), params, http_types::Method::Post)
-}
 #[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ListRadarReview<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,6 +28,17 @@ impl<'a> ListRadarReview<'a> {
         Self::default()
     }
 }
+impl<'a> ListRadarReview<'a> {
+    /// Returns a list of `Review` objects that have `open` set to `true`.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_types::RadarReview>> {
+        client.get_query("/reviews", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarReview<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -54,6 +50,16 @@ impl<'a> RetrieveRadarReview<'a> {
         Self::default()
     }
 }
+impl<'a> RetrieveRadarReview<'a> {
+    /// Retrieves a `Review` object.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        review: &stripe_types::radar_review::ReviewId,
+    ) -> stripe::Response<stripe_types::RadarReview> {
+        client.get_query(&format!("/reviews/{review}", review = review), self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ApproveRadarReview<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -63,5 +69,19 @@ pub struct ApproveRadarReview<'a> {
 impl<'a> ApproveRadarReview<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> ApproveRadarReview<'a> {
+    /// Approves a `Review` object, closing it and removing it from the list of reviews.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        review: &stripe_types::radar_review::ReviewId,
+    ) -> stripe::Response<stripe_types::RadarReview> {
+        client.send_form(
+            &format!("/reviews/{review}/approve", review = review),
+            self,
+            http_types::Method::Post,
+        )
     }
 }

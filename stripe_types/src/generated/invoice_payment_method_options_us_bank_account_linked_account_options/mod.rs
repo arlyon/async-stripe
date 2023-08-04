@@ -4,7 +4,8 @@ pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
     ///
     /// The `payment_method` permission must be included.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
+    pub permissions:
+        Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
 }
 /// The list of permissions to request.
 ///
@@ -65,7 +66,9 @@ impl serde::Serialize for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountO
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
+impl<'de> serde::Deserialize<'de>
+    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;

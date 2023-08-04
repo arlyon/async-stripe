@@ -74,10 +74,6 @@ pub struct Customer {
     /// The suffix of the customer's next invoice number, e.g., 0001.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_invoice_sequence: Option<i64>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: CustomerObject,
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -108,66 +104,6 @@ pub struct Customer {
     /// ID of the test clock this customer belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub test_clock: Option<stripe_types::Expandable<stripe_types::TestClock>>,
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CustomerObject {
-    Customer,
-}
-
-impl CustomerObject {
-    pub fn as_str(self) -> &'static str {
-        use CustomerObject::*;
-        match self {
-            Customer => "customer",
-        }
-    }
-}
-
-impl std::str::FromStr for CustomerObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CustomerObject::*;
-        match s {
-            "customer" => Ok(Customer),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for CustomerObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CustomerObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CustomerObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CustomerObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for CustomerObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerObject"))
-    }
 }
 /// Describes the customer's tax exemption status.
 ///
@@ -233,7 +169,8 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
+        Self::from_str(s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
     }
 }
 impl stripe_types::Object for Customer {

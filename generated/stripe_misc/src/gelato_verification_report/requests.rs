@@ -1,12 +1,3 @@
-
-/// Retrieves an existing VerificationReport.
-pub fn retrieve(client: &stripe::Client, report: &stripe_misc::gelato_verification_report::IdentityVerificationReportId, params: RetrieveGelatoVerificationReport) -> stripe::Response<stripe_misc::GelatoVerificationReport> {
-    client.get_query(&format!("/identity/verification_reports/{report}", report = report), params)
-}
-/// List all verification reports.
-pub fn list(client: &stripe::Client, params: ListGelatoVerificationReport) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationReport>> {
-    client.get_query("/identity/verification_reports", params)
-}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveGelatoVerificationReport<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -16,6 +7,16 @@ pub struct RetrieveGelatoVerificationReport<'a> {
 impl<'a> RetrieveGelatoVerificationReport<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+impl<'a> RetrieveGelatoVerificationReport<'a> {
+    /// Retrieves an existing VerificationReport.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+        report: &stripe_misc::gelato_verification_report::IdentityVerificationReportId,
+    ) -> stripe::Response<stripe_misc::GelatoVerificationReport> {
+        client.get_query(&format!("/identity/verification_reports/{report}", report = report), self)
     }
 }
 #[derive(Clone, Debug, Default, serde::Serialize)]
@@ -109,5 +110,14 @@ impl serde::Serialize for ListGelatoVerificationReportType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+impl<'a> ListGelatoVerificationReport<'a> {
+    /// List all verification reports.
+    pub fn send(
+        &self,
+        client: &stripe::Client,
+    ) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationReport>> {
+        client.get_query("/identity/verification_reports", self)
     }
 }

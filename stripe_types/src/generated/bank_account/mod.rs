@@ -54,10 +54,6 @@ pub struct BankAccount {
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// String representing the object's type.
-    ///
-    /// Objects of the same type share the same value.
-    pub object: BankAccountObject,
     /// Information about the requirements for the bank account, including what information needs to be collected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<stripe_types::ExternalAccountRequirements>,
@@ -137,67 +133,9 @@ impl<'de> serde::Deserialize<'de> for BankAccountAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankAccountAvailablePayoutMethods"))
-    }
-}
-/// String representing the object's type.
-///
-/// Objects of the same type share the same value.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum BankAccountObject {
-    BankAccount,
-}
-
-impl BankAccountObject {
-    pub fn as_str(self) -> &'static str {
-        use BankAccountObject::*;
-        match self {
-            BankAccount => "bank_account",
-        }
-    }
-}
-
-impl std::str::FromStr for BankAccountObject {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use BankAccountObject::*;
-        match s {
-            "bank_account" => Ok(BankAccount),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for BankAccountObject {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BankAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for BankAccountObject {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for BankAccountObject {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'de> serde::Deserialize<'de> for BankAccountObject {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for BankAccountObject"))
+        Self::from_str(s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for BankAccountAvailablePayoutMethods")
+        })
     }
 }
 impl stripe_types::Object for BankAccount {

@@ -38,13 +38,25 @@ impl CodeGen {
 
         for (obj, meta) in &self.overrides.overrides {
             let mut out = String::new();
-            self.components.write_object(obj, &ObjectMetadata::new(meta.ident.clone()).doc(meta.doc.clone()), ObjectGenInfo::new(Derives::new_deser()), &mut out);
+            self.components.write_object(
+                obj,
+                &ObjectMetadata::new(meta.ident.clone()).doc(meta.doc.clone()),
+                ObjectGenInfo::new(Derives::new_deser()),
+                &mut out,
+            );
             write_to_file(out, base_path.join(format!("{}.rs", meta.mod_path)))?;
-            let _ = writeln!(mod_rs_contents, "pub mod {0}; pub use {0}::{1};", meta.mod_path, meta.ident);
+            let _ = writeln!(
+                mod_rs_contents,
+                "pub mod {0}; pub use {0}::{1};",
+                meta.mod_path, meta.ident
+            );
         }
 
         // Write the current API version
-        let version_file_content = format!("pub const VERSION: crate::ApiVersion = crate::ApiVersion::V{};", self.spec.version().replace('-', "_"));
+        let version_file_content = format!(
+            "pub const VERSION: crate::ApiVersion = crate::ApiVersion::V{};",
+            self.spec.version().replace('-', "_")
+        );
         write_to_file(version_file_content, base_path.join("version.rs"))?;
         let _ = writeln!(mod_rs_contents, "pub mod version;");
 
@@ -66,7 +78,10 @@ impl CodeGen {
                 let obj_mod_path = component.mod_path();
                 self.write_component_requests(component, &requests_path.join(&obj_mod_path))?;
                 if krate != requests_crate {
-                    append_to_file(format!("pub mod {obj_mod_path};"), requests_path.join("mod.rs"))?;
+                    append_to_file(
+                        format!("pub mod {obj_mod_path};"),
+                        requests_path.join("mod.rs"),
+                    )?;
                 }
             }
         }
@@ -87,9 +102,31 @@ impl CodeGen {
                 self.write_generated_for_types_crate()?;
             } else {
                 let base_path = PathBuf::from(krate.generated_out_path());
+                let request_features = self
+                    .components
+                    .get_crate_members(*krate)
+                    .into_iter()
+                    .filter(|c| !self.components.get(c).requests.is_empty())
+                    .map(|c| self.components.get(c).mod_path())
+                    .collect();
 
-                let toml = gen_crate_toml(*krate, neighbors.collect());
+                let toml = gen_crate_toml(*krate, neighbors.collect(), request_features);
                 write_to_file(toml, base_path.join("Cargo.toml"))?;
+
+                // NB: a hack to avoid the insanely long lines generated because of _very_ long
+                // type names causing `rustfmt` errors (https://github.com/rust-lang/rustfmt/issues/5315)
+                if *krate == Crate::Treasury {
+                    write_to_file(
+                        r#"
+use_small_heuristics = "Max"
+reorder_imports = true
+group_imports = "StdExternalCrate"
+error_on_line_overflow = true
+max_width = 260
+                    "#,
+                        base_path.join(".rustfmt.toml"),
+                    )?;
+                }
 
                 let crate_name = krate.name();
 
@@ -110,10 +147,23 @@ impl CodeGen {
         Ok(())
     }
 
-    fn write_component_requests(&self, comp: &StripeObject, module_path: &Path) -> anyhow::Result<()> {
+    fn write_component_requests(
+        &self,
+        comp: &StripeObject,
+        module_path: &Path,
+    ) -> anyhow::Result<()> {
         let req_content = gen_requests(&comp.requests, &self.components);
         write_to_file(req_content, module_path.join("requests.rs"))?;
-        append_to_file("pub mod requests;", module_path.join("mod.rs"))
+        let feature_gate = comp.mod_path();
+        let new_mod_file_content = formatdoc! {
+            r#"
+            #[cfg(feature = "{feature_gate}")]
+            mod requests;
+            #[cfg(feature = "{feature_gate}")]
+            pub use requests::*;
+            "#
+        };
+        append_to_file(new_mod_file_content, module_path.join("mod.rs"))
     }
 
     fn gen_struct_definitions_for_component(&self, comp: &StripeObject) -> String {
@@ -132,7 +182,10 @@ impl CodeGen {
         let parent_mod_path = base_path.join("mod.rs");
 
         write_to_file(self.gen_struct_definitions_for_component(comp), obj_module_path)?;
-        append_to_file(format!("pub mod {0};pub use {0}::{1};", comp.mod_path(), comp.ident()), parent_mod_path)?;
+        append_to_file(
+            format!("pub mod {0};pub use {0}::{1};", comp.mod_path(), comp.ident()),
+            parent_mod_path,
+        )?;
 
         Ok(())
     }
