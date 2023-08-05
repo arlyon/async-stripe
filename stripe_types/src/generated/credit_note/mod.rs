@@ -141,8 +141,8 @@ impl serde::Serialize for CreditNoteReason {
 impl<'de> serde::Deserialize<'de> for CreditNoteReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
     }
 }
@@ -205,8 +205,8 @@ impl serde::Serialize for CreditNoteStatus {
 impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
     }
 }
@@ -270,8 +270,8 @@ impl serde::Serialize for CreditNoteType {
 impl<'de> serde::Deserialize<'de> for CreditNoteType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteType"))
     }
 }
 impl stripe_types::Object for CreditNote {

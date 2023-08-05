@@ -64,8 +64,8 @@ impl serde::Serialize for PaymentMethodDetailsCardInstallmentsPlanInterval {
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodDetailsCardInstallmentsPlanInterval",
             )
@@ -126,8 +126,8 @@ impl serde::Serialize for PaymentMethodDetailsCardInstallmentsPlanType {
 impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardInstallmentsPlanType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodDetailsCardInstallmentsPlanType",
             )

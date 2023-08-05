@@ -597,6 +597,7 @@ impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxCalculation<'a> {}
 impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     /// Retrieves the line items of a persisted tax calculation as a collection.
     pub fn send(
@@ -606,6 +607,15 @@ impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxCalculationLineItem>>
     {
         client.get_query(
+            &format!("/tax/calculations/{calculation}/line_items", calculation = calculation),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        calculation: &stripe_misc::tax_product_resource_tax_calculation::TaxCalculationId,
+    ) -> stripe::ListPaginator<stripe_misc::TaxProductResourceTaxCalculationLineItem> {
+        stripe::ListPaginator::from_params(
             &format!("/tax/calculations/{calculation}/line_items", calculation = calculation),
             self,
         )

@@ -28,6 +28,7 @@ impl<'a> ListRadarReview<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarReview<'a> {}
 impl<'a> ListRadarReview<'a> {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
@@ -37,6 +38,9 @@ impl<'a> ListRadarReview<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::RadarReview>> {
         client.get_query("/reviews", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::RadarReview> {
+        stripe::ListPaginator::from_params("/reviews", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

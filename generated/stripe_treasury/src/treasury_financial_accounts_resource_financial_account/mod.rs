@@ -98,8 +98,8 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceFinancialAccountStatu
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceFinancialAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceFinancialAccountStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceFinancialAccountStatus"))
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -182,8 +182,8 @@ impl serde::Serialize for Array {
 impl<'de> serde::Deserialize<'de> for Array {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for Array"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for Array"))
     }
 }
 impl stripe_types::Object for TreasuryFinancialAccountsResourceFinancialAccount {

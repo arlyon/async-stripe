@@ -35,6 +35,7 @@ impl<'a> ListTaxRate<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTaxRate<'a> {}
 impl<'a> ListTaxRate<'a> {
     /// Returns a list of your tax rates.
     ///
@@ -44,6 +45,9 @@ impl<'a> ListTaxRate<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::TaxRate>> {
         client.get_query("/tax_rates", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::TaxRate> {
+        stripe::ListPaginator::from_params("/tax_rates", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

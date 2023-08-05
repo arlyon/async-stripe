@@ -129,8 +129,8 @@ impl serde::Serialize for PaymentMethodP24Bank {
 impl<'de> serde::Deserialize<'de> for PaymentMethodP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodP24Bank"))
     }
 }

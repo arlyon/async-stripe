@@ -44,6 +44,7 @@ impl<'a> ListSubscriptionSchedule<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscriptionSchedule<'a> {}
 impl<'a> ListSubscriptionSchedule<'a> {
     /// Retrieves the list of your subscription schedules.
     pub fn send(
@@ -51,6 +52,9 @@ impl<'a> ListSubscriptionSchedule<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::SubscriptionSchedule>> {
         client.get_query("/subscription_schedules", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SubscriptionSchedule> {
+        stripe::ListPaginator::from_params("/subscription_schedules", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

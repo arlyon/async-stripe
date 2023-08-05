@@ -145,8 +145,8 @@ impl serde::Serialize for PlanAggregateUsage {
 impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
@@ -211,8 +211,8 @@ impl serde::Serialize for PlanBillingScheme {
 impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
     }
 }
@@ -281,8 +281,8 @@ impl serde::Serialize for PlanInterval {
 impl<'de> serde::Deserialize<'de> for PlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
     }
 }
 /// Defines if the tiering price should be `graduated` or `volume` based.
@@ -345,8 +345,8 @@ impl serde::Serialize for PlanTiersMode {
 impl<'de> serde::Deserialize<'de> for PlanTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -411,8 +411,8 @@ impl serde::Serialize for PlanUsageType {
 impl<'de> serde::Deserialize<'de> for PlanUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
     }
 }
 impl stripe_types::Object for Plan {

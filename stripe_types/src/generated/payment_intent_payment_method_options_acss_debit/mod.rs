@@ -78,8 +78,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureU
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage",
             )
@@ -146,8 +146,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsAcssDebitVerification
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod",
             )

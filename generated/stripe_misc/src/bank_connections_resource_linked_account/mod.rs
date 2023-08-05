@@ -119,8 +119,8 @@ impl serde::Serialize for BankConnectionsResourceLinkedAccountCategory {
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountCategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for BankConnectionsResourceLinkedAccountCategory",
             )
@@ -190,8 +190,8 @@ impl serde::Serialize for BankConnectionsResourceLinkedAccountPermissions {
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for BankConnectionsResourceLinkedAccountPermissions",
             )
@@ -258,8 +258,8 @@ impl serde::Serialize for BankConnectionsResourceLinkedAccountStatus {
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkedAccountStatus")
         })
     }
@@ -346,8 +346,8 @@ impl serde::Serialize for BankConnectionsResourceLinkedAccountSubcategory {
 impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkedAccountSubcategory {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for BankConnectionsResourceLinkedAccountSubcategory",
             )
@@ -413,8 +413,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for BankConnectionsResourceLinkedAccountSupportedPaymentMethodTypes",
             )

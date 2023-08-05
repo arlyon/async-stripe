@@ -208,6 +208,7 @@ impl<'a> ListCreditNote<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCreditNote<'a> {}
 impl<'a> ListCreditNote<'a> {
     /// Returns a list of credit notes.
     pub fn send(
@@ -215,6 +216,9 @@ impl<'a> ListCreditNote<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::CreditNote>> {
         client.get_query("/credit_notes", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::CreditNote> {
+        stripe::ListPaginator::from_params("/credit_notes", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -364,6 +368,7 @@ impl<'a> PreviewLinesCreditNote<'a> {
         }
     }
 }
+impl<'a> stripe::PaginationParams for PreviewLinesCreditNote<'a> {}
 impl<'a> PreviewLinesCreditNote<'a> {
     /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
     ///
@@ -373,6 +378,9 @@ impl<'a> PreviewLinesCreditNote<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
         client.get_query("/credit_notes/preview/lines", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::CreditNoteLineItem> {
+        stripe::ListPaginator::from_params("/credit_notes/preview/lines", self)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

@@ -29,6 +29,7 @@ impl<'a> ListPaymentSource<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentSource<'a> {}
 impl<'a> ListPaymentSource<'a> {
     /// List sources for a specified customer.
     pub fn send(
@@ -37,6 +38,15 @@ impl<'a> ListPaymentSource<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentSource>> {
         client.get_query(&format!("/customers/{customer}/sources", customer = customer), self)
+    }
+    pub fn paginate(
+        self,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::ListPaginator<stripe_types::PaymentSource> {
+        stripe::ListPaginator::from_params(
+            &format!("/customers/{customer}/sources", customer = customer),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

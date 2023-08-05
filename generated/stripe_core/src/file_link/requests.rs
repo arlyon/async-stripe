@@ -137,6 +137,7 @@ impl<'a> ListFileLink<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListFileLink<'a> {}
 impl<'a> ListFileLink<'a> {
     /// Returns a list of file links.
     pub fn send(
@@ -144,5 +145,8 @@ impl<'a> ListFileLink<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::FileLink>> {
         client.get_query("/file_links", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::FileLink> {
+        stripe::ListPaginator::from_params("/file_links", self)
     }
 }

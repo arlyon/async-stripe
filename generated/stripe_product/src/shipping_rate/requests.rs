@@ -37,6 +37,7 @@ impl<'a> ListShippingRate<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListShippingRate<'a> {}
 impl<'a> ListShippingRate<'a> {
     /// Returns a list of your shipping rates.
     pub fn send(
@@ -44,6 +45,9 @@ impl<'a> ListShippingRate<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::ShippingRate>> {
         client.get_query("/shipping_rates", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::ShippingRate> {
+        stripe::ListPaginator::from_params("/shipping_rates", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

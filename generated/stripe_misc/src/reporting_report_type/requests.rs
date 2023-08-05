@@ -35,6 +35,7 @@ impl<'a> ListReportingReportType<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListReportingReportType<'a> {}
 impl<'a> ListReportingReportType<'a> {
     /// Returns a full list of Report Types.
     pub fn send(
@@ -42,5 +43,8 @@ impl<'a> ListReportingReportType<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::ReportingReportType>> {
         client.get_query("/reporting/report_types", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::ReportingReportType> {
+        stripe::ListPaginator::from_params("/reporting/report_types", self)
     }
 }

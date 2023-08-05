@@ -109,8 +109,8 @@ impl serde::Serialize for TreasuryReceivedDebitsResourceReceivedDebitFailureCode
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitsResourceReceivedDebitFailureCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitFailureCode"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitFailureCode"))
     }
 }
 /// The network used for the ReceivedDebit.
@@ -173,8 +173,8 @@ impl serde::Serialize for TreasuryReceivedDebitsResourceReceivedDebitNetwork {
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitsResourceReceivedDebitNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitNetwork"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitNetwork"))
     }
 }
 /// Status of the ReceivedDebit.
@@ -237,8 +237,8 @@ impl serde::Serialize for TreasuryReceivedDebitsResourceReceivedDebitStatus {
 impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitsResourceReceivedDebitStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitsResourceReceivedDebitStatus"))
     }
 }
 impl stripe_types::Object for TreasuryReceivedDebitsResourceReceivedDebit {

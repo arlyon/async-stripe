@@ -23,19 +23,11 @@ pub struct PrintableRequestSpec<'a> {
 }
 
 impl<'a> PrintableRequestSpec<'a> {
-    pub fn gen_code(&self, out: &mut String) {
-        let return_type = &self.returned;
-        let mut params = vec![("client", "&stripe::Client".to_string())];
-        for param in &self.path_params {
-            params.push((param.name, param.typ.to_string()));
-        }
-        let params_body =
-            params.into_iter().map(|p| format!("{}:{}", p.0, p.1)).collect::<Vec<_>>().join(",");
-
+    fn gen_path_arg(&self) -> String {
         let req_path = self.request_path;
 
         // Parameterized request path
-        let path_arg = if !self.path_params.is_empty() {
+        if !self.path_params.is_empty() {
             let fmt_args = self
                 .path_params
                 .iter()
@@ -46,7 +38,22 @@ impl<'a> PrintableRequestSpec<'a> {
         } else {
             // Plain request path
             format!(r#""{req_path}""#)
-        };
+        }
+    }
+
+    fn gen_method_path_params(&self) -> String {
+        self.path_params
+            .iter()
+            .map(|p| format!("{}:{}", p.name, p.typ))
+            .collect::<Vec<_>>()
+            .join(",")
+    }
+
+    pub fn gen_code(&self, out: &mut String) {
+        let return_type = &self.returned;
+        let path_arg = self.gen_path_arg();
+        let path_params = self.gen_method_path_params();
+
         let method_enum = match self.method_type {
             OperationType::Get => "Get",
             OperationType::Post => "Post",
@@ -67,8 +74,21 @@ impl<'a> PrintableRequestSpec<'a> {
         let _ = writedoc!(
             out,
             r#"
-        pub fn send(&self, {params_body}) -> stripe::Response<{return_type}> {{
+        pub fn send(&self, client: &stripe::Client, {path_params}) -> stripe::Response<{return_type}> {{
             {body}
+        }}
+        "#
+        );
+    }
+
+    pub fn gen_paginate(&self, inner_pagination_typ: PrintableType, out: &mut String) {
+        let path = self.gen_path_arg();
+        let path_params = self.gen_method_path_params();
+        let _ = writedoc!(
+            out,
+            r#"
+        pub fn paginate(self, {path_params}) -> stripe::ListPaginator<{inner_pagination_typ}> {{
+            stripe::ListPaginator::from_params({path}, self)
         }}
         "#
         );

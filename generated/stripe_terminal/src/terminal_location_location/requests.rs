@@ -203,6 +203,7 @@ impl<'a> ListTerminalLocationLocation<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalLocationLocation<'a> {}
 impl<'a> ListTerminalLocationLocation<'a> {
     /// Returns a list of `Location` objects.
     pub fn send(
@@ -210,6 +211,9 @@ impl<'a> ListTerminalLocationLocation<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalLocationLocation>> {
         client.get_query("/terminal/locations", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_terminal::TerminalLocationLocation> {
+        stripe::ListPaginator::from_params("/terminal/locations", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

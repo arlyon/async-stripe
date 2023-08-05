@@ -78,8 +78,8 @@ impl serde::Serialize for GelatoIdNumberReportIdNumberType {
 impl<'de> serde::Deserialize<'de> for GelatoIdNumberReportIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for GelatoIdNumberReportIdNumberType")
         })
     }
@@ -141,8 +141,8 @@ impl serde::Serialize for GelatoIdNumberReportStatus {
 impl<'de> serde::Deserialize<'de> for GelatoIdNumberReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for GelatoIdNumberReportStatus"))
     }
 }

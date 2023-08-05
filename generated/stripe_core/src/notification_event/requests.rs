@@ -45,6 +45,7 @@ impl<'a> ListNotificationEvent<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListNotificationEvent<'a> {}
 impl<'a> ListNotificationEvent<'a> {
     /// List events, going back up to 30 days.
     ///
@@ -54,6 +55,9 @@ impl<'a> ListNotificationEvent<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_core::NotificationEvent>> {
         client.get_query("/events", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_core::NotificationEvent> {
+        stripe::ListPaginator::from_params("/events", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

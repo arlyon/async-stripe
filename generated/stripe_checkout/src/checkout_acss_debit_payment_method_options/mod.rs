@@ -77,8 +77,8 @@ impl serde::Serialize for CheckoutAcssDebitPaymentMethodOptionsCurrency {
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitPaymentMethodOptionsCurrency {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CheckoutAcssDebitPaymentMethodOptionsCurrency",
             )
@@ -149,8 +149,8 @@ impl serde::Serialize for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage 
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage",
             )
@@ -217,8 +217,8 @@ impl serde::Serialize for CheckoutAcssDebitPaymentMethodOptionsVerificationMetho
 impl<'de> serde::Deserialize<'de> for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod",
             )

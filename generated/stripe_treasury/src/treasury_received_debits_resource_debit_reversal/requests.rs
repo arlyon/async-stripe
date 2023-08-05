@@ -191,9 +191,13 @@ impl serde::Serialize for ListTreasuryReceivedDebitsResourceDebitReversalStatus 
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryReceivedDebitsResourceDebitReversal<'a> {}
 impl<'a> ListTreasuryReceivedDebitsResourceDebitReversal<'a> {
     /// Returns a list of DebitReversals.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal>> {
         client.get_query("/treasury/debit_reversals", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversal> {
+        stripe::ListPaginator::from_params("/treasury/debit_reversals", self)
     }
 }

@@ -87,8 +87,8 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode"))
     }
 }
 /// Represents what the user should do, if anything, to activate the Feature.
@@ -151,8 +151,8 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution"))
     }
 }
 /// The `platform_restrictions` that are restricting this Feature.
@@ -212,7 +212,7 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction"))
     }
 }

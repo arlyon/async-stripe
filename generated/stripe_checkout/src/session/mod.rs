@@ -194,8 +194,8 @@ impl serde::Serialize for SessionBillingAddressCollection {
 impl<'de> serde::Deserialize<'de> for SessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SessionBillingAddressCollection")
         })
     }
@@ -257,8 +257,8 @@ impl serde::Serialize for SessionCustomerCreation {
 impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionCustomerCreation"))
     }
 }
@@ -438,8 +438,8 @@ impl serde::Serialize for SessionLocale {
 impl<'de> serde::Deserialize<'de> for SessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
     }
 }
 /// The mode of the Checkout Session.
@@ -502,8 +502,8 @@ impl serde::Serialize for SessionMode {
 impl<'de> serde::Deserialize<'de> for SessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionMode"))
     }
 }
 /// Configure whether a Checkout Session should collect a payment method.
@@ -563,8 +563,8 @@ impl serde::Serialize for SessionPaymentMethodCollection {
 impl<'de> serde::Deserialize<'de> for SessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SessionPaymentMethodCollection")
         })
     }
@@ -630,8 +630,8 @@ impl serde::Serialize for SessionPaymentStatus {
 impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
     }
 }
@@ -695,8 +695,8 @@ impl serde::Serialize for SessionStatus {
 impl<'de> serde::Deserialize<'de> for SessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for SessionStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionStatus"))
     }
 }
 /// Describes the type of transaction being performed by Checkout in order to customize
@@ -765,8 +765,8 @@ impl serde::Serialize for SessionSubmitType {
 impl<'de> serde::Deserialize<'de> for SessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
     }
 }

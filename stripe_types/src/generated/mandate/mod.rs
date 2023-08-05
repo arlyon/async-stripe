@@ -82,8 +82,8 @@ impl serde::Serialize for MandateStatus {
 impl<'de> serde::Deserialize<'de> for MandateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateStatus"))
     }
 }
 /// The type of the mandate.
@@ -143,8 +143,8 @@ impl serde::Serialize for MandateType {
 impl<'de> serde::Deserialize<'de> for MandateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for MandateType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateType"))
     }
 }
 impl stripe_types::Object for Mandate {

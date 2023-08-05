@@ -1292,6 +1292,7 @@ impl<'a> ListSetupIntent<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListSetupIntent<'a> {}
 impl<'a> ListSetupIntent<'a> {
     /// Returns a list of SetupIntents.
     pub fn send(
@@ -1299,6 +1300,9 @@ impl<'a> ListSetupIntent<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::SetupIntent>> {
         client.get_query("/setup_intents", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SetupIntent> {
+        stripe::ListPaginator::from_params("/setup_intents", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

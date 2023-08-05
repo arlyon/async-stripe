@@ -26,6 +26,7 @@ impl<'a> ListScheduledQueryRun<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListScheduledQueryRun<'a> {}
 impl<'a> ListScheduledQueryRun<'a> {
     /// Returns a list of scheduled query runs.
     pub fn send(
@@ -33,6 +34,9 @@ impl<'a> ListScheduledQueryRun<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
         client.get_query("/sigma/scheduled_query_runs", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::ScheduledQueryRun> {
+        stripe::ListPaginator::from_params("/sigma/scheduled_query_runs", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

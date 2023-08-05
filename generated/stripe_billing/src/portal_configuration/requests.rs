@@ -32,6 +32,7 @@ impl<'a> ListPortalConfiguration<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPortalConfiguration<'a> {}
 impl<'a> ListPortalConfiguration<'a> {
     /// Returns a list of configurations that describe the functionality of the customer portal.
     pub fn send(
@@ -39,6 +40,9 @@ impl<'a> ListPortalConfiguration<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_billing::PortalConfiguration>> {
         client.get_query("/billing_portal/configurations", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_billing::PortalConfiguration> {
+        stripe::ListPaginator::from_params("/billing_portal/configurations", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

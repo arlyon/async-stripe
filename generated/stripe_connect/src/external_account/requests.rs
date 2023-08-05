@@ -26,6 +26,7 @@ impl<'a> ListExternalAccount<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListExternalAccount<'a> {}
 impl<'a> ListExternalAccount<'a> {
     /// List external accounts for an account.
     pub fn send(
@@ -34,6 +35,15 @@ impl<'a> ListExternalAccount<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::ExternalAccount>> {
         client.get_query(&format!("/accounts/{account}/external_accounts", account = account), self)
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_types::ExternalAccount> {
+        stripe::ListPaginator::from_params(
+            &format!("/accounts/{account}/external_accounts", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

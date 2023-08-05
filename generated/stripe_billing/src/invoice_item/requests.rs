@@ -45,6 +45,7 @@ impl<'a> ListInvoiceItem<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoiceItem<'a> {}
 impl<'a> ListInvoiceItem<'a> {
     /// Returns a list of your invoice items.
     ///
@@ -54,6 +55,9 @@ impl<'a> ListInvoiceItem<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceItem>> {
         client.get_query("/invoiceitems", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::InvoiceItem> {
+        stripe::ListPaginator::from_params("/invoiceitems", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -112,6 +112,7 @@ impl serde::Serialize for ListGelatoVerificationReportType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListGelatoVerificationReport<'a> {}
 impl<'a> ListGelatoVerificationReport<'a> {
     /// List all verification reports.
     pub fn send(
@@ -119,5 +120,8 @@ impl<'a> ListGelatoVerificationReport<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationReport>> {
         client.get_query("/identity/verification_reports", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::GelatoVerificationReport> {
+        stripe::ListPaginator::from_params("/identity/verification_reports", self)
     }
 }

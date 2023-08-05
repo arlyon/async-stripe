@@ -170,6 +170,7 @@ impl serde::Serialize for ListGelatoVerificationSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListGelatoVerificationSession<'a> {}
 impl<'a> ListGelatoVerificationSession<'a> {
     /// Returns a list of VerificationSessions.
     pub fn send(
@@ -177,6 +178,9 @@ impl<'a> ListGelatoVerificationSession<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::GelatoVerificationSession>> {
         client.get_query("/identity/verification_sessions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::GelatoVerificationSession> {
+        stripe::ListPaginator::from_params("/identity/verification_sessions", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -97,6 +97,7 @@ impl serde::Serialize for ListIssuingTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingTransaction<'a> {}
 impl<'a> ListIssuingTransaction<'a> {
     /// Returns a list of Issuing `Transaction` objects.
     ///
@@ -106,6 +107,9 @@ impl<'a> ListIssuingTransaction<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::IssuingTransaction>> {
         client.get_query("/issuing/transactions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::IssuingTransaction> {
+        stripe::ListPaginator::from_params("/issuing/transactions", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

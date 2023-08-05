@@ -52,6 +52,7 @@ impl<'a> ListSessionCustomerDetails<'a> {
         Self { email }
     }
 }
+impl<'a> stripe::PaginationParams for ListSession<'a> {}
 impl<'a> ListSession<'a> {
     /// Returns a list of Checkout Sessions.
     pub fn send(
@@ -59,6 +60,9 @@ impl<'a> ListSession<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_checkout::Session>> {
         client.get_query("/checkout/sessions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_checkout::Session> {
+        stripe::ListPaginator::from_params("/checkout/sessions", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -6454,6 +6458,7 @@ impl<'a> ListLineItemsSession<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsSession<'a> {}
 impl<'a> ListLineItemsSession<'a> {
     /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
     ///
@@ -6465,6 +6470,15 @@ impl<'a> ListLineItemsSession<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
         client
             .get_query(&format!("/checkout/sessions/{session}/line_items", session = session), self)
+    }
+    pub fn paginate(
+        self,
+        session: &stripe_checkout::session::CheckoutSessionId,
+    ) -> stripe::ListPaginator<stripe_types::LineItem> {
+        stripe::ListPaginator::from_params(
+            &format!("/checkout/sessions/{session}/line_items", session = session),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

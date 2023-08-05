@@ -71,6 +71,7 @@ impl<'a> ListFeeRefund<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListFeeRefund<'a> {}
 impl<'a> ListFeeRefund<'a> {
     /// You can see a list of the refunds belonging to a specific application fee.
     ///
@@ -82,6 +83,15 @@ impl<'a> ListFeeRefund<'a> {
         id: &stripe_types::fee_refund::FeeRefundId,
     ) -> stripe::Response<stripe_types::List<stripe_types::FeeRefund>> {
         client.get_query(&format!("/application_fees/{id}/refunds", id = id), self)
+    }
+    pub fn paginate(
+        self,
+        id: &stripe_types::fee_refund::FeeRefundId,
+    ) -> stripe::ListPaginator<stripe_types::FeeRefund> {
+        stripe::ListPaginator::from_params(
+            &format!("/application_fees/{id}/refunds", id = id),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

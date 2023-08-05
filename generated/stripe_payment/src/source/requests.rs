@@ -663,6 +663,7 @@ impl<'a> SourceTransactionsSource<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for SourceTransactionsSource<'a> {}
 impl<'a> SourceTransactionsSource<'a> {
     /// List source transactions for a given source.
     pub fn send(
@@ -671,6 +672,15 @@ impl<'a> SourceTransactionsSource<'a> {
         source: &stripe_types::source::SourceId,
     ) -> stripe::Response<stripe_types::List<stripe_types::SourceTransaction>> {
         client.get_query(&format!("/sources/{source}/source_transactions", source = source), self)
+    }
+    pub fn paginate(
+        self,
+        source: &stripe_types::source::SourceId,
+    ) -> stripe::ListPaginator<stripe_types::SourceTransaction> {
+        stripe::ListPaginator::from_params(
+            &format!("/sources/{source}/source_transactions", source = source),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -1682,6 +1682,7 @@ impl serde::Serialize for ListPaymentMethodType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentMethod<'a> {}
 impl<'a> ListPaymentMethod<'a> {
     /// Returns a list of PaymentMethods for Treasury flows.
     ///
@@ -1691,6 +1692,9 @@ impl<'a> ListPaymentMethod<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
         client.get_query("/payment_methods", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::PaymentMethod> {
+        stripe::ListPaginator::from_params("/payment_methods", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

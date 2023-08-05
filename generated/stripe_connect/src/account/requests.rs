@@ -447,6 +447,7 @@ impl<'a> ListAccount<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListAccount<'a> {}
 impl<'a> ListAccount<'a> {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
@@ -456,6 +457,9 @@ impl<'a> ListAccount<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Account>> {
         client.get_query("/accounts", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Account> {
+        stripe::ListPaginator::from_params("/accounts", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1014,6 +1018,7 @@ impl PersonsAccountRelationship {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for PersonsAccount<'a> {}
 impl<'a> PersonsAccount<'a> {
     /// Returns a list of people associated with the account’s legal entity.
     ///
@@ -1024,6 +1029,15 @@ impl<'a> PersonsAccount<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
         client.get_query(&format!("/accounts/{account}/persons", account = account), self)
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_types::Person> {
+        stripe::ListPaginator::from_params(
+            &format!("/accounts/{account}/persons", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1037,6 +1051,7 @@ impl<'a> CapabilitiesAccount<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for CapabilitiesAccount<'a> {}
 impl<'a> CapabilitiesAccount<'a> {
     /// Returns a list of capabilities associated with the account.
     ///
@@ -1047,6 +1062,15 @@ impl<'a> CapabilitiesAccount<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
         client.get_query(&format!("/accounts/{account}/capabilities", account = account), self)
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_types::AccountCapability> {
+        stripe::ListPaginator::from_params(
+            &format!("/accounts/{account}/capabilities", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

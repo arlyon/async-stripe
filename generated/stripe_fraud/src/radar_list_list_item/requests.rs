@@ -41,6 +41,7 @@ impl<'a> ListRadarListListItem<'a> {
         }
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarListListItem<'a> {}
 impl<'a> ListRadarListListItem<'a> {
     /// Returns a list of `ValueListItem` objects.
     ///
@@ -50,6 +51,9 @@ impl<'a> ListRadarListListItem<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarListListItem>> {
         client.get_query("/radar/value_list_items", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_fraud::RadarListListItem> {
+        stripe::ListPaginator::from_params("/radar/value_list_items", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

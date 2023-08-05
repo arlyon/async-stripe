@@ -7,7 +7,7 @@ use crate::dedup::deduplicate_types;
 use crate::ids::write_object_id;
 use crate::printable::{Lifetime, PrintableEnumVariant, PrintableStructField};
 use crate::rust_object::{ObjectMetadata, RustObject};
-use crate::rust_type::RustType;
+use crate::rust_type::{Container, RustType};
 use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::derives::Derives;
 use crate::templates::enums::{write_enum_variants, write_fieldless_enum_variants};
@@ -192,7 +192,7 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
     for req in &specs {
         components.write_rust_type_objs(&req.params, params_gen_info, &mut out);
 
-        let printable = PrintableRequestSpec {
+        let printable_req = PrintableRequestSpec {
             path_params: req
                 .path_params
                 .iter()
@@ -208,9 +208,18 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
             method_type: req.method_type,
         };
         let mut req_out = String::with_capacity(128);
-        printable.gen_code(&mut req_out);
+        printable_req.gen_code(&mut req_out);
         let lifetime_str = if req.params.has_reference() { "<'a>" } else { "" };
-        let impl_for = &printable.param_type;
+        let impl_for = &printable_req.param_type;
+
+        if let Some(inner_list_typ) = as_list_inner_typ(&req.returned) {
+            let _ = writeln!(
+                out,
+                r"impl{lifetime_str} stripe::PaginationParams for {impl_for}{lifetime_str} {{}}"
+            );
+            printable_req
+                .gen_paginate(components.construct_printable_type(inner_list_typ), &mut req_out);
+        }
         let _ = writedoc!(
             out,
             r#"
@@ -231,4 +240,11 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
         components.write_rust_type_objs(&typ, params_gen_info, &mut out);
     }
     out
+}
+
+fn as_list_inner_typ(typ: &RustType) -> Option<&RustType> {
+    match typ {
+        RustType::Container(Container::List(typ)) => Some(typ),
+        _ => None,
+    }
 }

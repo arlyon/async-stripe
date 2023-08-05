@@ -82,6 +82,7 @@ impl<'a> ListTerminalConfigurationConfiguration<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalConfigurationConfiguration<'a> {}
 impl<'a> ListTerminalConfigurationConfiguration<'a> {
     /// Returns a list of `Configuration` objects.
     pub fn send(
@@ -90,6 +91,11 @@ impl<'a> ListTerminalConfigurationConfiguration<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfigurationConfiguration>>
     {
         client.get_query("/terminal/configurations", self)
+    }
+    pub fn paginate(
+        self,
+    ) -> stripe::ListPaginator<stripe_terminal::TerminalConfigurationConfiguration> {
+        stripe::ListPaginator::from_params("/terminal/configurations", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -26,6 +26,7 @@ impl<'a> ListNotificationWebhookEndpoint<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListNotificationWebhookEndpoint<'a> {}
 impl<'a> ListNotificationWebhookEndpoint<'a> {
     /// Returns a list of your webhook endpoints.
     pub fn send(
@@ -33,6 +34,9 @@ impl<'a> ListNotificationWebhookEndpoint<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::NotificationWebhookEndpoint>> {
         client.get_query("/webhook_endpoints", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::NotificationWebhookEndpoint> {
+        stripe::ListPaginator::from_params("/webhook_endpoints", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

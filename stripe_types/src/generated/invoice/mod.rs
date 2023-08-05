@@ -381,8 +381,8 @@ impl serde::Serialize for InvoiceBillingReason {
 impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
     }
 }
@@ -446,8 +446,8 @@ impl serde::Serialize for InvoiceCollectionMethod {
 impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
     }
 }
@@ -514,8 +514,8 @@ impl serde::Serialize for InvoiceCustomerTaxExempt {
 impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
     }
 }
@@ -587,8 +587,8 @@ impl serde::Serialize for InvoiceStatus {
 impl<'de> serde::Deserialize<'de> for InvoiceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
     }
 }
 impl stripe_types::Object for Invoice {

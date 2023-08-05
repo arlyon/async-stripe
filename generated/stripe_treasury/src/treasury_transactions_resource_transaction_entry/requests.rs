@@ -123,9 +123,13 @@ impl serde::Serialize for ListTreasuryTransactionsResourceTransactionEntryOrderB
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryTransactionsResourceTransactionEntry<'a> {}
 impl<'a> ListTreasuryTransactionsResourceTransactionEntry<'a> {
     /// Retrieves a list of TransactionEntry objects.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransactionEntry>> {
         client.get_query("/treasury/transaction_entries", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryTransactionsResourceTransactionEntry> {
+        stripe::ListPaginator::from_params("/treasury/transaction_entries", self)
     }
 }

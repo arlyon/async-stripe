@@ -73,8 +73,8 @@ impl serde::Serialize for TreasurySharedResourceInitiatingPaymentMethodDetailsIn
 impl<'de> serde::Deserialize<'de> for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance"))
     }
 }
 /// Polymorphic type matching the originating money movement's source.
@@ -145,7 +145,7 @@ impl serde::Serialize for TreasurySharedResourceInitiatingPaymentMethodDetailsIn
 impl<'de> serde::Deserialize<'de> for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType"))
     }
 }

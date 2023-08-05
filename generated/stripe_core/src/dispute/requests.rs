@@ -34,6 +34,7 @@ impl<'a> ListDispute<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListDispute<'a> {}
 impl<'a> ListDispute<'a> {
     /// Returns a list of your disputes.
     pub fn send(
@@ -41,6 +42,9 @@ impl<'a> ListDispute<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Dispute>> {
         client.get_query("/disputes", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Dispute> {
+        stripe::ListPaginator::from_params("/disputes", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

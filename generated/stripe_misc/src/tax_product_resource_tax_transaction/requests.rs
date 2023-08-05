@@ -248,6 +248,7 @@ impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxTransaction<'a> {}
 impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
     /// Retrieves the line items of a committed standalone transaction as a collection.
     pub fn send(
@@ -257,6 +258,15 @@ impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_misc::TaxProductResourceTaxTransactionLineItem>>
     {
         client.get_query(
+            &format!("/tax/transactions/{transaction}/line_items", transaction = transaction),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        transaction: &stripe_misc::tax_product_resource_tax_transaction::TaxTransactionId,
+    ) -> stripe::ListPaginator<stripe_misc::TaxProductResourceTaxTransactionLineItem> {
+        stripe::ListPaginator::from_params(
             &format!("/tax/transactions/{transaction}/line_items", transaction = transaction),
             self,
         )

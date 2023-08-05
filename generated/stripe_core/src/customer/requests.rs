@@ -110,8 +110,8 @@ impl serde::Serialize for SearchReturnedObject {
 impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
@@ -155,6 +155,7 @@ impl<'a> ListCustomer<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCustomer<'a> {}
 impl<'a> ListCustomer<'a> {
     /// Returns a list of your customers.
     ///
@@ -164,6 +165,9 @@ impl<'a> ListCustomer<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Customer>> {
         client.get_query("/customers", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Customer> {
+        stripe::ListPaginator::from_params("/customers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -874,6 +878,7 @@ impl serde::Serialize for ListPaymentMethodsCustomerType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentMethodsCustomer<'a> {}
 impl<'a> ListPaymentMethodsCustomer<'a> {
     /// Returns a list of PaymentMethods for a given Customer.
     pub fn send(
@@ -883,6 +888,15 @@ impl<'a> ListPaymentMethodsCustomer<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
         client
             .get_query(&format!("/customers/{customer}/payment_methods", customer = customer), self)
+    }
+    pub fn paginate(
+        self,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::ListPaginator<stripe_types::PaymentMethod> {
+        stripe::ListPaginator::from_params(
+            &format!("/customers/{customer}/payment_methods", customer = customer),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -942,6 +956,7 @@ impl<'a> BalanceTransactionsCustomer<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for BalanceTransactionsCustomer<'a> {}
 impl<'a> BalanceTransactionsCustomer<'a> {
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn send(
@@ -950,6 +965,15 @@ impl<'a> BalanceTransactionsCustomer<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
         client.get_query(
+            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::ListPaginator<stripe_types::CustomerBalanceTransaction> {
+        stripe::ListPaginator::from_params(
             &format!("/customers/{customer}/balance_transactions", customer = customer),
             self,
         )

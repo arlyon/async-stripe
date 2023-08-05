@@ -37,6 +37,7 @@ impl<'a> ListPlan<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPlan<'a> {}
 impl<'a> ListPlan<'a> {
     /// Returns a list of your plans.
     pub fn send(
@@ -44,6 +45,9 @@ impl<'a> ListPlan<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Plan>> {
         client.get_query("/plans", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Plan> {
+        stripe::ListPaginator::from_params("/plans", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

@@ -82,6 +82,7 @@ impl<'a> ListTransferReversal<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTransferReversal<'a> {}
 impl<'a> ListTransferReversal<'a> {
     /// You can see a list of the reversals belonging to a specific transfer.
     ///
@@ -93,6 +94,12 @@ impl<'a> ListTransferReversal<'a> {
         id: &stripe_types::transfer_reversal::TransferReversalId,
     ) -> stripe::Response<stripe_types::List<stripe_types::TransferReversal>> {
         client.get_query(&format!("/transfers/{id}/reversals", id = id), self)
+    }
+    pub fn paginate(
+        self,
+        id: &stripe_types::transfer_reversal::TransferReversalId,
+    ) -> stripe::ListPaginator<stripe_types::TransferReversal> {
+        stripe::ListPaginator::from_params(&format!("/transfers/{id}/reversals", id = id), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

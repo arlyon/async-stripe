@@ -161,6 +161,7 @@ impl<'a> ListTransfer<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTransfer<'a> {}
 impl<'a> ListTransfer<'a> {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
@@ -170,6 +171,9 @@ impl<'a> ListTransfer<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Transfer>> {
         client.get_query("/transfers", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Transfer> {
+        stripe::ListPaginator::from_params("/transfers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

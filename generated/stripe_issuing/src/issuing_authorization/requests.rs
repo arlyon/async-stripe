@@ -99,6 +99,7 @@ impl serde::Serialize for ListIssuingAuthorizationStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingAuthorization<'a> {}
 impl<'a> ListIssuingAuthorization<'a> {
     /// Returns a list of Issuing `Authorization` objects.
     ///
@@ -108,6 +109,9 @@ impl<'a> ListIssuingAuthorization<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::IssuingAuthorization>> {
         client.get_query("/issuing/authorizations", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::IssuingAuthorization> {
+        stripe::ListPaginator::from_params("/issuing/authorizations", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -119,6 +119,7 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
         }
     }
 }
+impl<'a> stripe::PaginationParams for ListSecretServiceResourceSecret<'a> {}
 impl<'a> ListSecretServiceResourceSecret<'a> {
     /// List all secrets stored on the given scope.
     pub fn send(
@@ -126,6 +127,9 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_connect::SecretServiceResourceSecret>> {
         client.get_query("/apps/secrets", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_connect::SecretServiceResourceSecret> {
+        stripe::ListPaginator::from_params("/apps/secrets", self)
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

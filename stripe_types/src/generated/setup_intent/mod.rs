@@ -162,8 +162,8 @@ impl serde::Serialize for SetupIntentCancellationReason {
 impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
         })
     }
@@ -230,8 +230,8 @@ impl serde::Serialize for SetupIntentFlowDirections {
 impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentFlowDirections"))
     }
 }
@@ -304,8 +304,8 @@ impl serde::Serialize for SetupIntentStatus {
 impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentStatus"))
     }
 }

@@ -65,8 +65,8 @@ impl serde::Serialize for PaymentMethodOptionsCashappCaptureMethod {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCashappCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodOptionsCashappCaptureMethod")
         })
     }
@@ -135,8 +135,8 @@ impl serde::Serialize for PaymentMethodOptionsCashappSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCashappSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsCashappSetupFutureUsage",
             )

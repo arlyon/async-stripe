@@ -1041,8 +1041,8 @@ impl serde::Serialize for IssuingCardholderSpendingLimitCategories {
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for IssuingCardholderSpendingLimitCategories")
         })
     }
@@ -1116,8 +1116,8 @@ impl serde::Serialize for IssuingCardholderSpendingLimitInterval {
 impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for IssuingCardholderSpendingLimitInterval")
         })
     }

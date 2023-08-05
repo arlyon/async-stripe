@@ -26,6 +26,7 @@ impl<'a> ListExchangeRate<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListExchangeRate<'a> {}
 impl<'a> ListExchangeRate<'a> {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
@@ -35,6 +36,9 @@ impl<'a> ListExchangeRate<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_misc::ExchangeRate>> {
         client.get_query("/exchange_rates", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_misc::ExchangeRate> {
+        stripe::ListPaginator::from_params("/exchange_rates", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

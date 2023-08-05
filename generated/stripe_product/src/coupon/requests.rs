@@ -31,6 +31,7 @@ impl<'a> ListCoupon<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCoupon<'a> {}
 impl<'a> ListCoupon<'a> {
     /// Returns a list of your coupons.
     pub fn send(
@@ -38,6 +39,9 @@ impl<'a> ListCoupon<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Coupon>> {
         client.get_query("/coupons", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Coupon> {
+        stripe::ListPaginator::from_params("/coupons", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -109,49 +109,9 @@ rocket = { version = "0.4", optional = true }
 time-core = "<=0.1.0"
 
 [dev-dependencies]
+httpmock = "0.6.7"
 async-std = { version = "1.10.0", features = ["attributes"] }
-httpmock = "0.6.6"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
 axum = { version = "0.6.18", features = ["macros"] }
 async-trait = "0.1"
 actix-web = "4.2.1"
-
-[[example]]
-name = "checkout"
-required-features = ["async"]
-
-[[example]]
-name = "connect"
-required-features = ["async"]
-
-[[example]]
-name = "customer"
-required-features = ["async"]
-
-[[example]]
-name = "payment-intent"
-required-features = ["async"]
-
-[[example]]
-name = "payment-link"
-required-features = ["async"]
-
-[[example]]
-name = "strategy"
-required-features = ["async"]
-
-[[example]]
-name = "subscriptions"
-required-features = ["async"]
-
-[[example]]
-name = "webhook-axum"
-required-features = ["async"]
-
-[[example]]
-name = "webhook-actix"
-required-features = ["async"]
-
-[[example]]
-name = "webhook-rocket"
-required-features = ["rocket"]

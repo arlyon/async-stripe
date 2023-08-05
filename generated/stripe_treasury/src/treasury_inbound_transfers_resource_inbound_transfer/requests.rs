@@ -169,10 +169,14 @@ impl serde::Serialize for ListTreasuryInboundTransfersResourceInboundTransferSta
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryInboundTransfersResourceInboundTransfer<'a> {}
 impl<'a> ListTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer>> {
         client.get_query("/treasury/inbound_transfers", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        stripe::ListPaginator::from_params("/treasury/inbound_transfers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -110,8 +110,8 @@ impl serde::Serialize for SearchReturnedObject {
 impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
@@ -4369,6 +4369,7 @@ impl<'a> ListPaymentIntent<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentIntent<'a> {}
 impl<'a> ListPaymentIntent<'a> {
     /// Returns a list of PaymentIntents.
     pub fn send(
@@ -4376,6 +4377,9 @@ impl<'a> ListPaymentIntent<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentIntent>> {
         client.get_query("/payment_intents", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::PaymentIntent> {
+        stripe::ListPaginator::from_params("/payment_intents", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

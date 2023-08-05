@@ -59,6 +59,7 @@ impl<'a> ListPayout<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPayout<'a> {}
 impl<'a> ListPayout<'a> {
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///
@@ -68,6 +69,9 @@ impl<'a> ListPayout<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Payout>> {
         client.get_query("/payouts", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Payout> {
+        stripe::ListPaginator::from_params("/payouts", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

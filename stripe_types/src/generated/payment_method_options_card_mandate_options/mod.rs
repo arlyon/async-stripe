@@ -95,8 +95,8 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsAmountType {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsCardMandateOptionsAmountType",
             )
@@ -171,8 +171,8 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsInterval {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsCardMandateOptionsInterval",
             )
@@ -235,8 +235,8 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsCardMandateOptionsSupportedTypes",
             )

@@ -49,6 +49,7 @@ impl<'a> ListBalanceTransaction<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListBalanceTransaction<'a> {}
 impl<'a> ListBalanceTransaction<'a> {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
@@ -58,6 +59,9 @@ impl<'a> ListBalanceTransaction<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::BalanceTransaction>> {
         client.get_query("/balance_transactions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::BalanceTransaction> {
+        stripe::ListPaginator::from_params("/balance_transactions", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

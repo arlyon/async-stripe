@@ -82,8 +82,8 @@ impl serde::Serialize for PaymentMethodOptionsSofortPreferredLanguage {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsSofortPreferredLanguage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsSofortPreferredLanguage",
             )
@@ -151,8 +151,8 @@ impl serde::Serialize for PaymentMethodOptionsSofortSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsSofortSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodOptionsSofortSetupFutureUsage")
         })
     }

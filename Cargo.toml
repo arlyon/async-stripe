@@ -4,12 +4,10 @@ members = [
   "openapi",
     "generated/*",
   "stripe_types",
+  "tests",
+  "examples/*"
 #  "bench/binary_size"
 ]
-
-# excluding from workspace for now so that all these smoke tests
-# can avoid dealing with features
-exclude = ["tests"]
 
 [workspace.package]
 version = "0.22.2"

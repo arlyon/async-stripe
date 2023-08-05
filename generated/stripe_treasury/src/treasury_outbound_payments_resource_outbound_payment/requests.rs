@@ -567,10 +567,14 @@ impl serde::Serialize for ListTreasuryOutboundPaymentsResourceOutboundPaymentSta
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {}
 impl<'a> ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment>> {
         client.get_query("/treasury/outbound_payments", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment> {
+        stripe::ListPaginator::from_params("/treasury/outbound_payments", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -114,8 +114,8 @@ impl serde::Serialize for TreasuryTransactionsResourceTransactionFlowType {
 impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionFlowType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionFlowType"))
     }
 }
 /// Status of the Transaction.
@@ -178,8 +178,8 @@ impl serde::Serialize for TreasuryTransactionsResourceTransactionStatus {
 impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionStatus"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionStatus"))
     }
 }
 impl stripe_types::Object for TreasuryTransactionsResourceTransaction {

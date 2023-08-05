@@ -68,8 +68,8 @@ impl serde::Serialize for PaymentMethodFpxAccountHolderType {
 impl<'de> serde::Deserialize<'de> for PaymentMethodFpxAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodFpxAccountHolderType")
         })
     }
@@ -193,8 +193,8 @@ impl serde::Serialize for PaymentMethodFpxBank {
 impl<'de> serde::Deserialize<'de> for PaymentMethodFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodFpxBank"))
     }
 }

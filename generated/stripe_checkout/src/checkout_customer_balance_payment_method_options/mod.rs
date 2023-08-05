@@ -71,8 +71,8 @@ impl serde::Serialize for CheckoutCustomerBalancePaymentMethodOptionsFundingType
 impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CheckoutCustomerBalancePaymentMethodOptionsFundingType",
             )
@@ -137,8 +137,8 @@ impl serde::Serialize for CheckoutCustomerBalancePaymentMethodOptionsSetupFuture
 impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage",
             )

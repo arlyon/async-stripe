@@ -128,6 +128,7 @@ impl serde::Serialize for ListFilePurpose {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListFile<'a> {}
 impl<'a> ListFile<'a> {
     /// Returns a list of the files that your account has access to.
     ///
@@ -137,6 +138,9 @@ impl<'a> ListFile<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::File>> {
         client.get_query("/files", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::File> {
+        stripe::ListPaginator::from_params("/files", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

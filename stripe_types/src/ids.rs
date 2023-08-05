@@ -72,8 +72,6 @@ macro_rules! def_id {
             }
         }
 
-        impl $crate::AsCursor for $struct_name {}
-
         impl std::ops::Deref for $struct_name {
             type Target = str;
 
@@ -160,8 +158,6 @@ macro_rules! def_id {
                 self.as_str()
             }
         }
-
-        impl $crate::AsCursor for $struct_name {}
 
         impl std::ops::Deref for $struct_name {
             type Target = str;

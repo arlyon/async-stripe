@@ -76,8 +76,8 @@ impl serde::Serialize for InboundTransfersPaymentMethodDetailsUsBankAccountAccou
 impl<'de> serde::Deserialize<'de> for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType"))
     }
 }
 /// Account type: checkings or savings.
@@ -139,8 +139,8 @@ impl serde::Serialize for InboundTransfersPaymentMethodDetailsUsBankAccountAccou
 impl<'de> serde::Deserialize<'de> for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType"))
     }
 }
 /// The US bank account network used to debit funds.
@@ -197,7 +197,7 @@ impl serde::Serialize for InboundTransfersPaymentMethodDetailsUsBankAccountNetwo
 impl<'de> serde::Deserialize<'de> for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork"))
     }
 }

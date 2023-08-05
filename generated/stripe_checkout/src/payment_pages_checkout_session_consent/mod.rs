@@ -64,8 +64,8 @@ impl serde::Serialize for PaymentPagesCheckoutSessionConsentPromotions {
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentPromotions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentPagesCheckoutSessionConsentPromotions",
             )
@@ -126,8 +126,8 @@ impl serde::Serialize for PaymentPagesCheckoutSessionConsentTermsOfService {
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentTermsOfService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentPagesCheckoutSessionConsentTermsOfService",
             )

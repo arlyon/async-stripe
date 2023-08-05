@@ -197,9 +197,13 @@ impl ListTreasuryTransactionsResourceTransactionStatusTransitions {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryTransactionsResourceTransaction<'a> {}
 impl<'a> ListTreasuryTransactionsResourceTransaction<'a> {
     /// Retrieves a list of Transaction objects.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransactionsResourceTransaction>> {
         client.get_query("/treasury/transactions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryTransactionsResourceTransaction> {
+        stripe::ListPaginator::from_params("/treasury/transactions", self)
     }
 }

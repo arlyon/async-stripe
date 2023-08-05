@@ -85,10 +85,14 @@ impl serde::Serialize for ListTreasuryReceivedDebitsResourceReceivedDebitStatus 
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {}
 impl<'a> ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {
     /// Returns a list of ReceivedDebits.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebitsResourceReceivedDebit>> {
         client.get_query("/treasury/received_debits", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryReceivedDebitsResourceReceivedDebit> {
+        stripe::ListPaginator::from_params("/treasury/received_debits", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -207,8 +207,8 @@ impl serde::Serialize for PaymentIntentCancellationReason {
 impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentCancellationReason")
         })
     }
@@ -273,8 +273,8 @@ impl serde::Serialize for PaymentIntentCaptureMethod {
 impl<'de> serde::Deserialize<'de> for PaymentIntentCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentCaptureMethod"))
     }
 }
@@ -334,8 +334,8 @@ impl serde::Serialize for PaymentIntentConfirmationMethod {
 impl<'de> serde::Deserialize<'de> for PaymentIntentConfirmationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentConfirmationMethod")
         })
     }
@@ -401,8 +401,8 @@ impl serde::Serialize for PaymentIntentSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentIntentSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentIntentSetupFutureUsage")
         })
     }
@@ -481,8 +481,8 @@ impl serde::Serialize for PaymentIntentStatus {
 impl<'de> serde::Deserialize<'de> for PaymentIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentStatus"))
     }
 }

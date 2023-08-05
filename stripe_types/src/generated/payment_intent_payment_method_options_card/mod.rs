@@ -97,8 +97,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardCaptureMethod {
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsCardCaptureMethod",
             )
@@ -192,8 +192,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardNetwork {
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsCardNetwork",
             )
@@ -265,8 +265,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecu
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
             )
@@ -337,8 +337,8 @@ impl serde::Serialize for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage 
 impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
             )

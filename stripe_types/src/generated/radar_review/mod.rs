@@ -110,8 +110,8 @@ impl serde::Serialize for RadarReviewClosedReason {
 impl<'de> serde::Deserialize<'de> for RadarReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RadarReviewClosedReason"))
     }
 }
@@ -174,8 +174,8 @@ impl serde::Serialize for RadarReviewOpenedReason {
 impl<'de> serde::Deserialize<'de> for RadarReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RadarReviewOpenedReason"))
     }
 }

@@ -9,6 +9,7 @@ impl<'a> ListAccountCapability<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListAccountCapability<'a> {}
 impl<'a> ListAccountCapability<'a> {
     /// Returns a list of capabilities associated with the account.
     ///
@@ -19,6 +20,15 @@ impl<'a> ListAccountCapability<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
         client.get_query(&format!("/accounts/{account}/capabilities", account = account), self)
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_types::AccountCapability> {
+        stripe::ListPaginator::from_params(
+            &format!("/accounts/{account}/capabilities", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

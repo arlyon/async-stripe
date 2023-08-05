@@ -67,8 +67,8 @@ impl serde::Serialize for PaymentMethodOptionsKlarnaCaptureMethod {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKlarnaCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodOptionsKlarnaCaptureMethod")
         })
     }
@@ -131,8 +131,8 @@ impl serde::Serialize for PaymentMethodOptionsKlarnaSetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKlarnaSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodOptionsKlarnaSetupFutureUsage")
         })
     }

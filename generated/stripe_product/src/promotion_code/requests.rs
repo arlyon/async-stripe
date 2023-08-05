@@ -215,6 +215,7 @@ impl<'a> ListPromotionCode<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPromotionCode<'a> {}
 impl<'a> ListPromotionCode<'a> {
     /// Returns a list of your promotion codes.
     pub fn send(
@@ -222,6 +223,9 @@ impl<'a> ListPromotionCode<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::PromotionCode>> {
         client.get_query("/promotion_codes", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::PromotionCode> {
+        stripe::ListPaginator::from_params("/promotion_codes", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

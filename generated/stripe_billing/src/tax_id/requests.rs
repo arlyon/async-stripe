@@ -327,6 +327,7 @@ impl<'a> ListTaxId<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTaxId<'a> {}
 impl<'a> ListTaxId<'a> {
     /// Returns a list of tax IDs for a customer.
     pub fn send(
@@ -335,6 +336,15 @@ impl<'a> ListTaxId<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::TaxId>> {
         client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), self)
+    }
+    pub fn paginate(
+        self,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::ListPaginator<stripe_types::TaxId> {
+        stripe::ListPaginator::from_params(
+            &format!("/customers/{customer}/tax_ids", customer = customer),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

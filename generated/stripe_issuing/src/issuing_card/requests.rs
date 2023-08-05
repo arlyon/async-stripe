@@ -52,6 +52,7 @@ impl<'a> ListIssuingCard<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingCard<'a> {}
 impl<'a> ListIssuingCard<'a> {
     /// Returns a list of Issuing `Card` objects.
     ///
@@ -61,6 +62,9 @@ impl<'a> ListIssuingCard<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::IssuingCard>> {
         client.get_query("/issuing/cards", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::IssuingCard> {
+        stripe::ListPaginator::from_params("/issuing/cards", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

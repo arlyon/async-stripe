@@ -26,6 +26,7 @@ impl<'a> ListCreditNoteLineItem<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCreditNoteLineItem<'a> {}
 impl<'a> ListCreditNoteLineItem<'a> {
     /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
     ///
@@ -36,6 +37,15 @@ impl<'a> ListCreditNoteLineItem<'a> {
         credit_note: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
         client.get_query(
+            &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        credit_note: &stripe_types::credit_note::CreditNoteId,
+    ) -> stripe::ListPaginator<stripe_types::CreditNoteLineItem> {
+        stripe::ListPaginator::from_params(
             &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
             self,
         )

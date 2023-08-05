@@ -268,6 +268,7 @@ impl serde::Serialize for ListTerminalReaderReaderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalReaderReader<'a> {}
 impl<'a> ListTerminalReaderReader<'a> {
     /// Returns a list of `Reader` objects.
     pub fn send(
@@ -275,6 +276,9 @@ impl<'a> ListTerminalReaderReader<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalReaderReader>> {
         client.get_query("/terminal/readers", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_terminal::TerminalReaderReader> {
+        stripe::ListPaginator::from_params("/terminal/readers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

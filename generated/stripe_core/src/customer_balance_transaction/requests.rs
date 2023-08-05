@@ -55,6 +55,7 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCustomerBalanceTransaction<'a> {}
 impl<'a> ListCustomerBalanceTransaction<'a> {
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn send(
@@ -63,6 +64,15 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
         client.get_query(
+            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        customer: &stripe_types::customer::CustomerId,
+    ) -> stripe::ListPaginator<stripe_types::CustomerBalanceTransaction> {
+        stripe::ListPaginator::from_params(
             &format!("/customers/{customer}/balance_transactions", customer = customer),
             self,
         )

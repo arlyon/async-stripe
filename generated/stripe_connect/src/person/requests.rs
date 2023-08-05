@@ -50,6 +50,7 @@ impl ListPersonRelationship {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPerson<'a> {}
 impl<'a> ListPerson<'a> {
     /// Returns a list of people associated with the account’s legal entity.
     ///
@@ -60,6 +61,15 @@ impl<'a> ListPerson<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
         client.get_query(&format!("/accounts/{account}/persons", account = account), self)
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_types::Person> {
+        stripe::ListPaginator::from_params(
+            &format!("/accounts/{account}/persons", account = account),
+            self,
+        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -63,8 +63,8 @@ impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsI
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"))
     }
 }
 /// Restricts all outbound money movement.
@@ -124,7 +124,7 @@ impl serde::Serialize for TreasuryFinancialAccountsResourcePlatformRestrictionsO
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"))
     }
 }

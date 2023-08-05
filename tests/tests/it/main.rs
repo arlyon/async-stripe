@@ -1,9 +1,10 @@
-mod account;
-mod charge;
-mod checkout;
-mod customer;
-mod invoice;
+// Needed for `json!` usage in tests
+#![recursion_limit = "256"]
 mod mock;
-mod plan_interval;
-mod subscription;
-mod subscription_item;
+
+mod deser;
+
+#[cfg(feature = "async")]
+mod async_tests;
+#[cfg(feature = "blocking")]
+mod blocking;

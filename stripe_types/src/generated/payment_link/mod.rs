@@ -131,8 +131,8 @@ impl serde::Serialize for PaymentLinkBillingAddressCollection {
 impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection")
         })
     }
@@ -194,8 +194,8 @@ impl serde::Serialize for PaymentLinkCustomerCreation {
 impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
     }
 }
@@ -256,8 +256,8 @@ impl serde::Serialize for PaymentLinkPaymentMethodCollection {
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection")
         })
     }
@@ -399,8 +399,8 @@ impl serde::Serialize for PaymentLinkPaymentMethodTypes {
 impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes")
         })
     }
@@ -468,8 +468,8 @@ impl serde::Serialize for PaymentLinkSubmitType {
 impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
     }
 }

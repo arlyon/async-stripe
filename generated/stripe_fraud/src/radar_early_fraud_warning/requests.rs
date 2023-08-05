@@ -32,6 +32,7 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarEarlyFraudWarning<'a> {}
 impl<'a> ListRadarEarlyFraudWarning<'a> {
     /// Returns a list of early fraud warnings.
     pub fn send(
@@ -39,6 +40,9 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
         client.get_query("/radar/early_fraud_warnings", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_fraud::RadarEarlyFraudWarning> {
+        stripe::ListPaginator::from_params("/radar/early_fraud_warnings", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -34,6 +34,7 @@ impl<'a> ListRefund<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListRefund<'a> {}
 impl<'a> ListRefund<'a> {
     /// Returns a list of all refunds you’ve previously created.
     ///
@@ -44,6 +45,9 @@ impl<'a> ListRefund<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Refund>> {
         client.get_query("/refunds", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Refund> {
+        stripe::ListPaginator::from_params("/refunds", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

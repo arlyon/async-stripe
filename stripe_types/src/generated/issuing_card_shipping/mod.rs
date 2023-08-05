@@ -94,8 +94,8 @@ impl serde::Serialize for IssuingCardShippingCarrier {
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingCarrier"))
     }
 }
@@ -159,8 +159,8 @@ impl serde::Serialize for IssuingCardShippingService {
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingService"))
     }
 }
@@ -233,8 +233,8 @@ impl serde::Serialize for IssuingCardShippingStatus {
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingStatus"))
     }
 }
@@ -295,8 +295,8 @@ impl serde::Serialize for IssuingCardShippingType {
 impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingType"))
     }
 }

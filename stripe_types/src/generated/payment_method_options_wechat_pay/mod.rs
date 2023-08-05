@@ -74,8 +74,8 @@ impl serde::Serialize for PaymentMethodOptionsWechatPayClient {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for PaymentMethodOptionsWechatPayClient")
         })
     }
@@ -138,8 +138,8 @@ impl serde::Serialize for PaymentMethodOptionsWechatPaySetupFutureUsage {
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPaySetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for PaymentMethodOptionsWechatPaySetupFutureUsage",
             )

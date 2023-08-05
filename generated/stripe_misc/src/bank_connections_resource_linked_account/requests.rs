@@ -51,6 +51,7 @@ impl<'a> ListBankConnectionsResourceLinkedAccountAccountHolder<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListBankConnectionsResourceLinkedAccount<'a> {}
 impl<'a> ListBankConnectionsResourceLinkedAccount<'a> {
     /// Returns a list of Financial Connections `Account` objects.
     pub fn send(
@@ -59,6 +60,11 @@ impl<'a> ListBankConnectionsResourceLinkedAccount<'a> {
     ) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceLinkedAccount>>
     {
         client.get_query("/financial_connections/accounts", self)
+    }
+    pub fn paginate(
+        self,
+    ) -> stripe::ListPaginator<stripe_misc::BankConnectionsResourceLinkedAccount> {
+        stripe::ListPaginator::from_params("/financial_connections/accounts", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -121,6 +127,7 @@ impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
         }
     }
 }
+impl<'a> stripe::PaginationParams for ListOwnersBankConnectionsResourceLinkedAccount<'a> {}
 impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
     /// Lists all owners for a given `Account`.
     pub fn send(
@@ -129,6 +136,15 @@ impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_misc::BankConnectionsResourceOwner>> {
         client.get_query(
+            &format!("/financial_connections/accounts/{account}/owners", account = account),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        account: &stripe_types::account::AccountId,
+    ) -> stripe::ListPaginator<stripe_misc::BankConnectionsResourceOwner> {
+        stripe::ListPaginator::from_params(
             &format!("/financial_connections/accounts/{account}/owners", account = account),
             self,
         )

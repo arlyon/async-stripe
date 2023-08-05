@@ -123,8 +123,8 @@ impl serde::Serialize for IssuingCardCancellationReason {
 impl<'de> serde::Deserialize<'de> for IssuingCardCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for IssuingCardCancellationReason")
         })
     }
@@ -192,8 +192,8 @@ impl serde::Serialize for IssuingCardReplacementReason {
 impl<'de> serde::Deserialize<'de> for IssuingCardReplacementReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardReplacementReason"))
     }
 }
@@ -260,8 +260,8 @@ impl serde::Serialize for IssuingCardStatus {
 impl<'de> serde::Deserialize<'de> for IssuingCardStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardStatus"))
     }
 }
@@ -322,8 +322,9 @@ impl serde::Serialize for IssuingCardType {
 impl<'de> serde::Deserialize<'de> for IssuingCardType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardType"))
     }
 }
 impl stripe_types::Object for IssuingCard {

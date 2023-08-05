@@ -159,6 +159,7 @@ impl serde::Serialize for ListTopupStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTopup<'a> {}
 impl<'a> ListTopup<'a> {
     /// Returns a list of top-ups.
     pub fn send(
@@ -166,6 +167,9 @@ impl<'a> ListTopup<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Topup>> {
         client.get_query("/topups", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Topup> {
+        stripe::ListPaginator::from_params("/topups", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

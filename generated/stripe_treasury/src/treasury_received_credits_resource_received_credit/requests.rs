@@ -159,10 +159,14 @@ impl serde::Serialize for ListTreasuryReceivedCreditsResourceReceivedCreditStatu
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryReceivedCreditsResourceReceivedCredit<'a> {}
 impl<'a> ListTreasuryReceivedCreditsResourceReceivedCredit<'a> {
     /// Returns a list of ReceivedCredits.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit>> {
         client.get_query("/treasury/received_credits", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
+        stripe::ListPaginator::from_params("/treasury/received_credits", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

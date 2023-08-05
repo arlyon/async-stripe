@@ -76,8 +76,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule"))
     }
 }
 /// Transaction type of the mandate.
@@ -139,7 +139,7 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType"))
     }
 }

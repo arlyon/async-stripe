@@ -1,12 +1,14 @@
 #![recursion_limit = "128"]
 
-pub mod currency;
-pub mod generated;
-pub mod ids;
+mod currency;
+mod expandable;
+mod generated;
+mod ids;
 mod pagination;
-pub mod params;
+mod params;
 
 pub use currency::Currency;
+pub use expandable::*;
 pub use generated::account::AccountId;
 pub use generated::application::ApplicationId;
 pub use generated::*;

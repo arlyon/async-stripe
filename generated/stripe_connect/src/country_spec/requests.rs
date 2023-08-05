@@ -26,6 +26,7 @@ impl<'a> ListCountrySpec<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListCountrySpec<'a> {}
 impl<'a> ListCountrySpec<'a> {
     /// Lists all Country Spec objects available in the API.
     pub fn send(
@@ -33,6 +34,9 @@ impl<'a> ListCountrySpec<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
         client.get_query("/country_specs", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_connect::CountrySpec> {
+        stripe::ListPaginator::from_params("/country_specs", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -1,0 +1,24 @@
+[package]
+name = "endpoints"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+
+[dependencies]
+futures-util = "0.3.28"
+tokio = { version = "1.24.1", features = ["rt", "macros"] }
+async-stripe = {path = "../../async-stripe"}
+stripe_types = {path = "../../stripe_types"}
+stripe_core = {path = "../../generated/stripe_core", features = ["customer"]}
+stripe_product = {path = "../../generated/stripe_product", features = ["product", "price"]}
+stripe_checkout = {path = "../../generated/stripe_checkout", features = ["session"]}
+stripe_connect = {path = "../../generated/stripe_connect", features = ["account", "account_link"]}
+
+[features]
+async = []
+
+runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper", "async"]
+runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls", "async"]
+runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki", "async"]
+runtime-async-std-surf = ["async-stripe/runtime-async-std-surf", "async"]

@@ -100,8 +100,8 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsCardMandateOptionsAmoun
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsAmountType",
             )
@@ -176,8 +176,8 @@ impl serde::Serialize for SetupIntentPaymentMethodOptionsCardMandateOptionsInter
 impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsInterval",
             )
@@ -242,8 +242,8 @@ impl<'de> serde::Deserialize<'de>
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes",
             )

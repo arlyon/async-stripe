@@ -45,7 +45,7 @@ pub(crate) mod config {
 
 #[cfg(feature = "runtime-async-std-surf")]
 pub(crate) mod config {
-    pub(crate) use super::base::async_std::{err, ok};
+    pub(crate) use super::base::async_std::err;
     pub use super::base::async_std::{AsyncStdClient as BaseClient, Response};
 }
 

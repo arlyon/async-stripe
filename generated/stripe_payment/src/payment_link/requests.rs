@@ -29,6 +29,7 @@ impl<'a> ListPaymentLink<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentLink<'a> {}
 impl<'a> ListPaymentLink<'a> {
     /// Returns a list of your payment links.
     pub fn send(
@@ -36,6 +37,9 @@ impl<'a> ListPaymentLink<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentLink>> {
         client.get_query("/payment_links", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::PaymentLink> {
+        stripe::ListPaginator::from_params("/payment_links", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -88,6 +92,7 @@ impl<'a> ListLineItemsPaymentLink<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsPaymentLink<'a> {}
 impl<'a> ListLineItemsPaymentLink<'a> {
     /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
     ///
@@ -98,6 +103,15 @@ impl<'a> ListLineItemsPaymentLink<'a> {
         payment_link: &stripe_types::payment_link::PaymentLinkId,
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
         client.get_query(
+            &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        payment_link: &stripe_types::payment_link::PaymentLinkId,
+    ) -> stripe::ListPaginator<stripe_types::LineItem> {
+        stripe::ListPaginator::from_params(
             &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
             self,
         )

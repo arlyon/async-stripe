@@ -110,8 +110,8 @@ impl serde::Serialize for SearchReturnedObject {
 impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
@@ -975,6 +975,7 @@ impl<'a> UpcomingLinesInvoice<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for UpcomingLinesInvoice<'a> {}
 impl<'a> UpcomingLinesInvoice<'a> {
     /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     ///
@@ -984,6 +985,9 @@ impl<'a> UpcomingLinesInvoice<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
         client.get_query("/invoices/upcoming/lines", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::InvoiceLineItem> {
+        stripe::ListPaginator::from_params("/invoices/upcoming/lines", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1796,6 +1800,7 @@ impl serde::Serialize for ListInvoiceStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoice<'a> {}
 impl<'a> ListInvoice<'a> {
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
@@ -1805,6 +1810,9 @@ impl<'a> ListInvoice<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Invoice>> {
         client.get_query("/invoices", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Invoice> {
+        stripe::ListPaginator::from_params("/invoices", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -110,8 +110,8 @@ impl serde::Serialize for SearchReturnedObject {
 impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
@@ -262,6 +262,7 @@ impl serde::Serialize for ListSubscriptionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscription<'a> {}
 impl<'a> ListSubscription<'a> {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
@@ -271,6 +272,9 @@ impl<'a> ListSubscription<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::Subscription>> {
         client.get_query("/subscriptions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::Subscription> {
+        stripe::ListPaginator::from_params("/subscriptions", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

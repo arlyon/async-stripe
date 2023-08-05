@@ -280,8 +280,8 @@ impl serde::Serialize for TaxIdType {
 impl<'de> serde::Deserialize<'de> for TaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdType"))
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxIdType"))
     }
 }
 impl stripe_types::Object for TaxId {

@@ -34,6 +34,7 @@ impl<'a> ListSubscriptionItem<'a> {
         }
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscriptionItem<'a> {}
 impl<'a> ListSubscriptionItem<'a> {
     /// Returns a list of your subscription items for a given subscription.
     pub fn send(
@@ -41,6 +42,9 @@ impl<'a> ListSubscriptionItem<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::SubscriptionItem>> {
         client.get_query("/subscription_items", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SubscriptionItem> {
+        stripe::ListPaginator::from_params("/subscription_items", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -306,6 +310,7 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for UsageRecordSummariesSubscriptionItem<'a> {}
 impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
     /// For the specified subscription item, returns a list of summary objects.
     ///
@@ -318,6 +323,18 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
         client.get_query(
+            &format!(
+                "/subscription_items/{subscription_item}/usage_record_summaries",
+                subscription_item = subscription_item
+            ),
+            self,
+        )
+    }
+    pub fn paginate(
+        self,
+        subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
+    ) -> stripe::ListPaginator<stripe_types::UsageRecordSummary> {
+        stripe::ListPaginator::from_params(
             &format!(
                 "/subscription_items/{subscription_item}/usage_record_summaries",
                 subscription_item = subscription_item

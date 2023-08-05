@@ -89,8 +89,8 @@ impl serde::Serialize for RecurringAggregateUsage {
 impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringAggregateUsage"))
     }
 }
@@ -159,8 +159,8 @@ impl serde::Serialize for RecurringInterval {
 impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
     }
 }
@@ -226,8 +226,8 @@ impl serde::Serialize for RecurringUsageType {
 impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
     }
 }

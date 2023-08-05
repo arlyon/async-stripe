@@ -163,8 +163,8 @@ pub fn write_fieldless_enum_variants(
             impl<'de> serde::Deserialize<'de> for {enum_name} {{
                 fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {{
                     use std::str::FromStr;
-                    let s: &str = serde::Deserialize::deserialize(deserializer)?;
-                    Self::from_str(s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
+                    let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+                    Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
                 }}
             }}
             "#

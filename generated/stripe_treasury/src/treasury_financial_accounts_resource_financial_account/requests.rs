@@ -911,10 +911,14 @@ impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {}
 impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Returns a list of FinancialAccounts.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount>> {
         client.get_query("/treasury/financial_accounts", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        stripe::ListPaginator::from_params("/treasury/financial_accounts", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

@@ -58,6 +58,8 @@
 
 mod client;
 mod error;
+mod pagination;
+pub use pagination::{ListPaginator, PaginationExt, PaginationParams};
 
 // N.B. Ideally we would support both a blocking client and
 //      an async client without a feature flag, but the originally

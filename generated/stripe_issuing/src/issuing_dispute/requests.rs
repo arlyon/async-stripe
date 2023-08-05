@@ -98,6 +98,7 @@ impl serde::Serialize for ListIssuingDisputeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingDispute<'a> {}
 impl<'a> ListIssuingDispute<'a> {
     /// Returns a list of Issuing `Dispute` objects.
     ///
@@ -107,6 +108,9 @@ impl<'a> ListIssuingDispute<'a> {
         client: &stripe::Client,
     ) -> stripe::Response<stripe_types::List<stripe_types::IssuingDispute>> {
         client.get_query("/issuing/disputes", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::IssuingDispute> {
+        stripe::ListPaginator::from_params("/issuing/disputes", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

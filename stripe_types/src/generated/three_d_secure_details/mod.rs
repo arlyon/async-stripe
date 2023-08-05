@@ -69,8 +69,8 @@ impl serde::Serialize for ThreeDSecureDetailsAuthenticationFlow {
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsAuthenticationFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for ThreeDSecureDetailsAuthenticationFlow")
         })
     }
@@ -144,8 +144,8 @@ impl serde::Serialize for ThreeDSecureDetailsResult {
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResult"))
     }
 }
@@ -222,8 +222,8 @@ impl serde::Serialize for ThreeDSecureDetailsResultReason {
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsResultReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s).map_err(|_| {
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for ThreeDSecureDetailsResultReason")
         })
     }
@@ -288,8 +288,8 @@ impl serde::Serialize for ThreeDSecureDetailsVersion {
 impl<'de> serde::Deserialize<'de> for ThreeDSecureDetailsVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
-        let s: &str = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(s)
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for ThreeDSecureDetailsVersion"))
     }
 }

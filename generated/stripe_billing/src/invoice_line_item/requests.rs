@@ -26,6 +26,7 @@ impl<'a> ListInvoiceLineItem<'a> {
         Self::default()
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoiceLineItem<'a> {}
 impl<'a> ListInvoiceLineItem<'a> {
     /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     ///
@@ -36,5 +37,14 @@ impl<'a> ListInvoiceLineItem<'a> {
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
         client.get_query(&format!("/invoices/{invoice}/lines", invoice = invoice), self)
+    }
+    pub fn paginate(
+        self,
+        invoice: &stripe_types::invoice::InvoiceId,
+    ) -> stripe::ListPaginator<stripe_types::InvoiceLineItem> {
+        stripe::ListPaginator::from_params(
+            &format!("/invoices/{invoice}/lines", invoice = invoice),
+            self,
+        )
     }
 }
