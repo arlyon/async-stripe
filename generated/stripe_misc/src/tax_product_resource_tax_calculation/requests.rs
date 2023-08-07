@@ -179,6 +179,7 @@ impl<'a> CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIds<'a> {
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType {
     AdNrt,
     AeTrn,
@@ -246,6 +247,8 @@ pub enum CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType {
     VeRif,
     VnTin,
     ZaVat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType {
@@ -318,6 +321,7 @@ impl CreateTaxProductResourceTaxCalculationCustomerDetailsTaxIdsType {
             VeRif => "ve_rif",
             VnTin => "vn_tin",
             ZaVat => "za_vat",
+            Unknown => "unknown",
         }
     }
 }
@@ -569,14 +573,14 @@ impl<'a> CreateTaxProductResourceTaxCalculation<'a> {
         client.send_form("/tax/calculations", self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsTaxProductResourceTaxCalculation<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -590,7 +594,7 @@ pub struct ListLineItemsTaxProductResourceTaxCalculation<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     pub fn new() -> Self {

@@ -14,8 +14,8 @@ use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::{as_object_properties, get_request_form_parameters, Spec};
 use crate::spec_inference::{infer_id_name, Inference};
 use crate::stripe_object::{
-    parse_stripe_schema_as_rust_object, CrateInfo, OperationType, StripeObject, StripeOperation,
-    StripeResource,
+    parse_stripe_schema_as_rust_object, CrateInfo, OperationType, RequestSpec, StripeObject,
+    StripeOperation, StripeResource,
 };
 use crate::types::{ComponentPath, RustIdent};
 
@@ -216,6 +216,17 @@ impl Components {
             }
         }
     }
+
+    pub fn get_request_spec(&self, src: RequestSource) -> Option<&RequestSpec> {
+        for comp in self.components.values() {
+            for req in &comp.requests {
+                if req.method_type == src.op && req.req_path == src.path {
+                    return Some(req);
+                }
+            }
+        }
+        None
+    }
 }
 
 pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
@@ -285,62 +296,48 @@ pub struct OverrideData {
     pub doc: &'static str,
     pub mod_path: &'static str,
     pub ident: &'static str,
-    pub source: OverrideSource,
+    pub source: RequestSource,
 }
 
 #[derive(Debug, Copy, Clone)]
-pub struct RequestOverrideSource {
-    path: &'static str,
-    op: OperationType,
-    field_name: &'static str,
-}
-
-#[derive(Debug, Copy, Clone)]
-pub enum OverrideSource {
-    Request(RequestOverrideSource),
+pub struct RequestSource {
+    pub path: &'static str,
+    pub op: OperationType,
+    pub field_name: &'static str,
 }
 
 const OVERRIDES: &[OverrideData] = &[OverrideData {
     doc: "",
     mod_path: "api_version",
     ident: "ApiVersion",
-    source: OverrideSource::Request(RequestOverrideSource {
+    source: RequestSource {
         path: "/v1/webhook_endpoints",
         op: OperationType::Post,
         field_name: "api_version",
-    }),
+    },
 }];
 
 fn get_override_object(
     spec: &Spec,
     data: &OverrideData,
 ) -> anyhow::Result<(RustObject, OverrideMetadata)> {
-    match data.source {
-        OverrideSource::Request(req_src) => {
-            let op = spec
-                .get_request_operation(req_src.path, req_src.op)
-                .context("Request not found")?;
-            let form_params = get_request_form_parameters(op)
-                .context("No form params")?
-                .as_item()
-                .context("Was a ref")?;
-            let typ = as_object_properties(form_params).context("Not an object")?;
-            let schema = typ.get(req_src.field_name).context("Field not found")?;
-            let ident = RustIdent::create(data.ident);
-            let (obj, _) = Inference::new(&ident)
-                .infer_schema_or_ref_type(schema)
-                .into_object()
-                .context("Expected object type to be inferred")?;
-            Ok((
-                obj,
-                OverrideMetadata {
-                    ident,
-                    doc: data.doc.to_string(),
-                    mod_path: data.mod_path.to_string(),
-                },
-            ))
-        }
-    }
+    let req_src = data.source;
+    let op = spec.get_request_operation(req_src.path, req_src.op).context("Request not found")?;
+    let form_params = get_request_form_parameters(op)
+        .context("No form params")?
+        .as_item()
+        .context("Was a ref")?;
+    let typ = as_object_properties(form_params).context("Not an object")?;
+    let schema = typ.get(req_src.field_name).context("Field not found")?;
+    let ident = RustIdent::create(data.ident);
+    let (obj, _) = Inference::new(&ident)
+        .infer_schema_or_ref_type(schema)
+        .into_object()
+        .context("Expected object type to be inferred")?;
+    Ok((
+        obj,
+        OverrideMetadata { ident, doc: data.doc.to_string(), mod_path: data.mod_path.to_string() },
+    ))
 }
 
 pub fn build_field_overrides(spec: &Spec) -> anyhow::Result<Overrides> {

@@ -1,11 +1,11 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListExchangeRate<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is the currency that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with the exchange rate for currency X your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -19,7 +19,7 @@ pub struct ListExchangeRate<'a> {
     /// `starting_after` is the currency that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with the exchange rate for currency X, your subsequent call can include `starting_after=X` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListExchangeRate<'a> {
     pub fn new() -> Self {

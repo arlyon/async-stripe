@@ -5,6 +5,7 @@ pub struct TreasuryInboundTransfersResourceFailureDetails {
 }
 /// Reason for the failure.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryInboundTransfersResourceFailureDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -19,6 +20,8 @@ pub enum TreasuryInboundTransfersResourceFailureDetailsCode {
     InvalidCurrency,
     NoAccount,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl TreasuryInboundTransfersResourceFailureDetailsCode {
@@ -38,6 +41,7 @@ impl TreasuryInboundTransfersResourceFailureDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
+            Unknown => "unknown",
         }
     }
 }
@@ -94,6 +98,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryInboundTransfersResourceFailureDet
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryInboundTransfersResourceFailureDetailsCode"))
+        Ok(Self::from_str(&s).unwrap_or(TreasuryInboundTransfersResourceFailureDetailsCode::Unknown))
     }
 }

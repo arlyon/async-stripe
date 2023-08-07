@@ -164,6 +164,7 @@ impl<'a> Inference<'a> {
 
     fn infer_string_typ(&self, typ: &StringType) -> RustType {
         let variants = build_enum_variants(&typ.enumeration);
+
         if !variants.is_empty() {
             return self.build_object_type(RustObject::FieldlessEnum(variants), self.next_ident());
         }
@@ -172,17 +173,8 @@ impl<'a> Inference<'a> {
                 return RustType::ext(ExtType::Currency);
             }
         }
-        // FIXME: this is a hack to ensure the id's used for pagination are
-        // owned. This can be removed with cleverer codegen, but likely
-        // best to wait until issues like https://github.com/arlyon/async-stripe/issues/246
-        // resolved
-        let for_pagination =
-            self.field_name == Some("ending_before") || self.field_name == Some("starting_after");
-        if for_pagination {
-            return RustType::string();
-        }
 
-        if !for_pagination && self.should_infer_as_id_type() {
+        if self.should_infer_as_id_type() {
             if let Some(id_path) = self.id_path {
                 return RustType::object_id(id_path.clone(), self.can_borrow);
             }
@@ -213,6 +205,19 @@ impl<'a> Inference<'a> {
                 RustType::str_map(map_value_typ, self.can_borrow)
             };
         }
+
+        // NB: There is some inconsistency between usage of properties: {} and not including
+        // the properties key in the OpenAPI spec where not including properties: {} seems
+        // to imply that any object might be valid (or too complex for the OpenAPI spec). Since
+        // we cannot distinguish between the 2 cases, we always default to serde_json::Value
+        // when there is no specification of object shape.
+
+        // FIXME: The unfortunate `field_name.is_some()` is used to avoid substituting
+        // a serde_json::Value for a top level component type (see for example mandate_us_bank_account)
+        if typ.properties.is_empty() && self.field_name.is_some() {
+            return RustType::serde_json_value(self.can_borrow);
+        }
+
         // Generate the struct type
         let mut fields = vec![];
         let next_ident = self.next_ident();
@@ -400,7 +405,8 @@ fn build_enum_variants(options: &[Option<String>]) -> Vec<FieldlessVariant> {
             "*" => RustIdent::create("all"),
             n => {
                 if n.chars().next().unwrap().is_ascii_digit() {
-                    RustIdent::from_valid(format!("V{}", n.to_string().replace(['-', '.'], "_")))
+                    let ident = RustIdent::unchanged(format!("V{}", n.replace(['-', '.'], "_")));
+                    ident
                 } else {
                     // Hit for the case of timezones, e.g. Etc+7 and Etc-7
                     if wire_name.contains(['+', '-']) {
@@ -412,7 +418,7 @@ fn build_enum_variants(options: &[Option<String>]) -> Vec<FieldlessVariant> {
                 }
             }
         };
-        enum_variants.push(FieldlessVariant { wire_name: wire_name.clone(), variant_name });
+        enum_variants.push(FieldlessVariant::new(wire_name.clone(), variant_name));
     }
     enum_variants
 }
@@ -447,5 +453,5 @@ pub fn infer_doc_comment(schema: &Schema, doc_url: Option<&str>) -> String {
 }
 
 pub fn infer_id_name(obj_name: &str) -> RustIdent {
-    RustIdent::create(&format!("{obj_name}_id"))
+    RustIdent::create(format!("{obj_name}_id"))
 }

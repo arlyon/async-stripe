@@ -78,6 +78,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodFpxAccountHolderType {
 ///
 /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, `pb_enterprise`, or `bank_of_china`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodFpxBank {
     AffinBank,
     Agrobank,
@@ -101,6 +102,8 @@ pub enum PaymentMethodFpxBank {
     Rhb,
     StandardChartered,
     Uob,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodFpxBank {
@@ -129,6 +132,7 @@ impl PaymentMethodFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
+            Unknown => "unknown",
         }
     }
 }
@@ -194,7 +198,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodFpxBank"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodFpxBank::Unknown))
     }
 }

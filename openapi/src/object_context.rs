@@ -5,7 +5,7 @@ use indoc::writedoc;
 use crate::components::Components;
 use crate::dedup::deduplicate_types;
 use crate::ids::write_object_id;
-use crate::printable::{Lifetime, PrintableEnumVariant, PrintableStructField};
+use crate::printable::{Lifetime, PrintableStructField};
 use crate::rust_object::{ObjectMetadata, RustObject};
 use crate::rust_type::{Container, RustType};
 use crate::stripe_object::{RequestSpec, StripeObject};
@@ -15,6 +15,7 @@ use crate::templates::object_trait::{write_object_trait, write_object_trait_for_
 use crate::templates::requests::{PrintablePathParam, PrintableRequestSpec};
 use crate::templates::structs::write_struct;
 use crate::templates::utils::write_doc_comment;
+use crate::utils::as_object_names_for_deserialization;
 
 #[derive(Copy, Clone, Debug)]
 pub struct ObjectGenInfo {
@@ -90,18 +91,9 @@ impl Components {
                 write_fieldless_enum_variants(out, variants, ident, info.derives)
             }
             RustObject::Enum(variants) => {
-                let object_names = variants
-                    .iter()
-                    .map(|v| v.rust_type.as_ref().and_then(|t| extract_object_name(t, self)))
-                    .collect::<Vec<_>>();
-                let printable_variants = variants
-                    .iter()
-                    .map(|v| {
-                        let printable =
-                            v.rust_type.as_ref().map(|typ| self.construct_printable_type(typ));
-                        PrintableEnumVariant { rust_type: printable, variant: v.variant.clone() }
-                    })
-                    .collect::<Vec<_>>();
+                let printable_variants =
+                    variants.iter().map(|v| v.as_printable(self)).collect::<Vec<_>>();
+                let object_names = as_object_names_for_deserialization(self, variants);
                 let enum_derives = info.derives.copy(should_derive_copy);
                 write_enum_variants(
                     out,
@@ -121,12 +113,6 @@ impl Components {
             }
         }
     }
-}
-
-fn extract_object_name<'a>(typ: &'a RustType, components: &'a Components) -> Option<&'a str> {
-    let path = typ.as_component_path()?;
-    let obj = components.get(path);
-    obj.data.object_name.as_deref()
 }
 
 pub fn gen_obj(

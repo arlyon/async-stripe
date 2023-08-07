@@ -7,56 +7,47 @@
 //! a particular product and price. The nice thing with
 //! this API is the lack of associated customer.
 
-use stripe::{
-    Client, CreatePaymentLink, CreatePaymentLinkLineItems, CreatePrice, CreateProduct, Currency,
-    IdOrCreate, PaymentLink, Price, Product,
-};
+use stripe::{Client, StripeError};
+use stripe_payment::payment_link::{CreatePaymentLink, CreatePaymentLinkLineItems};
+use stripe_product::price::CreatePrice;
+use stripe_product::product::CreateProduct;
+use stripe_types::Currency;
 
-#[tokio::main]
-async fn main() {
-    let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-    let client = Client::new(secret_key);
-
+pub async fn run_payment_link_example(client: &Client) -> Result<(), StripeError> {
     // create a new example project
+    let meta =
+        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
     let product = {
         let mut create_product = CreateProduct::new("T-Shirt");
-        create_product.metadata = Some(std::collections::HashMap::from([(
-            String::from("async-stripe"),
-            String::from("true"),
-        )]));
-        Product::create(&client, create_product).await.unwrap()
+        create_product.metadata = Some(&meta);
+        create_product.send(client).await?
     };
 
     // and add a price for it in USD
     let price = {
         let mut create_price = CreatePrice::new(Currency::USD);
-        create_price.product = Some(IdOrCreate::Id(&product.id));
-        create_price.metadata = Some(std::collections::HashMap::from([(
-            String::from("async-stripe"),
-            String::from("true"),
-        )]));
+        create_price.product = Some(product.id.as_str());
+        create_price.metadata = Some(&meta);
         create_price.unit_amount = Some(1000);
-        create_price.expand = &["product"];
-        Price::create(&client, create_price).await.unwrap()
+        create_price.expand = Some(&["product"]);
+        create_price.send(client).await?
     };
 
     println!(
         "created a product {:?} at price {} {}",
-        product.name.unwrap(),
+        product.name,
         price.unit_amount.unwrap() / 100,
-        price.currency.unwrap()
+        price.currency,
     );
 
-    let payment_link = PaymentLink::create(
-        &client,
-        CreatePaymentLink::new(vec![CreatePaymentLinkLineItems {
-            quantity: 3,
-            price: price.id.to_string(),
-            ..Default::default()
-        }]),
-    )
-    .await
-    .unwrap();
+    let payment_link = CreatePaymentLink::new(&[CreatePaymentLinkLineItems {
+        adjustable_quantity: None,
+        quantity: 3,
+        price: &price.id,
+    }])
+    .send(client)
+    .await?;
 
     println!("created a payment link {}", payment_link.url);
+    Ok(())
 }

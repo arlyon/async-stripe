@@ -32,7 +32,7 @@ pub struct PaymentIntentNextAction {
     ///
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub use_stripe_sdk: Option<PaymentIntentNextActionUseStripeSdk>,
+    pub use_stripe_sdk: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verify_with_microdeposits:
         Option<stripe_types::PaymentIntentNextActionVerifyWithMicrodeposits>,
@@ -46,8 +46,3 @@ pub struct PaymentIntentNextAction {
     pub wechat_pay_redirect_to_ios_app:
         Option<stripe_types::PaymentIntentNextActionWechatPayRedirectToIosApp>,
 }
-/// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
-///
-/// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
-pub struct PaymentIntentNextActionUseStripeSdk {}

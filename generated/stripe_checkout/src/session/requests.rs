@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListSession<'a> {
     /// Only return the Checkout Sessions for the Customer specified.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,7 +11,7 @@ pub struct ListSession<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -31,7 +31,7 @@ pub struct ListSession<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// Only return the Checkout Session for the subscription specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<&'a str>,
@@ -1427,6 +1427,7 @@ impl serde::Serialize for CreateSessionLineItemsPriceDataRecurringInterval {
 ///
 /// If blank or `auto`, the browser's locale is used.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSessionLocale {
     Auto,
     Bg,
@@ -1469,6 +1470,8 @@ pub enum CreateSessionLocale {
     Zh,
     ZhMinusHk,
     ZhMinusTw,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateSessionLocale {
@@ -1516,6 +1519,7 @@ impl CreateSessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
+            Unknown => "unknown",
         }
     }
 }
@@ -4268,6 +4272,7 @@ impl serde::Serialize for CreateSessionPaymentMethodOptionsPaypalCaptureMethod {
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSessionPaymentMethodOptionsPaypalPreferredLocale {
     CsMinusCz,
     DaMinusDk,
@@ -4290,6 +4295,8 @@ pub enum CreateSessionPaymentMethodOptionsPaypalPreferredLocale {
     PtMinusPt,
     SkMinusSk,
     SvMinusSe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateSessionPaymentMethodOptionsPaypalPreferredLocale {
@@ -4317,6 +4324,7 @@ impl CreateSessionPaymentMethodOptionsPaypalPreferredLocale {
             PtMinusPt => "pt-PT",
             SkMinusSk => "sk-SK",
             SvMinusSe => "sv-SE",
+            Unknown => "unknown",
         }
     }
 }
@@ -4970,6 +4978,7 @@ impl serde::Serialize for CreateSessionPaymentMethodOptionsWechatPaySetupFutureU
 /// prioritize the most relevant payment methods based on the customer's location and
 /// other characteristics.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSessionPaymentMethodTypes {
     AcssDebit,
     Affirm,
@@ -5002,6 +5011,8 @@ pub enum CreateSessionPaymentMethodTypes {
     UsBankAccount,
     WechatPay,
     Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateSessionPaymentMethodTypes {
@@ -5039,6 +5050,7 @@ impl CreateSessionPaymentMethodTypes {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
+            Unknown => "unknown",
         }
     }
 }
@@ -5170,6 +5182,7 @@ impl<'a> CreateSessionShippingAddressCollection<'a> {
 ///
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSessionShippingAddressCollectionAllowedCountries {
     Ac,
     Ad,
@@ -5408,6 +5421,8 @@ pub enum CreateSessionShippingAddressCollectionAllowedCountries {
     Zm,
     Zw,
     Zz,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateSessionShippingAddressCollectionAllowedCountries {
@@ -5651,6 +5666,7 @@ impl CreateSessionShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
+            Unknown => "unknown",
         }
     }
 }
@@ -6430,14 +6446,14 @@ impl<'a> CreateSession<'a> {
         client.send_form("/checkout/sessions", self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsSession<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -6451,7 +6467,7 @@ pub struct ListLineItemsSession<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListLineItemsSession<'a> {
     pub fn new() -> Self {

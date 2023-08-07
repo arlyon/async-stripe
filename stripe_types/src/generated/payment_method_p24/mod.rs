@@ -5,6 +5,7 @@ pub struct PaymentMethodP24 {
 }
 /// The customer's bank, if provided.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodP24Bank {
     AliorBank,
     BankMillennium,
@@ -31,6 +32,8 @@ pub enum PaymentMethodP24Bank {
     TmobileUsbugiBankowe,
     ToyotaBank,
     VolkswagenBank,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodP24Bank {
@@ -62,6 +65,7 @@ impl PaymentMethodP24Bank {
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
             VolkswagenBank => "volkswagen_bank",
+            Unknown => "unknown",
         }
     }
 }
@@ -130,7 +134,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodP24Bank"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodP24Bank::Unknown))
     }
 }

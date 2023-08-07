@@ -385,7 +385,7 @@ impl<'a> AcceptQuote<'a> {
         )
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListQuote<'a> {
     /// The ID of the customer whose quotes will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -395,7 +395,7 @@ pub struct ListQuote<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -409,7 +409,7 @@ pub struct ListQuote<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// The status of the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ListQuoteStatus>,
@@ -497,14 +497,14 @@ impl<'a> ListQuote<'a> {
         stripe::ListPaginator::from_params("/quotes", self)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsQuote<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -518,7 +518,7 @@ pub struct ListLineItemsQuote<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListLineItemsQuote<'a> {
     pub fn new() -> Self {
@@ -547,14 +547,14 @@ impl<'a> ListLineItemsQuote<'a> {
         )
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -568,7 +568,7 @@ pub struct ListComputedUpfrontLineItemsQuote<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
     pub fn new() -> Self {
@@ -807,7 +807,7 @@ impl serde::Serialize for TaxBehavior {
 #[serde(untagged)]
 pub enum EffectiveDate {
     CurrentPeriodEnd,
-    Timestamp(stripe_types::Timestamp),
+    StripeTypesTimestamp(stripe_types::Timestamp),
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct TransferDataSpecs<'a> {

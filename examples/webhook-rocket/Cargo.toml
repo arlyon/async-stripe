@@ -1,0 +1,11 @@
+[package]
+name = "webhook-rocket"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+rocket = "0.5.0-rc.3"
+stripe_types = {path = "../../stripe_types"}
+stripe_webhook = {path = "../../stripe_webhook", features = ["stripe_checkout"]}
+stripe_checkout = {path = "../../generated/stripe_checkout"}

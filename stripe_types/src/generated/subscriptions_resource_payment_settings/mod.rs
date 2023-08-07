@@ -16,6 +16,7 @@ pub struct SubscriptionsResourcePaymentSettings {
 ///
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
@@ -41,6 +42,8 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Sofort,
     UsBankAccount,
     WechatPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
@@ -71,6 +74,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
+            Unknown => "unknown",
         }
     }
 }
@@ -138,11 +142,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionsResourcePaymentSettingsPaymentMethodTypes",
-            )
-        })
+        Ok(Self::from_str(&s)
+            .unwrap_or(SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Unknown))
     }
 }
 /// Either `off`, or `on_subscription`.

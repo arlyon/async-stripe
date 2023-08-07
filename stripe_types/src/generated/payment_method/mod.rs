@@ -102,6 +102,7 @@ pub struct PaymentMethod {
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodType {
     AcssDebit,
     Affirm,
@@ -136,6 +137,8 @@ pub enum PaymentMethodType {
     UsBankAccount,
     WechatPay,
     Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodType {
@@ -175,6 +178,7 @@ impl PaymentMethodType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
+            Unknown => "unknown",
         }
     }
 }
@@ -251,8 +255,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodType"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodType::Unknown))
     }
 }
 impl stripe_types::Object for PaymentMethod {

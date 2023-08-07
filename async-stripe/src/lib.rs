@@ -59,6 +59,7 @@
 mod client;
 mod error;
 mod pagination;
+
 pub use pagination::{ListPaginator, PaginationExt, PaginationParams};
 
 // N.B. Ideally we would support both a blocking client and
@@ -69,4 +70,4 @@ pub use pagination::{ListPaginator, PaginationExt, PaginationParams};
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
 pub use crate::client::*;
-pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
+pub use crate::error::StripeError;

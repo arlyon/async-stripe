@@ -1,5 +1,7 @@
 use std::fmt::{Debug, Display, Formatter};
 
+use crate::components::Components;
+use crate::printable::PrintableEnumVariant;
 use crate::rust_type::RustType;
 use crate::types::RustIdent;
 
@@ -52,6 +54,16 @@ impl RustObject {
         }
     }
 
+    pub fn get_struct_field(&self, field_name: &str) -> Option<&RustType> {
+        match self {
+            RustObject::Struct(fields) => {
+                let field = fields.iter().find(|f| f.field_name == field_name);
+                field.map(|f| &f.rust_type)
+            }
+            _ => None,
+        }
+    }
+
     /// Does this contain a reference type?
     pub fn has_reference(&self) -> bool {
         match self {
@@ -92,17 +104,32 @@ pub struct EnumVariant {
     pub variant: RustIdent,
     /// The type of the single field. If `None`, no inner field
     pub rust_type: Option<RustType>,
+    pub feature_gate: Option<String>,
 }
 
 impl EnumVariant {
     /// Make an enum variant with the given name and type.
     pub fn new(variant: RustIdent, rust_type: RustType) -> Self {
-        Self { variant, rust_type: Some(rust_type) }
+        Self { variant, rust_type: Some(rust_type), feature_gate: None }
     }
 
     /// Make a fieldless variant with the given name.
     pub fn fieldless(variant: RustIdent) -> Self {
-        Self { variant, rust_type: None }
+        Self { variant, rust_type: None, feature_gate: None }
+    }
+
+    pub fn as_printable(&self, components: &Components) -> PrintableEnumVariant {
+        let printable = self.rust_type.as_ref().map(|typ| components.construct_printable_type(typ));
+        PrintableEnumVariant {
+            rust_type: printable,
+            variant: &self.variant,
+            feature_gate: self.feature_gate.as_deref(),
+        }
+    }
+
+    pub fn with_feature_gate(mut self, gate: String) -> Self {
+        self.feature_gate = Some(gate);
+        self
     }
 }
 
@@ -113,6 +140,12 @@ pub struct FieldlessVariant {
     pub wire_name: String,
     /// Identifier for this variant
     pub variant_name: RustIdent,
+}
+
+impl FieldlessVariant {
+    pub fn new(wire: String, variant: RustIdent) -> Self {
+        Self { wire_name: wire, variant_name: variant }
+    }
 }
 
 /// Visibility of a struct field

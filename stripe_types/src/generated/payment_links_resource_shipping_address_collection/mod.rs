@@ -9,6 +9,7 @@ pub struct PaymentLinksResourceShippingAddressCollection {
 ///
 /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourceShippingAddressCollectionAllowedCountries {
     Ac,
     Ad,
@@ -247,6 +248,8 @@ pub enum PaymentLinksResourceShippingAddressCollectionAllowedCountries {
     Zm,
     Zw,
     Zz,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentLinksResourceShippingAddressCollectionAllowedCountries {
@@ -490,6 +493,7 @@ impl PaymentLinksResourceShippingAddressCollectionAllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
+            Unknown => "unknown",
         }
     }
 }
@@ -772,10 +776,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentLinksResourceShippingAddressCollectionAllowedCountries",
-            )
-        })
+        Ok(Self::from_str(&s)
+            .unwrap_or(PaymentLinksResourceShippingAddressCollectionAllowedCountries::Unknown))
     }
 }

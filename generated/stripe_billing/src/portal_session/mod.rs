@@ -46,6 +46,7 @@ pub struct PortalSession {
 ///
 /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSessionLocale {
     Auto,
     Bg,
@@ -94,6 +95,8 @@ pub enum PortalSessionLocale {
     Zh,
     ZhMinusHk,
     ZhMinusTw,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PortalSessionLocale {
@@ -147,6 +150,7 @@ impl PortalSessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
+            Unknown => "unknown",
         }
     }
 }
@@ -237,8 +241,7 @@ impl<'de> serde::Deserialize<'de> for PortalSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PortalSessionLocale"))
+        Ok(Self::from_str(&s).unwrap_or(PortalSessionLocale::Unknown))
     }
 }
 impl stripe_types::Object for PortalSession {

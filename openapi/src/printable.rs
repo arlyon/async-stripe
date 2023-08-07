@@ -37,9 +37,10 @@ pub enum PrintableContainer {
 
 /// A direct analogue of `EnumVariant`, but with `RustType` replaced by `PrintableType`.
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct PrintableEnumVariant {
-    pub variant: RustIdent,
+pub struct PrintableEnumVariant<'a> {
+    pub variant: &'a RustIdent,
     pub rust_type: Option<PrintableType>,
+    pub feature_gate: Option<&'a str>,
 }
 
 /// A (mostly) direct analogue of `StructField`, but with `RustType` replaced by `PrintableType`.
@@ -110,9 +111,6 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                 if typ.is_reference() {
                     write!(f, "&{lifetime} ")?;
                 }
-                if let Some(import) = typ.import_from() {
-                    write!(f, "{import}::")?;
-                }
                 f.write_str(typ.ident())
             }
             Container(typ) => match typ {
@@ -167,9 +165,6 @@ impl Display for PrintableType {
             Simple(typ) => {
                 if typ.is_reference() {
                     f.write_char('&')?;
-                }
-                if let Some(import) = typ.import_from() {
-                    write!(f, "{import}::")?;
                 }
                 f.write_str(typ.ident())
             }

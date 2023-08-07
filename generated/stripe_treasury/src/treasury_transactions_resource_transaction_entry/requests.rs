@@ -15,7 +15,7 @@ impl<'a> RetrieveTreasuryTransactionsResourceTransactionEntry<'a> {
         client.get_query(&format!("/treasury/transaction_entries/{id}", id = id), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryTransactionsResourceTransactionEntry<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
@@ -26,7 +26,7 @@ pub struct ListTreasuryTransactionsResourceTransactionEntry<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -47,7 +47,7 @@ pub struct ListTreasuryTransactionsResourceTransactionEntry<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// Only return TransactionEntries associated with this Transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<&'a str>,

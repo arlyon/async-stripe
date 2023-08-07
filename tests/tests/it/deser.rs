@@ -148,7 +148,7 @@ fn deserialize_customer_with_source() {
 
 #[test]
 fn deserialize_checkout_event() {
-    use stripe_core::NotificationEvent;
+    use stripe_types::NotificationEvent;
 
     let example = json!({
       "created": 1326853478,

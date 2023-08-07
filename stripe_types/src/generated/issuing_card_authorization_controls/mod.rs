@@ -22,6 +22,7 @@ pub struct IssuingCardAuthorizationControls {
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardAuthorizationControlsAllowedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -318,6 +319,8 @@ pub enum IssuingCardAuthorizationControlsAllowedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl IssuingCardAuthorizationControlsAllowedCategories {
@@ -663,6 +666,7 @@ impl IssuingCardAuthorizationControlsAllowedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -1049,11 +1053,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardAuthorizationControlsAllowedCat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingCardAuthorizationControlsAllowedCategories",
-            )
-        })
+        Ok(Self::from_str(&s).unwrap_or(IssuingCardAuthorizationControlsAllowedCategories::Unknown))
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -1061,6 +1061,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardAuthorizationControlsAllowedCat
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardAuthorizationControlsBlockedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -1357,6 +1358,8 @@ pub enum IssuingCardAuthorizationControlsBlockedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl IssuingCardAuthorizationControlsBlockedCategories {
@@ -1702,6 +1705,7 @@ impl IssuingCardAuthorizationControlsBlockedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -2088,10 +2092,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardAuthorizationControlsBlockedCat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingCardAuthorizationControlsBlockedCategories",
-            )
-        })
+        Ok(Self::from_str(&s).unwrap_or(IssuingCardAuthorizationControlsBlockedCategories::Unknown))
     }
 }

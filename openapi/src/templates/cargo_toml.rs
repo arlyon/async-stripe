@@ -48,6 +48,7 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         serde.workspace = true
         http-types.workspace = true
         smol_str.workspace = true
+        serde_json.workspace = true
         async-stripe = {{path = "../../async-stripe"}}
         {crate_dep_section}
         

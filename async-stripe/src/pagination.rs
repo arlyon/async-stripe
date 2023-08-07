@@ -30,13 +30,13 @@ where
 }
 
 impl<T> ListPaginator<T> {
-    pub fn from_params<U: ToString>(url: U, params: impl PaginationParams) -> Self {
+    pub fn from_params(url: &str, params: impl PaginationParams) -> Self {
         ListPaginator {
             data: vec![],
             url: url.to_string(),
             has_more: true,
             total_count: None,
-            params: serde_json::to_value(params).unwrap(),
+            params: serde_json::to_value(params).expect("Invalid pagination params"),
         }
     }
 }

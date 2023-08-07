@@ -12,13 +12,8 @@ pub struct SetupIntentNextAction {
     ///
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub use_stripe_sdk: Option<SetupIntentNextActionUseStripeSdk>,
+    pub use_stripe_sdk: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verify_with_microdeposits:
         Option<stripe_types::SetupIntentNextActionVerifyWithMicrodeposits>,
 }
-/// When confirming a SetupIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
-///
-/// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
-pub struct SetupIntentNextActionUseStripeSdk {}

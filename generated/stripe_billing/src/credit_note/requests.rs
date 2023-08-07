@@ -174,7 +174,7 @@ impl<'a> RetrieveCreditNote<'a> {
         client.get_query(&format!("/credit_notes/{id}", id = id), self)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListCreditNote<'a> {
     /// Only return credit notes for the customer specified by this customer ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -184,7 +184,7 @@ pub struct ListCreditNote<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -201,7 +201,7 @@ pub struct ListCreditNote<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListCreditNote<'a> {
     pub fn new() -> Self {
@@ -279,7 +279,7 @@ impl<'a> VoidCreditNoteCreditNote<'a> {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct PreviewLinesCreditNote<'a> {
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -298,7 +298,7 @@ pub struct PreviewLinesCreditNote<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -344,7 +344,7 @@ pub struct PreviewLinesCreditNote<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> PreviewLinesCreditNote<'a> {
     pub fn new(invoice: &'a str) -> Self {

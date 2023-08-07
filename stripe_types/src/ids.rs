@@ -15,7 +15,7 @@ macro_rules! def_id_serde_impls {
             where
                 D: serde::de::Deserializer<'de>,
             {
-                let s: String = serde::Deserialize::deserialize(deserializer)?;
+                let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }

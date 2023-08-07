@@ -12,6 +12,7 @@ path = "src/mod.rs"
 serde.workspace = true
 http-types.workspace = true
 smol_str.workspace = true
+serde_json.workspace = true
 async-stripe = {path = "../../async-stripe"}
 stripe_types = {path = "../../stripe_types"}
 

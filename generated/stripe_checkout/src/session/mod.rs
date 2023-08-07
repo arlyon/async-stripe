@@ -266,6 +266,7 @@ impl<'de> serde::Deserialize<'de> for SessionCustomerCreation {
 ///
 /// If blank or `auto`, the browser's locale is used.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SessionLocale {
     Auto,
     Bg,
@@ -308,6 +309,8 @@ pub enum SessionLocale {
     Zh,
     ZhMinusHk,
     ZhMinusTw,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SessionLocale {
@@ -355,6 +358,7 @@ impl SessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
+            Unknown => "unknown",
         }
     }
 }
@@ -439,7 +443,7 @@ impl<'de> serde::Deserialize<'de> for SessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionLocale"))
+        Ok(Self::from_str(&s).unwrap_or(SessionLocale::Unknown))
     }
 }
 /// The mode of the Checkout Session.

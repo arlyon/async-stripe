@@ -115,7 +115,7 @@ impl<'de> serde::Deserialize<'de> for SearchReturnedObject {
             .map_err(|_| serde::de::Error::custom("Unknown value for SearchReturnedObject"))
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListSubscription<'a> {
     /// Filter subscriptions by their automatic tax settings.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -139,7 +139,7 @@ pub struct ListSubscription<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -159,7 +159,7 @@ pub struct ListSubscription<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// The status of the subscriptions to retrieve.
     ///
     /// Passing in a value of `canceled` will return all canceled subscriptions, including those belonging to deleted customers.
@@ -560,7 +560,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub acss_debit: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>,
     /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    pub bancontact: Option<InvoicePaymentMethodOptionsParam>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a>>,
@@ -570,7 +570,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
         Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<InvoicePaymentMethodOptionsParam>,
+    pub konbini: Option<&'a serde_json::Value>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
@@ -592,18 +592,6 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     pub verification_method: Option<VerificationMethod>,
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
-    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language: Option<PreferredLanguage>,
-}
-impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1025,7 +1013,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub acss_debit: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>,
     /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    pub bancontact: Option<InvoicePaymentMethodOptionsParam>,
     /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard<'a>>,
@@ -1035,7 +1023,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
         Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<InvoicePaymentMethodOptionsParam>,
+    pub konbini: Option<&'a serde_json::Value>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
@@ -1057,18 +1045,6 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     pub verification_method: Option<VerificationMethod>,
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
-    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language: Option<PreferredLanguage>,
-}
-impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1941,13 +1917,6 @@ impl<'a> EuBankTransferParam<'a> {
         Self { country }
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct InvoicePaymentMethodOptionsParam {}
-impl InvoicePaymentMethodOptionsParam {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Permissions {
     Balances,
@@ -2008,6 +1977,7 @@ impl serde::Serialize for Permissions {
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
@@ -2033,6 +2003,8 @@ pub enum PaymentMethodTypes {
     Sofort,
     UsBankAccount,
     WechatPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodTypes {
@@ -2063,6 +2035,7 @@ impl PaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
+            Unknown => "unknown",
         }
     }
 }
@@ -2255,7 +2228,7 @@ impl<'a> TransferDataSpecs<'a> {
 #[serde(untagged)]
 pub enum TrialEnd {
     Now,
-    Timestamp(stripe_types::Timestamp),
+    StripeTypesTimestamp(stripe_types::Timestamp),
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MissingPaymentMethod {
@@ -2497,6 +2470,17 @@ pub struct MandateOptionsParam {
     pub transaction_type: Option<TransactionType>,
 }
 impl MandateOptionsParam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct InvoicePaymentMethodOptionsParam {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_language: Option<PreferredLanguage>,
+}
+impl InvoicePaymentMethodOptionsParam {
     pub fn new() -> Self {
         Self::default()
     }

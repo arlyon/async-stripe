@@ -67,6 +67,7 @@ pub struct LegalEntityCompany {
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum LegalEntityCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -88,6 +89,8 @@ pub enum LegalEntityCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl LegalEntityCompanyStructure {
@@ -114,6 +117,7 @@ impl LegalEntityCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            Unknown => "unknown",
         }
     }
 }
@@ -177,7 +181,6 @@ impl<'de> serde::Deserialize<'de> for LegalEntityCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for LegalEntityCompanyStructure"))
+        Ok(Self::from_str(&s).unwrap_or(LegalEntityCompanyStructure::Unknown))
     }
 }

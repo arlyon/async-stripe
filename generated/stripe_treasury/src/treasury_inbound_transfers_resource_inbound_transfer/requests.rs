@@ -76,14 +76,14 @@ impl<'a> RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
         client.get_query(&format!("/treasury/inbound_transfers/{id}", id = id), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -99,7 +99,7 @@ pub struct ListTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// Only return InboundTransfers that have the given status: `processing`, `succeeded`, `failed` or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ListTreasuryInboundTransfersResourceInboundTransferStatus>,
@@ -226,6 +226,7 @@ impl FailTreasuryInboundTransfersResourceInboundTransferFailureDetails {
 }
 /// Reason for the failure.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum FailTreasuryInboundTransfersResourceInboundTransferFailureDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -240,6 +241,8 @@ pub enum FailTreasuryInboundTransfersResourceInboundTransferFailureDetailsCode {
     InvalidCurrency,
     NoAccount,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl FailTreasuryInboundTransfersResourceInboundTransferFailureDetailsCode {
@@ -259,6 +262,7 @@ impl FailTreasuryInboundTransfersResourceInboundTransferFailureDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
+            Unknown => "unknown",
         }
     }
 }

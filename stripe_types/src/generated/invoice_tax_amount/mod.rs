@@ -17,6 +17,7 @@ pub struct InvoiceTaxAmount {
 ///
 /// The possible values for this field may be extended as new tax rules are supported.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceTaxAmountTaxabilityReason {
     CustomerExempt,
     NotCollecting,
@@ -33,6 +34,8 @@ pub enum InvoiceTaxAmountTaxabilityReason {
     StandardRated,
     TaxableBasisReduced,
     ZeroRated,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl InvoiceTaxAmountTaxabilityReason {
@@ -54,6 +57,7 @@ impl InvoiceTaxAmountTaxabilityReason {
             StandardRated => "standard_rated",
             TaxableBasisReduced => "taxable_basis_reduced",
             ZeroRated => "zero_rated",
+            Unknown => "unknown",
         }
     }
 }
@@ -112,8 +116,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceTaxAmountTaxabilityReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for InvoiceTaxAmountTaxabilityReason")
-        })
+        Ok(Self::from_str(&s).unwrap_or(InvoiceTaxAmountTaxabilityReason::Unknown))
     }
 }

@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 futures-util = "0.3.28"
-tokio = { version = "1.24.1", features = ["rt", "macros"] }
+tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
 async-stripe = {path = "../../async-stripe"}
 stripe_core = {path = "../../generated/stripe_core", features = ["customer"]}
 

@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListIssuingCardholder<'a> {
     /// Only return cardholders that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11,7 +11,7 @@ pub struct ListIssuingCardholder<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -28,7 +28,7 @@ pub struct ListIssuingCardholder<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// Only return cardholders that have the given status.
     ///
     /// One of `active`, `inactive`, or `blocked`.
@@ -232,6 +232,7 @@ impl<'a> CreateIssuingCardholderSpendingControls<'a> {
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingCardholderSpendingControlsAllowedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -528,6 +529,8 @@ pub enum CreateIssuingCardholderSpendingControlsAllowedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateIssuingCardholderSpendingControlsAllowedCategories {
@@ -873,6 +876,7 @@ impl CreateIssuingCardholderSpendingControlsAllowedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -1260,6 +1264,7 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsAllowedCategori
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingCardholderSpendingControlsBlockedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -1556,6 +1561,8 @@ pub enum CreateIssuingCardholderSpendingControlsBlockedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateIssuingCardholderSpendingControlsBlockedCategories {
@@ -1901,6 +1908,7 @@ impl CreateIssuingCardholderSpendingControlsBlockedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -2305,6 +2313,7 @@ impl<'a> CreateIssuingCardholderSpendingControlsSpendingLimits<'a> {
 ///
 /// Omitting this field will apply the limit to all categories.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -2601,6 +2610,8 @@ pub enum CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
@@ -2946,6 +2957,7 @@ impl CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -3444,6 +3456,7 @@ impl<'a> UpdateIssuingCardholderSpendingControls<'a> {
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingCardholderSpendingControlsAllowedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -3740,6 +3753,8 @@ pub enum UpdateIssuingCardholderSpendingControlsAllowedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl UpdateIssuingCardholderSpendingControlsAllowedCategories {
@@ -4085,6 +4100,7 @@ impl UpdateIssuingCardholderSpendingControlsAllowedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -4472,6 +4488,7 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsAllowedCategori
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingCardholderSpendingControlsBlockedCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -4768,6 +4785,8 @@ pub enum UpdateIssuingCardholderSpendingControlsBlockedCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl UpdateIssuingCardholderSpendingControlsBlockedCategories {
@@ -5113,6 +5132,7 @@ impl UpdateIssuingCardholderSpendingControlsBlockedCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -5517,6 +5537,7 @@ impl<'a> UpdateIssuingCardholderSpendingControlsSpendingLimits<'a> {
 ///
 /// Omitting this field will apply the limit to all categories.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -5813,6 +5834,8 @@ pub enum UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
@@ -6158,6 +6181,7 @@ impl UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }

@@ -119,7 +119,9 @@ pub fn parse_stripe_schema_as_rust_object(
     let not_deleted_path = path.as_not_deleted();
     let infer_ctx = Inference::new(ident).id_path(&not_deleted_path);
     let typ = infer_ctx.infer_schema_type(schema);
-    let (mut rust_obj, _) = typ.into_object().expect("Unexpected top level schema type");
+    let Some((mut rust_obj, _)) = typ.into_object() else {
+        panic!("Unexpected top level schema type for {}", path);
+    };
     match &mut rust_obj {
         RustObject::Struct(fields) => {
             let mut id_type = None;

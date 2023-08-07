@@ -114,6 +114,7 @@ pub struct Source {
 /// An additional hash is included on the source with a name matching this value.
 /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SourceType {
     AchCreditTransfer,
     AchDebit,
@@ -134,6 +135,8 @@ pub enum SourceType {
     Sofort,
     ThreeDSecure,
     Wechat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SourceType {
@@ -159,6 +162,7 @@ impl SourceType {
             Sofort => "sofort",
             ThreeDSecure => "three_d_secure",
             Wechat => "wechat",
+            Unknown => "unknown",
         }
     }
 }
@@ -221,7 +225,7 @@ impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SourceType"))
+        Ok(Self::from_str(&s).unwrap_or(SourceType::Unknown))
     }
 }
 impl stripe_types::Object for Source {

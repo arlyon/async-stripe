@@ -46,6 +46,7 @@ pub struct ApiErrors {
 }
 /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ApiErrorsCode {
     AccountClosed,
     AccountCountryInvalidAddress,
@@ -203,6 +204,8 @@ pub enum ApiErrorsCode {
     TransferSourceBalanceParametersMismatch,
     TransfersNotAllowed,
     UrlInvalid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl ApiErrorsCode {
@@ -385,6 +388,7 @@ impl ApiErrorsCode {
             }
             TransfersNotAllowed => "transfers_not_allowed",
             UrlInvalid => "url_invalid",
+            Unknown => "unknown",
         }
     }
 }
@@ -608,7 +612,7 @@ impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ApiErrorsCode"))
+        Ok(Self::from_str(&s).unwrap_or(ApiErrorsCode::Unknown))
     }
 }
 /// The type of error returned.

@@ -889,13 +889,13 @@ impl<'a> UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
     /// An object ID cursor for use in pagination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -904,7 +904,7 @@ pub struct ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     pub limit: Option<i64>,
     /// An object ID cursor for use in pagination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     pub fn new() -> Self {

@@ -8,6 +8,7 @@ pub struct GelatoSessionLastError {
 }
 /// A short machine-readable string giving the reason for the verification or user-session failure.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoSessionLastErrorCode {
     Abandoned,
     ConsentDeclined,
@@ -24,6 +25,8 @@ pub enum GelatoSessionLastErrorCode {
     SelfieManipulated,
     SelfieUnverifiedOther,
     UnderSupportedAge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl GelatoSessionLastErrorCode {
@@ -45,6 +48,7 @@ impl GelatoSessionLastErrorCode {
             SelfieManipulated => "selfie_manipulated",
             SelfieUnverifiedOther => "selfie_unverified_other",
             UnderSupportedAge => "under_supported_age",
+            Unknown => "unknown",
         }
     }
 }
@@ -103,7 +107,6 @@ impl<'de> serde::Deserialize<'de> for GelatoSessionLastErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoSessionLastErrorCode"))
+        Ok(Self::from_str(&s).unwrap_or(GelatoSessionLastErrorCode::Unknown))
     }
 }

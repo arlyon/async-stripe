@@ -32,6 +32,7 @@ pub struct IssuingAuthorizationRequest {
 }
 /// When an authorization is approved or declined by you or by Stripe, this field provides additional detail on the reason for the outcome.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationRequestReason {
     AccountDisabled,
     CardActive,
@@ -47,6 +48,8 @@ pub enum IssuingAuthorizationRequestReason {
     WebhookDeclined,
     WebhookError,
     WebhookTimeout,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl IssuingAuthorizationRequestReason {
@@ -67,6 +70,7 @@ impl IssuingAuthorizationRequestReason {
             WebhookDeclined => "webhook_declined",
             WebhookError => "webhook_error",
             WebhookTimeout => "webhook_timeout",
+            Unknown => "unknown",
         }
     }
 }
@@ -124,8 +128,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationRequestReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationRequestReason")
-        })
+        Ok(Self::from_str(&s).unwrap_or(IssuingAuthorizationRequestReason::Unknown))
     }
 }

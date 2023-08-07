@@ -18,7 +18,8 @@ extern crate rocket;
 use rocket::data::{self, Data, FromData, ToByteUnit};
 use rocket::http::Status;
 use rocket::request::{FromRequest, Outcome, Request};
-use stripe::{CheckoutSession, EventObject, EventType, Webhook};
+use stripe_checkout::Session;
+use stripe_webhook::{EventObject, EventType, Webhook};
 
 #[launch]
 async fn rocket() -> _ {
@@ -32,9 +33,9 @@ pub async fn stripe_webhooks(stripe_signature: StripeSignature<'_>, payload: Pay
         stripe_signature.signature,
         "webhook_secret_key",
     ) {
-        match event.event_type {
+        match event.type_ {
             EventType::CheckoutSessionCompleted => {
-                if let EventObject::CheckoutSession(session) = event.data.object {
+                if let EventObject::Session(session) = event.data.object {
                     match checkout_session_completed(session) {
                         Ok(_) => Status::Accepted,
                         Err(_) => Status::BadRequest,
@@ -50,7 +51,7 @@ pub async fn stripe_webhooks(stripe_signature: StripeSignature<'_>, payload: Pay
     }
 }
 
-fn checkout_session_completed<'a>(session: CheckoutSession) -> Result<(), &'a str> {
+fn checkout_session_completed<'a>(session: Session) -> Result<(), &'a str> {
     println!("Checkout Session Completed");
     println!("{:?}", session.id);
     Ok(())

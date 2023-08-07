@@ -17,7 +17,7 @@
 use std::borrow::Borrow;
 
 use actix_web::{post, web, App, HttpRequest, HttpResponse, HttpServer};
-use stripe::{EventObject, EventType, Webhook, WebhookError};
+use stripe_webhook::{EventObject, EventType, Webhook, WebhookError};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -43,7 +43,7 @@ pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> Result<(), Webho
                 }
             }
             EventType::CheckoutSessionCompleted => {
-                if let EventObject::CheckoutSession(session) = event.data.object {
+                if let EventObject::Session(session) = event.data.object {
                     handle_checkout_session(session)?;
                 }
             }
@@ -62,12 +62,12 @@ fn get_header_value<'b>(req: &'b HttpRequest, key: &'b str) -> Option<&'b str> {
     req.headers().get(key)?.to_str().ok()
 }
 
-fn handle_account_updated(account: stripe::Account) -> Result<(), WebhookError> {
+fn handle_account_updated(account: stripe_types::Account) -> Result<(), WebhookError> {
     println!("Received account updated webhook for account: {:?}", account.id);
     Ok(())
 }
 
-fn handle_checkout_session(session: stripe::CheckoutSession) -> Result<(), WebhookError> {
+fn handle_checkout_session(session: stripe_checkout::Session) -> Result<(), WebhookError> {
     println!("Received checkout session completed webhook with id: {:?}", session.id);
     Ok(())
 }

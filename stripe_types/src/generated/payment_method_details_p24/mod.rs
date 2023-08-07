@@ -16,6 +16,7 @@ pub struct PaymentMethodDetailsP24 {
 ///
 /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsP24Bank {
     AliorBank,
     BankMillennium,
@@ -42,6 +43,8 @@ pub enum PaymentMethodDetailsP24Bank {
     TmobileUsbugiBankowe,
     ToyotaBank,
     VolkswagenBank,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodDetailsP24Bank {
@@ -73,6 +76,7 @@ impl PaymentMethodDetailsP24Bank {
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
             VolkswagenBank => "volkswagen_bank",
+            Unknown => "unknown",
         }
     }
 }
@@ -141,7 +145,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodDetailsP24Bank"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodDetailsP24Bank::Unknown))
     }
 }

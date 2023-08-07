@@ -8,7 +8,7 @@ use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
-use crate::error::{ErrorResponse, StripeError};
+use crate::error::StripeError;
 
 #[cfg(feature = "hyper-rustls-native")]
 mod connector {
@@ -149,9 +149,8 @@ async fn send_inner(
                     tries += 1;
                     let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
                     last_error = serde_path_to_error::deserialize(json_deserializer)
-                        .map(|mut e: ErrorResponse| {
-                            e.error.http_status = status.into();
-                            StripeError::from(e.error)
+                        .map(|e: stripe_types::Error| {
+                            StripeError::Stripe(*e.error, status.as_u16())
                         })
                         .unwrap_or_else(StripeError::from);
                     last_status = Some(status.into());
@@ -180,6 +179,8 @@ mod tests {
     use http_types::{Method, Request, Url};
     use httpmock::prelude::*;
     use hyper::{body::to_bytes, Body, Request as HyperRequest};
+    use serde_json::json;
+    use stripe_types::api_errors::{ApiErrorsCode, ApiErrorsType};
 
     use super::convert_request;
     use super::TokioClient;
@@ -257,6 +258,43 @@ mod tests {
         assert!(res.is_err());
     }
 
+    // https://github.com/arlyon/async-stripe/issues/384
+    #[tokio::test]
+    async fn user_error_transfers() {
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+        let message ="Your destination account needs to have at least one of the following capabilities enabled: transfers, crypto_transfers, legacy_payments";
+        let log_url = "https://dashboard.stripe.com/logs/req_nIhlutaV4amLEs?t=1685040634";
+        let mock = server.mock(|when, then| {
+            when.method(GET).path("/v1/transfers");
+            then.status(400).json_body(json!({
+              "error": {
+                "code": "insufficient_capabilities_for_transfer",
+                "message": message,
+                "request_log_url": log_url,
+                "type": "invalid_request_error"
+              }
+            }));
+        });
+
+        let req = Request::get(Url::parse(&server.url("/v1/transfers")).unwrap());
+        let res = client.execute::<()>(req, &RequestStrategy::Once).await.unwrap_err();
+        mock.assert_hits_async(1).await;
+
+        match res {
+            StripeError::Stripe(err, status_code) => {
+                assert_eq!(status_code, 400);
+                assert_eq!(err.type_, ApiErrorsType::InvalidRequestError);
+                assert_eq!(err.message.as_deref(), Some(message));
+                assert_eq!(err.request_log_url.as_deref(), Some(log_url));
+                assert_eq!(err.code, Some(ApiErrorsCode::Unknown));
+            }
+            _ => panic!("Expected stripe error, got {:?}", res),
+        }
+    }
+
     #[tokio::test]
     async fn user_error() {
         let client = TokioClient::new();
@@ -281,7 +319,7 @@ mod tests {
         mock.assert_hits_async(1).await;
 
         match res {
-            Err(StripeError::Stripe(x)) => println!("{:?}", x),
+            Err(StripeError::Stripe(x, _)) => println!("{:?}", x),
             _ => panic!("Expected stripe error {:?}", res),
         }
     }

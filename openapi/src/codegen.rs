@@ -14,6 +14,7 @@ use crate::templates::cargo_toml::gen_crate_toml;
 use crate::templates::derives::Derives;
 use crate::url_finder::UrlFinder;
 use crate::utils::{append_to_file, write_to_file};
+use crate::webhook::write_generated_for_webhooks;
 
 pub struct CodeGen {
     pub components: Components,
@@ -90,7 +91,8 @@ impl CodeGen {
 
     pub fn write_files(&self) -> anyhow::Result<()> {
         self.write_crate_base()?;
-        self.write_components()
+        self.write_components()?;
+        write_generated_for_webhooks(&self.components)
     }
 
     fn write_crate_base(&self) -> anyhow::Result<()> {

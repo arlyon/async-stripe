@@ -83,6 +83,7 @@ impl<'a> CreateReportingReportRunParameters<'a> {
 }
 /// Category of balance transactions to be included in the report run.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateReportingReportRunParametersReportingCategory {
     Advance,
     AdvanceFunding,
@@ -118,6 +119,8 @@ pub enum CreateReportingReportRunParametersReportingCategory {
     TopupReversal,
     Transfer,
     TransferReversal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateReportingReportRunParametersReportingCategory {
@@ -158,6 +161,7 @@ impl CreateReportingReportRunParametersReportingCategory {
             TopupReversal => "topup_reversal",
             Transfer => "transfer",
             TransferReversal => "transfer_reversal",
+            Unknown => "unknown",
         }
     }
 }
@@ -237,6 +241,7 @@ impl serde::Serialize for CreateReportingReportRunParametersReportingCategory {
 /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
 /// Has no effect on `interval_start` or `interval_end`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateReportingReportRunParametersTimezone {
     AfricaAbidjan,
     AfricaAccra,
@@ -836,6 +841,8 @@ pub enum CreateReportingReportRunParametersTimezone {
     WMinusSu,
     Wet,
     Zulu,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateReportingReportRunParametersTimezone {
@@ -1440,6 +1447,7 @@ impl CreateReportingReportRunParametersTimezone {
             WMinusSu => "W-SU",
             Wet => "WET",
             Zulu => "Zulu",
+            Unknown => "unknown",
         }
     }
 }
@@ -2088,7 +2096,7 @@ impl<'a> CreateReportingReportRun<'a> {
         client.send_form("/reporting/report_runs", self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListReportingReportRun<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
@@ -2097,7 +2105,7 @@ pub struct ListReportingReportRun<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -2111,7 +2119,7 @@ pub struct ListReportingReportRun<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListReportingReportRun<'a> {
     pub fn new() -> Self {

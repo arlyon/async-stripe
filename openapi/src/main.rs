@@ -33,6 +33,7 @@ mod templates;
 mod types;
 mod url_finder;
 mod utils;
+mod webhook;
 
 #[derive(Debug, StructOpt)]
 struct Command {
@@ -115,6 +116,7 @@ fn main() -> Result<()> {
             }
         ));
     }
+    fmt_cmd.arg("out/stripe_webhook/mod.rs");
 
     let out = fmt_cmd.output()?;
     if !out.status.success() {
@@ -124,6 +126,7 @@ fn main() -> Result<()> {
     if !args.dry_run {
         run_rsync("out/crates/", "../generated/")?;
         run_rsync("out/stripe_types/", "../stripe_types/src/generated/")?;
+        run_rsync("out/stripe_webhook/", "../stripe_webhook/src/generated/")?;
     }
     Ok(())
 }

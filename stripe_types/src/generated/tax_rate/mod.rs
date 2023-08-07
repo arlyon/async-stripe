@@ -51,6 +51,7 @@ pub struct TaxRate {
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxRateTaxType {
     AmusementTax,
     CommunicationsTax,
@@ -65,6 +66,8 @@ pub enum TaxRateTaxType {
     SalesTax,
     ServiceTax,
     Vat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl TaxRateTaxType {
@@ -84,6 +87,7 @@ impl TaxRateTaxType {
             SalesTax => "sales_tax",
             ServiceTax => "service_tax",
             Vat => "vat",
+            Unknown => "unknown",
         }
     }
 }
@@ -140,7 +144,7 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRateTaxType"))
+        Ok(Self::from_str(&s).unwrap_or(TaxRateTaxType::Unknown))
     }
 }
 impl stripe_types::Object for TaxRate {

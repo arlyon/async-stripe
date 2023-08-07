@@ -30,6 +30,7 @@ pub struct File {
 }
 /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum FilePurpose {
     AccountRequirement,
     AdditionalVerification,
@@ -46,6 +47,8 @@ pub enum FilePurpose {
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
     TerminalReaderSplashscreen,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl FilePurpose {
@@ -67,6 +70,7 @@ impl FilePurpose {
             SigmaScheduledQuery => "sigma_scheduled_query",
             TaxDocumentUserUpload => "tax_document_user_upload",
             TerminalReaderSplashscreen => "terminal_reader_splashscreen",
+            Unknown => "unknown",
         }
     }
 }
@@ -125,7 +129,7 @@ impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FilePurpose"))
+        Ok(Self::from_str(&s).unwrap_or(FilePurpose::Unknown))
     }
 }
 impl stripe_types::Object for File {

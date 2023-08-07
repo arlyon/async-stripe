@@ -13,16 +13,9 @@ use crate::components::Components;
 use crate::graph::ComponentGraph;
 use crate::types::ComponentPath;
 
-// pub const PATHS_IN_TYPES: &[&str] = &[
-//     "account",
-//     "file",
-//     "customer",
-//     "payment_source",
-//     "invoice",
-//     "payment_method",
-//     "payment_intent",
-//     "product",
-// ];
+/// Paths for components required to live in the `stripe_types` crate. Adding `event` is
+/// used for webhooks
+const PATHS_IN_TYPES: &[&str] = &["event"];
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -260,6 +253,10 @@ impl Components {
                 if component.krate_unwrapped().are_type_defs_types_crate() {
                     continue;
                 }
+                if PATHS_IN_TYPES.contains(&path.as_ref()) {
+                    required.push(path.clone());
+                    continue;
+                }
                 let my_crate = component.krate_unwrapped().base();
                 let depended_on =
                     graph.neighbors_directed(path, Direction::Incoming).collect::<Vec<_>>();
@@ -322,10 +319,10 @@ impl Components {
     }
 }
 
-fn infer_crates_using_deps<F>(components: &mut Components, infer_test: F)
-where
-    F: Copy + FnOnce(&Components, &ComponentPath, &ComponentGraph) -> Option<Crate>,
-{
+fn infer_crates_using_deps(
+    components: &mut Components,
+    infer_test: fn(&Components, &ComponentPath, &ComponentGraph) -> Option<Crate>,
+) {
     let mut new_assignments: IndexMap<ComponentPath, Crate> = IndexMap::new();
     loop {
         let graph = components.gen_component_dep_graph();

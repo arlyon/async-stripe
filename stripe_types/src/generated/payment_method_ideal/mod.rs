@@ -11,6 +11,7 @@ pub struct PaymentMethodIdeal {
 ///
 /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodIdealBank {
     AbnAmro,
     AsnBank,
@@ -26,6 +27,8 @@ pub enum PaymentMethodIdealBank {
     TriodosBank,
     VanLanschot,
     Yoursafe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodIdealBank {
@@ -46,6 +49,7 @@ impl PaymentMethodIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
+            Unknown => "unknown",
         }
     }
 }
@@ -103,12 +107,12 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBank"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodIdealBank::Unknown))
     }
 }
 /// The Bank Identifier Code of the customer's bank, if the bank was provided.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodIdealBic {
     Abnanl2a,
     Asnbnl21,
@@ -125,6 +129,8 @@ pub enum PaymentMethodIdealBic {
     Revolt21,
     Snsbnl2a,
     Trionl2u,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodIdealBic {
@@ -146,6 +152,7 @@ impl PaymentMethodIdealBic {
             Revolt21 => "REVOLT21",
             Snsbnl2a => "SNSBNL2A",
             Trionl2u => "TRIONL2U",
+            Unknown => "unknown",
         }
     }
 }
@@ -204,7 +211,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodIdealBic"))
+        Ok(Self::from_str(&s).unwrap_or(PaymentMethodIdealBic::Unknown))
     }
 }

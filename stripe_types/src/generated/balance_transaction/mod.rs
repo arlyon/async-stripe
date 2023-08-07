@@ -56,6 +56,7 @@ pub struct BalanceTransaction {
 /// [Learn more](https://stripe.com/docs/reports/balance-transaction-types) about balance transaction types and what they represent.
 /// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BalanceTransactionType {
     Adjustment,
     Advance,
@@ -89,6 +90,8 @@ pub enum BalanceTransactionType {
     TransferCancel,
     TransferFailure,
     TransferRefund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl BalanceTransactionType {
@@ -127,6 +130,7 @@ impl BalanceTransactionType {
             TransferCancel => "transfer_cancel",
             TransferFailure => "transfer_failure",
             TransferRefund => "transfer_refund",
+            Unknown => "unknown",
         }
     }
 }
@@ -202,8 +206,7 @@ impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BalanceTransactionType"))
+        Ok(Self::from_str(&s).unwrap_or(BalanceTransactionType::Unknown))
     }
 }
 impl stripe_types::Object for BalanceTransaction {

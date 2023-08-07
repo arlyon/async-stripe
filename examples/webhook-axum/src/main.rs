@@ -21,7 +21,7 @@ use axum::{
     routing::post,
     Error, Router,
 };
-use stripe::{Event, EventObject, EventType};
+use stripe_webhook::{Event, EventObject, EventType, Webhook};
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
@@ -59,7 +59,7 @@ where
             String::from_request(req, state).await.map_err(IntoResponse::into_response)?;
 
         Ok(Self(
-            stripe::Webhook::construct_event(&payload, signature.to_str().unwrap(), "whsec_xxxxx")
+            Webhook::construct_event(&payload, signature.to_str().unwrap(), "whsec_xxxxx")
                 .map_err(|_| StatusCode::BAD_REQUEST.into_response())?,
         ))
     }
@@ -69,7 +69,7 @@ where
 async fn handle_webhook(StripeEvent(event): StripeEvent) {
     match event.type_ {
         EventType::CheckoutSessionCompleted => {
-            if let EventObject::CheckoutSession(session) = event.data.object {
+            if let EventObject::Session(session) = event.data.object {
                 println!("Received checkout session completed webhook with id: {:?}", session.id);
             }
         }

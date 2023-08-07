@@ -266,6 +266,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
 ///
 /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinkPaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
@@ -295,6 +296,8 @@ pub enum PaymentLinkPaymentMethodTypes {
     Sofort,
     UsBankAccount,
     WechatPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentLinkPaymentMethodTypes {
@@ -329,6 +332,7 @@ impl PaymentLinkPaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
+            Unknown => "unknown",
         }
     }
 }
@@ -400,9 +404,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodTypes")
-        })
+        Ok(Self::from_str(&s).unwrap_or(PaymentLinkPaymentMethodTypes::Unknown))
     }
 }
 /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.

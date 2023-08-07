@@ -8,11 +8,15 @@ use heck::CamelCase;
 pub struct RustIdent(String);
 
 impl RustIdent {
-    pub fn from_valid(val: String) -> Self {
+    /// Only to be used safely when `val` is known to be a valid
+    /// and we don't want to convert to camelcase since it strips
+    /// underscores (e.g. `ApiVersion`).
+    pub fn unchanged(val: String) -> Self {
         Self(val)
     }
 
-    pub fn create(val: &str) -> Self {
+    pub fn create<T: AsRef<str>>(val: T) -> Self {
+        let val = val.as_ref();
         if val.contains('.') {
             Self(val.replace('.', "_").to_camel_case())
         } else {
@@ -21,7 +25,7 @@ impl RustIdent {
     }
 
     pub fn joined<T: Display, U: Display>(piece1: T, piece2: U) -> Self {
-        Self::create(&format!("{piece1}_{piece2}"))
+        Self::create(format!("{piece1}_{piece2}"))
     }
 }
 

@@ -157,6 +157,10 @@ impl RustType {
         }
     }
 
+    pub fn serde_json_value(is_ref: bool) -> Self {
+        Self::Simple(SimpleType::Ext(ExtType::Value { is_ref }))
+    }
+
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
         Self::Path {
             path: PathToType::ObjectId(id_path),
@@ -329,30 +333,23 @@ pub enum SimpleType {
 impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
-        !matches!(self, Self::String)
+        !matches!(self, Self::String | Self::Ext(ExtType::Value { is_ref: false }))
     }
 
     /// Is this type a reference?
     pub const fn is_reference(self) -> bool {
-        matches!(self, SimpleType::Str)
+        matches!(self, Self::Str | Self::Ext(ExtType::Value { is_ref: true }))
     }
 
     pub const fn ident(self) -> &'static str {
+        use SimpleType::*;
         match self {
-            Self::Bool => "bool",
-            Self::Float => "f64",
-            Self::String => "String",
-            Self::Str => "str",
-            Self::Int(typ) => typ.as_str(),
-            Self::Ext(ext) => ext.ident(),
-        }
-    }
-
-    pub const fn import_from(self) -> Option<&'static str> {
-        if matches!(self, Self::Ext(_)) {
-            Some("stripe_types")
-        } else {
-            None
+            Bool => "bool",
+            Float => "f64",
+            String => "String",
+            Str => "str",
+            Int(typ) => typ.as_str(),
+            Ext(ext) => ext.ident(),
         }
     }
 }
@@ -388,22 +385,27 @@ impl Display for IntType {
     }
 }
 
-/// Types defined outside of codegen, in the `stripe_types` crate.
+/// Types defined outside of codegen.
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ExtType {
     Currency,
     RangeQueryTs,
     Timestamp,
     AlwaysTrue,
+    /// serde_json::Value
+    Value {
+        is_ref: bool,
+    },
 }
 
 impl ExtType {
     pub const fn ident(self) -> &'static str {
         match self {
-            Self::Currency => "Currency",
-            Self::RangeQueryTs => "RangeQueryTs",
-            Self::Timestamp => "Timestamp",
-            Self::AlwaysTrue => "AlwaysTrue",
+            Self::Currency => "stripe_types::Currency",
+            Self::RangeQueryTs => "stripe_types::RangeQueryTs",
+            Self::Timestamp => "stripe_types::Timestamp",
+            Self::AlwaysTrue => "stripe_types::AlwaysTrue",
+            Self::Value { .. } => "serde_json::Value",
         }
     }
 }

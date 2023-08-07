@@ -5,13 +5,13 @@ pub struct CreatePaymentMethod<'a> {
     pub acss_debit: Option<CreatePaymentMethodAcssDebit<'a>>,
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<CreatePaymentMethodAffirm>,
+    pub affirm: Option<&'a serde_json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<CreatePaymentMethodAfterpayClearpay>,
+    pub afterpay_clearpay: Option<&'a serde_json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<CreatePaymentMethodAlipay>,
+    pub alipay: Option<&'a serde_json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreatePaymentMethodAuBecsDebit<'a>>,
@@ -20,13 +20,13 @@ pub struct CreatePaymentMethod<'a> {
     pub bacs_debit: Option<CreatePaymentMethodBacsDebit<'a>>,
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<CreatePaymentMethodBancontact>,
+    pub bancontact: Option<&'a serde_json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<CreatePaymentMethodBlik>,
+    pub blik: Option<&'a serde_json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreatePaymentMethodBoleto<'a>>,
@@ -39,13 +39,13 @@ pub struct CreatePaymentMethod<'a> {
     pub card: Option<CreatePaymentMethodCard<'a>>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<CreatePaymentMethodCashapp>,
+    pub cashapp: Option<&'a serde_json::Value>,
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<CreatePaymentMethodCustomerBalance>,
+    pub customer_balance: Option<&'a serde_json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentMethodEps>,
@@ -57,25 +57,25 @@ pub struct CreatePaymentMethod<'a> {
     pub fpx: Option<CreatePaymentMethodFpx>,
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<CreatePaymentMethodGiropay>,
+    pub giropay: Option<&'a serde_json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<CreatePaymentMethodGrabpay>,
+    pub grabpay: Option<&'a serde_json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreatePaymentMethodIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<CreatePaymentMethodInteracPresent>,
+    pub interac_present: Option<&'a serde_json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreatePaymentMethodKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<CreatePaymentMethodKonbini>,
+    pub konbini: Option<&'a serde_json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<CreatePaymentMethodLink>,
+    pub link: Option<&'a serde_json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -85,7 +85,7 @@ pub struct CreatePaymentMethod<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<CreatePaymentMethodOxxo>,
+    pub oxxo: Option<&'a serde_json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreatePaymentMethodP24>,
@@ -94,16 +94,16 @@ pub struct CreatePaymentMethod<'a> {
     pub payment_method: Option<&'a str>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<CreatePaymentMethodPaynow>,
+    pub paynow: Option<&'a serde_json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<CreatePaymentMethodPaypal>,
+    pub paypal: Option<&'a serde_json::Value>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<CreatePaymentMethodPix>,
+    pub pix: Option<&'a serde_json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<CreatePaymentMethodPromptpay>,
+    pub promptpay: Option<&'a serde_json::Value>,
     /// Options to configure Radar.
     ///
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
@@ -127,10 +127,10 @@ pub struct CreatePaymentMethod<'a> {
     pub us_bank_account: Option<CreatePaymentMethodUsBankAccount<'a>>,
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<CreatePaymentMethodWechatPay>,
+    pub wechat_pay: Option<&'a serde_json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<CreatePaymentMethodZip>,
+    pub zip: Option<&'a serde_json::Value>,
 }
 impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
@@ -154,30 +154,6 @@ impl<'a> CreatePaymentMethodAcssDebit<'a> {
         transit_number: &'a str,
     ) -> Self {
         Self { account_number, institution_number, transit_number }
-    }
-}
-/// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodAffirm {}
-impl CreatePaymentMethodAffirm {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodAfterpayClearpay {}
-impl CreatePaymentMethodAfterpayClearpay {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodAlipay {}
-impl CreatePaymentMethodAlipay {
-    pub fn new() -> Self {
-        Self::default()
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
@@ -206,22 +182,6 @@ pub struct CreatePaymentMethodBacsDebit<'a> {
     pub sort_code: Option<&'a str>,
 }
 impl<'a> CreatePaymentMethodBacsDebit<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodBancontact {}
-impl CreatePaymentMethodBancontact {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodBlik {}
-impl CreatePaymentMethodBlik {
     pub fn new() -> Self {
         Self::default()
     }
@@ -286,22 +246,6 @@ impl<'a> CreatePaymentMethodTokenParams<'a> {
         Self { token }
     }
 }
-/// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodCashapp {}
-impl CreatePaymentMethodCashapp {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodCustomerBalance {}
-impl CreatePaymentMethodCustomerBalance {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodEps {
@@ -316,6 +260,7 @@ impl CreatePaymentMethodEps {
 }
 /// The customer's bank.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodEpsBank {
     ArzteUndApothekerBank,
     AustrianAnadiBankAg,
@@ -345,6 +290,8 @@ pub enum CreatePaymentMethodEpsBank {
     VolksbankGruppe,
     VolkskreditbankAg,
     VrBankBraunau,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePaymentMethodEpsBank {
@@ -379,6 +326,7 @@ impl CreatePaymentMethodEpsBank {
             VolksbankGruppe => "volksbank_gruppe",
             VolkskreditbankAg => "volkskreditbank_ag",
             VrBankBraunau => "vr_bank_braunau",
+            Unknown => "unknown",
         }
     }
 }
@@ -462,6 +410,7 @@ impl CreatePaymentMethodFpx {
 }
 /// The customer's bank.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
     Agrobank,
@@ -485,6 +434,8 @@ pub enum CreatePaymentMethodFpxBank {
     Rhb,
     StandardChartered,
     Uob,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePaymentMethodFpxBank {
@@ -513,6 +464,7 @@ impl CreatePaymentMethodFpxBank {
             Rhb => "rhb",
             StandardChartered => "standard_chartered",
             Uob => "uob",
+            Unknown => "unknown",
         }
     }
 }
@@ -574,22 +526,6 @@ impl serde::Serialize for CreatePaymentMethodFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
-/// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodGiropay {}
-impl CreatePaymentMethodGiropay {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodGrabpay {}
-impl CreatePaymentMethodGrabpay {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodIdeal {
@@ -604,6 +540,7 @@ impl CreatePaymentMethodIdeal {
 }
 /// The customer's bank.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodIdealBank {
     AbnAmro,
     AsnBank,
@@ -619,6 +556,8 @@ pub enum CreatePaymentMethodIdealBank {
     TriodosBank,
     VanLanschot,
     Yoursafe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePaymentMethodIdealBank {
@@ -639,6 +578,7 @@ impl CreatePaymentMethodIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
+            Unknown => "unknown",
         }
     }
 }
@@ -692,14 +632,6 @@ impl serde::Serialize for CreatePaymentMethodIdealBank {
         serializer.serialize_str(self.as_str())
     }
 }
-/// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodInteracPresent {}
-impl CreatePaymentMethodInteracPresent {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodKlarna {
@@ -727,30 +659,6 @@ impl CreatePaymentMethodKlarnaDob {
         Self { day, month, year }
     }
 }
-/// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodKonbini {}
-impl CreatePaymentMethodKonbini {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodLink {}
-impl CreatePaymentMethodLink {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodOxxo {}
-impl CreatePaymentMethodOxxo {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodP24 {
@@ -765,6 +673,7 @@ impl CreatePaymentMethodP24 {
 }
 /// The customer's bank.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodP24Bank {
     AliorBank,
     BankMillennium,
@@ -791,6 +700,8 @@ pub enum CreatePaymentMethodP24Bank {
     TmobileUsbugiBankowe,
     ToyotaBank,
     VolkswagenBank,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePaymentMethodP24Bank {
@@ -822,6 +733,7 @@ impl CreatePaymentMethodP24Bank {
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
             VolkswagenBank => "volkswagen_bank",
+            Unknown => "unknown",
         }
     }
 }
@@ -884,38 +796,6 @@ impl serde::Serialize for CreatePaymentMethodP24Bank {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
-    }
-}
-/// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodPaynow {}
-impl CreatePaymentMethodPaynow {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodPaypal {}
-impl CreatePaymentMethodPaypal {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodPix {}
-impl CreatePaymentMethodPix {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodPromptpay {}
-impl CreatePaymentMethodPromptpay {
-    pub fn new() -> Self {
-        Self::default()
     }
 }
 /// Options to configure Radar.
@@ -1025,6 +905,7 @@ impl serde::Serialize for CreatePaymentMethodSofortCountry {
 /// An additional hash is included on the PaymentMethod with a name matching this value.
 /// It contains additional information specific to the PaymentMethod type.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1057,6 +938,8 @@ pub enum CreatePaymentMethodType {
     UsBankAccount,
     WechatPay,
     Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePaymentMethodType {
@@ -1094,6 +977,7 @@ impl CreatePaymentMethodType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
+            Unknown => "unknown",
         }
     }
 }
@@ -1246,22 +1130,6 @@ impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-/// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodWechatPay {}
-impl CreatePaymentMethodWechatPay {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentMethodZip {}
-impl CreatePaymentMethodZip {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 impl<'a> CreatePaymentMethod<'a> {
     /// Creates a PaymentMethod object.
     ///
@@ -1302,22 +1170,22 @@ pub struct UpdatePaymentMethod<'a> {
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<UpdatePaymentMethodAcssDebit>,
+    pub acss_debit: Option<&'a serde_json::Value>,
     /// This is a legacy parameter that will be removed in the future.
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<UpdatePaymentMethodAffirm>,
+    pub affirm: Option<&'a serde_json::Value>,
     /// This is a legacy parameter that will be removed in the future.
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<UpdatePaymentMethodAuBecsDebit>,
+    pub au_becs_debit: Option<&'a serde_json::Value>,
     /// This is a legacy parameter that will be removed in the future.
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<UpdatePaymentMethodBacsDebit>,
+    pub bacs_debit: Option<&'a serde_json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams<'a>>,
@@ -1325,7 +1193,7 @@ pub struct UpdatePaymentMethod<'a> {
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<UpdatePaymentMethodBlik>,
+    pub blik: Option<&'a serde_json::Value>,
     /// If this is a `card` PaymentMethod, this hash contains the user's card details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdatePaymentMethodCard>,
@@ -1333,13 +1201,13 @@ pub struct UpdatePaymentMethod<'a> {
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<UpdatePaymentMethodCashapp>,
+    pub cashapp: Option<&'a serde_json::Value>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<UpdatePaymentMethodLink>,
+    pub link: Option<&'a serde_json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1351,7 +1219,7 @@ pub struct UpdatePaymentMethod<'a> {
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<UpdatePaymentMethodSepaDebit>,
+    pub sepa_debit: Option<&'a serde_json::Value>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
@@ -1359,59 +1227,9 @@ pub struct UpdatePaymentMethod<'a> {
     ///
     /// It is a hash that does not accept any keys.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<UpdatePaymentMethodZip>,
+    pub zip: Option<&'a serde_json::Value>,
 }
 impl<'a> UpdatePaymentMethod<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodAcssDebit {}
-impl UpdatePaymentMethodAcssDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodAffirm {}
-impl UpdatePaymentMethodAffirm {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodAuBecsDebit {}
-impl UpdatePaymentMethodAuBecsDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodBacsDebit {}
-impl UpdatePaymentMethodBacsDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodBlik {}
-impl UpdatePaymentMethodBlik {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1431,34 +1249,6 @@ impl UpdatePaymentMethodCard {
         Self::default()
     }
 }
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodCashapp {}
-impl UpdatePaymentMethodCashapp {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodLink {}
-impl UpdatePaymentMethodLink {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodSepaDebit {}
-impl UpdatePaymentMethodSepaDebit {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethodUsBankAccount {
@@ -1467,16 +1257,6 @@ pub struct UpdatePaymentMethodUsBankAccount {
     pub account_holder_type: Option<AccountHolderType>,
 }
 impl UpdatePaymentMethodUsBankAccount {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// This is a legacy parameter that will be removed in the future.
-///
-/// It is a hash that does not accept any keys.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentMethodZip {}
-impl UpdatePaymentMethodZip {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1497,7 +1277,7 @@ impl<'a> UpdatePaymentMethod<'a> {
         )
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentMethod<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1507,7 +1287,7 @@ pub struct ListPaymentMethod<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -1521,7 +1301,7 @@ pub struct ListPaymentMethod<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
     /// An optional filter on the list, based on the object `type` field.
     ///
     /// Without the filter, the list includes all current and future payment method types.
@@ -1540,6 +1320,7 @@ impl<'a> ListPaymentMethod<'a> {
 /// Without the filter, the list includes all current and future payment method types.
 /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListPaymentMethodType {
     AcssDebit,
     Affirm,
@@ -1573,6 +1354,8 @@ pub enum ListPaymentMethodType {
     UsBankAccount,
     WechatPay,
     Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl ListPaymentMethodType {
@@ -1611,6 +1394,7 @@ impl ListPaymentMethodType {
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
+            Unknown => "unknown",
         }
     }
 }

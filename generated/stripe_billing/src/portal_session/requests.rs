@@ -323,6 +323,7 @@ impl serde::Serialize for CreatePortalSessionFlowDataType {
 ///
 /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePortalSessionLocale {
     Auto,
     Bg,
@@ -371,6 +372,8 @@ pub enum CreatePortalSessionLocale {
     Zh,
     ZhMinusHk,
     ZhMinusTw,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreatePortalSessionLocale {
@@ -424,6 +427,7 @@ impl CreatePortalSessionLocale {
             Zh => "zh",
             ZhMinusHk => "zh-HK",
             ZhMinusTw => "zh-TW",
+            Unknown => "unknown",
         }
     }
 }

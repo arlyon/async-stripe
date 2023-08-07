@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentLink<'a> {
     /// Only return payment links that are active or inactive (e.g., pass `false` to list all inactive payment links).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8,7 +8,7 @@ pub struct ListPaymentLink<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -22,7 +22,7 @@ pub struct ListPaymentLink<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListPaymentLink<'a> {
     pub fn new() -> Self {
@@ -64,14 +64,14 @@ impl<'a> RetrievePaymentLink<'a> {
             .get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), self)
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsPaymentLink<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -85,7 +85,7 @@ pub struct ListLineItemsPaymentLink<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListLineItemsPaymentLink<'a> {
     pub fn new() -> Self {
@@ -1675,6 +1675,7 @@ impl AdjustableQuantityParams {
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodTypes {
     Affirm,
     AfterpayClearpay,
@@ -1704,6 +1705,8 @@ pub enum PaymentMethodTypes {
     Sofort,
     UsBankAccount,
     WechatPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl PaymentMethodTypes {
@@ -1738,6 +1741,7 @@ impl PaymentMethodTypes {
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
+            Unknown => "unknown",
         }
     }
 }
@@ -1806,6 +1810,7 @@ impl serde::Serialize for PaymentMethodTypes {
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AllowedCountries {
     Ac,
     Ad,
@@ -2044,6 +2049,8 @@ pub enum AllowedCountries {
     Zm,
     Zw,
     Zz,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl AllowedCountries {
@@ -2287,6 +2294,7 @@ impl AllowedCountries {
             Zm => "ZM",
             Zw => "ZW",
             Zz => "ZZ",
+            Unknown => "unknown",
         }
     }
 }

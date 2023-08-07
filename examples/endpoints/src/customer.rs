@@ -7,58 +7,41 @@
 
 use futures_util::StreamExt;
 use futures_util::TryStreamExt;
-use stripe::{Client, CreateCustomer, Customer, ListCustomers};
+use stripe::{Client, StripeError};
+use stripe_core::customer::{CreateCustomer, ListCustomer};
 
-#[tokio::main]
-async fn main() {
-    let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-    let client = Client::new(secret_key);
-
-    let customer = Customer::create(
-        &client,
-        CreateCustomer {
-            name: Some("Alexander Lyon"),
-            email: Some("test@async-stripe.com"),
-            description: Some(
-                "A fake customer that is used to illustrate the examples in async-stripe.",
-            ),
-            metadata: Some(std::collections::HashMap::from([(
-                String::from("async-stripe"),
-                String::from("true"),
-            )])),
-
-            ..Default::default()
-        },
-    )
-    .await
-    .unwrap();
+pub async fn run_customer_example(client: &Client) -> Result<(), StripeError> {
+    let meta =
+        std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
+    let customer = CreateCustomer {
+        name: Some("Alexander Lyon"),
+        email: Some("test@async-stripe.com"),
+        description: Some(
+            "A fake customer that is used to illustrate the examples in async-stripe.",
+        ),
+        metadata: Some(&meta),
+        ..Default::default()
+    }
+    .send(client)
+    .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    let customer = Customer::create(
-        &client,
-        CreateCustomer {
-            name: Some("Someone Else"),
-            email: Some("test@async-stripe.com"),
-            description: Some(
-                "A fake customer that is used to illustrate the examples in async-stripe.",
-            ),
-            metadata: Some(std::collections::HashMap::from([(
-                String::from("async-stripe"),
-                String::from("true"),
-            )])),
-
-            ..Default::default()
-        },
-    )
-    .await
-    .unwrap();
+    let customer = CreateCustomer {
+        name: Some("Someone Else"),
+        email: Some("test@async-stripe.com"),
+        description: Some(
+            "A fake customer that is used to illustrate the examples in async-stripe.",
+        ),
+        metadata: Some(&meta),
+        ..Default::default()
+    }
+    .send(client)
+    .await?;
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    let params = ListCustomers { ..Default::default() };
-    let paginator = Customer::list(&client, &params).await.unwrap().paginate(params);
-    let mut stream = paginator.stream(&client);
+    let mut stream = ListCustomer::new().paginate().stream(client);
 
     // get the next customer
     let _next = stream.next().await.unwrap();
@@ -67,4 +50,5 @@ async fn main() {
     let customers = stream.try_collect::<Vec<_>>().await.unwrap();
 
     println!("fetched {} customers: {:?}", customers.len(), customers);
+    Ok(())
 }

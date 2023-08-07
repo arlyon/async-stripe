@@ -114,6 +114,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionEnt
 }
 /// The specific money movement that generated the TransactionEntry.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryTransactionsResourceTransactionEntryType {
     CreditReversal,
     CreditReversalPosting,
@@ -135,6 +136,8 @@ pub enum TreasuryTransactionsResourceTransactionEntryType {
     OutboundTransferReturn,
     ReceivedCredit,
     ReceivedDebit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl TreasuryTransactionsResourceTransactionEntryType {
@@ -161,6 +164,7 @@ impl TreasuryTransactionsResourceTransactionEntryType {
             OutboundTransferReturn => "outbound_transfer_return",
             ReceivedCredit => "received_credit",
             ReceivedDebit => "received_debit",
+            Unknown => "unknown",
         }
     }
 }
@@ -224,7 +228,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceTransactionEnt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryTransactionsResourceTransactionEntryType"))
+        Ok(Self::from_str(&s).unwrap_or(TreasuryTransactionsResourceTransactionEntryType::Unknown))
     }
 }
 impl stripe_types::Object for TreasuryTransactionsResourceTransactionEntry {

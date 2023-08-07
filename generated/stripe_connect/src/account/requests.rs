@@ -417,7 +417,7 @@ impl<'a> UpdateAccount<'a> {
         )
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
@@ -426,7 +426,7 @@ pub struct ListAccount<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -440,7 +440,7 @@ pub struct ListAccount<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> ListAccount<'a> {
     pub fn new() -> Self {
@@ -966,14 +966,14 @@ impl<'a> RejectAccount<'a> {
         )
     }
 }
-#[derive(Clone, Debug, Default, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct PersonsAccount<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -990,7 +990,7 @@ pub struct PersonsAccount<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
 }
 impl<'a> PersonsAccount<'a> {
     pub fn new() -> Self {
@@ -1204,6 +1204,7 @@ impl<'a> CompanyOwnershipDeclaration<'a> {
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum Structure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -1225,6 +1226,8 @@ pub enum Structure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl Structure {
@@ -1251,6 +1254,7 @@ impl Structure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            Unknown => "unknown",
         }
     }
 }

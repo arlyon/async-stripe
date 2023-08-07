@@ -300,6 +300,7 @@ impl<'a> CreateTokenAccountCompanyOwnershipDeclaration<'a> {
 ///
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTokenAccountCompanyStructure {
     FreeZoneEstablishment,
     FreeZoneLlc,
@@ -321,6 +322,8 @@ pub enum CreateTokenAccountCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl CreateTokenAccountCompanyStructure {
@@ -347,6 +350,7 @@ impl CreateTokenAccountCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            Unknown => "unknown",
         }
     }
 }

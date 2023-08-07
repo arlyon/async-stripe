@@ -39,6 +39,7 @@ pub struct SourceTransaction {
 }
 /// The type of source this transaction is attached to.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SourceTransactionType {
     AchCreditTransfer,
     AchDebit,
@@ -56,6 +57,8 @@ pub enum SourceTransactionType {
     Sofort,
     ThreeDSecure,
     Wechat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SourceTransactionType {
@@ -78,6 +81,7 @@ impl SourceTransactionType {
             Sofort => "sofort",
             ThreeDSecure => "three_d_secure",
             Wechat => "wechat",
+            Unknown => "unknown",
         }
     }
 }
@@ -137,8 +141,7 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SourceTransactionType"))
+        Ok(Self::from_str(&s).unwrap_or(SourceTransactionType::Unknown))
     }
 }
 impl stripe_types::Object for SourceTransaction {

@@ -1,4 +1,5 @@
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ApiVersion {
     V2011_01_01,
     V2011_06_21,
@@ -98,6 +99,8 @@ pub enum ApiVersion {
     V2020_08_27,
     V2022_08_01,
     V2022_11_15,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl ApiVersion {
@@ -202,6 +205,7 @@ impl ApiVersion {
             V2020_08_27 => "2020-08-27",
             V2022_08_01 => "2022-08-01",
             V2022_11_15 => "2022-11-15",
+            Unknown => "unknown",
         }
     }
 }
@@ -343,6 +347,6 @@ impl<'de> serde::Deserialize<'de> for ApiVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ApiVersion"))
+        Ok(Self::from_str(&s).unwrap_or(ApiVersion::Unknown))
     }
 }

@@ -22,6 +22,7 @@ pub struct SetupAttemptPaymentMethodDetailsIdeal {
 ///
 /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     AbnAmro,
     AsnBank,
@@ -37,6 +38,8 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     TriodosBank,
     VanLanschot,
     Yoursafe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SetupAttemptPaymentMethodDetailsIdealBank {
@@ -57,6 +60,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBank {
             TriodosBank => "triodos_bank",
             VanLanschot => "van_lanschot",
             Yoursafe => "yoursafe",
+            Unknown => "unknown",
         }
     }
 }
@@ -114,13 +118,12 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsIdealBank 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetupAttemptPaymentMethodDetailsIdealBank")
-        })
+        Ok(Self::from_str(&s).unwrap_or(SetupAttemptPaymentMethodDetailsIdealBank::Unknown))
     }
 }
 /// The Bank Identifier Code of the customer's bank.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Abnanl2a,
     Asnbnl21,
@@ -137,6 +140,8 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Revolt21,
     Snsbnl2a,
     Trionl2u,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl SetupAttemptPaymentMethodDetailsIdealBic {
@@ -158,6 +163,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBic {
             Revolt21 => "REVOLT21",
             Snsbnl2a => "SNSBNL2A",
             Trionl2u => "TRIONL2U",
+            Unknown => "unknown",
         }
     }
 }
@@ -216,8 +222,6 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetupAttemptPaymentMethodDetailsIdealBic")
-        })
+        Ok(Self::from_str(&s).unwrap_or(SetupAttemptPaymentMethodDetailsIdealBic::Unknown))
     }
 }

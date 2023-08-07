@@ -15,14 +15,18 @@ pub fn write_enum_variants(
     variants: &[PrintableEnumVariant],
     additional_derives: Derives,
     lifetime: Option<Lifetime>,
-    object_names: Vec<Option<&str>>,
+    deser_names: Option<IndexSet<&str>>,
 ) {
     let lifetime_str = lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
-    let deser_names = as_object_names_for_deserialization(object_names);
 
     // Build the body of the enum definition
     let mut enum_body = String::with_capacity(64);
-    for (ind, PrintableEnumVariant { variant, rust_type }) in variants.iter().enumerate() {
+    for (ind, PrintableEnumVariant { variant, rust_type, feature_gate }) in
+        variants.iter().enumerate()
+    {
+        if let Some(feature_gate) = feature_gate {
+            let _ = writeln!(enum_body, r#"#[cfg(feature = "{feature_gate}")]"#);
+        }
         if let Some(typ) = rust_type {
             if let Some(names) = &deser_names {
                 let rename_to = names.get_index(ind).unwrap();
@@ -48,15 +52,7 @@ pub fn write_enum_variants(
     );
 }
 
-fn as_object_names_for_deserialization(names: Vec<Option<&str>>) -> Option<IndexSet<&str>> {
-    let orig_names_len = names.len();
-    let flat_set = names.into_iter().flatten().collect::<IndexSet<_>>();
-    if flat_set.len() == orig_names_len {
-        Some(flat_set)
-    } else {
-        None
-    }
-}
+const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
 
 /// Generate the enum definition, along with the methods `as_str`, `as_ref`, `impl Display`,
 /// and `impl Default`.
@@ -66,16 +62,34 @@ pub fn write_fieldless_enum_variants(
     enum_name: &RustIdent,
     additional_derives: Derives,
 ) {
+    let provide_unknown_variant = variants.len() > ADD_UNKNOWN_VARIANT_THRESHOLD
+        && !variants.iter().any(|v| v.variant_name.as_ref() == "Unknown");
+    let nonexhaustive = if provide_unknown_variant { "#[non_exhaustive]" } else { "" };
+    let derive_deser = additional_derives.derives_deserialize();
+    let derive_serialize = additional_derives.derives_serialize();
+
     // Build the body of the enum definition
     let mut enum_def_body = String::with_capacity(128);
     for FieldlessVariant { variant_name, .. } in variants {
         let _ = writeln!(enum_def_body, "{variant_name},");
+    }
+    if provide_unknown_variant {
+        let _ = writedoc!(
+            enum_def_body,
+            r"
+            /// An unrecognized value from Stripe. Should not be used as a request parameter.
+            Unknown,
+        "
+        );
     }
 
     // Build the body of the `as_str` implementation
     let mut as_str_body = String::with_capacity(32);
     for FieldlessVariant { wire_name, variant_name } in variants {
         let _ = writeln!(as_str_body, r#"{variant_name} => "{wire_name}","#);
+    }
+    if provide_unknown_variant {
+        let _ = writeln!(as_str_body, r#"Unknown => "unknown","#);
     }
 
     // Build the body of the `from_str` implementation
@@ -84,9 +98,6 @@ pub fn write_fieldless_enum_variants(
         let _ = writeln!(from_str_body, r#""{wire_name}" => Ok({variant_name}),"#);
     }
     let _ = writeln!(from_str_body, "_ => Err(())");
-
-    let derive_deser = additional_derives.derives_deserialize();
-    let derive_serialize = additional_derives.derives_serialize();
 
     // NB: we unset the derive flags for serialize + deserialize + debug to avoid duplicating
     // the (potentially many) strings in `as_str` and `from_str` through the default derive.
@@ -99,7 +110,7 @@ pub fn write_fieldless_enum_variants(
     let _ = writedoc!(
         out,
         r#"
-            {derives}
+            {derives}{nonexhaustive}
             pub enum {enum_name} {{
             {enum_def_body}
             }}
@@ -157,6 +168,13 @@ pub fn write_fieldless_enum_variants(
     }
 
     if derive_deser {
+        let ret_line = if provide_unknown_variant {
+            format!("Ok(Self::from_str(&s).unwrap_or({enum_name}::Unknown))")
+        } else {
+            format!(
+                r#"Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))"#
+            )
+        };
         let _ = writedoc!(
             out,
             r#"
@@ -164,7 +182,7 @@ pub fn write_fieldless_enum_variants(
                 fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {{
                     use std::str::FromStr;
                     let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-                    Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))
+                    {ret_line}
                 }}
             }}
             "#

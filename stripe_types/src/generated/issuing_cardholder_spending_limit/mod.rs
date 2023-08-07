@@ -15,6 +15,7 @@ pub struct IssuingCardholderSpendingLimit {
 ///
 /// Omitting this field will apply the limit to all categories.
 #[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardholderSpendingLimitCategories {
     AcRefrigerationRepair,
     AccountingBookkeepingServices,
@@ -311,6 +312,8 @@ pub enum IssuingCardholderSpendingLimitCategories {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
 }
 
 impl IssuingCardholderSpendingLimitCategories {
@@ -656,6 +659,7 @@ impl IssuingCardholderSpendingLimitCategories {
             WomensAccessoryAndSpecialtyShops => "womens_accessory_and_specialty_shops",
             WomensReadyToWearStores => "womens_ready_to_wear_stores",
             WreckingAndSalvageYards => "wrecking_and_salvage_yards",
+            Unknown => "unknown",
         }
     }
 }
@@ -1042,9 +1046,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardholderSpendingLimitCategories")
-        })
+        Ok(Self::from_str(&s).unwrap_or(IssuingCardholderSpendingLimitCategories::Unknown))
     }
 }
 /// Interval (or event) to which the amount applies.
