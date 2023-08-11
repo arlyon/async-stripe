@@ -16,6 +16,9 @@ pub struct CustomerCashBalanceTransaction {
     pub id: CustomerCashBalanceTransactionId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub adjusted_for_overdraft: Option<CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub applied_to_payment: Option<CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction>,
 
     /// Time at which the object was created.
@@ -69,6 +72,13 @@ impl Object for CustomerCashBalanceTransaction {
     fn object(&self) -> &'static str {
         "customer_cash_balance_transaction"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
+
+    /// The [Cash Balance Transaction](https://stripe.com/docs/api/cash_balance_transactions/object) that brought the customer balance negative, triggering the clawback of funds.
+    pub linked_transaction: Expandable<CustomerCashBalanceTransaction>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -253,6 +263,7 @@ impl std::default::Default for CustomerBalanceResourceCashBalanceTransactionReso
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CustomerCashBalanceTransactionType {
+    AdjustedForOverdraft,
     AppliedToPayment,
     Funded,
     FundingReversed,
@@ -265,6 +276,7 @@ pub enum CustomerCashBalanceTransactionType {
 impl CustomerCashBalanceTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
+            CustomerCashBalanceTransactionType::AdjustedForOverdraft => "adjusted_for_overdraft",
             CustomerCashBalanceTransactionType::AppliedToPayment => "applied_to_payment",
             CustomerCashBalanceTransactionType::Funded => "funded",
             CustomerCashBalanceTransactionType::FundingReversed => "funding_reversed",
@@ -289,6 +301,6 @@ impl std::fmt::Display for CustomerCashBalanceTransactionType {
 }
 impl std::default::Default for CustomerCashBalanceTransactionType {
     fn default() -> Self {
-        Self::AppliedToPayment
+        Self::AdjustedForOverdraft
     }
 }

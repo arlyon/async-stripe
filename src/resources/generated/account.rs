@@ -142,7 +142,7 @@ impl Account {
     /// Any parameters not provided are left unchanged.  For Custom accounts, you can update any information on the account.
     /// For other accounts, you can update all information until that account has started to go through Connect Onboarding.
     /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters can no longer be changed.
-    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
@@ -153,7 +153,7 @@ impl Account {
     /// Accounts created using test-mode keys can be deleted at any time.
     ///
     /// Standard accounts created using live-mode keys cannot be deleted.
-    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
+    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
@@ -4053,6 +4053,7 @@ pub enum CompanyParamsStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -4068,6 +4069,7 @@ pub enum CompanyParamsStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
 }
 
 impl CompanyParamsStructure {
@@ -4078,6 +4080,7 @@ impl CompanyParamsStructure {
             CompanyParamsStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyParamsStructure::GovernmentalUnit => "governmental_unit",
             CompanyParamsStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyParamsStructure::IncorporatedPartnership => "incorporated_partnership",
             CompanyParamsStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
             CompanyParamsStructure::Llc => "llc",
             CompanyParamsStructure::MultiMemberLlc => "multi_member_llc",
@@ -4095,6 +4098,7 @@ impl CompanyParamsStructure {
             }
             CompanyParamsStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyParamsStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+            CompanyParamsStructure::UnincorporatedPartnership => "unincorporated_partnership",
         }
     }
 }
@@ -4125,6 +4129,7 @@ pub enum CompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -4140,6 +4145,7 @@ pub enum CompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
 }
 
 impl CompanyStructure {
@@ -4150,6 +4156,7 @@ impl CompanyStructure {
             CompanyStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyStructure::GovernmentalUnit => "governmental_unit",
             CompanyStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyStructure::IncorporatedPartnership => "incorporated_partnership",
             CompanyStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
             CompanyStructure::Llc => "llc",
             CompanyStructure::MultiMemberLlc => "multi_member_llc",
@@ -4167,6 +4174,7 @@ impl CompanyStructure {
             }
             CompanyStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+            CompanyStructure::UnincorporatedPartnership => "unincorporated_partnership",
         }
     }
 }

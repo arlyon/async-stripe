@@ -190,7 +190,7 @@ pub struct CreateBillingPortalSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_data: Option<CreateBillingPortalSessionFlowData>,
 
-    /// The IETF language tag of the locale Customer Portal is displayed in.
+    /// The IETF language tag of the locale customer portal is displayed in.
     ///
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
     #[serde(skip_serializing_if = "Option::is_none")]
