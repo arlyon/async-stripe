@@ -52,7 +52,6 @@ impl<'a> ListSessionCustomerDetails<'a> {
         Self { email }
     }
 }
-impl<'a> stripe::PaginationParams for ListSession<'a> {}
 impl<'a> ListSession<'a> {
     /// Returns a list of Checkout Sessions.
     pub fn send(
@@ -65,6 +64,7 @@ impl<'a> ListSession<'a> {
         stripe::ListPaginator::from_params("/checkout/sessions", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSession<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -6474,7 +6474,6 @@ impl<'a> ListLineItemsSession<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListLineItemsSession<'a> {}
 impl<'a> ListLineItemsSession<'a> {
     /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
     ///
@@ -6497,6 +6496,7 @@ impl<'a> ListLineItemsSession<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsSession<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ExpireSession<'a> {
     /// Specifies which fields in the response should be expanded.

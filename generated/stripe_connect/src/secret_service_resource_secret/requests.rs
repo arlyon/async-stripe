@@ -119,7 +119,6 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
         }
     }
 }
-impl<'a> stripe::PaginationParams for ListSecretServiceResourceSecret<'a> {}
 impl<'a> ListSecretServiceResourceSecret<'a> {
     /// List all secrets stored on the given scope.
     pub fn send(
@@ -132,6 +131,7 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
         stripe::ListPaginator::from_params("/apps/secrets", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSecretServiceResourceSecret<'a> {}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     Account,

@@ -41,7 +41,6 @@ impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
         }
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentFlowsSetupIntentSetupAttempt<'a> {}
 impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
     /// Returns a list of SetupAttempts associated with a provided SetupIntent.
     pub fn send(
@@ -57,3 +56,4 @@ impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
         stripe::ListPaginator::from_params("/setup_attempts", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentFlowsSetupIntentSetupAttempt<'a> {}

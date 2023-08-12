@@ -34,7 +34,6 @@ impl<'a> ListRadarListList<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListRadarListList<'a> {}
 impl<'a> ListRadarListList<'a> {
     /// Returns a list of `ValueList` objects.
     ///
@@ -49,6 +48,7 @@ impl<'a> ListRadarListList<'a> {
         stripe::ListPaginator::from_params("/radar/value_lists", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarListList<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarListList<'a> {
     /// Specifies which fields in the response should be expanded.

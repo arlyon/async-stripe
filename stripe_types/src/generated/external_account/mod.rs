@@ -9,10 +9,10 @@ pub enum ExternalAccount {
 }
 impl stripe_types::Object for ExternalAccount {
     type Id = String;
-    fn id(&self) -> Self::Id {
+    fn id(&self) -> Option<&str> {
         match self {
-            Self::BankAccount(v) => v.id.to_string(),
-            Self::Card(v) => v.id.to_string(),
+            Self::BankAccount(v) => Some(v.id.as_str()),
+            Self::Card(v) => Some(v.id.as_str()),
         }
     }
 }

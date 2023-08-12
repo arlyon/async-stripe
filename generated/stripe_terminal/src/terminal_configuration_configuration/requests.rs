@@ -82,7 +82,6 @@ impl<'a> ListTerminalConfigurationConfiguration<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTerminalConfigurationConfiguration<'a> {}
 impl<'a> ListTerminalConfigurationConfiguration<'a> {
     /// Returns a list of `Configuration` objects.
     pub fn send(
@@ -98,6 +97,7 @@ impl<'a> ListTerminalConfigurationConfiguration<'a> {
         stripe::ListPaginator::from_params("/terminal/configurations", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalConfigurationConfiguration<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTerminalConfigurationConfiguration<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -123,10 +123,12 @@ impl<'a> RetrieveTerminalConfigurationConfiguration<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum RetrieveReturned {
-    TerminalConfiguration(stripe_terminal::TerminalConfigurationConfiguration),
-    DeletedTerminalConfiguration(stripe_terminal::TerminalConfigurationDeletedConfiguration),
+    #[serde(rename = "terminal.configuration")]
+    TerminalConfigurationDeletedConfiguration(
+        stripe_terminal::TerminalConfigurationDeletedConfiguration,
+    ),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateTerminalConfigurationConfiguration<'a> {
@@ -187,10 +189,12 @@ impl<'a> UpdateTerminalConfigurationConfiguration<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum UpdateReturned {
-    TerminalConfiguration(stripe_terminal::TerminalConfigurationConfiguration),
-    DeletedTerminalConfiguration(stripe_terminal::TerminalConfigurationDeletedConfiguration),
+    #[serde(rename = "terminal.configuration")]
+    TerminalConfigurationDeletedConfiguration(
+        stripe_terminal::TerminalConfigurationDeletedConfiguration,
+    ),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteTerminalConfigurationConfiguration {}

@@ -134,8 +134,8 @@ impl<'de> serde::Deserialize<'de> for FilePurpose {
 }
 impl stripe_types::Object for File {
     type Id = stripe_types::file::FileId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(FileId, "file_");

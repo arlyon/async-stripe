@@ -240,7 +240,6 @@ impl serde::Serialize for ListPriceType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListPrice<'a> {}
 impl<'a> ListPrice<'a> {
     /// Returns a list of your prices.
     pub fn send(
@@ -253,6 +252,7 @@ impl<'a> ListPrice<'a> {
         stripe::ListPaginator::from_params("/prices", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPrice<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePrice<'a> {
     /// Whether the price can be used for new purchases.

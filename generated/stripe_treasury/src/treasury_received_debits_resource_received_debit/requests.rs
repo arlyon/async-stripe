@@ -85,7 +85,6 @@ impl serde::Serialize for ListTreasuryReceivedDebitsResourceReceivedDebitStatus 
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {}
 impl<'a> ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {
     /// Returns a list of ReceivedDebits.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebitsResourceReceivedDebit>> {
@@ -95,6 +94,7 @@ impl<'a> ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {
         stripe::ListPaginator::from_params("/treasury/received_debits", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryReceivedDebitsResourceReceivedDebit<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryReceivedDebitsResourceReceivedDebit<'a> {
     /// Specifies which fields in the response should be expanded.

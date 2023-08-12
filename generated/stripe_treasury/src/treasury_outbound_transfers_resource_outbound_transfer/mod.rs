@@ -130,8 +130,8 @@ impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransfersResourceOutboundT
 }
 impl stripe_types::Object for TreasuryOutboundTransfersResourceOutboundTransfer {
     type Id = stripe_treasury::treasury_outbound_transfers_resource_outbound_transfer::TreasuryOutboundTransferId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TreasuryOutboundTransferId);

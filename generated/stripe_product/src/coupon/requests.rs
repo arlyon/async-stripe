@@ -31,7 +31,6 @@ impl<'a> ListCoupon<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCoupon<'a> {}
 impl<'a> ListCoupon<'a> {
     /// Returns a list of your coupons.
     pub fn send(
@@ -44,6 +43,7 @@ impl<'a> ListCoupon<'a> {
         stripe::ListPaginator::from_params("/coupons", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListCoupon<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCoupon<'a> {
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).

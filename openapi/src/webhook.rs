@@ -1,16 +1,16 @@
 use std::path::Path;
 
 use anyhow::{bail, Context};
+use indexmap::IndexMap;
 
 use crate::components::{Components, RequestSource};
 use crate::crate_inference::Crate;
-use crate::rust_object::{EnumVariant, RustObject};
-use crate::rust_type::RustType;
+use crate::rust_object::{ObjectRef, RustObject};
 use crate::stripe_object::OperationType;
 use crate::templates::derives::Derives;
-use crate::templates::enums::{write_enum_variants, write_fieldless_enum_variants};
+use crate::templates::ObjectWriter;
 use crate::types::{ComponentPath, RustIdent};
-use crate::utils::{append_to_file, as_object_names_for_deserialization};
+use crate::utils::append_to_file;
 
 /// Paths to components which will be options in the `EventObject` union.
 const WEBHOOK_OBJ_PATHS: &[&str] = &[
@@ -67,31 +67,30 @@ pub fn write_generated_for_webhooks(components: &Components) -> anyhow::Result<(
 }
 
 fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Result<()> {
-    let mut variants = vec![];
+    let mut objects = IndexMap::new();
     for path in WEBHOOK_OBJ_PATHS {
         let comp_path = ComponentPath::new(path.to_string());
         let component = components.get(&comp_path);
         let belonging_crate = component.krate_unwrapped().for_types();
+        let obj_name = component.data.object_name.as_deref().expect("Component has no object name");
 
-        let typ = RustType::component_path(comp_path);
-        let mut enum_variant = EnumVariant::new(component.ident().clone(), typ);
-        if belonging_crate != Crate::Types {
-            enum_variant = enum_variant.with_feature_gate(belonging_crate.name());
-        }
-        variants.push(enum_variant);
+        objects.insert(
+            obj_name,
+            ObjectRef {
+                path: comp_path,
+                feature_gate: if belonging_crate != Crate::Types {
+                    Some(belonging_crate.name())
+                } else {
+                    None
+                },
+            },
+        );
     }
     let mut out = String::new();
-    let object_names = as_object_names_for_deserialization(components, &variants);
-    let printable = variants.iter().map(|v| v.as_printable(components)).collect::<Vec<_>>();
-    write_enum_variants(
-        &mut out,
-        &RustIdent::unchanged("EventObject".into()),
-        &printable,
-        Derives::new_deser(),
-        None,
-        object_names,
-    );
-
+    let ident = RustIdent::unchanged("EventObject".into());
+    let mut writer = ObjectWriter::new(components, &ident);
+    writer.provide_unknown_variant(true).derives_mut().deserialize(true);
+    writer.write_enum_of_objects(&mut out, components, &objects);
     append_to_file(out, out_path.join("mod.rs"))?;
     Ok(())
 }
@@ -111,13 +110,16 @@ fn write_event_type(components: &Components, out_path: &Path) -> anyhow::Result<
         .context("Field not found")?
         .as_rust_object()
         .context("Not an object")?;
-    let mut event_enum_variants = match typ {
-        RustObject::FieldlessEnum(enum_) => enum_.clone(),
-        _ => bail!("Expected enum"),
+    let RustObject::FieldlessEnum(enum_) = typ else {
+        bail!("Expected enum");
     };
-    event_enum_variants.retain(|v| v.wire_name != "*");
+    let event_enum_variants =
+        enum_.iter().filter(|v| v.wire_name != "*").cloned().collect::<Vec<_>>();
     let mut out = String::new();
     let ident = RustIdent::unchanged("EventType".into());
-    write_fieldless_enum_variants(&mut out, &event_enum_variants, &ident, Derives::new_deser());
+    ObjectWriter::new(components, &ident)
+        .derives(Derives::new_deser())
+        .provide_unknown_variant(true)
+        .write_fieldless_enum_variants(&mut out, &event_enum_variants);
     append_to_file(out, out_path.join("mod.rs"))
 }

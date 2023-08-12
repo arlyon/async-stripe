@@ -26,7 +26,6 @@ impl<'a> ListExternalAccount<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListExternalAccount<'a> {}
 impl<'a> ListExternalAccount<'a> {
     /// List external accounts for an account.
     pub fn send(
@@ -46,6 +45,7 @@ impl<'a> ListExternalAccount<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListExternalAccount<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveExternalAccount<'a> {
     /// Specifies which fields in the response should be expanded.

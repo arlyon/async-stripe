@@ -3,7 +3,7 @@
 //!
 //! Reference: <https://stripe.com/docs/api/payment_intents>
 //!
-//! This example shows how to create a [PaymentIntent] and use it to create a
+//! This example shows how to create a [stripe_types::PaymentIntent] and use it to create a
 //! charge for a fictional card. We create a customer, an intent, update
 //! their payment information, and lastly use the intent to create a charge.
 

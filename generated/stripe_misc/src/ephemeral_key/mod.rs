@@ -20,8 +20,8 @@ pub struct EphemeralKey {
 }
 impl stripe_types::Object for EphemeralKey {
     type Id = stripe_misc::ephemeral_key::EphemeralKeyId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(EphemeralKeyId, "ephkey_");

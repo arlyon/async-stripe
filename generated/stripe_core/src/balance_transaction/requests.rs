@@ -49,7 +49,6 @@ impl<'a> ListBalanceTransaction<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListBalanceTransaction<'a> {}
 impl<'a> ListBalanceTransaction<'a> {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
@@ -64,6 +63,7 @@ impl<'a> ListBalanceTransaction<'a> {
         stripe::ListPaginator::from_params("/balance_transactions", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListBalanceTransaction<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveBalanceTransaction<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -101,15 +101,15 @@ impl Dedupper {
     pub fn replace_typ(&self, typ: &mut RustType) {
         match typ {
             RustType::Object(obj, _) => {
-                let has_reference = obj.has_reference();
+                let has_ref = obj.has_reference();
                 let is_copy = obj.is_copy();
                 if let Some(ident) = self.objs.get(obj) {
-                    *typ = RustType::Path {
-                        path: PathToType::IntraFile(RustIdent::create(ident)),
+                    *typ = RustType::Path(PathToType::IntraFile {
+                        ident: RustIdent::create(ident),
                         is_ref: false,
-                        has_reference,
+                        has_ref,
                         is_copy,
-                    }
+                    });
                 } else {
                     self.replace_obj(obj);
                 }

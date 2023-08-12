@@ -3,8 +3,8 @@ use std::fs;
 use std::fs::File;
 
 use anyhow::{bail, Context, Result};
+use clap::Parser;
 use petgraph::dot::{Config, Dot};
-use structopt::StructOpt;
 use tracing::info;
 
 use crate::codegen::CodeGen;
@@ -20,7 +20,7 @@ mod crate_inference;
 mod dedup;
 mod graph;
 mod ids;
-mod object_context;
+mod object_writing;
 mod printable;
 mod requests;
 mod rust_object;
@@ -35,36 +35,36 @@ mod url_finder;
 mod utils;
 mod webhook;
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, Parser)]
 struct Command {
     /// Input path for the OpenAPI spec, defaults to `spec3.sdk.json`
-    #[structopt(default_value = "spec3.sdk.json")]
+    #[arg(default_value = "spec3.sdk.json")]
     spec_path: String,
     /// Output directory for generated code, defaults to `out`
-    #[structopt(long, default_value = "out")]
+    #[arg(long, default_value = "out")]
     out: String,
     /// If not passed, skips the step of fetching the spec. Otherwise, `latest` for the
     /// newest spec release, `current` for the version used in the latest codegen update,
     /// or a specific version, such as `v171`
-    #[structopt(long, parse(try_from_str = spec_fetch::parse_spec_version))]
+    #[arg(long, value_parser = spec_fetch::parse_spec_version)]
     fetch: Option<spec_fetch::SpecVersion>,
     /// Instead of writing files, generate a graph of dependencies in `graphviz` `DOT` format. Writes
     /// to `graph.txt`
-    #[structopt(long)]
+    #[arg(long)]
     graph: bool,
     /// Stub the `UrlFinder` instead of making a request to `Stripe`. Meant for use in local
     /// testing to avoid network requirement / fetch time. Will mean that no `doc_url`'s will
     /// be found.
-    #[structopt(long)]
+    #[arg(long)]
     stub_url_finder: bool,
     /// Skip the step of copying the generated code from `out` to `generated/`.
-    #[structopt(long)]
+    #[arg(long)]
     dry_run: bool,
 }
 
 fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let args = Command::from_args();
+    let args = Command::parse();
 
     let in_path = args.spec_path;
     let out_path = args.out;

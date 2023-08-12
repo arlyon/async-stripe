@@ -14,8 +14,8 @@ pub struct ExchangeRate {
 }
 impl stripe_types::Object for ExchangeRate {
     type Id = stripe_misc::exchange_rate::ExchangeRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ExchangeRateId);

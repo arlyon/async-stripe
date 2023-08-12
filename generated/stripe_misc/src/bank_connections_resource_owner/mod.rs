@@ -18,8 +18,8 @@ pub struct BankConnectionsResourceOwner {
 }
 impl stripe_types::Object for BankConnectionsResourceOwner {
     type Id = stripe_misc::bank_connections_resource_owner::FinancialConnectionsAccountOwnerId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(FinancialConnectionsAccountOwnerId);

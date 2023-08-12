@@ -93,8 +93,8 @@ impl<'de> serde::Deserialize<'de> for GelatoVerificationReportType {
 }
 impl stripe_types::Object for GelatoVerificationReport {
     type Id = stripe_misc::gelato_verification_report::IdentityVerificationReportId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(IdentityVerificationReportId);

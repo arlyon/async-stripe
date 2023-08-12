@@ -1466,7 +1466,6 @@ impl serde::Serialize for ListPaymentMethodType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentMethod<'a> {}
 impl<'a> ListPaymentMethod<'a> {
     /// Returns a list of PaymentMethods for Treasury flows.
     ///
@@ -1481,6 +1480,7 @@ impl<'a> ListPaymentMethod<'a> {
         stripe::ListPaginator::from_params("/payment_methods", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentMethod<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AttachPaymentMethod<'a> {
     /// The ID of the customer to which to attach the PaymentMethod.

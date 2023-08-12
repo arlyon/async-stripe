@@ -1,7 +1,7 @@
 use std::fs;
 
 use anyhow::Context;
-use regex::Regex;
+use regex_lite::Regex;
 use reqwest::blocking::Client;
 use reqwest::header::USER_AGENT;
 use serde_json::Value;

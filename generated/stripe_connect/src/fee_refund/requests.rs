@@ -71,7 +71,6 @@ impl<'a> ListFeeRefund<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListFeeRefund<'a> {}
 impl<'a> ListFeeRefund<'a> {
     /// You can see a list of the refunds belonging to a specific application fee.
     ///
@@ -94,6 +93,7 @@ impl<'a> ListFeeRefund<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListFeeRefund<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFeeRefund<'a> {
     /// Specifies which fields in the response should be expanded.

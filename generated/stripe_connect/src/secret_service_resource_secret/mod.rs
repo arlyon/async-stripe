@@ -29,8 +29,8 @@ pub struct SecretServiceResourceSecret {
 }
 impl stripe_types::Object for SecretServiceResourceSecret {
     type Id = stripe_connect::secret_service_resource_secret::AppsSecretId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(AppsSecretId);

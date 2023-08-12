@@ -50,7 +50,6 @@ impl ListPersonRelationship {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPerson<'a> {}
 impl<'a> ListPerson<'a> {
     /// Returns a list of people associated with the account’s legal entity.
     ///
@@ -72,6 +71,7 @@ impl<'a> ListPerson<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListPerson<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePerson<'a> {
     /// Specifies which fields in the response should be expanded.

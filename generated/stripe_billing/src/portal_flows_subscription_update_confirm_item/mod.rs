@@ -13,8 +13,8 @@ pub quantity: Option<u64>,
 }
 impl stripe_types::Object for PortalFlowsSubscriptionUpdateConfirmItem {
     type Id = Option<stripe_billing::portal_flows_subscription_update_confirm_item::PortalFlowsSubscriptionUpdateConfirmItemId>;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        self.id.as_ref().map(|i| i.as_str())
     }
 }
 stripe_types::def_id!(PortalFlowsSubscriptionUpdateConfirmItemId);

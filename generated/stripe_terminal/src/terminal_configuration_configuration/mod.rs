@@ -18,8 +18,8 @@ pub struct TerminalConfigurationConfiguration {
 }
 impl stripe_types::Object for TerminalConfigurationConfiguration {
     type Id = stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TerminalConfigurationId, "tmc_");

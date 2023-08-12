@@ -218,8 +218,8 @@ impl<'de> serde::Deserialize<'de> for ChargeStatus {
 }
 impl stripe_types::Object for Charge {
     type Id = stripe_types::charge::ChargeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ChargeId, "ch_" | "py_");

@@ -125,8 +125,8 @@ impl<'de> serde::Deserialize<'de> for TopupStatus {
 }
 impl stripe_types::Object for Topup {
     type Id = stripe_types::topup::TopupId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TopupId, "tu_");

@@ -190,8 +190,8 @@ impl<'de> serde::Deserialize<'de> for IssuingTransactionWallet {
 }
 impl stripe_types::Object for IssuingTransaction {
     type Id = stripe_types::issuing_transaction::IssuingTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(IssuingTransactionId, "ipi_");

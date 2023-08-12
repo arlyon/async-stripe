@@ -149,8 +149,8 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
 }
 impl stripe_types::Object for TaxRate {
     type Id = stripe_types::tax_rate::TaxRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TaxRateId, "txr_");

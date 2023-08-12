@@ -149,8 +149,8 @@ impl<'de> serde::Deserialize<'de> for MandateType {
 }
 impl stripe_types::Object for Mandate {
     type Id = stripe_types::mandate::MandateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(MandateId, "mandate_");

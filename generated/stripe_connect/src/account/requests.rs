@@ -447,7 +447,6 @@ impl<'a> ListAccount<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListAccount<'a> {}
 impl<'a> ListAccount<'a> {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
@@ -462,6 +461,7 @@ impl<'a> ListAccount<'a> {
         stripe::ListPaginator::from_params("/accounts", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListAccount<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
@@ -1018,7 +1018,6 @@ impl PersonsAccountRelationship {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for PersonsAccount<'a> {}
 impl<'a> PersonsAccount<'a> {
     /// Returns a list of people associated with the account’s legal entity.
     ///
@@ -1040,6 +1039,7 @@ impl<'a> PersonsAccount<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for PersonsAccount<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CapabilitiesAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -1051,7 +1051,6 @@ impl<'a> CapabilitiesAccount<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for CapabilitiesAccount<'a> {}
 impl<'a> CapabilitiesAccount<'a> {
     /// Returns a list of capabilities associated with the account.
     ///
@@ -1073,6 +1072,7 @@ impl<'a> CapabilitiesAccount<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for CapabilitiesAccount<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MonthlyEstimatedRevenueSpecs {
     /// A non-negative integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).

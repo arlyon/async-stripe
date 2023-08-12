@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use heck::SnakeCase;
+use heck::ToSnakeCase;
 use reqwest::blocking::Client;
 
 // we use a common user agent, otherwise stripe rejects the connection

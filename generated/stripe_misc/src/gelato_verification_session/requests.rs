@@ -170,7 +170,6 @@ impl serde::Serialize for ListGelatoVerificationSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListGelatoVerificationSession<'a> {}
 impl<'a> ListGelatoVerificationSession<'a> {
     /// Returns a list of VerificationSessions.
     pub fn send(
@@ -183,6 +182,7 @@ impl<'a> ListGelatoVerificationSession<'a> {
         stripe::ListPaginator::from_params("/identity/verification_sessions", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListGelatoVerificationSession<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelGelatoVerificationSession<'a> {
     /// Specifies which fields in the response should be expanded.

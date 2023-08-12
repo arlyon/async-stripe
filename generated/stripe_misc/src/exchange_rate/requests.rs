@@ -26,7 +26,6 @@ impl<'a> ListExchangeRate<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListExchangeRate<'a> {}
 impl<'a> ListExchangeRate<'a> {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
@@ -41,6 +40,7 @@ impl<'a> ListExchangeRate<'a> {
         stripe::ListPaginator::from_params("/exchange_rates", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListExchangeRate<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveExchangeRate<'a> {
     /// Specifies which fields in the response should be expanded.

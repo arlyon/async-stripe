@@ -136,8 +136,8 @@ impl<'de> serde::Deserialize<'de> for TreasuryOutboundPaymentsResourceOutboundPa
 }
 impl stripe_types::Object for TreasuryOutboundPaymentsResourceOutboundPayment {
     type Id = stripe_treasury::treasury_outbound_payments_resource_outbound_payment::TreasuryOutboundPaymentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TreasuryOutboundPaymentId);

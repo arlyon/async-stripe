@@ -2126,7 +2126,6 @@ impl<'a> ListReportingReportRun<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListReportingReportRun<'a> {}
 impl<'a> ListReportingReportRun<'a> {
     /// Returns a list of Report Runs, with the most recent appearing first.
     pub fn send(
@@ -2139,3 +2138,4 @@ impl<'a> ListReportingReportRun<'a> {
         stripe::ListPaginator::from_params("/reporting/report_runs", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListReportingReportRun<'a> {}

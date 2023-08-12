@@ -7,7 +7,7 @@ pub struct DeletedCoupon {
 }
 impl stripe_types::Object for DeletedCoupon {
     type Id = stripe_types::coupon::CouponId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

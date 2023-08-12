@@ -329,8 +329,8 @@ impl<'de> serde::Deserialize<'de> for IssuingCardType {
 }
 impl stripe_types::Object for IssuingCard {
     type Id = stripe_types::issuing_card::IssuingCardId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(IssuingCardId, "ic_");

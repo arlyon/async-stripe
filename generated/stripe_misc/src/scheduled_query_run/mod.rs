@@ -30,8 +30,8 @@ pub struct ScheduledQueryRun {
 }
 impl stripe_types::Object for ScheduledQueryRun {
     type Id = stripe_misc::scheduled_query_run::ScheduledQueryRunId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ScheduledQueryRunId, "sqr_");

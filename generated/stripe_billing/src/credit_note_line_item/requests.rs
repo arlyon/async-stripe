@@ -26,7 +26,6 @@ impl<'a> ListCreditNoteLineItem<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCreditNoteLineItem<'a> {}
 impl<'a> ListCreditNoteLineItem<'a> {
     /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
     ///
@@ -51,3 +50,4 @@ impl<'a> ListCreditNoteLineItem<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListCreditNoteLineItem<'a> {}

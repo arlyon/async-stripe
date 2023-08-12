@@ -202,8 +202,8 @@ impl<'de> serde::Deserialize<'de> for PayoutType {
 }
 impl stripe_types::Object for Payout {
     type Id = stripe_types::payout::PayoutId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(PayoutId, "po_");

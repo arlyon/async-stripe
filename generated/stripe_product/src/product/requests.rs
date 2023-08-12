@@ -635,7 +635,6 @@ impl<'a> ListProduct<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListProduct<'a> {}
 impl<'a> ListProduct<'a> {
     /// Returns a list of your products.
     ///
@@ -650,6 +649,7 @@ impl<'a> ListProduct<'a> {
         stripe::ListPaginator::from_params("/products", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListProduct<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteProduct {}
 impl DeleteProduct {

@@ -55,7 +55,6 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCustomerBalanceTransaction<'a> {}
 impl<'a> ListCustomerBalanceTransaction<'a> {
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn send(
@@ -78,6 +77,7 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListCustomerBalanceTransaction<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerBalanceTransaction<'a> {
     /// The integer amount in **cents (or local equivalent)** to apply to the customer's credit balance.

@@ -9,8 +9,8 @@ pub struct RadarRule {
 }
 impl stripe_types::Object for RadarRule {
     type Id = stripe_types::radar_rule::RuleId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(RuleId);

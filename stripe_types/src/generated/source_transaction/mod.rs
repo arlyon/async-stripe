@@ -146,8 +146,8 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionType {
 }
 impl stripe_types::Object for SourceTransaction {
     type Id = stripe_types::source_transaction::SourceTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(SourceTransactionId);

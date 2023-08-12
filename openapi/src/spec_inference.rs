@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::fmt::Write;
 
 use anyhow::bail;
-use heck::SnakeCase;
+use heck::ToSnakeCase;
 use openapiv3::{
     AdditionalProperties, IntegerFormat, ObjectType, ReferenceOr, Schema, SchemaKind, StringType,
     Type, VariantOrUnknownOrEmpty,
@@ -405,8 +405,7 @@ fn build_enum_variants(options: &[Option<String>]) -> Vec<FieldlessVariant> {
             "*" => RustIdent::create("all"),
             n => {
                 if n.chars().next().unwrap().is_ascii_digit() {
-                    let ident = RustIdent::unchanged(format!("V{}", n.replace(['-', '.'], "_")));
-                    ident
+                    RustIdent::unchanged(format!("V{}", n.replace(['-', '.'], "_")))
                 } else {
                     // Hit for the case of timezones, e.g. Etc+7 and Etc-7
                     if wire_name.contains(['+', '-']) {

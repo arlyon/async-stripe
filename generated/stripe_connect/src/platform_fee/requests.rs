@@ -31,7 +31,6 @@ impl<'a> ListPlatformFee<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPlatformFee<'a> {}
 impl<'a> ListPlatformFee<'a> {
     /// Returns a list of application fees you’ve previously collected.
     ///
@@ -46,6 +45,7 @@ impl<'a> ListPlatformFee<'a> {
         stripe::ListPaginator::from_params("/application_fees", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPlatformFee<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePlatformFee<'a> {
     /// Specifies which fields in the response should be expanded.

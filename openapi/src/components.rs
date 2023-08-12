@@ -66,6 +66,16 @@ impl Components {
         PathInfo { krate: Some(krate), path: Some(component.mod_path()) }
     }
 
+    pub fn construct_printable_type_from_path(&self, path: &ComponentPath) -> PrintableType {
+        let comp = self.get(path);
+        PrintableType::QualifiedPath {
+            path: Some(PathInfo::with_crate(comp.krate_unwrapped().for_types())),
+            ident: comp.ident().clone(),
+            has_ref: false,
+            is_ref: false,
+        }
+    }
+
     pub fn construct_printable_type(&self, typ: &RustType) -> PrintableType {
         match typ {
             RustType::Object(obj, metadata) => PrintableType::QualifiedPath {
@@ -74,31 +84,33 @@ impl Components {
                 is_ref: false,
                 ident: metadata.ident.clone(),
             },
-
-            RustType::Path { path, has_reference, is_ref, .. } => {
-                let (path, ident) = match path {
-                    PathToType::Component(path) => {
-                        let comp = self.get(path);
-                        (
-                            Some(PathInfo::with_crate(comp.krate_unwrapped().for_types())),
-                            comp.ident().clone(),
-                        )
-                    }
-                    PathToType::IntraFile(ident) => (None, ident.clone()),
-                    PathToType::ObjectId(path) => {
-                        let ident = infer_id_name(path);
-                        let path_info = self.resolve_path(path);
-                        (Some(path_info), ident)
-                    }
-                    PathToType::Types(ident) => {
-                        (Some(PathInfo { krate: Some(Crate::Types), path: None }), ident.clone())
-                    }
-                };
+            RustType::Path(PathToType::Component { path }) => {
+                self.construct_printable_type_from_path(path)
+            }
+            RustType::Path(PathToType::ObjectId { path, is_ref }) => {
+                let ident = infer_id_name(path);
+                let path_info = self.resolve_path(path);
                 PrintableType::QualifiedPath {
-                    path,
-                    has_ref: *has_reference,
-                    is_ref: *is_ref,
+                    path: Some(path_info),
                     ident,
+                    is_ref: *is_ref,
+                    has_ref: false,
+                }
+            }
+            RustType::Path(PathToType::IntraFile { ident, is_ref, has_ref, .. }) => {
+                PrintableType::QualifiedPath {
+                    path: None,
+                    has_ref: *has_ref,
+                    is_ref: *is_ref,
+                    ident: ident.clone(),
+                }
+            }
+            RustType::Path(PathToType::Types { ident, is_ref, has_ref, .. }) => {
+                PrintableType::QualifiedPath {
+                    path: Some(PathInfo { krate: Some(Crate::Types), path: None }),
+                    ident: ident.clone(),
+                    has_ref: *has_ref,
+                    is_ref: *is_ref,
                 }
             }
             RustType::Simple(typ) => PrintableType::Simple(*typ),
@@ -171,7 +183,7 @@ impl Components {
     ) {
         match typ {
             RustType::Object(obj, _) => self.add_deps_from_obj(deps, obj),
-            RustType::Path { path: PathToType::Component(path), .. } => {
+            RustType::Path(PathToType::Component { path }) => {
                 deps.insert(path);
             }
             RustType::Container(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
@@ -355,12 +367,12 @@ impl Overrides {
         match typ {
             RustType::Object(obj, _) => {
                 if let Some(meta) = self.overrides.get(obj) {
-                    *typ = RustType::Path {
-                        path: PathToType::Types(meta.ident.clone()),
+                    *typ = RustType::Path(PathToType::Types {
+                        ident: meta.ident.clone(),
                         is_ref: false,
-                        has_reference: obj.has_reference(),
+                        has_ref: obj.has_reference(),
                         is_copy: obj.is_copy(),
-                    }
+                    });
                 } else {
                     self.replace_obj(obj);
                 }

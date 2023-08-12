@@ -26,7 +26,6 @@ impl<'a> ListInvoiceLineItem<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListInvoiceLineItem<'a> {}
 impl<'a> ListInvoiceLineItem<'a> {
     /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     ///
@@ -48,3 +47,4 @@ impl<'a> ListInvoiceLineItem<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoiceLineItem<'a> {}

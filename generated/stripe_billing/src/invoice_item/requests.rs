@@ -45,7 +45,6 @@ impl<'a> ListInvoiceItem<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListInvoiceItem<'a> {}
 impl<'a> ListInvoiceItem<'a> {
     /// Returns a list of your invoice items.
     ///
@@ -60,6 +59,7 @@ impl<'a> ListInvoiceItem<'a> {
         stripe::ListPaginator::from_params("/invoiceitems", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoiceItem<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateInvoiceItem<'a> {
     /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.

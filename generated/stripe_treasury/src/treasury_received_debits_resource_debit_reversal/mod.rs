@@ -164,8 +164,8 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitsResourceDebitReversa
 }
 impl stripe_types::Object for TreasuryReceivedDebitsResourceDebitReversal {
     type Id = stripe_treasury::treasury_received_debits_resource_debit_reversal::TreasuryDebitReversalId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TreasuryDebitReversalId);

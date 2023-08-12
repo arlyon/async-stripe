@@ -188,8 +188,8 @@ impl<'de> serde::Deserialize<'de> for Array {
 }
 impl stripe_types::Object for TreasuryFinancialAccountsResourceFinancialAccount {
     type Id = stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TreasuryFinancialAccountId);

@@ -34,7 +34,6 @@ impl<'a> ListSubscriptionItem<'a> {
         }
     }
 }
-impl<'a> stripe::PaginationParams for ListSubscriptionItem<'a> {}
 impl<'a> ListSubscriptionItem<'a> {
     /// Returns a list of your subscription items for a given subscription.
     pub fn send(
@@ -47,6 +46,7 @@ impl<'a> ListSubscriptionItem<'a> {
         stripe::ListPaginator::from_params("/subscription_items", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscriptionItem<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSubscriptionItem<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -310,7 +310,6 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for UsageRecordSummariesSubscriptionItem<'a> {}
 impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
     /// For the specified subscription item, returns a list of summary objects.
     ///
@@ -343,6 +342,7 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for UsageRecordSummariesSubscriptionItem<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).

@@ -35,7 +35,6 @@ impl<'a> ListTaxRate<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTaxRate<'a> {}
 impl<'a> ListTaxRate<'a> {
     /// Returns a list of your tax rates.
     ///
@@ -50,6 +49,7 @@ impl<'a> ListTaxRate<'a> {
         stripe::ListPaginator::from_params("/tax_rates", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTaxRate<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxRate<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -567,7 +567,6 @@ impl serde::Serialize for ListTreasuryOutboundPaymentsResourceOutboundPaymentSta
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {}
 impl<'a> ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryOutboundPaymentsResourceOutboundPayment>> {
@@ -577,6 +576,7 @@ impl<'a> ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
         stripe::ListPaginator::from_params("/treasury/outbound_payments", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryOutboundPaymentsResourceOutboundPayment<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelTreasuryOutboundPaymentsResourceOutboundPayment<'a> {
     /// Specifies which fields in the response should be expanded.

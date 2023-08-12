@@ -22,7 +22,6 @@ pub trait PaginationExt<T> {
 impl<T> PaginationExt<T> for List<T>
 where
     T: Object + DeserializeOwned + Send + Sync + 'static,
-    T::Id: ToString,
 {
     fn into_paginator(self) -> ListPaginator<T> {
         ListPaginator::new_from_list(self)
@@ -44,7 +43,6 @@ impl<T> ListPaginator<T> {
 impl<T> ListPaginator<T>
 where
     T: Object + DeserializeOwned + Send + Sync + 'static,
-    T::Id: ToString,
 {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
@@ -61,9 +59,6 @@ where
             }
             let next_page = paginator.fetch_page_with_curr_params(client)?;
             paginator.update_with_new_data(next_page);
-            if let Some(last) = paginator.data.last() {
-                paginator.update_cursor(last.id().to_string());
-            }
         }
         Ok(data)
     }
@@ -104,19 +99,16 @@ where
         }
 
         match paginator.fetch_page_with_curr_params(&client).await {
-            Ok(mut next_page) => {
-                // NB: we get the next cursor _before_ reversing the data
-                let new_cursor = next_page.data.last().map(|t| t.id().to_string());
-
-                // We are going to be popping items off the end of the list, so we need to reverse it.
-                next_page.data.reverse();
+            Ok(next_page) => {
+                debug_assert!(paginator.data.is_empty());
                 paginator.update_with_new_data(next_page);
 
-                let next_val = paginator.data.pop()?;
+                // We are going to be popping items off the end of the list, so we need to reverse it.
+                // The assert above ensures we are only reversing this specific list we've
+                // just received
+                paginator.data.reverse();
 
-                if let Some(new_cursor) = new_cursor {
-                    paginator.update_cursor(new_cursor);
-                }
+                let next_val = paginator.data.pop()?;
 
                 // Yield last value of this page, the next page (and client) becomes the state
                 Some((Ok(next_val), Some((paginator, client))))
@@ -138,9 +130,8 @@ where
             total_count: list.total_count.map(|t| t as usize),
             params: Default::default(),
         };
-        if let Some(last) = &paginator.data.last() {
-            let new_cursor = last.id().to_string();
-            paginator.update_cursor(new_cursor);
+        if let Some(curr_cursor) = paginator.data.last().and_then(|t| t.id()) {
+            paginator.update_cursor(curr_cursor.to_string());
         }
         paginator
     }
@@ -150,12 +141,13 @@ where
     }
 
     fn update_with_new_data(&mut self, list: List<T>) {
-        if let Some(last) = &list.data.last() {
-            let new_cursor = last.id().to_string();
-            self.update_cursor(new_cursor);
-        }
-        self.data.extend(list.data);
         self.has_more = list.has_more;
         self.total_count = list.total_count.map(|t| t as usize);
+        if let Some(new_cursor) = list.data.last().and_then(|l| l.id()) {
+            self.update_cursor(new_cursor.to_string());
+        } else {
+            self.has_more = false;
+        }
+        self.data.extend(list.data);
     }
 }

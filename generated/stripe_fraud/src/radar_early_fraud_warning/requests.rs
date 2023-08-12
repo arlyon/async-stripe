@@ -32,7 +32,6 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListRadarEarlyFraudWarning<'a> {}
 impl<'a> ListRadarEarlyFraudWarning<'a> {
     /// Returns a list of early fraud warnings.
     pub fn send(
@@ -45,6 +44,7 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
         stripe::ListPaginator::from_params("/radar/early_fraud_warnings", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarEarlyFraudWarning<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarEarlyFraudWarning<'a> {
     /// Specifies which fields in the response should be expanded.

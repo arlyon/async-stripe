@@ -2,99 +2,100 @@ use std::fmt::Write;
 
 use indoc::{formatdoc, writedoc};
 
-use crate::printable::{Lifetime, PrintableStructField, PrintableWithLifetime};
-use crate::rust_object::Visibility;
-use crate::templates::derives::{write_derives_line, Derives};
+use crate::printable::PrintableWithLifetime;
+use crate::rust_object::{StructField, Visibility};
 use crate::templates::utils::{write_doc_comment, write_serde_rename};
-use crate::types::RustIdent;
+use crate::templates::ObjectWriter;
 
-pub fn write_struct(
-    out: &mut String,
-    name: &RustIdent,
-    additional_derives: Derives,
-    fields: &[PrintableStructField],
-    include_constructor: bool,
-    opt_lifetime: Option<Lifetime>,
-) {
-    let derives = write_derives_line(additional_derives);
-    let lifetime_str = opt_lifetime.map(|l| format!("<{l}>")).unwrap_or_default();
+impl<'a> ObjectWriter<'a> {
+    pub fn write_struct(
+        &self,
+        out: &mut String,
+        fields: &[StructField],
+        include_constructor: bool,
+    ) {
+        let name = self.ident;
 
-    let mut fields_str = String::with_capacity(64);
-    for field in fields {
-        field.write_code(&mut fields_str, opt_lifetime);
-    }
-    let _ = writedoc!(
-        out,
-        r"
-        {derives}
+        let mut fields_str = String::with_capacity(64);
+        for field in fields {
+            self.write_struct_field(&mut fields_str, field);
+        }
+
+        let lifetime_str = self.lifetime_param();
+        self.write_derives_line(out);
+        let _ = writedoc!(
+            out,
+            r"
         pub struct {name}{lifetime_str} {{
         {fields_str}
         }}
     "
-    );
+        );
 
-    if include_constructor {
-        let cons_body = if additional_derives.derives_default() {
-            r"
+        if include_constructor {
+            let cons_body = if self.derives.default {
+                r"
             pub fn new() -> Self {
                 Self::default()
             }
             "
-            .into()
-        } else {
-            let mut cons_inner = String::new();
-            let mut params = String::new();
-            for field in fields {
-                if field.required {
-                    let typ = PrintableWithLifetime::new(&field.rust_type, opt_lifetime);
-                    let _ = write!(params, "{}: {typ},", field.field_name);
-                    let _ = write!(cons_inner, "{},", field.field_name);
-                } else {
-                    let _ = write!(cons_inner, "{}: Default::default(),", field.field_name);
+                .into()
+            } else {
+                let mut cons_inner = String::new();
+                let mut params = String::new();
+                for field in fields {
+                    if field.required {
+                        let printable = self.get_printable(&field.rust_type);
+                        let typ = PrintableWithLifetime::new(&printable, self.lifetime);
+                        let _ = write!(params, "{}: {typ},", field.field_name);
+                        let _ = write!(cons_inner, "{},", field.field_name);
+                    } else {
+                        let _ = write!(cons_inner, "{}: Default::default(),", field.field_name);
+                    }
                 }
-            }
-            formatdoc! {
-                r"
+                formatdoc! {
+                    r"
                 pub fn new({params}) -> Self {{
                     Self {{
                         {cons_inner}
                     }}
                 }} 
                 "
-            }
-        };
-        let _ = writedoc!(
-            out,
-            r"
+                }
+            };
+            let _ = writedoc!(
+                out,
+                r"
             impl{lifetime_str} {name}{lifetime_str} {{
                 {cons_body}
             }}
                 "
-        );
+            );
+        }
     }
-}
 
-impl<'a> PrintableStructField<'a> {
-    fn write_code(&self, out: &mut String, lifetime: Option<Lifetime>) {
-        if let Some(doc_comment) = &self.doc_comment {
+    fn write_struct_field(&self, out: &mut String, field: &StructField) {
+        if let Some(doc_comment) = &field.doc_comment {
             let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
         }
-        if let Some(renamer) = &self.rename_as {
+        if let Some(renamer) = &field.rename_as {
             write_serde_rename(out, renamer);
         }
-        if let Some(skip_serializing) = self.skip_serializing {
-            let _ = writeln!(out, r#"#[serde(skip_serializing_if = "{skip_serializing}")]"#);
+        if !field.required {
+            if let Some(skip_ser) = field.rust_type.as_skip_serializing() {
+                let _ = writeln!(out, r#"#[serde(skip_serializing_if = "{skip_ser}")]"#);
+            }
+            if let Some(default) = field.rust_type.as_deser_default() {
+                let _ = writeln!(out, "{}", default.to_serde_attr());
+            }
         }
 
-        if let Some(serde_default) = self.deser_default {
-            let _ = writeln!(out, "{}", serde_default.to_serde_attr());
-        }
-
-        let typ = PrintableWithLifetime::new(&self.rust_type, lifetime);
-        let vis = match self.vis {
+        let printable = self.get_printable(&field.rust_type);
+        let typ = PrintableWithLifetime::new(&printable, self.lifetime);
+        let vis = match field.vis {
             Visibility::Public => "pub ",
             Visibility::Private => "",
         };
-        let _ = writeln!(out, "{vis}{}: {typ},", self.field_name);
+        let _ = writeln!(out, "{vis}{}: {typ},", field.field_name);
     }
 }

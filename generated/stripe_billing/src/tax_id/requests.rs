@@ -331,7 +331,6 @@ impl<'a> ListTaxId<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTaxId<'a> {}
 impl<'a> ListTaxId<'a> {
     /// Returns a list of tax IDs for a customer.
     pub fn send(
@@ -351,6 +350,7 @@ impl<'a> ListTaxId<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListTaxId<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteTaxId {}
 impl DeleteTaxId {

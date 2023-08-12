@@ -33,8 +33,8 @@ pub struct TransferReversal {
 }
 impl stripe_types::Object for TransferReversal {
     type Id = stripe_types::transfer_reversal::TransferReversalId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TransferReversalId, "trr_");

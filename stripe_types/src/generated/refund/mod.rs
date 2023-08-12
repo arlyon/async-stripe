@@ -135,8 +135,8 @@ impl<'de> serde::Deserialize<'de> for RefundReason {
 }
 impl stripe_types::Object for Refund {
     type Id = stripe_types::refund::RefundId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(RefundId, "re_" | "pyr_");

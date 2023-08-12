@@ -126,7 +126,6 @@ impl<'a> ListTestClock<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTestClock<'a> {}
 impl<'a> ListTestClock<'a> {
     /// Returns a list of your test clocks.
     pub fn send(
@@ -139,3 +138,4 @@ impl<'a> ListTestClock<'a> {
         stripe::ListPaginator::from_params("/test_helpers/test_clocks", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTestClock<'a> {}

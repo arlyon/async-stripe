@@ -14,8 +14,8 @@ pub struct ReserveTransaction {
 }
 impl stripe_types::Object for ReserveTransaction {
     type Id = stripe_types::reserve_transaction::ReserveTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ReserveTransactionId, "rtx_");

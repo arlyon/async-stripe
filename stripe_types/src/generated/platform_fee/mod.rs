@@ -35,8 +35,8 @@ pub struct PlatformFee {
 }
 impl stripe_types::Object for PlatformFee {
     type Id = stripe_types::platform_fee::ApplicationFeeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ApplicationFeeId, "fee_");

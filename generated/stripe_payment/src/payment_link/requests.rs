@@ -29,7 +29,6 @@ impl<'a> ListPaymentLink<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentLink<'a> {}
 impl<'a> ListPaymentLink<'a> {
     /// Returns a list of your payment links.
     pub fn send(
@@ -42,6 +41,7 @@ impl<'a> ListPaymentLink<'a> {
         stripe::ListPaginator::from_params("/payment_links", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentLink<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentLink<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -92,7 +92,6 @@ impl<'a> ListLineItemsPaymentLink<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListLineItemsPaymentLink<'a> {}
 impl<'a> ListLineItemsPaymentLink<'a> {
     /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
     ///
@@ -117,6 +116,7 @@ impl<'a> ListLineItemsPaymentLink<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsPaymentLink<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLink<'a> {
     /// Behavior after the purchase is complete.

@@ -262,7 +262,6 @@ impl serde::Serialize for ListSubscriptionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListSubscription<'a> {}
 impl<'a> ListSubscription<'a> {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
@@ -277,6 +276,7 @@ impl<'a> ListSubscription<'a> {
         stripe::ListPaginator::from_params("/subscriptions", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscription<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscription<'a> {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.

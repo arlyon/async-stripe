@@ -55,7 +55,6 @@ impl<'a> ListCustomerCashBalanceTransaction<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCustomerCashBalanceTransaction<'a> {}
 impl<'a> ListCustomerCashBalanceTransaction<'a> {
     /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
     pub fn send(
@@ -78,3 +77,4 @@ impl<'a> ListCustomerCashBalanceTransaction<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListCustomerCashBalanceTransaction<'a> {}

@@ -201,8 +201,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
 }
 impl stripe_types::Object for SubscriptionSchedule {
     type Id = stripe_types::subscription_schedule::SubscriptionScheduleId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(SubscriptionScheduleId, "sub_sched_");

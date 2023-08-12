@@ -29,7 +29,6 @@ impl<'a> ListPaymentSource<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentSource<'a> {}
 impl<'a> ListPaymentSource<'a> {
     /// List sources for a specified customer.
     pub fn send(
@@ -49,6 +48,7 @@ impl<'a> ListPaymentSource<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentSource<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentSource<'a> {
     /// Specifies which fields in the response should be expanded.

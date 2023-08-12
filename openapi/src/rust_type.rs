@@ -7,13 +7,33 @@ use crate::types::{ComponentPath, RustIdent};
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum PathToType {
     /// A top-level component.
-    Component(ComponentPath),
+    Component { path: ComponentPath },
     /// The id for a top-level component.
-    ObjectId(ComponentPath),
+    ObjectId { path: ComponentPath, is_ref: bool },
     /// A type generated in `stripe_types`, so printed as `stripe_types::{ident}`
-    Types(RustIdent),
+    Types { ident: RustIdent, is_ref: bool, has_ref: bool, is_copy: bool },
     /// A reference to a type in the same file (so not import needed).
-    IntraFile(RustIdent),
+    IntraFile { ident: RustIdent, is_ref: bool, has_ref: bool, is_copy: bool },
+}
+
+impl PathToType {
+    pub fn is_copy(&self) -> bool {
+        use PathToType::*;
+        match self {
+            Component { .. } | ObjectId { .. } => false,
+            Types { is_copy, .. } => *is_copy,
+            IntraFile { is_copy, .. } => *is_copy,
+        }
+    }
+
+    pub fn has_reference(&self) -> bool {
+        use PathToType::*;
+        match self {
+            Component { .. } | ObjectId { .. } => false,
+            Types { has_ref, .. } => *has_ref,
+            IntraFile { has_ref, .. } => *has_ref,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
@@ -21,15 +41,7 @@ pub enum RustType {
     Object(RustObject, ObjectMetadata),
     /// Either a Rust defined scalar type, or a type predefined in `stripe_types`.
     Simple(SimpleType),
-    Path {
-        path: PathToType,
-        is_ref: bool,
-        /// Does the underlying type pointed to have references (e.g. when printing do
-        /// we need a lifetime?)
-        has_reference: bool,
-        /// Does the underlying type pointed to implement `Copy`?
-        is_copy: bool,
-    },
+    Path(PathToType),
     /// Type containing an inner type.
     Container(Container),
 }
@@ -55,55 +67,55 @@ impl RustType {
         Self::Simple(SimpleType::Ext(ext))
     }
 
-    pub fn option(typ: RustType) -> Self {
+    pub fn option(typ: Self) -> Self {
         Self::Container(Container::Option(Box::new(typ)))
     }
 
-    pub fn boxed(typ: RustType) -> Self {
+    pub fn boxed(typ: Self) -> Self {
         Self::Container(Container::Box(Box::new(typ)))
     }
 
-    pub fn list(typ: RustType) -> Self {
+    pub fn list(typ: Self) -> Self {
         Self::Container(Container::List(Box::new(typ)))
     }
 
     /// Construct an `Expandable<{typ}>`.
-    pub fn expandable(typ: RustType) -> Self {
+    pub fn expandable(typ: Self) -> Self {
         Self::Container(Container::Expandable(Box::new(typ)))
     }
 
     /// Construct a `HashMap<String, {typ}>`.
-    pub fn str_map(value: RustType, is_ref: bool) -> Self {
+    pub fn str_map(value: Self, is_ref: bool) -> Self {
         Self::Container(Container::Map { key: MapKey::String, value: Box::new(value), is_ref })
     }
 
     /// Construct a `HashMap<Currency, {typ}>`.
-    pub fn currency_map(typ: RustType, is_ref: bool) -> Self {
+    pub fn currency_map(typ: Self, is_ref: bool) -> Self {
         Self::Container(Container::Map { key: MapKey::Currency, value: Box::new(typ), is_ref })
     }
 
     /// Construct a `Vec<{typ}>`.
-    pub fn vec(typ: RustType) -> Self {
+    pub fn vec(typ: Self) -> Self {
         Self::Container(Container::Vec(Box::new(typ)))
     }
 
     /// Construct a `&[{typ}]`
-    pub fn slice(typ: RustType) -> Self {
+    pub fn slice(typ: Self) -> Self {
         Self::Container(Container::Slice(Box::new(typ)))
     }
 
     pub fn as_id_path(&self) -> Option<&ComponentPath> {
         match self {
-            RustType::Path { path: PathToType::ObjectId(path), .. } => Some(path),
-            RustType::Container(typ) => typ.value_typ().as_id_path(),
+            Self::Path(PathToType::ObjectId { path, .. }) => Some(path),
+            Self::Container(typ) => typ.value_typ().as_id_path(),
             _ => None,
         }
     }
 
     pub fn as_component_path(&self) -> Option<&ComponentPath> {
         match self {
-            RustType::Path { path: PathToType::Component(path), .. } => Some(path),
-            RustType::Container(typ) => typ.value_typ().as_component_path(),
+            Self::Path(PathToType::Component { path }) => Some(path),
+            Self::Container(typ) => typ.value_typ().as_component_path(),
             _ => None,
         }
     }
@@ -121,10 +133,10 @@ impl RustType {
     pub fn is_copy(&self) -> bool {
         use Container::*;
         match self {
-            RustType::Object(obj, ..) => obj.is_copy(),
-            RustType::Simple(typ) => typ.is_copy(),
-            RustType::Path { is_copy, .. } => *is_copy,
-            RustType::Container(typ) => match typ {
+            Self::Object(obj, ..) => obj.is_copy(),
+            Self::Simple(typ) => typ.is_copy(),
+            Self::Path(typ) => typ.is_copy(),
+            Self::Container(typ) => match typ {
                 List(_) | Vec(_) | Expandable(_) => false,
                 Slice(_) => true,
                 Option(inner) | Box(inner) => inner.is_copy(),
@@ -137,10 +149,10 @@ impl RustType {
     /// require lifetimes.
     pub fn has_reference(&self) -> bool {
         match self {
-            RustType::Object(obj, ..) => obj.has_reference(),
-            RustType::Simple(typ) => typ.is_reference(),
-            RustType::Path { has_reference, .. } => *has_reference,
-            RustType::Container(typ) => match typ {
+            Self::Object(obj, ..) => obj.has_reference(),
+            Self::Simple(typ) => typ.is_reference(),
+            Self::Path(typ) => typ.has_reference(),
+            Self::Container(typ) => match typ {
                 Container::Slice(_) => true,
                 Container::Map { is_ref: true, .. } => true,
                 _ => typ.value_typ().has_reference(),
@@ -149,12 +161,7 @@ impl RustType {
     }
 
     pub fn component_path(path: ComponentPath) -> Self {
-        Self::Path {
-            path: PathToType::Component(path),
-            has_reference: false,
-            is_ref: false,
-            is_copy: false,
-        }
+        Self::Path(PathToType::Component { path })
     }
 
     pub fn serde_json_value(is_ref: bool) -> Self {
@@ -162,12 +169,7 @@ impl RustType {
     }
 
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
-        Self::Path {
-            path: PathToType::ObjectId(id_path),
-            is_ref,
-            is_copy: false,
-            has_reference: false,
-        }
+        Self::Path(PathToType::ObjectId { path: id_path, is_ref })
     }
 
     pub fn into_nullable(self) -> Self {
@@ -235,8 +237,8 @@ pub enum MapKey {
 impl Display for MapKey {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let as_str = match self {
-            MapKey::String => "String",
-            MapKey::Currency => "stripe_types::Currency",
+            Self::String => "String",
+            Self::Currency => "stripe_types::Currency",
         };
         f.write_str(as_str)
     }

@@ -26,7 +26,6 @@ impl<'a> ListTaxProductResourceTaxCode<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTaxProductResourceTaxCode<'a> {}
 impl<'a> ListTaxProductResourceTaxCode<'a> {
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
     pub fn send(
@@ -39,6 +38,7 @@ impl<'a> ListTaxProductResourceTaxCode<'a> {
         stripe::ListPaginator::from_params("/tax_codes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTaxProductResourceTaxCode<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTaxProductResourceTaxCode<'a> {
     /// Specifies which fields in the response should be expanded.

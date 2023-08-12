@@ -32,7 +32,6 @@ impl<'a> ListPortalConfiguration<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPortalConfiguration<'a> {}
 impl<'a> ListPortalConfiguration<'a> {
     /// Returns a list of configurations that describe the functionality of the customer portal.
     pub fn send(
@@ -45,6 +44,7 @@ impl<'a> ListPortalConfiguration<'a> {
         stripe::ListPaginator::from_params("/billing_portal/configurations", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPortalConfiguration<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalConfiguration<'a> {
     /// The business information shown to customers in the portal.

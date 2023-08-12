@@ -765,7 +765,8 @@ impl<'de> serde::Deserialize<'de> for EventType {
         Ok(Self::from_str(&s).unwrap_or(EventType::Unknown))
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Deserialize)]
+#[non_exhaustive]
 #[serde(tag = "object")]
 pub enum EventObject {
     #[serde(rename = "account")]
@@ -857,4 +858,6 @@ pub enum EventObject {
     Topup(stripe_types::Topup),
     #[serde(rename = "transfer")]
     Transfer(stripe_types::Transfer),
+    #[serde(other)]
+    Unknown,
 }

@@ -601,7 +601,6 @@ impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxCalculation<'a> {}
 impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     /// Retrieves the line items of a persisted tax calculation as a collection.
     pub fn send(
@@ -625,6 +624,7 @@ impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxCalculation<'a> {}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxBehavior {
     Exclusive,

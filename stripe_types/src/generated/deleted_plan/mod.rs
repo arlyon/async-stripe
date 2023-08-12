@@ -7,7 +7,7 @@ pub struct DeletedPlan {
 }
 impl stripe_types::Object for DeletedPlan {
     type Id = stripe_types::plan::PlanId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

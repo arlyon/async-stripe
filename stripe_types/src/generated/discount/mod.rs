@@ -33,8 +33,8 @@ pub struct Discount {
 }
 impl stripe_types::Object for Discount {
     type Id = stripe_types::discount::DiscountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(DiscountId, "di_");

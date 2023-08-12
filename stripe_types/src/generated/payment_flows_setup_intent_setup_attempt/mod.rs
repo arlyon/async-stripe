@@ -116,8 +116,8 @@ impl<'de> serde::Deserialize<'de> for PaymentFlowsSetupIntentSetupAttemptFlowDir
 }
 impl stripe_types::Object for PaymentFlowsSetupIntentSetupAttempt {
     type Id = stripe_types::payment_flows_setup_intent_setup_attempt::SetupAttemptId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(SetupAttemptId, "setatt_");

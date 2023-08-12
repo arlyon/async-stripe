@@ -302,8 +302,8 @@ impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
 }
 impl stripe_types::Object for Subscription {
     type Id = stripe_types::subscription::SubscriptionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(SubscriptionId, "sub_");

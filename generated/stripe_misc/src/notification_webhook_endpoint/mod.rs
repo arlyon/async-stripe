@@ -43,8 +43,8 @@ pub struct NotificationWebhookEndpoint {
 }
 impl stripe_types::Object for NotificationWebhookEndpoint {
     type Id = stripe_misc::notification_webhook_endpoint::WebhookEndpointId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(WebhookEndpointId, "we_");

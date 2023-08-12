@@ -98,7 +98,6 @@ impl serde::Serialize for ListIssuingDisputeStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListIssuingDispute<'a> {}
 impl<'a> ListIssuingDispute<'a> {
     /// Returns a list of Issuing `Dispute` objects.
     ///
@@ -113,6 +112,7 @@ impl<'a> ListIssuingDispute<'a> {
         stripe::ListPaginator::from_params("/issuing/disputes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingDispute<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIssuingDispute<'a> {
     /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).

@@ -14,8 +14,8 @@ pub struct UsageRecordSummary {
 }
 impl stripe_types::Object for UsageRecordSummary {
     type Id = stripe_types::usage_record_summary::UsageRecordSummaryId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(UsageRecordSummaryId, "urs_" | "sis_");

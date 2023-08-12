@@ -5,7 +5,7 @@ pub trait Object {
     /// The canonical id type for this object.
     type Id;
     /// The id of the object.
-    fn id(&self) -> Self::Id;
+    fn id(&self) -> Option<&str>;
 }
 
 /// A single page of a cursor-paginated list of an object.

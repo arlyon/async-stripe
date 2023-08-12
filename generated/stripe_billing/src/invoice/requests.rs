@@ -963,7 +963,6 @@ impl<'a> UpcomingLinesInvoice<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for UpcomingLinesInvoice<'a> {}
 impl<'a> UpcomingLinesInvoice<'a> {
     /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     ///
@@ -978,6 +977,7 @@ impl<'a> UpcomingLinesInvoice<'a> {
         stripe::ListPaginator::from_params("/invoices/upcoming/lines", self)
     }
 }
+impl<'a> stripe::PaginationParams for UpcomingLinesInvoice<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateInvoice<'a> {
     /// The account tax IDs associated with the invoice.
@@ -1776,7 +1776,6 @@ impl serde::Serialize for ListInvoiceStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListInvoice<'a> {}
 impl<'a> ListInvoice<'a> {
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
@@ -1791,6 +1790,7 @@ impl<'a> ListInvoice<'a> {
         stripe::ListPaginator::from_params("/invoices", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListInvoice<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveInvoice<'a> {
     /// Specifies which fields in the response should be expanded.

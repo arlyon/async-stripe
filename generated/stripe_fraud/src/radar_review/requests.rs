@@ -28,7 +28,6 @@ impl<'a> ListRadarReview<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListRadarReview<'a> {}
 impl<'a> ListRadarReview<'a> {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
@@ -43,6 +42,7 @@ impl<'a> ListRadarReview<'a> {
         stripe::ListPaginator::from_params("/reviews", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListRadarReview<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveRadarReview<'a> {
     /// Specifies which fields in the response should be expanded.

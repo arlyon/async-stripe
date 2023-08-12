@@ -37,7 +37,6 @@ impl<'a> ListPlan<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPlan<'a> {}
 impl<'a> ListPlan<'a> {
     /// Returns a list of your plans.
     pub fn send(
@@ -50,6 +49,7 @@ impl<'a> ListPlan<'a> {
         stripe::ListPaginator::from_params("/plans", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPlan<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePlan<'a> {
     /// Whether the plan is currently available for new subscriptions.

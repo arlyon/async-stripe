@@ -20,8 +20,8 @@ pub struct TerminalLocationLocation {
 }
 impl stripe_types::Object for TerminalLocationLocation {
     type Id = stripe_terminal::terminal_location_location::TerminalLocationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TerminalLocationId, "tml_");

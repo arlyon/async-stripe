@@ -132,7 +132,6 @@ impl serde::Serialize for ListFilePurpose {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListFile<'a> {}
 impl<'a> ListFile<'a> {
     /// Returns a list of the files that your account has access to.
     ///
@@ -147,6 +146,7 @@ impl<'a> ListFile<'a> {
         stripe::ListPaginator::from_params("/files", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListFile<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFile<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -3,7 +3,7 @@
 #[serde(tag = "object")]
 pub enum BalanceTransactionSource {
     #[serde(rename = "application_fee")]
-    ApplicationFee(stripe_types::PlatformFee),
+    PlatformFee(stripe_types::PlatformFee),
     #[serde(rename = "charge")]
     Charge(stripe_types::Charge),
     #[serde(rename = "connect_collection_transfer")]
@@ -21,7 +21,7 @@ pub enum BalanceTransactionSource {
     #[serde(rename = "payout")]
     Payout(stripe_types::Payout),
     #[serde(rename = "platform_tax_fee")]
-    PlatformTaxFee(stripe_types::PlatformTax),
+    PlatformTax(stripe_types::PlatformTax),
     #[serde(rename = "refund")]
     Refund(stripe_types::Refund),
     #[serde(rename = "reserve_transaction")]
@@ -37,24 +37,24 @@ pub enum BalanceTransactionSource {
 }
 impl stripe_types::Object for BalanceTransactionSource {
     type Id = String;
-    fn id(&self) -> Self::Id {
+    fn id(&self) -> Option<&str> {
         match self {
-            Self::ApplicationFee(v) => v.id.to_string(),
-            Self::Charge(v) => v.id.to_string(),
-            Self::ConnectCollectionTransfer(v) => v.id.to_string(),
-            Self::Dispute(v) => v.id.to_string(),
-            Self::FeeRefund(v) => v.id.to_string(),
-            Self::IssuingAuthorization(v) => v.id.to_string(),
-            Self::IssuingDispute(v) => v.id.to_string(),
-            Self::IssuingTransaction(v) => v.id.to_string(),
-            Self::Payout(v) => v.id.to_string(),
-            Self::PlatformTaxFee(v) => v.id.to_string(),
-            Self::Refund(v) => v.id.to_string(),
-            Self::ReserveTransaction(v) => v.id.to_string(),
-            Self::TaxDeductedAtSource(v) => v.id.to_string(),
-            Self::Topup(v) => v.id.to_string(),
-            Self::Transfer(v) => v.id.to_string(),
-            Self::TransferReversal(v) => v.id.to_string(),
+            Self::PlatformFee(v) => Some(v.id.as_str()),
+            Self::Charge(v) => Some(v.id.as_str()),
+            Self::ConnectCollectionTransfer(v) => Some(v.id.as_str()),
+            Self::Dispute(v) => Some(v.id.as_str()),
+            Self::FeeRefund(v) => Some(v.id.as_str()),
+            Self::IssuingAuthorization(v) => Some(v.id.as_str()),
+            Self::IssuingDispute(v) => Some(v.id.as_str()),
+            Self::IssuingTransaction(v) => Some(v.id.as_str()),
+            Self::Payout(v) => Some(v.id.as_str()),
+            Self::PlatformTax(v) => Some(v.id.as_str()),
+            Self::Refund(v) => Some(v.id.as_str()),
+            Self::ReserveTransaction(v) => Some(v.id.as_str()),
+            Self::TaxDeductedAtSource(v) => Some(v.id.as_str()),
+            Self::Topup(v) => Some(v.id.as_str()),
+            Self::Transfer(v) => Some(v.id.as_str()),
+            Self::TransferReversal(v) => Some(v.id.as_str()),
         }
     }
 }

@@ -663,7 +663,6 @@ impl<'a> SourceTransactionsSource<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for SourceTransactionsSource<'a> {}
 impl<'a> SourceTransactionsSource<'a> {
     /// List source transactions for a given source.
     pub fn send(
@@ -683,6 +682,7 @@ impl<'a> SourceTransactionsSource<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for SourceTransactionsSource<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct MandateOfflineAcceptanceParams<'a> {
     /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.

@@ -38,8 +38,8 @@ pub struct NotificationEvent {
 }
 impl stripe_types::Object for NotificationEvent {
     type Id = stripe_types::notification_event::EventId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(EventId, "evt_");

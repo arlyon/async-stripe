@@ -215,7 +215,6 @@ impl<'a> ListPromotionCode<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPromotionCode<'a> {}
 impl<'a> ListPromotionCode<'a> {
     /// Returns a list of your promotion codes.
     pub fn send(
@@ -228,6 +227,7 @@ impl<'a> ListPromotionCode<'a> {
         stripe::ListPaginator::from_params("/promotion_codes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPromotionCode<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CurrencyOption {
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).

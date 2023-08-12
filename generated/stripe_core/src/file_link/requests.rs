@@ -137,7 +137,6 @@ impl<'a> ListFileLink<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListFileLink<'a> {}
 impl<'a> ListFileLink<'a> {
     /// Returns a list of file links.
     pub fn send(
@@ -150,3 +149,4 @@ impl<'a> ListFileLink<'a> {
         stripe::ListPaginator::from_params("/file_links", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListFileLink<'a> {}

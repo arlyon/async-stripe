@@ -10,7 +10,7 @@ pub struct DeletedBankAccount {
 }
 impl stripe_types::Object for DeletedBankAccount {
     type Id = stripe_types::bank_account::BankAccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

@@ -37,7 +37,6 @@ impl<'a> ListShippingRate<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListShippingRate<'a> {}
 impl<'a> ListShippingRate<'a> {
     /// Returns a list of your shipping rates.
     pub fn send(
@@ -50,6 +49,7 @@ impl<'a> ListShippingRate<'a> {
         stripe::ListPaginator::from_params("/shipping_rates", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListShippingRate<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveShippingRate<'a> {
     /// Specifies which fields in the response should be expanded.

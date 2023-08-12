@@ -155,7 +155,6 @@ impl<'a> ListCustomer<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCustomer<'a> {}
 impl<'a> ListCustomer<'a> {
     /// Returns a list of your customers.
     ///
@@ -170,6 +169,7 @@ impl<'a> ListCustomer<'a> {
         stripe::ListPaginator::from_params("/customers", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListCustomer<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCustomer<'a> {
     /// The customer's address.
@@ -557,9 +557,9 @@ impl<'a> RetrieveCustomer<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum RetrieveReturned {
-    Customer(stripe_types::Customer),
+    #[serde(rename = "customer")]
     DeletedCustomer(stripe_types::DeletedCustomer),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -886,7 +886,6 @@ impl serde::Serialize for ListPaymentMethodsCustomerType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentMethodsCustomer<'a> {}
 impl<'a> ListPaymentMethodsCustomer<'a> {
     /// Returns a list of PaymentMethods for a given Customer.
     pub fn send(
@@ -907,6 +906,7 @@ impl<'a> ListPaymentMethodsCustomer<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentMethodsCustomer<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentMethodCustomer<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -964,7 +964,6 @@ impl<'a> BalanceTransactionsCustomer<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for BalanceTransactionsCustomer<'a> {}
 impl<'a> BalanceTransactionsCustomer<'a> {
     /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
     pub fn send(
@@ -987,6 +986,7 @@ impl<'a> BalanceTransactionsCustomer<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for BalanceTransactionsCustomer<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct FundCashBalanceCustomer<'a> {
     /// Amount to be used for this test cash balance transaction.

@@ -26,7 +26,6 @@ impl<'a> ListUsageRecordSummary<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListUsageRecordSummary<'a> {}
 impl<'a> ListUsageRecordSummary<'a> {
     /// For the specified subscription item, returns a list of summary objects.
     ///
@@ -59,3 +58,4 @@ impl<'a> ListUsageRecordSummary<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListUsageRecordSummary<'a> {}

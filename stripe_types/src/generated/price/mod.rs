@@ -342,8 +342,8 @@ impl<'de> serde::Deserialize<'de> for PriceType {
 }
 impl stripe_types::Object for Price {
     type Id = stripe_types::price::PriceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(PriceId, "price_");

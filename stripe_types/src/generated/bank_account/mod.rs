@@ -140,8 +140,8 @@ impl<'de> serde::Deserialize<'de> for BankAccountAvailablePayoutMethods {
 }
 impl stripe_types::Object for BankAccount {
     type Id = stripe_types::bank_account::BankAccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(BankAccountId, "ba_" | "card_");

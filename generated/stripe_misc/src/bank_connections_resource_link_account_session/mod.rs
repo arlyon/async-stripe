@@ -96,8 +96,8 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkAccountSessionP
 impl stripe_types::Object for BankConnectionsResourceLinkAccountSession {
     type Id =
         stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);

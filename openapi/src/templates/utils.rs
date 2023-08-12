@@ -1,7 +1,7 @@
 use std::fmt::Write;
 
 use lazy_static::lazy_static;
-use regex::Regex;
+use regex_lite::Regex;
 
 pub fn write_serde_rename(out: &mut String, rename: &str) {
     let _ = writeln!(out, r#"#[serde(rename = "{rename}")]"#);

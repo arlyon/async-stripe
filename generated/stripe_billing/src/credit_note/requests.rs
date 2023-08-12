@@ -208,7 +208,6 @@ impl<'a> ListCreditNote<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCreditNote<'a> {}
 impl<'a> ListCreditNote<'a> {
     /// Returns a list of credit notes.
     pub fn send(
@@ -221,6 +220,7 @@ impl<'a> ListCreditNote<'a> {
         stripe::ListPaginator::from_params("/credit_notes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListCreditNote<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCreditNote<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -368,7 +368,6 @@ impl<'a> PreviewLinesCreditNote<'a> {
         }
     }
 }
-impl<'a> stripe::PaginationParams for PreviewLinesCreditNote<'a> {}
 impl<'a> PreviewLinesCreditNote<'a> {
     /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
     ///
@@ -383,6 +382,7 @@ impl<'a> PreviewLinesCreditNote<'a> {
         stripe::ListPaginator::from_params("/credit_notes/preview/lines", self)
     }
 }
+impl<'a> stripe::PaginationParams for PreviewLinesCreditNote<'a> {}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Type {
     CustomLineItem,

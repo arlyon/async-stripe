@@ -211,8 +211,8 @@ impl<'de> serde::Deserialize<'de> for BalanceTransactionType {
 }
 impl stripe_types::Object for BalanceTransaction {
     type Id = stripe_types::balance_transaction::BalanceTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(BalanceTransactionId, "txn_");

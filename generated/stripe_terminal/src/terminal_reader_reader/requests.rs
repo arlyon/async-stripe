@@ -36,10 +36,10 @@ impl<'a> UpdateTerminalReaderReader<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum UpdateReturned {
-    TerminalReader(stripe_terminal::TerminalReaderReader),
-    DeletedTerminalReader(stripe_terminal::TerminalReaderDeletedReader),
+    #[serde(rename = "terminal.reader")]
+    TerminalReaderDeletedReader(stripe_terminal::TerminalReaderDeletedReader),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTerminalReaderReader<'a> {
@@ -63,10 +63,10 @@ impl<'a> RetrieveTerminalReaderReader<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum RetrieveReturned {
-    TerminalReader(stripe_terminal::TerminalReaderReader),
-    DeletedTerminalReader(stripe_terminal::TerminalReaderDeletedReader),
+    #[serde(rename = "terminal.reader")]
+    TerminalReaderDeletedReader(stripe_terminal::TerminalReaderDeletedReader),
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalReaderReader<'a> {
@@ -268,7 +268,6 @@ impl serde::Serialize for ListTerminalReaderReaderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListTerminalReaderReader<'a> {}
 impl<'a> ListTerminalReaderReader<'a> {
     /// Returns a list of `Reader` objects.
     pub fn send(
@@ -281,6 +280,7 @@ impl<'a> ListTerminalReaderReader<'a> {
         stripe::ListPaginator::from_params("/terminal/readers", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalReaderReader<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteTerminalReaderReader {}
 impl DeleteTerminalReaderReader {

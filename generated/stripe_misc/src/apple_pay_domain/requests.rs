@@ -28,7 +28,6 @@ impl<'a> ListApplePayDomain<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListApplePayDomain<'a> {}
 impl<'a> ListApplePayDomain<'a> {
     /// List apple pay domains.
     pub fn send(
@@ -41,6 +40,7 @@ impl<'a> ListApplePayDomain<'a> {
         stripe::ListPaginator::from_params("/apple_pay/domains", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListApplePayDomain<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateApplePayDomain<'a> {
     pub domain_name: &'a str,

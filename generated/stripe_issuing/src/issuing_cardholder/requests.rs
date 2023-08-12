@@ -105,7 +105,6 @@ impl serde::Serialize for ListIssuingCardholderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListIssuingCardholder<'a> {}
 impl<'a> ListIssuingCardholder<'a> {
     /// Returns a list of Issuing `Cardholder` objects.
     ///
@@ -120,6 +119,7 @@ impl<'a> ListIssuingCardholder<'a> {
         stripe::ListPaginator::from_params("/issuing/cardholders", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingCardholder<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardholder<'a> {
     /// The cardholder's billing address.

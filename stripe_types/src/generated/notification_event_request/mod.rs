@@ -12,7 +12,7 @@ pub struct NotificationEventRequest {
 }
 impl stripe_types::Object for NotificationEventRequest {
     type Id = Option<String>;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        self.id.as_ref().map(|i| i.as_str())
     }
 }

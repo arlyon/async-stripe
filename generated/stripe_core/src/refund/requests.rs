@@ -34,7 +34,6 @@ impl<'a> ListRefund<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListRefund<'a> {}
 impl<'a> ListRefund<'a> {
     /// Returns a list of all refunds you’ve previously created.
     ///
@@ -50,6 +49,7 @@ impl<'a> ListRefund<'a> {
         stripe::ListPaginator::from_params("/refunds", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListRefund<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateRefund<'a> {
     /// A positive integer representing how much to refund.

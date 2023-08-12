@@ -35,7 +35,6 @@ impl<'a> ListReportingReportType<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListReportingReportType<'a> {}
 impl<'a> ListReportingReportType<'a> {
     /// Returns a full list of Report Types.
     pub fn send(
@@ -48,3 +47,4 @@ impl<'a> ListReportingReportType<'a> {
         stripe::ListPaginator::from_params("/reporting/report_types", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListReportingReportType<'a> {}

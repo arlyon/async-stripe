@@ -112,8 +112,8 @@ impl<'de> serde::Deserialize<'de> for RadarListListItemType {
 }
 impl stripe_types::Object for RadarListList {
     type Id = stripe_fraud::radar_list_list::RadarValueListId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(RadarValueListId);

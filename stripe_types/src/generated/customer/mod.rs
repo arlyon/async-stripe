@@ -175,8 +175,8 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
 }
 impl stripe_types::Object for Customer {
     type Id = stripe_types::customer::CustomerId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(CustomerId, "cus_");

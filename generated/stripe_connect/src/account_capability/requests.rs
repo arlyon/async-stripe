@@ -9,7 +9,6 @@ impl<'a> ListAccountCapability<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListAccountCapability<'a> {}
 impl<'a> ListAccountCapability<'a> {
     /// Returns a list of capabilities associated with the account.
     ///
@@ -31,6 +30,7 @@ impl<'a> ListAccountCapability<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListAccountCapability<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveAccountCapability<'a> {
     /// Specifies which fields in the response should be expanded.

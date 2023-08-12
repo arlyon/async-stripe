@@ -7,7 +7,7 @@ pub struct DeletedPerson {
 }
 impl stripe_types::Object for DeletedPerson {
     type Id = stripe_types::person::PersonId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

@@ -7,7 +7,7 @@
 //! a particular product and price. Creating a checkout
 //! session generates a URL that the user can use to pay.
 //! Notice you have to define the customer ahead of time.
-//! If you'd rather avoid this, you can use a [stripe::PaymentLink].
+//! If you'd rather avoid this, you can use a [stripe_types::PaymentLink].
 
 use stripe::StripeError;
 use stripe_checkout::session::{CreateSession, CreateSessionLineItems, CreateSessionMode};

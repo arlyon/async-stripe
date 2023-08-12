@@ -7,7 +7,7 @@ pub struct NotificationWebhookEndpointDeleted {
 }
 impl stripe_types::Object for NotificationWebhookEndpointDeleted {
     type Id = stripe_misc::notification_webhook_endpoint::WebhookEndpointId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

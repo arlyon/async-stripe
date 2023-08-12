@@ -20,10 +20,10 @@ impl<'a> RetrieveTerminalLocationLocation<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum RetrieveReturned {
-    TerminalLocation(stripe_terminal::TerminalLocationLocation),
-    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
+    #[serde(rename = "terminal.location")]
+    TerminalLocationDeletedLocation(stripe_terminal::TerminalLocationDeletedLocation),
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalLocationLocation<'a> {
@@ -170,10 +170,10 @@ impl<'a> UpdateTerminalLocationLocation<'a> {
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[serde(tag = "object")]
 pub enum UpdateReturned {
-    TerminalLocation(stripe_terminal::TerminalLocationLocation),
-    DeletedTerminalLocation(stripe_terminal::TerminalLocationDeletedLocation),
+    #[serde(rename = "terminal.location")]
+    TerminalLocationDeletedLocation(stripe_terminal::TerminalLocationDeletedLocation),
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListTerminalLocationLocation<'a> {
@@ -203,7 +203,6 @@ impl<'a> ListTerminalLocationLocation<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTerminalLocationLocation<'a> {}
 impl<'a> ListTerminalLocationLocation<'a> {
     /// Returns a list of `Location` objects.
     pub fn send(
@@ -216,6 +215,7 @@ impl<'a> ListTerminalLocationLocation<'a> {
         stripe::ListPaginator::from_params("/terminal/locations", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTerminalLocationLocation<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct DeleteTerminalLocationLocation {}
 impl DeleteTerminalLocationLocation {

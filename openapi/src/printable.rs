@@ -1,7 +1,6 @@
 use std::fmt::{Display, Formatter, Write};
 
 use crate::components::PathInfo;
-use crate::rust_object::{DeserDefault, StructField, Visibility};
 use crate::rust_type::{MapKey, SimpleType};
 use crate::types::RustIdent;
 
@@ -33,58 +32,6 @@ pub enum PrintableContainer {
     Option(Box<PrintableType>),
     Box(Box<PrintableType>),
     Map { key: MapKey, value: Box<PrintableType>, is_ref: bool },
-}
-
-/// A direct analogue of `EnumVariant`, but with `RustType` replaced by `PrintableType`.
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct PrintableEnumVariant<'a> {
-    pub variant: &'a RustIdent,
-    pub rust_type: Option<PrintableType>,
-    pub feature_gate: Option<&'a str>,
-}
-
-/// A (mostly) direct analogue of `StructField`, but with `RustType` replaced by `PrintableType`.
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct PrintableStructField<'a> {
-    /// Used to document this enum if provided
-    pub doc_comment: Option<&'a str>,
-    /// If provided, used to apply `serde(rename)`
-    pub rename_as: Option<&'a str>,
-    /// If provided, used to apply `serde(default)`.
-    pub deser_default: Option<DeserDefault>,
-    /// If provided, used to apply `serde(skip_serializing_if)`.
-    pub skip_serializing: Option<&'static str>,
-    /// Name of this field
-    pub field_name: &'a str,
-    /// Type for this field
-    pub rust_type: PrintableType,
-    pub required: bool,
-    pub vis: Visibility,
-}
-
-impl<'a> PrintableStructField<'a> {
-    pub fn from_field(field: &'a StructField, printable_type: PrintableType) -> Self {
-        let mut deser_default = None;
-        let mut skip_serializing = None;
-        if !field.required {
-            if let Some(default) = field.rust_type.as_deser_default() {
-                deser_default = Some(default);
-            }
-            if let Some(skip) = field.rust_type.as_skip_serializing() {
-                skip_serializing = Some(skip);
-            }
-        }
-        Self {
-            doc_comment: field.doc_comment.as_deref(),
-            rename_as: field.rename_as.as_deref(),
-            deser_default,
-            skip_serializing,
-            field_name: &field.field_name,
-            rust_type: printable_type,
-            required: field.required,
-            vis: field.vis,
-        }
-    }
 }
 
 impl<'a> Display for PrintableWithLifetime<'a> {
@@ -208,6 +155,10 @@ impl Lifetime {
 
     pub fn as_str(self) -> &'static str {
         self.0
+    }
+
+    pub fn as_param(self) -> String {
+        format!("<{self}>")
     }
 }
 

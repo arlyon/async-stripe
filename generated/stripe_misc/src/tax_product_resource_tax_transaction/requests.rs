@@ -248,7 +248,6 @@ impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxTransaction<'a> {}
 impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
     /// Retrieves the line items of a committed standalone transaction as a collection.
     pub fn send(
@@ -272,3 +271,4 @@ impl<'a> ListLineItemsTaxProductResourceTaxTransaction<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxTransaction<'a> {}

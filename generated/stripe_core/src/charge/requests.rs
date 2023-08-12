@@ -154,7 +154,6 @@ impl<'a> ListCharge<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCharge<'a> {}
 impl<'a> ListCharge<'a> {
     /// Returns a list of charges you’ve previously created.
     ///
@@ -169,6 +168,7 @@ impl<'a> ListCharge<'a> {
         stripe::ListPaginator::from_params("/charges", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListCharge<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCharge<'a> {
     /// Amount intended to be collected by this payment.

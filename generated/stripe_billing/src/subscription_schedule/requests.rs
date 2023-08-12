@@ -44,7 +44,6 @@ impl<'a> ListSubscriptionSchedule<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListSubscriptionSchedule<'a> {}
 impl<'a> ListSubscriptionSchedule<'a> {
     /// Retrieves the list of your subscription schedules.
     pub fn send(
@@ -57,6 +56,7 @@ impl<'a> ListSubscriptionSchedule<'a> {
         stripe::ListPaginator::from_params("/subscription_schedules", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSubscriptionSchedule<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSubscriptionSchedule<'a> {
     /// The identifier of the customer to create the subscription schedule for.

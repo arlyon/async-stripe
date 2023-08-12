@@ -16,19 +16,6 @@ pub enum Expandable<T: Object> {
     Object(Box<T>),
 }
 
-impl<T> Expandable<T>
-where
-    T: Object,
-    T::Id: Clone + Default,
-{
-    pub fn id(&self) -> T::Id {
-        match self {
-            Expandable::Id(id) => id.clone(),
-            Expandable::Object(obj) => obj.id(),
-        }
-    }
-}
-
 impl<T: Object> Default for Expandable<T>
 where
     T::Id: Default,

@@ -82,7 +82,6 @@ impl<'a> ListTransferReversal<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTransferReversal<'a> {}
 impl<'a> ListTransferReversal<'a> {
     /// You can see a list of the reversals belonging to a specific transfer.
     ///
@@ -102,6 +101,7 @@ impl<'a> ListTransferReversal<'a> {
         stripe::ListPaginator::from_params(&format!("/transfers/{id}/reversals", id = id), self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTransferReversal<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTransferReversal<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -5,7 +5,7 @@ use indoc::formatdoc;
 
 use crate::components::{build_field_overrides, get_components, Components, Overrides};
 use crate::crate_inference::Crate;
-use crate::object_context::{gen_obj, gen_requests, ObjectGenInfo};
+use crate::object_writing::{gen_obj, gen_requests, ObjectGenInfo};
 use crate::rust_object::ObjectMetadata;
 use crate::spec::Spec;
 use crate::spec_inference::infer_doc_comment;

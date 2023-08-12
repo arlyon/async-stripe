@@ -26,7 +26,6 @@ impl<'a> ListCountrySpec<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListCountrySpec<'a> {}
 impl<'a> ListCountrySpec<'a> {
     /// Lists all Country Spec objects available in the API.
     pub fn send(
@@ -39,6 +38,7 @@ impl<'a> ListCountrySpec<'a> {
         stripe::ListPaginator::from_params("/country_specs", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListCountrySpec<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveCountrySpec<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -105,8 +105,8 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderDeviceType {
 }
 impl stripe_types::Object for TerminalReaderReader {
     type Id = stripe_terminal::terminal_reader_reader::TerminalReaderId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TerminalReaderId, "tmr_");

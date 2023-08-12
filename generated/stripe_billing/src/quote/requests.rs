@@ -484,7 +484,6 @@ impl serde::Serialize for ListQuoteStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListQuote<'a> {}
 impl<'a> ListQuote<'a> {
     /// Returns a list of your quotes.
     pub fn send(
@@ -497,6 +496,7 @@ impl<'a> ListQuote<'a> {
         stripe::ListPaginator::from_params("/quotes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListQuote<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListLineItemsQuote<'a> {
     /// A cursor for use in pagination.
@@ -525,7 +525,6 @@ impl<'a> ListLineItemsQuote<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListLineItemsQuote<'a> {}
 impl<'a> ListLineItemsQuote<'a> {
     /// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
     ///
@@ -547,6 +546,7 @@ impl<'a> ListLineItemsQuote<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListLineItemsQuote<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote<'a> {
     /// A cursor for use in pagination.
@@ -575,7 +575,6 @@ impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListComputedUpfrontLineItemsQuote<'a> {}
 impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
     /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
     ///
@@ -598,6 +597,7 @@ impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListComputedUpfrontLineItemsQuote<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct AutomaticTaxParam {
     /// Controls whether Stripe will automatically compute tax on the resulting invoices or subscriptions as well as the quote itself.

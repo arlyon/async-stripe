@@ -51,7 +51,6 @@ impl<'a> ListBankConnectionsResourceLinkedAccountAccountHolder<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListBankConnectionsResourceLinkedAccount<'a> {}
 impl<'a> ListBankConnectionsResourceLinkedAccount<'a> {
     /// Returns a list of Financial Connections `Account` objects.
     pub fn send(
@@ -67,6 +66,7 @@ impl<'a> ListBankConnectionsResourceLinkedAccount<'a> {
         stripe::ListPaginator::from_params("/financial_connections/accounts", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListBankConnectionsResourceLinkedAccount<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveBankConnectionsResourceLinkedAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -127,7 +127,6 @@ impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
         }
     }
 }
-impl<'a> stripe::PaginationParams for ListOwnersBankConnectionsResourceLinkedAccount<'a> {}
 impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
     /// Lists all owners for a given `Account`.
     pub fn send(
@@ -150,6 +149,7 @@ impl<'a> ListOwnersBankConnectionsResourceLinkedAccount<'a> {
         )
     }
 }
+impl<'a> stripe::PaginationParams for ListOwnersBankConnectionsResourceLinkedAccount<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct RefreshBankConnectionsResourceLinkedAccount<'a> {
     /// Specifies which fields in the response should be expanded.

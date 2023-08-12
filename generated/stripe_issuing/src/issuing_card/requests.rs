@@ -52,7 +52,6 @@ impl<'a> ListIssuingCard<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListIssuingCard<'a> {}
 impl<'a> ListIssuingCard<'a> {
     /// Returns a list of Issuing `Card` objects.
     ///
@@ -67,6 +66,7 @@ impl<'a> ListIssuingCard<'a> {
         stripe::ListPaginator::from_params("/issuing/cards", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingCard<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCard<'a> {
     /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object with which the card will be associated.

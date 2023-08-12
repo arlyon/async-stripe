@@ -488,8 +488,8 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentStatus {
 }
 impl stripe_types::Object for PaymentIntent {
     type Id = stripe_types::payment_intent::PaymentIntentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(PaymentIntentId, "pi_");

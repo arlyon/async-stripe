@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Context};
-use heck::SnakeCase;
+use heck::ToSnakeCase;
 use openapiv3::Schema;
 use serde::{Deserialize, Serialize};
 
@@ -232,7 +232,7 @@ impl StripeResource {
         } else {
             vec![]
         };
-        Ok(StripeResource { base_ident: ident, in_package, requests, path })
+        Ok(Self { base_ident: ident, in_package, requests, path })
     }
 }
 

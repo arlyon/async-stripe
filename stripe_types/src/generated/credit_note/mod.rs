@@ -276,8 +276,8 @@ impl<'de> serde::Deserialize<'de> for CreditNoteType {
 }
 impl stripe_types::Object for CreditNote {
     type Id = stripe_types::credit_note::CreditNoteId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(CreditNoteId, "cn_");

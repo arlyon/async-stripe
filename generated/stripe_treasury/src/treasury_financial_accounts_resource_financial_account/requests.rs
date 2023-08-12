@@ -911,7 +911,6 @@ impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {}
 impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Returns a list of FinancialAccounts.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount>> {
@@ -921,6 +920,7 @@ impl<'a> ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {
         stripe::ListPaginator::from_params("/treasury/financial_accounts", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryFinancialAccountsResourceFinancialAccount<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.

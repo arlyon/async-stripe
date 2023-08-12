@@ -91,7 +91,6 @@ impl serde::Serialize for ListTreasuryReceivedCreditsResourceCreditReversalStatu
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListTreasuryReceivedCreditsResourceCreditReversal<'a> {}
 impl<'a> ListTreasuryReceivedCreditsResourceCreditReversal<'a> {
     /// Returns a list of CreditReversals.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal>> {
@@ -101,6 +100,7 @@ impl<'a> ListTreasuryReceivedCreditsResourceCreditReversal<'a> {
         stripe::ListPaginator::from_params("/treasury/credit_reversals", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTreasuryReceivedCreditsResourceCreditReversal<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
     /// Specifies which fields in the response should be expanded.

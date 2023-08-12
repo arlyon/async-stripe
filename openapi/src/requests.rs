@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use anyhow::{bail, Context};
-use heck::SnakeCase;
+use heck::ToSnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::warn;
 

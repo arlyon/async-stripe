@@ -97,8 +97,8 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilityStatus {
 }
 impl stripe_types::Object for AccountCapability {
     type Id = stripe_types::account_capability::CapabilityId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(CapabilityId);

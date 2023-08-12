@@ -26,7 +26,6 @@ impl<'a> ListNotificationWebhookEndpoint<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListNotificationWebhookEndpoint<'a> {}
 impl<'a> ListNotificationWebhookEndpoint<'a> {
     /// Returns a list of your webhook endpoints.
     pub fn send(
@@ -39,6 +38,7 @@ impl<'a> ListNotificationWebhookEndpoint<'a> {
         stripe::ListPaginator::from_params("/webhook_endpoints", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListNotificationWebhookEndpoint<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveNotificationWebhookEndpoint<'a> {
     /// Specifies which fields in the response should be expanded.

@@ -4172,7 +4172,6 @@ impl<'a> ListPaymentIntent<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListPaymentIntent<'a> {}
 impl<'a> ListPaymentIntent<'a> {
     /// Returns a list of PaymentIntents.
     pub fn send(
@@ -4185,6 +4184,7 @@ impl<'a> ListPaymentIntent<'a> {
         stripe::ListPaginator::from_params("/payment_intents", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListPaymentIntent<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrievePaymentIntent<'a> {
     /// The client secret of the PaymentIntent.

@@ -181,8 +181,8 @@ impl<'de> serde::Deserialize<'de> for RadarReviewOpenedReason {
 }
 impl stripe_types::Object for RadarReview {
     type Id = stripe_types::radar_review::ReviewId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(ReviewId, "prv_");

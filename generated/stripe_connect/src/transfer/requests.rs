@@ -161,7 +161,6 @@ impl<'a> ListTransfer<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListTransfer<'a> {}
 impl<'a> ListTransfer<'a> {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
@@ -176,6 +175,7 @@ impl<'a> ListTransfer<'a> {
         stripe::ListPaginator::from_params("/transfers", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTransfer<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTransfer<'a> {
     /// Specifies which fields in the response should be expanded.

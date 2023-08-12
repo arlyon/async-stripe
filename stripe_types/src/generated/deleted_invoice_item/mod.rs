@@ -7,7 +7,7 @@ pub struct DeletedInvoiceItem {
 }
 impl stripe_types::Object for DeletedInvoiceItem {
     type Id = stripe_types::invoice_item::InvoiceitemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }

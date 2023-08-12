@@ -45,7 +45,6 @@ impl<'a> ListNotificationEvent<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListNotificationEvent<'a> {}
 impl<'a> ListNotificationEvent<'a> {
     /// List events, going back up to 30 days.
     ///
@@ -60,6 +59,7 @@ impl<'a> ListNotificationEvent<'a> {
         stripe::ListPaginator::from_params("/events", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListNotificationEvent<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveNotificationEvent<'a> {
     /// Specifies which fields in the response should be expanded.

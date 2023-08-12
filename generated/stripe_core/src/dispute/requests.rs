@@ -34,7 +34,6 @@ impl<'a> ListDispute<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListDispute<'a> {}
 impl<'a> ListDispute<'a> {
     /// Returns a list of your disputes.
     pub fn send(
@@ -47,6 +46,7 @@ impl<'a> ListDispute<'a> {
         stripe::ListPaginator::from_params("/disputes", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListDispute<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveDispute<'a> {
     /// Specifies which fields in the response should be expanded.

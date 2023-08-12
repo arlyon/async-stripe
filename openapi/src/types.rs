@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 
-use heck::CamelCase;
+use heck::ToUpperCamelCase;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub struct RustIdent(String);
@@ -11,16 +11,16 @@ impl RustIdent {
     /// Only to be used safely when `val` is known to be a valid
     /// and we don't want to convert to camelcase since it strips
     /// underscores (e.g. `ApiVersion`).
-    pub fn unchanged(val: String) -> Self {
+    pub const fn unchanged(val: String) -> Self {
         Self(val)
     }
 
     pub fn create<T: AsRef<str>>(val: T) -> Self {
         let val = val.as_ref();
         if val.contains('.') {
-            Self(val.replace('.', "_").to_camel_case())
+            Self(val.replace('.', "_").to_upper_camel_case())
         } else {
-            Self(val.to_camel_case())
+            Self(val.to_upper_camel_case())
         }
     }
 
@@ -52,7 +52,7 @@ impl Display for RustIdent {
 pub struct ComponentPath(String);
 
 impl ComponentPath {
-    pub fn new(path: String) -> Self {
+    pub const fn new(path: String) -> Self {
         Self(path)
     }
 

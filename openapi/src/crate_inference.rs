@@ -35,7 +35,7 @@ pub enum Crate {
 }
 
 impl Crate {
-    pub fn all() -> &'static [Crate] {
+    pub const fn all() -> &'static [Self] {
         use Crate::*;
         &[
             Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment,
@@ -53,7 +53,7 @@ impl Crate {
     }
 
     pub fn generated_out_path(self) -> String {
-        if self == Crate::Types {
+        if self == Self::Types {
             "stripe_types".into()
         } else {
             format!("crates/{}", self.name())
@@ -64,7 +64,7 @@ impl Crate {
         format!("stripe_{}", self.suffix())
     }
 
-    pub fn suffix(self) -> &'static str {
+    pub const fn suffix(self) -> &'static str {
         use Crate::*;
         match self {
             Core => "core",

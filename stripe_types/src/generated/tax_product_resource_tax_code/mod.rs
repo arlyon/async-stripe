@@ -10,8 +10,8 @@ pub struct TaxProductResourceTaxCode {
 }
 impl stripe_types::Object for TaxProductResourceTaxCode {
     type Id = stripe_types::tax_product_resource_tax_code::TaxCodeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
+    fn id(&self) -> Option<&str> {
+        Some(self.id.as_str())
     }
 }
 stripe_types::def_id!(TaxCodeId, "txcd_");

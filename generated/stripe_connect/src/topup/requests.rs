@@ -159,7 +159,6 @@ impl serde::Serialize for ListTopupStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListTopup<'a> {}
 impl<'a> ListTopup<'a> {
     /// Returns a list of top-ups.
     pub fn send(
@@ -172,6 +171,7 @@ impl<'a> ListTopup<'a> {
         stripe::ListPaginator::from_params("/topups", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListTopup<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveTopup<'a> {
     /// Specifies which fields in the response should be expanded.

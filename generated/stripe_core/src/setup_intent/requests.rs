@@ -1099,7 +1099,6 @@ impl<'a> ListSetupIntent<'a> {
         Self::default()
     }
 }
-impl<'a> stripe::PaginationParams for ListSetupIntent<'a> {}
 impl<'a> ListSetupIntent<'a> {
     /// Returns a list of SetupIntents.
     pub fn send(
@@ -1112,6 +1111,7 @@ impl<'a> ListSetupIntent<'a> {
         stripe::ListPaginator::from_params("/setup_intents", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListSetupIntent<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSetupIntent<'a> {
     /// The client secret of the SetupIntent.

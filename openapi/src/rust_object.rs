@@ -1,9 +1,10 @@
 use std::fmt::{Debug, Display, Formatter};
 
+use indexmap::IndexMap;
+
 use crate::components::Components;
-use crate::printable::PrintableEnumVariant;
 use crate::rust_type::RustType;
-use crate::types::RustIdent;
+use crate::types::{ComponentPath, RustIdent};
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustObject {
@@ -56,7 +57,7 @@ impl RustObject {
 
     pub fn get_struct_field(&self, field_name: &str) -> Option<&RustType> {
         match self {
-            RustObject::Struct(fields) => {
+            Self::Struct(fields) => {
                 let field = fields.iter().find(|f| f.field_name == field_name);
                 field.map(|f| &f.rust_type)
             }
@@ -79,13 +80,13 @@ impl RustObject {
     pub fn typs_mut(&mut self) -> Vec<&mut RustType> {
         let mut res = vec![];
         match self {
-            RustObject::Struct(fields) => {
+            Self::Struct(fields) => {
                 for field in fields {
                     res.push(&mut field.rust_type)
                 }
             }
-            RustObject::FieldlessEnum(_) => {}
-            RustObject::Enum(variants) => {
+            Self::FieldlessEnum(_) => {}
+            Self::Enum(variants) => {
                 for variant in variants {
                     if let Some(typ) = &mut variant.rust_type {
                         res.push(typ);
@@ -104,32 +105,17 @@ pub struct EnumVariant {
     pub variant: RustIdent,
     /// The type of the single field. If `None`, no inner field
     pub rust_type: Option<RustType>,
-    pub feature_gate: Option<String>,
 }
 
 impl EnumVariant {
     /// Make an enum variant with the given name and type.
     pub fn new(variant: RustIdent, rust_type: RustType) -> Self {
-        Self { variant, rust_type: Some(rust_type), feature_gate: None }
+        Self { variant, rust_type: Some(rust_type) }
     }
 
     /// Make a fieldless variant with the given name.
     pub fn fieldless(variant: RustIdent) -> Self {
-        Self { variant, rust_type: None, feature_gate: None }
-    }
-
-    pub fn as_printable(&self, components: &Components) -> PrintableEnumVariant {
-        let printable = self.rust_type.as_ref().map(|typ| components.construct_printable_type(typ));
-        PrintableEnumVariant {
-            rust_type: printable,
-            variant: &self.variant,
-            feature_gate: self.feature_gate.as_deref(),
-        }
-    }
-
-    pub fn with_feature_gate(mut self, gate: String) -> Self {
-        self.feature_gate = Some(gate);
-        self
+        Self { variant, rust_type: None }
     }
 }
 
@@ -231,4 +217,23 @@ impl DeserDefault {
             Self::Default => "#[serde(default)]",
         }
     }
+}
+
+pub struct ObjectRef {
+    pub path: ComponentPath,
+    pub feature_gate: Option<String>,
+}
+
+pub fn as_enum_of_objects<'a>(
+    components: &'a Components,
+    variants: &'a [EnumVariant],
+) -> Option<IndexMap<&'a str, ObjectRef>> {
+    let mut object_map = IndexMap::new();
+    for variant in variants {
+        let path = variant.rust_type.as_ref().and_then(|t| t.as_component_path())?;
+        let obj = components.get(path);
+        let name = obj.data.object_name.as_deref()?;
+        object_map.insert(name, ObjectRef { path: path.clone(), feature_gate: None });
+    }
+    Some(object_map)
 }

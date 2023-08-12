@@ -99,7 +99,6 @@ impl serde::Serialize for ListIssuingAuthorizationStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> stripe::PaginationParams for ListIssuingAuthorization<'a> {}
 impl<'a> ListIssuingAuthorization<'a> {
     /// Returns a list of Issuing `Authorization` objects.
     ///
@@ -114,6 +113,7 @@ impl<'a> ListIssuingAuthorization<'a> {
         stripe::ListPaginator::from_params("/issuing/authorizations", self)
     }
 }
+impl<'a> stripe::PaginationParams for ListIssuingAuthorization<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveIssuingAuthorization<'a> {
     /// Specifies which fields in the response should be expanded.
