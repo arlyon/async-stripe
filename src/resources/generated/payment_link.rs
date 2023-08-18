@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::PaymentLinkId;
+use crate::ids::{PaymentLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
-use crate::resources::{
-    Account, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions, ShippingRate, TaxId,
-};
+use crate::resources::{Account, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions, ShippingRate, TaxId};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentLink".
 ///
@@ -115,10 +112,12 @@ pub struct PaymentLink {
 }
 
 impl PaymentLink {
+
     /// Returns a list of your payment links.
-    pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
-        client.get_query("/payment_links", &params)
-    }
+pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
+   client.get_query("/payment_links", &params)
+}
+
 
     /// Creates a payment link.
     pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
@@ -131,11 +130,7 @@ impl PaymentLink {
     }
 
     /// Updates a payment link.
-    pub fn update(
-        client: &Client,
-        id: &PaymentLinkId,
-        params: UpdatePaymentLink<'_>,
-    ) -> Response<PaymentLink> {
+    pub fn update(client: &Client, id: &PaymentLinkId, params: UpdatePaymentLink<'_>) -> Response<PaymentLink> {
         client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }
@@ -152,6 +147,7 @@ impl Object for PaymentLink {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_confirmation: Option<PaymentLinksResourceCompletionBehaviorConfirmationPage>,
 
@@ -165,24 +161,28 @@ pub struct PaymentLinksResourceAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAutomaticTax {
+
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorConfirmationPage {
+
     /// The custom message that is displayed to the customer after the purchase is complete.
     pub custom_message: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorRedirect {
+
     /// The URL the customer will be redirected to after the purchase is complete.
     pub url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceConsentCollection {
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
 
@@ -194,6 +194,7 @@ pub struct PaymentLinksResourceConsentCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFields {
+
     /// Configuration for `type=dropdown` fields.
     pub dropdown: Option<PaymentLinksResourceCustomFieldsDropdown>,
 
@@ -222,6 +223,7 @@ pub struct PaymentLinksResourceCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFieldsDropdown {
+
     /// The options available for the customer to select.
     ///
     /// Up to 200 options allowed.
@@ -230,6 +232,7 @@ pub struct PaymentLinksResourceCustomFieldsDropdown {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFieldsDropdownOption {
+
     /// The label for the option, displayed to the customer.
     ///
     /// Up to 100 characters.
@@ -243,6 +246,7 @@ pub struct PaymentLinksResourceCustomFieldsDropdownOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFieldsLabel {
+
     /// Custom text for the label, displayed to the customer.
     ///
     /// Up to 50 characters.
@@ -255,6 +259,7 @@ pub struct PaymentLinksResourceCustomFieldsLabel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFieldsNumeric {
+
     /// The maximum character length constraint for the customer's input.
     pub maximum_length: Option<i64>,
 
@@ -264,6 +269,7 @@ pub struct PaymentLinksResourceCustomFieldsNumeric {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomFieldsText {
+
     /// The maximum character length constraint for the customer's input.
     pub maximum_length: Option<i64>,
 
@@ -273,6 +279,7 @@ pub struct PaymentLinksResourceCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomText {
+
     /// Custom text that should be displayed alongside shipping address collection.
     pub shipping_address: Option<PaymentLinksResourceCustomTextPosition>,
 
@@ -282,12 +289,14 @@ pub struct PaymentLinksResourceCustomText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomTextPosition {
+
     /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceInvoiceCreation {
+
     /// Enable creating an invoice on successful payment.
     pub enabled: bool,
 
@@ -299,6 +308,7 @@ pub struct PaymentLinksResourceInvoiceCreation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceInvoiceSettings {
+
     /// The account tax IDs associated with the invoice.
     pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
 
@@ -324,6 +334,7 @@ pub struct PaymentLinksResourceInvoiceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
+
     /// The name of the custom field.
     pub name: String,
 
@@ -333,6 +344,7 @@ pub struct InvoiceSettingCustomField {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePaymentIntentData {
+
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
 
@@ -342,12 +354,14 @@ pub struct PaymentLinksResourcePaymentIntentData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePhoneNumberCollection {
+
     /// If `true`, a phone number will be collected during checkout.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceShippingAddressCollection {
+
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations.
     ///
     /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
@@ -356,6 +370,7 @@ pub struct PaymentLinksResourceShippingAddressCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceShippingOption {
+
     /// A non-negative integer in cents representing how much to charge.
     pub shipping_amount: i64,
 
@@ -365,6 +380,7 @@ pub struct PaymentLinksResourceShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceSubscriptionData {
+
     /// The subscription's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store an explanation of the subscription.
@@ -376,12 +392,14 @@ pub struct PaymentLinksResourceSubscriptionData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceTaxIdCollection {
+
     /// Indicates whether tax ID collection is enabled for the session.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceTransferData {
+
     /// The amount in cents (or local equivalent) that will be transferred to the destination account.
     ///
     /// By default, the entire amount is transferred to the destination.
@@ -394,6 +412,7 @@ pub struct PaymentLinksResourceTransferData {
 /// The parameters for `PaymentLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentLink<'a> {
+
     /// Behavior after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after_completion: Option<CreatePaymentLinkAfterCompletion>,
@@ -561,6 +580,7 @@ impl<'a> CreatePaymentLink<'a> {
 /// The parameters for `PaymentLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentLinks<'a> {
+
     /// Only return payment links that are active or inactive (e.g., pass `false` to list all inactive payment links).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -604,12 +624,12 @@ impl<'a> ListPaymentLinks<'a> {
 impl Paginable for ListPaymentLinks<'_> {
     type O = PaymentLink;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `PaymentLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentLink<'a> {
+
     /// Whether the payment link's `url` is active.
     ///
     /// If `false`, customers visiting the URL will be shown a page saying that the link has been deactivated.
@@ -678,7 +698,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+    /// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,
 
@@ -711,6 +731,7 @@ impl<'a> UpdatePaymentLink<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
+
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_confirmation: Option<CreatePaymentLinkAfterCompletionHostedConfirmation>,
@@ -728,12 +749,14 @@ pub struct CreatePaymentLinkAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
+
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkConsentCollection {
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
@@ -749,6 +772,7 @@ pub struct CreatePaymentLinkConsentCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFields {
+
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dropdown: Option<CreatePaymentLinkCustomFieldsDropdown>,
@@ -782,6 +806,7 @@ pub struct CreatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomText {
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<CreatePaymentLinkCustomTextShippingAddress>,
@@ -793,6 +818,7 @@ pub struct CreatePaymentLinkCustomText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreation {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -803,6 +829,7 @@ pub struct CreatePaymentLinkInvoiceCreation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItems {
+
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreatePaymentLinkLineItemsAdjustableQuantity>,
@@ -816,6 +843,7 @@ pub struct CreatePaymentLinkLineItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPaymentIntentData {
+
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
@@ -837,12 +865,14 @@ pub struct CreatePaymentLinkPaymentIntentData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPhoneNumberCollection {
+
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
+
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
     /// shipping locations.
     ///
@@ -852,6 +882,7 @@ pub struct CreatePaymentLinkShippingAddressCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingOptions {
+
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
@@ -859,6 +890,7 @@ pub struct CreatePaymentLinkShippingOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
+
     /// The subscription's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store an explanation of the subscription.
@@ -874,12 +906,14 @@ pub struct CreatePaymentLinkSubscriptionData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTaxIdCollection {
+
     /// Set to `true` to enable tax ID collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTransferData {
+
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -894,6 +928,7 @@ pub struct CreatePaymentLinkTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletion {
+
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_confirmation: Option<UpdatePaymentLinkAfterCompletionHostedConfirmation>,
@@ -911,12 +946,14 @@ pub struct UpdatePaymentLinkAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
+
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFields {
+
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dropdown: Option<UpdatePaymentLinkCustomFieldsDropdown>,
@@ -950,6 +987,7 @@ pub struct UpdatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomText {
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<UpdatePaymentLinkCustomTextShippingAddress>,
@@ -961,6 +999,7 @@ pub struct UpdatePaymentLinkCustomText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreation {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -971,6 +1010,7 @@ pub struct UpdatePaymentLinkInvoiceCreation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
+
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<UpdatePaymentLinkLineItemsAdjustableQuantity>,
@@ -985,6 +1025,7 @@ pub struct UpdatePaymentLinkLineItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
+
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
     /// shipping locations.
     ///
@@ -994,6 +1035,7 @@ pub struct UpdatePaymentLinkShippingAddressCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionHostedConfirmation {
+
     /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
@@ -1001,6 +1043,7 @@ pub struct CreatePaymentLinkAfterCompletionHostedConfirmation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionRedirect {
+
     /// The URL the customer will be redirected to after the purchase is complete.
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
@@ -1009,6 +1052,7 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsDropdown {
+
     /// The options available for the customer to select.
     ///
     /// Up to 200 options allowed.
@@ -1017,6 +1061,7 @@ pub struct CreatePaymentLinkCustomFieldsDropdown {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsLabel {
+
     /// Custom text for the label, displayed to the customer.
     ///
     /// Up to 50 characters.
@@ -1029,6 +1074,7 @@ pub struct CreatePaymentLinkCustomFieldsLabel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
+
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -1040,6 +1086,7 @@ pub struct CreatePaymentLinkCustomFieldsNumeric {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsText {
+
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -1051,18 +1098,21 @@ pub struct CreatePaymentLinkCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextShippingAddress {
+
     /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextSubmit {
+
     /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
+
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_tax_ids: Option<Vec<String>>,
@@ -1096,6 +1146,7 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
+
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
 
@@ -1116,6 +1167,7 @@ pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
+
     /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
@@ -1123,6 +1175,7 @@ pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionRedirect {
+
     /// The URL the customer will be redirected to after the purchase is complete.
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
@@ -1131,6 +1184,7 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsDropdown {
+
     /// The options available for the customer to select.
     ///
     /// Up to 200 options allowed.
@@ -1139,6 +1193,7 @@ pub struct UpdatePaymentLinkCustomFieldsDropdown {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsLabel {
+
     /// Custom text for the label, displayed to the customer.
     ///
     /// Up to 50 characters.
@@ -1151,6 +1206,7 @@ pub struct UpdatePaymentLinkCustomFieldsLabel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
+
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -1162,6 +1218,7 @@ pub struct UpdatePaymentLinkCustomFieldsNumeric {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsText {
+
     /// The maximum character length constraint for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum_length: Option<i64>,
@@ -1173,18 +1230,21 @@ pub struct UpdatePaymentLinkCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextShippingAddress {
+
     /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextSubmit {
+
     /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
+
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_tax_ids: Option<Vec<String>>,
@@ -1218,6 +1278,7 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
+
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
 
@@ -1238,6 +1299,7 @@ pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsDropdownOptions {
+
     /// The label for the option, displayed to the customer.
     ///
     /// Up to 100 characters.
@@ -1251,6 +1313,7 @@ pub struct CreatePaymentLinkCustomFieldsDropdownOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
+
     /// The name of the custom field.
     ///
     /// This may be up to 30 characters.
@@ -1264,18 +1327,19 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
     /// One of `exclude_tax` or `include_inclusive_tax`.
     /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
     /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display:
-        Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    pub amount_tax_display: Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsDropdownOptions {
+
     /// The label for the option, displayed to the customer.
     ///
     /// Up to 100 characters.
@@ -1289,6 +1353,7 @@ pub struct UpdatePaymentLinkCustomFieldsDropdownOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
+
     /// The name of the custom field.
     ///
     /// This may be up to 30 characters.
@@ -1302,14 +1367,14 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
     /// One of `exclude_tax` or `include_inclusive_tax`.
     /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
     /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display:
-        Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    pub amount_tax_display: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 
 /// An enum representing the possible values of an `CreatePaymentLinkAfterCompletion`'s `type` field.
@@ -1505,16 +1570,12 @@ impl AsRef<str> for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsA
     }
 }
 
-impl std::fmt::Display
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::fmt::Display for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::default::Default for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn default() -> Self {
         Self::ExcludeTax
     }
@@ -3749,16 +3810,12 @@ impl AsRef<str> for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsA
     }
 }
 
-impl std::fmt::Display
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::fmt::Display for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::default::Default for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn default() -> Self {
         Self::ExcludeTax
     }

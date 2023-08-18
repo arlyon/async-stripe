@@ -2,13 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::InvoiceLineItemId;
+use crate::ids::{InvoiceLineItemId};
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{
-    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
-};
+use crate::resources::{Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -113,6 +110,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
@@ -122,6 +120,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
+
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
@@ -142,12 +141,14 @@ pub struct TaxAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsProrationDetails {
+
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
     pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceLineItemsCreditedItems {
+
     /// Invoice containing the credited invoice line items.
     pub invoice: String,
 
