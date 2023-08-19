@@ -181,13 +181,7 @@ pub trait Paginable {
 
 pub trait PaginableList {
     type O: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug;
-    fn new(
-        &self,
-        data: Vec<Self::O>,
-        url: String,
-        has_more: bool,
-        total_count: Option<u64>,
-    ) -> Self;
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> Self;
     fn get_data(&self) -> Vec<Self::O>;
     fn get_url(&self) -> String;
     fn get_total_count(&self) -> Option<u64>;
@@ -239,13 +233,12 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
     type O = T;
 
     fn new(
-        &self,
         data: Vec<Self::O>,
         url: String,
         has_more: bool,
         total_count: Option<u64>,
     ) -> SearchList<T> {
-        Self { object: "".to_string(), url, has_more, data: data, next_page: None, total_count }
+        Self { object: "".to_string(), url, has_more, data, next_page: None, total_count }
     }
 
     fn get_data(&self) -> Vec<Self::O> {
@@ -255,10 +248,10 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         self.url.clone()
     }
     fn get_total_count(&self) -> Option<u64> {
-        self.total_count.clone()
+        self.total_count
     }
     fn has_more(&self) -> bool {
-        self.has_more.clone()
+        self.has_more
     }
 }
 
@@ -267,14 +260,8 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
 {
     type O = T;
 
-    fn new(
-        &self,
-        data: Vec<Self::O>,
-        url: String,
-        has_more: bool,
-        total_count: Option<u64>,
-    ) -> List<T> {
-        Self { url, has_more, data: data, total_count }
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> List<T> {
+        Self { url, has_more, data, total_count }
     }
 
     fn get_data(&self) -> Vec<Self::O> {
@@ -284,10 +271,10 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         self.url.clone()
     }
     fn get_total_count(&self) -> Option<u64> {
-        self.total_count.clone()
+        self.total_count
     }
     fn has_more(&self) -> bool {
-        self.has_more.clone()
+        self.has_more
     }
 }
 
@@ -452,7 +439,7 @@ where
             }
         } else {
             ok(ListPaginator {
-                page: self.page.new(
+                page: T::new(
                     Vec::new(),
                     self.page.get_url(),
                     self.page.has_more(),
