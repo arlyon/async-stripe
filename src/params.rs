@@ -394,7 +394,7 @@ where
     /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
-        mut self,
+        self,
         client: &Client,
     ) -> impl futures_util::Stream<Item = Result<T::O, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
@@ -408,7 +408,7 @@ where
     async fn unfold_stream(
         state: Option<(Self, Client)>,
     ) -> Option<(Result<T::O, StripeError>, Option<(Self, Client)>)> {
-        let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
+        let (paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.get_data().len() > 1 {
             return Some((Ok(paginator.page.get_data().pop()?), Some((paginator, client))));
@@ -420,7 +420,7 @@ where
         }
 
         match paginator.next(&client).await {
-            Ok(mut next_paginator) => {
+            Ok(next_paginator) => {
                 let data = paginator.page.get_data().pop()?;
                 next_paginator.page.get_data().reverse();
 
