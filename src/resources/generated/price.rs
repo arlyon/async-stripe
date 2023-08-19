@@ -486,7 +486,7 @@ pub struct UpdatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CurrencyMap<Option<CurrencyMap<UpdatePriceCurrencyOptions>>>>,
+    pub currency_options: Option<CurrencyMap<UpdatePriceCurrencyOptions>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
