@@ -439,12 +439,7 @@ where
             }
         } else {
             ok(ListPaginator {
-                page: T::new(
-                    Vec::new(),
-                    self.page.get_url(),
-                    self.page.has_more(),
-                    self.page.get_total_count(),
-                ),
+                page: T::new(Vec::new(), self.page.get_url(), false, self.page.get_total_count()),
                 params: self.params.clone(),
             })
         }
