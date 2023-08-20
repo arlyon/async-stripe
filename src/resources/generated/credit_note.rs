@@ -20,7 +20,7 @@ pub struct CreditNote {
     /// Unique identifier for the object.
     pub id: CreditNoteId,
 
-    /// The integer amount in %s representing the total amount of the credit note, including tax.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, including tax.
     pub amount: i64,
 
     /// This is the sum of all the shipping amounts.
@@ -42,7 +42,7 @@ pub struct CreditNote {
     /// Customer balance transaction related to this credit note.
     pub customer_balance_transaction: Option<Expandable<CustomerBalanceTransaction>>,
 
-    /// The integer amount in %s representing the total amount of discount that was credited.
+    /// The integer amount in cents (or local equivalent) representing the total amount of discount that was credited.
     pub discount_amount: i64,
 
     /// The aggregate amounts calculated per discount for all line items.
@@ -94,19 +94,19 @@ pub struct CreditNote {
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
     pub status: CreditNoteStatus,
 
-    /// The integer amount in %s representing the amount of the credit note, excluding exclusive tax and invoice level discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount of the credit note, excluding exclusive tax and invoice level discounts.
     pub subtotal: i64,
 
-    /// The integer amount in %s representing the amount of the credit note, excluding all tax and invoice level discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount of the credit note, excluding all tax and invoice level discounts.
     pub subtotal_excluding_tax: Option<i64>,
 
     /// The aggregate amounts calculated per tax rate for all line items.
     pub tax_amounts: Vec<CreditNoteTaxAmount>,
 
-    /// The integer amount in %s representing the total amount of the credit note, including tax and all discount.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, including tax and all discount.
     pub total: i64,
 
-    /// The integer amount in %s representing the total amount of the credit note, excluding tax, but including discounts.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, excluding tax, but including discounts.
     pub total_excluding_tax: Option<i64>,
 
     /// Type of this credit note, one of `pre_payment` or `post_payment`.
@@ -163,7 +163,7 @@ impl Object for CreditNote {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
     /// Whether this tax amount is inclusive or exclusive.
@@ -177,13 +177,13 @@ pub struct CreditNoteTaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<CreditNoteTaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
+    /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
     /// The discount that was applied to get this discount amount.

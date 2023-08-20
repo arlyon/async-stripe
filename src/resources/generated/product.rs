@@ -405,7 +405,7 @@ pub struct UpdateProduct<'a> {
     ///
     /// May only be set if `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
+    pub caption: Option<String>,
 
     /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
     ///
@@ -421,7 +421,7 @@ pub struct UpdateProduct<'a> {
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    pub description: Option<String>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -469,7 +469,7 @@ pub struct UpdateProduct<'a> {
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     /// May only be set if `type=service`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_label: Option<&'a str>,
+    pub unit_label: Option<String>,
 
     /// A URL of a publicly-accessible webpage for this product.
     #[serde(skip_serializing_if = "Option::is_none")]

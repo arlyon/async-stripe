@@ -19,7 +19,7 @@ pub struct BalanceTransaction {
     /// Unique identifier for the object.
     pub id: BalanceTransactionId,
 
-    /// Gross amount of the transaction, in %s.
+    /// Gross amount of the transaction, in cents (or local equivalent).
     pub amount: i64,
 
     /// The date the transaction's net funds will become available in the Stripe balance.
@@ -49,13 +49,13 @@ pub struct BalanceTransaction {
     /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
     pub exchange_rate: Option<f64>,
 
-    /// Fees (in %s) paid for this transaction.
+    /// Fees (in cents (or local equivalent)) paid for this transaction.
     pub fee: i64,
 
-    /// Detailed breakdown of fees (in %s) paid for this transaction.
+    /// Detailed breakdown of fees (in cents (or local equivalent)) paid for this transaction.
     pub fee_details: Vec<Fee>,
 
-    /// Net amount of the transaction, in %s.
+    /// Net amount of the transaction, in cents (or local equivalent).
     pub net: i64,
 
     /// [Learn more](https://stripe.com/docs/reports/reporting-categories) about how reporting categories can help you understand balance transactions from an accounting perspective.

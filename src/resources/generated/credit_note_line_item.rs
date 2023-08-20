@@ -16,16 +16,16 @@ pub struct CreditNoteLineItem {
     /// Unique identifier for the object.
     pub id: CreditNoteLineItemId,
 
-    /// The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
     pub amount: i64,
 
-    /// The integer amount in %s representing the amount being credited for this line item, excluding all tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount being credited for this line item, excluding all tax and discounts.
     pub amount_excluding_tax: Option<i64>,
 
     /// Description of the item being credited.
     pub description: Option<String>,
 
-    /// The integer amount in %s representing the discount being credited for this line item.
+    /// The integer amount in cents (or local equivalent) representing the discount being credited for this line item.
     pub discount_amount: i64,
 
     /// The amount of discount calculated per discount for this line item.
@@ -59,7 +59,7 @@ pub struct CreditNoteLineItem {
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     pub unit_amount_decimal: Option<String>,
 
-    /// The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.
+    /// The amount in cents (or local equivalent) representing the unit amount being credited for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
 
@@ -75,7 +75,7 @@ impl Object for CreditNoteLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
 
     /// Whether this tax amount is inclusive or exclusive.
@@ -89,13 +89,13 @@ pub struct CreditNoteTaxAmount {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<CreditNoteTaxAmountTaxabilityReason>,
 
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
+    /// The amount, in cents (or local equivalent), of the discount.
     pub amount: i64,
 
     /// The discount that was applied to get this discount amount.

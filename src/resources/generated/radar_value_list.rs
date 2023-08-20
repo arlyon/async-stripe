@@ -35,7 +35,7 @@ pub struct RadarValueList {
 
     /// The type of items in the value list.
     ///
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    /// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub item_type: Option<RadarValueListItemType>,
 
@@ -79,7 +79,9 @@ pub enum RadarValueListItemType {
     CustomerId,
     Email,
     IpAddress,
+    SepaDebitFingerprint,
     String,
+    UsBankAccountFingerprint,
 }
 
 impl RadarValueListItemType {
@@ -92,7 +94,9 @@ impl RadarValueListItemType {
             RadarValueListItemType::CustomerId => "customer_id",
             RadarValueListItemType::Email => "email",
             RadarValueListItemType::IpAddress => "ip_address",
+            RadarValueListItemType::SepaDebitFingerprint => "sepa_debit_fingerprint",
             RadarValueListItemType::String => "string",
+            RadarValueListItemType::UsBankAccountFingerprint => "us_bank_account_fingerprint",
         }
     }
 }
