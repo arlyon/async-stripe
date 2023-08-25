@@ -299,7 +299,7 @@ pub struct CardDetails {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
@@ -388,7 +388,7 @@ pub struct CardPresent {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     pub fingerprint: Option<String>,
 
     /// Card funding type.
@@ -605,7 +605,7 @@ pub struct PaymentMethodInteracPresent {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     pub fingerprint: Option<String>,
 
     /// Card funding type.
@@ -663,12 +663,6 @@ pub struct PaymentMethodKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodLink {
-    /// Two-letter ISO code representing the funding source (i.e.
-    ///
-    /// card, bank) country beneath the Link payment method. You could use this attribute to get a sense of the international breakdown of funding sources you've collected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-
     /// Account owner's email address.
     pub email: Option<String>,
 
@@ -1102,49 +1096,13 @@ impl Paginable for ListPaymentMethods<'_> {
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<UpdatePaymentMethodAcssDebit>,
-
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<UpdatePaymentMethodAffirm>,
-
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<UpdatePaymentMethodAuBecsDebit>,
-
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<UpdatePaymentMethodBacsDebit>,
-
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
 
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<UpdatePaymentMethodBlik>,
-
     /// If this is a `card` PaymentMethod, this hash contains the user's card details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateApiParam>,
-
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<UpdatePaymentMethodCashapp>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -1162,40 +1120,20 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<UpdatePaymentMethodSepaDebit>,
-
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
-
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<UpdatePaymentMethodZip>,
 }
 
 impl<'a> UpdatePaymentMethod<'a> {
     pub fn new() -> Self {
         UpdatePaymentMethod {
-            acss_debit: Default::default(),
-            affirm: Default::default(),
-            au_becs_debit: Default::default(),
-            bacs_debit: Default::default(),
             billing_details: Default::default(),
-            blik: Default::default(),
             card: Default::default(),
-            cashapp: Default::default(),
             expand: Default::default(),
             link: Default::default(),
             metadata: Default::default(),
-            sepa_debit: Default::default(),
             us_bank_account: Default::default(),
-            zip: Default::default(),
         }
     }
 }
@@ -1380,28 +1318,7 @@ pub struct CreatePaymentMethodWechatPay {}
 pub struct CreatePaymentMethodZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodAcssDebit {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodAffirm {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodAuBecsDebit {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBacsDebit {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBlik {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodCashapp {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodLink {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodSepaDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodUsBankAccount {
@@ -1409,9 +1326,6 @@ pub struct UpdatePaymentMethodUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
 }
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodKlarnaDob {
@@ -2498,7 +2412,6 @@ pub enum PaymentMethodTypeFilter {
     Blik,
     Boleto,
     Card,
-    CardPresent,
     Cashapp,
     CustomerBalance,
     Eps,
@@ -2535,7 +2448,6 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Blik => "blik",
             PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
-            PaymentMethodTypeFilter::CardPresent => "card_present",
             PaymentMethodTypeFilter::Cashapp => "cashapp",
             PaymentMethodTypeFilter::CustomerBalance => "customer_balance",
             PaymentMethodTypeFilter::Eps => "eps",

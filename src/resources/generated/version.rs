@@ -1,3 +1,3 @@
 use crate::ApiVersion;
 
-pub const VERSION: ApiVersion = ApiVersion::V2022_11_15;
+pub const VERSION: ApiVersion = ApiVersion::V2023_08_16;

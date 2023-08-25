@@ -142,7 +142,7 @@ impl Account {
     /// Any parameters not provided are left unchanged.  For Custom accounts, you can update any information on the account.
     /// For other accounts, you can update all information until that account has started to go through Connect Onboarding.
     /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters can no longer be changed.
-    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
@@ -153,7 +153,7 @@ impl Account {
     /// Accounts created using test-mode keys can be deleted at any time.
     ///
     /// Standard accounts created using live-mode keys cannot be deleted.
-    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
+    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
@@ -1460,7 +1460,7 @@ pub struct PersonParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
 
-    /// The government-issued ID number of the individual, as appropriate for the representative’s country.
+    /// The government-issued ID number of the individual, as appropriate for the representative's country.
     ///
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
     /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
@@ -3820,10 +3820,12 @@ pub enum AccountRequirementsErrorCode {
     InvalidStreetAddress,
     InvalidTosAcceptance,
     InvalidValueOther,
+    VerificationDirectorsMismatch,
     VerificationDocumentAddressMismatch,
     VerificationDocumentAddressMissing,
     VerificationDocumentCorrupt,
     VerificationDocumentCountryNotSupported,
+    VerificationDocumentDirectorsMismatch,
     VerificationDocumentDobMismatch,
     VerificationDocumentDuplicateType,
     VerificationDocumentExpired,
@@ -3849,6 +3851,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentPhotoMismatch,
     VerificationDocumentTooLarge,
     VerificationDocumentTypeNotSupported,
+    VerificationExtraneousDirectors,
     VerificationFailedAddressMatch,
     VerificationFailedBusinessIecNumber,
     VerificationFailedDocumentMatch,
@@ -3860,6 +3863,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
+    VerificationMissingDirectors,
     VerificationMissingExecutives,
     VerificationMissingOwners,
     VerificationRequiresAdditionalMemorandumOfAssociations,
@@ -3874,10 +3878,12 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
             AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
+            AccountRequirementsErrorCode::VerificationDirectorsMismatch => "verification_directors_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentAddressMissing => "verification_document_address_missing",
             AccountRequirementsErrorCode::VerificationDocumentCorrupt => "verification_document_corrupt",
             AccountRequirementsErrorCode::VerificationDocumentCountryNotSupported => "verification_document_country_not_supported",
+            AccountRequirementsErrorCode::VerificationDocumentDirectorsMismatch => "verification_document_directors_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentDobMismatch => "verification_document_dob_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentDuplicateType => "verification_document_duplicate_type",
             AccountRequirementsErrorCode::VerificationDocumentExpired => "verification_document_expired",
@@ -3903,6 +3909,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationDocumentPhotoMismatch => "verification_document_photo_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentTooLarge => "verification_document_too_large",
             AccountRequirementsErrorCode::VerificationDocumentTypeNotSupported => "verification_document_type_not_supported",
+            AccountRequirementsErrorCode::VerificationExtraneousDirectors => "verification_extraneous_directors",
             AccountRequirementsErrorCode::VerificationFailedAddressMatch => "verification_failed_address_match",
             AccountRequirementsErrorCode::VerificationFailedBusinessIecNumber => "verification_failed_business_iec_number",
             AccountRequirementsErrorCode::VerificationFailedDocumentMatch => "verification_failed_document_match",
@@ -3914,6 +3921,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
+            AccountRequirementsErrorCode::VerificationMissingDirectors => "verification_missing_directors",
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
             AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
             AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
@@ -4053,6 +4061,7 @@ pub enum CompanyParamsStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -4068,6 +4077,7 @@ pub enum CompanyParamsStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
 }
 
 impl CompanyParamsStructure {
@@ -4078,6 +4088,7 @@ impl CompanyParamsStructure {
             CompanyParamsStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyParamsStructure::GovernmentalUnit => "governmental_unit",
             CompanyParamsStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyParamsStructure::IncorporatedPartnership => "incorporated_partnership",
             CompanyParamsStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
             CompanyParamsStructure::Llc => "llc",
             CompanyParamsStructure::MultiMemberLlc => "multi_member_llc",
@@ -4095,6 +4106,7 @@ impl CompanyParamsStructure {
             }
             CompanyParamsStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyParamsStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+            CompanyParamsStructure::UnincorporatedPartnership => "unincorporated_partnership",
         }
     }
 }
@@ -4125,6 +4137,7 @@ pub enum CompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -4140,6 +4153,7 @@ pub enum CompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
 }
 
 impl CompanyStructure {
@@ -4150,6 +4164,7 @@ impl CompanyStructure {
             CompanyStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyStructure::GovernmentalUnit => "governmental_unit",
             CompanyStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyStructure::IncorporatedPartnership => "incorporated_partnership",
             CompanyStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
             CompanyStructure::Llc => "llc",
             CompanyStructure::MultiMemberLlc => "multi_member_llc",
@@ -4167,6 +4182,7 @@ impl CompanyStructure {
             }
             CompanyStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+            CompanyStructure::UnincorporatedPartnership => "unincorporated_partnership",
         }
     }
 }

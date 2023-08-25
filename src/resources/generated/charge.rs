@@ -9,10 +9,10 @@ use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
-    ChargeSourceParams, Currency, Customer, Dispute, Invoice, Mandate, PaymentIntent,
-    PaymentMethod, PaymentMethodDetailsCardChecks, PaymentMethodDetailsCardInstallmentsPlan,
+    ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
+    PaymentMethodDetailsCardChecks, PaymentMethodDetailsCardInstallmentsPlan,
     PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, PaymentSource,
-    RadarRadarOptions, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+    RadarRadarOptions, Refund, Review, Shipping, Transfer,
 };
 
 /// The resource representing a Stripe "Charge".
@@ -22,9 +22,6 @@ use crate::resources::{
 pub struct Charge {
     /// Unique identifier for the object.
     pub id: ChargeId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternate_statement_descriptors: Option<AlternateStatementDescriptors>,
 
     /// Amount intended to be collected by this payment.
     ///
@@ -86,12 +83,6 @@ pub struct Charge {
     ///
     /// Often useful for displaying to users.
     pub description: Option<String>,
-
-    /// ID of an existing, connected Stripe account to transfer funds to if `transfer_data` was specified in the charge request.
-    pub destination: Option<Expandable<Account>>,
-
-    /// Details about the dispute if the charge has been disputed.
-    pub dispute: Option<Expandable<Dispute>>,
 
     /// Whether the charge has been disputed.
     pub disputed: bool,
@@ -257,17 +248,6 @@ impl Object for Charge {
     fn object(&self) -> &'static str {
         "charge"
     }
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AlternateStatementDescriptors {
-    /// The Kana variation of the descriptor.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kana: Option<String>,
-
-    /// The Kanji variation of the descriptor.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kanji: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -702,7 +682,7 @@ pub struct PaymentMethodDetailsCard {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
@@ -748,7 +728,7 @@ pub struct PaymentMethodDetailsCard {
     pub network_token: Option<PaymentMethodDetailsCardNetworkToken>,
 
     /// Populated if this transaction used 3D Secure authentication.
-    pub three_d_secure: Option<ThreeDSecureDetails>,
+    pub three_d_secure: Option<ThreeDSecureDetailsCharge>,
 
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     pub wallet: Option<PaymentMethodDetailsCardWallet>,
@@ -810,7 +790,7 @@ pub struct PaymentMethodDetailsCardPresent {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     pub fingerprint: Option<String>,
 
     /// Card funding type.
@@ -1121,7 +1101,7 @@ pub struct PaymentMethodDetailsInteracPresent {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     pub fingerprint: Option<String>,
 
     /// Card funding type.
@@ -1448,6 +1428,23 @@ pub struct Rule {
 
     /// The predicate to evaluate the payment against.
     pub predicate: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ThreeDSecureDetailsCharge {
+    /// For authenticated transactions: how the customer was authenticated by
+    /// the issuing bank.
+    pub authentication_flow: Option<ThreeDSecureDetailsChargeAuthenticationFlow>,
+
+    /// Indicates the outcome of 3D Secure authentication.
+    pub result: Option<ThreeDSecureDetailsChargeResult>,
+
+    /// Additional information about why 3D Secure succeeded or failed based
+    /// on the `result`.
+    pub result_reason: Option<ThreeDSecureDetailsChargeResultReason>,
+
+    /// The version of 3D Secure that was used.
+    pub version: Option<ThreeDSecureDetailsChargeVersion>,
 }
 
 /// The parameters for `Charge::create`.
@@ -2746,6 +2743,165 @@ impl std::fmt::Display for PaypalSellerProtectionStatus {
 impl std::default::Default for PaypalSellerProtectionStatus {
     fn default() -> Self {
         Self::Eligible
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `authentication_flow` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeAuthenticationFlow {
+    Challenge,
+    Frictionless,
+}
+
+impl ThreeDSecureDetailsChargeAuthenticationFlow {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeAuthenticationFlow::Challenge => "challenge",
+            ThreeDSecureDetailsChargeAuthenticationFlow::Frictionless => "frictionless",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn default() -> Self {
+        Self::Challenge
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `result` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeResult {
+    AttemptAcknowledged,
+    Authenticated,
+    Exempted,
+    Failed,
+    NotSupported,
+    ProcessingError,
+}
+
+impl ThreeDSecureDetailsChargeResult {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeResult::AttemptAcknowledged => "attempt_acknowledged",
+            ThreeDSecureDetailsChargeResult::Authenticated => "authenticated",
+            ThreeDSecureDetailsChargeResult::Exempted => "exempted",
+            ThreeDSecureDetailsChargeResult::Failed => "failed",
+            ThreeDSecureDetailsChargeResult::NotSupported => "not_supported",
+            ThreeDSecureDetailsChargeResult::ProcessingError => "processing_error",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeResult {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeResult {
+    fn default() -> Self {
+        Self::AttemptAcknowledged
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `result_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeResultReason {
+    Abandoned,
+    Bypassed,
+    Canceled,
+    CardNotEnrolled,
+    NetworkNotSupported,
+    ProtocolError,
+    Rejected,
+}
+
+impl ThreeDSecureDetailsChargeResultReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeResultReason::Abandoned => "abandoned",
+            ThreeDSecureDetailsChargeResultReason::Bypassed => "bypassed",
+            ThreeDSecureDetailsChargeResultReason::Canceled => "canceled",
+            ThreeDSecureDetailsChargeResultReason::CardNotEnrolled => "card_not_enrolled",
+            ThreeDSecureDetailsChargeResultReason::NetworkNotSupported => "network_not_supported",
+            ThreeDSecureDetailsChargeResultReason::ProtocolError => "protocol_error",
+            ThreeDSecureDetailsChargeResultReason::Rejected => "rejected",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeResultReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeResultReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeResultReason {
+    fn default() -> Self {
+        Self::Abandoned
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `version` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeVersion {
+    #[serde(rename = "1.0.2")]
+    V1_0_2,
+    #[serde(rename = "2.1.0")]
+    V2_1_0,
+    #[serde(rename = "2.2.0")]
+    V2_2_0,
+}
+
+impl ThreeDSecureDetailsChargeVersion {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeVersion::V1_0_2 => "1.0.2",
+            ThreeDSecureDetailsChargeVersion::V2_1_0 => "2.1.0",
+            ThreeDSecureDetailsChargeVersion::V2_2_0 => "2.2.0",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeVersion {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeVersion {
+    fn default() -> Self {
+        Self::V1_0_2
     }
 }
 

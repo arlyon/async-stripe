@@ -62,6 +62,9 @@ pub struct Dispute {
     /// ID of the PaymentIntent that was disputed.
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_details: Option<DisputePaymentMethodDetails>,
+
     /// Reason given by cardholder for dispute.
     ///
     /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
@@ -70,7 +73,7 @@ pub struct Dispute {
 
     /// Current status of dispute.
     ///
-    /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
+    /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, or `lost`.
     pub status: DisputeStatus,
 }
 
@@ -219,6 +222,29 @@ pub struct DisputeEvidenceDetails {
     pub submission_count: u64,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetails {
+    /// Card specific dispute details.
+    pub card: Option<DisputePaymentMethodDetailsCard>,
+
+    /// Payment method type.
+    #[serde(rename = "type")]
+    pub type_: DisputePaymentMethodDetailsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DisputePaymentMethodDetailsCard {
+    /// Card brand.
+    ///
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub brand: String,
+
+    /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
+    ///
+    /// The [Network code map](https://stripe.com/docs/disputes/categories#network-code-map) lists all available dispute reason codes by network.
+    pub network_reason_code: Option<String>,
+}
+
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
@@ -277,11 +303,42 @@ impl Paginable for ListDisputes<'_> {
         self.starting_after = Some(item.id());
     }
 }
+/// An enum representing the possible values of an `DisputePaymentMethodDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DisputePaymentMethodDetailsType {
+    Card,
+}
+
+impl DisputePaymentMethodDetailsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DisputePaymentMethodDetailsType::Card => "card",
+        }
+    }
+}
+
+impl AsRef<str> for DisputePaymentMethodDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputePaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for DisputePaymentMethodDetailsType {
+    fn default() -> Self {
+        Self::Card
+    }
+}
+
 /// An enum representing the possible values of an `Dispute`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum DisputeStatus {
-    ChargeRefunded,
     Lost,
     NeedsResponse,
     UnderReview,
@@ -294,7 +351,6 @@ pub enum DisputeStatus {
 impl DisputeStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            DisputeStatus::ChargeRefunded => "charge_refunded",
             DisputeStatus::Lost => "lost",
             DisputeStatus::NeedsResponse => "needs_response",
             DisputeStatus::UnderReview => "under_review",
@@ -319,6 +375,6 @@ impl std::fmt::Display for DisputeStatus {
 }
 impl std::default::Default for DisputeStatus {
     fn default() -> Self {
-        Self::ChargeRefunded
+        Self::Lost
     }
 }

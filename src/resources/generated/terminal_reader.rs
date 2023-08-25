@@ -128,9 +128,15 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated_card: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process_config: Option<TerminalReaderReaderResourceProcessSetupConfig>,
+
     /// Most recent SetupIntent processed by the reader.
     pub setup_intent: Expandable<SetupIntent>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceProcessSetupConfig {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {

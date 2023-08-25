@@ -9,8 +9,8 @@ use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
-    Mandate, MandateOptionsOffSessionDetailsBlik,
-    PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode, PaymentMethod, SetupAttempt,
+    Mandate, PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode, PaymentMethod,
+    SetupAttempt,
 };
 
 /// The resource representing a Stripe "SetupIntent".
@@ -32,7 +32,7 @@ pub struct SetupIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attach_to_self: Option<bool>,
 
-    /// Settings for automatic payment methods compatible with this Setup Intent.
+    /// Settings for dynamic payment methods compatible with this Setup Intent.
     pub automatic_payment_methods: Option<PaymentFlowsAutomaticPaymentMethodsSetupIntent>,
 
     /// Reason for cancellation of this SetupIntent, one of `abandoned`, `requested_by_customer`, or `duplicate`.
@@ -228,9 +228,6 @@ pub struct SetupIntentPaymentMethodOptions {
     pub acss_debit: Option<SetupIntentPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<SetupIntentPaymentMethodOptionsBlik>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<SetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -257,12 +254,6 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupIntentPaymentMethodOptionsBlik {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<SetupIntentPaymentMethodOptionsMandateOptionsBlik>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -365,19 +356,6 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// Transaction type of the mandate.
     pub transaction_type:
         Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupIntentPaymentMethodOptionsMandateOptionsBlik {
-    /// Date at which the mandate expires.
-    pub expires_after: Option<Timestamp>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub off_session: Option<MandateOptionsOffSessionDetailsBlik>,
-
-    /// Type of the mandate.
-    #[serde(rename = "type")]
-    pub type_: Option<SetupIntentPaymentMethodOptionsMandateOptionsBlikType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -866,10 +844,6 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateSetupIntentPaymentMethodOptionsAcssDebit>,
 
-    /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<CreateSetupIntentPaymentMethodOptionsBlik>,
-
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
@@ -1063,10 +1037,6 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     /// If this is a `acss_debit` SetupIntent, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebit>,
-
-    /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<UpdateSetupIntentPaymentMethodOptionsBlik>,
 
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1325,15 +1295,6 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsBlik {
-    /// The 6-digit BLIK code that a customer has generated using their banking application.
-    ///
-    /// Can only be set on confirmation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1625,15 +1586,6 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsBlik {
-    /// The 6-digit BLIK code that a customer has generated using their banking application.
-    ///
-    /// Can only be set on confirmation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<String>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     /// Configuration options for setting up an eMandate for cards issued in India.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1856,6 +1808,11 @@ pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
         Vec<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
     >,
 
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch:
+        Option<Vec<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>>,
+
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -2009,6 +1966,11 @@ pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
     pub permissions: Option<
         Vec<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
     >,
+
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch:
+        Option<Vec<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>>,
 
     /// For webview integrations only.
     ///
@@ -3088,6 +3050,42 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
 /// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks`'s `requested` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3659,40 +3657,6 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Business
-    }
-}
-
-/// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsMandateOptionsBlik`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
-    OffSession,
-    OnSession,
-}
-
-impl SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SetupIntentPaymentMethodOptionsMandateOptionsBlikType::OffSession => "off_session",
-            SetupIntentPaymentMethodOptionsMandateOptionsBlikType::OnSession => "on_session",
-        }
-    }
-}
-
-impl AsRef<str> for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
-    fn default() -> Self {
-        Self::OffSession
     }
 }
 
@@ -4768,6 +4732,42 @@ impl std::fmt::Display
 }
 impl std::default::Default
     for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn default() -> Self {
         Self::Balances

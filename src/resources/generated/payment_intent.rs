@@ -182,7 +182,7 @@ pub struct PaymentIntent {
 
     /// A string that identifies the resulting payment as part of a group.
     ///
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     pub transfer_group: Option<String>,
 }
 
@@ -1624,7 +1624,7 @@ pub struct CreatePaymentIntent<'a> {
 
     /// A string that identifies the resulting payment as part of a group.
     ///
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 
@@ -4436,6 +4436,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
         Vec<CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
     >,
 
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<
+        Vec<CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>,
+    >,
+
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -4614,6 +4620,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<
         Vec<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
+    >,
+
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<
+        Vec<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>,
     >,
 
     /// For webview integrations only.
@@ -7384,6 +7396,44 @@ impl std::fmt::Display
 }
 impl std::default::Default
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn default() -> Self {
         Self::Balances
@@ -12623,6 +12673,44 @@ impl std::fmt::Display
 }
 impl std::default::Default
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn default() -> Self {
         Self::Balances
