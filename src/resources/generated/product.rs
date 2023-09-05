@@ -24,27 +24,11 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
-
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
-
-    /// An array of connect application identifiers that cannot purchase this product.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
 
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -190,24 +174,6 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 alphanumeric attributes.
-    ///
-    /// Should only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
-
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
     ///
     /// This Price will be set as the default price for this product.
@@ -289,9 +255,6 @@ impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             default_price_data: Default::default(),
             description: Default::default(),
             expand: Default::default(),
@@ -394,25 +357,6 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 alphanumeric attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    ///
-    /// If a value for `attributes` is specified, the list specified will replace the existing attributes list on this product.
-    /// Any attributes not present after the update will be deleted from the SKUs for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
-
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_price: Option<&'a str>,
@@ -480,9 +424,6 @@ impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         UpdateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             default_price: Default::default(),
             description: Default::default(),
             expand: Default::default(),

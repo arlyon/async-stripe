@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::MandateId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod};
+use crate::resources::{Currency, PaymentMethod};
 
 /// The resource representing a Stripe "Mandate".
 ///
@@ -95,9 +95,6 @@ pub struct MandatePaymentMethodDetails {
     pub bacs_debit: Option<MandateBacsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<MandateBlik>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CardMandatePaymentMethodDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -164,19 +161,6 @@ pub struct MandateBacsDebit {
 
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateBlik {
-    /// Date at which the mandate expires.
-    pub expires_after: Option<Timestamp>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub off_session: Option<MandateOptionsOffSessionDetailsBlik>,
-
-    /// Type of the mandate.
-    #[serde(rename = "type")]
-    pub type_: Option<MandateBlikType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -407,40 +391,6 @@ impl std::fmt::Display for MandateBacsDebitNetworkStatus {
 impl std::default::Default for MandateBacsDebitNetworkStatus {
     fn default() -> Self {
         Self::Accepted
-    }
-}
-
-/// An enum representing the possible values of an `MandateBlik`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum MandateBlikType {
-    OffSession,
-    OnSession,
-}
-
-impl MandateBlikType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            MandateBlikType::OffSession => "off_session",
-            MandateBlikType::OnSession => "on_session",
-        }
-    }
-}
-
-impl AsRef<str> for MandateBlikType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for MandateBlikType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for MandateBlikType {
-    fn default() -> Self {
-        Self::OffSession
     }
 }
 

@@ -23,6 +23,9 @@ pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions:
         Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
+
+    /// Data features requested to be retrieved upon account creation.
+    pub prefetch: Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch>>,
 }
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions`'s `permissions` field.
@@ -57,6 +60,42 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
 }
 impl std::default::Default
     for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
+    Balances,
+}
+
+impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Balances => {
+                "balances"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
 {
     fn default() -> Self {
         Self::Balances

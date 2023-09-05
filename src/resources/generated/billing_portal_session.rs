@@ -118,6 +118,9 @@ pub struct PortalFlowsAfterCompletionRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFlowsFlowSubscriptionCancel {
+    /// Specify a retention strategy to be used in the cancellation flow.
+    pub retention: Option<PortalFlowsRetention>,
+
     /// The ID of the subscription to be canceled.
     pub subscription: String,
 }
@@ -142,6 +145,22 @@ pub struct PortalFlowsFlowSubscriptionUpdateConfirm {
 
     /// The ID of the subscription to be updated.
     pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsRetention {
+    /// Configuration when `retention.type=coupon_offer`.
+    pub coupon_offer: Option<PortalFlowsCouponOffer>,
+
+    /// Type of retention strategy that will be used.
+    #[serde(rename = "type")]
+    pub type_: PortalFlowsRetentionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsCouponOffer {
+    /// The ID of the coupon to be offered.
+    pub coupon: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -190,7 +209,7 @@ pub struct CreateBillingPortalSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_data: Option<CreateBillingPortalSessionFlowData>,
 
-    /// The IETF language tag of the locale Customer Portal is displayed in.
+    /// The IETF language tag of the locale customer portal is displayed in.
     ///
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -265,6 +284,10 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
+    /// Specify a retention strategy to be used in the cancellation flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retention: Option<CreateBillingPortalSessionFlowDataSubscriptionCancelRetention>,
+
     /// The ID of the subscription to be canceled.
     pub subscription: String,
 }
@@ -307,6 +330,16 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
+    /// Configuration when `retention.type=coupon_offer`.
+    pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
+
+    /// Type of retention strategy to use with the customer.
+    #[serde(rename = "type")]
+    pub type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
     /// The ID of the coupon to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -331,6 +364,12 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     /// [Quantity](https://stripe.com/docs/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
+    /// The ID of the coupon to be offered.
+    pub coupon: String,
 }
 
 /// An enum representing the possible values of an `BillingPortalSession`'s `locale` field.
@@ -509,6 +548,40 @@ impl std::default::Default for CreateBillingPortalSessionFlowDataAfterCompletion
     }
 }
 
+/// An enum representing the possible values of an `CreateBillingPortalSessionFlowDataSubscriptionCancelRetention`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    CouponOffer,
+}
+
+impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::CouponOffer => {
+                "coupon_offer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn default() -> Self {
+        Self::CouponOffer
+    }
+}
+
 /// An enum representing the possible values of an `CreateBillingPortalSessionFlowData`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -620,5 +693,37 @@ impl std::fmt::Display for PortalFlowsFlowType {
 impl std::default::Default for PortalFlowsFlowType {
     fn default() -> Self {
         Self::PaymentMethodUpdate
+    }
+}
+
+/// An enum representing the possible values of an `PortalFlowsRetention`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PortalFlowsRetentionType {
+    CouponOffer,
+}
+
+impl PortalFlowsRetentionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PortalFlowsRetentionType::CouponOffer => "coupon_offer",
+        }
+    }
+}
+
+impl AsRef<str> for PortalFlowsRetentionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PortalFlowsRetentionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PortalFlowsRetentionType {
+    fn default() -> Self {
+        Self::CouponOffer
     }
 }

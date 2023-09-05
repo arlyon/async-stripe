@@ -678,7 +678,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+    /// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,
 

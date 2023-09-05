@@ -1229,14 +1229,10 @@ pub struct CreateCheckoutSession<'a> {
     pub shipping_address_collection: Option<CreateCheckoutSessionShippingAddressCollection>,
 
     /// The shipping rate options to apply to this Session.
+    ///
+    /// Up to a maximum of 5.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_options: Option<Vec<CreateCheckoutSessionShippingOptions>>,
-
-    /// [Deprecated] The shipping rate to apply to this Session.
-    ///
-    /// Only up to one may be specified.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rates: Option<Vec<String>>,
 
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
@@ -1293,7 +1289,6 @@ impl<'a> CreateCheckoutSession<'a> {
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
             shipping_options: Default::default(),
-            shipping_rates: Default::default(),
             submit_type: Default::default(),
             subscription_data: Default::default(),
             success_url,
@@ -1605,7 +1600,7 @@ pub struct CreateCheckoutSessionPaymentIntentData {
 
     /// A string that identifies the resulting payment as part of a group.
     ///
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
@@ -1786,12 +1781,6 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
 
-    /// The ID of the coupon to apply to this subscription.
-    ///
-    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-
     /// The tax rates that will apply to any subscription item that does not have
     /// `tax_rates` set.
     ///
@@ -1833,13 +1822,6 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// Has to be at least 48 hours in the future.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Timestamp>,
-
-    /// Indicates if a plan’s `trial_period_days` should be applied to the subscription.
-    ///
-    /// Setting `trial_end` on `subscription_data` is preferred.
-    /// Defaults to `false`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_from_plan: Option<bool>,
 
     /// Integer representing the number of trial period days before the
     /// customer is charged for the first time.
@@ -2737,6 +2719,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnec
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<
         Vec<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
+    >,
+
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<
+        Vec<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>,
     >,
 }
 
@@ -6072,6 +6060,44 @@ impl std::fmt::Display
 }
 impl std::default::Default
     for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn default() -> Self {
         Self::Balances

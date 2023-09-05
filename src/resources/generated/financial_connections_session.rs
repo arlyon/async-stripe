@@ -34,6 +34,9 @@ pub struct FinancialConnectionsSession {
     /// Permissions requested for accounts collected during this session.
     pub permissions: Vec<FinancialConnectionsSessionPermissions>,
 
+    /// Data features requested to be retrieved upon account creation.
+    pub prefetch: Option<Vec<FinancialConnectionsSessionPrefetch>>,
+
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -88,6 +91,10 @@ pub struct CreateFinancialConnectionsSession<'a> {
     /// Possible values are `balances`, `transactions`, `ownership`, and `payment_method`.
     pub permissions: Vec<CreateFinancialConnectionsSessionPermissions>,
 
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<Vec<CreateFinancialConnectionsSessionPrefetch>>,
+
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -102,6 +109,7 @@ impl<'a> CreateFinancialConnectionsSession<'a> {
             expand: Default::default(),
             filters: Default::default(),
             permissions,
+            prefetch: Default::default(),
             return_url: Default::default(),
         }
     }
@@ -206,6 +214,40 @@ impl std::default::Default for CreateFinancialConnectionsSessionPermissions {
     }
 }
 
+/// An enum representing the possible values of an `CreateFinancialConnectionsSession`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateFinancialConnectionsSessionPrefetch {
+    Balances,
+    Ownership,
+}
+
+impl CreateFinancialConnectionsSessionPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateFinancialConnectionsSessionPrefetch::Balances => "balances",
+            CreateFinancialConnectionsSessionPrefetch::Ownership => "ownership",
+        }
+    }
+}
+
+impl AsRef<str> for CreateFinancialConnectionsSessionPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateFinancialConnectionsSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateFinancialConnectionsSessionPrefetch {
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
 /// An enum representing the possible values of an `FinancialConnectionsSession`'s `permissions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -239,6 +281,40 @@ impl std::fmt::Display for FinancialConnectionsSessionPermissions {
     }
 }
 impl std::default::Default for FinancialConnectionsSessionPermissions {
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `FinancialConnectionsSession`'s `prefetch` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FinancialConnectionsSessionPrefetch {
+    Balances,
+    Ownership,
+}
+
+impl FinancialConnectionsSessionPrefetch {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FinancialConnectionsSessionPrefetch::Balances => "balances",
+            FinancialConnectionsSessionPrefetch::Ownership => "ownership",
+        }
+    }
+}
+
+impl AsRef<str> for FinancialConnectionsSessionPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FinancialConnectionsSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FinancialConnectionsSessionPrefetch {
     fn default() -> Self {
         Self::Balances
     }
