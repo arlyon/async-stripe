@@ -23,7 +23,7 @@ jobs:
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
       - uses: dtolnay/rust-toolchain@1.60
-      - uses: cycjimmy/semantic-release-action@v3
+      - uses: cycjimmy/semantic-release-action@v4
         with:
           extra_plugins: |
             @semantic-release/changelog
