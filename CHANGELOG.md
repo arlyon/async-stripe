@@ -1,3 +1,18 @@
+# [0.23.0](https://github.com/arlyon/async-stripe/compare/v0.22.2...v0.23.0) (2023-09-06)
+
+
+### Bug Fixes
+
+* don't pin time-core for msrv ([00a9a1d](https://github.com/arlyon/async-stripe/commit/00a9a1d0067461f94ce978fd3b1885b3d2b8b6b6))
+* Update hyper-rustls to fix RUSTSEC-2023-0052 ([7c31f76](https://github.com/arlyon/async-stripe/commit/7c31f76b0272031efabc7bda29ee12967d67ed10))
+
+
+### Features
+
+* add support for connect tokens ([b7c5489](https://github.com/arlyon/async-stripe/commit/b7c5489240eed0bd28e720eeda08afaf71bfa0eb))
+* add tax calculation api behind a feature ([2266ed1](https://github.com/arlyon/async-stripe/commit/2266ed1196f6c9662d38815583ea266d170ff67f))
+* handle currency_options ([1bb8165](https://github.com/arlyon/async-stripe/commit/1bb8165673eabdf157856de170ad47a1066ae362))
+
 ## [0.22.2](https://github.com/arlyon/async-stripe/compare/v0.22.1...v0.22.2) (2023-05-11)
 
 
