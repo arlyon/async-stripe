@@ -3,7 +3,9 @@ name = "binary_size"
 version = "0.1.0"
 authors = ["Kevin Stenerson <kestred@users.noreply.github.com>"]
 edition = "2018"
-publish = false
+
+# workaround for semantic-release-cargo
+publish = ["do-not-publish"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
