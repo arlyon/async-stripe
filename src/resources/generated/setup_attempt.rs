@@ -282,7 +282,7 @@ pub struct SetupAttemptPaymentMethodDetailsCashapp {}
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<SetupAttemptPaymentMethodDetailsIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank.
@@ -542,6 +542,7 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -561,6 +562,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBank {
             SetupAttemptPaymentMethodDetailsIdealBank::Ing => "ing",
             SetupAttemptPaymentMethodDetailsIdealBank::Knab => "knab",
             SetupAttemptPaymentMethodDetailsIdealBank::Moneyou => "moneyou",
+            SetupAttemptPaymentMethodDetailsIdealBank::N26 => "n26",
             SetupAttemptPaymentMethodDetailsIdealBank::Rabobank => "rabobank",
             SetupAttemptPaymentMethodDetailsIdealBank::Regiobank => "regiobank",
             SetupAttemptPaymentMethodDetailsIdealBank::Revolut => "revolut",
@@ -611,6 +613,8 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Knabnl2h,
     #[serde(rename = "MOYONL21")]
     Moyonl21,
+    #[serde(rename = "NTSBDEB1")]
+    Ntsbdeb1,
     #[serde(rename = "RABONL2U")]
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
@@ -637,6 +641,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBic {
             SetupAttemptPaymentMethodDetailsIdealBic::Ingbnl2a => "INGBNL2A",
             SetupAttemptPaymentMethodDetailsIdealBic::Knabnl2h => "KNABNL2H",
             SetupAttemptPaymentMethodDetailsIdealBic::Moyonl21 => "MOYONL21",
+            SetupAttemptPaymentMethodDetailsIdealBic::Ntsbdeb1 => "NTSBDEB1",
             SetupAttemptPaymentMethodDetailsIdealBic::Rabonl2u => "RABONL2U",
             SetupAttemptPaymentMethodDetailsIdealBic::Rbrbnl21 => "RBRBNL21",
             SetupAttemptPaymentMethodDetailsIdealBic::Revoie23 => "REVOIE23",
