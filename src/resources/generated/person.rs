@@ -64,7 +64,7 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub full_name_aliases: Option<Vec<String>>,
 
-    /// Information about the upcoming new requirements for this person, including what information needs to be collected, and by when.
+    /// Information about the [upcoming new requirements for this person](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<PersonFutureRequirements>,
 
@@ -73,6 +73,9 @@ pub struct Person {
     pub gender: Option<String>,
 
     /// Whether the person's `id_number` was provided.
+    ///
+    /// True if either the full ID number was provided or if only the required part of the ID number was provided (ex.
+    /// last four of an individual's SSN for the US indicated by `ssn_last_4_provided`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_provided: Option<bool>,
 
