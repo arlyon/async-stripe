@@ -449,8 +449,6 @@ pub enum EventFilter {
     InvoiceitemCreated,
     #[serde(rename = "invoiceitem.deleted")]
     InvoiceitemDeleted,
-    #[serde(rename = "invoiceitem.updated")]
-    InvoiceitemUpdated,
     #[serde(rename = "issuing_authorization.created")]
     IssuingAuthorizationCreated,
     #[serde(rename = "issuing_authorization.request")]
@@ -850,7 +848,6 @@ impl EventFilter {
             EventFilter::InvoiceVoided => "invoice.voided",
             EventFilter::InvoiceitemCreated => "invoiceitem.created",
             EventFilter::InvoiceitemDeleted => "invoiceitem.deleted",
-            EventFilter::InvoiceitemUpdated => "invoiceitem.updated",
             EventFilter::IssuingAuthorizationCreated => "issuing_authorization.created",
             EventFilter::IssuingAuthorizationRequest => "issuing_authorization.request",
             EventFilter::IssuingAuthorizationUpdated => "issuing_authorization.updated",

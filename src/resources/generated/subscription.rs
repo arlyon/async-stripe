@@ -266,13 +266,13 @@ impl Object for Subscription {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CancellationDetails {
-    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    /// Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
     pub comment: Option<String>,
 
-    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     pub feedback: Option<CancellationDetailsFeedback>,
 
-    /// Why this subscription was cancelled.
+    /// Why this subscription was canceled.
     pub reason: Option<CancellationDetailsReason>,
 }
 
@@ -1136,11 +1136,11 @@ pub struct UpdateSubscriptionAutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionCancellationDetails {
-    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    /// Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
 
-    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback: Option<UpdateSubscriptionCancellationDetailsFeedback>,
 }

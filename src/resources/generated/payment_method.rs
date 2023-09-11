@@ -564,7 +564,7 @@ pub struct PaymentMethodGrabpay {}
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
@@ -1596,6 +1596,7 @@ pub enum CreatePaymentMethodIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -1615,6 +1616,7 @@ impl CreatePaymentMethodIdealBank {
             CreatePaymentMethodIdealBank::Ing => "ing",
             CreatePaymentMethodIdealBank::Knab => "knab",
             CreatePaymentMethodIdealBank::Moneyou => "moneyou",
+            CreatePaymentMethodIdealBank::N26 => "n26",
             CreatePaymentMethodIdealBank::Rabobank => "rabobank",
             CreatePaymentMethodIdealBank::Regiobank => "regiobank",
             CreatePaymentMethodIdealBank::Revolut => "revolut",
@@ -2056,6 +2058,7 @@ pub enum PaymentMethodIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -2075,6 +2078,7 @@ impl PaymentMethodIdealBank {
             PaymentMethodIdealBank::Ing => "ing",
             PaymentMethodIdealBank::Knab => "knab",
             PaymentMethodIdealBank::Moneyou => "moneyou",
+            PaymentMethodIdealBank::N26 => "n26",
             PaymentMethodIdealBank::Rabobank => "rabobank",
             PaymentMethodIdealBank::Regiobank => "regiobank",
             PaymentMethodIdealBank::Revolut => "revolut",
@@ -2125,6 +2129,8 @@ pub enum PaymentMethodIdealBic {
     Knabnl2h,
     #[serde(rename = "MOYONL21")]
     Moyonl21,
+    #[serde(rename = "NTSBDEB1")]
+    Ntsbdeb1,
     #[serde(rename = "RABONL2U")]
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
@@ -2151,6 +2157,7 @@ impl PaymentMethodIdealBic {
             PaymentMethodIdealBic::Ingbnl2a => "INGBNL2A",
             PaymentMethodIdealBic::Knabnl2h => "KNABNL2H",
             PaymentMethodIdealBic::Moyonl21 => "MOYONL21",
+            PaymentMethodIdealBic::Ntsbdeb1 => "NTSBDEB1",
             PaymentMethodIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodIdealBic::Rbrbnl21 => "RBRBNL21",
             PaymentMethodIdealBic::Revoie23 => "REVOIE23",

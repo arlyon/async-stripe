@@ -1042,7 +1042,7 @@ pub struct PaymentMethodDetailsGrabpay {
 pub struct PaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodDetailsIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank.
@@ -2242,6 +2242,7 @@ pub enum PaymentMethodDetailsIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -2261,6 +2262,7 @@ impl PaymentMethodDetailsIdealBank {
             PaymentMethodDetailsIdealBank::Ing => "ing",
             PaymentMethodDetailsIdealBank::Knab => "knab",
             PaymentMethodDetailsIdealBank::Moneyou => "moneyou",
+            PaymentMethodDetailsIdealBank::N26 => "n26",
             PaymentMethodDetailsIdealBank::Rabobank => "rabobank",
             PaymentMethodDetailsIdealBank::Regiobank => "regiobank",
             PaymentMethodDetailsIdealBank::Revolut => "revolut",
@@ -2311,6 +2313,8 @@ pub enum PaymentMethodDetailsIdealBic {
     Knabnl2h,
     #[serde(rename = "MOYONL21")]
     Moyonl21,
+    #[serde(rename = "NTSBDEB1")]
+    Ntsbdeb1,
     #[serde(rename = "RABONL2U")]
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
@@ -2337,6 +2341,7 @@ impl PaymentMethodDetailsIdealBic {
             PaymentMethodDetailsIdealBic::Ingbnl2a => "INGBNL2A",
             PaymentMethodDetailsIdealBic::Knabnl2h => "KNABNL2H",
             PaymentMethodDetailsIdealBic::Moyonl21 => "MOYONL21",
+            PaymentMethodDetailsIdealBic::Ntsbdeb1 => "NTSBDEB1",
             PaymentMethodDetailsIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodDetailsIdealBic::Rbrbnl21 => "RBRBNL21",
             PaymentMethodDetailsIdealBic::Revoie23 => "REVOIE23",
