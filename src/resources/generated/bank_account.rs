@@ -70,7 +70,7 @@ pub struct BankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
-    /// Information about upcoming new requirements for the bank account, including what information needs to be collected.
+    /// Information about the [upcoming new requirements for the bank account](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<ExternalAccountRequirements>,
 

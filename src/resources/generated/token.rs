@@ -74,6 +74,10 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
 
+    /// The card this token will represent.
+    ///
+    /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+    /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateTokenCardUnion>,
 
@@ -438,6 +442,10 @@ impl std::default::Default for CreateTokenAccountBusinessType {
     }
 }
 
+/// The card this token will represent.
+///
+/// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+/// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateTokenCardUnion {
@@ -447,25 +455,41 @@ pub enum CreateTokenCardUnion {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditCardSpecs {
+    /// City / District / Suburb / Town / Village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<String>,
+    /// Billing address country, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_country: Option<String>,
+    /// Address line 1 (Street address / PO Box / Company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1: Option<String>,
+    /// Address line 2 (Apartment / Suite / Unit / Building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line2: Option<String>,
+    /// State / County / Province / Region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_state: Option<String>,
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip: Option<String>,
+    /// Required in order to add the card to an account; in all other cases, this parameter is not used.
+    ///
+    /// When added to an account, the card (which must be a debit card) can be used as a transfer destination for funds in this currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
+    /// Card security code.
+    ///
+    /// Highly recommended to always include this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
+    /// Two-digit number representing the card's expiration month.
     pub exp_month: String,
+    /// Two- or four-digit number representing the card's expiration year.
     pub exp_year: String,
+    /// Cardholder's full name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The card number, as a string without any separators.
     pub number: String,
 }

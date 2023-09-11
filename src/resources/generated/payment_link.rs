@@ -8,7 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{
-    Account, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions, ShippingRate, TaxId,
+    Account, Application, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions,
+    ShippingRate, TaxId,
 };
 
 /// The resource representing a Stripe "PaymentLink".
@@ -28,6 +29,9 @@ pub struct PaymentLink {
 
     /// Whether user redeemable promotion codes are enabled.
     pub allow_promotion_codes: bool,
+
+    /// The ID of the Connect application that created the Payment Link.
+    pub application: Option<Expandable<Application>>,
 
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     pub application_fee_amount: Option<i64>,
