@@ -213,6 +213,7 @@ pub enum ApiErrorsCode {
     SkuInactive,
     StateUnsupported,
     StatusTransitionInvalid,
+    StripeTaxInactive,
     TaxIdInvalid,
     TaxesCalculationFailed,
     TerminalLocationCountryUnsupported,
@@ -412,6 +413,7 @@ impl ApiErrorsCode {
             ApiErrorsCode::SkuInactive => "sku_inactive",
             ApiErrorsCode::StateUnsupported => "state_unsupported",
             ApiErrorsCode::StatusTransitionInvalid => "status_transition_invalid",
+            ApiErrorsCode::StripeTaxInactive => "stripe_tax_inactive",
             ApiErrorsCode::TaxIdInvalid => "tax_id_invalid",
             ApiErrorsCode::TaxesCalculationFailed => "taxes_calculation_failed",
             ApiErrorsCode::TerminalLocationCountryUnsupported => {

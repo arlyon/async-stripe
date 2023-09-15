@@ -19,13 +19,13 @@ pub struct Dispute {
 
     /// Disputed amount.
     ///
-    /// Usually the amount of the charge, but can differ (usually because of currency fluctuation or because only part of the order is disputed).
+    /// Usually the amount of the charge, but it can differ (usually because of currency fluctuation or because only part of the order is disputed).
     pub amount: i64,
 
     /// List of zero, one, or two balance transactions that show funds withdrawn and reinstated to your Stripe account as a result of this dispute.
     pub balance_transactions: Vec<BalanceTransaction>,
 
-    /// ID of the charge that was disputed.
+    /// ID of the charge that's disputed.
     pub charge: Expandable<Charge>,
 
     /// Time at which the object was created.
@@ -42,9 +42,9 @@ pub struct Dispute {
 
     pub evidence_details: DisputeEvidenceDetails,
 
-    /// If true, it is still possible to refund the disputed payment.
+    /// If true, it's still possible to refund the disputed payment.
     ///
-    /// Once the payment has been fully refunded, no further funds will be withdrawn from your Stripe account as a result of this dispute.
+    /// After the payment has been fully refunded, no further funds are withdrawn from your Stripe account as a result of this dispute.
     pub is_charge_refundable: bool,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -59,7 +59,7 @@ pub struct Dispute {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_reason_code: Option<String>,
 
-    /// ID of the PaymentIntent that was disputed.
+    /// ID of the PaymentIntent that's disputed.
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,7 +68,7 @@ pub struct Dispute {
     /// Reason given by cardholder for dispute.
     ///
     /// Possible values are `bank_cannot_process`, `check_returned`, `credit_not_processed`, `customer_initiated`, `debit_not_authorized`, `duplicate`, `fraudulent`, `general`, `incorrect_account_details`, `insufficient_funds`, `product_not_received`, `product_unacceptable`, `subscription_canceled`, or `unrecognized`.
-    /// Read more about [dispute reasons](https://stripe.com/docs/disputes/categories).
+    /// Learn more about [dispute reasons](https://stripe.com/docs/disputes/categories).
     pub reason: String,
 
     /// Current status of dispute.

@@ -10,7 +10,7 @@ use crate::resources::Customer;
 
 /// The resource representing a Stripe "tax_id".
 ///
-/// For more details see <https://stripe.com/docs/api/customer_tax_ids/object>
+/// For more details see <https://stripe.com/docs/api/tax_ids/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxId {
     /// Unique identifier for the object.
