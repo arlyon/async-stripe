@@ -5,13 +5,17 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, PaymentLinkId, SubscriptionId};
+use crate::ids::{
+    CheckoutSessionId, CustomerId, PaymentIntentId, PaymentLinkId, PaymentMethodConfigurationId,
+    SubscriptionId,
+};
 use crate::params::{
     CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, Timestamp,
 };
 use crate::resources::{
     Address, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
     InvoiceSettingRenderingOptions, LinkedAccountOptionsUsBankAccount, PaymentIntent, PaymentLink,
+    PaymentMethodConfigBizPaymentMethodConfigurationDetails,
     PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent, Shipping, ShippingRate,
     Subscription, TaxId, TaxRate,
 };
@@ -135,6 +139,11 @@ pub struct CheckoutSession {
 
     /// Configure whether a Checkout Session should collect a payment method.
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
+
+    /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration_details:
+        Option<PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
 
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
     pub payment_method_options: Option<CheckoutSessionPaymentMethodOptions>,
@@ -1193,6 +1202,10 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
 
+    /// The ID of the payment method configuration to use with this Checkout session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration: Option<PaymentMethodConfigurationId>,
+
     /// Payment-method-specific configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateCheckoutSessionPaymentMethodOptions>,
@@ -1283,6 +1296,7 @@ impl<'a> CreateCheckoutSession<'a> {
             mode: Default::default(),
             payment_intent_data: Default::default(),
             payment_method_collection: Default::default(),
+            payment_method_configuration: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
             phone_number_collection: Default::default(),

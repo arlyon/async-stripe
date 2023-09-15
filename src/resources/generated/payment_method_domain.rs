@@ -8,6 +8,8 @@ use crate::params::{Expand, List, Object, Paginable, Timestamp};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentMethodDomainResourcePaymentMethodDomain".
+///
+/// For more details see <https://stripe.com/docs/api/payment_method_domains/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDomain {
     /// Unique identifier for the object.
