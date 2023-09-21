@@ -40,7 +40,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
-          commit-message: Generate latest changes from OpenApi spec
+          commit-message: "feat: generate latest changes from OpenApi spec"
           title: Generate latest changes from OpenApi spec
           body: |
             This is an automated PR that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
