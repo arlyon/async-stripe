@@ -5,12 +5,12 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
+use crate::ids::{CustomerId, PaymentMethodConfigurationId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
     Mandate, PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode, PaymentMethod,
-    SetupAttempt,
+    PaymentMethodConfigBizPaymentMethodConfigurationDetails, SetupAttempt,
 };
 
 /// The resource representing a Stripe "SetupIntent".
@@ -95,6 +95,11 @@ pub struct SetupIntent {
 
     /// ID of the payment method used with this SetupIntent.
     pub payment_method: Option<Expandable<PaymentMethod>>,
+
+    /// Information about the payment method configuration used for this Setup Intent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration_details:
+        Option<PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
 
     /// Payment-method-specific configuration for this SetupIntent.
     pub payment_method_options: Option<SetupIntentPaymentMethodOptions>,
@@ -456,6 +461,10 @@ pub struct CreateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
 
+    /// The ID of the payment method configuration to use with this Setup Intent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration: Option<PaymentMethodConfigurationId>,
+
     /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method)
     /// value in the SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -502,6 +511,7 @@ impl<'a> CreateSetupIntent<'a> {
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_method: Default::default(),
+            payment_method_configuration: Default::default(),
             payment_method_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
@@ -632,6 +642,10 @@ pub struct UpdateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
 
+    /// The ID of the payment method configuration to use with this SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration: Option<PaymentMethodConfigurationId>,
+
     /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method)
     /// value in the SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -659,6 +673,7 @@ impl<'a> UpdateSetupIntent<'a> {
             flow_directions: Default::default(),
             metadata: Default::default(),
             payment_method: Default::default(),
+            payment_method_configuration: Default::default(),
             payment_method_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
