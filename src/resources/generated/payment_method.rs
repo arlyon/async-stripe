@@ -2818,6 +2818,7 @@ pub struct CardDetailsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TokenParams {
+    /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format card: {token: "tok_visa"}.
     pub token: String,
 }
 

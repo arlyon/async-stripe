@@ -195,14 +195,14 @@ pub struct CreateTokenPerson {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<String>,
 

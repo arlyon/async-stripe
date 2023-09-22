@@ -22,10 +22,10 @@ pub struct File {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// The time at which the file expires and is no longer available in epoch seconds.
+    /// The file expires and isn't available at this time in epoch seconds.
     pub expires_at: Option<Timestamp>,
 
-    /// A filename for the file, suitable for saving to a filesystem.
+    /// The suitable name for saving the file to a filesystem.
     pub filename: Option<String>,
 
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
@@ -35,32 +35,32 @@ pub struct File {
     /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: FilePurpose,
 
-    /// The size in bytes of the file object.
+    /// The size of the file object in bytes.
     pub size: u64,
 
-    /// A user friendly title for the document.
+    /// A suitable title for the document.
     pub title: Option<String>,
 
-    /// The type of the file returned (e.g., `csv`, `pdf`, `jpg`, or `png`).
+    /// The returned file type (for example, `csv`, `pdf`, `jpg`, or `png`).
     #[serde(rename = "type")]
     pub type_: Option<String>,
 
-    /// The URL from which the file can be downloaded using your live secret API key.
+    /// Use your live secret API key to download the file from this URL.
     pub url: Option<String>,
 }
 
 impl File {
     /// Returns a list of the files that your account has access to.
     ///
-    /// The files are returned sorted by creation date, with the most recently created files appearing first.
+    /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
     pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
         client.get_query("/files", &params)
     }
 
     /// Retrieves the details of an existing file object.
     ///
-    /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
-    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
+    /// After you supply a unique file ID, Stripe returns the corresponding file object.
+    /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
         client.get_query(&format!("/files/{}", id), &Expand { expand })
     }
@@ -99,9 +99,9 @@ pub struct ListFiles<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
-    /// The file purpose to filter queries by.
+    /// Filter queries by the file purpose.
     ///
-    /// If none is provided, files will not be filtered by purpose.
+    /// If you don't provide a purpose, the queries return unfiltered files.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<FilePurpose>,
 

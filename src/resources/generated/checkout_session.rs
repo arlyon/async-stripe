@@ -874,11 +874,14 @@ pub struct PaymentPagesCheckoutSessionCustomText {
 
     /// Custom text that should be displayed alongside the payment confirmation button.
     pub submit: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
+
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    pub terms_of_service_acceptance: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomTextPosition {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
@@ -1450,6 +1453,11 @@ pub struct CreateCheckoutSessionCustomText {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<CreateCheckoutSessionCustomTextSubmit>,
+
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance:
+        Option<CreateCheckoutSessionCustomTextTermsOfServiceAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1920,13 +1928,19 @@ pub struct CreateCheckoutSessionCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomTextShippingAddress {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomTextSubmit {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomTextTermsOfServiceAcceptance {
+    /// Text may be up to 1200 characters in length.
     pub message: String,
 }
 
