@@ -22,10 +22,10 @@ pub struct FileLink {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// Whether this link is already expired.
+    /// Returns if the link is already expired.
     pub expired: bool,
 
-    /// Time at which the link expires.
+    /// Time that the link expires.
     pub expires_at: Option<Timestamp>,
 
     /// The file object this link points to.
@@ -88,7 +88,7 @@ pub struct CreateFileLink<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A future timestamp after which the link will no longer be usable.
+    /// The link isn't usable after this future timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
 
@@ -136,7 +136,7 @@ pub struct ListFileLinks<'a> {
 
     /// Filter links by their expiration status.
     ///
-    /// By default, all links are returned.
+    /// By default, Stripe returns all links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expired: Option<bool>,
 
