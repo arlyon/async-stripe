@@ -126,7 +126,7 @@ pub struct CheckoutSession {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// The mode of the Checkout Session.
     pub mode: CheckoutSessionMode,
@@ -938,7 +938,7 @@ pub struct PaymentPagesCheckoutSessionInvoiceSettings {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// Options for invoice PDF rendering.
     pub rendering_options: Option<InvoiceSettingRenderingOptions>,
@@ -1563,8 +1563,8 @@ pub struct CreateCheckoutSessionPaymentIntentData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The Stripe account ID for which these funds are intended.
     ///
@@ -1761,8 +1761,8 @@ pub struct CreateCheckoutSessionSetupIntentData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The Stripe account for which the setup is intended.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1821,8 +1821,8 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The account on behalf of which to charge, for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1969,8 +1969,8 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2529,8 +2529,8 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
@@ -2626,8 +2626,8 @@ pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The product's name, meant to be displayable to the customer.
     pub name: String,

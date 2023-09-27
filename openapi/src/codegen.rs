@@ -1234,7 +1234,11 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
     }
     if field_name == "metadata" {
         state.use_params.insert("Metadata");
-        return "Metadata".into();
+        return if !required || is_nullable {
+            "Option<Metadata>".into()
+        } else {
+            "Metadata".into()
+        };
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && matches!(maybe_schema.map(|s| &s.schema_kind), Some(SchemaKind::Type(Type::String(_))))
     {
@@ -1253,7 +1257,11 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
         };
     } else if field_name == "type" && object == "event" {
         state.use_resources.insert("EventType".into());
-        return "EventType".into();
+        return if !required || is_nullable {
+            "Option<EventType>".into()
+        } else {
+            "EventType".into()
+        };
     }
 
     let ty = gen_schema_or_ref_type(

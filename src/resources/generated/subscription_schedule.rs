@@ -59,7 +59,7 @@ pub struct SubscriptionSchedule {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// Configuration for the subscription schedule's phases.
     pub phases: Vec<SubscriptionSchedulePhaseConfiguration>,
@@ -209,7 +209,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     ///
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered.
     /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     ///
@@ -268,7 +268,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
     ///
     /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// ID of the plan to which the customer should be subscribed.
     pub plan: Expandable<Plan>,
@@ -632,8 +632,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -818,8 +818,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -896,8 +896,8 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The plan ID to subscribe to.
     ///
@@ -1000,8 +1000,8 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
-    #[serde(default)]
-    pub metadata: Metadata,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The plan ID to subscribe to.
     ///

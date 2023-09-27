@@ -38,7 +38,7 @@ pub struct TransferReversal {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+    pub metadata: Option<Metadata>,
 
     /// ID of the refund responsible for the transfer reversal.
     pub source_refund: Option<Expandable<Refund>>,
