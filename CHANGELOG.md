@@ -1,3 +1,10 @@
+## [0.25.1](https://github.com/arlyon/async-stripe/compare/v0.25.0...v0.25.1) (2023-09-27)
+
+
+### Bug Fixes
+
+* respect the required and optional fields for EventType and Metadata ([cdabd2e](https://github.com/arlyon/async-stripe/commit/cdabd2eac56cf3b9613f3b4617492684e27446a6))
+
 # [0.25.0](https://github.com/arlyon/async-stripe/compare/v0.24.0...v0.25.0) (2023-09-25)
 
 
