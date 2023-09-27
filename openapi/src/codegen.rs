@@ -767,7 +767,7 @@ pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta:
                 self.as_str()
             }}
         }}
-        
+
         impl std::fmt::Display for {enum_name} {{
             fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
                 self.as_str().fmt(f)
@@ -1234,7 +1234,11 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
     }
     if field_name == "metadata" {
         state.use_params.insert("Metadata");
-        return "Metadata".into();
+        return if !required || is_nullable {
+            "Option<Metadata>".into()
+        } else {
+            "Metadata".into()
+        };
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && matches!(maybe_schema.map(|s| &s.schema_kind), Some(SchemaKind::Type(Type::String(_))))
     {
