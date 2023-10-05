@@ -1,3 +1,10 @@
+## [0.25.2](https://github.com/arlyon/async-stripe/compare/v0.25.1...v0.25.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* prevent panic on StatusCode conversion ([9b94228](https://github.com/arlyon/async-stripe/commit/9b942282e556b269c806caba56c8c7026badc33c))
+
 ## [0.25.1](https://github.com/arlyon/async-stripe/compare/v0.25.0...v0.25.1) (2023-09-27)
 
 
