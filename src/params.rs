@@ -179,10 +179,109 @@ pub trait Paginable {
     fn set_last(&mut self, item: Self::O);
 }
 
-#[derive(Debug)]
-pub struct ListPaginator<T, P> {
-    pub page: List<T>,
-    pub params: P,
+pub trait PaginableList {
+    type O: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug;
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> Self;
+    fn get_data(&self) -> Vec<Self::O>;
+    fn get_url(&self) -> String;
+    fn get_total_count(&self) -> Option<u64>;
+    fn has_more(&self) -> bool;
+}
+
+/// A single page of a cursor-paginated list of a search object.
+///
+/// For more details, see <https://stripe.com/docs/api/pagination/search>
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SearchList<T> {
+    pub object: String,
+    pub url: String,
+    pub has_more: bool,
+    pub data: Vec<T>,
+    pub next_page: Option<String>,
+    pub total_count: Option<u64>,
+}
+
+impl<T> Default for SearchList<T> {
+    fn default() -> Self {
+        SearchList {
+            object: String::new(),
+            data: Vec::new(),
+            has_more: false,
+            total_count: None,
+            url: String::new(),
+            next_page: None,
+        }
+    }
+}
+
+impl<T: Clone> Clone for SearchList<T> {
+    fn clone(&self) -> Self {
+        SearchList {
+            object: self.object.clone(),
+            data: self.data.clone(),
+            has_more: self.has_more,
+            total_count: self.total_count,
+            url: self.url.clone(),
+            next_page: self.next_page.clone(),
+        }
+    }
+}
+
+impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug> PaginableList
+    for SearchList<T>
+{
+    type O = T;
+
+    fn new(
+        data: Vec<Self::O>,
+        url: String,
+        has_more: bool,
+        total_count: Option<u64>,
+    ) -> SearchList<T> {
+        Self { object: "".to_string(), url, has_more, data, next_page: None, total_count }
+    }
+
+    fn get_data(&self) -> Vec<Self::O> {
+        self.data.clone()
+    }
+    fn get_url(&self) -> String {
+        self.url.clone()
+    }
+    fn get_total_count(&self) -> Option<u64> {
+        self.total_count
+    }
+    fn has_more(&self) -> bool {
+        self.has_more
+    }
+}
+
+impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug> PaginableList
+    for List<T>
+{
+    type O = T;
+
+    fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> List<T> {
+        Self { url, has_more, data, total_count }
+    }
+
+    fn get_data(&self) -> Vec<Self::O> {
+        self.data.clone()
+    }
+    fn get_url(&self) -> String {
+        self.url.clone()
+    }
+    fn get_total_count(&self) -> Option<u64> {
+        self.total_count
+    }
+    fn has_more(&self) -> bool {
+        self.has_more
+    }
+}
+
+impl<T> SearchList<T> {
+    pub fn paginate<P>(self, params: P) -> ListPaginator<SearchList<T>, P> {
+        ListPaginator { page: self, params }
+    }
 }
 
 /// A single page of a cursor-paginated list of an object.
@@ -214,33 +313,39 @@ impl<T: Clone> Clone for List<T> {
 }
 
 impl<T> List<T> {
-    pub fn paginate<P>(self, params: P) -> ListPaginator<T, P> {
+    pub fn paginate<P>(self, params: P) -> ListPaginator<List<T>, P> {
         ListPaginator { page: self, params }
     }
 }
 
+#[derive(Debug)]
+pub struct ListPaginator<T, P> {
+    pub page: T,
+    pub params: P,
+}
+
 impl<
-        T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug,
+        T: PaginableList + Send + DeserializeOwned + 'static,
         P: Clone + Serialize + Send + 'static + std::fmt::Debug,
     > ListPaginator<T, P>
 where
-    P: Paginable<O = T>,
+    P: Paginable<O = T::O>,
 {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
     /// Requires `feature = "blocking"`.
     #[cfg(feature = "blocking")]
-    pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
-        let mut data = Vec::with_capacity(self.page.total_count.unwrap_or(0) as usize);
+    pub fn get_all(self, client: &Client) -> Response<Vec<T::O>> {
+        let mut data = Vec::with_capacity(self.page.get_total_count().unwrap_or(0) as usize);
         let mut paginator = self;
         loop {
-            if !paginator.page.has_more {
-                data.extend(paginator.page.data.into_iter());
+            if !paginator.page.has_more() {
+                data.extend(paginator.page.get_data().into_iter());
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.data.into_iter());
+            data.extend(paginator.page.get_data().into_iter());
             paginator = next_paginator
         }
         Ok(data)
@@ -276,11 +381,11 @@ where
     /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
-        mut self,
+        self,
         client: &Client,
-    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin {
+    ) -> impl futures_util::Stream<Item = Result<T::O, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
-        self.page.data.reverse();
+        self.page.get_data().reverse();
 
         Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
     }
@@ -289,22 +394,22 @@ where
     #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
         state: Option<(Self, Client)>,
-    ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
-        let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
+    ) -> Option<(Result<T::O, StripeError>, Option<(Self, Client)>)> {
+        let (paginator, client) = state?; // If none, we sent the last item in the last iteration
 
-        if paginator.page.data.len() > 1 {
-            return Some((Ok(paginator.page.data.pop()?), Some((paginator, client))));
+        if paginator.page.get_data().len() > 1 {
+            return Some((Ok(paginator.page.get_data().pop()?), Some((paginator, client))));
             // We have more data on this page
         }
 
-        if !paginator.page.has_more {
-            return Some((Ok(paginator.page.data.pop()?), None)); // Final value of the stream, no errors
+        if !paginator.page.has_more() {
+            return Some((Ok(paginator.page.get_data().pop()?), None)); // Final value of the stream, no errors
         }
 
         match paginator.next(&client).await {
-            Ok(mut next_paginator) => {
-                let data = paginator.page.data.pop()?;
-                next_paginator.page.data.reverse();
+            Ok(next_paginator) => {
+                let data = paginator.page.get_data().pop()?;
+                next_paginator.page.get_data().reverse();
 
                 // Yield last value of thimuts page, the next page (and client) becomes the state
                 Some((Ok(data), Some((next_paginator, client))))
@@ -315,9 +420,9 @@ where
 
     /// Fetch an additional page of data from stripe.
     pub fn next(&self, client: &Client) -> Response<Self> {
-        if let Some(last) = self.page.data.last() {
-            if self.page.url.starts_with("/v1/") {
-                let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
+        if let Some(last) = self.page.get_data().last() {
+            if self.page.get_url().starts_with("/v1/") {
+                let path = self.page.get_url().trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
 
                 // clone the params and set the cursor
                 let params_next = {
@@ -334,12 +439,7 @@ where
             }
         } else {
             ok(ListPaginator {
-                page: List {
-                    data: Vec::new(),
-                    has_more: false,
-                    total_count: self.page.total_count,
-                    url: self.page.url.clone(),
-                },
+                page: T::new(Vec::new(), self.page.get_url(), false, self.page.get_total_count()),
                 params: self.params.clone(),
             })
         }
@@ -348,13 +448,13 @@ where
     /// Pin a new future which maps the result inside the page future into
     /// a ListPaginator
     #[cfg(feature = "async")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<T>, params: P) -> Response<Self> {
         use futures_util::FutureExt;
         Box::pin(page.map(|page| page.map(|page| ListPaginator { page, params })))
     }
 
     #[cfg(feature = "blocking")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<T>, params: P) -> Response<Self> {
         page.map(|page| ListPaginator { page, params })
     }
 }

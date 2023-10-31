@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
-use crate::params::{Deleted, Expand, List};
+use crate::params::{Deleted, Expand, List, SearchList};
 use crate::resources::{
     BankAccount, Customer, PaymentMethod, PaymentSource, PaymentSourceParams, Source,
 };
@@ -70,6 +70,22 @@ pub enum CustomerPaymentMethodRetrievalType {
     WechatPay,
 }
 
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct CustomerSearchParams<'a> {
+    pub query: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<u64>,
+    pub expand: &'a [&'a str],
+}
+
+impl<'a> CustomerSearchParams<'a> {
+    pub fn new() -> CustomerSearchParams<'a> {
+        CustomerSearchParams { query: String::new(), limit: None, page: None, expand: &[] }
+    }
+}
+
 impl Customer {
     /// Attaches a source to a customer, does not change default Source for the Customer
     ///
@@ -131,6 +147,13 @@ impl Customer {
         params: CustomerPaymentMethodRetrieval<'_>,
     ) -> Response<List<PaymentMethod>> {
         client.get_query(&format!("/customers/{}/payment_methods", customer_id), &params)
+    }
+
+    /// Searches for a customer.
+    ///
+    /// For more details see <https://stripe.com/docs/api/customers/search>.
+    pub fn search(client: &Client, params: CustomerSearchParams) -> Response<SearchList<Customer>> {
+        client.get_query("/customers/search", params)
     }
 }
 
