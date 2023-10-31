@@ -1,3 +1,17 @@
+# [0.26.0](https://github.com/arlyon/async-stripe/compare/v0.25.2...v0.26.0) (2023-10-31)
+
+
+### Features
+
+* fixed bool value ([c752f52](https://github.com/arlyon/async-stripe/commit/c752f52c623a6af86b6253b27b03c3da83e46d6e))
+* fixed bool value ([153d63d](https://github.com/arlyon/async-stripe/commit/153d63d984482dd67a42c6b16a3ee68106517727))
+* fixed mutability ([86aabdd](https://github.com/arlyon/async-stripe/commit/86aabddd70432c13cb3d14eca29dc01b9bbe5155))
+* fixed mutability ([5ad76c5](https://github.com/arlyon/async-stripe/commit/5ad76c5971d925aa719445a3ba1774b0a0cb1ab9))
+* fixed warnings ([30f0a1e](https://github.com/arlyon/async-stripe/commit/30f0a1e9d6c8c6c1426b0f505d6bdd4b6ed6c349))
+* fixed warnings ([e0d0bd8](https://github.com/arlyon/async-stripe/commit/e0d0bd8157257f8c40394de554f3be3c8482720a))
+* updated ListPaginator to be generic over type T where T impl PaginableList instead of having separate SearchListPaginator and ListPaginator implementations for types SearchList and List. ([9d49602](https://github.com/arlyon/async-stripe/commit/9d496023128ff5b3b5b16065241afc83fc1ba3cd))
+* updated ListPaginator to be generic over type T where T impl PaginableList instead of having separate SearchListPaginator and ListPaginator implementations for types SearchList and List. ([411f82c](https://github.com/arlyon/async-stripe/commit/411f82ce849357587712043e03b2aff7e0a55e3b))
+
 ## [0.25.2](https://github.com/arlyon/async-stripe/compare/v0.25.1...v0.25.2) (2023-10-05)
 
 
