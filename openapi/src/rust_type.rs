@@ -5,12 +5,6 @@ use crate::rust_object::{DeserDefault, ObjectMetadata, RustObject};
 use crate::types::{ComponentPath, RustIdent};
 use crate::visitor::{Visitor, VisitorMut};
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum TypeSource {
-    Types,
-    Component(ComponentPath),
-}
-
 /// A path to a type defined elsewhere.
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum PathToType {
@@ -18,10 +12,8 @@ pub enum PathToType {
     Component(ComponentPath),
     /// The id for a top-level component.
     ObjectId(ComponentPath),
-    Type {
-        source: TypeSource,
-        ident: RustIdent,
-    },
+    /// A type defined in `stripe_types`
+    Type(RustIdent),
 }
 
 impl PathToType {
@@ -35,11 +27,9 @@ impl PathToType {
 
             // Always either backed by `String` or `smol_str::SmolStr`
             PathToType::ObjectId(_) => false,
-            PathToType::Type { source, ident } => components
-                .get_type_from_source(source, ident)
-                .expect("not found")
-                .obj
-                .has_reference(components),
+            PathToType::Type(ident) => {
+                components.get_extra_type(ident).obj.has_reference(components)
+            }
         }
     }
 
@@ -53,11 +43,7 @@ impl PathToType {
 
             // Always either backed by `String` or `smol_str::SmolStr`
             PathToType::ObjectId(_) => false,
-            PathToType::Type { source, ident } => components
-                .get_type_from_source(source, ident)
-                .expect("not found")
-                .obj
-                .is_copy(components),
+            PathToType::Type(ident) => components.get_extra_type(ident).obj.is_copy(components),
         }
     }
 }

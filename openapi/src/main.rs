@@ -17,7 +17,6 @@ use crate::utils::write_to_file;
 mod codegen;
 mod components;
 mod crate_inference;
-mod deduplication;
 mod graph;
 mod ids;
 mod object_writing;

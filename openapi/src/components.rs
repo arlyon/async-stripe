@@ -6,13 +6,12 @@ use petgraph::Direction;
 use tracing::{debug, info};
 
 use crate::crate_inference::{maybe_infer_crate, validate_crate_map, Crate};
-use crate::deduplication::deduplicate_types;
 use crate::object_writing::ObjectGenInfo;
 use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
 use crate::rust_object::RustObject;
-use crate::rust_type::{Container, PathToType, RustType, TypeSource};
+use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::Spec;
 use crate::spec_inference::infer_id_name;
 use crate::stripe_object::{
@@ -108,20 +107,11 @@ impl Components {
                     has_ref: false,
                 }
             }
-            RustType::Path { path: PathToType::Type { source, ident }, is_ref } => {
-                let referred_typ =
-                    self.get_type_from_source(source, ident).expect("type not found");
+            RustType::Path { path: PathToType::Type(ident), is_ref } => {
+                let referred_typ = self.get_extra_type(ident);
                 let has_ref = referred_typ.obj.has_reference(self);
                 PrintableType::QualifiedPath {
-                    path: Some(PathInfo {
-                        krate: match source {
-                            TypeSource::Types => Crate::Types,
-                            TypeSource::Component(comp_path) => {
-                                self.get(comp_path).krate_unwrapped().for_types()
-                            }
-                        },
-                        path: None,
-                    }),
+                    path: Some(PathInfo { krate: Crate::Types, path: None }),
                     has_ref,
                     is_ref: *is_ref,
                     ident: ident.clone(),
@@ -275,27 +265,9 @@ impl Components {
         Ok(())
     }
 
-    pub fn get_type_from_source(
-        &self,
-        source: &TypeSource,
-        ident: &RustIdent,
-    ) -> Option<&TypeSpec> {
-        match source {
-            TypeSource::Types => self.extra_types.get(ident),
-            TypeSource::Component(comp) => {
-                let obj = self.get(comp);
-                obj.extra_types.get(ident)
-            }
-        }
-    }
-
-    fn run_deduplication_pass(&mut self) {
-        for comp in self.components.values_mut() {
-            let extra_typs = deduplicate_types(comp);
-            for (ident, typ) in extra_typs {
-                comp.extra_types.insert(ident, typ);
-            }
-        }
+    #[track_caller]
+    pub fn get_extra_type(&self, ident: &RustIdent) -> &TypeSpec {
+        &self.extra_types[ident]
     }
 }
 
@@ -353,8 +325,6 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     components.apply_overrides()?;
     debug!("Finished applying overrides");
 
-    // components.run_deduplication_pass();
-    // info!("Finished deduplication pass");
     Ok(components)
 }
 

@@ -3,7 +3,7 @@ use indexmap::IndexMap;
 
 use crate::components::{Components, RequestSource};
 use crate::rust_object::RustObject;
-use crate::rust_type::{PathToType, RustType, TypeSource};
+use crate::rust_type::{PathToType, RustType};
 use crate::stripe_object::OperationType;
 use crate::types::RustIdent;
 use crate::utils::get_request_param_field;
@@ -75,10 +75,7 @@ impl VisitorMut for Overrides {
     fn visit_typ_mut(&mut self, typ: &mut RustType) {
         if let Some((obj, _)) = typ.as_object_mut() {
             if let Some(meta) = self.overrides.get(obj) {
-                *typ = RustType::path(
-                    PathToType::Type { source: TypeSource::Types, ident: meta.ident.clone() },
-                    false,
-                );
+                *typ = RustType::path(PathToType::Type(meta.ident.clone()), false);
             }
         }
         typ.visit_mut(self);

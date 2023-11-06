@@ -42,21 +42,6 @@ impl ObjectGenInfo {
         self.include_constructor = true;
         self
     }
-
-    /// Essentially a union of the requirements
-    pub fn with_shared_requirements(&self, other: &Self) -> Self {
-        let mut derives = self.derives;
-        if other.derives.deserialize {
-            derives.deserialize(true);
-        }
-        if other.derives.serialize {
-            derives.serialize(true);
-        }
-        ObjectGenInfo {
-            derives,
-            include_constructor: other.include_constructor | self.include_constructor,
-        }
-    }
 }
 
 impl Components {
