@@ -11,7 +11,7 @@ use crate::rust_object::RustObject;
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::types::{ComponentPath, RustIdent};
-use crate::visitor::{Visitor, VisitorMut};
+use crate::visitor::{Visit, VisitMut};
 
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
 pub struct CrateInfo {
@@ -76,14 +76,14 @@ impl StripeObject {
         self.krate = Some(CrateInfo::new(new_krate));
     }
 
-    pub fn visit<V: Visitor>(&self, visitor: &mut V) {
+    pub fn visit<'a, V: Visit<'a>>(&'a self, visitor: &mut V) {
         visitor.visit_obj(&self.data.obj, None);
         for req in &self.requests {
             visitor.visit_req(req);
         }
     }
 
-    pub fn visit_mut<V: VisitorMut>(&mut self, visitor: &mut V) {
+    pub fn visit_mut<V: VisitMut>(&mut self, visitor: &mut V) {
         visitor.visit_obj_mut(&mut self.data.obj, None);
         for req in &mut self.requests {
             visitor.visit_req_mut(req);
@@ -277,12 +277,12 @@ pub struct RequestSpec {
 }
 
 impl RequestSpec {
-    pub fn visit<V: Visitor>(&self, visitor: &mut V) {
+    pub fn visit<'a, V: Visit<'a>>(&'a self, visitor: &mut V) {
         visitor.visit_typ(&self.returned);
         visitor.visit_typ(&self.params);
     }
 
-    pub fn visit_mut<V: VisitorMut>(&mut self, visitor: &mut V) {
+    pub fn visit_mut<V: VisitMut>(&mut self, visitor: &mut V) {
         visitor.visit_typ_mut(&mut self.returned);
         visitor.visit_typ_mut(&mut self.params);
     }

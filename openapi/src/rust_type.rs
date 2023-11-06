@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter};
 use crate::components::Components;
 use crate::rust_object::{DeserDefault, ObjectMetadata, RustObject};
 use crate::types::{ComponentPath, RustIdent};
-use crate::visitor::{Visitor, VisitorMut};
+use crate::visitor::{Visit, VisitMut};
 
 /// A path to a type defined elsewhere.
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
@@ -244,7 +244,7 @@ impl RustType {
         }
     }
 
-    pub fn visit<T: Visitor>(&self, visitor: &mut T) {
+    pub fn visit<'a, T: Visit<'a>>(&'a self, visitor: &mut T) {
         use RustType::*;
         match self {
             Object(obj, meta) => {
@@ -255,7 +255,7 @@ impl RustType {
         }
     }
 
-    pub fn visit_mut<T: VisitorMut>(&mut self, visitor: &mut T) {
+    pub fn visit_mut<T: VisitMut>(&mut self, visitor: &mut T) {
         use RustType::*;
         match self {
             Object(obj, meta) => {

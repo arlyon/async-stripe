@@ -7,7 +7,7 @@ use crate::rust_type::{PathToType, RustType};
 use crate::stripe_object::OperationType;
 use crate::types::RustIdent;
 use crate::utils::get_request_param_field;
-use crate::visitor::VisitorMut;
+use crate::visitor::VisitMut;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct OverrideMetadata {
@@ -71,7 +71,7 @@ fn get_override_object(
     ))
 }
 
-impl VisitorMut for Overrides {
+impl VisitMut for Overrides {
     fn visit_typ_mut(&mut self, typ: &mut RustType) {
         if let Some((obj, _)) = typ.as_object_mut() {
             if let Some(meta) = self.overrides.get(obj) {

@@ -19,6 +19,7 @@ use crate::stripe_object::{
     StripeOperation, StripeResource,
 };
 use crate::types::{ComponentPath, RustIdent};
+use crate::visitor::Visit;
 
 #[derive(Clone, Debug)]
 pub struct TypeSpec {
@@ -136,72 +137,14 @@ impl Components {
         }
     }
 
-    pub fn add_component_deps<'a>(
-        &'a self,
-        deps: &mut IndexSet<&'a ComponentPath>,
-        path: &'a ComponentPath,
-    ) {
-        let component = self.get(path);
-        let base_type = component.rust_obj();
-        self.add_deps_from_obj(deps, base_type);
-        let reqs = &component.requests;
-        let mut typs = vec![];
-        for req in reqs {
-            typs.push(&req.params);
-            typs.push(&req.returned);
-            for path_param in &req.path_params {
-                typs.push(&path_param.rust_type);
-            }
-        }
-        for typ in typs {
-            self.add_deps_from_typ(deps, typ);
-        }
-    }
-
-    pub fn add_deps_from_obj<'a>(
-        &'a self,
-        deps: &mut IndexSet<&'a ComponentPath>,
-        obj: &'a RustObject,
-    ) {
-        match obj {
-            RustObject::Struct(fields) => {
-                for field in fields {
-                    self.add_deps_from_typ(deps, &field.rust_type);
-                }
-            }
-            RustObject::Enum(variants) => {
-                for variant in variants {
-                    if let Some(typ) = &variant.rust_type {
-                        self.add_deps_from_typ(deps, typ);
-                    }
-                }
-            }
-            RustObject::FieldlessEnum(_) => {}
-        }
-    }
-
-    pub fn add_deps_from_typ<'a>(
-        &'a self,
-        deps: &mut IndexSet<&'a ComponentPath>,
-        typ: &'a RustType,
-    ) {
-        match typ {
-            RustType::Object(obj, _) => self.add_deps_from_obj(deps, obj),
-            RustType::Path { path: PathToType::Component(path), .. } => {
-                deps.insert(path);
-            }
-            RustType::Container(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
-            _ => {}
-        }
-    }
-
     pub fn deps_for_component<'a>(
         &'a self,
         path: &'a ComponentPath,
     ) -> IndexSet<&'a ComponentPath> {
-        let mut deps = IndexSet::new();
-        self.add_component_deps(&mut deps, path);
-        deps
+        let mut dep_collector = DependencyCollector::new();
+        let comp = self.get(path);
+        dep_collector.visit_stripe_object(comp);
+        dep_collector.deps
     }
 
     pub fn filter_unused_components(&mut self) {
@@ -333,4 +276,29 @@ pub struct RequestSource {
     pub path: &'static str,
     pub op: OperationType,
     pub field_name: &'static str,
+}
+
+#[derive(Default)]
+struct DependencyCollector<'a> {
+    deps: IndexSet<&'a ComponentPath>,
+}
+
+impl<'a> DependencyCollector<'a> {
+    fn new() -> Self {
+        Self::default()
+    }
+}
+
+impl<'a> Visit<'a> for DependencyCollector<'a> {
+    fn visit_typ(&mut self, typ: &'a RustType)
+    where
+        Self: Sized,
+    {
+        match typ {
+            RustType::Path { path: PathToType::Component(path), .. } => {
+                self.deps.insert(path);
+            }
+            _ => typ.visit(self),
+        }
+    }
 }

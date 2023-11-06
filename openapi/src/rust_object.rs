@@ -6,7 +6,7 @@ use crate::components::Components;
 use crate::object_writing::ObjectGenInfo;
 use crate::rust_type::RustType;
 use crate::types::{ComponentPath, RustIdent};
-use crate::visitor::{Visitor, VisitorMut};
+use crate::visitor::{Visit, VisitMut};
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustObject {
@@ -58,7 +58,7 @@ impl RustObject {
         }
     }
 
-    pub fn visit<T: Visitor>(&self, visitor: &mut T) {
+    pub fn visit<'a, T: Visit<'a>>(&'a self, visitor: &mut T) {
         match self {
             RustObject::Struct(fields) => {
                 for field in fields {
@@ -76,7 +76,7 @@ impl RustObject {
         }
     }
 
-    pub fn visit_mut<T: VisitorMut>(&mut self, visitor: &mut T) {
+    pub fn visit_mut<T: VisitMut>(&mut self, visitor: &mut T) {
         match self {
             RustObject::Struct(fields) => {
                 for field in fields {
