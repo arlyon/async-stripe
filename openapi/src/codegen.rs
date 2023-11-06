@@ -50,23 +50,30 @@ impl CodeGen {
     fn write_components(&self) -> anyhow::Result<()> {
         for component in self.components.components.values() {
             debug!("Writing component {}", component.path());
-            let krate = component.krate_unwrapped().for_types();
-            let crate_path = PathBuf::from(krate.generate_to());
+            let base_crate = component.krate_unwrapped().base();
+            let base_path = PathBuf::from(base_crate.generate_to());
 
-            let requests_crate = component.krate_unwrapped().base();
-            let requests_path = PathBuf::from(requests_crate.generate_to());
+            let crate_for_types = component.krate_unwrapped().for_types();
+            let path_for_types = PathBuf::from(crate_for_types.generate_to());
 
-            self.write_component(component, &crate_path)?;
+            self.write_component(component, &path_for_types)?;
+
+            let mod_path = component.mod_path();
+
+            // Reexport in this crate if we wrote types to `stripe_types` instead of the
+            // component's base crate.
+            if crate_for_types == Crate::Types {
+                append_to_file(
+                    format!("pub use stripe_types::{mod_path}::*;"),
+                    base_path.join("mod.rs"),
+                )?;
+            }
 
             if !component.requests.is_empty() {
-                let obj_mod_path = component.mod_path();
                 debug!("Writing requests for {}", component.path());
-                self.write_component_requests(component, &requests_path.join(&obj_mod_path))?;
-                if krate != requests_crate {
-                    append_to_file(
-                        format!("pub mod {obj_mod_path};"),
-                        requests_path.join("mod.rs"),
-                    )?;
+                self.write_component_requests(component, &base_path.join(&mod_path))?;
+                if base_crate != crate_for_types {
+                    append_to_file(format!("pub mod {mod_path};"), base_path.join("mod.rs"))?;
                 }
             }
         }

@@ -10,4 +10,8 @@ pub mod radar_list_list;
 pub use radar_list_list::RadarListList;
 pub mod radar_list_list_item;
 pub use radar_list_list_item::RadarListListItem;
+pub use stripe_types::radar_review::*;
+pub use stripe_types::radar_review_resource_location::*;
+pub use stripe_types::radar_review_resource_session::*;
 pub mod radar_review;
+pub use stripe_types::radar_rule::*;
