@@ -1,13 +1,17 @@
 use anyhow::{anyhow, Context};
 use heck::ToSnakeCase;
+use indexmap::IndexMap;
 use openapiv3::Schema;
 use serde::{Deserialize, Serialize};
 
+use crate::components::TypeSpec;
 use crate::crate_inference::Crate;
+use crate::object_writing::ObjectGenInfo;
 use crate::rust_object::RustObject;
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::types::{ComponentPath, RustIdent};
+use crate::visitor::{Visitor, VisitorMut};
 
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
 pub struct CrateInfo {
@@ -47,6 +51,7 @@ pub struct StripeObject {
     pub resource: StripeResource,
     pub data: StripeObjectData,
     pub krate: Option<CrateInfo>,
+    pub extra_types: IndexMap<RustIdent, TypeSpec>,
 }
 
 impl StripeObject {
@@ -69,6 +74,20 @@ impl StripeObject {
 
     pub fn assign_crate(&mut self, new_krate: Crate) {
         self.krate = Some(CrateInfo::new(new_krate));
+    }
+
+    pub fn visit<V: Visitor>(&self, visitor: &mut V) {
+        visitor.visit_obj(&self.data.obj, None);
+        for req in &self.requests {
+            visitor.visit_req(req);
+        }
+    }
+
+    pub fn visit_mut<V: VisitorMut>(&mut self, visitor: &mut V) {
+        visitor.visit_obj_mut(&mut self.data.obj, None);
+        for req in &mut self.requests {
+            visitor.visit_req_mut(req);
+        }
     }
 }
 
@@ -117,7 +136,7 @@ pub fn parse_stripe_schema_as_rust_object(
     ident: &RustIdent,
 ) -> StripeObjectData {
     let not_deleted_path = path.as_not_deleted();
-    let infer_ctx = Inference::new(ident).id_path(&not_deleted_path);
+    let infer_ctx = Inference::new(ident, ObjectGenInfo::new_deser()).id_path(&not_deleted_path);
     let typ = infer_ctx.infer_schema_type(schema);
     let Some((mut rust_obj, _)) = typ.into_object() else {
         panic!("Unexpected top level schema type for {}", path);
@@ -255,6 +274,18 @@ pub struct RequestSpec {
     pub doc_comment: Option<String>,
     pub req_path: String,
     pub method_name: String,
+}
+
+impl RequestSpec {
+    pub fn visit<V: Visitor>(&self, visitor: &mut V) {
+        visitor.visit_typ(&self.returned);
+        visitor.visit_typ(&self.params);
+    }
+
+    pub fn visit_mut<V: VisitorMut>(&mut self, visitor: &mut V) {
+        visitor.visit_typ_mut(&mut self.returned);
+        visitor.visit_typ_mut(&mut self.params);
+    }
 }
 
 #[derive(Debug, Clone)]

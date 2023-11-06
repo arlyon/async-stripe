@@ -4,6 +4,9 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Context;
 
+use crate::rust_type::RustType;
+use crate::stripe_object::RequestSpec;
+
 /// Write to a file, starting paths from the `out` directory and ensuring existence
 /// of directories along the way.
 pub fn write_to_file<C: AsRef<[u8]>, P: AsRef<Path>>(
@@ -40,4 +43,8 @@ fn write_or_append_to_outfile<C: AsRef<[u8]>, P: AsRef<Path>>(
         .with_context(|| format!("Could not create file at {}", base.display()))?
         .write_all(content.as_ref())?;
     Ok(())
+}
+
+pub fn get_request_param_field<'a>(req: &'a RequestSpec, field: &str) -> Option<&'a RustType> {
+    req.params.as_rust_object()?.get_struct_field(field)
 }

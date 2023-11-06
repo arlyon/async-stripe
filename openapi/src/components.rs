@@ -1,37 +1,48 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use anyhow::Context;
 use indexmap::{IndexMap, IndexSet};
 use petgraph::Direction;
-use tracing::info;
+use tracing::{debug, info};
 
 use crate::crate_inference::{maybe_infer_crate, validate_crate_map, Crate};
+use crate::deduplication::deduplicate_types;
+use crate::object_writing::ObjectGenInfo;
+use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
 use crate::rust_object::RustObject;
-use crate::rust_type::{Container, PathToType, RustType};
-use crate::spec::{as_object_properties, get_request_form_parameters, Spec};
-use crate::spec_inference::{infer_id_name, Inference};
+use crate::rust_type::{Container, PathToType, RustType, TypeSource};
+use crate::spec::Spec;
+use crate::spec_inference::infer_id_name;
 use crate::stripe_object::{
     parse_stripe_schema_as_rust_object, CrateInfo, OperationType, RequestSpec, StripeObject,
     StripeOperation, StripeResource,
 };
 use crate::types::{ComponentPath, RustIdent};
 
+#[derive(Clone, Debug)]
+pub struct TypeSpec {
+    pub doc: Option<String>,
+    pub gen_info: ObjectGenInfo,
+    pub obj: RustObject,
+    pub mod_path: String,
+}
+
 pub struct Components {
     pub components: IndexMap<ComponentPath, StripeObject>,
+    pub extra_types: IndexMap<RustIdent, TypeSpec>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct PathInfo {
-    pub krate: Option<Crate>,
+    pub krate: Crate,
     pub path: Option<String>,
 }
 
 impl PathInfo {
-    pub fn with_crate(krate: Crate) -> Self {
-        Self { krate: Some(krate), path: None }
+    pub fn new(krate: Crate) -> Self {
+        Self { krate, path: None }
     }
 }
 
@@ -63,13 +74,13 @@ impl Components {
     pub fn resolve_path(&self, path: &ComponentPath) -> PathInfo {
         let component = self.get(path);
         let krate = component.krate_unwrapped().for_types();
-        PathInfo { krate: Some(krate), path: Some(component.mod_path()) }
+        PathInfo { krate, path: Some(component.mod_path()) }
     }
 
     pub fn construct_printable_type_from_path(&self, path: &ComponentPath) -> PrintableType {
         let comp = self.get(path);
         PrintableType::QualifiedPath {
-            path: Some(PathInfo::with_crate(comp.krate_unwrapped().for_types())),
+            path: Some(PathInfo::new(comp.krate_unwrapped().for_types())),
             ident: comp.ident().clone(),
             has_ref: false,
             is_ref: false,
@@ -80,14 +91,14 @@ impl Components {
         match typ {
             RustType::Object(obj, metadata) => PrintableType::QualifiedPath {
                 path: None,
-                has_ref: obj.has_reference(),
+                has_ref: obj.has_reference(self),
                 is_ref: false,
                 ident: metadata.ident.clone(),
             },
-            RustType::Path(PathToType::Component { path }) => {
+            RustType::Path { path: PathToType::Component(path), .. } => {
                 self.construct_printable_type_from_path(path)
             }
-            RustType::Path(PathToType::ObjectId { path, is_ref }) => {
+            RustType::Path { path: PathToType::ObjectId(path), is_ref } => {
                 let ident = infer_id_name(path);
                 let path_info = self.resolve_path(path);
                 PrintableType::QualifiedPath {
@@ -97,20 +108,23 @@ impl Components {
                     has_ref: false,
                 }
             }
-            RustType::Path(PathToType::IntraFile { ident, is_ref, has_ref, .. }) => {
+            RustType::Path { path: PathToType::Type { source, ident }, is_ref } => {
+                let referred_typ =
+                    self.get_type_from_source(source, ident).expect("type not found");
+                let has_ref = referred_typ.obj.has_reference(self);
                 PrintableType::QualifiedPath {
-                    path: None,
-                    has_ref: *has_ref,
+                    path: Some(PathInfo {
+                        krate: match source {
+                            TypeSource::Types => Crate::Types,
+                            TypeSource::Component(comp_path) => {
+                                self.get(comp_path).krate_unwrapped().for_types()
+                            }
+                        },
+                        path: None,
+                    }),
+                    has_ref,
                     is_ref: *is_ref,
                     ident: ident.clone(),
-                }
-            }
-            RustType::Path(PathToType::Types { ident, is_ref, has_ref, .. }) => {
-                PrintableType::QualifiedPath {
-                    path: Some(PathInfo { krate: Some(Crate::Types), path: None }),
-                    ident: ident.clone(),
-                    has_ref: *has_ref,
-                    is_ref: *is_ref,
                 }
             }
             RustType::Simple(typ) => PrintableType::Simple(*typ),
@@ -183,7 +197,7 @@ impl Components {
     ) {
         match typ {
             RustType::Object(obj, _) => self.add_deps_from_obj(deps, obj),
-            RustType::Path(PathToType::Component { path }) => {
+            RustType::Path { path: PathToType::Component(path), .. } => {
                 deps.insert(path);
             }
             RustType::Container(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
@@ -222,7 +236,7 @@ impl Components {
                 break;
             }
 
-            info!("Filtering unused components: {unused:#?}");
+            debug!("Filtering unused components: {unused:#?}");
             for unused_mod in unused.drain(..) {
                 self.components.remove(unused_mod.as_ref());
             }
@@ -238,6 +252,50 @@ impl Components {
             }
         }
         None
+    }
+
+    #[tracing::instrument(level = "debug", skip(self))]
+    fn apply_overrides(&mut self) -> anyhow::Result<()> {
+        let mut overrides = Overrides::new(self)?;
+        for comp in self.components.values_mut() {
+            comp.visit_mut(&mut overrides);
+        }
+        for (obj, override_meta) in overrides.overrides {
+            self.extra_types.insert(
+                override_meta.ident,
+                TypeSpec {
+                    doc: Some(override_meta.doc),
+                    mod_path: override_meta.mod_path,
+                    gen_info: ObjectGenInfo::new_deser(),
+                    obj,
+                },
+            );
+        }
+
+        Ok(())
+    }
+
+    pub fn get_type_from_source(
+        &self,
+        source: &TypeSource,
+        ident: &RustIdent,
+    ) -> Option<&TypeSpec> {
+        match source {
+            TypeSource::Types => self.extra_types.get(ident),
+            TypeSource::Component(comp) => {
+                let obj = self.get(comp);
+                obj.extra_types.get(ident)
+            }
+        }
+    }
+
+    fn run_deduplication_pass(&mut self) {
+        for comp in self.components.values_mut() {
+            let extra_typs = deduplicate_types(comp);
+            for (ident, typ) in extra_typs {
+                comp.extra_types.insert(ident, typ);
+            }
+        }
     }
 }
 
@@ -280,35 +338,24 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
                 resource: resource.clone(),
                 data,
                 krate: inferred_krate.map(CrateInfo::new),
+                extra_types: Default::default(),
             },
         );
     }
 
-    let mut components = Components { components };
+    let mut components = Components { components, extra_types: Default::default() };
     components.filter_unused_components();
 
     validate_crate_map(&components)?;
     components.infer_all_crate_assignments()?;
+    info!("Finished inferring crates");
+
+    components.apply_overrides()?;
+    debug!("Finished applying overrides");
+
+    // components.run_deduplication_pass();
+    // info!("Finished deduplication pass");
     Ok(components)
-}
-
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub struct OverrideMetadata {
-    pub ident: RustIdent,
-    pub doc: String,
-    pub mod_path: String,
-}
-
-pub struct Overrides {
-    pub overrides: IndexMap<RustObject, OverrideMetadata>,
-}
-
-#[derive(Debug, Copy, Clone)]
-pub struct OverrideData {
-    pub doc: &'static str,
-    pub mod_path: &'static str,
-    pub ident: &'static str,
-    pub source: RequestSource,
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -316,104 +363,4 @@ pub struct RequestSource {
     pub path: &'static str,
     pub op: OperationType,
     pub field_name: &'static str,
-}
-
-const OVERRIDES: &[OverrideData] = &[OverrideData {
-    doc: "",
-    mod_path: "api_version",
-    ident: "ApiVersion",
-    source: RequestSource {
-        path: "/v1/webhook_endpoints",
-        op: OperationType::Post,
-        field_name: "api_version",
-    },
-}];
-
-fn get_override_object(
-    spec: &Spec,
-    data: &OverrideData,
-) -> anyhow::Result<(RustObject, OverrideMetadata)> {
-    let req_src = data.source;
-    let op = spec.get_request_operation(req_src.path, req_src.op).context("Request not found")?;
-    let form_params = get_request_form_parameters(op)
-        .context("No form params")?
-        .as_item()
-        .context("Was a ref")?;
-    let typ = as_object_properties(form_params).context("Not an object")?;
-    let schema = typ.get(req_src.field_name).context("Field not found")?;
-    let ident = RustIdent::create(data.ident);
-    let (obj, _) = Inference::new(&ident)
-        .infer_schema_or_ref_type(schema)
-        .into_object()
-        .context("Expected object type to be inferred")?;
-    Ok((
-        obj,
-        OverrideMetadata { ident, doc: data.doc.to_string(), mod_path: data.mod_path.to_string() },
-    ))
-}
-
-pub fn build_field_overrides(spec: &Spec) -> anyhow::Result<Overrides> {
-    let mut overrides = IndexMap::new();
-    for override_ in OVERRIDES {
-        let (obj, meta) = get_override_object(spec, override_)
-            .with_context(|| format!("Failed to construct override for source {override_:?}"))?;
-        overrides.insert(obj, meta);
-    }
-    Ok(Overrides { overrides })
-}
-
-impl Overrides {
-    pub fn replace_typ(&self, typ: &mut RustType) {
-        match typ {
-            RustType::Object(obj, _) => {
-                if let Some(meta) = self.overrides.get(obj) {
-                    *typ = RustType::Path(PathToType::Types {
-                        ident: meta.ident.clone(),
-                        is_ref: false,
-                        has_ref: obj.has_reference(),
-                        is_copy: obj.is_copy(),
-                    });
-                } else {
-                    self.replace_obj(obj);
-                }
-            }
-            RustType::Simple(_) => {}
-            RustType::Path { .. } => {}
-            RustType::Container(inner) => {
-                self.replace_typ(inner.value_typ_mut());
-            }
-        }
-    }
-
-    fn replace_obj(&self, obj: &mut RustObject) {
-        match obj {
-            RustObject::Struct(fields) => {
-                for field in fields {
-                    self.replace_typ(&mut field.rust_type);
-                }
-            }
-            RustObject::FieldlessEnum(_) => {}
-            RustObject::Enum(variants) => {
-                for var in variants {
-                    if let Some(typ) = &mut var.rust_type {
-                        self.replace_typ(typ);
-                    }
-                }
-            }
-        }
-    }
-}
-
-impl Components {
-    pub fn apply_overrides(&mut self, overrides: &Overrides) {
-        for obj in self.components.values_mut() {
-            let obj_typ = &mut obj.data.obj;
-            overrides.replace_obj(obj_typ);
-
-            for req in &mut obj.requests {
-                overrides.replace_typ(&mut req.params);
-                overrides.replace_typ(&mut req.returned);
-            }
-        }
-    }
 }

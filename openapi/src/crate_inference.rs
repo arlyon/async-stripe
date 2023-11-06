@@ -7,7 +7,7 @@ use lazy_static::lazy_static;
 use petgraph::algo::is_cyclic_directed;
 use petgraph::Direction;
 use serde::{Deserialize, Serialize};
-use tracing::{debug, error};
+use tracing::{error, trace};
 
 use crate::components::Components;
 use crate::graph::ComponentGraph;
@@ -163,7 +163,7 @@ impl Components {
                 }
             }
         }
-        debug!("Inferred {new_assignments:#?} based on naming");
+        trace!("Inferred based on naming: {new_assignments:#?} ");
         for (path, krate) in new_assignments {
             self.get_mut(&path).assign_crate(krate);
         }
@@ -271,7 +271,6 @@ impl Components {
                 }
             }
 
-            debug!("Assigned types for {required:#?} to live in `stripe_types`");
             let done = required.is_empty();
             if done {
                 break;
@@ -336,7 +335,7 @@ fn infer_crates_using_deps(
         }
         let no_new_assignments = new_assignments.is_empty();
 
-        debug!("Inferred {new_assignments:#?}");
+        trace!("Inferred {new_assignments:#?}");
         for (mod_name, krate) in new_assignments.drain(..) {
             components.get_mut(&mod_name).assign_crate(krate);
         }

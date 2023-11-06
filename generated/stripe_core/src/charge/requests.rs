@@ -242,7 +242,7 @@ pub struct CreateCharge<'a> {
     ///
     /// Helps prevent fraud on charges for physical goods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<OptionalFieldsShipping<'a>>,
+    pub shipping: Option<CreateChargeShipping<'a>>,
     /// A payment source to be charged.
     ///
     /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
@@ -303,6 +303,65 @@ pub struct CreateChargeRadarOptions<'a> {
     pub session: Option<&'a str>,
 }
 impl<'a> CreateChargeRadarOptions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Shipping information for the charge.
+///
+/// Helps prevent fraud on charges for physical goods.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateChargeShipping<'a> {
+    /// Shipping address.
+    pub address: CreateChargeShippingAddress<'a>,
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<&'a str>,
+    /// Recipient name.
+    pub name: &'a str,
+    /// Recipient phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<&'a str>,
+}
+impl<'a> CreateChargeShipping<'a> {
+    pub fn new(address: CreateChargeShippingAddress<'a>, name: &'a str) -> Self {
+        Self {
+            address,
+            carrier: Default::default(),
+            name,
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
+    }
+}
+/// Shipping address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateChargeShippingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateChargeShippingAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -397,7 +456,7 @@ pub struct UpdateCharge<'a> {
     ///
     /// Helps prevent fraud on charges for physical goods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<OptionalFieldsShipping<'a>>,
+    pub shipping: Option<UpdateChargeShipping<'a>>,
     /// A string that identifies this transaction as part of a group.
     ///
     /// `transfer_group` may only be provided if it has not been set.
@@ -477,6 +536,65 @@ impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Shipping information for the charge.
+///
+/// Helps prevent fraud on charges for physical goods.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateChargeShipping<'a> {
+    /// Shipping address.
+    pub address: UpdateChargeShippingAddress<'a>,
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<&'a str>,
+    /// Recipient name.
+    pub name: &'a str,
+    /// Recipient phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<&'a str>,
+}
+impl<'a> UpdateChargeShipping<'a> {
+    pub fn new(address: UpdateChargeShippingAddress<'a>, name: &'a str) -> Self {
+        Self {
+            address,
+            carrier: Default::default(),
+            name,
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
+    }
+}
+/// Shipping address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateChargeShippingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> UpdateChargeShippingAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 impl<'a> UpdateCharge<'a> {
@@ -580,60 +698,5 @@ impl<'a> CaptureCharge<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct OptionalFieldsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> OptionalFieldsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct OptionalFieldsShipping<'a> {
-    /// Shipping address.
-    pub address: OptionalFieldsAddress<'a>,
-    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<&'a str>,
-    /// Recipient name.
-    pub name: &'a str,
-    /// Recipient phone (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-    /// The tracking number for a physical product, obtained from the delivery service.
-    ///
-    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tracking_number: Option<&'a str>,
-}
-impl<'a> OptionalFieldsShipping<'a> {
-    pub fn new(address: OptionalFieldsAddress<'a>, name: &'a str) -> Self {
-        Self {
-            address,
-            carrier: Default::default(),
-            name,
-            phone: Default::default(),
-            tracking_number: Default::default(),
-        }
     }
 }

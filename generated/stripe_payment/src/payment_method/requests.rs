@@ -23,7 +23,7 @@ pub struct CreatePaymentMethod<'a> {
     pub bancontact: Option<&'a serde_json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetailsInnerParams<'a>>,
+    pub billing_details: Option<CreatePaymentMethodBillingDetails<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik: Option<&'a serde_json::Value>,
@@ -182,6 +182,54 @@ pub struct CreatePaymentMethodBacsDebit<'a> {
     pub sort_code: Option<&'a str>,
 }
 impl<'a> CreatePaymentMethodBacsDebit<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePaymentMethodBillingDetails<'a> {
+    /// Billing address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<CreatePaymentMethodBillingDetailsAddress<'a>>,
+    /// Email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    /// Full name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Billing phone number (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> CreatePaymentMethodBillingDetails<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Billing address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePaymentMethodBillingDetailsAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreatePaymentMethodBillingDetailsAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -399,13 +447,67 @@ impl serde::Serialize for CreatePaymentMethodEpsBank {
 pub struct CreatePaymentMethodFpx {
     /// Account holder type for FPX transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Option<CreatePaymentMethodFpxAccountHolderType>,
     /// The customer's bank.
     pub bank: CreatePaymentMethodFpxBank,
 }
 impl CreatePaymentMethodFpx {
     pub fn new(bank: CreatePaymentMethodFpxBank) -> Self {
         Self { account_holder_type: Default::default(), bank }
+    }
+}
+/// Account holder type for FPX transaction.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodFpxAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl CreatePaymentMethodFpxAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodFpxAccountHolderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodFpxAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodFpxAccountHolderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodFpxAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodFpxAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The customer's bank.
@@ -1053,7 +1155,7 @@ impl serde::Serialize for CreatePaymentMethodType {
 pub struct CreatePaymentMethodUsBankAccount<'a> {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Option<CreatePaymentMethodUsBankAccountAccountHolderType>,
     /// Account number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<&'a str>,
@@ -1072,6 +1174,60 @@ pub struct CreatePaymentMethodUsBankAccount<'a> {
 impl<'a> CreatePaymentMethodUsBankAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Account holder type: individual or company.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentMethodUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl CreatePaymentMethodUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentMethodUsBankAccountAccountHolderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodUsBankAccountAccountHolderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Account type: checkings or savings.
@@ -1188,7 +1344,7 @@ pub struct UpdatePaymentMethod<'a> {
     pub bacs_debit: Option<&'a serde_json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<BillingDetailsInnerParams<'a>>,
+    pub billing_details: Option<UpdatePaymentMethodBillingDetails<'a>>,
     /// This is a legacy parameter that will be removed in the future.
     ///
     /// It is a hash that does not accept any keys.
@@ -1234,6 +1390,54 @@ impl<'a> UpdatePaymentMethod<'a> {
         Self::default()
     }
 }
+/// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentMethodBillingDetails<'a> {
+    /// Billing address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<UpdatePaymentMethodBillingDetailsAddress<'a>>,
+    /// Email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    /// Full name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Billing phone number (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> UpdatePaymentMethodBillingDetails<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Billing address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentMethodBillingDetailsAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> UpdatePaymentMethodBillingDetailsAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// If this is a `card` PaymentMethod, this hash contains the user's card details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethodCard {
@@ -1254,11 +1458,65 @@ impl UpdatePaymentMethodCard {
 pub struct UpdatePaymentMethodUsBankAccount {
     /// Bank account type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
 }
 impl UpdatePaymentMethodUsBankAccount {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Bank account type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentMethodUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl UpdatePaymentMethodUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentMethodUsBankAccountAccountHolderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodUsBankAccountAccountHolderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> UpdatePaymentMethod<'a> {
@@ -1539,104 +1797,5 @@ impl<'a> DetachPaymentMethod<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct BillingDetailsAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> BillingDetailsAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AccountHolderType {
-    Company,
-    Individual,
-}
-
-impl AccountHolderType {
-    pub fn as_str(self) -> &'static str {
-        use AccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-        }
-    }
-}
-
-impl std::str::FromStr for AccountHolderType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AccountHolderType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct BillingDetailsInnerParams<'a> {
-    /// Billing address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<BillingDetailsAddress<'a>>,
-    /// Email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-    /// Full name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// Billing phone number (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> BillingDetailsInnerParams<'a> {
-    pub fn new() -> Self {
-        Self::default()
     }
 }

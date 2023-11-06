@@ -3,8 +3,9 @@ use std::collections::HashMap;
 use anyhow::{bail, Context};
 use heck::ToSnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
-use tracing::warn;
+use tracing::debug;
 
+use crate::object_writing::ObjectGenInfo;
 use crate::rust_object::{ObjectMetadata, RustObject};
 use crate::rust_type::{RustType, SimpleType};
 use crate::spec::{get_ok_response_schema, get_request_form_parameters, Spec};
@@ -143,7 +144,7 @@ pub fn parse_requests(
     let mut req_details = Vec::with_capacity(operations.len());
     for op in &operations {
         if should_skip_request(op) {
-            warn!("Skipping request at path {} with name {}", op.path, op.method_name);
+            debug!("Skipping request at path {} with name {}", op.path, op.method_name);
             continue;
         }
         req_details.push(get_req_details(op, spec)?);
@@ -192,11 +193,14 @@ fn build_request(
     path_id_map: &HashMap<String, ComponentPath>,
 ) -> anyhow::Result<RequestSpec> {
     let return_ident = RustIdent::joined(method_name, "returned");
-    let return_type =
-        Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
+    let return_type = Inference::new(&return_ident, ObjectGenInfo::new_deser())
+        .required(true)
+        .infer_schema_or_ref_type(req.returned);
 
     let params_ident = RustIdent::joined(method_name, parent_ident);
-    let param_inference = Inference::new(&params_ident).can_borrow(true).required(true);
+    let params_gen_info = ObjectGenInfo::new().include_constructor().serialize(true);
+    let param_inference =
+        Inference::new(&params_ident, params_gen_info).can_borrow(true).required(true);
 
     let param_typ = match &req.params {
         RequestParams::Form(schema) => schema.map(|s| param_inference.infer_schema_or_ref_type(s)),
@@ -218,13 +222,16 @@ fn build_request(
                 }
                 Some(RustType::Object(
                     RustObject::Struct(struct_fields),
-                    ObjectMetadata::new(params_ident.clone()),
+                    ObjectMetadata::new(params_ident.clone(), params_gen_info),
                 ))
             }
         },
     }
     .unwrap_or_else(|| {
-        RustType::Object(RustObject::Struct(vec![]), ObjectMetadata::new(params_ident.clone()))
+        RustType::Object(
+            RustObject::Struct(vec![]),
+            ObjectMetadata::new(params_ident.clone(), params_gen_info),
+        )
     });
     let mut path_params = vec![];
     let has_single_path_param = req.path_params.len() == 1;
@@ -232,7 +239,7 @@ fn build_request(
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
         };
-        let mut rust_type = Inference::new(&params_ident)
+        let mut rust_type = Inference::new(&params_ident, ObjectGenInfo::new())
             .can_borrow(true)
             .required(param.required)
             .maybe_description(param.description.as_deref())

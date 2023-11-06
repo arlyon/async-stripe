@@ -8,11 +8,84 @@ pub struct FindSecretServiceResourceSecret<'a> {
     /// Specifies the scoping of the secret.
     ///
     /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-    pub scope: ScopeParam<'a>,
+    pub scope: FindSecretServiceResourceSecretScope<'a>,
 }
 impl<'a> FindSecretServiceResourceSecret<'a> {
-    pub fn new(name: &'a str, scope: ScopeParam<'a>) -> Self {
+    pub fn new(name: &'a str, scope: FindSecretServiceResourceSecretScope<'a>) -> Self {
         Self { expand: Default::default(), name, scope }
+    }
+}
+/// Specifies the scoping of the secret.
+///
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct FindSecretServiceResourceSecretScope<'a> {
+    /// The secret scope type.
+    #[serde(rename = "type")]
+    pub type_: FindSecretServiceResourceSecretScopeType,
+    /// The user ID.
+    ///
+    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<&'a str>,
+}
+impl<'a> FindSecretServiceResourceSecretScope<'a> {
+    pub fn new(type_: FindSecretServiceResourceSecretScopeType) -> Self {
+        Self { type_, user: Default::default() }
+    }
+}
+/// The secret scope type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum FindSecretServiceResourceSecretScopeType {
+    Account,
+    User,
+}
+
+impl FindSecretServiceResourceSecretScopeType {
+    pub fn as_str(self) -> &'static str {
+        use FindSecretServiceResourceSecretScopeType::*;
+        match self {
+            Account => "account",
+            User => "user",
+        }
+    }
+}
+
+impl std::str::FromStr for FindSecretServiceResourceSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use FindSecretServiceResourceSecretScopeType::*;
+        match s {
+            "account" => Ok(Account),
+            "user" => Ok(User),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for FindSecretServiceResourceSecretScopeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FindSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for FindSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for FindSecretServiceResourceSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> FindSecretServiceResourceSecret<'a> {
@@ -39,11 +112,88 @@ pub struct CreateSecretServiceResourceSecret<'a> {
     /// Specifies the scoping of the secret.
     ///
     /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-    pub scope: ScopeParam<'a>,
+    pub scope: CreateSecretServiceResourceSecretScope<'a>,
 }
 impl<'a> CreateSecretServiceResourceSecret<'a> {
-    pub fn new(name: &'a str, payload: &'a str, scope: ScopeParam<'a>) -> Self {
+    pub fn new(
+        name: &'a str,
+        payload: &'a str,
+        scope: CreateSecretServiceResourceSecretScope<'a>,
+    ) -> Self {
         Self { expand: Default::default(), expires_at: Default::default(), name, payload, scope }
+    }
+}
+/// Specifies the scoping of the secret.
+///
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSecretServiceResourceSecretScope<'a> {
+    /// The secret scope type.
+    #[serde(rename = "type")]
+    pub type_: CreateSecretServiceResourceSecretScopeType,
+    /// The user ID.
+    ///
+    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<&'a str>,
+}
+impl<'a> CreateSecretServiceResourceSecretScope<'a> {
+    pub fn new(type_: CreateSecretServiceResourceSecretScopeType) -> Self {
+        Self { type_, user: Default::default() }
+    }
+}
+/// The secret scope type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSecretServiceResourceSecretScopeType {
+    Account,
+    User,
+}
+
+impl CreateSecretServiceResourceSecretScopeType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSecretServiceResourceSecretScopeType::*;
+        match self {
+            Account => "account",
+            User => "user",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSecretServiceResourceSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSecretServiceResourceSecretScopeType::*;
+        match s {
+            "account" => Ok(Account),
+            "user" => Ok(User),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSecretServiceResourceSecretScopeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSecretServiceResourceSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> CreateSecretServiceResourceSecret<'a> {
@@ -65,11 +215,84 @@ pub struct DeleteWhereSecretServiceResourceSecret<'a> {
     /// Specifies the scoping of the secret.
     ///
     /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-    pub scope: ScopeParam<'a>,
+    pub scope: DeleteWhereSecretServiceResourceSecretScope<'a>,
 }
 impl<'a> DeleteWhereSecretServiceResourceSecret<'a> {
-    pub fn new(name: &'a str, scope: ScopeParam<'a>) -> Self {
+    pub fn new(name: &'a str, scope: DeleteWhereSecretServiceResourceSecretScope<'a>) -> Self {
         Self { expand: Default::default(), name, scope }
+    }
+}
+/// Specifies the scoping of the secret.
+///
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct DeleteWhereSecretServiceResourceSecretScope<'a> {
+    /// The secret scope type.
+    #[serde(rename = "type")]
+    pub type_: DeleteWhereSecretServiceResourceSecretScopeType,
+    /// The user ID.
+    ///
+    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<&'a str>,
+}
+impl<'a> DeleteWhereSecretServiceResourceSecretScope<'a> {
+    pub fn new(type_: DeleteWhereSecretServiceResourceSecretScopeType) -> Self {
+        Self { type_, user: Default::default() }
+    }
+}
+/// The secret scope type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum DeleteWhereSecretServiceResourceSecretScopeType {
+    Account,
+    User,
+}
+
+impl DeleteWhereSecretServiceResourceSecretScopeType {
+    pub fn as_str(self) -> &'static str {
+        use DeleteWhereSecretServiceResourceSecretScopeType::*;
+        match self {
+            Account => "account",
+            User => "user",
+        }
+    }
+}
+
+impl std::str::FromStr for DeleteWhereSecretServiceResourceSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeleteWhereSecretServiceResourceSecretScopeType::*;
+        match s {
+            "account" => Ok(Account),
+            "user" => Ok(User),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for DeleteWhereSecretServiceResourceSecretScopeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DeleteWhereSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DeleteWhereSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for DeleteWhereSecretServiceResourceSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> DeleteWhereSecretServiceResourceSecret<'a> {
@@ -100,7 +323,7 @@ pub struct ListSecretServiceResourceSecret<'a> {
     /// Specifies the scoping of the secret.
     ///
     /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-    pub scope: ScopeParam<'a>,
+    pub scope: ListSecretServiceResourceSecretScope<'a>,
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -109,7 +332,7 @@ pub struct ListSecretServiceResourceSecret<'a> {
     pub starting_after: Option<&'a str>,
 }
 impl<'a> ListSecretServiceResourceSecret<'a> {
-    pub fn new(scope: ScopeParam<'a>) -> Self {
+    pub fn new(scope: ListSecretServiceResourceSecretScope<'a>) -> Self {
         Self {
             ending_before: Default::default(),
             expand: Default::default(),
@@ -117,6 +340,79 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
             scope,
             starting_after: Default::default(),
         }
+    }
+}
+/// Specifies the scoping of the secret.
+///
+/// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct ListSecretServiceResourceSecretScope<'a> {
+    /// The secret scope type.
+    #[serde(rename = "type")]
+    pub type_: ListSecretServiceResourceSecretScopeType,
+    /// The user ID.
+    ///
+    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<&'a str>,
+}
+impl<'a> ListSecretServiceResourceSecretScope<'a> {
+    pub fn new(type_: ListSecretServiceResourceSecretScopeType) -> Self {
+        Self { type_, user: Default::default() }
+    }
+}
+/// The secret scope type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListSecretServiceResourceSecretScopeType {
+    Account,
+    User,
+}
+
+impl ListSecretServiceResourceSecretScopeType {
+    pub fn as_str(self) -> &'static str {
+        use ListSecretServiceResourceSecretScopeType::*;
+        match self {
+            Account => "account",
+            User => "user",
+        }
+    }
+}
+
+impl std::str::FromStr for ListSecretServiceResourceSecretScopeType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListSecretServiceResourceSecretScopeType::*;
+        match s {
+            "account" => Ok(Account),
+            "user" => Ok(User),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListSecretServiceResourceSecretScopeType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListSecretServiceResourceSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListSecretServiceResourceSecretScopeType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> ListSecretServiceResourceSecret<'a> {
@@ -132,72 +428,3 @@ impl<'a> ListSecretServiceResourceSecret<'a> {
     }
 }
 impl<'a> stripe::PaginationParams for ListSecretServiceResourceSecret<'a> {}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Type {
-    Account,
-    User,
-}
-
-impl Type {
-    pub fn as_str(self) -> &'static str {
-        use Type::*;
-        match self {
-            Account => "account",
-            User => "user",
-        }
-    }
-}
-
-impl std::str::FromStr for Type {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Type::*;
-        match s {
-            "account" => Ok(Account),
-            "user" => Ok(User),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Type {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Type {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ScopeParam<'a> {
-    /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: Type,
-    /// The user ID.
-    ///
-    /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<&'a str>,
-}
-impl<'a> ScopeParam<'a> {
-    pub fn new(type_: Type) -> Self {
-        Self { type_, user: Default::default() }
-    }
-}

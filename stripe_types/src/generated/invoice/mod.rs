@@ -594,7 +594,7 @@ impl<'de> serde::Deserialize<'de> for InvoiceStatus {
 impl stripe_types::Object for Invoice {
     type Id = Option<stripe_types::invoice::InvoiceId>;
     fn id(&self) -> Option<&str> {
-        self.id.as_ref().map(|i| i.as_str())
+        self.id.as_deref()
     }
 }
 stripe_types::def_id!(InvoiceId, "in_");

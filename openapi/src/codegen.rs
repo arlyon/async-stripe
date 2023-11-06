@@ -1,9 +1,11 @@
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
+use anyhow::Context;
 use indoc::formatdoc;
+use tracing::debug;
 
-use crate::components::{build_field_overrides, get_components, Components, Overrides};
+use crate::components::{get_components, Components};
 use crate::crate_inference::Crate;
 use crate::object_writing::{gen_obj, gen_requests, ObjectGenInfo};
 use crate::rust_object::ObjectMetadata;
@@ -11,7 +13,6 @@ use crate::spec::Spec;
 use crate::spec_inference::infer_doc_comment;
 use crate::stripe_object::StripeObject;
 use crate::templates::cargo_toml::gen_crate_toml;
-use crate::templates::derives::Derives;
 use crate::url_finder::UrlFinder;
 use crate::utils::{append_to_file, write_to_file};
 use crate::webhook::write_generated_for_webhooks;
@@ -20,38 +21,19 @@ pub struct CodeGen {
     pub components: Components,
     pub spec: Spec,
     pub url_finder: UrlFinder,
-    pub overrides: Overrides,
 }
 
 impl CodeGen {
     pub fn new(spec: Spec, url_finder: UrlFinder) -> anyhow::Result<Self> {
-        let overrides = build_field_overrides(&spec)?;
-        let mut components = get_components(&spec)?;
-        components.apply_overrides(&overrides);
+        let components = get_components(&spec)?;
 
-        Ok(Self { components, spec, url_finder, overrides })
+        Ok(Self { components, spec, url_finder })
     }
 
     fn write_generated_for_types_crate(&self) -> anyhow::Result<()> {
         let base_path = PathBuf::from(Crate::Types.generated_out_path());
         let mut mod_rs_contents = String::new();
         let mod_rs_path = base_path.join("mod.rs");
-
-        for (obj, meta) in &self.overrides.overrides {
-            let mut out = String::new();
-            self.components.write_object(
-                obj,
-                &ObjectMetadata::new(meta.ident.clone()).doc(meta.doc.clone()),
-                ObjectGenInfo::new(Derives::new_deser()),
-                &mut out,
-            );
-            write_to_file(out, base_path.join(format!("{}.rs", meta.mod_path)))?;
-            let _ = writeln!(
-                mod_rs_contents,
-                "pub mod {0}; pub use {0}::{1};",
-                meta.mod_path, meta.ident
-            );
-        }
 
         // Write the current API version
         let version_file_content = format!(
@@ -67,6 +49,7 @@ impl CodeGen {
 
     fn write_components(&self) -> anyhow::Result<()> {
         for component in self.components.components.values() {
+            debug!("Writing component {}", component.path());
             let krate = component.krate_unwrapped().for_types();
             let crate_path = PathBuf::from(krate.generate_to());
 
@@ -77,6 +60,7 @@ impl CodeGen {
 
             if !component.requests.is_empty() {
                 let obj_mod_path = component.mod_path();
+                debug!("Writing requests for {}", component.path());
                 self.write_component_requests(component, &requests_path.join(&obj_mod_path))?;
                 if krate != requests_crate {
                     append_to_file(
@@ -86,6 +70,22 @@ impl CodeGen {
                 }
             }
         }
+
+        let crate_path = PathBuf::from(Crate::Types.generate_to());
+        let crate_mod_path = crate_path.join("mod.rs");
+        for (ident, typ_info) in &self.components.extra_types {
+            let mut out = String::new();
+            let mut metadata = ObjectMetadata::new(ident.clone(), typ_info.gen_info);
+            if let Some(doc) = &typ_info.doc {
+                metadata = metadata.doc(doc.clone());
+            }
+            self.components.write_object(&typ_info.obj, &metadata, &mut out);
+            write_to_file(out, crate_path.join(format!("{}.rs", typ_info.mod_path)))?;
+            append_to_file(
+                format!("pub mod {0}; pub use {0}::{1};", typ_info.mod_path, ident),
+                &crate_mod_path,
+            )?;
+        }
         Ok(())
     }
 
@@ -93,6 +93,7 @@ impl CodeGen {
         self.write_crate_base()?;
         self.write_components()?;
         write_generated_for_webhooks(&self.components)
+            .context("Could not write webhook generated code")
     }
 
     fn write_crate_base(&self) -> anyhow::Result<()> {
@@ -173,11 +174,13 @@ max_width = 260
         let doc_url = self.url_finder.url_for_object(comp.path());
         let schema = self.spec.get_component_schema(comp.path());
         let doc_comment = infer_doc_comment(schema, doc_url.as_deref());
-        let meta = ObjectMetadata::new(comp.ident().clone()).doc(doc_comment);
+        let meta =
+            ObjectMetadata::new(comp.ident().clone(), ObjectGenInfo::new_deser()).doc(doc_comment);
 
         gen_obj(base_obj, &meta, comp, &self.components)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(path = %comp.path()))]
     fn write_component(&self, comp: &StripeObject, base_path: &Path) -> anyhow::Result<()> {
         let module_path = base_path.join(comp.mod_path());
         let obj_module_path = module_path.join("mod.rs");

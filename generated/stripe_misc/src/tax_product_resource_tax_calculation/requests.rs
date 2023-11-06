@@ -513,7 +513,7 @@ pub struct CreateTaxProductResourceTaxCalculationLineItems<'a> {
     ///
     /// Defaults to `exclusive`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID to use for this line item.
     ///
     /// If not provided, we will use the tax code from the provided `product` param.
@@ -531,6 +531,62 @@ impl<'a> CreateTaxProductResourceTaxCalculationLineItems<'a> {
             tax_behavior: Default::default(),
             tax_code: Default::default(),
         }
+    }
+}
+/// Specifies whether the `amount` includes taxes.
+///
+/// Defaults to `exclusive`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    Exclusive,
+    Inclusive,
+}
+
+impl CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxProductResourceTaxCalculationLineItemsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Shipping cost details to be used for the calculation.
@@ -552,7 +608,7 @@ pub struct CreateTaxProductResourceTaxCalculationShippingCost<'a> {
     /// If `tax_behavior=inclusive`, then the amount includes taxes.
     /// Defaults to `exclusive`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior>,
     /// The [tax code](https://stripe.com/docs/tax/tax-categories) used to calculate tax on shipping.
     ///
     /// If not provided, the default shipping tax code from your [Tax Settings](/settings/tax) is used.
@@ -562,6 +618,63 @@ pub struct CreateTaxProductResourceTaxCalculationShippingCost<'a> {
 impl<'a> CreateTaxProductResourceTaxCalculationShippingCost<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Specifies whether the `amount` includes taxes.
+///
+/// If `tax_behavior=inclusive`, then the amount includes taxes.
+/// Defaults to `exclusive`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    Exclusive,
+    Inclusive,
+}
+
+impl CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> CreateTaxProductResourceTaxCalculation<'a> {
@@ -625,56 +738,3 @@ impl<'a> ListLineItemsTaxProductResourceTaxCalculation<'a> {
     }
 }
 impl<'a> stripe::PaginationParams for ListLineItemsTaxProductResourceTaxCalculation<'a> {}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TaxBehavior {
-    Exclusive,
-    Inclusive,
-}
-
-impl TaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        use TaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-        }
-    }
-}
-
-impl std::str::FromStr for TaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}

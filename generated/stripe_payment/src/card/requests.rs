@@ -7,7 +7,7 @@ pub struct UpdateCustomerCard<'a> {
     ///
     /// This can be either `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Option<UpdateCustomerCardAccountHolderType>,
     /// City/District/Suburb/Town/Village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<&'a str>,
@@ -51,6 +51,62 @@ pub struct UpdateCustomerCard<'a> {
 impl<'a> UpdateCustomerCard<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The type of entity that holds the account.
+///
+/// This can be either `individual` or `company`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateCustomerCardAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl UpdateCustomerCardAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateCustomerCardAccountHolderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateCustomerCardAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateCustomerCardAccountHolderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateCustomerCardAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateCustomerCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateCustomerCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateCustomerCardAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -166,7 +222,7 @@ pub struct UpdateAccountCard<'a> {
     ///
     /// This can be either `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Option<UpdateAccountCardAccountHolderType>,
     /// The bank account type.
     ///
     /// This can only be `checking` or `savings` in most countries.
@@ -220,6 +276,62 @@ pub struct UpdateAccountCard<'a> {
 impl<'a> UpdateAccountCard<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The type of entity that holds the account.
+///
+/// This can be either `individual` or `company`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateAccountCardAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl UpdateAccountCardAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateAccountCardAccountHolderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateAccountCardAccountHolderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateAccountCardAccountHolderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateAccountCardAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateAccountCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateAccountCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateAccountCardAccountHolderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The bank account type.
@@ -351,58 +463,5 @@ impl DeleteAccountCard {
             self,
             http_types::Method::Delete,
         )
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AccountHolderType {
-    Company,
-    Individual,
-}
-
-impl AccountHolderType {
-    pub fn as_str(self) -> &'static str {
-        use AccountHolderType::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-        }
-    }
-}
-
-impl std::str::FromStr for AccountHolderType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AccountHolderType::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AccountHolderType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AccountHolderType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AccountHolderType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

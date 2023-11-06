@@ -13,7 +13,7 @@ use stripe_payment::payment_method::{
     AttachPaymentMethod, CreatePaymentMethod, CreatePaymentMethodCard,
     CreatePaymentMethodCardDetailsParams, CreatePaymentMethodType,
 };
-use stripe_product::price::{CreatePrice, CreatePriceRecurring, Interval};
+use stripe_product::price::{CreatePrice, CreatePriceRecurring, CreatePriceRecurringInterval};
 use stripe_product::product::CreateProduct;
 use stripe_types::{Currency, Expandable};
 
@@ -73,7 +73,8 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
         create_price.product = Some(&product.id);
         create_price.metadata = Some(&meta);
         create_price.unit_amount = Some(1000);
-        create_price.recurring = Some(CreatePriceRecurring::new(Interval::Month));
+        create_price.recurring =
+            Some(CreatePriceRecurring::new(CreatePriceRecurringInterval::Month));
         create_price.expand = Some(&["product"]);
         create_price.send(client).await?
     };

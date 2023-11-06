@@ -88,8 +88,12 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreatePromotionCodeRestrictionsCurrencyOptions,
+        >,
+    >,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_time_transaction: Option<bool>,
@@ -101,6 +105,20 @@ pub struct CreatePromotionCodeRestrictions<'a> {
     pub minimum_amount_currency: Option<stripe_types::Currency>,
 }
 impl<'a> CreatePromotionCodeRestrictions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Promotion codes defined in each available currency option.
+///
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePromotionCodeRestrictionsCurrencyOptions {
+    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_amount: Option<i64>,
+}
+impl CreatePromotionCodeRestrictionsCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -146,10 +164,28 @@ pub struct UpdatePromotionCodeRestrictions<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            UpdatePromotionCodeRestrictionsCurrencyOptions,
+        >,
+    >,
 }
 impl<'a> UpdatePromotionCodeRestrictions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Promotion codes defined in each available currency option.
+///
+/// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePromotionCodeRestrictionsCurrencyOptions {
+    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_amount: Option<i64>,
+}
+impl UpdatePromotionCodeRestrictionsCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -228,14 +264,3 @@ impl<'a> ListPromotionCode<'a> {
     }
 }
 impl<'a> stripe::PaginationParams for ListPromotionCode<'a> {}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CurrencyOption {
-    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum_amount: Option<i64>,
-}
-impl CurrencyOption {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}

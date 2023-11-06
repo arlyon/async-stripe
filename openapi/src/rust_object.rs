@@ -3,8 +3,10 @@ use std::fmt::{Debug, Display, Formatter};
 use indexmap::IndexMap;
 
 use crate::components::Components;
+use crate::object_writing::ObjectGenInfo;
 use crate::rust_type::RustType;
 use crate::types::{ComponentPath, RustIdent};
+use crate::visitor::{Visitor, VisitorMut};
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustObject {
@@ -28,11 +30,12 @@ pub struct ObjectMetadata {
     pub title: Option<String>,
     /// The name of the field in the OpenAPI schema
     pub field_name: Option<String>,
+    pub gen_info: ObjectGenInfo,
 }
 
 impl ObjectMetadata {
-    pub fn new(ident: RustIdent) -> Self {
-        Self { ident, doc: None, title: None, field_name: None }
+    pub fn new(ident: RustIdent, gen_info: ObjectGenInfo) -> Self {
+        Self { ident, doc: None, title: None, field_name: None, gen_info }
     }
 
     /// Attach a doc comment.
@@ -44,14 +47,50 @@ impl ObjectMetadata {
 
 impl RustObject {
     /// Can this derive `Copy`?
-    pub fn is_copy(&self) -> bool {
+    pub fn is_copy(&self, components: &Components) -> bool {
         match self {
-            Self::Struct(fields) => fields.iter().all(|f| f.rust_type.is_copy()),
+            Self::Struct(fields) => fields.iter().all(|f| f.rust_type.is_copy(components)),
             Self::FieldlessEnum(_) => true,
             Self::Enum(variants) => variants.iter().all(|f| match &f.rust_type {
                 None => true,
-                Some(typ) => typ.is_copy(),
+                Some(typ) => typ.is_copy(components),
             }),
+        }
+    }
+
+    pub fn visit<T: Visitor>(&self, visitor: &mut T) {
+        match self {
+            RustObject::Struct(fields) => {
+                for field in fields {
+                    visitor.visit_typ(&field.rust_type);
+                }
+            }
+            RustObject::Enum(variants) => {
+                for variant in variants {
+                    if let Some(typ) = &variant.rust_type {
+                        visitor.visit_typ(typ);
+                    }
+                }
+            }
+            RustObject::FieldlessEnum(_) => {}
+        }
+    }
+
+    pub fn visit_mut<T: VisitorMut>(&mut self, visitor: &mut T) {
+        match self {
+            RustObject::Struct(fields) => {
+                for field in fields {
+                    visitor.visit_typ_mut(&mut field.rust_type);
+                }
+            }
+            RustObject::Enum(variants) => {
+                for variant in variants {
+                    if let Some(typ) = &mut variant.rust_type {
+                        visitor.visit_typ_mut(typ);
+                    }
+                }
+            }
+            RustObject::FieldlessEnum(_) => {}
         }
     }
 
@@ -66,35 +105,15 @@ impl RustObject {
     }
 
     /// Does this contain a reference type?
-    pub fn has_reference(&self) -> bool {
+    pub fn has_reference(&self, components: &Components) -> bool {
         match self {
-            Self::Struct(fields) => fields.iter().any(|f| f.rust_type.has_reference()),
+            Self::Struct(fields) => fields.iter().any(|f| f.rust_type.has_reference(components)),
             Self::FieldlessEnum(_) => false,
             Self::Enum(variants) => variants.iter().any(|v| match &v.rust_type {
                 None => false,
-                Some(typ) => typ.has_reference(),
+                Some(typ) => typ.has_reference(components),
             }),
         }
-    }
-
-    pub fn typs_mut(&mut self) -> Vec<&mut RustType> {
-        let mut res = vec![];
-        match self {
-            Self::Struct(fields) => {
-                for field in fields {
-                    res.push(&mut field.rust_type)
-                }
-            }
-            Self::FieldlessEnum(_) => {}
-            Self::Enum(variants) => {
-                for variant in variants {
-                    if let Some(typ) = &mut variant.rust_type {
-                        res.push(typ);
-                    }
-                }
-            }
-        }
-        res
     }
 }
 

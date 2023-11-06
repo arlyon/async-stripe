@@ -11,8 +11,8 @@ impl RustIdent {
     /// Only to be used safely when `val` is known to be a valid
     /// and we don't want to convert to camelcase since it strips
     /// underscores (e.g. `ApiVersion`).
-    pub const fn unchanged(val: String) -> Self {
-        Self(val)
+    pub fn unchanged<T: ToString>(val: T) -> Self {
+        Self(val.to_string())
     }
 
     pub fn create<T: AsRef<str>>(val: T) -> Self {

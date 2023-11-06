@@ -44,7 +44,7 @@ impl<'a> Display for PrintableWithLifetime<'a> {
         use PrintableType::*;
         match &self.typ {
             QualifiedPath { path, has_ref, is_ref, ident } => {
-                let full_path = PathWithIdent::new(path, ident);
+                let full_path = PathWithIdent::new(path.as_ref(), ident);
                 if *is_ref {
                     write!(f, "&{lifetime} ")?;
                 }
@@ -103,7 +103,7 @@ impl Display for PrintableType {
         use PrintableType::*;
         match self {
             QualifiedPath { path, is_ref, ident, .. } => {
-                let full_path = PathWithIdent::new(path, ident);
+                let full_path = PathWithIdent::new(path.as_ref(), ident);
                 if *is_ref {
                     f.write_char('&')?;
                 }
@@ -189,12 +189,12 @@ impl<'a> PrintableWithLifetime<'a> {
 
 #[derive(Debug, Copy, Clone)]
 struct PathWithIdent<'a> {
-    path: &'a Option<PathInfo>,
+    path: Option<&'a PathInfo>,
     ident: &'a RustIdent,
 }
 
 impl<'a> PathWithIdent<'a> {
-    fn new(path: &'a Option<PathInfo>, ident: &'a RustIdent) -> Self {
+    fn new(path: Option<&'a PathInfo>, ident: &'a RustIdent) -> Self {
         Self { path, ident }
     }
 }
@@ -202,13 +202,12 @@ impl<'a> PathWithIdent<'a> {
 impl<'a> Display for PathWithIdent<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Some(path) = self.path {
-            if let Some(krate) = path.krate {
-                write!(f, "{}::", krate.name())?;
-            }
+            write!(f, "{}::", path.krate.name())?;
             if let Some(path) = &path.path {
                 write!(f, "{path}::")?;
             }
         }
+
         write!(f, "{}", self.ident)
     }
 }

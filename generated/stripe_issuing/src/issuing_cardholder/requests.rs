@@ -39,7 +39,7 @@ pub struct ListIssuingCardholder<'a> {
     /// One of `individual` or `company`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Type>,
+    pub type_: Option<ListIssuingCardholderType>,
 }
 impl<'a> ListIssuingCardholder<'a> {
     pub fn new() -> Self {
@@ -105,6 +105,62 @@ impl serde::Serialize for ListIssuingCardholderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+/// Only return cardholders that have the given type.
+///
+/// One of `individual` or `company`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListIssuingCardholderType {
+    Company,
+    Individual,
+}
+
+impl ListIssuingCardholderType {
+    pub fn as_str(self) -> &'static str {
+        use ListIssuingCardholderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for ListIssuingCardholderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListIssuingCardholderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListIssuingCardholderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListIssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListIssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListIssuingCardholderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 impl<'a> ListIssuingCardholder<'a> {
     /// Returns a list of Issuing `Cardholder` objects.
     ///
@@ -123,10 +179,10 @@ impl<'a> stripe::PaginationParams for ListIssuingCardholder<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardholder<'a> {
     /// The cardholder's billing address.
-    pub billing: BillingSpecs<'a>,
+    pub billing: CreateIssuingCardholderBilling<'a>,
     /// Additional information about a `company` cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<CompanyParam<'a>>,
+    pub company: Option<CreateIssuingCardholderCompany<'a>>,
     /// The cardholder's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
@@ -135,7 +191,7 @@ pub struct CreateIssuingCardholder<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Additional information about an `individual` cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<IndividualParam<'a>>,
+    pub individual: Option<CreateIssuingCardholderIndividual<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -160,7 +216,7 @@ pub struct CreateIssuingCardholder<'a> {
     ///
     /// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<&'a [PreferredLocales]>,
+    pub preferred_locales: Option<&'a [CreateIssuingCardholderPreferredLocales]>,
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
@@ -170,16 +226,16 @@ pub struct CreateIssuingCardholder<'a> {
     ///
     /// Defaults to `active`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Status>,
+    pub status: Option<CreateIssuingCardholderStatus>,
     /// One of `individual` or `company`.
     ///
     /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Type>,
+    pub type_: Option<CreateIssuingCardholderType>,
 }
 impl<'a> CreateIssuingCardholder<'a> {
-    pub fn new(billing: BillingSpecs<'a>, name: &'a str) -> Self {
+    pub fn new(billing: CreateIssuingCardholderBilling<'a>, name: &'a str) -> Self {
         Self {
             billing,
             company: Default::default(),
@@ -194,6 +250,231 @@ impl<'a> CreateIssuingCardholder<'a> {
             status: Default::default(),
             type_: Default::default(),
         }
+    }
+}
+/// The cardholder's billing address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingCardholderBilling<'a> {
+    /// The cardholder’s billing address.
+    pub address: CreateIssuingCardholderBillingAddress<'a>,
+}
+impl<'a> CreateIssuingCardholderBilling<'a> {
+    pub fn new(address: CreateIssuingCardholderBillingAddress<'a>) -> Self {
+        Self { address }
+    }
+}
+/// The cardholder’s billing address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingCardholderBillingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    pub city: &'a str,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: &'a str,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    pub line1: &'a str,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    pub postal_code: &'a str,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateIssuingCardholderBillingAddress<'a> {
+    pub fn new(city: &'a str, country: &'a str, line1: &'a str, postal_code: &'a str) -> Self {
+        Self {
+            city,
+            country,
+            line1,
+            line2: Default::default(),
+            postal_code,
+            state: Default::default(),
+        }
+    }
+}
+/// Additional information about a `company` cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderCompany<'a> {
+    /// The entity's business ID number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<&'a str>,
+}
+impl<'a> CreateIssuingCardholderCompany<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Additional information about an `individual` cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividual<'a> {
+    /// Information related to the card_issuing program for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<CreateIssuingCardholderIndividualCardIssuing<'a>>,
+    /// The date of birth of this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<CreateIssuingCardholderIndividualDob>,
+    /// The first name of this cardholder.
+    ///
+    /// Required before activating Cards.
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<&'a str>,
+    /// The last name of this cardholder.
+    ///
+    /// Required before activating Cards.
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<&'a str>,
+    /// Government-issued ID document for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<CreateIssuingCardholderIndividualVerification<'a>>,
+}
+impl<'a> CreateIssuingCardholderIndividual<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Information related to the card_issuing program for this cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividualCardIssuing<'a> {
+    /// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_terms_acceptance:
+        Option<CreateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a>>,
+}
+impl<'a> CreateIssuingCardholderIndividualCardIssuing<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
+    /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> CreateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The date of birth of this cardholder.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividualDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+impl CreateIssuingCardholderIndividualDob {
+    pub fn new(day: i64, month: i64, year: i64) -> Self {
+        Self { day, month, year }
+    }
+}
+/// Government-issued ID document for this cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividualVerification<'a> {
+    /// An identifying document, either a passport or local ID card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<CreateIssuingCardholderIndividualVerificationDocument<'a>>,
+}
+impl<'a> CreateIssuingCardholderIndividualVerification<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// An identifying document, either a passport or local ID card.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateIssuingCardholderIndividualVerificationDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> CreateIssuingCardholderIndividualVerificationDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The cardholder’s preferred locales (languages), ordered by preference.
+///
+/// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardholderPreferredLocales {
+    De,
+    En,
+    Es,
+    Fr,
+    It,
+}
+
+impl CreateIssuingCardholderPreferredLocales {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardholderPreferredLocales::*;
+        match self {
+            De => "de",
+            En => "en",
+            Es => "es",
+            Fr => "fr",
+            It => "it",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderPreferredLocales {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderPreferredLocales::*;
+        match s {
+            "de" => Ok(De),
+            "en" => Ok(En),
+            "es" => Ok(Es),
+            "fr" => Ok(Fr),
+            "it" => Ok(It),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardholderPreferredLocales {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderPreferredLocales {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Rules that control spending across this cardholder's cards.
@@ -2302,10 +2583,13 @@ pub struct CreateIssuingCardholderSpendingControlsSpendingLimits<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<&'a [CreateIssuingCardholderSpendingControlsSpendingLimitsCategories]>,
     /// Interval (or event) to which the amount applies.
-    pub interval: Interval,
+    pub interval: CreateIssuingCardholderSpendingControlsSpendingLimitsInterval,
 }
 impl<'a> CreateIssuingCardholderSpendingControlsSpendingLimits<'a> {
-    pub fn new(amount: i64, interval: Interval) -> Self {
+    pub fn new(
+        amount: i64,
+        interval: CreateIssuingCardholderSpendingControlsSpendingLimitsInterval,
+    ) -> Self {
         Self { amount, categories: Default::default(), interval }
     }
 }
@@ -3340,6 +3624,184 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsC
         serializer.serialize_str(self.as_str())
     }
 }
+/// Interval (or event) to which the amount applies.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    AllTime,
+    Daily,
+    Monthly,
+    PerAuthorization,
+    Weekly,
+    Yearly,
+}
+
+impl CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
+        match self {
+            AllTime => "all_time",
+            Daily => "daily",
+            Monthly => "monthly",
+            PerAuthorization => "per_authorization",
+            Weekly => "weekly",
+            Yearly => "yearly",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
+        match s {
+            "all_time" => Ok(AllTime),
+            "daily" => Ok(Daily),
+            "monthly" => Ok(Monthly),
+            "per_authorization" => Ok(PerAuthorization),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Specifies whether to permit authorizations on this cardholder's cards.
+///
+/// Defaults to `active`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardholderStatus {
+    Active,
+    Inactive,
+}
+
+impl CreateIssuingCardholderStatus {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardholderStatus::*;
+        match self {
+            Active => "active",
+            Inactive => "inactive",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderStatus::*;
+        match s {
+            "active" => Ok(Active),
+            "inactive" => Ok(Inactive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardholderStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// One of `individual` or `company`.
+///
+/// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardholderType {
+    Company,
+    Individual,
+}
+
+impl CreateIssuingCardholderType {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardholderType::*;
+        match self {
+            Company => "company",
+            Individual => "individual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderType::*;
+        match s {
+            "company" => Ok(Company),
+            "individual" => Ok(Individual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardholderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 impl<'a> CreateIssuingCardholder<'a> {
     /// Creates a new Issuing `Cardholder` object that can be issued cards.
     pub fn send(
@@ -3375,10 +3837,10 @@ impl<'a> RetrieveIssuingCardholder<'a> {
 pub struct UpdateIssuingCardholder<'a> {
     /// The cardholder's billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<BillingSpecs<'a>>,
+    pub billing: Option<UpdateIssuingCardholderBilling<'a>>,
     /// Additional information about a `company` cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<CompanyParam<'a>>,
+    pub company: Option<UpdateIssuingCardholderCompany<'a>>,
     /// The cardholder's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
@@ -3387,7 +3849,7 @@ pub struct UpdateIssuingCardholder<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Additional information about an `individual` cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<IndividualParam<'a>>,
+    pub individual: Option<UpdateIssuingCardholderIndividual<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -3405,7 +3867,7 @@ pub struct UpdateIssuingCardholder<'a> {
     ///
     /// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<&'a [PreferredLocales]>,
+    pub preferred_locales: Option<&'a [UpdateIssuingCardholderPreferredLocales]>,
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
@@ -3413,11 +3875,236 @@ pub struct UpdateIssuingCardholder<'a> {
     pub spending_controls: Option<UpdateIssuingCardholderSpendingControls<'a>>,
     /// Specifies whether to permit authorizations on this cardholder's cards.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Status>,
+    pub status: Option<UpdateIssuingCardholderStatus>,
 }
 impl<'a> UpdateIssuingCardholder<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The cardholder's billing address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCardholderBilling<'a> {
+    /// The cardholder’s billing address.
+    pub address: UpdateIssuingCardholderBillingAddress<'a>,
+}
+impl<'a> UpdateIssuingCardholderBilling<'a> {
+    pub fn new(address: UpdateIssuingCardholderBillingAddress<'a>) -> Self {
+        Self { address }
+    }
+}
+/// The cardholder’s billing address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCardholderBillingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    pub city: &'a str,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: &'a str,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    pub line1: &'a str,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    pub postal_code: &'a str,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> UpdateIssuingCardholderBillingAddress<'a> {
+    pub fn new(city: &'a str, country: &'a str, line1: &'a str, postal_code: &'a str) -> Self {
+        Self {
+            city,
+            country,
+            line1,
+            line2: Default::default(),
+            postal_code,
+            state: Default::default(),
+        }
+    }
+}
+/// Additional information about a `company` cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderCompany<'a> {
+    /// The entity's business ID number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<&'a str>,
+}
+impl<'a> UpdateIssuingCardholderCompany<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Additional information about an `individual` cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividual<'a> {
+    /// Information related to the card_issuing program for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<UpdateIssuingCardholderIndividualCardIssuing<'a>>,
+    /// The date of birth of this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<UpdateIssuingCardholderIndividualDob>,
+    /// The first name of this cardholder.
+    ///
+    /// Required before activating Cards.
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<&'a str>,
+    /// The last name of this cardholder.
+    ///
+    /// Required before activating Cards.
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<&'a str>,
+    /// Government-issued ID document for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<UpdateIssuingCardholderIndividualVerification<'a>>,
+}
+impl<'a> UpdateIssuingCardholderIndividual<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Information related to the card_issuing program for this cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividualCardIssuing<'a> {
+    /// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_terms_acceptance:
+        Option<UpdateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a>>,
+}
+impl<'a> UpdateIssuingCardholderIndividualCardIssuing<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
+    /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> UpdateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The date of birth of this cardholder.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividualDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+impl UpdateIssuingCardholderIndividualDob {
+    pub fn new(day: i64, month: i64, year: i64) -> Self {
+        Self { day, month, year }
+    }
+}
+/// Government-issued ID document for this cardholder.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividualVerification<'a> {
+    /// An identifying document, either a passport or local ID card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<UpdateIssuingCardholderIndividualVerificationDocument<'a>>,
+}
+impl<'a> UpdateIssuingCardholderIndividualVerification<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// An identifying document, either a passport or local ID card.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateIssuingCardholderIndividualVerificationDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> UpdateIssuingCardholderIndividualVerificationDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The cardholder’s preferred locales (languages), ordered by preference.
+///
+/// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardholderPreferredLocales {
+    De,
+    En,
+    Es,
+    Fr,
+    It,
+}
+
+impl UpdateIssuingCardholderPreferredLocales {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardholderPreferredLocales::*;
+        match self {
+            De => "de",
+            En => "en",
+            Es => "es",
+            Fr => "fr",
+            It => "it",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardholderPreferredLocales {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardholderPreferredLocales::*;
+        match s {
+            "de" => Ok(De),
+            "en" => Ok(En),
+            "es" => Ok(Es),
+            "fr" => Ok(Fr),
+            "it" => Ok(It),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateIssuingCardholderPreferredLocales {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateIssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardholderPreferredLocales {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Rules that control spending across this cardholder's cards.
@@ -5526,10 +6213,13 @@ pub struct UpdateIssuingCardholderSpendingControlsSpendingLimits<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<&'a [UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories]>,
     /// Interval (or event) to which the amount applies.
-    pub interval: Interval,
+    pub interval: UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval,
 }
 impl<'a> UpdateIssuingCardholderSpendingControlsSpendingLimits<'a> {
-    pub fn new(amount: i64, interval: Interval) -> Self {
+    pub fn new(
+        amount: i64,
+        interval: UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval,
+    ) -> Self {
         Self { amount, categories: Default::default(), interval }
     }
 }
@@ -6564,6 +7254,126 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsC
         serializer.serialize_str(self.as_str())
     }
 }
+/// Interval (or event) to which the amount applies.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    AllTime,
+    Daily,
+    Monthly,
+    PerAuthorization,
+    Weekly,
+    Yearly,
+}
+
+impl UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
+        match self {
+            AllTime => "all_time",
+            Daily => "daily",
+            Monthly => "monthly",
+            PerAuthorization => "per_authorization",
+            Weekly => "weekly",
+            Yearly => "yearly",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
+        match s {
+            "all_time" => Ok(AllTime),
+            "daily" => Ok(Daily),
+            "monthly" => Ok(Monthly),
+            "per_authorization" => Ok(PerAuthorization),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Specifies whether to permit authorizations on this cardholder's cards.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardholderStatus {
+    Active,
+    Inactive,
+}
+
+impl UpdateIssuingCardholderStatus {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardholderStatus::*;
+        match self {
+            Active => "active",
+            Inactive => "inactive",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardholderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardholderStatus::*;
+        match s {
+            "active" => Ok(Active),
+            "inactive" => Ok(Inactive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateIssuingCardholderStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardholderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 impl<'a> UpdateIssuingCardholder<'a> {
     /// Updates the specified Issuing `Cardholder` object by setting the values of the parameters passed.
     ///
@@ -6578,388 +7388,5 @@ impl<'a> UpdateIssuingCardholder<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Type {
-    Company,
-    Individual,
-}
-
-impl Type {
-    pub fn as_str(self) -> &'static str {
-        use Type::*;
-        match self {
-            Company => "company",
-            Individual => "individual",
-        }
-    }
-}
-
-impl std::str::FromStr for Type {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Type::*;
-        match s {
-            "company" => Ok(Company),
-            "individual" => Ok(Individual),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Type {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Type {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct RequiredAddress<'a> {
-    /// City, district, suburb, town, or village.
-    pub city: &'a str,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: &'a str,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    pub line1: &'a str,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    pub postal_code: &'a str,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> RequiredAddress<'a> {
-    pub fn new(city: &'a str, country: &'a str, line1: &'a str, postal_code: &'a str) -> Self {
-        Self {
-            city,
-            country,
-            line1,
-            line2: Default::default(),
-            postal_code,
-            state: Default::default(),
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CompanyParam<'a> {
-    /// The entity's business ID number.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id: Option<&'a str>,
-}
-impl<'a> CompanyParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct TermsAcceptanceParam<'a> {
-    /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
-    ///
-    /// Required for Celtic Spend Card users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<stripe_types::Timestamp>,
-    /// The IP address from which the cardholder accepted the Authorized User Terms.
-    ///
-    /// Required for Celtic Spend Card users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<&'a str>,
-    /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<&'a str>,
-}
-impl<'a> TermsAcceptanceParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DateOfBirthSpecs {
-    /// The day of birth, between 1 and 31.
-    pub day: i64,
-    /// The month of birth, between 1 and 12.
-    pub month: i64,
-    /// The four-digit year of birth.
-    pub year: i64,
-}
-impl DateOfBirthSpecs {
-    pub fn new(day: i64, month: i64, year: i64) -> Self {
-        Self { day, month, year }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PersonVerificationDocumentParam<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> PersonVerificationDocumentParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum PreferredLocales {
-    De,
-    En,
-    Es,
-    Fr,
-    It,
-}
-
-impl PreferredLocales {
-    pub fn as_str(self) -> &'static str {
-        use PreferredLocales::*;
-        match self {
-            De => "de",
-            En => "en",
-            Es => "es",
-            Fr => "fr",
-            It => "it",
-        }
-    }
-}
-
-impl std::str::FromStr for PreferredLocales {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PreferredLocales::*;
-        match s {
-            "de" => Ok(De),
-            "en" => Ok(En),
-            "es" => Ok(Es),
-            "fr" => Ok(Fr),
-            "it" => Ok(It),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for PreferredLocales {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PreferredLocales {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PreferredLocales {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for PreferredLocales {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Interval {
-    AllTime,
-    Daily,
-    Monthly,
-    PerAuthorization,
-    Weekly,
-    Yearly,
-}
-
-impl Interval {
-    pub fn as_str(self) -> &'static str {
-        use Interval::*;
-        match self {
-            AllTime => "all_time",
-            Daily => "daily",
-            Monthly => "monthly",
-            PerAuthorization => "per_authorization",
-            Weekly => "weekly",
-            Yearly => "yearly",
-        }
-    }
-}
-
-impl std::str::FromStr for Interval {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Interval::*;
-        match s {
-            "all_time" => Ok(AllTime),
-            "daily" => Ok(Daily),
-            "monthly" => Ok(Monthly),
-            "per_authorization" => Ok(PerAuthorization),
-            "weekly" => Ok(Weekly),
-            "yearly" => Ok(Yearly),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Interval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Interval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Status {
-    Active,
-    Inactive,
-}
-
-impl Status {
-    pub fn as_str(self) -> &'static str {
-        use Status::*;
-        match self {
-            Active => "active",
-            Inactive => "inactive",
-        }
-    }
-}
-
-impl std::str::FromStr for Status {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Status::*;
-        match s {
-            "active" => Ok(Active),
-            "inactive" => Ok(Inactive),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Status {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Status {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct BillingSpecs<'a> {
-    /// The cardholder’s billing address.
-    pub address: RequiredAddress<'a>,
-}
-impl<'a> BillingSpecs<'a> {
-    pub fn new(address: RequiredAddress<'a>) -> Self {
-        Self { address }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CardIssuingParam<'a> {
-    /// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_terms_acceptance: Option<TermsAcceptanceParam<'a>>,
-}
-impl<'a> CardIssuingParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PersonVerificationParam<'a> {
-    /// An identifying document, either a passport or local ID card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<PersonVerificationDocumentParam<'a>>,
-}
-impl<'a> PersonVerificationParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct IndividualParam<'a> {
-    /// Information related to the card_issuing program for this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_issuing: Option<CardIssuingParam<'a>>,
-    /// The date of birth of this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirthSpecs>,
-    /// The first name of this cardholder.
-    ///
-    /// Required before activating Cards.
-    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name: Option<&'a str>,
-    /// The last name of this cardholder.
-    ///
-    /// Required before activating Cards.
-    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name: Option<&'a str>,
-    /// Government-issued ID document for this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<PersonVerificationParam<'a>>,
-}
-impl<'a> IndividualParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
     }
 }

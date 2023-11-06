@@ -1,5 +1,3 @@
-pub mod api_version;
-pub use api_version::ApiVersion;
 pub mod account;
 pub mod version;
 pub use account::Account;
@@ -1137,3 +1135,5 @@ pub mod transform_quantity;
 pub use transform_quantity::TransformQuantity;
 pub mod transform_usage;
 pub use transform_usage::TransformUsage;
+pub mod api_version;
+pub use api_version::ApiVersion;

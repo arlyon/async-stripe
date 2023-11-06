@@ -14,8 +14,7 @@ pub fn write_object_trait(
     id_type: &PrintableType,
     is_optional: bool,
 ) {
-    let body =
-        if is_optional { "self.id.as_ref().map(|i| i.as_str())" } else { "Some(self.id.as_str())" };
+    let body = if is_optional { "self.id.as_deref()" } else { "Some(self.id.as_str())" };
     let _ = writedoc!(
         out,
         r#"

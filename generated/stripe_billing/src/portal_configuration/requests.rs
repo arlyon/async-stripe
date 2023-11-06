@@ -48,7 +48,7 @@ impl<'a> stripe::PaginationParams for ListPortalConfiguration<'a> {}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalConfiguration<'a> {
     /// The business information shown to customers in the portal.
-    pub business_profile: BusinessProfile<'a>,
+    pub business_profile: CreatePortalConfigurationBusinessProfile<'a>,
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
@@ -74,7 +74,7 @@ pub struct CreatePortalConfiguration<'a> {
 }
 impl<'a> CreatePortalConfiguration<'a> {
     pub fn new(
-        business_profile: BusinessProfile<'a>,
+        business_profile: CreatePortalConfigurationBusinessProfile<'a>,
         features: CreatePortalConfigurationFeatures<'a>,
     ) -> Self {
         Self {
@@ -85,6 +85,24 @@ impl<'a> CreatePortalConfiguration<'a> {
             login_page: Default::default(),
             metadata: Default::default(),
         }
+    }
+}
+/// The business information shown to customers in the portal.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePortalConfigurationBusinessProfile<'a> {
+    /// The messaging shown to customers in the portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub headline: Option<&'a str>,
+    /// A link to the business’s publicly available privacy policy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub privacy_policy_url: Option<&'a str>,
+    /// A link to the business’s publicly available terms of service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_url: Option<&'a str>,
+}
+impl<'a> CreatePortalConfigurationBusinessProfile<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// Information about the features available in the portal.
@@ -104,7 +122,7 @@ pub struct CreatePortalConfigurationFeatures<'a> {
     pub subscription_cancel: Option<CreatePortalConfigurationFeaturesSubscriptionCancel<'a>>,
     /// Information about pausing subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_pause: Option<SubscriptionPauseParam>,
+    pub subscription_pause: Option<CreatePortalConfigurationFeaturesSubscriptionPause>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<CreatePortalConfigurationFeaturesSubscriptionUpdate<'a>>,
@@ -121,13 +139,82 @@ pub struct CreatePortalConfigurationFeaturesCustomerUpdate<'a> {
     ///
     /// When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates: Option<&'a [AllowedUpdates]>,
+    pub allowed_updates:
+        Option<&'a [CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 impl<'a> CreatePortalConfigurationFeaturesCustomerUpdate<'a> {
     pub fn new(enabled: bool) -> Self {
         Self { allowed_updates: Default::default(), enabled }
+    }
+}
+/// The types of customer updates that are supported.
+///
+/// When empty, customers are not updateable.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    Address,
+    Email,
+    Name,
+    Phone,
+    Shipping,
+    TaxId,
+}
+
+impl CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
+        match self {
+            Address => "address",
+            Email => "email",
+            Name => "name",
+            Phone => "phone",
+            Shipping => "shipping",
+            TaxId => "tax_id",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
+        match s {
+            "address" => Ok(Address),
+            "email" => Ok(Email),
+            "name" => Ok(Name),
+            "phone" => Ok(Phone),
+            "shipping" => Ok(Shipping),
+            "tax_id" => Ok(TaxId),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about showing the billing history in the portal.
@@ -163,13 +250,14 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub enabled: bool,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<Mode>,
+    pub mode: Option<CreatePortalConfigurationFeaturesSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     ///
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<ProrationBehavior>,
+    pub proration_behavior:
+        Option<CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
 impl<'a> CreatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub fn new(enabled: bool) -> Self {
@@ -187,11 +275,221 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReason
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
-    pub options: &'a [Options],
+    pub options:
+        &'a [CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
 }
 impl<'a> CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
-    pub fn new(enabled: bool, options: &'a [Options]) -> Self {
+    pub fn new(
+        enabled: bool,
+        options: &'a [CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
+    ) -> Self {
         Self { enabled, options }
+    }
+}
+/// Which cancellation reasons will be given as options to the customer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
+        match self {
+            CustomerService => "customer_service",
+            LowQuality => "low_quality",
+            MissingFeatures => "missing_features",
+            Other => "other",
+            SwitchedService => "switched_service",
+            TooComplex => "too_complex",
+            TooExpensive => "too_expensive",
+            Unused => "unused",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
+        match s {
+            "customer_service" => Ok(CustomerService),
+            "low_quality" => Ok(LowQuality),
+            "missing_features" => Ok(MissingFeatures),
+            "other" => Ok(Other),
+            "switched_service" => Ok(SwitchedService),
+            "too_complex" => Ok(TooComplex),
+            "too_expensive" => Ok(TooExpensive),
+            "unused" => Ok(Unused),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Whether to cancel subscriptions immediately or at the end of the billing period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    AtPeriodEnd,
+    Immediately,
+}
+
+impl CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelMode::*;
+        match self {
+            AtPeriodEnd => "at_period_end",
+            Immediately => "immediately",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelMode::*;
+        match s {
+            "at_period_end" => Ok(AtPeriodEnd),
+            "immediately" => Ok(Immediately),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Whether to create prorations when canceling subscriptions.
+///
+/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// No prorations are generated when canceling a subscription at the end of its natural billing period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+
+impl CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Information about pausing subscriptions in the portal.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePortalConfigurationFeaturesSubscriptionPause {
+    /// Whether the feature is enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+impl CreatePortalConfigurationFeaturesSubscriptionPause {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// Information about updating subscriptions in the portal.
@@ -200,24 +498,161 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// The types of subscription updates that are supported.
     ///
     /// When empty, subscriptions are not updateable.
-    pub default_allowed_updates: &'a [DefaultAllowedUpdates],
+    pub default_allowed_updates:
+        &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of products that support subscription updates.
-    pub products: &'a [SubscriptionUpdateProductParam<'a>],
+    pub products: &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a>],
     /// Determines how to handle prorations resulting from subscription updates.
     ///
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<ProrationBehavior>,
+    pub proration_behavior:
+        Option<CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
 impl<'a> CreatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     pub fn new(
-        default_allowed_updates: &'a [DefaultAllowedUpdates],
+        default_allowed_updates: &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
         enabled: bool,
-        products: &'a [SubscriptionUpdateProductParam<'a>],
+        products: &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a>],
     ) -> Self {
         Self { default_allowed_updates, enabled, products, proration_behavior: Default::default() }
+    }
+}
+/// The types of subscription updates that are supported.
+///
+/// When empty, subscriptions are not updateable.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    Price,
+    PromotionCode,
+    Quantity,
+}
+
+impl CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
+        match self {
+            Price => "price",
+            PromotionCode => "promotion_code",
+            Quantity => "quantity",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
+        match s {
+            "price" => Ok(Price),
+            "promotion_code" => Ok(PromotionCode),
+            "quantity" => Ok(Quantity),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The list of products that support subscription updates.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
+    /// The list of price IDs for the product that a subscription can be updated to.
+    pub prices: &'a [&'a str],
+    /// The product id.
+    pub product: &'a str,
+}
+impl<'a> CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
+    pub fn new(prices: &'a [&'a str], product: &'a str) -> Self {
+        Self { prices, product }
+    }
+}
+/// Determines how to handle prorations resulting from subscription updates.
+///
+/// Valid values are `none`, `create_prorations`, and `always_invoice`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+
+impl CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The hosted login page for this configuration.
@@ -249,7 +684,7 @@ pub struct UpdatePortalConfiguration<'a> {
     pub active: Option<bool>,
     /// The business information shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_profile: Option<BusinessProfile<'a>>,
+    pub business_profile: Option<UpdatePortalConfigurationBusinessProfile<'a>>,
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
@@ -279,6 +714,24 @@ impl<'a> UpdatePortalConfiguration<'a> {
         Self::default()
     }
 }
+/// The business information shown to customers in the portal.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePortalConfigurationBusinessProfile<'a> {
+    /// The messaging shown to customers in the portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub headline: Option<&'a str>,
+    /// A link to the business’s publicly available privacy policy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub privacy_policy_url: Option<&'a str>,
+    /// A link to the business’s publicly available terms of service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_url: Option<&'a str>,
+}
+impl<'a> UpdatePortalConfigurationBusinessProfile<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// Information about the features available in the portal.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePortalConfigurationFeatures<'a> {
@@ -296,7 +749,7 @@ pub struct UpdatePortalConfigurationFeatures<'a> {
     pub subscription_cancel: Option<UpdatePortalConfigurationFeaturesSubscriptionCancel<'a>>,
     /// Information about pausing subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_pause: Option<SubscriptionPauseParam>,
+    pub subscription_pause: Option<UpdatePortalConfigurationFeaturesSubscriptionPause>,
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<UpdatePortalConfigurationFeaturesSubscriptionUpdate<'a>>,
@@ -313,7 +766,8 @@ pub struct UpdatePortalConfigurationFeaturesCustomerUpdate<'a> {
     ///
     /// When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates: Option<&'a [AllowedUpdates]>,
+    pub allowed_updates:
+        Option<&'a [UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -321,6 +775,74 @@ pub struct UpdatePortalConfigurationFeaturesCustomerUpdate<'a> {
 impl<'a> UpdatePortalConfigurationFeaturesCustomerUpdate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The types of customer updates that are supported.
+///
+/// When empty, customers are not updateable.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    Address,
+    Email,
+    Name,
+    Phone,
+    Shipping,
+    TaxId,
+}
+
+impl UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
+        match self {
+            Address => "address",
+            Email => "email",
+            Name => "name",
+            Phone => "phone",
+            Shipping => "shipping",
+            TaxId => "tax_id",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates::*;
+        match s {
+            "address" => Ok(Address),
+            "email" => Ok(Email),
+            "name" => Ok(Name),
+            "phone" => Ok(Phone),
+            "shipping" => Ok(Shipping),
+            "tax_id" => Ok(TaxId),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Information about showing the billing history in the portal.
@@ -357,13 +879,14 @@ pub struct UpdatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub enabled: Option<bool>,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<Mode>,
+    pub mode: Option<UpdatePortalConfigurationFeaturesSubscriptionCancelMode>,
     /// Whether to create prorations when canceling subscriptions.
     ///
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<ProrationBehavior>,
+    pub proration_behavior:
+        Option<UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
 impl<'a> UpdatePortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub fn new() -> Self {
@@ -377,11 +900,218 @@ pub struct UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReason
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<&'a [Options]>,
+    pub options:
+        Option<&'a [UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions]>,
 }
 impl<'a> UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
     pub fn new(enabled: bool) -> Self {
         Self { enabled, options: Default::default() }
+    }
+}
+/// Which cancellation reasons will be given as options to the customer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
+        match self {
+            CustomerService => "customer_service",
+            LowQuality => "low_quality",
+            MissingFeatures => "missing_features",
+            Other => "other",
+            SwitchedService => "switched_service",
+            TooComplex => "too_complex",
+            TooExpensive => "too_expensive",
+            Unused => "unused",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
+        match s {
+            "customer_service" => Ok(CustomerService),
+            "low_quality" => Ok(LowQuality),
+            "missing_features" => Ok(MissingFeatures),
+            "other" => Ok(Other),
+            "switched_service" => Ok(SwitchedService),
+            "too_complex" => Ok(TooComplex),
+            "too_expensive" => Ok(TooExpensive),
+            "unused" => Ok(Unused),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdatePortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Whether to cancel subscriptions immediately or at the end of the billing period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    AtPeriodEnd,
+    Immediately,
+}
+
+impl UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelMode::*;
+        match self {
+            AtPeriodEnd => "at_period_end",
+            Immediately => "immediately",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelMode::*;
+        match s {
+            "at_period_end" => Ok(AtPeriodEnd),
+            "immediately" => Ok(Immediately),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePortalConfigurationFeaturesSubscriptionCancelMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Whether to create prorations when canceling subscriptions.
+///
+/// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
+/// No prorations are generated when canceling a subscription at the end of its natural billing period.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+
+impl UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Information about pausing subscriptions in the portal.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePortalConfigurationFeaturesSubscriptionPause {
+    /// Whether the feature is enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+impl UpdatePortalConfigurationFeaturesSubscriptionPause {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// Information about updating subscriptions in the portal.
@@ -391,22 +1121,159 @@ pub struct UpdatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     ///
     /// When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_allowed_updates: Option<&'a [DefaultAllowedUpdates]>,
+    pub default_allowed_updates:
+        Option<&'a [UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates]>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The list of products that support subscription updates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub products: Option<&'a [SubscriptionUpdateProductParam<'a>]>,
+    pub products: Option<&'a [UpdatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a>]>,
     /// Determines how to handle prorations resulting from subscription updates.
     ///
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<ProrationBehavior>,
+    pub proration_behavior:
+        Option<UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
 impl<'a> UpdatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The types of subscription updates that are supported.
+///
+/// When empty, subscriptions are not updateable.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    Price,
+    PromotionCode,
+    Quantity,
+}
+
+impl UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
+        match self {
+            Price => "price",
+            PromotionCode => "promotion_code",
+            Quantity => "quantity",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
+        match s {
+            "price" => Ok(Price),
+            "promotion_code" => Ok(PromotionCode),
+            "quantity" => Ok(Quantity),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The list of products that support subscription updates.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
+    /// The list of price IDs for the product that a subscription can be updated to.
+    pub prices: &'a [&'a str],
+    /// The product id.
+    pub product: &'a str,
+}
+impl<'a> UpdatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
+    pub fn new(prices: &'a [&'a str], product: &'a str) -> Self {
+        Self { prices, product }
+    }
+}
+/// Determines how to handle prorations resulting from subscription updates.
+///
+/// Valid values are `none`, `create_prorations`, and `always_invoice`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+
+impl UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The hosted login page for this configuration.
@@ -466,346 +1333,5 @@ impl<'a> RetrievePortalConfiguration<'a> {
             ),
             self,
         )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct BusinessProfile<'a> {
-    /// The messaging shown to customers in the portal.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub headline: Option<&'a str>,
-    /// A link to the business’s publicly available privacy policy.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub privacy_policy_url: Option<&'a str>,
-    /// A link to the business’s publicly available terms of service.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service_url: Option<&'a str>,
-}
-impl<'a> BusinessProfile<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AllowedUpdates {
-    Address,
-    Email,
-    Name,
-    Phone,
-    Shipping,
-    TaxId,
-}
-
-impl AllowedUpdates {
-    pub fn as_str(self) -> &'static str {
-        use AllowedUpdates::*;
-        match self {
-            Address => "address",
-            Email => "email",
-            Name => "name",
-            Phone => "phone",
-            Shipping => "shipping",
-            TaxId => "tax_id",
-        }
-    }
-}
-
-impl std::str::FromStr for AllowedUpdates {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AllowedUpdates::*;
-        match s {
-            "address" => Ok(Address),
-            "email" => Ok(Email),
-            "name" => Ok(Name),
-            "phone" => Ok(Phone),
-            "shipping" => Ok(Shipping),
-            "tax_id" => Ok(TaxId),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AllowedUpdates {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Options {
-    CustomerService,
-    LowQuality,
-    MissingFeatures,
-    Other,
-    SwitchedService,
-    TooComplex,
-    TooExpensive,
-    Unused,
-}
-
-impl Options {
-    pub fn as_str(self) -> &'static str {
-        use Options::*;
-        match self {
-            CustomerService => "customer_service",
-            LowQuality => "low_quality",
-            MissingFeatures => "missing_features",
-            Other => "other",
-            SwitchedService => "switched_service",
-            TooComplex => "too_complex",
-            TooExpensive => "too_expensive",
-            Unused => "unused",
-        }
-    }
-}
-
-impl std::str::FromStr for Options {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Options::*;
-        match s {
-            "customer_service" => Ok(CustomerService),
-            "low_quality" => Ok(LowQuality),
-            "missing_features" => Ok(MissingFeatures),
-            "other" => Ok(Other),
-            "switched_service" => Ok(SwitchedService),
-            "too_complex" => Ok(TooComplex),
-            "too_expensive" => Ok(TooExpensive),
-            "unused" => Ok(Unused),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Options {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Options {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Options {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Options {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Mode {
-    AtPeriodEnd,
-    Immediately,
-}
-
-impl Mode {
-    pub fn as_str(self) -> &'static str {
-        use Mode::*;
-        match self {
-            AtPeriodEnd => "at_period_end",
-            Immediately => "immediately",
-        }
-    }
-}
-
-impl std::str::FromStr for Mode {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Mode::*;
-        match s {
-            "at_period_end" => Ok(AtPeriodEnd),
-            "immediately" => Ok(Immediately),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Mode {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Mode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Mode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Mode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl ProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        use ProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-        }
-    }
-}
-
-impl std::str::FromStr for ProrationBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for ProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct SubscriptionPauseParam {
-    /// Whether the feature is enabled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled: Option<bool>,
-}
-impl SubscriptionPauseParam {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum DefaultAllowedUpdates {
-    Price,
-    PromotionCode,
-    Quantity,
-}
-
-impl DefaultAllowedUpdates {
-    pub fn as_str(self) -> &'static str {
-        use DefaultAllowedUpdates::*;
-        match self {
-            Price => "price",
-            PromotionCode => "promotion_code",
-            Quantity => "quantity",
-        }
-    }
-}
-
-impl std::str::FromStr for DefaultAllowedUpdates {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DefaultAllowedUpdates::*;
-        match s {
-            "price" => Ok(Price),
-            "promotion_code" => Ok(PromotionCode),
-            "quantity" => Ok(Quantity),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for DefaultAllowedUpdates {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for DefaultAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for DefaultAllowedUpdates {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for DefaultAllowedUpdates {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SubscriptionUpdateProductParam<'a> {
-    /// The list of price IDs for the product that a subscription can be updated to.
-    pub prices: &'a [&'a str],
-    /// The product id.
-    pub product: &'a str,
-}
-impl<'a> SubscriptionUpdateProductParam<'a> {
-    pub fn new(prices: &'a [&'a str], product: &'a str) -> Self {
-        Self { prices, product }
     }
 }

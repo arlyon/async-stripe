@@ -39,17 +39,132 @@ pub struct ListIssuingCard<'a> {
     ///
     /// One of `active`, `inactive`, or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Status>,
+    pub status: Option<ListIssuingCardStatus>,
     /// Only return cards that have the given type.
     ///
     /// One of `virtual` or `physical`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Type>,
+    pub type_: Option<ListIssuingCardType>,
 }
 impl<'a> ListIssuingCard<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Only return cards that have the given status.
+///
+/// One of `active`, `inactive`, or `canceled`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListIssuingCardStatus {
+    Active,
+    Canceled,
+    Inactive,
+}
+
+impl ListIssuingCardStatus {
+    pub fn as_str(self) -> &'static str {
+        use ListIssuingCardStatus::*;
+        match self {
+            Active => "active",
+            Canceled => "canceled",
+            Inactive => "inactive",
+        }
+    }
+}
+
+impl std::str::FromStr for ListIssuingCardStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListIssuingCardStatus::*;
+        match s {
+            "active" => Ok(Active),
+            "canceled" => Ok(Canceled),
+            "inactive" => Ok(Inactive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListIssuingCardStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListIssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListIssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListIssuingCardStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Only return cards that have the given type.
+///
+/// One of `virtual` or `physical`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListIssuingCardType {
+    Physical,
+    Virtual,
+}
+
+impl ListIssuingCardType {
+    pub fn as_str(self) -> &'static str {
+        use ListIssuingCardType::*;
+        match self {
+            Physical => "physical",
+            Virtual => "virtual",
+        }
+    }
+}
+
+impl std::str::FromStr for ListIssuingCardType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListIssuingCardType::*;
+        match s {
+            "physical" => Ok(Physical),
+            "virtual" => Ok(Virtual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListIssuingCardType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListIssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListIssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListIssuingCardType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> ListIssuingCard<'a> {
@@ -110,10 +225,10 @@ pub struct CreateIssuingCard<'a> {
     ///
     /// Possible values are `physical` or `virtual`.
     #[serde(rename = "type")]
-    pub type_: Type,
+    pub type_: CreateIssuingCardType,
 }
 impl<'a> CreateIssuingCard<'a> {
-    pub fn new(currency: stripe_types::Currency, type_: Type) -> Self {
+    pub fn new(currency: stripe_types::Currency, type_: CreateIssuingCardType) -> Self {
         Self {
             cardholder: Default::default(),
             currency,
@@ -2482,10 +2597,13 @@ pub struct CreateIssuingCardSpendingControlsSpendingLimits<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<&'a [CreateIssuingCardSpendingControlsSpendingLimitsCategories]>,
     /// Interval (or event) to which the amount applies.
-    pub interval: Interval,
+    pub interval: CreateIssuingCardSpendingControlsSpendingLimitsInterval,
 }
 impl<'a> CreateIssuingCardSpendingControlsSpendingLimits<'a> {
-    pub fn new(amount: i64, interval: Interval) -> Self {
+    pub fn new(
+        amount: i64,
+        interval: CreateIssuingCardSpendingControlsSpendingLimitsInterval,
+    ) -> Self {
         Self { amount, categories: Default::default(), interval }
     }
 }
@@ -3520,6 +3638,72 @@ impl serde::Serialize for CreateIssuingCardSpendingControlsSpendingLimitsCategor
         serializer.serialize_str(self.as_str())
     }
 }
+/// Interval (or event) to which the amount applies.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    AllTime,
+    Daily,
+    Monthly,
+    PerAuthorization,
+    Weekly,
+    Yearly,
+}
+
+impl CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardSpendingControlsSpendingLimitsInterval::*;
+        match self {
+            AllTime => "all_time",
+            Daily => "daily",
+            Monthly => "monthly",
+            PerAuthorization => "per_authorization",
+            Weekly => "weekly",
+            Yearly => "yearly",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardSpendingControlsSpendingLimitsInterval::*;
+        match s {
+            "all_time" => Ok(AllTime),
+            "daily" => Ok(Daily),
+            "monthly" => Ok(Monthly),
+            "per_authorization" => Ok(PerAuthorization),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// Whether authorizations can be approved on this card.
 ///
 /// May be blocked from activating cards depending on past-due Cardholder requirements.
@@ -3570,6 +3754,62 @@ impl std::fmt::Debug for CreateIssuingCardStatus {
     }
 }
 impl serde::Serialize for CreateIssuingCardStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The type of card to issue.
+///
+/// Possible values are `physical` or `virtual`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateIssuingCardType {
+    Physical,
+    Virtual,
+}
+
+impl CreateIssuingCardType {
+    pub fn as_str(self) -> &'static str {
+        use CreateIssuingCardType::*;
+        match self {
+            Physical => "physical",
+            Virtual => "virtual",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardType::*;
+        match s {
+            "physical" => Ok(Physical),
+            "virtual" => Ok(Virtual),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateIssuingCardType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateIssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateIssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateIssuingCardType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -3633,7 +3873,7 @@ pub struct UpdateIssuingCard<'a> {
     /// Defaults to `inactive`.
     /// If this card is being canceled because it was lost or stolen, this information should be provided as `cancellation_reason`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Status>,
+    pub status: Option<UpdateIssuingCardStatus>,
 }
 impl<'a> UpdateIssuingCard<'a> {
     pub fn new() -> Self {
@@ -5807,10 +6047,13 @@ pub struct UpdateIssuingCardSpendingControlsSpendingLimits<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<&'a [UpdateIssuingCardSpendingControlsSpendingLimitsCategories]>,
     /// Interval (or event) to which the amount applies.
-    pub interval: Interval,
+    pub interval: UpdateIssuingCardSpendingControlsSpendingLimitsInterval,
 }
 impl<'a> UpdateIssuingCardSpendingControlsSpendingLimits<'a> {
-    pub fn new(amount: i64, interval: Interval) -> Self {
+    pub fn new(
+        amount: i64,
+        interval: UpdateIssuingCardSpendingControlsSpendingLimitsInterval,
+    ) -> Self {
         Self { amount, categories: Default::default(), interval }
     }
 }
@@ -6845,6 +7088,133 @@ impl serde::Serialize for UpdateIssuingCardSpendingControlsSpendingLimitsCategor
         serializer.serialize_str(self.as_str())
     }
 }
+/// Interval (or event) to which the amount applies.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    AllTime,
+    Daily,
+    Monthly,
+    PerAuthorization,
+    Weekly,
+    Yearly,
+}
+
+impl UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardSpendingControlsSpendingLimitsInterval::*;
+        match self {
+            AllTime => "all_time",
+            Daily => "daily",
+            Monthly => "monthly",
+            PerAuthorization => "per_authorization",
+            Weekly => "weekly",
+            Yearly => "yearly",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardSpendingControlsSpendingLimitsInterval::*;
+        match s {
+            "all_time" => Ok(AllTime),
+            "daily" => Ok(Daily),
+            "monthly" => Ok(Monthly),
+            "per_authorization" => Ok(PerAuthorization),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardSpendingControlsSpendingLimitsInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Dictates whether authorizations can be approved on this card.
+///
+/// May be blocked from activating cards depending on past-due Cardholder requirements.
+/// Defaults to `inactive`.
+/// If this card is being canceled because it was lost or stolen, this information should be provided as `cancellation_reason`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateIssuingCardStatus {
+    Active,
+    Canceled,
+    Inactive,
+}
+
+impl UpdateIssuingCardStatus {
+    pub fn as_str(self) -> &'static str {
+        use UpdateIssuingCardStatus::*;
+        match self {
+            Active => "active",
+            Canceled => "canceled",
+            Inactive => "inactive",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardStatus::*;
+        match s {
+            "active" => Ok(Active),
+            "canceled" => Ok(Canceled),
+            "inactive" => Ok(Inactive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateIssuingCardStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateIssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateIssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateIssuingCardStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 impl<'a> UpdateIssuingCard<'a> {
     /// Updates the specified Issuing `Card` object by setting the values of the parameters passed.
     ///
@@ -6959,179 +7329,5 @@ impl<'a> FailCardIssuingCard<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Status {
-    Active,
-    Canceled,
-    Inactive,
-}
-
-impl Status {
-    pub fn as_str(self) -> &'static str {
-        use Status::*;
-        match self {
-            Active => "active",
-            Canceled => "canceled",
-            Inactive => "inactive",
-        }
-    }
-}
-
-impl std::str::FromStr for Status {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Status::*;
-        match s {
-            "active" => Ok(Active),
-            "canceled" => Ok(Canceled),
-            "inactive" => Ok(Inactive),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Status {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Status {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Type {
-    Physical,
-    Virtual,
-}
-
-impl Type {
-    pub fn as_str(self) -> &'static str {
-        use Type::*;
-        match self {
-            Physical => "physical",
-            Virtual => "virtual",
-        }
-    }
-}
-
-impl std::str::FromStr for Type {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Type::*;
-        match s {
-            "physical" => Ok(Physical),
-            "virtual" => Ok(Virtual),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Type {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Type {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Interval {
-    AllTime,
-    Daily,
-    Monthly,
-    PerAuthorization,
-    Weekly,
-    Yearly,
-}
-
-impl Interval {
-    pub fn as_str(self) -> &'static str {
-        use Interval::*;
-        match self {
-            AllTime => "all_time",
-            Daily => "daily",
-            Monthly => "monthly",
-            PerAuthorization => "per_authorization",
-            Weekly => "weekly",
-            Yearly => "yearly",
-        }
-    }
-}
-
-impl std::str::FromStr for Interval {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Interval::*;
-        match s {
-            "all_time" => Ok(AllTime),
-            "daily" => Ok(Daily),
-            "monthly" => Ok(Monthly),
-            "per_authorization" => Ok(PerAuthorization),
-            "weekly" => Ok(Weekly),
-            "yearly" => Ok(Yearly),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Interval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Interval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

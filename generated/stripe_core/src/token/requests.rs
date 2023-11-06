@@ -141,7 +141,7 @@ impl serde::Serialize for CreateTokenAccountBusinessType {
 pub struct CreateTokenAccountCompany<'a> {
     /// The company's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<AddressSpecs<'a>>,
+    pub address: Option<CreateTokenAccountCompanyAddress<'a>>,
     /// The Kana variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kana: Option<CreateTokenAccountCompanyAddressKana<'a>>,
@@ -214,6 +214,33 @@ pub struct CreateTokenAccountCompany<'a> {
     pub verification: Option<CreateTokenAccountCompanyVerification<'a>>,
 }
 impl<'a> CreateTokenAccountCompany<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The company's primary address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountCompanyAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateTokenAccountCompanyAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -446,7 +473,7 @@ impl<'a> CreateTokenAccountCompanyVerificationDocument<'a> {
 pub struct CreateTokenAccountIndividual<'a> {
     /// The individual's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<AddressSpecs<'a>>,
+    pub address: Option<CreateTokenAccountIndividualAddress<'a>>,
     /// The Kana variation of the the individual's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kana: Option<CreateTokenAccountIndividualAddressKana<'a>>,
@@ -455,7 +482,7 @@ pub struct CreateTokenAccountIndividual<'a> {
     pub address_kanji: Option<CreateTokenAccountIndividualAddressKanji<'a>>,
     /// The individual's date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirthSpecs>,
+    pub dob: Option<CreateTokenAccountIndividualDob>,
     /// The individual's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
@@ -513,7 +540,7 @@ pub struct CreateTokenAccountIndividual<'a> {
     pub political_exposure: Option<CreateTokenAccountIndividualPoliticalExposure>,
     /// The individual's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registered_address: Option<AddressSpecs<'a>>,
+    pub registered_address: Option<CreateTokenAccountIndividualRegisteredAddress<'a>>,
     /// The last four digits of the individual's Social Security Number (U.S.
     ///
     /// only).
@@ -521,9 +548,36 @@ pub struct CreateTokenAccountIndividual<'a> {
     pub ssn_last_4: Option<&'a str>,
     /// The individual's verification document information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<PersonVerificationSpecs<'a>>,
+    pub verification: Option<CreateTokenAccountIndividualVerification<'a>>,
 }
 impl<'a> CreateTokenAccountIndividual<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The individual's primary address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountIndividualAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateTokenAccountIndividualAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -588,6 +642,21 @@ impl<'a> CreateTokenAccountIndividualAddressKanji<'a> {
         Self::default()
     }
 }
+/// The individual's date of birth.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTokenAccountIndividualDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+impl CreateTokenAccountIndividualDob {
+    pub fn new(day: i64, month: i64, year: i64) -> Self {
+        Self { day, month, year }
+    }
+}
 /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTokenAccountIndividualPoliticalExposure {
@@ -640,6 +709,86 @@ impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// The individual's registered address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountIndividualRegisteredAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateTokenAccountIndividualRegisteredAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The individual's verification document information.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountIndividualVerification<'a> {
+    /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_document: Option<CreateTokenAccountIndividualVerificationAdditionalDocument<'a>>,
+    /// An identifying document, either a passport or local ID card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<CreateTokenAccountIndividualVerificationDocument<'a>>,
+}
+impl<'a> CreateTokenAccountIndividualVerification<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountIndividualVerificationAdditionalDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> CreateTokenAccountIndividualVerificationAdditionalDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// An identifying document, either a passport or local ID card.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenAccountIndividualVerificationDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> CreateTokenAccountIndividualVerificationDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// The bank account this token will represent.
@@ -875,7 +1024,7 @@ impl<'a> CreateTokenCvcUpdate<'a> {
 pub struct CreateTokenPerson<'a> {
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<AddressSpecs<'a>>,
+    pub address: Option<CreateTokenPersonAddress<'a>>,
     /// The Kana variation of the person's address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kana: Option<CreateTokenPersonAddressKana<'a>>,
@@ -884,7 +1033,7 @@ pub struct CreateTokenPerson<'a> {
     pub address_kanji: Option<CreateTokenPersonAddressKanji<'a>>,
     /// The person's date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<DateOfBirthSpecs>,
+    pub dob: Option<CreateTokenPersonDob>,
     /// Documents that may be submitted to satisfy various informational requests.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub documents: Option<CreateTokenPersonDocuments<'a>>,
@@ -950,7 +1099,7 @@ pub struct CreateTokenPerson<'a> {
     pub political_exposure: Option<&'a str>,
     /// The person's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub registered_address: Option<AddressSpecs<'a>>,
+    pub registered_address: Option<CreateTokenPersonRegisteredAddress<'a>>,
     /// The relationship that this person has with the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<CreateTokenPersonRelationship<'a>>,
@@ -961,9 +1110,36 @@ pub struct CreateTokenPerson<'a> {
     pub ssn_last_4: Option<&'a str>,
     /// The person's verification status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<PersonVerificationSpecs<'a>>,
+    pub verification: Option<CreateTokenPersonVerification<'a>>,
 }
 impl<'a> CreateTokenPerson<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The person's address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateTokenPersonAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1028,20 +1204,98 @@ impl<'a> CreateTokenPersonAddressKanji<'a> {
         Self::default()
     }
 }
+/// The person's date of birth.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTokenPersonDob {
+    /// The day of birth, between 1 and 31.
+    pub day: i64,
+    /// The month of birth, between 1 and 12.
+    pub month: i64,
+    /// The four-digit year of birth.
+    pub year: i64,
+}
+impl CreateTokenPersonDob {
+    pub fn new(day: i64, month: i64, year: i64) -> Self {
+        Self { day, month, year }
+    }
+}
 /// Documents that may be submitted to satisfy various informational requests.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenPersonDocuments<'a> {
     /// One or more documents that demonstrate proof that this person is authorized to represent the company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_authorization: Option<DocumentsParam<'a>>,
+    pub company_authorization: Option<CreateTokenPersonDocumentsCompanyAuthorization<'a>>,
     /// One or more documents showing the person's passport page with photo and personal data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub passport: Option<DocumentsParam<'a>>,
+    pub passport: Option<CreateTokenPersonDocumentsPassport<'a>>,
     /// One or more documents showing the person's visa required for living in the country where they are residing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub visa: Option<DocumentsParam<'a>>,
+    pub visa: Option<CreateTokenPersonDocumentsVisa<'a>>,
 }
 impl<'a> CreateTokenPersonDocuments<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// One or more documents that demonstrate proof that this person is authorized to represent the company.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonDocumentsCompanyAuthorization<'a> {
+    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<&'a [&'a str]>,
+}
+impl<'a> CreateTokenPersonDocumentsCompanyAuthorization<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// One or more documents showing the person's passport page with photo and personal data.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonDocumentsPassport<'a> {
+    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<&'a [&'a str]>,
+}
+impl<'a> CreateTokenPersonDocumentsPassport<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// One or more documents showing the person's visa required for living in the country where they are residing.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonDocumentsVisa<'a> {
+    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<&'a [&'a str]>,
+}
+impl<'a> CreateTokenPersonDocumentsVisa<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The person's registered address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonRegisteredAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateTokenPersonRegisteredAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1079,6 +1333,59 @@ impl<'a> CreateTokenPersonRelationship<'a> {
         Self::default()
     }
 }
+/// The person's verification status.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonVerification<'a> {
+    /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_document: Option<CreateTokenPersonVerificationAdditionalDocument<'a>>,
+    /// An identifying document, either a passport or local ID card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<CreateTokenPersonVerificationDocument<'a>>,
+}
+impl<'a> CreateTokenPersonVerification<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonVerificationAdditionalDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> CreateTokenPersonVerificationAdditionalDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// An identifying document, either a passport or local ID card.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonVerificationDocument<'a> {
+    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<&'a str>,
+    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    ///
+    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<&'a str>,
+}
+impl<'a> CreateTokenPersonVerificationDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// The PII this token will represent.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenPii<'a> {
@@ -1098,88 +1405,5 @@ impl<'a> CreateToken<'a> {
     /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_core::Token> {
         client.send_form("/tokens", self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct AddressSpecs<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> AddressSpecs<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DateOfBirthSpecs {
-    /// The day of birth, between 1 and 31.
-    pub day: i64,
-    /// The month of birth, between 1 and 12.
-    pub month: i64,
-    /// The four-digit year of birth.
-    pub year: i64,
-}
-impl DateOfBirthSpecs {
-    pub fn new(day: i64, month: i64, year: i64) -> Self {
-        Self { day, month, year }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PersonVerificationDocumentSpecs<'a> {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<&'a str>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    ///
-    /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<&'a str>,
-}
-impl<'a> PersonVerificationDocumentSpecs<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DocumentsParam<'a> {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<&'a [&'a str]>,
-}
-impl<'a> DocumentsParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct PersonVerificationSpecs<'a> {
-    /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<PersonVerificationDocumentSpecs<'a>>,
-    /// An identifying document, either a passport or local ID card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<PersonVerificationDocumentSpecs<'a>>,
-}
-impl<'a> PersonVerificationSpecs<'a> {
-    pub fn new() -> Self {
-        Self::default()
     }
 }

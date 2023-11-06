@@ -12,16 +12,16 @@ pub struct CreateGelatoVerificationSession<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<SessionOptionsParam<'a>>,
+    pub options: Option<CreateGelatoVerificationSessionOptions<'a>>,
     /// The URL that the user will be redirected to upon completing the verification flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
-    pub type_: Type,
+    pub type_: CreateGelatoVerificationSessionType,
 }
 impl<'a> CreateGelatoVerificationSession<'a> {
-    pub fn new(type_: Type) -> Self {
+    pub fn new(type_: CreateGelatoVerificationSessionType) -> Self {
         Self {
             expand: Default::default(),
             metadata: Default::default(),
@@ -29,6 +29,156 @@ impl<'a> CreateGelatoVerificationSession<'a> {
             return_url: Default::default(),
             type_,
         }
+    }
+}
+/// A set of options for the session’s verification checks.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateGelatoVerificationSessionOptions<'a> {
+    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<CreateGelatoVerificationSessionOptionsDocument<'a>>,
+}
+impl<'a> CreateGelatoVerificationSessionOptions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateGelatoVerificationSessionOptionsDocument<'a> {
+    /// Array of strings of allowed identity document types.
+    ///
+    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_types: Option<&'a [CreateGelatoVerificationSessionOptionsDocumentAllowedTypes]>,
+    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_id_number: Option<bool>,
+    /// Disable image uploads, identity document images have to be captured using the device’s camera.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_live_capture: Option<bool>,
+    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    ///
+    /// [Learn more](https://stripe.com/docs/identity/selfie).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_matching_selfie: Option<bool>,
+}
+impl<'a> CreateGelatoVerificationSessionOptionsDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Array of strings of allowed identity document types.
+///
+/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    DrivingLicense,
+    IdCard,
+    Passport,
+}
+
+impl CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    pub fn as_str(self) -> &'static str {
+        use CreateGelatoVerificationSessionOptionsDocumentAllowedTypes::*;
+        match self {
+            DrivingLicense => "driving_license",
+            IdCard => "id_card",
+            Passport => "passport",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateGelatoVerificationSessionOptionsDocumentAllowedTypes::*;
+        match s {
+            "driving_license" => Ok(DrivingLicense),
+            "id_card" => Ok(IdCard),
+            "passport" => Ok(Passport),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateGelatoVerificationSessionType {
+    Document,
+    IdNumber,
+}
+
+impl CreateGelatoVerificationSessionType {
+    pub fn as_str(self) -> &'static str {
+        use CreateGelatoVerificationSessionType::*;
+        match self {
+            Document => "document",
+            IdNumber => "id_number",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateGelatoVerificationSessionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateGelatoVerificationSessionType::*;
+        match s {
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateGelatoVerificationSessionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateGelatoVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateGelatoVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateGelatoVerificationSessionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> CreateGelatoVerificationSession<'a> {
@@ -259,15 +409,165 @@ pub struct UpdateGelatoVerificationSession<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<SessionOptionsParam<'a>>,
+    pub options: Option<UpdateGelatoVerificationSessionOptions<'a>>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Type>,
+    pub type_: Option<UpdateGelatoVerificationSessionType>,
 }
 impl<'a> UpdateGelatoVerificationSession<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// A set of options for the session’s verification checks.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateGelatoVerificationSessionOptions<'a> {
+    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<UpdateGelatoVerificationSessionOptionsDocument<'a>>,
+}
+impl<'a> UpdateGelatoVerificationSessionOptions<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateGelatoVerificationSessionOptionsDocument<'a> {
+    /// Array of strings of allowed identity document types.
+    ///
+    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_types: Option<&'a [UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes]>,
+    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_id_number: Option<bool>,
+    /// Disable image uploads, identity document images have to be captured using the device’s camera.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_live_capture: Option<bool>,
+    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    ///
+    /// [Learn more](https://stripe.com/docs/identity/selfie).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_matching_selfie: Option<bool>,
+}
+impl<'a> UpdateGelatoVerificationSessionOptionsDocument<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Array of strings of allowed identity document types.
+///
+/// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    DrivingLicense,
+    IdCard,
+    Passport,
+}
+
+impl UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    pub fn as_str(self) -> &'static str {
+        use UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes::*;
+        match self {
+            DrivingLicense => "driving_license",
+            IdCard => "id_card",
+            Passport => "passport",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes::*;
+        match s {
+            "driving_license" => Ok(DrivingLicense),
+            "id_card" => Ok(IdCard),
+            "passport" => Ok(Passport),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateGelatoVerificationSessionOptionsDocumentAllowedTypes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateGelatoVerificationSessionType {
+    Document,
+    IdNumber,
+}
+
+impl UpdateGelatoVerificationSessionType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateGelatoVerificationSessionType::*;
+        match self {
+            Document => "document",
+            IdNumber => "id_number",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateGelatoVerificationSessionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateGelatoVerificationSessionType::*;
+        match s {
+            "document" => Ok(Document),
+            "id_number" => Ok(IdNumber),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateGelatoVerificationSessionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateGelatoVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateGelatoVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateGelatoVerificationSessionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> UpdateGelatoVerificationSession<'a> {
@@ -285,149 +585,5 @@ impl<'a> UpdateGelatoVerificationSession<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum AllowedTypes {
-    DrivingLicense,
-    IdCard,
-    Passport,
-}
-
-impl AllowedTypes {
-    pub fn as_str(self) -> &'static str {
-        use AllowedTypes::*;
-        match self {
-            DrivingLicense => "driving_license",
-            IdCard => "id_card",
-            Passport => "passport",
-        }
-    }
-}
-
-impl std::str::FromStr for AllowedTypes {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use AllowedTypes::*;
-        match s {
-            "driving_license" => Ok(DrivingLicense),
-            "id_card" => Ok(IdCard),
-            "passport" => Ok(Passport),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for AllowedTypes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for AllowedTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for AllowedTypes {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Type {
-    Document,
-    IdNumber,
-}
-
-impl Type {
-    pub fn as_str(self) -> &'static str {
-        use Type::*;
-        match self {
-            Document => "document",
-            IdNumber => "id_number",
-        }
-    }
-}
-
-impl std::str::FromStr for Type {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Type::*;
-        match s {
-            "document" => Ok(Document),
-            "id_number" => Ok(IdNumber),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Type {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Type {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DocumentOptions<'a> {
-    /// Array of strings of allowed identity document types.
-    ///
-    /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<&'a [AllowedTypes]>,
-    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
-    /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    ///
-    /// [Learn more](https://stripe.com/docs/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
-}
-impl<'a> DocumentOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct SessionOptionsParam<'a> {
-    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<DocumentOptions<'a>>,
-}
-impl<'a> SessionOptionsParam<'a> {
-    pub fn new() -> Self {
-        Self::default()
     }
 }

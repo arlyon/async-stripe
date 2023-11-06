@@ -10,7 +10,7 @@ use crate::stripe_object::OperationType;
 use crate::templates::derives::Derives;
 use crate::templates::ObjectWriter;
 use crate::types::{ComponentPath, RustIdent};
-use crate::utils::append_to_file;
+use crate::utils::{append_to_file, get_request_param_field};
 
 /// Paths to components which will be options in the `EventObject` union.
 const WEBHOOK_OBJ_PATHS: &[&str] = &[
@@ -87,7 +87,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         );
     }
     let mut out = String::new();
-    let ident = RustIdent::unchanged("EventObject".into());
+    let ident = RustIdent::unchanged("EventObject");
     let mut writer = ObjectWriter::new(components, &ident);
     writer.provide_unknown_variant(true).derives_mut().deserialize(true);
     writer.write_enum_of_objects(&mut out, components, &objects);
@@ -102,21 +102,16 @@ fn write_event_type(components: &Components, out_path: &Path) -> anyhow::Result<
         field_name: "enabled_events",
     };
     let spec = components.get_request_spec(event_type_src).context("Webhook endpoint not found")?;
-    let typ = spec
-        .params
-        .as_rust_object()
-        .context("Not an object")?
-        .get_struct_field(event_type_src.field_name)
-        .context("Field not found")?
-        .as_rust_object()
-        .context("Not an object")?;
-    let RustObject::FieldlessEnum(enum_) = typ else {
+    let typ = get_request_param_field(spec, event_type_src.field_name)
+        .context("Could not extract object field")?;
+    let obj = typ.as_rust_object().context("No inner object")?;
+    let RustObject::FieldlessEnum(enum_) = obj else {
         bail!("Expected enum");
     };
     let event_enum_variants =
         enum_.iter().filter(|v| v.wire_name != "*").cloned().collect::<Vec<_>>();
     let mut out = String::new();
-    let ident = RustIdent::unchanged("EventType".into());
+    let ident = RustIdent::unchanged("EventType");
     ObjectWriter::new(components, &ident)
         .derives(Derives::new_deser())
         .provide_unknown_variant(true)

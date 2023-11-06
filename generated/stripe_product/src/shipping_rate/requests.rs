@@ -107,7 +107,7 @@ pub struct CreateShippingRate<'a> {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<CreateShippingRateTaxBehavior>,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
@@ -143,16 +143,172 @@ pub struct CreateShippingRateDeliveryEstimate {
     ///
     /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<DeliveryEstimateBound>,
+    pub maximum: Option<CreateShippingRateDeliveryEstimateMaximum>,
     /// The lower bound of the estimated range.
     ///
     /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<DeliveryEstimateBound>,
+    pub minimum: Option<CreateShippingRateDeliveryEstimateMinimum>,
 }
 impl CreateShippingRateDeliveryEstimate {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// The upper bound of the estimated range.
+///
+/// If empty, represents no upper bound i.e., infinite.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateShippingRateDeliveryEstimateMaximum {
+    /// A unit of time.
+    pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
+    /// Must be greater than 0.
+    pub value: i64,
+}
+impl CreateShippingRateDeliveryEstimateMaximum {
+    pub fn new(unit: CreateShippingRateDeliveryEstimateMaximumUnit, value: i64) -> Self {
+        Self { unit, value }
+    }
+}
+/// A unit of time.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateShippingRateDeliveryEstimateMaximumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateShippingRateDeliveryEstimateMaximumUnit {
+    pub fn as_str(self) -> &'static str {
+        use CreateShippingRateDeliveryEstimateMaximumUnit::*;
+        match self {
+            BusinessDay => "business_day",
+            Day => "day",
+            Hour => "hour",
+            Month => "month",
+            Week => "week",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateShippingRateDeliveryEstimateMaximumUnit::*;
+        match s {
+            "business_day" => Ok(BusinessDay),
+            "day" => Ok(Day),
+            "hour" => Ok(Hour),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The lower bound of the estimated range.
+///
+/// If empty, represents no lower bound.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateShippingRateDeliveryEstimateMinimum {
+    /// A unit of time.
+    pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
+    /// Must be greater than 0.
+    pub value: i64,
+}
+impl CreateShippingRateDeliveryEstimateMinimum {
+    pub fn new(unit: CreateShippingRateDeliveryEstimateMinimumUnit, value: i64) -> Self {
+        Self { unit, value }
+    }
+}
+/// A unit of time.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateShippingRateDeliveryEstimateMinimumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateShippingRateDeliveryEstimateMinimumUnit {
+    pub fn as_str(self) -> &'static str {
+        use CreateShippingRateDeliveryEstimateMinimumUnit::*;
+        match self {
+            BusinessDay => "business_day",
+            Day => "day",
+            Hour => "hour",
+            Month => "month",
+            Week => "week",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateShippingRateDeliveryEstimateMinimumUnit::*;
+        match s {
+            "business_day" => Ok(BusinessDay),
+            "day" => Ok(Day),
+            "hour" => Ok(Hour),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Describes a fixed amount to charge for shipping.
@@ -193,11 +349,129 @@ pub struct CreateShippingRateFixedAmountCurrencyOptions {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior>,
 }
 impl CreateShippingRateFixedAmountCurrencyOptions {
     pub fn new(amount: i64) -> Self {
         Self { amount, tax_behavior: Default::default() }
+    }
+}
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+///
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+///
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateShippingRateTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateShippingRateTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use CreateShippingRateTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateShippingRateTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateShippingRateTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateShippingRateTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateShippingRateTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateShippingRateTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateShippingRateTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// The type of calculation to use on the shipping rate.
@@ -285,7 +559,7 @@ pub struct UpdateShippingRate<'a> {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<UpdateShippingRateTaxBehavior>,
 }
 impl<'a> UpdateShippingRate<'a> {
     pub fn new() -> Self {
@@ -325,11 +599,129 @@ pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<TaxBehavior>,
+    pub tax_behavior: Option<UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior>,
 }
 impl UpdateShippingRateFixedAmountCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+///
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+///
+/// One of `inclusive`, `exclusive`, or `unspecified`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateShippingRateTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl UpdateShippingRateTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        use UpdateShippingRateTaxBehavior::*;
+        match self {
+            Exclusive => "exclusive",
+            Inclusive => "inclusive",
+            Unspecified => "unspecified",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateShippingRateTaxBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateShippingRateTaxBehavior::*;
+        match s {
+            "exclusive" => Ok(Exclusive),
+            "inclusive" => Ok(Inclusive),
+            "unspecified" => Ok(Unspecified),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateShippingRateTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateShippingRateTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateShippingRateTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateShippingRateTaxBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> UpdateShippingRate<'a> {
@@ -347,135 +739,5 @@ impl<'a> UpdateShippingRate<'a> {
             self,
             http_types::Method::Post,
         )
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Unit {
-    BusinessDay,
-    Day,
-    Hour,
-    Month,
-    Week,
-}
-
-impl Unit {
-    pub fn as_str(self) -> &'static str {
-        use Unit::*;
-        match self {
-            BusinessDay => "business_day",
-            Day => "day",
-            Hour => "hour",
-            Month => "month",
-            Week => "week",
-        }
-    }
-}
-
-impl std::str::FromStr for Unit {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Unit::*;
-        match s {
-            "business_day" => Ok(BusinessDay),
-            "day" => Ok(Day),
-            "hour" => Ok(Hour),
-            "month" => Ok(Month),
-            "week" => Ok(Week),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Unit {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Unit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Unit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Unit {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum TaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl TaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        use TaxBehavior::*;
-        match self {
-            Exclusive => "exclusive",
-            Inclusive => "inclusive",
-            Unspecified => "unspecified",
-        }
-    }
-}
-
-impl std::str::FromStr for TaxBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use TaxBehavior::*;
-        match s {
-            "exclusive" => Ok(Exclusive),
-            "inclusive" => Ok(Inclusive),
-            "unspecified" => Ok(Unspecified),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for TaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for TaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for TaxBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct DeliveryEstimateBound {
-    /// A unit of time.
-    pub unit: Unit,
-    /// Must be greater than 0.
-    pub value: i64,
-}
-impl DeliveryEstimateBound {
-    pub fn new(unit: Unit, value: i64) -> Self {
-        Self { unit, value }
     }
 }

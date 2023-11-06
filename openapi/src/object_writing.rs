@@ -1,7 +1,6 @@
 use std::fmt::{Debug, Write};
 
 use crate::components::Components;
-use crate::dedup::deduplicate_types;
 use crate::ids::write_object_id;
 use crate::printable::Lifetime;
 use crate::rust_object::{as_enum_of_objects, ObjectMetadata, RustObject};
@@ -14,40 +13,65 @@ use crate::templates::ObjectWriter;
 
 const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct ObjectGenInfo {
     pub derives: Derives,
     pub include_constructor: bool,
 }
 
 impl ObjectGenInfo {
-    pub fn new(derives: Derives) -> Self {
-        Self { derives, include_constructor: false }
+    pub fn new() -> Self {
+        Self { derives: Derives::new(), include_constructor: false }
+    }
+
+    pub fn new_deser() -> Self {
+        Self::new().deserialize(true).serialize(true)
+    }
+
+    pub fn serialize(mut self, serialize: bool) -> Self {
+        self.derives.serialize(serialize);
+        self
+    }
+
+    pub fn deserialize(mut self, deserialize: bool) -> Self {
+        self.derives.deserialize(deserialize);
+        self
     }
 
     pub fn include_constructor(mut self) -> Self {
         self.include_constructor = true;
         self
     }
+
+    /// Essentially a union of the requirements
+    pub fn with_shared_requirements(&self, other: &Self) -> Self {
+        let mut derives = self.derives;
+        if other.derives.deserialize {
+            derives.deserialize(true);
+        }
+        if other.derives.serialize {
+            derives.serialize(true);
+        }
+        ObjectGenInfo {
+            derives,
+            include_constructor: other.include_constructor | self.include_constructor,
+        }
+    }
 }
 
 impl Components {
-    fn write_rust_type_objs(&self, typ: &RustType, info: ObjectGenInfo, out: &mut String) {
+    fn write_rust_type_objs(&self, typ: &RustType, out: &mut String) {
         let Some((obj, meta)) = typ.as_object() else {
             return;
         };
-        self.write_object(obj, meta, info, out);
+        self.write_object(obj, meta, out);
     }
 
-    pub fn write_object(
-        &self,
-        obj: &RustObject,
-        metadata: &ObjectMetadata,
-        info: ObjectGenInfo,
-        out: &mut String,
-    ) {
+    pub fn write_object(&self, obj: &RustObject, metadata: &ObjectMetadata, out: &mut String) {
+        let info = metadata.gen_info;
+
         // If the object contains any references, we'll need to print with a lifetime
-        let has_ref = obj.has_reference();
+        let has_ref = obj.has_reference(self);
         let lifetime = if has_ref { Some(Lifetime::new()) } else { None };
         let ident = &metadata.ident;
 
@@ -56,7 +80,7 @@ impl Components {
             let _ = write!(out, "{comment}");
         }
         let mut writer = ObjectWriter::new(self, ident);
-        writer.lifetime(lifetime).derives(info.derives).derives_mut().copy(obj.is_copy());
+        writer.lifetime(lifetime).derives(info.derives).derives_mut().copy(obj.is_copy(self));
         match obj {
             RustObject::Struct(fields) => {
                 let should_derive_default = fields.iter().all(|field| field.rust_type.is_option());
@@ -65,7 +89,7 @@ impl Components {
 
                 for field in fields {
                     if let Some((obj, meta)) = field.rust_type.as_object() {
-                        self.write_object(obj, meta, info, out);
+                        self.write_object(obj, meta, out);
                     }
                 }
             }
@@ -84,7 +108,7 @@ impl Components {
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         if let Some((obj, meta)) = typ.as_object() {
-                            self.write_object(obj, meta, info, out);
+                            self.write_object(obj, meta, out);
                         }
                     }
                 }
@@ -99,21 +123,9 @@ pub fn gen_obj(
     comp: &StripeObject,
     components: &Components,
 ) -> String {
-    let gen_info = ObjectGenInfo::new(Derives::new_deser());
     let mut out = String::with_capacity(128);
 
-    let mut obj = obj.clone();
-
-    // NB: we deduplicate the fields / variants of a top-level struct, not the object
-    // itself
-    let mut typs = obj.typs_mut();
-    let dedupped_objs = deduplicate_types(&mut typs);
-    components.write_object(&obj, meta, gen_info, &mut out);
-
-    for (obj, ident) in dedupped_objs {
-        let typ = RustType::Object(obj, ObjectMetadata::new(ident));
-        components.write_rust_type_objs(&typ, gen_info, &mut out);
-    }
+    components.write_object(obj, meta, &mut out);
 
     let ident = &meta.ident;
     if let Some(id_typ) = comp.id_type() {
@@ -147,34 +159,14 @@ pub fn gen_obj(
 
 pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
     let mut out = String::with_capacity(128);
-    let mut specs = Vec::from(specs);
-    let mut req_typs = vec![];
-    for spec in &mut specs {
-        if let Some(rust_obj) = spec.params.as_rust_object_mut() {
-            req_typs.extend(rust_obj.typs_mut());
-        }
-    }
 
-    let dedupped_objs = deduplicate_types(&mut req_typs);
-    let mut params_derive = Derives::new();
-    params_derive.serialize(true);
-    let params_gen_info = ObjectGenInfo::new(params_derive).include_constructor();
-
-    for req in &specs {
-        components.write_rust_type_objs(&req.params, params_gen_info, &mut out);
+    for req in specs {
+        components.write_rust_type_objs(&req.params, &mut out);
 
         let req_body = req.gen(components);
         let _ = write!(out, "{}", req_body);
 
-        components.write_rust_type_objs(
-            &req.returned,
-            ObjectGenInfo::new(Derives::new_deser()),
-            &mut out,
-        );
-    }
-    for (obj, ident) in dedupped_objs {
-        let typ = RustType::Object(obj, ObjectMetadata::new(ident));
-        components.write_rust_type_objs(&typ, params_gen_info, &mut out);
+        components.write_rust_type_objs(&req.returned, &mut out);
     }
     out
 }

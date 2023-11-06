@@ -88,7 +88,7 @@ pub struct CreateSource<'a> {
     pub flow: Option<CreateSourceFlow>,
     /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate: Option<MandateParams<'a>>,
+    pub mandate: Option<CreateSourceMandate<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The source to share.
@@ -96,7 +96,7 @@ pub struct CreateSource<'a> {
     pub original_source: Option<&'a str>,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<Owner<'a>>,
+    pub owner: Option<CreateSourceOwner<'a>>,
     /// Optional parameters for the receiver flow.
     ///
     /// Can be set only if the source is a receiver (`flow` is `receiver`).
@@ -197,6 +197,407 @@ impl serde::Serialize for CreateSourceFlow {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSourceMandate<'a> {
+    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acceptance: Option<CreateSourceMandateAcceptance<'a>>,
+    /// The amount specified by the mandate.
+    ///
+    /// (Leave null for a mandate covering all amounts).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The currency specified by the mandate.
+    ///
+    /// (Must match `currency` of the source).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// The interval of debits permitted by the mandate.
+    ///
+    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<CreateSourceMandateInterval>,
+    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+    ///
+    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notification_method: Option<CreateSourceMandateNotificationMethod>,
+}
+impl<'a> CreateSourceMandate<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSourceMandateAcceptance<'a> {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The parameters required to store a mandate accepted offline.
+    ///
+    /// Should only be set if `mandate[type]` is `offline`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<CreateSourceMandateAcceptanceOffline<'a>>,
+    /// The parameters required to store a mandate accepted online.
+    ///
+    /// Should only be set if `mandate[type]` is `online`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub online: Option<CreateSourceMandateAcceptanceOnline<'a>>,
+    /// The status of the mandate acceptance.
+    ///
+    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+    pub status: CreateSourceMandateAcceptanceStatus,
+    /// The type of acceptance information included with the mandate.
+    ///
+    /// Either `online` or `offline`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateSourceMandateAcceptanceType>,
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> CreateSourceMandateAcceptance<'a> {
+    pub fn new(status: CreateSourceMandateAcceptanceStatus) -> Self {
+        Self {
+            date: Default::default(),
+            ip: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            status,
+            type_: Default::default(),
+            user_agent: Default::default(),
+        }
+    }
+}
+/// The parameters required to store a mandate accepted offline.
+///
+/// Should only be set if `mandate[type]` is `offline`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSourceMandateAcceptanceOffline<'a> {
+    /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
+    pub contact_email: &'a str,
+}
+impl<'a> CreateSourceMandateAcceptanceOffline<'a> {
+    pub fn new(contact_email: &'a str) -> Self {
+        Self { contact_email }
+    }
+}
+/// The parameters required to store a mandate accepted online.
+///
+/// Should only be set if `mandate[type]` is `online`.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSourceMandateAcceptanceOnline<'a> {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> CreateSourceMandateAcceptanceOnline<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The status of the mandate acceptance.
+///
+/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSourceMandateAcceptanceStatus {
+    Accepted,
+    Pending,
+    Refused,
+    Revoked,
+}
+
+impl CreateSourceMandateAcceptanceStatus {
+    pub fn as_str(self) -> &'static str {
+        use CreateSourceMandateAcceptanceStatus::*;
+        match self {
+            Accepted => "accepted",
+            Pending => "pending",
+            Refused => "refused",
+            Revoked => "revoked",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSourceMandateAcceptanceStatus::*;
+        match s {
+            "accepted" => Ok(Accepted),
+            "pending" => Ok(Pending),
+            "refused" => Ok(Refused),
+            "revoked" => Ok(Revoked),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSourceMandateAcceptanceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSourceMandateAcceptanceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The type of acceptance information included with the mandate.
+///
+/// Either `online` or `offline`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSourceMandateAcceptanceType {
+    Offline,
+    Online,
+}
+
+impl CreateSourceMandateAcceptanceType {
+    pub fn as_str(self) -> &'static str {
+        use CreateSourceMandateAcceptanceType::*;
+        match self {
+            Offline => "offline",
+            Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSourceMandateAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSourceMandateAcceptanceType::*;
+        match s {
+            "offline" => Ok(Offline),
+            "online" => Ok(Online),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSourceMandateAcceptanceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSourceMandateAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The interval of debits permitted by the mandate.
+///
+/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSourceMandateInterval {
+    OneTime,
+    Scheduled,
+    Variable,
+}
+
+impl CreateSourceMandateInterval {
+    pub fn as_str(self) -> &'static str {
+        use CreateSourceMandateInterval::*;
+        match self {
+            OneTime => "one_time",
+            Scheduled => "scheduled",
+            Variable => "variable",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSourceMandateInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSourceMandateInterval::*;
+        match s {
+            "one_time" => Ok(OneTime),
+            "scheduled" => Ok(Scheduled),
+            "variable" => Ok(Variable),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSourceMandateInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSourceMandateInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+///
+/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSourceMandateNotificationMethod {
+    DeprecatedNone,
+    Email,
+    Manual,
+    None,
+    StripeEmail,
+}
+
+impl CreateSourceMandateNotificationMethod {
+    pub fn as_str(self) -> &'static str {
+        use CreateSourceMandateNotificationMethod::*;
+        match self {
+            DeprecatedNone => "deprecated_none",
+            Email => "email",
+            Manual => "manual",
+            None => "none",
+            StripeEmail => "stripe_email",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSourceMandateNotificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSourceMandateNotificationMethod::*;
+        match s {
+            "deprecated_none" => Ok(DeprecatedNone),
+            "email" => Ok(Email),
+            "manual" => Ok(Manual),
+            "none" => Ok(None),
+            "stripe_email" => Ok(StripeEmail),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSourceMandateNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSourceMandateNotificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Information about the owner of the payment instrument that may be used or required by particular source types.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSourceOwner<'a> {
+    /// Owner's address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<CreateSourceOwnerAddress<'a>>,
+    /// Owner's email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    /// Owner's full name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Owner's phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> CreateSourceOwner<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Owner's address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSourceOwnerAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateSourceOwnerAddress<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// Optional parameters for the receiver flow.
@@ -303,7 +704,7 @@ pub struct CreateSourceSourceOrder<'a> {
     ///
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<OrderShipping<'a>>,
+    pub shipping: Option<CreateSourceSourceOrderShipping<'a>>,
 }
 impl<'a> CreateSourceSourceOrder<'a> {
     pub fn new() -> Self {
@@ -395,6 +796,72 @@ impl serde::Serialize for CreateSourceSourceOrderItemsType {
         serializer.serialize_str(self.as_str())
     }
 }
+/// Shipping address for the order.
+///
+/// Required if any of the SKUs are for products that have `shippable` set to true.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSourceSourceOrderShipping<'a> {
+    /// Shipping address.
+    pub address: CreateSourceSourceOrderShippingAddress<'a>,
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<&'a str>,
+    /// Recipient name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Recipient phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<&'a str>,
+}
+impl<'a> CreateSourceSourceOrderShipping<'a> {
+    pub fn new(address: CreateSourceSourceOrderShippingAddress<'a>) -> Self {
+        Self {
+            address,
+            carrier: Default::default(),
+            name: Default::default(),
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
+    }
+}
+/// Shipping address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSourceSourceOrderShippingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    pub line1: &'a str,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> CreateSourceSourceOrderShippingAddress<'a> {
+    pub fn new(line1: &'a str) -> Self {
+        Self {
+            city: Default::default(),
+            country: Default::default(),
+            line1,
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceUsage {
     Reusable,
@@ -464,7 +931,7 @@ pub struct UpdateSource<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate: Option<MandateParams<'a>>,
+    pub mandate: Option<UpdateSourceMandate<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -474,7 +941,7 @@ pub struct UpdateSource<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<Owner<'a>>,
+    pub owner: Option<UpdateSourceOwner<'a>>,
     /// Information about the items and shipping associated with the source.
     ///
     /// Required for transactional credit (for example Klarna) sources before you can charge it.
@@ -482,6 +949,407 @@ pub struct UpdateSource<'a> {
     pub source_order: Option<UpdateSourceSourceOrder<'a>>,
 }
 impl<'a> UpdateSource<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateSourceMandate<'a> {
+    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acceptance: Option<UpdateSourceMandateAcceptance<'a>>,
+    /// The amount specified by the mandate.
+    ///
+    /// (Leave null for a mandate covering all amounts).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The currency specified by the mandate.
+    ///
+    /// (Must match `currency` of the source).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// The interval of debits permitted by the mandate.
+    ///
+    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<UpdateSourceMandateInterval>,
+    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+    ///
+    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notification_method: Option<UpdateSourceMandateNotificationMethod>,
+}
+impl<'a> UpdateSourceMandate<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSourceMandateAcceptance<'a> {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The parameters required to store a mandate accepted offline.
+    ///
+    /// Should only be set if `mandate[type]` is `offline`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<UpdateSourceMandateAcceptanceOffline<'a>>,
+    /// The parameters required to store a mandate accepted online.
+    ///
+    /// Should only be set if `mandate[type]` is `online`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub online: Option<UpdateSourceMandateAcceptanceOnline<'a>>,
+    /// The status of the mandate acceptance.
+    ///
+    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+    pub status: UpdateSourceMandateAcceptanceStatus,
+    /// The type of acceptance information included with the mandate.
+    ///
+    /// Either `online` or `offline`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdateSourceMandateAcceptanceType>,
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> UpdateSourceMandateAcceptance<'a> {
+    pub fn new(status: UpdateSourceMandateAcceptanceStatus) -> Self {
+        Self {
+            date: Default::default(),
+            ip: Default::default(),
+            offline: Default::default(),
+            online: Default::default(),
+            status,
+            type_: Default::default(),
+            user_agent: Default::default(),
+        }
+    }
+}
+/// The parameters required to store a mandate accepted offline.
+///
+/// Should only be set if `mandate[type]` is `offline`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSourceMandateAcceptanceOffline<'a> {
+    /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
+    pub contact_email: &'a str,
+}
+impl<'a> UpdateSourceMandateAcceptanceOffline<'a> {
+    pub fn new(contact_email: &'a str) -> Self {
+        Self { contact_email }
+    }
+}
+/// The parameters required to store a mandate accepted online.
+///
+/// Should only be set if `mandate[type]` is `online`.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateSourceMandateAcceptanceOnline<'a> {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> UpdateSourceMandateAcceptanceOnline<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// The status of the mandate acceptance.
+///
+/// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSourceMandateAcceptanceStatus {
+    Accepted,
+    Pending,
+    Refused,
+    Revoked,
+}
+
+impl UpdateSourceMandateAcceptanceStatus {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSourceMandateAcceptanceStatus::*;
+        match self {
+            Accepted => "accepted",
+            Pending => "pending",
+            Refused => "refused",
+            Revoked => "revoked",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSourceMandateAcceptanceStatus::*;
+        match s {
+            "accepted" => Ok(Accepted),
+            "pending" => Ok(Pending),
+            "refused" => Ok(Refused),
+            "revoked" => Ok(Revoked),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSourceMandateAcceptanceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSourceMandateAcceptanceStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The type of acceptance information included with the mandate.
+///
+/// Either `online` or `offline`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSourceMandateAcceptanceType {
+    Offline,
+    Online,
+}
+
+impl UpdateSourceMandateAcceptanceType {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSourceMandateAcceptanceType::*;
+        match self {
+            Offline => "offline",
+            Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSourceMandateAcceptanceType::*;
+        match s {
+            "offline" => Ok(Offline),
+            "online" => Ok(Online),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSourceMandateAcceptanceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSourceMandateAcceptanceType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The interval of debits permitted by the mandate.
+///
+/// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSourceMandateInterval {
+    OneTime,
+    Scheduled,
+    Variable,
+}
+
+impl UpdateSourceMandateInterval {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSourceMandateInterval::*;
+        match self {
+            OneTime => "one_time",
+            Scheduled => "scheduled",
+            Variable => "variable",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSourceMandateInterval {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSourceMandateInterval::*;
+        match s {
+            "one_time" => Ok(OneTime),
+            "scheduled" => Ok(Scheduled),
+            "variable" => Ok(Variable),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSourceMandateInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSourceMandateInterval {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+///
+/// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSourceMandateNotificationMethod {
+    DeprecatedNone,
+    Email,
+    Manual,
+    None,
+    StripeEmail,
+}
+
+impl UpdateSourceMandateNotificationMethod {
+    pub fn as_str(self) -> &'static str {
+        use UpdateSourceMandateNotificationMethod::*;
+        match self {
+            DeprecatedNone => "deprecated_none",
+            Email => "email",
+            Manual => "manual",
+            None => "none",
+            StripeEmail => "stripe_email",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSourceMandateNotificationMethod::*;
+        match s {
+            "deprecated_none" => Ok(DeprecatedNone),
+            "email" => Ok(Email),
+            "manual" => Ok(Manual),
+            "none" => Ok(None),
+            "stripe_email" => Ok(StripeEmail),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSourceMandateNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSourceMandateNotificationMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Information about the owner of the payment instrument that may be used or required by particular source types.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateSourceOwner<'a> {
+    /// Owner's address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<UpdateSourceOwnerAddress<'a>>,
+    /// Owner's email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    /// Owner's full name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Owner's phone number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+}
+impl<'a> UpdateSourceOwner<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Owner's address.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateSourceOwnerAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<&'a str>,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> UpdateSourceOwnerAddress<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -498,7 +1366,7 @@ pub struct UpdateSourceSourceOrder<'a> {
     ///
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<OrderShipping<'a>>,
+    pub shipping: Option<UpdateSourceSourceOrderShipping<'a>>,
 }
 impl<'a> UpdateSourceSourceOrder<'a> {
     pub fn new() -> Self {
@@ -588,6 +1456,72 @@ impl serde::Serialize for UpdateSourceSourceOrderItemsType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// Shipping address for the order.
+///
+/// Required if any of the SKUs are for products that have `shippable` set to true.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSourceSourceOrderShipping<'a> {
+    /// Shipping address.
+    pub address: UpdateSourceSourceOrderShippingAddress<'a>,
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<&'a str>,
+    /// Recipient name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'a str>,
+    /// Recipient phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<&'a str>,
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<&'a str>,
+}
+impl<'a> UpdateSourceSourceOrderShipping<'a> {
+    pub fn new(address: UpdateSourceSourceOrderShippingAddress<'a>) -> Self {
+        Self {
+            address,
+            carrier: Default::default(),
+            name: Default::default(),
+            phone: Default::default(),
+            tracking_number: Default::default(),
+        }
+    }
+}
+/// Shipping address.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateSourceSourceOrderShippingAddress<'a> {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<&'a str>,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    pub line1: &'a str,
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<&'a str>,
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<&'a str>,
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
+}
+impl<'a> UpdateSourceSourceOrderShippingAddress<'a> {
+    pub fn new(line1: &'a str) -> Self {
+        Self {
+            city: Default::default(),
+            country: Default::default(),
+            line1,
+            line2: Default::default(),
+            postal_code: Default::default(),
+            state: Default::default(),
+        }
     }
 }
 impl<'a> UpdateSource<'a> {
@@ -683,444 +1617,3 @@ impl<'a> SourceTransactionsSource<'a> {
     }
 }
 impl<'a> stripe::PaginationParams for SourceTransactionsSource<'a> {}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct MandateOfflineAcceptanceParams<'a> {
-    /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
-    pub contact_email: &'a str,
-}
-impl<'a> MandateOfflineAcceptanceParams<'a> {
-    pub fn new(contact_email: &'a str) -> Self {
-        Self { contact_email }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct MandateOnlineAcceptanceParams<'a> {
-    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<stripe_types::Timestamp>,
-    /// The IP address from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<&'a str>,
-    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<&'a str>,
-}
-impl<'a> MandateOnlineAcceptanceParams<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Status {
-    Accepted,
-    Pending,
-    Refused,
-    Revoked,
-}
-
-impl Status {
-    pub fn as_str(self) -> &'static str {
-        use Status::*;
-        match self {
-            Accepted => "accepted",
-            Pending => "pending",
-            Refused => "refused",
-            Revoked => "revoked",
-        }
-    }
-}
-
-impl std::str::FromStr for Status {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Status::*;
-        match s {
-            "accepted" => Ok(Accepted),
-            "pending" => Ok(Pending),
-            "refused" => Ok(Refused),
-            "revoked" => Ok(Revoked),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Status {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Status {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Type {
-    Offline,
-    Online,
-}
-
-impl Type {
-    pub fn as_str(self) -> &'static str {
-        use Type::*;
-        match self {
-            Offline => "offline",
-            Online => "online",
-        }
-    }
-}
-
-impl std::str::FromStr for Type {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Type::*;
-        match s {
-            "offline" => Ok(Offline),
-            "online" => Ok(Online),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Type {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Type {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum Interval {
-    OneTime,
-    Scheduled,
-    Variable,
-}
-
-impl Interval {
-    pub fn as_str(self) -> &'static str {
-        use Interval::*;
-        match self {
-            OneTime => "one_time",
-            Scheduled => "scheduled",
-            Variable => "variable",
-        }
-    }
-}
-
-impl std::str::FromStr for Interval {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use Interval::*;
-        match s {
-            "one_time" => Ok(OneTime),
-            "scheduled" => Ok(Scheduled),
-            "variable" => Ok(Variable),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for Interval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for Interval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for Interval {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum NotificationMethod {
-    DeprecatedNone,
-    Email,
-    Manual,
-    None,
-    StripeEmail,
-}
-
-impl NotificationMethod {
-    pub fn as_str(self) -> &'static str {
-        use NotificationMethod::*;
-        match self {
-            DeprecatedNone => "deprecated_none",
-            Email => "email",
-            Manual => "manual",
-            None => "none",
-            StripeEmail => "stripe_email",
-        }
-    }
-}
-
-impl std::str::FromStr for NotificationMethod {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use NotificationMethod::*;
-        match s {
-            "deprecated_none" => Ok(DeprecatedNone),
-            "email" => Ok(Email),
-            "manual" => Ok(Manual),
-            "none" => Ok(None),
-            "stripe_email" => Ok(StripeEmail),
-            _ => Err(()),
-        }
-    }
-}
-
-impl AsRef<str> for NotificationMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for NotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for NotificationMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for NotificationMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct SourceAddress<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<&'a str>,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> SourceAddress<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct Address<'a> {
-    /// City, district, suburb, town, or village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<&'a str>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<&'a str>,
-    /// Address line 1 (e.g., street, PO Box, or company name).
-    pub line1: &'a str,
-    /// Address line 2 (e.g., apartment, suite, unit, or building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<&'a str>,
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<&'a str>,
-    /// State, county, province, or region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<&'a str>,
-}
-impl<'a> Address<'a> {
-    pub fn new(line1: &'a str) -> Self {
-        Self {
-            city: Default::default(),
-            country: Default::default(),
-            line1,
-            line2: Default::default(),
-            postal_code: Default::default(),
-            state: Default::default(),
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct MandateAcceptanceParams<'a> {
-    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<stripe_types::Timestamp>,
-    /// The IP address from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip: Option<&'a str>,
-    /// The parameters required to store a mandate accepted offline.
-    ///
-    /// Should only be set if `mandate[type]` is `offline`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<MandateOfflineAcceptanceParams<'a>>,
-    /// The parameters required to store a mandate accepted online.
-    ///
-    /// Should only be set if `mandate[type]` is `online`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<MandateOnlineAcceptanceParams<'a>>,
-    /// The status of the mandate acceptance.
-    ///
-    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-    pub status: Status,
-    /// The type of acceptance information included with the mandate.
-    ///
-    /// Either `online` or `offline`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Type>,
-    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<&'a str>,
-}
-impl<'a> MandateAcceptanceParams<'a> {
-    pub fn new(status: Status) -> Self {
-        Self {
-            date: Default::default(),
-            ip: Default::default(),
-            offline: Default::default(),
-            online: Default::default(),
-            status,
-            type_: Default::default(),
-            user_agent: Default::default(),
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct Owner<'a> {
-    /// Owner's address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<SourceAddress<'a>>,
-    /// Owner's email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-    /// Owner's full name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// Owner's phone number.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-impl<'a> Owner<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct OrderShipping<'a> {
-    /// Shipping address.
-    pub address: Address<'a>,
-    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<&'a str>,
-    /// Recipient name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-    /// Recipient phone (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-    /// The tracking number for a physical product, obtained from the delivery service.
-    ///
-    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tracking_number: Option<&'a str>,
-}
-impl<'a> OrderShipping<'a> {
-    pub fn new(address: Address<'a>) -> Self {
-        Self {
-            address,
-            carrier: Default::default(),
-            name: Default::default(),
-            phone: Default::default(),
-            tracking_number: Default::default(),
-        }
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct MandateParams<'a> {
-    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acceptance: Option<MandateAcceptanceParams<'a>>,
-    /// The amount specified by the mandate.
-    ///
-    /// (Leave null for a mandate covering all amounts).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// The currency specified by the mandate.
-    ///
-    /// (Must match `currency` of the source).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<stripe_types::Currency>,
-    /// The interval of debits permitted by the mandate.
-    ///
-    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<Interval>,
-    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
-    ///
-    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub notification_method: Option<NotificationMethod>,
-}
-impl<'a> MandateParams<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}

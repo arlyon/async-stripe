@@ -34,7 +34,7 @@ pub struct TaxProductResourceTaxCalculation {
 impl stripe_types::Object for TaxProductResourceTaxCalculation {
     type Id = Option<stripe_misc::tax_product_resource_tax_calculation::TaxCalculationId>;
     fn id(&self) -> Option<&str> {
-        self.id.as_ref().map(|i| i.as_str())
+        self.id.as_deref()
     }
 }
 stripe_types::def_id!(TaxCalculationId);
