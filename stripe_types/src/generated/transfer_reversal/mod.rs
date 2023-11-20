@@ -6,7 +6,7 @@
 /// It is possible to reverse a [transfer_group](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) transfer only if the destination account has enough balance to cover the reversal.  Related guide: [Reversing transfers](https://stripe.com/docs/connect/separate-charges-and-transfers#reversing-transfers).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TransferReversal {
-    /// Amount, in %s.
+    /// Amount, in cents (or local equivalent).
     pub amount: i64,
     /// Balance transaction that describes the impact on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,

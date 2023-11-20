@@ -6,6 +6,9 @@ pub struct CreateTerminalConfigurationConfiguration<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
+    /// Configurations for collecting transactions offline.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<CreateTerminalConfigurationConfigurationOffline>,
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<CreateTerminalConfigurationConfigurationTipping<'a>>,
@@ -28,6 +31,19 @@ pub struct CreateTerminalConfigurationConfigurationBbposWiseposE<'a> {
 impl<'a> CreateTerminalConfigurationConfigurationBbposWiseposE<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Configurations for collecting transactions offline.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalConfigurationConfigurationOffline {
+    /// Determines whether to allow transactions to be collected while reader is offline.
+    ///
+    /// Defaults to false.
+    pub enabled: bool,
+}
+impl CreateTerminalConfigurationConfigurationOffline {
+    pub fn new(enabled: bool) -> Self {
+        Self { enabled }
     }
 }
 /// Tipping configurations for readers supporting on-reader tips.
@@ -441,6 +457,9 @@ pub struct UpdateTerminalConfigurationConfiguration<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
+    /// Configurations for collecting transactions offline.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<UpdateTerminalConfigurationConfigurationOffline>,
     /// Tipping configurations for readers supporting on-reader tips.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<UpdateTerminalConfigurationConfigurationTipping<'a>>,
@@ -463,6 +482,19 @@ pub struct UpdateTerminalConfigurationConfigurationBbposWiseposE<'a> {
 impl<'a> UpdateTerminalConfigurationConfigurationBbposWiseposE<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Configurations for collecting transactions offline.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdateTerminalConfigurationConfigurationOffline {
+    /// Determines whether to allow transactions to be collected while reader is offline.
+    ///
+    /// Defaults to false.
+    pub enabled: bool,
+}
+impl UpdateTerminalConfigurationConfigurationOffline {
+    pub fn new(enabled: bool) -> Self {
+        Self { enabled }
     }
 }
 /// Tipping configurations for readers supporting on-reader tips.

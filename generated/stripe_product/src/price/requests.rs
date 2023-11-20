@@ -359,7 +359,9 @@ impl serde::Serialize for ListPriceType {
     }
 }
 impl<'a> ListPrice<'a> {
-    /// Returns a list of your prices.
+    /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
+    ///
+    /// For the list of inactive prices, set `active` to false.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -1317,9 +1319,6 @@ pub struct UpdatePrice<'a> {
     /// A brief description of the price, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
-    /// The recurring components of a price such as `interval` and `usage_type`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<UpdatePriceRecurring>,
     /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
@@ -1507,18 +1506,6 @@ impl UpdatePriceCurrencyOptionsTiers {
 pub enum UpdatePriceCurrencyOptionsTiersUpTo {
     Inf,
     I64(i64),
-}
-/// The recurring components of a price such as `interval` and `usage_type`.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePriceRecurring {
-    /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<u32>,
-}
-impl UpdatePriceRecurring {
-    pub fn new() -> Self {
-        Self::default()
-    }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 ///

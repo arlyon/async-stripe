@@ -1,6 +1,6 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct InvoiceTaxAmount {
-    /// The amount, in %s, of the tax.
+    /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
     /// Whether this tax amount is inclusive or exclusive.
     pub inclusive: bool,
@@ -10,7 +10,7 @@ pub struct InvoiceTaxAmount {
     ///
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: Option<InvoiceTaxAmountTaxabilityReason>,
-    /// The amount on which tax is calculated, in %s.
+    /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: Option<i64>,
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.

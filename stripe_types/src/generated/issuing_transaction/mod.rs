@@ -46,8 +46,15 @@ pub struct IssuingTransaction {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
+    /// Details about the transaction, such as processing dates, set by the card network.
+    pub network_data: Option<stripe_types::IssuingTransactionNetworkData>,
     /// Additional purchase information that is optionally provided by the merchant.
     pub purchase_details: Option<stripe_types::IssuingTransactionPurchaseDetails>,
+    /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this transaction.
+    ///
+    /// If a network token was not used for this transaction, this field will be null.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token: Option<stripe_types::Expandable<stripe_types::IssuingNetworkToken>>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<stripe_types::IssuingTransactionTreasury>,

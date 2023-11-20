@@ -1,12 +1,14 @@
 /// Balance transactions represent funds moving through your Stripe account.
-/// They're created for every type of transaction that comes into or flows out of your Stripe account balance.
+/// Stripe creates them for every type of transaction that enters or leaves your Stripe account balance.
 ///
 /// Related guide: [Balance transaction types](https://stripe.com/docs/reports/balance-transaction-types).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct BalanceTransaction {
-    /// Gross amount of the transaction, in %s.
+    /// Gross amount of this transaction (in cents (or local equivalent)).
+    ///
+    /// A positive value represents funds charged to another party, and a negative value represents funds sent to another party.
     pub amount: i64,
-    /// The date the transaction's net funds will become available in the Stripe balance.
+    /// The date that the transaction's net funds become available in the Stripe balance.
     pub available_on: stripe_types::Timestamp,
     /// Time at which the object was created.
     ///
@@ -20,41 +22,42 @@ pub struct BalanceTransaction {
     ///
     /// Often useful for displaying to users.
     pub description: Option<String>,
-    /// The exchange rate used, if applicable, for this transaction.
+    /// If applicable, this transaction uses an exchange rate.
     ///
-    /// Specifically, if money was converted from currency A to currency B, then the `amount` in currency A, times `exchange_rate`, would be the `amount` in currency B.
-    /// For example, suppose you charged a customer 10.00 EUR.
-    /// Then the PaymentIntent's `amount` would be `1000` and `currency` would be `eur`.
-    /// Suppose this was converted into 12.34 USD in your Stripe account.
-    /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
+    /// If money converts from currency A to currency B, then the `amount` in currency A, multipled by the `exchange_rate`, equals the `amount` in currency B.
+    /// For example, if you charge a customer 10.00 EUR, the PaymentIntent's `amount` is `1000` and `currency` is `eur`.
+    /// If this converts to 12.34 USD in your Stripe account, the BalanceTransaction's `amount` is `1234`, its `currency` is `usd`, and the `exchange_rate` is `1.234`.
     pub exchange_rate: Option<f64>,
-    /// Fees (in %s) paid for this transaction.
+    /// Fees (in cents (or local equivalent)) paid for this transaction.
+    ///
+    /// Represented as a positive integer when assessed.
     pub fee: i64,
-    /// Detailed breakdown of fees (in %s) paid for this transaction.
+    /// Detailed breakdown of fees (in cents (or local equivalent)) paid for this transaction.
     pub fee_details: Vec<stripe_types::Fee>,
     /// Unique identifier for the object.
     pub id: stripe_types::balance_transaction::BalanceTransactionId,
-    /// Net amount of the transaction, in %s.
+    /// Net impact to a Stripe balance (in cents (or local equivalent)).
+    ///
+    /// A positive value represents incrementing a Stripe balance, and a negative value decrementing a Stripe balance.
+    /// You can calculate the net impact of a transaction on a balance by `amount` - `fee`.
     pub net: i64,
-    /// [Learn more](https://stripe.com/docs/reports/reporting-categories) about how reporting categories can help you understand balance transactions from an accounting perspective.
+    /// Learn more about how [reporting categories](https://stripe.com/docs/reports/reporting-categories) can help you understand balance transactions from an accounting perspective.
     pub reporting_category: String,
-    /// The Stripe object to which this transaction is related.
+    /// This transaction relates to the Stripe object.
     pub source: Option<stripe_types::Expandable<stripe_types::BalanceTransactionSource>>,
-    /// If the transaction's net funds are available in the Stripe balance yet.
-    ///
-    /// Either `available` or `pending`.
+    /// The transaction's net funds status in the Stripe balance, which are either `available` or `pending`.
     pub status: String,
-    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+    /// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_inbound`, `obligation_outbound`, `obligation_reversal_inbound`, `obligation_reversal_outbound`, `obligation_payout`, `obligation_payout_failure`, `payment`, `payment_failure_refund`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     ///
-    /// [Learn more](https://stripe.com/docs/reports/balance-transaction-types) about balance transaction types and what they represent.
-    /// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
+    /// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
+    /// To classify transactions for accounting purposes, consider `reporting_category` instead.
     #[serde(rename = "type")]
     pub type_: BalanceTransactionType,
 }
-/// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+/// Transaction type: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_inbound`, `obligation_outbound`, `obligation_reversal_inbound`, `obligation_reversal_outbound`, `obligation_payout`, `obligation_payout_failure`, `payment`, `payment_failure_refund`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
 ///
-/// [Learn more](https://stripe.com/docs/reports/balance-transaction-types) about balance transaction types and what they represent.
-/// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
+/// Learn more about [balance transaction types and what they represent](https://stripe.com/docs/reports/balance-transaction-types).
+/// To classify transactions for accounting purposes, consider `reporting_category` instead.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum BalanceTransactionType {
@@ -71,9 +74,17 @@ pub enum BalanceTransactionType {
     IssuingAuthorizationRelease,
     IssuingDispute,
     IssuingTransaction,
+    ObligationInbound,
+    ObligationOutbound,
+    ObligationPayout,
+    ObligationPayoutFailure,
+    ObligationReversalInbound,
+    ObligationReversalOutbound,
     Payment,
     PaymentFailureRefund,
     PaymentRefund,
+    PaymentReversal,
+    PaymentUnreconciled,
     Payout,
     PayoutCancel,
     PayoutFailure,
@@ -111,9 +122,17 @@ impl BalanceTransactionType {
             IssuingAuthorizationRelease => "issuing_authorization_release",
             IssuingDispute => "issuing_dispute",
             IssuingTransaction => "issuing_transaction",
+            ObligationInbound => "obligation_inbound",
+            ObligationOutbound => "obligation_outbound",
+            ObligationPayout => "obligation_payout",
+            ObligationPayoutFailure => "obligation_payout_failure",
+            ObligationReversalInbound => "obligation_reversal_inbound",
+            ObligationReversalOutbound => "obligation_reversal_outbound",
             Payment => "payment",
             PaymentFailureRefund => "payment_failure_refund",
             PaymentRefund => "payment_refund",
+            PaymentReversal => "payment_reversal",
+            PaymentUnreconciled => "payment_unreconciled",
             Payout => "payout",
             PayoutCancel => "payout_cancel",
             PayoutFailure => "payout_failure",
@@ -153,9 +172,17 @@ impl std::str::FromStr for BalanceTransactionType {
             "issuing_authorization_release" => Ok(IssuingAuthorizationRelease),
             "issuing_dispute" => Ok(IssuingDispute),
             "issuing_transaction" => Ok(IssuingTransaction),
+            "obligation_inbound" => Ok(ObligationInbound),
+            "obligation_outbound" => Ok(ObligationOutbound),
+            "obligation_payout" => Ok(ObligationPayout),
+            "obligation_payout_failure" => Ok(ObligationPayoutFailure),
+            "obligation_reversal_inbound" => Ok(ObligationReversalInbound),
+            "obligation_reversal_outbound" => Ok(ObligationReversalOutbound),
             "payment" => Ok(Payment),
             "payment_failure_refund" => Ok(PaymentFailureRefund),
             "payment_refund" => Ok(PaymentRefund),
+            "payment_reversal" => Ok(PaymentReversal),
+            "payment_unreconciled" => Ok(PaymentUnreconciled),
             "payout" => Ok(Payout),
             "payout_cancel" => Ok(PayoutCancel),
             "payout_failure" => Ok(PayoutFailure),

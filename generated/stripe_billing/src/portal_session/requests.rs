@@ -15,7 +15,7 @@ pub struct CreatePortalSession<'a> {
     /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_data: Option<CreatePortalSessionFlowData<'a>>,
-    /// The IETF language tag of the locale Customer Portal is displayed in.
+    /// The IETF language tag of the locale customer portal is displayed in.
     ///
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -179,12 +179,94 @@ impl serde::Serialize for CreatePortalSessionFlowDataAfterCompletionType {
 /// Configuration when `flow_data.type=subscription_cancel`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalSessionFlowDataSubscriptionCancel<'a> {
+    /// Specify a retention strategy to be used in the cancellation flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retention: Option<CreatePortalSessionFlowDataSubscriptionCancelRetention<'a>>,
     /// The ID of the subscription to be canceled.
     pub subscription: &'a str,
 }
 impl<'a> CreatePortalSessionFlowDataSubscriptionCancel<'a> {
     pub fn new(subscription: &'a str) -> Self {
-        Self { subscription }
+        Self { retention: Default::default(), subscription }
+    }
+}
+/// Specify a retention strategy to be used in the cancellation flow.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePortalSessionFlowDataSubscriptionCancelRetention<'a> {
+    /// Configuration when `retention.type=coupon_offer`.
+    pub coupon_offer: CreatePortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a>,
+    /// Type of retention strategy to use with the customer.
+    #[serde(rename = "type")]
+    pub type_: CreatePortalSessionFlowDataSubscriptionCancelRetentionType,
+}
+impl<'a> CreatePortalSessionFlowDataSubscriptionCancelRetention<'a> {
+    pub fn new(
+        coupon_offer: CreatePortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a>,
+        type_: CreatePortalSessionFlowDataSubscriptionCancelRetentionType,
+    ) -> Self {
+        Self { coupon_offer, type_ }
+    }
+}
+/// Configuration when `retention.type=coupon_offer`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a> {
+    /// The ID of the coupon to be offered.
+    pub coupon: &'a str,
+}
+impl<'a> CreatePortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a> {
+    pub fn new(coupon: &'a str) -> Self {
+        Self { coupon }
+    }
+}
+/// Type of retention strategy to use with the customer.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    CouponOffer,
+}
+
+impl CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    pub fn as_str(self) -> &'static str {
+        use CreatePortalSessionFlowDataSubscriptionCancelRetentionType::*;
+        match self {
+            CouponOffer => "coupon_offer",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePortalSessionFlowDataSubscriptionCancelRetentionType::*;
+        match s {
+            "coupon_offer" => Ok(CouponOffer),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
@@ -319,7 +401,7 @@ impl serde::Serialize for CreatePortalSessionFlowDataType {
         serializer.serialize_str(self.as_str())
     }
 }
-/// The IETF language tag of the locale Customer Portal is displayed in.
+/// The IETF language tag of the locale customer portal is displayed in.
 ///
 /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
 #[derive(Copy, Clone, Eq, PartialEq)]

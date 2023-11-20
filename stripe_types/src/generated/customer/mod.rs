@@ -1,23 +1,24 @@
 /// This object represents a customer of your business.
 ///
-/// It lets you create recurring charges and track payments that belong to the same customer.  Related guide: [Save a card during payment](https://stripe.com/docs/payments/save-during-payment).
+/// Use it to create recurring charges and track payments that belong to the same customer.  Related guide: [Save a card during payment](https://stripe.com/docs/payments/save-during-payment).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Customer {
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<stripe_types::Address>,
-    /// Current balance, if any, being stored on the customer.
+    /// The current balance, if any, that's stored on the customer.
     ///
     /// If negative, the customer has credit to apply to their next invoice.
-    /// If positive, the customer has an amount owed that will be added to their next invoice.
-    /// The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice.
-    /// This balance is only taken into account as invoices are finalized.
+    /// If positive, the customer has an amount owed that's added to their next invoice.
+    /// The balance only considers amounts that Stripe hasn't successfully applied to any invoice.
+    /// It doesn't reflect unpaid invoices.
+    /// This balance is only taken into account after invoices finalize.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
     /// The current funds being held by Stripe on behalf of the customer.
     ///
-    /// These funds can be applied towards payment intents with source "cash_balance".
-    /// The settings[reconciliation_mode] field describes whether these funds are applied to such payment intents manually or automatically.
+    /// You can apply these funds towards payment intents when the source is "cash_balance".
+    /// The `settings[reconciliation_mode]` field describes if these funds apply to these payment intents manually or automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cash_balance: Option<stripe_types::CashBalance>,
     /// Time at which the object was created.
@@ -29,11 +30,13 @@ pub struct Customer {
     pub currency: Option<stripe_types::Currency>,
     /// ID of the default payment source for the customer.
     ///
-    /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
+    /// If you use payment methods created through the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
     pub default_source: Option<stripe_types::Expandable<stripe_types::PaymentSource>>,
-    /// When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
+    /// Tracks the most recent state change on any invoice belonging to the customer.
     ///
-    /// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't get reset to `false`.
+    /// Paying an invoice or marking it uncollectible via the API will set this field to false.
+    /// An automatic payment failure or passing the `invoice.due_date` will set this field to `true`.  If an invoice becomes uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't reset to `false`.  If you care whether the customer has paid their most recent subscription invoice, use `subscription.status` instead.
+    /// Paying or marking uncollectible any customer invoice regardless of whether it is the latest invoice for a subscription will always set this field to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delinquent: Option<bool>,
     /// An arbitrary string attached to the object.
@@ -47,13 +50,13 @@ pub struct Customer {
     pub email: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_types::customer::CustomerId,
-    /// The current multi-currency balances, if any, being stored on the customer.
+    /// The current multi-currency balances, if any, that's stored on the customer.
     ///
     /// If positive in a currency, the customer has a credit to apply to their next invoice denominated in that currency.
-    /// If negative, the customer has an amount owed that will be added to their next invoice denominated in that currency.
-    /// These balances do not refer to any unpaid invoices.
-    /// They solely track amounts that have yet to be successfully applied to any invoice.
-    /// A balance in a particular currency is only applied to any invoice as an invoice in that currency is finalized.
+    /// If negative, the customer has an amount owed that's added to their next invoice denominated in that currency.
+    /// These balances don't apply to unpaid invoices.
+    /// They solely track amounts that Stripe hasn't successfully applied to any invoice.
+    /// Stripe only applies a balance in a specific currency to an invoice after that invoice (which is in the same currency) finalizes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_credit_balance: Option<std::collections::HashMap<String, i64>>,
     /// The prefix for the customer used to generate unique invoice numbers.
@@ -71,7 +74,7 @@ pub struct Customer {
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The suffix of the customer's next invoice number, e.g., 0001.
+    /// The suffix of the customer's next invoice number (for example, 0001).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_invoice_sequence: Option<i64>,
     /// The customer's phone number.
@@ -92,23 +95,21 @@ pub struct Customer {
     pub subscriptions: stripe_types::List<stripe_types::Subscription>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<stripe_types::CustomerTax>,
-    /// Describes the customer's tax exemption status.
+    /// Describes the customer's tax exemption status, which is `none`, `exempt`, or `reverse`.
     ///
-    /// One of `none`, `exempt`, or `reverse`.
-    /// When set to `reverse`, invoice and receipt PDFs include the text **"Reverse charge"**.
+    /// When set to `reverse`, invoice and receipt PDFs include the following text: **"Reverse charge"**.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExempt>,
     /// The customer's tax IDs.
     #[serde(default)]
     pub tax_ids: stripe_types::List<stripe_types::TaxId>,
-    /// ID of the test clock this customer belongs to.
+    /// ID of the test clock that this customer belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub test_clock: Option<stripe_types::Expandable<stripe_types::TestClock>>,
 }
-/// Describes the customer's tax exemption status.
+/// Describes the customer's tax exemption status, which is `none`, `exempt`, or `reverse`.
 ///
-/// One of `none`, `exempt`, or `reverse`.
-/// When set to `reverse`, invoice and receipt PDFs include the text **"Reverse charge"**.
+/// When set to `reverse`, invoice and receipt PDFs include the following text: **"Reverse charge"**.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerTaxExempt {
     Exempt,

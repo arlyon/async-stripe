@@ -79,7 +79,7 @@ pub struct CreateRadarListList<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Type of the items in the value list.
     ///
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    /// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
     /// Use `string` if the item type is unknown or mixed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub item_type: Option<CreateRadarListListItemType>,
@@ -106,7 +106,7 @@ impl<'a> CreateRadarListList<'a> {
 }
 /// Type of the items in the value list.
 ///
-/// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+/// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
 /// Use `string` if the item type is unknown or mixed.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateRadarListListItemType {
@@ -117,7 +117,9 @@ pub enum CreateRadarListListItemType {
     CustomerId,
     Email,
     IpAddress,
+    SepaDebitFingerprint,
     String,
+    UsBankAccountFingerprint,
 }
 
 impl CreateRadarListListItemType {
@@ -131,7 +133,9 @@ impl CreateRadarListListItemType {
             CustomerId => "customer_id",
             Email => "email",
             IpAddress => "ip_address",
+            SepaDebitFingerprint => "sepa_debit_fingerprint",
             String => "string",
+            UsBankAccountFingerprint => "us_bank_account_fingerprint",
         }
     }
 }
@@ -148,7 +152,9 @@ impl std::str::FromStr for CreateRadarListListItemType {
             "customer_id" => Ok(CustomerId),
             "email" => Ok(Email),
             "ip_address" => Ok(IpAddress),
+            "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
             "string" => Ok(String),
+            "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
             _ => Err(()),
         }
     }

@@ -1,4 +1,3 @@
-use anyhow::{anyhow, Context};
 use heck::ToSnakeCase;
 use indexmap::IndexMap;
 use openapiv3::Schema;
@@ -29,12 +28,12 @@ impl CrateInfo {
     }
 
     pub fn are_type_defs_types_crate(&self) -> bool {
-        self.type_defs_in_stripe_types || self.krate == Crate::Types
+        self.type_defs_in_stripe_types || self.krate == Crate::TYPES
     }
 
     pub fn for_types(&self) -> Crate {
         if self.type_defs_in_stripe_types {
-            Crate::Types
+            Crate::TYPES
         } else {
             self.krate
         }
@@ -146,7 +145,7 @@ pub fn parse_stripe_schema_as_rust_object(
             let mut id_type = None;
             let mut object_name = None;
             fields.retain(|field| {
-                if field.field_name == "id" {
+                if field.field_name == "id" && field.rust_type.as_id_path().is_some() {
                     id_type = Some(field.rust_type.clone());
                 }
                 if field.field_name == "object" {
@@ -214,7 +213,7 @@ struct BaseResource {
 #[derive(Debug, Clone)]
 pub struct StripeResource {
     pub path: ComponentPath,
-    pub base_ident: RustIdent,
+    base_ident: RustIdent,
     pub in_package: Option<String>,
     pub requests: Vec<StripeOperation>,
 }
@@ -230,14 +229,11 @@ impl StripeResource {
 }
 
 impl StripeResource {
-    pub fn from_schema(schema: &Schema, path: ComponentPath) -> anyhow::Result<Self> {
-        let resource: BaseResource = schema
-            .schema_data
-            .extensions
-            .get("x-stripeResource")
-            .context("No stripe resource")
-            .and_then(|r| serde_json::from_value(r.clone()).map_err(|err| anyhow!(err)))?;
-
+    pub fn from_schema(schema: &Schema, path: ComponentPath) -> anyhow::Result<Option<Self>> {
+        let Some(resource) = schema.schema_data.extensions.get("x-stripeResource") else {
+            return Ok(None);
+        };
+        let resource: BaseResource = serde_json::from_value(resource.clone())?;
         let mut in_package = None;
         if let Some(package) = resource.in_package {
             if !package.is_empty() {
@@ -251,7 +247,7 @@ impl StripeResource {
         } else {
             vec![]
         };
-        Ok(Self { base_ident: ident, in_package, requests, path })
+        Ok(Some(Self { base_ident: ident, in_package, requests, path }))
     }
 }
 

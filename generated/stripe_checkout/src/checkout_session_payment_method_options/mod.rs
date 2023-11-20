@@ -45,7 +45,11 @@ pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<stripe_checkout::CheckoutPaynowPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<stripe_checkout::CheckoutPaypalPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<stripe_checkout::CheckoutPixPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<stripe_checkout::CheckoutRevolutPayPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<stripe_checkout::CheckoutSepaDebitPaymentMethodOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]

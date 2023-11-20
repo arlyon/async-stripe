@@ -2,6 +2,10 @@
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections: Option<stripe_types::LinkedAccountOptionsUsBankAccount>,
+    /// Preferred transaction settlement speed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_settlement_speed:
+        Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -13,6 +17,69 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
+/// Preferred transaction settlement speed.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    Fastest,
+    Standard,
+}
+
+impl PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    pub fn as_str(self) -> &'static str {
+        use PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
+        match self {
+            Fastest => "fastest",
+            Standard => "standard",
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
+        match s {
+            "fastest" => Ok(Fastest),
+            "standard" => Ok(Standard),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"))
+    }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///

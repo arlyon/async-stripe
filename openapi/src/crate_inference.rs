@@ -1,12 +1,11 @@
-use std::collections::HashMap;
-use std::fs::File;
+use std::fs::read_to_string;
 
 use anyhow::bail;
 use indexmap::{IndexMap, IndexSet};
 use lazy_static::lazy_static;
 use petgraph::algo::is_cyclic_directed;
 use petgraph::Direction;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tracing::{error, trace};
 
 use crate::components::Components;
@@ -17,35 +16,16 @@ use crate::types::ComponentPath;
 /// used for webhooks
 const PATHS_IN_TYPES: &[&str] = &["event"];
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum Crate {
-    Core,
-    Types,
-    Misc,
-    Connect,
-    Terminal,
-    Checkout,
-    Treasury,
-    Product,
-    Billing,
-    Payment,
-    Issuing,
-    Fraud,
-}
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct Crate(&'static str);
 
 impl Crate {
-    pub const fn all() -> &'static [Self] {
-        use Crate::*;
-        &[
-            Core, Types, Misc, Connect, Terminal, Checkout, Treasury, Product, Billing, Payment,
-            Issuing, Fraud,
-        ]
-    }
+    pub const TYPES: Self = Self("types");
+    pub const TREASURY: Self = Self("treasury");
 
     pub fn generate_to(self) -> String {
         let out_path = self.generated_out_path();
-        if self == Self::Types {
+        if self == Self::TYPES {
             out_path
         } else {
             format!("{out_path}/src")
@@ -53,7 +33,7 @@ impl Crate {
     }
 
     pub fn generated_out_path(self) -> String {
-        if self == Self::Types {
+        if self == Self::TYPES {
             "stripe_types".into()
         } else {
             format!("crates/{}", self.name())
@@ -65,65 +45,62 @@ impl Crate {
     }
 
     pub const fn suffix(self) -> &'static str {
-        use Crate::*;
-        match self {
-            Core => "core",
-            Types => "types",
-            Misc => "misc",
-            Connect => "connect",
-            Terminal => "terminal",
-            Checkout => "checkout",
-            Treasury => "treasury",
-            Product => "product",
-            Billing => "billing",
-            Payment => "payment",
-            Issuing => "issuing",
-            Fraud => "fraud",
-        }
+        self.0
     }
 }
 
 #[derive(Deserialize)]
-struct CrateMap {
-    components: HashMap<Crate, Vec<String>>,
-    packages: HashMap<String, Crate>,
+struct CrateGen {
+    name: String,
+    #[serde(default)]
+    paths: Vec<String>,
+    #[serde(default)]
+    packages: Vec<String>,
 }
 
-fn load_crate_map() -> anyhow::Result<CrateMap> {
-    let loaded = serde_json::from_reader(File::open("crate_map.json")?)?;
+#[derive(Deserialize)]
+struct CrateInfo {
+    crates: Vec<CrateGen>,
+}
+
+fn load_crate_info() -> anyhow::Result<CrateInfo> {
+    let toml_str = read_to_string("gen_crates.toml")?;
+    let loaded = toml::from_str(&toml_str)?;
     Ok(loaded)
 }
 
 lazy_static! {
-    static ref CRATE_MAP: CrateMap = load_crate_map().expect("Could not load crate map");
+    static ref CRATE_INFO: CrateInfo = load_crate_info().expect("Could not load crate info");
+    pub static ref ALL_CRATES: Vec<Crate> =
+        CRATE_INFO.crates.iter().map(|c| Crate(&c.name)).collect();
 }
 
-pub fn validate_crate_map(components: &Components) -> anyhow::Result<()> {
-    for members in CRATE_MAP.components.values() {
-        for name in members {
+pub fn validate_crate_info(components: &Components) -> anyhow::Result<()> {
+    for krate in &CRATE_INFO.crates {
+        for name in &krate.paths {
             if !components.components.contains_key(name.as_str()) {
-                bail!("Crate map includes unrecognized {name}. Maybe it is misspelled?");
+                bail!("Crate info includes unrecognized {name}. Maybe it is misspelled?");
             }
         }
     }
     Ok(())
 }
 
-pub fn maybe_infer_crate(path: &str, package: Option<&str>) -> Option<Crate> {
+pub fn infer_crate_by_package(package: &str) -> Crate {
+    for krate in &CRATE_INFO.crates {
+        if krate.packages.iter().any(|p| p == package) {
+            return Crate(&krate.name);
+        }
+    }
+    panic!("Package {} requires a mapping in gen_crates.toml", package);
+}
+
+pub fn maybe_infer_crate_by_path(path: &str) -> Option<Crate> {
     // Make sure deleted variants end up in the same place as the non-deleted version
     let path = path.trim_start_matches("deleted_");
-    if let Some(package) = package {
-        let krate = CRATE_MAP.packages.get(package).unwrap_or_else(|| {
-            panic!("Package {} requires a mapping", package);
-        });
-        return Some(*krate);
-    }
-    for krate in Crate::all() {
-        let Some(members) = CRATE_MAP.components.get(krate) else {
-            continue;
-        };
-        if members.iter().any(|c| c == path) {
-            return Some(*krate);
+    for krate in &CRATE_INFO.crates {
+        if krate.paths.iter().any(|p| p == path) {
+            return Some(Crate(&krate.name));
         }
     }
     None
@@ -170,30 +147,9 @@ impl Components {
 
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_what_depends_on_it);
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_deps);
-        self.assign_uninferrable_crates();
         self.ensure_no_missing_crates()?;
         self.assign_paths_required_to_live_in_types_crate();
         self.validate_crate_assignment()
-    }
-
-    fn assign_uninferrable_crates(&mut self) {
-        let uninferrable = [
-            ("linked_account_options_us_bank_account", Crate::Core),
-            ("three_d_secure_details", Crate::Types),
-            ("radar_radar_options", Crate::Types),
-        ];
-        for (path, krate) in uninferrable {
-            let comp = self.components.get_mut(path).expect("Component not found");
-            if comp.krate().is_some() {
-                panic!(
-                    "Component {} already had crate {:?}. Cannot assign {:?}",
-                    path,
-                    comp.krate().unwrap(),
-                    krate
-                );
-            }
-            comp.assign_crate(krate);
-        }
     }
 
     fn ensure_no_missing_crates(&self) -> anyhow::Result<()> {
@@ -204,6 +160,8 @@ impl Components {
             .map(|(name, _)| name)
             .collect::<Vec<_>>();
 
+        // If we've got missing crates, also look at the dep graph to dump some
+        // helpful info
         if !missing_crates.is_empty() {
             let graph = self.gen_component_dep_graph();
             for missing in &missing_crates {
@@ -221,7 +179,7 @@ impl Components {
 
     fn validate_crate_assignment(&self) -> anyhow::Result<()> {
         let graph = self.gen_crate_dep_graph();
-        let deps_for_types_crate = graph.neighbors(Crate::Types).collect::<Vec<_>>();
+        let deps_for_types_crate = graph.neighbors(Crate::TYPES).collect::<Vec<_>>();
         if !deps_for_types_crate.is_empty() {
             bail!(
                 "Types crate should not have dependencies, but has dependencies {:#?}!",
@@ -235,7 +193,7 @@ impl Components {
             .components
             .iter()
             .filter(|(_, comp)| {
-                comp.krate_unwrapped().base() == Crate::Types && !comp.requests.is_empty()
+                comp.krate_unwrapped().base() == Crate::TYPES && !comp.requests.is_empty()
             })
             .map(|(path, _)| path)
             .collect::<Vec<_>>();
@@ -265,7 +223,7 @@ impl Components {
                     .map(|m| self.get(m).krate_unwrapped().for_types())
                     .filter(|c| *c != my_crate)
                     .collect::<IndexSet<_>>();
-                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::Types)
+                if !depended_crates.is_empty() || depended_crates.iter().any(|d| *d == Crate::TYPES)
                 {
                     required.push(path.clone());
                 }

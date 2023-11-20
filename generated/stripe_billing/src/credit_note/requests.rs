@@ -88,9 +88,14 @@ pub struct CreateCreditNoteLines<'a> {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// A list of up to 10 tax amounts for the credit note line item.
+    ///
+    /// Cannot be mixed with `tax_rates`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_amounts: Option<&'a [CreateCreditNoteLinesTaxAmounts<'a>]>,
     /// The tax rates which apply to the credit note line item.
     ///
-    /// Only valid when the `type` is `custom_line_item`.
+    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<&'a [&'a str]>,
     /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -115,11 +120,31 @@ impl<'a> CreateCreditNoteLines<'a> {
             description: Default::default(),
             invoice_line_item: Default::default(),
             quantity: Default::default(),
+            tax_amounts: Default::default(),
             tax_rates: Default::default(),
             type_,
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
+    }
+}
+/// A list of up to 10 tax amounts for the credit note line item.
+///
+/// Cannot be mixed with `tax_rates`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateCreditNoteLinesTaxAmounts<'a> {
+    /// The amount, in cents (or local equivalent), of the tax.
+    pub amount: i64,
+    /// The id of the tax rate for this tax amount.
+    ///
+    /// The tax rate must have been automatically created by Stripe.
+    pub tax_rate: &'a str,
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: i64,
+}
+impl<'a> CreateCreditNoteLinesTaxAmounts<'a> {
+    pub fn new(amount: i64, tax_rate: &'a str, taxable_amount: i64) -> Self {
+        Self { amount, tax_rate, taxable_amount }
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -349,9 +374,14 @@ pub struct PreviewCreditNoteLines<'a> {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// A list of up to 10 tax amounts for the credit note line item.
+    ///
+    /// Cannot be mixed with `tax_rates`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_amounts: Option<&'a [PreviewCreditNoteLinesTaxAmounts<'a>]>,
     /// The tax rates which apply to the credit note line item.
     ///
-    /// Only valid when the `type` is `custom_line_item`.
+    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<&'a [&'a str]>,
     /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -376,11 +406,31 @@ impl<'a> PreviewCreditNoteLines<'a> {
             description: Default::default(),
             invoice_line_item: Default::default(),
             quantity: Default::default(),
+            tax_amounts: Default::default(),
             tax_rates: Default::default(),
             type_,
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
+    }
+}
+/// A list of up to 10 tax amounts for the credit note line item.
+///
+/// Cannot be mixed with `tax_rates`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct PreviewCreditNoteLinesTaxAmounts<'a> {
+    /// The amount, in cents (or local equivalent), of the tax.
+    pub amount: i64,
+    /// The id of the tax rate for this tax amount.
+    ///
+    /// The tax rate must have been automatically created by Stripe.
+    pub tax_rate: &'a str,
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: i64,
+}
+impl<'a> PreviewCreditNoteLinesTaxAmounts<'a> {
+    pub fn new(amount: i64, tax_rate: &'a str, taxable_amount: i64) -> Self {
+        Self { amount, tax_rate, taxable_amount }
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -751,9 +801,14 @@ pub struct PreviewLinesCreditNoteLines<'a> {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// A list of up to 10 tax amounts for the credit note line item.
+    ///
+    /// Cannot be mixed with `tax_rates`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_amounts: Option<&'a [PreviewLinesCreditNoteLinesTaxAmounts<'a>]>,
     /// The tax rates which apply to the credit note line item.
     ///
-    /// Only valid when the `type` is `custom_line_item`.
+    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<&'a [&'a str]>,
     /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
@@ -778,11 +833,31 @@ impl<'a> PreviewLinesCreditNoteLines<'a> {
             description: Default::default(),
             invoice_line_item: Default::default(),
             quantity: Default::default(),
+            tax_amounts: Default::default(),
             tax_rates: Default::default(),
             type_,
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
+    }
+}
+/// A list of up to 10 tax amounts for the credit note line item.
+///
+/// Cannot be mixed with `tax_rates`.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct PreviewLinesCreditNoteLinesTaxAmounts<'a> {
+    /// The amount, in cents (or local equivalent), of the tax.
+    pub amount: i64,
+    /// The id of the tax rate for this tax amount.
+    ///
+    /// The tax rate must have been automatically created by Stripe.
+    pub tax_rate: &'a str,
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: i64,
+}
+impl<'a> PreviewLinesCreditNoteLinesTaxAmounts<'a> {
+    pub fn new(amount: i64, tax_rate: &'a str, taxable_amount: i64) -> Self {
+        Self { amount, tax_rate, taxable_amount }
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.

@@ -5,7 +5,9 @@ use indexmap::{IndexMap, IndexSet};
 use petgraph::Direction;
 use tracing::{debug, info};
 
-use crate::crate_inference::{maybe_infer_crate, validate_crate_map, Crate};
+use crate::crate_inference::{
+    infer_crate_by_package, maybe_infer_crate_by_path, validate_crate_info, Crate,
+};
 use crate::object_writing::ObjectGenInfo;
 use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
@@ -112,7 +114,7 @@ impl Components {
                 let referred_typ = self.get_extra_type(ident);
                 let has_ref = referred_typ.obj.has_reference(self);
                 PrintableType::QualifiedPath {
-                    path: Some(PathInfo { krate: Crate::Types, path: None }),
+                    path: Some(PathInfo { krate: Crate::TYPES, path: None }),
                     has_ref,
                     is_ref: *is_ref,
                     ident: ident.clone(),
@@ -223,8 +225,12 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     for path in spec.component_schemas().keys() {
         let path = ComponentPath::new(path.clone());
         let schema = spec.get_component_schema(&path);
-        let stripe_resource = StripeResource::from_schema(schema, path.clone())?;
-        let data = parse_stripe_schema_as_rust_object(schema, &path, &stripe_resource.base_ident);
+
+        // TODO: handle schemas that are `x-stripeEvent`
+        let Some(stripe_resource) = StripeResource::from_schema(schema, path.clone())? else {
+            continue;
+        };
+        let data = parse_stripe_schema_as_rust_object(schema, &path, stripe_resource.ident());
         if let Some(obj_name) = &data.object_name {
             if let Some(id_typ) = data.id_type.as_ref().and_then(|t| t.as_id_path()) {
                 id_map.insert(obj_name.clone(), id_typ.clone());
@@ -244,8 +250,12 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
                 vec![]
             };
 
-        let inferred_krate = maybe_infer_crate(&path, resource.in_package.as_deref());
-        let reqs = parse_requests(stripe_reqs, spec, &resource.base_ident, &path, &id_map)?;
+        let inferred_krate = if let Some(package) = &resource.in_package {
+            Some(infer_crate_by_package(package))
+        } else {
+            maybe_infer_crate_by_path(&path)
+        };
+        let reqs = parse_requests(stripe_reqs, spec, resource.ident(), &path, &id_map)?;
         components.insert(
             path,
             StripeObject {
@@ -261,7 +271,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     let mut components = Components { components, extra_types: Default::default() };
     components.filter_unused_components();
 
-    validate_crate_map(&components)?;
+    validate_crate_info(&components)?;
     components.infer_all_crate_assignments()?;
     info!("Finished inferring crates");
 

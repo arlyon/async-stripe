@@ -1,6 +1,7 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct IssuingCardholderIndividual {
     /// Information related to the card_issuing program for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<stripe_types::IssuingCardholderCardIssuing>,
     /// The date of birth of this cardholder.
     pub dob: Option<stripe_types::IssuingCardholderIndividualDob>,

@@ -2,7 +2,7 @@
 pub struct PaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodDetailsIdealBank>,
     /// The Bank Identifier Code of the customer's bank.
     pub bic: Option<PaymentMethodDetailsIdealBic>,
@@ -20,7 +20,7 @@ pub struct PaymentMethodDetailsIdeal {
 }
 /// The customer's bank.
 ///
-/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsIdealBank {
@@ -31,6 +31,7 @@ pub enum PaymentMethodDetailsIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -53,6 +54,7 @@ impl PaymentMethodDetailsIdealBank {
             Ing => "ing",
             Knab => "knab",
             Moneyou => "moneyou",
+            N26 => "n26",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -77,6 +79,7 @@ impl std::str::FromStr for PaymentMethodDetailsIdealBank {
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
+            "n26" => Ok(N26),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -134,6 +137,7 @@ pub enum PaymentMethodDetailsIdealBic {
     Ingbnl2a,
     Knabnl2h,
     Moyonl21,
+    Ntsbdeb1,
     Rabonl2u,
     Rbrbnl21,
     Revoie23,
@@ -157,6 +161,7 @@ impl PaymentMethodDetailsIdealBic {
             Ingbnl2a => "INGBNL2A",
             Knabnl2h => "KNABNL2H",
             Moyonl21 => "MOYONL21",
+            Ntsbdeb1 => "NTSBDEB1",
             Rabonl2u => "RABONL2U",
             Rbrbnl21 => "RBRBNL21",
             Revoie23 => "REVOIE23",
@@ -182,6 +187,7 @@ impl std::str::FromStr for PaymentMethodDetailsIdealBic {
             "INGBNL2A" => Ok(Ingbnl2a),
             "KNABNL2H" => Ok(Knabnl2h),
             "MOYONL21" => Ok(Moyonl21),
+            "NTSBDEB1" => Ok(Ntsbdeb1),
             "RABONL2U" => Ok(Rabonl2u),
             "RBRBNL21" => Ok(Rbrbnl21),
             "REVOIE23" => Ok(Revoie23),

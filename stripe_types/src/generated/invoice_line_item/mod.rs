@@ -1,8 +1,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct InvoiceLineItem {
-    /// The amount, in %s.
+    /// The amount, in cents (or local equivalent).
     pub amount: i64,
-    /// The integer amount in %s representing the amount for this line item, excluding all tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount for this line item, excluding all tax and discounts.
     pub amount_excluding_tax: Option<i64>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -62,7 +62,7 @@ pub struct InvoiceLineItem {
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
-    /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
+    /// The amount in cents (or local equivalent) representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
 /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.

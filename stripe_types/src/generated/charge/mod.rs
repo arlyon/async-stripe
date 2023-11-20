@@ -4,17 +4,15 @@
 /// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Charge {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternate_statement_descriptors: Option<stripe_types::AlternateStatementDescriptors>,
     /// Amount intended to be collected by this payment.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
-    /// Amount in %s captured (can be less than the amount attribute on the charge if a partial capture was made).
+    /// Amount in cents (or local equivalent) captured (can be less than the amount attribute on the charge if a partial capture was made).
     pub amount_captured: i64,
-    /// Amount in %s refunded (can be less than the amount attribute on the charge if a partial refund was issued).
+    /// Amount in cents (or local equivalent) refunded (can be less than the amount attribute on the charge if a partial refund was issued).
     pub amount_refunded: i64,
     /// ID of the Connect application that created the charge.
     pub application: Option<stripe_types::Expandable<stripe_types::Application>>,
@@ -52,10 +50,6 @@ pub struct Charge {
     ///
     /// Often useful for displaying to users.
     pub description: Option<String>,
-    /// ID of an existing, connected Stripe account to transfer funds to if `transfer_data` was specified in the charge request.
-    pub destination: Option<stripe_types::Expandable<stripe_types::Account>>,
-    /// Details about the dispute if the charge has been disputed.
-    pub dispute: Option<stripe_types::Expandable<stripe_types::Dispute>>,
     /// Whether the charge has been disputed.
     pub disputed: bool,
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.

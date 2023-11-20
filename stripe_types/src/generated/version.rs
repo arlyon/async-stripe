@@ -1,1 +1,1 @@
-pub const VERSION: crate::ApiVersion = crate::ApiVersion::V2022_11_15;
+pub const VERSION: crate::ApiVersion = crate::ApiVersion::V2023_10_16;

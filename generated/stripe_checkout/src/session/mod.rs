@@ -22,6 +22,8 @@ pub struct Session {
     ///
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
     pub client_reference_id: Option<String>,
+    /// Client secret to be used when initializing Stripe.js embedded checkout.
+    pub client_secret: Option<String>,
     /// Results of `consent_collection` for this session.
     pub consent: Option<stripe_checkout::PaymentPagesCheckoutSessionConsent>,
     /// When set, provides configuration for the Checkout Session to gather active consent from customers.
@@ -42,7 +44,7 @@ pub struct Session {
     pub custom_fields: Vec<stripe_checkout::PaymentPagesCheckoutSessionCustomFields>,
     pub custom_text: stripe_checkout::PaymentPagesCheckoutSessionCustomText,
     /// The ID of the customer for this Session.
-    /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
+    /// For Checkout Sessions in `subscription` mode or Checkout Sessions with `customer_creation` set as `always` in `payment` mode, Checkout
     /// will create a new customer object based on information provided
     /// during the payment flow unless an existing customer was provided when
     /// the Session was created.
@@ -89,6 +91,9 @@ pub struct Session {
     pub payment_link: Option<stripe_types::Expandable<stripe_types::PaymentLink>>,
     /// Configure whether a Checkout Session should collect a payment method.
     pub payment_method_collection: Option<SessionPaymentMethodCollection>,
+    /// Information about the payment method configuration used for this Checkout session if using dynamic payment methods.
+    pub payment_method_configuration_details:
+        Option<stripe_types::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
     pub payment_method_options: Option<stripe_checkout::CheckoutSessionPaymentMethodOptions>,
     /// A list of the types of payment methods (e.g.
@@ -103,6 +108,17 @@ pub struct Session {
         Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
+    /// Applies to Checkout Sessions with `ui_mode: embedded`.
+    ///
+    /// By default, Stripe will always redirect to your return_url after a successful confirmation.
+    /// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect_on_completion: Option<SessionRedirectOnCompletion>,
+    /// Applies to Checkout Sessions with `ui_mode: embedded`.
+    ///
+    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     pub setup_intent: Option<stripe_types::Expandable<stripe_types::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
@@ -130,6 +146,10 @@ pub struct Session {
     pub tax_id_collection: Option<stripe_checkout::PaymentPagesCheckoutSessionTaxIdCollection>,
     /// Tax and discount details for the computed total amount.
     pub total_details: Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetails>,
+    /// The UI mode of the Session.
+    ///
+    /// Can be `hosted` (default) or `embedded`.
+    pub ui_mode: Option<SessionUiMode>,
     /// The URL to the Checkout Session.
     ///
     /// Redirect customers to this URL to take them to Checkout.
@@ -639,6 +659,74 @@ impl<'de> serde::Deserialize<'de> for SessionPaymentStatus {
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionPaymentStatus"))
     }
 }
+/// Applies to Checkout Sessions with `ui_mode: embedded`.
+///
+/// By default, Stripe will always redirect to your return_url after a successful confirmation.
+/// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum SessionRedirectOnCompletion {
+    Always,
+    IfRequired,
+    Never,
+}
+
+impl SessionRedirectOnCompletion {
+    pub fn as_str(self) -> &'static str {
+        use SessionRedirectOnCompletion::*;
+        match self {
+            Always => "always",
+            IfRequired => "if_required",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionRedirectOnCompletion {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionRedirectOnCompletion::*;
+        match s {
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
+            "never" => Ok(Never),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for SessionRedirectOnCompletion {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SessionRedirectOnCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SessionRedirectOnCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for SessionRedirectOnCompletion {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionRedirectOnCompletion {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for SessionRedirectOnCompletion"))
+    }
+}
 /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SessionStatus {
@@ -772,6 +860,69 @@ impl<'de> serde::Deserialize<'de> for SessionSubmitType {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s)
             .map_err(|_| serde::de::Error::custom("Unknown value for SessionSubmitType"))
+    }
+}
+/// The UI mode of the Session.
+///
+/// Can be `hosted` (default) or `embedded`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum SessionUiMode {
+    Embedded,
+    Hosted,
+}
+
+impl SessionUiMode {
+    pub fn as_str(self) -> &'static str {
+        use SessionUiMode::*;
+        match self {
+            Embedded => "embedded",
+            Hosted => "hosted",
+        }
+    }
+}
+
+impl std::str::FromStr for SessionUiMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use SessionUiMode::*;
+        match s {
+            "embedded" => Ok(Embedded),
+            "hosted" => Ok(Hosted),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for SessionUiMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SessionUiMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for SessionUiMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for SessionUiMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for SessionUiMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SessionUiMode"))
     }
 }
 impl stripe_types::Object for Session {

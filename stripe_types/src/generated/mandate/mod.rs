@@ -1,4 +1,4 @@
-/// A Mandate is a record of the permission a customer has given you to debit their payment method.
+/// A Mandate is a record of the permission that your customer gives you to debit their payment method.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Mandate {
     pub customer_acceptance: stripe_types::CustomerAcceptance,
@@ -8,7 +8,7 @@ pub struct Mandate {
     pub livemode: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multi_use: Option<stripe_types::MandateMultiUse>,
-    /// The account (if any) for which the mandate is intended.
+    /// The account (if any) that the mandate is intended for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
     /// ID of the payment method associated with this mandate.
@@ -16,13 +16,13 @@ pub struct Mandate {
     pub payment_method_details: stripe_types::MandatePaymentMethodDetails,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub single_use: Option<stripe_types::MandateSingleUse>,
-    /// The status of the mandate, which indicates whether it can be used to initiate a payment.
+    /// The mandate status indicates whether or not you can use it to initiate a payment.
     pub status: MandateStatus,
     /// The type of the mandate.
     #[serde(rename = "type")]
     pub type_: MandateType,
 }
-/// The status of the mandate, which indicates whether it can be used to initiate a payment.
+/// The mandate status indicates whether or not you can use it to initiate a payment.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum MandateStatus {
     Active,

@@ -2,6 +2,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FundingInstructionsBankTransferFinancialAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub aba: Option<stripe_types::FundingInstructionsBankTransferAbaRecord>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub iban: Option<stripe_types::FundingInstructionsBankTransferIbanRecord>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<stripe_types::FundingInstructionsBankTransferSortCodeRecord>,
@@ -11,6 +13,8 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_networks:
         Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swift: Option<stripe_types::FundingInstructionsBankTransferSwiftRecord>,
     /// The type of financial address.
     #[serde(rename = "type")]
     pub type_: FundingInstructionsBankTransferFinancialAddressType,
@@ -20,10 +24,13 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 /// The payment networks supported by this FinancialAddress.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    Ach,
     Bacs,
+    DomesticWireUs,
     Fps,
     Sepa,
     Spei,
+    Swift,
     Zengin,
 }
 
@@ -31,10 +38,13 @@ impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     pub fn as_str(self) -> &'static str {
         use FundingInstructionsBankTransferFinancialAddressSupportedNetworks::*;
         match self {
+            Ach => "ach",
             Bacs => "bacs",
+            DomesticWireUs => "domestic_wire_us",
             Fps => "fps",
             Sepa => "sepa",
             Spei => "spei",
+            Swift => "swift",
             Zengin => "zengin",
         }
     }
@@ -45,10 +55,13 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressSuppor
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FundingInstructionsBankTransferFinancialAddressSupportedNetworks::*;
         match s {
+            "ach" => Ok(Ach),
             "bacs" => Ok(Bacs),
+            "domestic_wire_us" => Ok(DomesticWireUs),
             "fps" => Ok(Fps),
             "sepa" => Ok(Sepa),
             "spei" => Ok(Spei),
+            "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             _ => Err(()),
         }
@@ -92,9 +105,11 @@ impl<'de> serde::Deserialize<'de>
 /// The type of financial address.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FundingInstructionsBankTransferFinancialAddressType {
+    Aba,
     Iban,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
@@ -102,9 +117,11 @@ impl FundingInstructionsBankTransferFinancialAddressType {
     pub fn as_str(self) -> &'static str {
         use FundingInstructionsBankTransferFinancialAddressType::*;
         match self {
+            Aba => "aba",
             Iban => "iban",
             SortCode => "sort_code",
             Spei => "spei",
+            Swift => "swift",
             Zengin => "zengin",
         }
     }
@@ -115,9 +132,11 @@ impl std::str::FromStr for FundingInstructionsBankTransferFinancialAddressType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FundingInstructionsBankTransferFinancialAddressType::*;
         match s {
+            "aba" => Ok(Aba),
             "iban" => Ok(Iban),
             "sort_code" => Ok(SortCode),
             "spei" => Ok(Spei),
+            "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
             _ => Err(()),
         }

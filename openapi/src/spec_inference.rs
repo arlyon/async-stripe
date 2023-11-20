@@ -308,7 +308,7 @@ impl<'a> Inference<'a> {
     ) -> anyhow::Result<Vec<EnumVariant>> {
         let mut variants = Vec::with_capacity(fields.len());
         for option in fields {
-            match option.borrow() {
+            match option {
                 ReferenceOr::Reference { reference } => {
                     let schema_path = ComponentPath::from_reference(reference);
                     variants.push(EnumVariant::new(

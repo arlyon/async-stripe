@@ -72,7 +72,7 @@ pub struct Subscription {
     pub default_tax_rates: Option<Vec<stripe_types::TaxRate>>,
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
     /// Describes the current discount applied to this subscription, if there is one.
     ///

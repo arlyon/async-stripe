@@ -12,7 +12,8 @@ pub struct AccountRequirements {
     pub currently_due: Option<Vec<String>>,
     /// If the account is disabled, this string describes why.
     ///
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.
+    /// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
+    /// Can be `action_required.requested_capabilities`, `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.incomplete_verification`, `rejected.listed`, `rejected.other`, `rejected.terms_of_service`, `under_review`, or `other`.
     pub disabled_reason: Option<String>,
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Option<Vec<stripe_types::AccountRequirementsError>>,

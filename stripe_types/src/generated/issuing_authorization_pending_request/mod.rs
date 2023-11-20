@@ -18,4 +18,8 @@ pub struct IssuingAuthorizationPendingRequest {
     pub merchant_amount: i64,
     /// The local currency the merchant is requesting to authorize.
     pub merchant_currency: stripe_types::Currency,
+    /// The card network's estimate of the likelihood that an authorization is fraudulent.
+    ///
+    /// Takes on values between 1 and 99.
+    pub network_risk_score: Option<i64>,
 }

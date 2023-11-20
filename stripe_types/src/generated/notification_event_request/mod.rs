@@ -10,9 +10,3 @@ pub struct NotificationEventRequest {
     /// *Note: This property is populated only for events on or after May 23, 2017*.
     pub idempotency_key: Option<String>,
 }
-impl stripe_types::Object for NotificationEventRequest {
-    type Id = Option<String>;
-    fn id(&self) -> Option<&str> {
-        self.id.as_deref()
-    }
-}

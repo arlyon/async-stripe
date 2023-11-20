@@ -1,16 +1,16 @@
 /// To share the contents of a `File` object with non-Stripe users, you can
 /// create a `FileLink`.
 ///
-/// `FileLink`s contain a URL that can be used to retrieve the contents of the file without authentication.
+/// `FileLink`s contain a URL that you can use to retrieve the contents of the file without authentication.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FileLink {
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// Whether this link is already expired.
+    /// Returns if the link is already expired.
     pub expired: bool,
-    /// Time at which the link expires.
+    /// Time that the link expires.
     pub expires_at: Option<stripe_types::Timestamp>,
     /// The file object this link points to.
     pub file: stripe_types::Expandable<stripe_types::File>,

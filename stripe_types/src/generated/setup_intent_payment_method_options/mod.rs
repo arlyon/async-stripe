@@ -3,8 +3,6 @@ pub struct SetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<stripe_types::SetupIntentPaymentMethodOptionsAcssDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<stripe_types::SetupIntentPaymentMethodOptionsBlik>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<stripe_types::SetupIntentPaymentMethodOptionsCard>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<stripe_types::SetupIntentPaymentMethodOptionsLink>,

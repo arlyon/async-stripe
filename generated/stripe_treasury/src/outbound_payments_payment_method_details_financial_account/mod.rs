@@ -63,9 +63,3 @@ impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsFinanc
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for OutboundPaymentsPaymentMethodDetailsFinancialAccountNetwork"))
     }
 }
-impl stripe_types::Object for OutboundPaymentsPaymentMethodDetailsFinancialAccount {
-    type Id = String;
-    fn id(&self) -> Option<&str> {
-        Some(self.id.as_str())
-    }
-}

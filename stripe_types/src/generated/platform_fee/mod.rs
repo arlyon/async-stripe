@@ -2,9 +2,9 @@
 pub struct PlatformFee {
     /// ID of the Stripe account this fee was taken from.
     pub account: stripe_types::Expandable<stripe_types::Account>,
-    /// Amount earned, in %s.
+    /// Amount earned, in cents (or local equivalent).
     pub amount: i64,
-    /// Amount in %s refunded (can be less than the amount attribute on the fee if a partial refund was issued).
+    /// Amount in cents (or local equivalent) refunded (can be less than the amount attribute on the fee if a partial refund was issued).
     pub amount_refunded: i64,
     /// ID of the Connect application that earned the fee.
     pub application: stripe_types::Expandable<stripe_types::Application>,

@@ -147,7 +147,7 @@ pub struct CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutbou
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsAch>,
-    /// Enables US domestic wire tranfers via the OutboundPayments API.
+    /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
 }
@@ -167,7 +167,7 @@ impl CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaym
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundPayments API.
+/// Enables US domestic wire transfers via the OutboundPayments API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
@@ -184,7 +184,7 @@ pub struct CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutbou
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersAch>,
-    /// Enables US domestic wire tranfers via the OutboundTransfers API.
+    /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
 }
@@ -204,7 +204,7 @@ impl CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTran
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundTransfers API.
+/// Enables US domestic wire transfers via the OutboundTransfers API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
@@ -493,7 +493,7 @@ pub struct UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutbou
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsAch>,
-    /// Enables US domestic wire tranfers via the OutboundPayments API.
+    /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
 }
@@ -513,7 +513,7 @@ impl UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaym
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundPayments API.
+/// Enables US domestic wire transfers via the OutboundPayments API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
@@ -530,7 +530,7 @@ pub struct UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutbou
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersAch>,
-    /// Enables US domestic wire tranfers via the OutboundTransfers API.
+    /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
 }
@@ -550,7 +550,7 @@ impl UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTran
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundTransfers API.
+/// Enables US domestic wire transfers via the OutboundTransfers API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountsResourceFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
@@ -811,7 +811,7 @@ pub struct UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutbou
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundPaymentsAch>,
-    /// Enables US domestic wire tranfers via the OutboundPayments API.
+    /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundPaymentsUsDomesticWire>,
 }
@@ -831,7 +831,7 @@ impl UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundPaym
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundPayments API.
+/// Enables US domestic wire transfers via the OutboundPayments API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
@@ -848,7 +848,7 @@ pub struct UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutbou
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTransfersAch>,
-    /// Enables US domestic wire tranfers via the OutboundTransfers API.
+    /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTransfersUsDomesticWire>,
 }
@@ -868,7 +868,7 @@ impl UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTran
         Self { requested }
     }
 }
-/// Enables US domestic wire tranfers via the OutboundTransfers API.
+/// Enables US domestic wire transfers via the OutboundTransfers API.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.

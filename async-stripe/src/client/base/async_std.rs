@@ -3,9 +3,10 @@ use std::pin::Pin;
 
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
+use serde::de::DeserializeOwned;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
-use crate::error::{ErrorResponse, StripeError};
+use crate::error::StripeError;
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 
@@ -25,7 +26,7 @@ impl AsyncStdClient {
         Self { client: surf::Client::new() }
     }
 
-    pub fn execute<T: Deserialize + Send + 'static>(
+    pub fn execute<T: DeserializeOwned + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
@@ -40,6 +41,12 @@ impl AsyncStdClient {
             let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
             serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
         })
+    }
+}
+
+impl Default for AsyncStdClient {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -95,10 +102,7 @@ async fn send_inner(
                     tries += 1;
                     let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
                     last_error = serde_path_to_error::deserialize(json_deserializer)
-                        .map(|mut e: ErrorResponse| {
-                            e.error.http_status = status.into();
-                            StripeError::from(e.error)
-                        })
+                        .map(|e: stripe_types::Error| StripeError::Stripe(*e.error, status.into()))
                         .unwrap_or_else(StripeError::from);
                     last_status = Some(status);
                     last_retry_header = retry;

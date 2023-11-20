@@ -95,6 +95,12 @@ impl TokioClient {
     }
 }
 
+impl Default for TokioClient {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 async fn send_inner(
     client: &HttpClient,
     mut request: Request,

@@ -1,3 +1,5 @@
+// Necessary under tokio-blocking since `Response` is a type alias to a `Result`
+#![allow(clippy::missing_errors_doc)]
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use stripe_types::{List, Object};
@@ -54,7 +56,7 @@ where
         let mut paginator = self;
         loop {
             if !paginator.has_more {
-                data.extend(paginator.data.into_iter());
+                data.extend(paginator.data);
                 break;
             }
             let next_page = paginator.fetch_page_with_curr_params(client)?;

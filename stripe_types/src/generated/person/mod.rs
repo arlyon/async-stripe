@@ -3,12 +3,14 @@
 /// A platform cannot access a Standard or Express account's persons after the account starts onboarding, such as after generating an account link for the account.
 /// See the [Standard onboarding](https://stripe.com/docs/connect/standard-accounts) or [Express onboarding documentation](https://stripe.com/docs/connect/express-accounts) for information about platform prefilling and account onboarding steps.
 ///
-/// Related guide: [Handling identity verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).
+/// Related guide: [Handling identity verification with the API](https://stripe.com/docs/connect/handling-api-verification#person-information).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Person {
     /// The account the person is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<stripe_types::PersonAdditionalTosAcceptances>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<stripe_types::Address>,
     /// The Kana variation of the person's address (Japan only).
@@ -38,7 +40,7 @@ pub struct Person {
     /// A list of alternate names or aliases that the person is known by.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub full_name_aliases: Option<Vec<String>>,
-    /// Information about the upcoming new requirements for this person, including what information needs to be collected, and by when.
+    /// Information about the [upcoming new requirements for this person](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<stripe_types::PersonFutureRequirements>,
     /// The person's gender (International regulations require either "male" or "female").
@@ -47,6 +49,9 @@ pub struct Person {
     /// Unique identifier for the object.
     pub id: stripe_types::person::PersonId,
     /// Whether the person's `id_number` was provided.
+    ///
+    /// True if either the full ID number was provided or if only the required part of the ID number was provided (ex.
+    /// last four of an individual's SSN for the US indicated by `ssn_last_4_provided`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_provided: Option<bool>,
     /// Whether the person's `id_number_secondary` was provided.

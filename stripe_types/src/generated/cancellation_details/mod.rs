@@ -1,13 +1,13 @@
 #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
 pub struct CancellationDetails {
-    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    /// Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
     pub comment: Option<String>,
-    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     pub feedback: Option<CancellationDetailsFeedback>,
-    /// Why this subscription was cancelled.
+    /// Why this subscription was canceled.
     pub reason: Option<CancellationDetailsReason>,
 }
-/// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+/// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancellationDetailsFeedback {
     CustomerService,
@@ -87,7 +87,7 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
             .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
     }
 }
-/// Why this subscription was cancelled.
+/// Why this subscription was canceled.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancellationDetailsReason {
     CancellationRequested,

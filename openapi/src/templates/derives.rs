@@ -20,10 +20,6 @@ impl Derives {
         }
     }
 
-    pub const fn new_deser() -> Self {
-        Self { serialize: true, deserialize: true, ..Self::new() }
-    }
-
     pub fn debug(&mut self, debug: bool) -> &mut Self {
         self.debug = debug;
         self

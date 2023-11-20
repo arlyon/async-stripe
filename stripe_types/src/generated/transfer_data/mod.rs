@@ -7,8 +7,8 @@ pub struct TransferData {
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
-    /// The account (if any) the payment will be attributed to for tax
-    /// reporting, and where funds from the payment will be transferred to upon
+    /// The account (if any) that the payment is attributed to for tax
+    /// reporting, and where funds from the payment are transferred to after
     /// payment success.
     pub destination: stripe_types::Expandable<stripe_types::Account>,
 }

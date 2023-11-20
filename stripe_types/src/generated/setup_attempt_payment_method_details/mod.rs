@@ -9,8 +9,6 @@ pub struct SetupAttemptPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<stripe_types::SetupAttemptPaymentMethodDetailsBancontact>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<stripe_types::SetupAttemptPaymentMethodDetailsBlik>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<stripe_types::SetupAttemptPaymentMethodDetailsBoleto>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<stripe_types::SetupAttemptPaymentMethodDetailsCard>,

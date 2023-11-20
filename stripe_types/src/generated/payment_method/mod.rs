@@ -81,6 +81,8 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<stripe_types::RadarRadarOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<stripe_types::PaymentMethodRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<stripe_types::PaymentMethodSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<stripe_types::PaymentMethodSofort>,
@@ -132,6 +134,7 @@ pub enum PaymentMethodType {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -173,6 +176,7 @@ impl PaymentMethodType {
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
@@ -216,6 +220,7 @@ impl std::str::FromStr for PaymentMethodType {
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),

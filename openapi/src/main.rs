@@ -8,7 +8,7 @@ use petgraph::dot::{Config, Dot};
 use tracing::info;
 
 use crate::codegen::CodeGen;
-use crate::crate_inference::Crate;
+use crate::crate_inference::{Crate, ALL_CRATES};
 use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::url_finder::UrlFinder;
@@ -107,10 +107,10 @@ fn main() -> Result<()> {
 
     let mut fmt_cmd = std::process::Command::new("cargo");
     fmt_cmd.arg("+nightly").arg("fmt").arg("--");
-    for krate in Crate::all() {
+    for krate in &*ALL_CRATES {
         fmt_cmd.arg(format!(
             "out/{}",
-            if *krate == Crate::Types {
+            if *krate == Crate::TYPES {
                 format!("{}/mod.rs", krate.generated_out_path())
             } else {
                 format!("{}/src/mod.rs", krate.generated_out_path())

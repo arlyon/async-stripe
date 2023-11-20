@@ -65,10 +65,12 @@ pub struct UpdateAccountCapability<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
-    /// Passing true requests the capability for the account, if it is not already requested.
+    /// To request a new capability for an account, pass true.
     ///
-    /// A requested capability may not immediately become active.
-    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    /// There can be a delay before the requested capability becomes active.
+    /// If the capability has any activation requirements, the response includes them in the `requirements` arrays.  If a capability isn't permanent, you can remove it from the account by passing false.
+    /// Most capabilities are permanent after they've been requested.
+    /// Attempting to remove a permanent capability returns an error.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -79,6 +81,8 @@ impl<'a> UpdateAccountCapability<'a> {
 }
 impl<'a> UpdateAccountCapability<'a> {
     /// Updates an existing Account Capability.
+    ///
+    /// Request or remove a capability by updating its `requested` parameter.
     pub fn send(
         &self,
         client: &stripe::Client,

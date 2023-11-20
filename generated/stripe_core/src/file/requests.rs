@@ -16,9 +16,9 @@ pub struct ListFile<'a> {
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
-    /// The file purpose to filter queries by.
+    /// Filter queries by the file purpose.
     ///
-    /// If none is provided, files will not be filtered by purpose.
+    /// If you don't provide a purpose, the queries return unfiltered files.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<ListFilePurpose>,
     /// A cursor for use in pagination.
@@ -33,9 +33,9 @@ impl<'a> ListFile<'a> {
         Self::default()
     }
 }
-/// The file purpose to filter queries by.
+/// Filter queries by the file purpose.
 ///
-/// If none is provided, files will not be filtered by purpose.
+/// If you don't provide a purpose, the queries return unfiltered files.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ListFilePurpose {
@@ -135,7 +135,7 @@ impl serde::Serialize for ListFilePurpose {
 impl<'a> ListFile<'a> {
     /// Returns a list of the files that your account has access to.
     ///
-    /// The files are returned sorted by creation date, with the most recently created files appearing first.
+    /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -161,8 +161,8 @@ impl<'a> RetrieveFile<'a> {
 impl<'a> RetrieveFile<'a> {
     /// Retrieves the details of an existing file object.
     ///
-    /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
-    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
+    /// After you supply a unique file ID, Stripe returns the corresponding file object.
+    /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn send(
         &self,
         client: &stripe::Client,

@@ -12,7 +12,8 @@ impl<'a> RetrievePayout<'a> {
 impl<'a> RetrievePayout<'a> {
     /// Retrieves the details of an existing payout.
     ///
-    /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
+    /// Supply the unique payout ID from either a payout creation request or the payout list.
+    /// Stripe returns the corresponding payout information.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -60,9 +61,9 @@ impl<'a> ListPayout<'a> {
     }
 }
 impl<'a> ListPayout<'a> {
-    /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
+    /// Returns a list of existing payouts sent to third-party bank accounts or payouts that Stripe sent to you.
     ///
-    /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
+    /// The payouts return in sorted order, with the most recently created payouts appearing first.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -89,7 +90,7 @@ pub struct CreatePayout<'a> {
     pub description: Option<&'a str>,
     /// The ID of a bank account or a card to send the payout to.
     ///
-    /// If no destination is supplied, the default external account for the specified currency will be used.
+    /// If you don't provide a destination, we use the default external account for the specified currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
@@ -102,25 +103,24 @@ pub struct CreatePayout<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The method used to send this payout, which can be `standard` or `instant`.
+    /// The method used to send this payout, which is `standard` or `instant`.
     ///
-    /// `instant` is only supported for payouts to debit cards.
-    /// (See [Instant payouts for marketplaces for more information](https://stripe.com/blog/instant-payouts-for-marketplaces).).
+    /// We support `instant` for payouts to debit cards and bank accounts in certain countries.
+    /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub method: Option<CreatePayoutMethod>,
     /// The balance type of your Stripe balance to draw this payout from.
     ///
     /// Balances for different payment sources are kept separately.
-    /// You can find the amounts with the balances API.
+    /// You can find the amounts with the Balances API.
     /// One of `bank_account`, `card`, or `fpx`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<CreatePayoutSourceType>,
-    /// A string to be displayed on the recipient's bank or card statement.
+    /// A string that displays on the recipient's bank or card statement (up to 22 characters).
     ///
-    /// This may be at most 22 characters.
-    /// Attempting to use a `statement_descriptor` longer than 22 characters will return an error.
-    /// Note: Most banks will truncate this information and/or display it inconsistently.
-    /// Some may not display it at all.
+    /// A `statement_descriptor` that's longer than 22 characters return an error.
+    /// Most banks truncate this information and display it inconsistently.
+    /// Some banks might not display it at all.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 }
@@ -139,10 +139,10 @@ impl<'a> CreatePayout<'a> {
         }
     }
 }
-/// The method used to send this payout, which can be `standard` or `instant`.
+/// The method used to send this payout, which is `standard` or `instant`.
 ///
-/// `instant` is only supported for payouts to debit cards.
-/// (See [Instant payouts for marketplaces for more information](https://stripe.com/blog/instant-payouts-for-marketplaces).).
+/// We support `instant` for payouts to debit cards and bank accounts in certain countries.
+/// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePayoutMethod {
     Instant,
@@ -199,7 +199,7 @@ impl serde::Serialize for CreatePayoutMethod {
 /// The balance type of your Stripe balance to draw this payout from.
 ///
 /// Balances for different payment sources are kept separately.
-/// You can find the amounts with the balances API.
+/// You can find the amounts with the Balances API.
 /// One of `bank_account`, `card`, or `fpx`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePayoutSourceType {
@@ -258,9 +258,10 @@ impl serde::Serialize for CreatePayoutSourceType {
     }
 }
 impl<'a> CreatePayout<'a> {
-    /// To send funds to your own bank account, you create a new payout object.
+    /// To send funds to your own bank account, create a new payout object.
     ///
-    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must cover the payout amount.
+    /// If it doesn’t, you receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though every other action occurs as if you’re in live mode.  If you create a manual payout on a Stripe account that uses multiple payment source types, you need to specify the source type balance that the payout draws from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Payout> {
         client.send_form("/payouts", self, http_types::Method::Post)
@@ -285,10 +286,10 @@ impl<'a> UpdatePayout<'a> {
     }
 }
 impl<'a> UpdatePayout<'a> {
-    /// Updates the specified payout by setting the values of the parameters passed.
+    /// Updates the specified payout by setting the values of the parameters you pass.
     ///
-    /// Any parameters not provided will be left unchanged.
-    /// This request accepts only the metadata as arguments.
+    /// We don’t change parameters that you don’t provide.
+    /// This request only accepts the metadata as arguments.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -313,10 +314,10 @@ impl<'a> CancelPayout<'a> {
     }
 }
 impl<'a> CancelPayout<'a> {
-    /// A previously created payout can be canceled if it has not yet been paid out.
+    /// You can cancel a previously created payout if it hasn’t been paid out yet.
     ///
-    /// Funds will be refunded to your available balance.
-    /// You may not cancel automatic Stripe payouts.
+    /// Stripe refunds the funds to your available balance.
+    /// You can’t cancel automatic Stripe payouts.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -350,8 +351,8 @@ impl<'a> ReversePayout<'a> {
 impl<'a> ReversePayout<'a> {
     /// Reverses a payout by debiting the destination bank account.
     ///
-    /// Only payouts for connected accounts to US bank accounts may be reversed at this time.
-    /// If the payout is in the `pending` status, `/v1/payouts/:id/cancel` should be used instead.  By requesting a reversal via `/v1/payouts/:id/reverse`, you confirm that the authorized signatory of the selected bank account has authorized the debit on the bank account and that no other authorization is required.
+    /// At this time, you can only reverse payouts for connected accounts to US bank accounts.
+    /// If the payout is in the `pending` status, use `/v1/payouts/:id/cancel` instead.  By requesting a reversal through `/v1/payouts/:id/reverse`, you confirm that the authorized signatory of the selected bank account authorizes the debit on the bank account and that no other authorization is required.
     pub fn send(
         &self,
         client: &stripe::Client,

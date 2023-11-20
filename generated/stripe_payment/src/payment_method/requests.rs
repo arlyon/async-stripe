@@ -109,6 +109,9 @@ pub struct CreatePaymentMethod<'a> {
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreatePaymentMethodRadarOptions<'a>>,
+    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<&'a serde_json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentMethodSepaDebit<'a>>,
@@ -287,6 +290,7 @@ impl<'a> CreatePaymentMethodCardDetailsParams<'a> {
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodTokenParams<'a> {
+    /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format card: {token: "tok_visa"}.
     pub token: &'a str,
 }
 impl<'a> CreatePaymentMethodTokenParams<'a> {
@@ -651,6 +655,7 @@ pub enum CreatePaymentMethodIdealBank {
     Ing,
     Knab,
     Moneyou,
+    N26,
     Rabobank,
     Regiobank,
     Revolut,
@@ -673,6 +678,7 @@ impl CreatePaymentMethodIdealBank {
             Ing => "ing",
             Knab => "knab",
             Moneyou => "moneyou",
+            N26 => "n26",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -697,6 +703,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
+            "n26" => Ok(N26),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -1035,6 +1042,7 @@ pub enum CreatePaymentMethodType {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1074,6 +1082,7 @@ impl CreatePaymentMethodType {
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
@@ -1115,6 +1124,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
@@ -1322,42 +1332,12 @@ impl<'a> RetrievePaymentMethod<'a> {
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethod<'a> {
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<&'a serde_json::Value>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<&'a serde_json::Value>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<&'a serde_json::Value>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<&'a serde_json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdatePaymentMethodBillingDetails<'a>>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<&'a serde_json::Value>,
     /// If this is a `card` PaymentMethod, this hash contains the user's card details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdatePaymentMethodCard>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<&'a serde_json::Value>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -1371,19 +1351,9 @@ pub struct UpdatePaymentMethod<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<&'a serde_json::Value>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
-    /// This is a legacy parameter that will be removed in the future.
-    ///
-    /// It is a hash that does not accept any keys.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<&'a serde_json::Value>,
 }
 impl<'a> UpdatePaymentMethod<'a> {
     pub fn new() -> Self {
@@ -1590,7 +1560,6 @@ pub enum ListPaymentMethodType {
     Blik,
     Boleto,
     Card,
-    CardPresent,
     Cashapp,
     CustomerBalance,
     Eps,
@@ -1607,6 +1576,7 @@ pub enum ListPaymentMethodType {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1630,7 +1600,6 @@ impl ListPaymentMethodType {
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
-            CardPresent => "card_present",
             Cashapp => "cashapp",
             CustomerBalance => "customer_balance",
             Eps => "eps",
@@ -1647,6 +1616,7 @@ impl ListPaymentMethodType {
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
@@ -1672,7 +1642,6 @@ impl std::str::FromStr for ListPaymentMethodType {
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
-            "card_present" => Ok(CardPresent),
             "cashapp" => Ok(Cashapp),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
@@ -1689,6 +1658,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),

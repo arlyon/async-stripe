@@ -2,7 +2,7 @@
 pub struct ListPaymentFlowsSetupIntentSetupAttempt<'a> {
     /// A filter on the list, based on the object `created` field.
     ///
-    /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
+    /// The value can be a string with an integer Unix timestamp or a dictionary with a number of different query options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
     /// A cursor for use in pagination.
@@ -42,7 +42,7 @@ impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
     }
 }
 impl<'a> ListPaymentFlowsSetupIntentSetupAttempt<'a> {
-    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
+    /// Returns a list of SetupAttempts that associate with a provided SetupIntent.
     pub fn send(
         &self,
         client: &stripe::Client,

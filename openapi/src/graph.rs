@@ -2,7 +2,7 @@ use indexmap::IndexSet;
 use petgraph::prelude::DiGraphMap;
 
 use crate::components::Components;
-use crate::crate_inference::Crate;
+use crate::crate_inference::{Crate, ALL_CRATES};
 use crate::types::ComponentPath;
 
 pub type ComponentGraph<'a> = DiGraphMap<&'a ComponentPath, ()>;
@@ -31,15 +31,15 @@ impl Components {
     pub fn gen_crate_dep_graph(&self) -> DiGraphMap<Crate, ()> {
         let mut graph = DiGraphMap::new();
 
-        for krate in Crate::all().iter() {
+        for krate in &*ALL_CRATES {
             graph.add_node(*krate);
-            if *krate != Crate::Types {
+            if *krate != Crate::TYPES {
                 // Everybody depends on `stripe_types` because of def_id!, ext types, etc.
-                graph.add_edge(*krate, Crate::Types, ());
+                graph.add_edge(*krate, Crate::TYPES, ());
             }
         }
 
-        for krate in Crate::all().iter() {
+        for krate in &*ALL_CRATES {
             let members = self.get_crate_members(*krate);
             let mut deps = IndexSet::new();
             for member in members {

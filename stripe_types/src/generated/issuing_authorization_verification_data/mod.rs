@@ -1,13 +1,19 @@
-#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct IssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: IssuingAuthorizationVerificationDataAddressLine1Check,
     /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
     pub address_postal_code_check: IssuingAuthorizationVerificationDataAddressPostalCodeCheck,
+    /// The exemption applied to this authorization.
+    pub authentication_exemption: Option<stripe_types::IssuingAuthorizationAuthenticationExemption>,
     /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
     pub cvc_check: IssuingAuthorizationVerificationDataCvcCheck,
     /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
     pub expiry_check: IssuingAuthorizationVerificationDataExpiryCheck,
+    /// The postal code submitted as part of the authorization used for postal code verification.
+    pub postal_code: Option<String>,
+    /// 3D Secure details.
+    pub three_d_secure: Option<stripe_types::IssuingAuthorizationThreeDSecure>,
 }
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
 #[derive(Copy, Clone, Eq, PartialEq)]

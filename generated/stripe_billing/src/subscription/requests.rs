@@ -434,7 +434,7 @@ pub struct CreateSubscription<'a> {
     pub default_tax_rates: Option<&'a [&'a str]>,
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
@@ -1730,6 +1730,9 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFin
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub permissions: Option<&'a [CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    /// List of data features that you would like to retrieve upon account creation.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub prefetch: Option<&'a [CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 
 }
 impl<'a>
@@ -1798,6 +1801,58 @@ impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUs
     }
 }
 impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    Balances,
+}
+
+impl
+    CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    pub fn as_str(self) -> &'static str {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match s {
+    "balances" => Ok(Balances),
+_ => Err(())
+
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
     }
@@ -2393,7 +2448,7 @@ pub struct UpdateSubscription<'a> {
     pub default_tax_rates: Option<&'a [&'a str]>,
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// Specifies which fields in the response should be expanded.
@@ -2701,10 +2756,10 @@ impl UpdateSubscriptionBillingThresholds {
 /// Details about why this subscription was cancelled.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionCancellationDetails<'a> {
-    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    /// Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<&'a str>,
-    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback: Option<UpdateSubscriptionCancellationDetailsFeedback>,
 }
@@ -2713,7 +2768,7 @@ impl<'a> UpdateSubscriptionCancellationDetails<'a> {
         Self::default()
     }
 }
-/// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+/// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionCancellationDetailsFeedback {
     CustomerService,
@@ -3887,6 +3942,9 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFin
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub permissions: Option<&'a [UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    /// List of data features that you would like to retrieve upon account creation.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub prefetch: Option<&'a [UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 
 }
 impl<'a>
@@ -3955,6 +4013,58 @@ impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUs
     }
 }
 impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    Balances,
+}
+
+impl
+    UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    pub fn as_str(self) -> &'static str {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match s {
+    "balances" => Ok(Balances),
+_ => Err(())
+
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
     }
@@ -4464,10 +4574,22 @@ impl serde::Serialize for UpdateSubscriptionTrialSettingsEndBehaviorMissingPayme
     }
 }
 impl<'a> UpdateSubscription<'a> {
-    /// Updates an existing subscription on a customer to match the specified parameters.
+    /// Updates an existing subscription to match the specified parameters.
+    /// When changing prices or quantities, we optionally prorate the price we charge next month to make up for any price changes.
+    /// To preview how the proration is calculated, use the [upcoming invoice](https://stripe.com/docs/api/invoices/upcoming) endpoint.
     ///
-    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
-    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
+    /// By default, we prorate subscription changes.
+    ///
+    /// For example, if a customer signs up on May 1 for a $100 price, they’ll be billed $100 immediately.
+    /// If on May 15 they switch to a $200 price, then on June 1 they’ll be billed $250 ($200 for a renewal of her subscription, plus a $50 prorating adjustment for half of the previous month’s $100 difference).
+    /// Similarly, a downgrade generates a credit that is applied to the next invoice.
+    /// We also prorate when you make quantity changes.  Switching prices does not normally change the billing date or generate an immediate charge unless:  <ul> <li>The billing interval is changed (for example, from monthly to yearly).</li> <li>The subscription moves from free to paid, or paid to free.</li> <li>A trial starts or ends.</li> </ul>  In these cases, we apply a credit for the unused time on the previous price, immediately charge the customer using the new price, and reset the billing date.  If you want to charge for an upgrade immediately, pass `proration_behavior` as `always_invoice` to create prorations, automatically invoice the customer for those proration adjustments, and attempt to collect payment.
+    /// If you pass `create_prorations`, the prorations are created but not automatically invoiced.
+    /// If you want to bill the customer for the prorations before the subscription’s renewal date, you need to manually [invoice the customer](https://stripe.com/docs/api/invoices/create).  If you don’t want to prorate, set the `proration_behavior` option to `none`.
+    /// With this option, the customer is billed $100 on May 1 and $200 on June 1.
+    /// Similarly, if you set `proration_behavior` to `none` when switching between different billing intervals (for example, from monthly to yearly), we don’t generate any credits for the old subscription’s unused time.
+    /// We still reset the billing date and bill immediately for the new subscription.  Updating the quantity on a subscription many times in an hour may result in [rate limiting](https://stripe.com/docs/rate-limits).
+    /// If you need to bill for a frequently changing quantity, consider integrating [usage-based billing](https://stripe.com/docs/billing/subscriptions/usage-based) instead.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -4533,10 +4655,10 @@ impl<'a> CancelSubscription<'a> {
 /// Details about why this subscription was cancelled.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelSubscriptionCancellationDetails<'a> {
-    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    /// Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<&'a str>,
-    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub feedback: Option<CancelSubscriptionCancellationDetailsFeedback>,
 }
@@ -4545,7 +4667,7 @@ impl<'a> CancelSubscriptionCancellationDetails<'a> {
         Self::default()
     }
 }
-/// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+/// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CancelSubscriptionCancellationDetailsFeedback {
     CustomerService,

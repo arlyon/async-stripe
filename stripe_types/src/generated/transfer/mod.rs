@@ -8,9 +8,9 @@
 /// For more information, read about the [transfer/payout split](https://stripe.com/docs/transfer-payout-split).  Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/separate-charges-and-transfers).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Transfer {
-    /// Amount in %s to be transferred.
+    /// Amount in cents (or local equivalent) to be transferred.
     pub amount: i64,
-    /// Amount in %s reversed (can be less than the amount attribute on the transfer if a partial reversal was issued).
+    /// Amount in cents (or local equivalent) reversed (can be less than the amount attribute on the transfer if a partial reversal was issued).
     pub amount_reversed: i64,
     /// Balance transaction that describes the impact of this transfer on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,

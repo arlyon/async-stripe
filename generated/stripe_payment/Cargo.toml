@@ -4,6 +4,12 @@ version.workspace = true
 description.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lib]
 path = "src/mod.rs"
@@ -29,5 +35,7 @@ bank_account = []
 card = []
 payment_link = []
 payment_method = []
+payment_method_config_resource_payment_method_configuration = []
+payment_method_domain_resource_payment_method_domain = []
 source = []
 

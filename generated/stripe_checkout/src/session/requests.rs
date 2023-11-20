@@ -32,6 +32,9 @@ pub struct ListSession<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<&'a str>,
+    /// Only return the Checkout Sessions matching the given status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<ListSessionStatus>,
     /// Only return the Checkout Session for the subscription specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<&'a str>,
@@ -50,6 +53,63 @@ pub struct ListSessionCustomerDetails<'a> {
 impl<'a> ListSessionCustomerDetails<'a> {
     pub fn new(email: &'a str) -> Self {
         Self { email }
+    }
+}
+/// Only return the Checkout Sessions matching the given status.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListSessionStatus {
+    Complete,
+    Expired,
+    Open,
+}
+
+impl ListSessionStatus {
+    pub fn as_str(self) -> &'static str {
+        use ListSessionStatus::*;
+        match self {
+            Complete => "complete",
+            Expired => "expired",
+            Open => "open",
+        }
+    }
+}
+
+impl std::str::FromStr for ListSessionStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListSessionStatus::*;
+        match s {
+            "complete" => Ok(Complete),
+            "expired" => Ok(Expired),
+            "open" => Ok(Open),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListSessionStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListSessionStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> ListSession<'a> {
@@ -86,7 +146,7 @@ impl<'a> RetrieveSession<'a> {
         client.get_query(&format!("/checkout/sessions/{session}", session = session), self)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSession<'a> {
     /// Configure actions after a Checkout Session has expired.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -114,6 +174,7 @@ pub struct CreateSession<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    /// Required in `setup` mode when `payment_method_types` is not set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// Collect additional information from your customer using custom fields.
@@ -126,9 +187,9 @@ pub struct CreateSession<'a> {
     pub custom_text: Option<CreateSessionCustomText<'a>>,
     /// ID of an existing Customer, if one exists.
     ///
-    /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
-    /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, and otherwise the most recent card will be used.
-    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
+    /// In `payment` mode, the customer’s most recently saved card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
+    /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, otherwise the most recently saved card will be used.
+    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `subscription` mode or with `customer_creation` set as `always` in `payment` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
@@ -203,13 +264,16 @@ pub struct CreateSession<'a> {
     /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0. This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on configuring [subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_collection: Option<CreateSessionPaymentMethodCollection>,
+    /// The ID of the payment method configuration to use with this Checkout session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration: Option<&'a str>,
     /// Payment-method-specific configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateSessionPaymentMethodOptions<'a>>,
     /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
     ///
-    /// In `payment` and `subscription` mode, you can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-    /// It is required in `setup` mode.
+    /// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    /// See [Dynamic Payment Methods](https://stripe.com/docs/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
     ///
     /// Read more about the supported payment methods and their requirements in our [payment
     /// method details guide](/docs/payments/checkout/payment-methods).
@@ -227,6 +291,18 @@ pub struct CreateSession<'a> {
     /// Learn more about [collecting phone numbers with Checkout](https://stripe.com/docs/payments/checkout/phone-numbers).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number_collection: Option<CreateSessionPhoneNumberCollection>,
+    /// This parameter applies to `ui_mode: embedded`.
+    ///
+    /// By default, Stripe will always redirect to your return_url after a successful confirmation.
+    /// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect_on_completion: Option<CreateSessionRedirectOnCompletion>,
+    /// The URL to redirect your customer back to after they authenticate or cancel their payment on the
+    /// payment method's app or site.
+    ///
+    /// This parameter is required if ui_mode is `embedded` and redirect-based payment methods are enabled on the session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<&'a str>,
     /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent_data: Option<CreateSessionSetupIntentData<'a>>,
@@ -234,13 +310,10 @@ pub struct CreateSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<CreateSessionShippingAddressCollection<'a>>,
     /// The shipping rate options to apply to this Session.
+    ///
+    /// Up to a maximum of 5.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_options: Option<&'a [CreateSessionShippingOptions<'a>]>,
-    /// [Deprecated] The shipping rate to apply to this Session.
-    ///
-    /// Only up to one may be specified.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rates: Option<&'a [&'a str]>,
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
@@ -252,52 +325,23 @@ pub struct CreateSession<'a> {
     pub subscription_data: Option<CreateSessionSubscriptionData<'a>>,
     /// The URL to which Stripe should send customers when payment or setup
     /// is complete.
-    /// If you’d like to use information from the successful Checkout Session on your page,
-    /// read the guide on [customizing your success page](https://stripe.com/docs/payments/checkout/custom-success-page).
-    pub success_url: &'a str,
+    /// This parameter is not allowed if ui_mode is `embedded`.
+    ///
+    /// If you’d like to use information from the successful Checkout Session on your page, read the guide on [customizing your success page](https://stripe.com/docs/payments/checkout/custom-success-page).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub success_url: Option<&'a str>,
     /// Controls tax ID collection settings for the session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_collection: Option<CreateSessionTaxIdCollection>,
+    /// `ui_mode` can be `hosted` or `embedded`.
+    ///
+    /// The default is `hosted`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ui_mode: Option<CreateSessionUiMode>,
 }
 impl<'a> CreateSession<'a> {
-    pub fn new(success_url: &'a str) -> Self {
-        Self {
-            after_expiration: Default::default(),
-            allow_promotion_codes: Default::default(),
-            automatic_tax: Default::default(),
-            billing_address_collection: Default::default(),
-            cancel_url: Default::default(),
-            client_reference_id: Default::default(),
-            consent_collection: Default::default(),
-            currency: Default::default(),
-            custom_fields: Default::default(),
-            custom_text: Default::default(),
-            customer: Default::default(),
-            customer_creation: Default::default(),
-            customer_email: Default::default(),
-            customer_update: Default::default(),
-            discounts: Default::default(),
-            expand: Default::default(),
-            expires_at: Default::default(),
-            invoice_creation: Default::default(),
-            line_items: Default::default(),
-            locale: Default::default(),
-            metadata: Default::default(),
-            mode: Default::default(),
-            payment_intent_data: Default::default(),
-            payment_method_collection: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-            phone_number_collection: Default::default(),
-            setup_intent_data: Default::default(),
-            shipping_address_collection: Default::default(),
-            shipping_options: Default::default(),
-            shipping_rates: Default::default(),
-            submit_type: Default::default(),
-            subscription_data: Default::default(),
-            success_url,
-            tax_id_collection: Default::default(),
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 /// Configure actions after a Checkout Session has expired.
@@ -768,6 +812,9 @@ pub struct CreateSessionCustomText<'a> {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<CreateSessionCustomTextSubmit<'a>>,
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance: Option<CreateSessionCustomTextTermsOfServiceAcceptance<'a>>,
 }
 impl<'a> CreateSessionCustomText<'a> {
     pub fn new() -> Self {
@@ -777,7 +824,7 @@ impl<'a> CreateSessionCustomText<'a> {
 /// Custom text that should be displayed alongside shipping address collection.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSessionCustomTextShippingAddress<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> CreateSessionCustomTextShippingAddress<'a> {
@@ -788,10 +835,21 @@ impl<'a> CreateSessionCustomTextShippingAddress<'a> {
 /// Custom text that should be displayed alongside the payment confirmation button.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSessionCustomTextSubmit<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> CreateSessionCustomTextSubmit<'a> {
+    pub fn new(message: &'a str) -> Self {
+        Self { message }
+    }
+}
+/// Custom text that should be displayed in place of the default terms of service agreement text.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateSessionCustomTextTermsOfServiceAcceptance<'a> {
+    /// Text may be up to 1200 characters in length.
+    pub message: &'a str,
+}
+impl<'a> CreateSessionCustomTextTermsOfServiceAcceptance<'a> {
     pub fn new(message: &'a str) -> Self {
         Self { message }
     }
@@ -1815,7 +1873,7 @@ pub struct CreateSessionPaymentIntentData<'a> {
     pub transfer_data: Option<CreateSessionPaymentIntentDataTransferData<'a>>,
     /// A string that identifies the resulting payment as part of a group.
     ///
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
@@ -2164,6 +2222,9 @@ pub struct CreateSessionPaymentMethodOptions<'a> {
     /// contains details about the Pix payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<CreateSessionPaymentMethodOptionsPix>,
+    /// contains details about the RevolutPay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<CreateSessionPaymentMethodOptionsRevolutPay>,
     /// contains details about the Sepa Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSessionPaymentMethodOptionsSepaDebit>,
@@ -3321,8 +3382,6 @@ pub struct CreateSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
         &'a [CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes],
     >,
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
-    ///
-    /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -3430,8 +3489,6 @@ impl serde::Serialize
     }
 }
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
-///
-/// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     EuBankTransfer,
@@ -4668,6 +4725,80 @@ impl CreateSessionPaymentMethodOptionsPix {
         Self::default()
     }
 }
+/// contains details about the RevolutPay payment method options.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateSessionPaymentMethodOptionsRevolutPay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+}
+impl CreateSessionPaymentMethodOptionsRevolutPay {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+///
+/// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        use CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
 /// contains details about the Sepa Debit payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSessionPaymentMethodOptionsSepaDebit {
@@ -4850,6 +4981,10 @@ pub struct CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions:
         Option<&'a [CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch:
+        Option<&'a [CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 }
 impl<'a> CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
     pub fn new() -> Self {
@@ -4919,6 +5054,65 @@ impl std::fmt::Debug
 }
 impl serde::Serialize
     for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -5179,8 +5373,8 @@ impl serde::Serialize for CreateSessionPaymentMethodOptionsWechatPaySetupFutureU
 }
 /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
 ///
-/// In `payment` and `subscription` mode, you can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-/// It is required in `setup` mode.
+/// You can omit this attribute to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+/// See [Dynamic Payment Methods](https://stripe.com/docs/payments/payment-methods/integration-options#using-dynamic-payment-methods) for more details.
 ///
 /// Read more about the supported payment methods and their requirements in our [payment
 /// method details guide](/docs/payments/checkout/payment-methods).
@@ -5217,6 +5411,7 @@ pub enum CreateSessionPaymentMethodTypes {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -5256,6 +5451,7 @@ impl CreateSessionPaymentMethodTypes {
             Paypal => "paypal",
             Pix => "pix",
             Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             UsBankAccount => "us_bank_account",
@@ -5297,6 +5493,7 @@ impl std::str::FromStr for CreateSessionPaymentMethodTypes {
             "paypal" => Ok(Paypal),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
@@ -5346,6 +5543,66 @@ pub struct CreateSessionPhoneNumberCollection {
 impl CreateSessionPhoneNumberCollection {
     pub fn new(enabled: bool) -> Self {
         Self { enabled }
+    }
+}
+/// This parameter applies to `ui_mode: embedded`.
+///
+/// By default, Stripe will always redirect to your return_url after a successful confirmation.
+/// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSessionRedirectOnCompletion {
+    Always,
+    IfRequired,
+    Never,
+}
+
+impl CreateSessionRedirectOnCompletion {
+    pub fn as_str(self) -> &'static str {
+        use CreateSessionRedirectOnCompletion::*;
+        match self {
+            Always => "always",
+            IfRequired => "if_required",
+            Never => "never",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSessionRedirectOnCompletion {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSessionRedirectOnCompletion::*;
+        match s {
+            "always" => Ok(Always),
+            "if_required" => Ok(IfRequired),
+            "never" => Ok(Never),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSessionRedirectOnCompletion {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSessionRedirectOnCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSessionRedirectOnCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSessionRedirectOnCompletion {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
@@ -6155,6 +6412,8 @@ impl serde::Serialize for CreateSessionShippingAddressCollectionAllowedCountries
     }
 }
 /// The shipping rate options to apply to this Session.
+///
+/// Up to a maximum of 5.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSessionShippingOptions<'a> {
     /// The ID of the Shipping Rate to use for this shipping option.
@@ -6709,11 +6968,6 @@ pub struct CreateSessionSubscriptionData<'a> {
     /// A future timestamp to anchor the subscription's billing cycle for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
-    /// The ID of the coupon to apply to this subscription.
-    ///
-    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
     /// The tax rates that will apply to any subscription item that does not have
     /// `tax_rates` set.
     ///
@@ -6722,7 +6976,7 @@ pub struct CreateSessionSubscriptionData<'a> {
     pub default_tax_rates: Option<&'a [&'a str]>,
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription
-    /// for rendering in Stripe hosted surfaces.
+    /// for rendering in the [customer portal](https://stripe.com/docs/customer-management).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -6749,12 +7003,6 @@ pub struct CreateSessionSubscriptionData<'a> {
     /// Has to be at least 48 hours in the future.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<stripe_types::Timestamp>,
-    /// Indicates if a plan’s `trial_period_days` should be applied to the subscription.
-    ///
-    /// Setting `trial_end` on `subscription_data` is preferred.
-    /// Defaults to `false`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_from_plan: Option<bool>,
     /// Integer representing the number of trial period days before the
     /// customer is charged for the first time.
     ///
@@ -6940,6 +7188,62 @@ pub struct CreateSessionTaxIdCollection {
 impl CreateSessionTaxIdCollection {
     pub fn new(enabled: bool) -> Self {
         Self { enabled }
+    }
+}
+/// `ui_mode` can be `hosted` or `embedded`.
+///
+/// The default is `hosted`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateSessionUiMode {
+    Embedded,
+    Hosted,
+}
+
+impl CreateSessionUiMode {
+    pub fn as_str(self) -> &'static str {
+        use CreateSessionUiMode::*;
+        match self {
+            Embedded => "embedded",
+            Hosted => "hosted",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSessionUiMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSessionUiMode::*;
+        match s {
+            "embedded" => Ok(Embedded),
+            "hosted" => Ok(Hosted),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateSessionUiMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSessionUiMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateSessionUiMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateSessionUiMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> CreateSession<'a> {

@@ -25,6 +25,11 @@ pub struct CreateReversalTaxProductResourceTaxTransaction<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
+    /// A flat amount to reverse across the entire transaction, in negative integer cents.
+    ///
+    /// This value represents the total amount to refund from the transaction, including taxes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<i64>,
     /// The line item amounts to reverse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line_items: Option<&'a [CreateReversalTaxProductResourceTaxTransactionLineItems<'a>]>,
@@ -57,6 +62,7 @@ impl<'a> CreateReversalTaxProductResourceTaxTransaction<'a> {
     ) -> Self {
         Self {
             expand: Default::default(),
+            flat_amount: Default::default(),
             line_items: Default::default(),
             metadata: Default::default(),
             mode,

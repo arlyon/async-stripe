@@ -344,6 +344,9 @@ pub struct UpdateAccountCapabilities {
     /// The promptpay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<UpdateAccountCapabilitiesPromptpayPayments>,
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<UpdateAccountCapabilitiesRevolutPayPayments>,
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
@@ -794,6 +797,21 @@ impl UpdateAccountCapabilitiesPromptpayPayments {
         Self::default()
     }
 }
+/// The revolut_pay_payments capability.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateAccountCapabilitiesRevolutPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+impl UpdateAccountCapabilitiesRevolutPayPayments {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// The sepa_debit_payments capability.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateAccountCapabilitiesSepaDebitPayments {
@@ -1111,6 +1129,7 @@ pub enum UpdateAccountCompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -1126,6 +1145,7 @@ pub enum UpdateAccountCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -1139,6 +1159,7 @@ impl UpdateAccountCompanyStructure {
             GovernmentInstrumentality => "government_instrumentality",
             GovernmentalUnit => "governmental_unit",
             IncorporatedNonProfit => "incorporated_non_profit",
+            IncorporatedPartnership => "incorporated_partnership",
             LimitedLiabilityPartnership => "limited_liability_partnership",
             Llc => "llc",
             MultiMemberLlc => "multi_member_llc",
@@ -1154,6 +1175,7 @@ impl UpdateAccountCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            UnincorporatedPartnership => "unincorporated_partnership",
             Unknown => "unknown",
         }
     }
@@ -1169,6 +1191,7 @@ impl std::str::FromStr for UpdateAccountCompanyStructure {
             "government_instrumentality" => Ok(GovernmentInstrumentality),
             "governmental_unit" => Ok(GovernmentalUnit),
             "incorporated_non_profit" => Ok(IncorporatedNonProfit),
+            "incorporated_partnership" => Ok(IncorporatedPartnership),
             "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
             "llc" => Ok(Llc),
             "multi_member_llc" => Ok(MultiMemberLlc),
@@ -1184,6 +1207,7 @@ impl std::str::FromStr for UpdateAccountCompanyStructure {
             "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
+            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
             _ => Err(()),
         }
     }
@@ -1401,16 +1425,16 @@ pub struct UpdateAccountIndividual<'a> {
     /// The individual's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<&'a str>,
-    /// The government-issued ID number of the individual, as appropriate for the representative’s country.
+    /// The government-issued ID number of the individual, as appropriate for the representative's country.
     ///
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The government-issued secondary ID number of the individual, as appropriate for the representative's country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The individual's last name.
@@ -1694,6 +1718,9 @@ impl<'a> UpdateAccountIndividualVerificationDocument<'a> {
 /// Options for customizing how the account functions within Stripe.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateAccountSettings<'a> {
+    /// Settings specific to Bacs Direct Debit payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<UpdateAccountSettingsBacsDebitPayments<'a>>,
     /// Settings used to apply the account's branding to email receipts, invoices, Checkout, and other products.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branding: Option<UpdateAccountSettingsBranding<'a>>,
@@ -1714,6 +1741,24 @@ pub struct UpdateAccountSettings<'a> {
     pub treasury: Option<UpdateAccountSettingsTreasury<'a>>,
 }
 impl<'a> UpdateAccountSettings<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Settings specific to Bacs Direct Debit payments.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateAccountSettingsBacsDebitPayments<'a> {
+    /// The Bacs Direct Debit Display Name for this account.
+    ///
+    /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
+    /// Mobile banking apps display it as the name of the business.
+    /// To use custom branding, set the Bacs Direct Debit Display Name during or right after creation.
+    /// Custom branding incurs an additional monthly fee for the platform.
+    /// If you don't set the display name before requesting Bacs capability, it's automatically set as "Stripe" and the account is onboarded to Stripe branding, which is free.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_name: Option<&'a str>,
+}
+impl<'a> UpdateAccountSettingsBacsDebitPayments<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -2105,7 +2150,7 @@ impl<'a> UpdateAccount<'a> {
     /// Any parameters not provided are left unchanged.  For Custom accounts, you can update any information on the account.
     /// For other accounts, you can update all information until that account has started to go through Connect Onboarding.
     /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters can no longer be changed.
-    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/settings/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn send(
         &self,
@@ -2485,6 +2530,9 @@ pub struct CreateAccountCapabilities {
     /// The promptpay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<CreateAccountCapabilitiesPromptpayPayments>,
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<CreateAccountCapabilitiesRevolutPayPayments>,
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
@@ -2935,6 +2983,21 @@ impl CreateAccountCapabilitiesPromptpayPayments {
         Self::default()
     }
 }
+/// The revolut_pay_payments capability.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateAccountCapabilitiesRevolutPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+impl CreateAccountCapabilitiesRevolutPayPayments {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// The sepa_debit_payments capability.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateAccountCapabilitiesSepaDebitPayments {
@@ -3252,6 +3315,7 @@ pub enum CreateAccountCompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -3267,6 +3331,7 @@ pub enum CreateAccountCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -3280,6 +3345,7 @@ impl CreateAccountCompanyStructure {
             GovernmentInstrumentality => "government_instrumentality",
             GovernmentalUnit => "governmental_unit",
             IncorporatedNonProfit => "incorporated_non_profit",
+            IncorporatedPartnership => "incorporated_partnership",
             LimitedLiabilityPartnership => "limited_liability_partnership",
             Llc => "llc",
             MultiMemberLlc => "multi_member_llc",
@@ -3295,6 +3361,7 @@ impl CreateAccountCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            UnincorporatedPartnership => "unincorporated_partnership",
             Unknown => "unknown",
         }
     }
@@ -3310,6 +3377,7 @@ impl std::str::FromStr for CreateAccountCompanyStructure {
             "government_instrumentality" => Ok(GovernmentInstrumentality),
             "governmental_unit" => Ok(GovernmentalUnit),
             "incorporated_non_profit" => Ok(IncorporatedNonProfit),
+            "incorporated_partnership" => Ok(IncorporatedPartnership),
             "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
             "llc" => Ok(Llc),
             "multi_member_llc" => Ok(MultiMemberLlc),
@@ -3325,6 +3393,7 @@ impl std::str::FromStr for CreateAccountCompanyStructure {
             "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
+            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
             _ => Err(()),
         }
     }
@@ -3542,16 +3611,16 @@ pub struct CreateAccountIndividual<'a> {
     /// The individual's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<&'a str>,
-    /// The government-issued ID number of the individual, as appropriate for the representative’s country.
+    /// The government-issued ID number of the individual, as appropriate for the representative's country.
     ///
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The government-issued secondary ID number of the individual, as appropriate for the representative's country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The individual's last name.
@@ -3835,6 +3904,9 @@ impl<'a> CreateAccountIndividualVerificationDocument<'a> {
 /// Options for customizing how the account functions within Stripe.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateAccountSettings<'a> {
+    /// Settings specific to Bacs Direct Debit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<CreateAccountSettingsBacsDebitPayments<'a>>,
     /// Settings used to apply the account's branding to email receipts, invoices, Checkout, and other products.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branding: Option<CreateAccountSettingsBranding<'a>>,
@@ -3855,6 +3927,24 @@ pub struct CreateAccountSettings<'a> {
     pub treasury: Option<CreateAccountSettingsTreasury<'a>>,
 }
 impl<'a> CreateAccountSettings<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Settings specific to Bacs Direct Debit.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateAccountSettingsBacsDebitPayments<'a> {
+    /// The Bacs Direct Debit Display Name for this account.
+    ///
+    /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
+    /// Mobile banking apps display it as the name of the business.
+    /// To use custom branding, set the Bacs Direct Debit Display Name during or right after creation.
+    /// Custom branding incurs an additional monthly fee for the platform.
+    /// If you don't set the display name before requesting Bacs capability, it's automatically set as "Stripe" and the account is onboarded to Stripe branding, which is free.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_name: Option<&'a str>,
+}
+impl<'a> CreateAccountSettingsBacsDebitPayments<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -4324,7 +4414,7 @@ impl DeleteAccount {
     /// Accounts created using test-mode keys can be deleted at any time.
     ///
     /// Standard accounts created using live-mode keys cannot be deleted.
-    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
+    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/settings/account) instead.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -4410,6 +4500,9 @@ pub struct PersonsAccountRelationship {
     /// A filter on the list of people returned based on whether these people are executives of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
+    /// A filter on the list of people returned based on whether these people are legal guardians of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
     /// A filter on the list of people returned based on whether these people are owners of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,

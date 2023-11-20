@@ -1,12 +1,13 @@
+/// The credit note line item object.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreditNoteLineItem {
-    /// The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
     pub amount: i64,
-    /// The integer amount in %s representing the amount being credited for this line item, excluding all tax and discounts.
+    /// The integer amount in cents (or local equivalent) representing the amount being credited for this line item, excluding all tax and discounts.
     pub amount_excluding_tax: Option<i64>,
     /// Description of the item being credited.
     pub description: Option<String>,
-    /// The integer amount in %s representing the discount being credited for this line item.
+    /// The integer amount in cents (or local equivalent) representing the discount being credited for this line item.
     pub discount_amount: i64,
     /// The amount of discount calculated per discount for this line item.
     pub discount_amounts: Vec<stripe_types::DiscountsResourceDiscountAmount>,
@@ -32,7 +33,7 @@ pub struct CreditNoteLineItem {
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     pub unit_amount_decimal: Option<String>,
-    /// The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.
+    /// The amount in cents (or local equivalent) representing the unit amount being credited for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
 /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.

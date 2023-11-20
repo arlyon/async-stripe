@@ -12,11 +12,11 @@ pub struct Plan {
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     pub aggregate_usage: Option<PlanAggregateUsage>,
-    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub amount: Option<i64>,
-    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub amount_decimal: Option<String>,

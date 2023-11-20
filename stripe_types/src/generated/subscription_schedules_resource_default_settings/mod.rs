@@ -26,7 +26,7 @@ pub struct SubscriptionSchedulesResourceDefaultSettings {
     pub default_payment_method: Option<stripe_types::Expandable<stripe_types::PaymentMethod>>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
     /// The subscription schedule's default invoice settings.
     pub invoice_settings: Option<stripe_types::InvoiceSettingSubscriptionScheduleSetting>,

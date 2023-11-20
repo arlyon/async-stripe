@@ -4,6 +4,12 @@ version.workspace = true
 description.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lib]
 path = "src/mod.rs"
@@ -37,6 +43,7 @@ reporting_report_run = []
 reporting_report_type = []
 scheduled_query_run = []
 tax_product_resource_tax_calculation = []
+tax_product_registrations_resource_tax_registration = []
 tax_product_resource_tax_settings = []
 tax_product_resource_tax_transaction = []
 

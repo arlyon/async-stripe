@@ -5,6 +5,8 @@ pub struct LinkedAccountOptionsUsBankAccount {
     /// The `payment_method` permission must be included.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<LinkedAccountOptionsUsBankAccountPermissions>>,
+    /// Data features requested to be retrieved upon account creation.
+    pub prefetch: Option<Vec<LinkedAccountOptionsUsBankAccountPrefetch>>,
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -81,6 +83,66 @@ impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsUsBankAccountPermissio
             serde::de::Error::custom(
                 "Unknown value for LinkedAccountOptionsUsBankAccountPermissions",
             )
+        })
+    }
+}
+/// Data features requested to be retrieved upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum LinkedAccountOptionsUsBankAccountPrefetch {
+    Balances,
+}
+
+impl LinkedAccountOptionsUsBankAccountPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use LinkedAccountOptionsUsBankAccountPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr for LinkedAccountOptionsUsBankAccountPrefetch {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use LinkedAccountOptionsUsBankAccountPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for LinkedAccountOptionsUsBankAccountPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for LinkedAccountOptionsUsBankAccountPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for LinkedAccountOptionsUsBankAccountPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for LinkedAccountOptionsUsBankAccountPrefetch {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsUsBankAccountPrefetch {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for LinkedAccountOptionsUsBankAccountPrefetch")
         })
     }
 }

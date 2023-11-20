@@ -38,6 +38,9 @@ pub struct ListPersonRelationship {
     /// A filter on the list of people returned based on whether these people are executives of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
+    /// A filter on the list of people returned based on whether these people are legal guardians of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
     /// A filter on the list of people returned based on whether these people are owners of the account's company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -99,6 +102,9 @@ impl<'a> RetrievePerson<'a> {
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePerson<'a> {
+    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<CreatePersonAdditionalTosAcceptances<'a>>,
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreatePersonAddress<'a>>,
@@ -138,13 +144,13 @@ pub struct CreatePerson<'a> {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The person's last name.
@@ -196,6 +202,36 @@ pub struct CreatePerson<'a> {
     pub verification: Option<CreatePersonVerification<'a>>,
 }
 impl<'a> CreatePerson<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the required Stripe agreements.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePersonAdditionalTosAcceptances<'a> {
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<CreatePersonAdditionalTosAcceptancesAccount<'a>>,
+}
+impl<'a> CreatePersonAdditionalTosAcceptances<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the main Stripe service agreement.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePersonAdditionalTosAcceptancesAccount<'a> {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> CreatePersonAdditionalTosAcceptancesAccount<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -394,6 +430,9 @@ pub struct CreatePersonRelationship<'a> {
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
+    /// Whether the person is the legal guardian of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -485,6 +524,9 @@ impl<'a> CreatePerson<'a> {
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePerson<'a> {
+    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<UpdatePersonAdditionalTosAcceptances<'a>>,
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<UpdatePersonAddress<'a>>,
@@ -524,13 +566,13 @@ pub struct UpdatePerson<'a> {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The person's last name.
@@ -582,6 +624,36 @@ pub struct UpdatePerson<'a> {
     pub verification: Option<UpdatePersonVerification<'a>>,
 }
 impl<'a> UpdatePerson<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the required Stripe agreements.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePersonAdditionalTosAcceptances<'a> {
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<UpdatePersonAdditionalTosAcceptancesAccount<'a>>,
+}
+impl<'a> UpdatePersonAdditionalTosAcceptances<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the main Stripe service agreement.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePersonAdditionalTosAcceptancesAccount<'a> {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> UpdatePersonAdditionalTosAcceptancesAccount<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -780,6 +852,9 @@ pub struct UpdatePersonRelationship<'a> {
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
+    /// Whether the person is the legal guardian of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,

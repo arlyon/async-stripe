@@ -8,6 +8,8 @@ pub enum BalanceTransactionSource {
     Charge(stripe_types::Charge),
     #[serde(rename = "connect_collection_transfer")]
     ConnectCollectionTransfer(stripe_types::ConnectCollectionTransfer),
+    #[serde(rename = "customer_cash_balance_transaction")]
+    CustomerCashBalanceTransaction(stripe_types::CustomerCashBalanceTransaction),
     #[serde(rename = "dispute")]
     Dispute(stripe_types::Dispute),
     #[serde(rename = "fee_refund")]
@@ -42,6 +44,7 @@ impl stripe_types::Object for BalanceTransactionSource {
             Self::PlatformFee(v) => Some(v.id.as_str()),
             Self::Charge(v) => Some(v.id.as_str()),
             Self::ConnectCollectionTransfer(v) => Some(v.id.as_str()),
+            Self::CustomerCashBalanceTransaction(v) => Some(v.id.as_str()),
             Self::Dispute(v) => Some(v.id.as_str()),
             Self::FeeRefund(v) => Some(v.id.as_str()),
             Self::IssuingAuthorization(v) => Some(v.id.as_str()),

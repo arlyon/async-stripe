@@ -72,7 +72,7 @@ pub struct Card {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
     /// Card funding type.
@@ -99,9 +99,9 @@ pub struct Card {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Cardholder name.
     pub name: Option<String>,
-    /// For external accounts, possible values are `new` and `errored`.
+    /// For external accounts that are cards, possible values are `new` and `errored`.
     ///
-    /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
+    /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// If the card number is tokenized, this is the method that was used.

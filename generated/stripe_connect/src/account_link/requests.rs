@@ -102,8 +102,6 @@ impl serde::Serialize for CreateAccountLinkCollect {
 pub enum CreateAccountLinkType {
     AccountOnboarding,
     AccountUpdate,
-    CustomAccountUpdate,
-    CustomAccountVerification,
 }
 
 impl CreateAccountLinkType {
@@ -112,8 +110,6 @@ impl CreateAccountLinkType {
         match self {
             AccountOnboarding => "account_onboarding",
             AccountUpdate => "account_update",
-            CustomAccountUpdate => "custom_account_update",
-            CustomAccountVerification => "custom_account_verification",
         }
     }
 }
@@ -125,8 +121,6 @@ impl std::str::FromStr for CreateAccountLinkType {
         match s {
             "account_onboarding" => Ok(AccountOnboarding),
             "account_update" => Ok(AccountUpdate),
-            "custom_account_update" => Ok(CustomAccountUpdate),
-            "custom_account_verification" => Ok(CustomAccountVerification),
             _ => Err(()),
         }
     }

@@ -14,6 +14,9 @@ pub struct ListExternalAccount<'a> {
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    /// Filter external accounts according to a particular object type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object: Option<ListExternalAccountObject>,
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -24,6 +27,60 @@ pub struct ListExternalAccount<'a> {
 impl<'a> ListExternalAccount<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// Filter external accounts according to a particular object type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListExternalAccountObject {
+    BankAccount,
+    Card,
+}
+
+impl ListExternalAccountObject {
+    pub fn as_str(self) -> &'static str {
+        use ListExternalAccountObject::*;
+        match self {
+            BankAccount => "bank_account",
+            Card => "card",
+        }
+    }
+}
+
+impl std::str::FromStr for ListExternalAccountObject {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListExternalAccountObject::*;
+        match s {
+            "bank_account" => Ok(BankAccount),
+            "card" => Ok(Card),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for ListExternalAccountObject {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ListExternalAccountObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListExternalAccountObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListExternalAccountObject {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> ListExternalAccount<'a> {

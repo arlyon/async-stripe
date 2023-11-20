@@ -10,22 +10,10 @@
 pub struct Product {
     /// Whether the product is currently available for purchase.
     pub active: bool,
-    /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    pub attributes: Option<Vec<String>>,
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// An array of connect application identifiers that cannot purchase this product.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_price: Option<stripe_types::Expandable<stripe_types::Price>>,
@@ -33,6 +21,10 @@ pub struct Product {
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     pub description: Option<String>,
+    /// A list of up to 15 features for this product.
+    ///
+    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    pub features: Vec<stripe_types::ProductFeature>,
     /// Unique identifier for the object.
     pub id: stripe_types::product::ProductId,
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.

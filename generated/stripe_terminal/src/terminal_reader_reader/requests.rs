@@ -133,6 +133,9 @@ pub struct ListTerminalReaderReader<'a> {
     /// A location ID to filter the response list to only readers at the specific location.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<&'a str>,
+    /// Filters readers by serial number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub serial_number: Option<&'a str>,
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -368,12 +371,20 @@ pub struct ProcessSetupIntentTerminalReaderReader<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
+    /// Configuration overrides.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process_config: Option<&'a serde_json::Value>,
     /// SetupIntent ID.
     pub setup_intent: &'a str,
 }
 impl<'a> ProcessSetupIntentTerminalReaderReader<'a> {
     pub fn new(customer_consent_collected: bool, setup_intent: &'a str) -> Self {
-        Self { customer_consent_collected, expand: Default::default(), setup_intent }
+        Self {
+            customer_consent_collected,
+            expand: Default::default(),
+            process_config: Default::default(),
+            setup_intent,
+        }
     }
 }
 impl<'a> ProcessSetupIntentTerminalReaderReader<'a> {

@@ -9,7 +9,6 @@ pub struct PaymentMethodUsBankAccount {
     /// The name of the bank.
     pub bank_name: Option<String>,
     /// The ID of the Financial Connections Account used to create the payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections_account: Option<String>,
     /// Uniquely identifies this particular bank account.
     ///
@@ -22,7 +21,6 @@ pub struct PaymentMethodUsBankAccount {
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
     /// Contains information about the future reusability of this PaymentMethod.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status_details: Option<stripe_types::PaymentMethodUsBankAccountStatusDetails>,
 }
 /// Account holder type: individual or company.

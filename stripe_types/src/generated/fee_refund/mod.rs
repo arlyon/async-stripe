@@ -4,7 +4,7 @@
 /// Funds will be refunded to the Stripe account from which the fee was originally collected.  Related guide: [Refunding application fees](https://stripe.com/docs/connect/destination-charges#refunding-app-fee).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct FeeRefund {
-    /// Amount, in %s.
+    /// Amount, in cents (or local equivalent).
     pub amount: i64,
     /// Balance transaction that describes the impact on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,

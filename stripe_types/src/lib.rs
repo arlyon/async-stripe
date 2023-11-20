@@ -1,4 +1,6 @@
 #![recursion_limit = "128"]
+// FIXME: could be worked around in the codegen
+#![allow(clippy::large_enum_variant)]
 
 mod currency;
 mod expandable;

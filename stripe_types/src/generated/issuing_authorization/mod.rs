@@ -6,7 +6,8 @@
 pub struct IssuingAuthorization {
     /// The total amount that was authorized or rejected.
     ///
-    /// This amount is in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// `amount` should be the same as `merchant_amount`, unless `currency` and `merchant_currency` are different.
     pub amount: i64,
     /// Detailed breakdown of amount components.
     ///
@@ -25,8 +26,10 @@ pub struct IssuingAuthorization {
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// The currency of the cardholder.
     ///
+    /// This currency can be different from the currency presented at authorization and the `merchant_currency` field on this authorization.
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
     /// Unique identifier for the object.
@@ -36,9 +39,11 @@ pub struct IssuingAuthorization {
     /// The total amount that was authorized or rejected.
     ///
     /// This amount is in the `merchant_currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// `merchant_amount` should be the same as `amount`, unless `merchant_currency` and `currency` are different.
     pub merchant_amount: i64,
-    /// The currency that was presented to the cardholder for the authorization.
+    /// The local currency that was presented to the cardholder for the authorization.
     ///
+    /// This currency can be different from the cardholder currency and the `currency` field on this authorization.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub merchant_currency: stripe_types::Currency,
@@ -61,6 +66,11 @@ pub struct IssuingAuthorization {
     pub request_history: Vec<stripe_types::IssuingAuthorizationRequest>,
     /// The current status of the authorization in its lifecycle.
     pub status: IssuingAuthorizationStatus,
+    /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this authorization.
+    ///
+    /// If a network token was not used for this authorization, this field will be null.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token: Option<stripe_types::Expandable<stripe_types::IssuingNetworkToken>>,
     /// List of [transactions](https://stripe.com/docs/api/issuing/transactions) associated with this authorization.
     pub transactions: Vec<stripe_types::IssuingTransaction>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).

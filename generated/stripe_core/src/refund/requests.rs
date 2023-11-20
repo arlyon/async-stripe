@@ -35,10 +35,9 @@ impl<'a> ListRefund<'a> {
     }
 }
 impl<'a> ListRefund<'a> {
-    /// Returns a list of all refunds you’ve previously created.
+    /// Returns a list of all refunds you created.
     ///
-    /// The refunds are returned in sorted order, with the most recent refunds appearing first.
-    /// For convenience, the 10 most recent refunds are always available by default on the charge object.
+    /// We return the refunds in sorted order, with the most recent refunds appearing first The 10 most recent refunds are always available by default on the Charge object.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -52,9 +51,9 @@ impl<'a> ListRefund<'a> {
 impl<'a> stripe::PaginationParams for ListRefund<'a> {}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateRefund<'a> {
-    /// A positive integer representing how much to refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+    /// The identifier of the charge to refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<&'a str>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -81,12 +80,25 @@ pub struct CreateRefund<'a> {
     /// Origin of the refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<CreateRefundOrigin>,
+    /// The identifier of the PaymentIntent to refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<&'a str>,
+    /// String indicating the reason for the refund.
+    ///
+    /// If set, possible values are `duplicate`, `fraudulent`, and `requested_by_customer`.
+    /// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://stripe.com/docs/radar/lists), and will also help us improve our fraud detection algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<CreateRefundReason>,
+    /// Boolean indicating whether the application fee should be refunded when refunding this charge.
+    ///
+    /// If a full charge refund is given, the full application fee will be refunded.
+    /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
+    /// An application fee can be refunded only by the application that created the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_application_fee: Option<bool>,
+    /// Boolean indicating whether the transfer should be reversed when refunding this charge.
+    ///
+    /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).  A transfer can be reversed only by the application that created the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverse_transfer: Option<bool>,
 }
@@ -146,6 +158,10 @@ impl serde::Serialize for CreateRefundOrigin {
         serializer.serialize_str(self.as_str())
     }
 }
+/// String indicating the reason for the refund.
+///
+/// If set, possible values are `duplicate`, `fraudulent`, and `requested_by_customer`.
+/// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://stripe.com/docs/radar/lists), and will also help us improve our fraud detection algorithms.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateRefundReason {
     Duplicate,
@@ -203,7 +219,17 @@ impl serde::Serialize for CreateRefundReason {
     }
 }
 impl<'a> CreateRefund<'a> {
-    /// Create a refund.
+    /// When you create a new refund, you must specify a Charge or a PaymentIntent object on which to create it.
+    ///
+    /// Creating a new refund will refund a charge that has previously been created but not yet refunded.
+    /// Funds will be refunded to the credit or debit card that was originally charged.
+    ///
+    /// You can optionally refund only part of a charge.
+    /// You can do so multiple times, until the entire charge has been refunded.
+    ///
+    /// Once entirely refunded, a charge can’t be refunded again.
+    /// This method will raise an error when called on an already-refunded charge,
+    /// or when trying to refund more money than is left on a charge.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::Refund> {
         client.send_form("/refunds", self, http_types::Method::Post)
     }
@@ -248,9 +274,9 @@ impl<'a> UpdateRefund<'a> {
     }
 }
 impl<'a> UpdateRefund<'a> {
-    /// Updates the specified refund by setting the values of the parameters passed.
+    /// Updates the refund that you specify by setting the values of the passed parameters.
     ///
-    /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
+    /// Any parameters that you don’t provide remain unchanged.  This request only accepts `metadata` as an argument.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -277,7 +303,9 @@ impl<'a> CancelRefund<'a> {
 impl<'a> CancelRefund<'a> {
     /// Cancels a refund with a status of `requires_action`.
     ///
-    /// Refunds in other states cannot be canceled, and only refunds for payment methods that require customer action will enter the `requires_action` state.
+    /// You can’t cancel refunds in other states.
+    ///
+    /// Only refunds for payment methods that require customer action can enter the `requires_action` state.
     pub fn send(
         &self,
         client: &stripe::Client,

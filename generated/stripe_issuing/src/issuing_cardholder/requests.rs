@@ -312,6 +312,8 @@ pub struct CreateIssuingCardholderIndividual<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<CreateIssuingCardholderIndividualCardIssuing<'a>>,
     /// The date of birth of this cardholder.
+    ///
+    /// Cardholders must be older than 13 years old.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<CreateIssuingCardholderIndividualDob>,
     /// The first name of this cardholder.
@@ -371,6 +373,8 @@ impl<'a> CreateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
     }
 }
 /// The date of birth of this cardholder.
+///
+/// Cardholders must be older than 13 years old.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
@@ -3942,6 +3946,8 @@ pub struct UpdateIssuingCardholderIndividual<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<UpdateIssuingCardholderIndividualCardIssuing<'a>>,
     /// The date of birth of this cardholder.
+    ///
+    /// Cardholders must be older than 13 years old.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<UpdateIssuingCardholderIndividualDob>,
     /// The first name of this cardholder.
@@ -4001,6 +4007,8 @@ impl<'a> UpdateIssuingCardholderIndividualCardIssuingUserTermsAcceptance<'a> {
     }
 }
 /// The date of birth of this cardholder.
+///
+/// Cardholders must be older than 13 years old.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateIssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.

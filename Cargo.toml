@@ -7,7 +7,7 @@ members = [
   "tests",
   "examples/*"
 ]
-
+resolver = "2"
 exclude = ["openapi"]
 
 [workspace.package]

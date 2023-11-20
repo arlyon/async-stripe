@@ -1,6 +1,6 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct QuotesResourceTransferData {
-    /// The amount in %s that will be transferred to the destination account when the invoice is paid.
+    /// The amount in cents (or local equivalent) that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
     pub amount: Option<i64>,

@@ -1,23 +1,22 @@
 /// A SetupIntent guides you through the process of setting up and saving a customer's payment credentials for future payments.
-/// For example, you could use a SetupIntent to set up and save your customer's card without immediately collecting a payment.
+/// For example, you can use a SetupIntent to set up and save your customer's card without immediately collecting a payment.
 /// Later, you can use [PaymentIntents](https://stripe.com/docs/api#payment_intents) to drive the payment flow.
 ///
-/// Create a SetupIntent as soon as you're ready to collect your customer's payment credentials.
-/// Do not maintain long-lived, unconfirmed SetupIntents as they may no longer be valid.
-/// The SetupIntent then transitions through multiple [statuses](https://stripe.com/docs/payments/intents#intent-statuses) as it guides
+/// Create a SetupIntent when you're ready to collect your customer's payment credentials.
+/// Don't maintain long-lived, unconfirmed SetupIntents because they might not be valid.
+/// The SetupIntent transitions through multiple [statuses](https://stripe.com/docs/payments/intents#intent-statuses) as it guides
 /// you through the setup process.
 ///
 /// Successful SetupIntents result in payment credentials that are optimized for future payments.
-/// For example, cardholders in [certain regions](/guides/strong-customer-authentication) may need to be run through
-/// [Strong Customer Authentication](https://stripe.com/docs/strong-customer-authentication) at the time of payment method collection
-/// in order to streamline later [off-session payments](https://stripe.com/docs/payments/setup-intents).
-/// If the SetupIntent is used with a [Customer](https://stripe.com/docs/api#setup_intent_object-customer), upon success,
-/// it will automatically attach the resulting payment method to that Customer.
+/// For example, cardholders in [certain regions](/guides/strong-customer-authentication) might need to be run through
+/// [Strong Customer Authentication](https://stripe.com/docs/strong-customer-authentication) during payment method collection
+/// to streamline later [off-session payments](https://stripe.com/docs/payments/setup-intents).
+/// If you use the SetupIntent with a [Customer](https://stripe.com/docs/api#setup_intent_object-customer),
+/// it automatically attaches the resulting payment method to that Customer after successful setup.
 /// We recommend using SetupIntents or [setup_future_usage](https://stripe.com/docs/api#payment_intent_object-setup_future_usage) on
-/// PaymentIntents to save payment methods in order to prevent saving invalid or unoptimized payment methods.
+/// PaymentIntents to save payment methods to prevent saving invalid or unoptimized payment methods.
 ///
-/// By using SetupIntents, you ensure that your customers experience the minimum set of required friction,
-/// even as regulations change over time.
+/// By using SetupIntents, you can reduce friction for your customers, even as regulations change over time.
 ///
 /// Related guide: [Setup Intents API](https://stripe.com/docs/payments/setup-intents).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -31,7 +30,7 @@ pub struct SetupIntent {
     /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attach_to_self: Option<bool>,
-    /// Settings for automatic payment methods compatible with this Setup Intent.
+    /// Settings for dynamic payment methods compatible with this Setup Intent.
     pub automatic_payment_methods:
         Option<stripe_types::PaymentFlowsAutomaticPaymentMethodsSetupIntent>,
     /// Reason for cancellation of this SetupIntent, one of `abandoned`, `requested_by_customer`, or `duplicate`.
@@ -84,7 +83,10 @@ pub struct SetupIntent {
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_types::Account>>,
     /// ID of the payment method used with this SetupIntent.
     pub payment_method: Option<stripe_types::Expandable<stripe_types::PaymentMethod>>,
-    /// Payment-method-specific configuration for this SetupIntent.
+    /// Information about the payment method configuration used for this Setup Intent.
+    pub payment_method_configuration_details:
+        Option<stripe_types::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
+    /// Payment method-specific configuration for this SetupIntent.
     pub payment_method_options: Option<stripe_types::SetupIntentPaymentMethodOptions>,
     /// The list of payment method types (e.g.
     ///

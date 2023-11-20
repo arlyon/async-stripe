@@ -16,6 +16,8 @@ pub struct BankConnectionsResourceLinkAccountSession {
     pub livemode: bool,
     /// Permissions requested for accounts collected during this session.
     pub permissions: Vec<BankConnectionsResourceLinkAccountSessionPermissions>,
+    /// Data features requested to be retrieved upon account creation.
+    pub prefetch: Option<Vec<BankConnectionsResourceLinkAccountSessionPrefetch>>,
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -89,6 +91,71 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkAccountSessionP
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom(
                 "Unknown value for BankConnectionsResourceLinkAccountSessionPermissions",
+            )
+        })
+    }
+}
+/// Data features requested to be retrieved upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum BankConnectionsResourceLinkAccountSessionPrefetch {
+    Balances,
+    Ownership,
+}
+
+impl BankConnectionsResourceLinkAccountSessionPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use BankConnectionsResourceLinkAccountSessionPrefetch::*;
+        match self {
+            Balances => "balances",
+            Ownership => "ownership",
+        }
+    }
+}
+
+impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionPrefetch {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use BankConnectionsResourceLinkAccountSessionPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for BankConnectionsResourceLinkAccountSessionPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BankConnectionsResourceLinkAccountSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for BankConnectionsResourceLinkAccountSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for BankConnectionsResourceLinkAccountSessionPrefetch {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for BankConnectionsResourceLinkAccountSessionPrefetch {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for BankConnectionsResourceLinkAccountSessionPrefetch",
             )
         })
     }

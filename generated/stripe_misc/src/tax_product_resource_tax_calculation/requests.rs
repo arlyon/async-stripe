@@ -88,9 +88,9 @@ pub struct CreateTaxProductResourceTaxCalculationCustomerDetailsAddress<'a> {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<&'a str>,
-    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    /// State, county, province, or region.
     ///
-    /// Example: "NY" or "TX".
+    /// We recommend sending [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code value when possible.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
 }

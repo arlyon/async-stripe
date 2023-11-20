@@ -2,17 +2,17 @@
 /// initiate a payout to either a bank account or debit card of a [connected
 /// Stripe account](/docs/connect/bank-debit-card-payouts).
 ///
-/// You can retrieve individual payouts, as well as list all payouts.
+/// You can retrieve individual payouts, and list all payouts.
 /// Payouts are made on [varying schedules](/docs/connect/manage-payout-schedule), depending on your country and industry.  Related guide: [Receiving payouts](https://stripe.com/docs/payouts).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Payout {
-    /// Amount (in %s) to be transferred to your bank account or debit card.
+    /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
-    /// Date the payout is expected to arrive in the bank.
+    /// Date that you can expect the payout to arrive in the bank.
     ///
-    /// This factors in delays like weekends or bank holidays.
+    /// This factors in delays to account for weekends or bank holidays.
     pub arrival_date: stripe_types::Timestamp,
-    /// Returns `true` if the payout was created by an [automated payout schedule](https://stripe.com/docs/payouts#payout-schedule), and `false` if it was [requested manually](https://stripe.com/docs/payouts#manual-payouts).
+    /// Returns `true` if the payout is created by an [automated payout schedule](https://stripe.com/docs/payouts#payout-schedule) and `false` if it's [requested manually](https://stripe.com/docs/payouts#manual-payouts).
     pub automatic: bool,
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
@@ -28,16 +28,16 @@ pub struct Payout {
     ///
     /// Often useful for displaying to users.
     pub description: Option<String>,
-    /// ID of the bank account or card the payout was sent to.
+    /// ID of the bank account or card the payout is sent to.
     pub destination: Option<stripe_types::Expandable<stripe_types::ExternalAccount>>,
-    /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
+    /// If the payout fails or cancels, this is the ID of the balance transaction that reverses the initial balance transaction and returns the funds from the failed payout back in your balance.
     pub failure_balance_transaction:
         Option<stripe_types::Expandable<stripe_types::BalanceTransaction>>,
-    /// Error code explaining reason for payout failure if available.
+    /// Error code that provides a reason for a payout failure, if available.
     ///
-    /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
+    /// View our [list of failure codes](https://stripe.com/docs/api#payout_failures).
     pub failure_code: Option<String>,
-    /// Message to user further explaining reason for payout failure if available.
+    /// Message that provides the reason for a payout failure, if available.
     pub failure_message: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_types::payout::PayoutId,
@@ -49,32 +49,30 @@ pub struct Payout {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
-    /// `instant` is only supported for payouts to debit cards.
-    /// (See [Instant payouts for marketplaces](https://stripe.com/blog/instant-payouts-for-marketplaces) for more information.).
+    /// `instant` is supported for payouts to debit cards and bank accounts in certain countries.
+    /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
     pub method: String,
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<stripe_types::Expandable<stripe_types::Payout>>,
-    /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+    /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
     pub reconciliation_status: PayoutReconciliationStatus,
-    /// If the payout was reversed, this is the ID of the payout that reverses this payout.
+    /// If the payout reverses, this is the ID of the payout that reverses this payout.
     pub reversed_by: Option<stripe_types::Expandable<stripe_types::Payout>>,
-    /// The source balance this payout came from.
-    ///
-    /// One of `card`, `fpx`, or `bank_account`.
+    /// The source balance this payout came from, which can be one of the following: `card`, `fpx`, or `bank_account`.
     pub source_type: String,
-    /// Extra information about a payout to be displayed on the user's bank statement.
+    /// Extra information about a payout that displays on the user's bank statement.
     pub statement_descriptor: Option<String>,
     /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
     ///
-    /// A payout is `pending` until it is submitted to the bank, when it becomes `in_transit`.
-    /// The status then changes to `paid` if the transaction goes through, or to `failed` or `canceled` (within 5 business days).
-    /// Some failed payouts may initially show as `paid` but then change to `failed`.
+    /// A payout is `pending` until it's submitted to the bank, when it becomes `in_transit`.
+    /// The status changes to `paid` if the transaction succeeds, or to `failed` or `canceled` (within 5 business days).
+    /// Some payouts that fail might initially show as `paid`, then change to `failed`.
     pub status: String,
     /// Can be `bank_account` or `card`.
     #[serde(rename = "type")]
     pub type_: PayoutType,
 }
-/// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+/// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PayoutReconciliationStatus {
     Completed,

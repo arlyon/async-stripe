@@ -1,3 +1,5 @@
+// Necessary under tokio-blocking since `Response` is a type alias to a `Result`
+#![allow(clippy::missing_errors_doc)]
 use http_types::{Body, Method, Request, Url};
 use serde::de::DeserializeOwned;
 use serde::Serialize;

@@ -11,6 +11,8 @@ pub struct PaymentLink {
     pub after_completion: stripe_types::PaymentLinksResourceAfterCompletion,
     /// Whether user redeemable promotion codes are enabled.
     pub allow_promotion_codes: bool,
+    /// The ID of the Connect application that created the Payment Link.
+    pub application: Option<stripe_types::Expandable<stripe_types::Application>>,
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     pub application_fee_amount: Option<i64>,
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.

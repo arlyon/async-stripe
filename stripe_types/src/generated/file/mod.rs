@@ -1,15 +1,16 @@
-/// This is an object representing a file hosted on Stripe's servers.
+/// This object represents files hosted on Stripe's servers.
 ///
-/// The file may have been uploaded by yourself using the [create file](https://stripe.com/docs/api#create_file) request (for example, when uploading dispute evidence) or it may have been created by Stripe (for example, the results of a [Sigma scheduled query](#scheduled_queries)).  Related guide: [File upload guide](https://stripe.com/docs/file-upload).
+/// You can upload files with the [create file](https://stripe.com/docs/api#create_file) request (for example, when uploading dispute evidence).
+/// Stripe also creates files independetly (for example, the results of a [Sigma scheduled query](#scheduled_queries)).  Related guide: [File upload guide](https://stripe.com/docs/file-upload).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct File {
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// The time at which the file expires and is no longer available in epoch seconds.
+    /// The file expires and isn't available at this time in epoch seconds.
     pub expires_at: Option<stripe_types::Timestamp>,
-    /// A filename for the file, suitable for saving to a filesystem.
+    /// The suitable name for saving the file to a filesystem.
     pub filename: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_types::file::FileId,
@@ -18,14 +19,14 @@ pub struct File {
     pub links: stripe_types::List<stripe_types::FileLink>,
     /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: FilePurpose,
-    /// The size in bytes of the file object.
+    /// The size of the file object in bytes.
     pub size: u64,
-    /// A user friendly title for the document.
+    /// A suitable title for the document.
     pub title: Option<String>,
-    /// The type of the file returned (e.g., `csv`, `pdf`, `jpg`, or `png`).
+    /// The returned file type (for example, `csv`, `pdf`, `jpg`, or `png`).
     #[serde(rename = "type")]
     pub type_: Option<String>,
-    /// The URL from which the file can be downloaded using your live secret API key.
+    /// Use your live secret API key to download the file from this URL.
     pub url: Option<String>,
 }
 /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.

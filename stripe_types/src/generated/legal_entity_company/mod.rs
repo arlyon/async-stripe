@@ -74,6 +74,7 @@ pub enum LegalEntityCompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -89,6 +90,7 @@ pub enum LegalEntityCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -102,6 +104,7 @@ impl LegalEntityCompanyStructure {
             GovernmentInstrumentality => "government_instrumentality",
             GovernmentalUnit => "governmental_unit",
             IncorporatedNonProfit => "incorporated_non_profit",
+            IncorporatedPartnership => "incorporated_partnership",
             LimitedLiabilityPartnership => "limited_liability_partnership",
             Llc => "llc",
             MultiMemberLlc => "multi_member_llc",
@@ -117,6 +120,7 @@ impl LegalEntityCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            UnincorporatedPartnership => "unincorporated_partnership",
             Unknown => "unknown",
         }
     }
@@ -132,6 +136,7 @@ impl std::str::FromStr for LegalEntityCompanyStructure {
             "government_instrumentality" => Ok(GovernmentInstrumentality),
             "governmental_unit" => Ok(GovernmentalUnit),
             "incorporated_non_profit" => Ok(IncorporatedNonProfit),
+            "incorporated_partnership" => Ok(IncorporatedPartnership),
             "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
             "llc" => Ok(Llc),
             "multi_member_llc" => Ok(MultiMemberLlc),
@@ -147,6 +152,7 @@ impl std::str::FromStr for LegalEntityCompanyStructure {
             "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
+            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
             _ => Err(()),
         }
     }

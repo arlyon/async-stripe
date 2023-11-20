@@ -6,6 +6,8 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CustomerCashBalanceTransaction {
 #[serde(skip_serializing_if = "Option::is_none")]
+pub adjusted_for_overdraft: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft>,
+#[serde(skip_serializing_if = "Option::is_none")]
 pub applied_to_payment: Option<stripe_types::CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction>,
     /// Time at which the object was created.
     ///
@@ -49,12 +51,14 @@ pub unapplied_from_payment: Option<stripe_types::CustomerBalanceResourceCashBala
 /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerCashBalanceTransactionType {
+    AdjustedForOverdraft,
     AppliedToPayment,
     Funded,
     FundingReversed,
     RefundedFromPayment,
     ReturnCanceled,
     ReturnInitiated,
+    TransferredToBalance,
     UnappliedFromPayment,
 }
 
@@ -62,12 +66,14 @@ impl CustomerCashBalanceTransactionType {
     pub fn as_str(self) -> &'static str {
         use CustomerCashBalanceTransactionType::*;
         match self {
+            AdjustedForOverdraft => "adjusted_for_overdraft",
             AppliedToPayment => "applied_to_payment",
             Funded => "funded",
             FundingReversed => "funding_reversed",
             RefundedFromPayment => "refunded_from_payment",
             ReturnCanceled => "return_canceled",
             ReturnInitiated => "return_initiated",
+            TransferredToBalance => "transferred_to_balance",
             UnappliedFromPayment => "unapplied_from_payment",
         }
     }
@@ -78,12 +84,14 @@ impl std::str::FromStr for CustomerCashBalanceTransactionType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerCashBalanceTransactionType::*;
         match s {
+            "adjusted_for_overdraft" => Ok(AdjustedForOverdraft),
             "applied_to_payment" => Ok(AppliedToPayment),
             "funded" => Ok(Funded),
             "funding_reversed" => Ok(FundingReversed),
             "refunded_from_payment" => Ok(RefundedFromPayment),
             "return_canceled" => Ok(ReturnCanceled),
             "return_initiated" => Ok(ReturnInitiated),
+            "transferred_to_balance" => Ok(TransferredToBalance),
             "unapplied_from_payment" => Ok(UnappliedFromPayment),
             _ => Err(()),
         }

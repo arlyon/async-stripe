@@ -24,7 +24,7 @@ pub struct CreateFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
-    /// A future timestamp after which the link will no longer be usable.
+    /// The link isn't usable after this future timestamp.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<stripe_types::Timestamp>,
     /// The ID of the file.
@@ -114,7 +114,7 @@ pub struct ListFileLink<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Filter links by their expiration status.
     ///
-    /// By default, all links are returned.
+    /// By default, Stripe returns all links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expired: Option<bool>,
     /// Only return links for the given file.

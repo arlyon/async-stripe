@@ -145,7 +145,7 @@ pub struct CreateSubscriptionScheduleDefaultSettings<'a> {
     pub default_payment_method: Option<&'a str>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// All invoices will be billed using the specified settings.
@@ -462,7 +462,7 @@ pub struct CreateSubscriptionSchedulePhases<'a> {
     pub default_tax_rates: Option<&'a [&'a str]>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// The date at which this phase of the subscription schedule ends.
@@ -1261,7 +1261,7 @@ pub struct UpdateSubscriptionScheduleDefaultSettings<'a> {
     pub default_payment_method: Option<&'a str>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// All invoices will be billed using the specified settings.
@@ -1579,7 +1579,7 @@ pub struct UpdateSubscriptionSchedulePhases<'a> {
     pub default_tax_rates: Option<&'a [&'a str]>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// The date at which this phase of the subscription schedule ends.
@@ -2286,7 +2286,7 @@ impl<'a> UpdateSubscriptionSchedulePhasesTransferData<'a> {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
-    I64(i64),
+    StripeTypesTimestamp(stripe_types::Timestamp),
     Now,
 }
 /// If the update changes the current phase, indicates whether the changes should be prorated.

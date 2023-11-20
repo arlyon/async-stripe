@@ -6,6 +6,8 @@ pub struct PersonRelationship {
     pub director: Option<bool>,
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     pub executive: Option<bool>,
+    /// Whether the person is the legal guardian of the account's representative.
+    pub legal_guardian: Option<bool>,
     /// Whether the person is an owner of the account’s legal entity.
     pub owner: Option<bool>,
     /// The percent owned by the person of the account's legal entity.

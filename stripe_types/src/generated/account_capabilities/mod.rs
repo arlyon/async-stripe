@@ -84,6 +84,9 @@ pub struct AccountCapabilities {
     /// The status of the promptpay payments capability of the account, or whether the account can directly process promptpay charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<AccountCapabilitiesPromptpayPayments>,
+    /// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<AccountCapabilitiesRevolutPayPayments>,
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<AccountCapabilitiesSepaDebitPayments>,
@@ -1958,6 +1961,72 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilitiesPromptpayPayments {
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| {
             serde::de::Error::custom("Unknown value for AccountCapabilitiesPromptpayPayments")
+        })
+    }
+}
+/// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum AccountCapabilitiesRevolutPayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesRevolutPayPayments {
+    pub fn as_str(self) -> &'static str {
+        use AccountCapabilitiesRevolutPayPayments::*;
+        match self {
+            Active => "active",
+            Inactive => "inactive",
+            Pending => "pending",
+        }
+    }
+}
+
+impl std::str::FromStr for AccountCapabilitiesRevolutPayPayments {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use AccountCapabilitiesRevolutPayPayments::*;
+        match s {
+            "active" => Ok(Active),
+            "inactive" => Ok(Inactive),
+            "pending" => Ok(Pending),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesRevolutPayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesRevolutPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for AccountCapabilitiesRevolutPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for AccountCapabilitiesRevolutPayPayments {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for AccountCapabilitiesRevolutPayPayments {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for AccountCapabilitiesRevolutPayPayments")
         })
     }
 }

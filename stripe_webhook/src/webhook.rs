@@ -102,7 +102,7 @@ impl Webhook {
             livemode: base_evt.livemode,
             pending_webhooks: base_evt.pending_webhooks,
             request: base_evt.request,
-            type_: EventType::from_str(&base_evt.type_).unwrap_or(EventType::Unknown),
+            type_: base_evt.type_,
         })
     }
 }
@@ -137,6 +137,7 @@ impl<'r> Signature<'r> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::EventType;
 
     #[test]
     fn test_signature_parse() {

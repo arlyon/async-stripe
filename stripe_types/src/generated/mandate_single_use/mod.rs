@@ -1,7 +1,7 @@
 #[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct MandateSingleUse {
-    /// On a single use mandate, the amount of the payment.
+    /// The amount of the payment on a single use mandate.
     pub amount: i64,
-    /// On a single use mandate, the currency of the payment.
+    /// The currency of the payment on a single use mandate.
     pub currency: stripe_types::Currency,
 }

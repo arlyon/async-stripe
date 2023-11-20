@@ -1,20 +1,16 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CustomerAcceptance {
-    /// The time at which the customer accepted the Mandate.
+    /// The time that the customer accepts the mandate.
     pub accepted_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<stripe_types::OfflineAcceptance>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub online: Option<stripe_types::OnlineAcceptance>,
-    /// The type of customer acceptance information included with the Mandate.
-    ///
-    /// One of `online` or `offline`.
+    /// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
     #[serde(rename = "type")]
     pub type_: CustomerAcceptanceType,
 }
-/// The type of customer acceptance information included with the Mandate.
-///
-/// One of `online` or `offline`.
+/// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerAcceptanceType {
     Offline,

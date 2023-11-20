@@ -6,7 +6,7 @@ pub struct PortalSubscriptionUpdate {
     pub default_allowed_updates: Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>,
     /// Whether the feature is enabled.
     pub enabled: bool,
-    /// The list of products that support subscription updates.
+    /// The list of up to 10 products that support subscription updates.
     pub products: Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>,
     /// Determines how to handle prorations resulting from subscription updates.
     ///

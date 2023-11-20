@@ -64,7 +64,7 @@ pub async fn run_checkout_session_example(client: &stripe::Client) -> Result<(),
         ..Default::default()
     }];
     let checkout_session = {
-        let mut params = CreateSession::new("http://test.com/success");
+        let mut params = CreateSession::new();
         params.cancel_url = Some("http://test.com/cancel");
         params.customer = Some(customer.id.as_str());
         params.mode = Some(CreateSessionMode::Payment);

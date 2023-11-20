@@ -4,6 +4,12 @@ version.workspace = true
 description.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lib]
 path = "src/mod.rs"
@@ -27,6 +33,7 @@ runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
 runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
 account = []
 account_link = []
+connect_embedded_method_account_session_create_method_account_session = []
 platform_fee = []
 secret_service_resource_secret = []
 account_capability = []

@@ -1,3 +1,4 @@
+#![allow(clippy::missing_errors_doc)]
 use std::{sync::Arc, time::Duration};
 
 use http_types::Request;
@@ -52,5 +53,11 @@ impl TokioBlockingClient {
             Ok(finished) => finished,
             Err(_) => Err(StripeError::Timeout),
         }
+    }
+}
+
+impl Default for TokioBlockingClient {
+    fn default() -> Self {
+        Self::new()
     }
 }

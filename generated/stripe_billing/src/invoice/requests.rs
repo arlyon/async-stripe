@@ -133,9 +133,13 @@ pub struct UpcomingInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
+    ///
+    /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// Details about the customer you want to invoice or overrides for an existing customer.
+    ///
+    /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_details: Option<UpcomingInvoiceCustomerDetails<'a>>,
     /// The coupons to redeem into discounts for the invoice preview.
@@ -153,7 +157,7 @@ pub struct UpcomingInvoice<'a> {
     /// List of invoice items to add or update in the upcoming invoice preview.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_items: Option<&'a [UpcomingInvoiceInvoiceItems<'a>]>,
-    /// The identifier of the unstarted schedule whose upcoming invoice you'd like to retrieve.
+    /// The identifier of the schedule whose upcoming invoice you'd like to retrieve.
     ///
     /// Cannot be used with subscription or subscription fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -239,6 +243,8 @@ impl UpcomingInvoiceAutomaticTax {
     }
 }
 /// Details about the customer you want to invoice or overrides for an existing customer.
+///
+/// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpcomingInvoiceCustomerDetails<'a> {
     /// The customer's address.
@@ -1470,6 +1476,12 @@ pub struct UpdateInvoice<'a> {
     /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_settings: Option<UpdateInvoicePaymentSettings<'a>>,
+    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering: Option<UpdateInvoiceRendering>,
+    /// This is a legacy field that will be removed soon.
+    ///
+    /// For details about `rendering_options`, refer to `rendering` instead.
     /// Options for invoice PDF rendering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<UpdateInvoiceRenderingOptions>,
@@ -2212,6 +2224,9 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancia
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub permissions: Option<&'a [UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    /// List of data features that you would like to retrieve upon account creation.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub prefetch: Option<&'a [UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 
 }
 impl<'a> UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
@@ -2285,6 +2300,67 @@ impl std::fmt::Debug
 }
 impl serde::Serialize
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -2487,6 +2563,159 @@ impl serde::Serialize for UpdateInvoicePaymentSettingsPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
+/// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateInvoiceRendering {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<UpdateInvoiceRenderingAmountTaxDisplay>,
+    /// Invoice pdf rendering options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf: Option<UpdateInvoiceRenderingPdf>,
+}
+impl UpdateInvoiceRendering {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+///
+/// One of `exclude_tax` or `include_inclusive_tax`.
+/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateInvoiceRenderingAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl UpdateInvoiceRenderingAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        use UpdateInvoiceRenderingAmountTaxDisplay::*;
+        match self {
+            ExcludeTax => "exclude_tax",
+            IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateInvoiceRenderingAmountTaxDisplay {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoiceRenderingAmountTaxDisplay::*;
+        match s {
+            "exclude_tax" => Ok(ExcludeTax),
+            "include_inclusive_tax" => Ok(IncludeInclusiveTax),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateInvoiceRenderingAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateInvoiceRenderingAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateInvoiceRenderingAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateInvoiceRenderingAmountTaxDisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Invoice pdf rendering options.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdateInvoiceRenderingPdf {
+    /// Page size for invoice PDF.
+    ///
+    /// Can be set to `a4`, `letter`, or `auto`.  If set to `auto`, invoice PDF page size defaults to `a4` for customers with  Japanese locale and `letter` for customers with other locales.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page_size: Option<UpdateInvoiceRenderingPdfPageSize>,
+}
+impl UpdateInvoiceRenderingPdf {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Page size for invoice PDF.
+///
+/// Can be set to `a4`, `letter`, or `auto`.  If set to `auto`, invoice PDF page size defaults to `a4` for customers with  Japanese locale and `letter` for customers with other locales.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdateInvoiceRenderingPdfPageSize {
+    A4,
+    Auto,
+    Letter,
+}
+
+impl UpdateInvoiceRenderingPdfPageSize {
+    pub fn as_str(self) -> &'static str {
+        use UpdateInvoiceRenderingPdfPageSize::*;
+        match self {
+            A4 => "a4",
+            Auto => "auto",
+            Letter => "letter",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateInvoiceRenderingPdfPageSize {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoiceRenderingPdfPageSize::*;
+        match s {
+            "a4" => Ok(A4),
+            "auto" => Ok(Auto),
+            "letter" => Ok(Letter),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for UpdateInvoiceRenderingPdfPageSize {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateInvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdateInvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdateInvoiceRenderingPdfPageSize {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// This is a legacy field that will be removed soon.
+///
+/// For details about `rendering_options`, refer to `rendering` instead.
 /// Options for invoice PDF rendering.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateInvoiceRenderingOptions {
@@ -3196,9 +3425,13 @@ pub struct UpcomingLinesInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
+    ///
+    /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// Details about the customer you want to invoice or overrides for an existing customer.
+    ///
+    /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_details: Option<UpcomingLinesInvoiceCustomerDetails<'a>>,
     /// The coupons to redeem into discounts for the invoice preview.
@@ -3227,7 +3460,7 @@ pub struct UpcomingLinesInvoice<'a> {
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
-    /// The identifier of the unstarted schedule whose upcoming invoice you'd like to retrieve.
+    /// The identifier of the schedule whose upcoming invoice you'd like to retrieve.
     ///
     /// Cannot be used with subscription or subscription fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3320,6 +3553,8 @@ impl UpcomingLinesInvoiceAutomaticTax {
     }
 }
 /// Details about the customer you want to invoice or overrides for an existing customer.
+///
+/// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpcomingLinesInvoiceCustomerDetails<'a> {
     /// The customer's address.
@@ -4575,6 +4810,12 @@ pub struct CreateInvoice<'a> {
     /// Defaults to `exclude` if the parameter is omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_items_behavior: Option<CreateInvoicePendingInvoiceItemsBehavior>,
+    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering: Option<CreateInvoiceRendering>,
+    /// This is a legacy field that will be removed soon.
+    ///
+    /// For details about `rendering_options`, refer to `rendering` instead.
     /// Options for invoice PDF rendering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateInvoiceRenderingOptions>,
@@ -5392,6 +5633,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancia
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub permissions: Option<&'a [CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    /// List of data features that you would like to retrieve upon account creation.
+#[serde(skip_serializing_if = "Option::is_none")]
+pub prefetch: Option<&'a [CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 
 }
 impl<'a> CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
@@ -5465,6 +5709,67 @@ impl std::fmt::Debug
 }
 impl serde::Serialize
     for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    Balances,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match self {
+            Balances => "balances",
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -5729,6 +6034,159 @@ impl serde::Serialize for CreateInvoicePendingInvoiceItemsBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+/// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateInvoiceRendering {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<CreateInvoiceRenderingAmountTaxDisplay>,
+    /// Invoice pdf rendering options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf: Option<CreateInvoiceRenderingPdf>,
+}
+impl CreateInvoiceRendering {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+///
+/// One of `exclude_tax` or `include_inclusive_tax`.
+/// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+/// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateInvoiceRenderingAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CreateInvoiceRenderingAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        use CreateInvoiceRenderingAmountTaxDisplay::*;
+        match self {
+            ExcludeTax => "exclude_tax",
+            IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateInvoiceRenderingAmountTaxDisplay {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoiceRenderingAmountTaxDisplay::*;
+        match s {
+            "exclude_tax" => Ok(ExcludeTax),
+            "include_inclusive_tax" => Ok(IncludeInclusiveTax),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceRenderingAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceRenderingAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateInvoiceRenderingAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateInvoiceRenderingAmountTaxDisplay {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// Invoice pdf rendering options.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateInvoiceRenderingPdf {
+    /// Page size for invoice PDF.
+    ///
+    /// Can be set to `a4`, `letter`, or `auto`.  If set to `auto`, invoice PDF page size defaults to `a4` for customers with  Japanese locale and `letter` for customers with other locales.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page_size: Option<CreateInvoiceRenderingPdfPageSize>,
+}
+impl CreateInvoiceRenderingPdf {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Page size for invoice PDF.
+///
+/// Can be set to `a4`, `letter`, or `auto`.  If set to `auto`, invoice PDF page size defaults to `a4` for customers with  Japanese locale and `letter` for customers with other locales.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateInvoiceRenderingPdfPageSize {
+    A4,
+    Auto,
+    Letter,
+}
+
+impl CreateInvoiceRenderingPdfPageSize {
+    pub fn as_str(self) -> &'static str {
+        use CreateInvoiceRenderingPdfPageSize::*;
+        match self {
+            A4 => "a4",
+            Auto => "auto",
+            Letter => "letter",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateInvoiceRenderingPdfPageSize {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoiceRenderingPdfPageSize::*;
+        match s {
+            "a4" => Ok(A4),
+            "auto" => Ok(Auto),
+            "letter" => Ok(Letter),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceRenderingPdfPageSize {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateInvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateInvoiceRenderingPdfPageSize {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// This is a legacy field that will be removed soon.
+///
+/// For details about `rendering_options`, refer to `rendering` instead.
 /// Options for invoice PDF rendering.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateInvoiceRenderingOptions {

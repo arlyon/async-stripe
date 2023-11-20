@@ -3,10 +3,9 @@ pub struct PaymentMethodOptionsAfterpayClearpay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentMethodOptionsAfterpayClearpayCaptureMethod>,
-    /// Order identifier shown to the customer in Afterpay’s online portal.
+    /// An internal identifier or reference that this payment corresponds to.
     ///
-    /// We recommend using a value that helps you answer any questions a customer might have about the payment.
-    /// The identifier is limited to 128 characters and may contain only letters, digits, underscores, backslashes and dashes.
+    /// You must limit the identifier to 128 characters, and it can only contain letters, numbers, underscores, backslashes, and dashes. This field differs from the statement descriptor and item name.
     pub reference: Option<String>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///

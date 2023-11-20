@@ -6,6 +6,8 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
     /// Only present if it was possible to generate a card PaymentMethod.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated_card: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process_config: Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupConfig>,
     /// Most recent SetupIntent processed by the reader.
     pub setup_intent: stripe_types::Expandable<stripe_types::SetupIntent>,
 }

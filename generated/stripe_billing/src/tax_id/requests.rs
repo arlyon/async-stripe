@@ -265,7 +265,7 @@ impl serde::Serialize for CreateTaxIdType {
     }
 }
 impl<'a> CreateTaxId<'a> {
-    /// Creates a new `TaxID` object for a customer.
+    /// Creates a new `tax_id` object for a customer.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -290,7 +290,7 @@ impl<'a> RetrieveTaxId<'a> {
     }
 }
 impl<'a> RetrieveTaxId<'a> {
-    /// Retrieves the `TaxID` object with the given identifier.
+    /// Retrieves the `tax_id` object with the given identifier.
     pub fn send(
         &self,
         client: &stripe::Client,
@@ -359,7 +359,7 @@ impl DeleteTaxId {
     }
 }
 impl DeleteTaxId {
-    /// Deletes an existing `TaxID` object.
+    /// Deletes an existing `tax_id` object.
     pub fn send(
         &self,
         client: &stripe::Client,

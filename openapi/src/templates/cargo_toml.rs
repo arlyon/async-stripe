@@ -18,7 +18,7 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
     let crate_name = krate.name();
     let mut crate_dep_section = String::new();
     for dep in crate_deps {
-        let dep_path = if dep == Crate::Types {
+        let dep_path = if dep == Crate::TYPES {
             "../../stripe_types".into()
         } else {
             format!("../../generated/{}", dep.name())
@@ -40,6 +40,12 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         description.workspace = true
         edition.workspace = true
         rust-version.workspace = true
+        authors.workspace = true
+        license.workspace = true
+        homepage.workspace = true
+        repository.workspace = true
+        keywords.workspace = true
+        categories.workspace = true
         
         [lib]
         path = "src/mod.rs"

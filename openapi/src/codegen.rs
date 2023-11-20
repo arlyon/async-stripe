@@ -3,10 +3,12 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Context;
 use indoc::formatdoc;
+use tabled::settings::Style;
+use tabled::{Table, Tabled};
 use tracing::debug;
 
 use crate::components::{get_components, Components};
-use crate::crate_inference::Crate;
+use crate::crate_inference::{Crate, ALL_CRATES};
 use crate::object_writing::{gen_obj, gen_requests, ObjectGenInfo};
 use crate::rust_object::ObjectMetadata;
 use crate::spec::Spec;
@@ -31,7 +33,7 @@ impl CodeGen {
     }
 
     fn write_generated_for_types_crate(&self) -> anyhow::Result<()> {
-        let base_path = PathBuf::from(Crate::Types.generated_out_path());
+        let base_path = PathBuf::from(Crate::TYPES.generated_out_path());
         let mut mod_rs_contents = String::new();
         let mod_rs_path = base_path.join("mod.rs");
 
@@ -62,9 +64,13 @@ impl CodeGen {
 
             // Reexport in this crate if we wrote types to `stripe_types` instead of the
             // component's base crate.
-            if crate_for_types == Crate::Types {
+            if crate_for_types == Crate::TYPES && base_crate != Crate::TYPES {
                 append_to_file(
                     format!("pub use stripe_types::{mod_path}::*;"),
+                    base_path.join(&mod_path).join("mod.rs"),
+                )?;
+                append_to_file(
+                    format!("pub use stripe_types::{};", component.resource.ident()),
                     base_path.join("mod.rs"),
                 )?;
             }
@@ -78,7 +84,7 @@ impl CodeGen {
             }
         }
 
-        let crate_path = PathBuf::from(Crate::Types.generate_to());
+        let crate_path = PathBuf::from(Crate::TYPES.generate_to());
         let crate_mod_path = crate_path.join("mod.rs");
         for (ident, typ_info) in &self.components.extra_types {
             let mut out = String::new();
@@ -100,15 +106,41 @@ impl CodeGen {
         self.write_crate_base()?;
         self.write_components()?;
         write_generated_for_webhooks(&self.components)
-            .context("Could not write webhook generated code")
+            .context("Could not write webhook generated code")?;
+        self.write_crate_info()
+    }
+
+    fn write_crate_info(&self) -> anyhow::Result<()> {
+        #[derive(Tabled)]
+        struct CrateDisplay {
+            name: String,
+            krate: String,
+        }
+
+        let mut comps = vec![];
+        for (_, obj) in &self.components.components {
+            if obj.requests.is_empty() {
+                continue;
+            }
+            comps.push(CrateDisplay {
+                name: obj.resource.ident().to_string(),
+                krate: obj.krate_unwrapped().base().name(),
+            })
+        }
+        comps.sort_by_key(|c| c.krate.clone());
+        let mut table = Table::new(comps);
+        table.with(Style::markdown());
+        let display = table.to_string();
+        write_to_file(display, "crate_info.md")?;
+        Ok(())
     }
 
     fn write_crate_base(&self) -> anyhow::Result<()> {
         let crate_graph = self.components.gen_crate_dep_graph();
 
-        for krate in Crate::all() {
+        for krate in &*ALL_CRATES {
             let neighbors = crate_graph.neighbors(*krate);
-            if *krate == Crate::Types {
+            if *krate == Crate::TYPES {
                 self.write_generated_for_types_crate()?;
             } else {
                 let base_path = PathBuf::from(krate.generated_out_path());
@@ -125,7 +157,7 @@ impl CodeGen {
 
                 // NB: a hack to avoid the insanely long lines generated because of _very_ long
                 // type names causing `rustfmt` errors (https://github.com/rust-lang/rustfmt/issues/5315)
-                if *krate == Crate::Treasury {
+                if *krate == Crate::TREASURY {
                     write_to_file(
                         r#"
 use_small_heuristics = "Max"

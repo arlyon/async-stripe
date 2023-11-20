@@ -21,30 +21,34 @@ impl<'a> RetrieveToken<'a> {
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateToken<'a> {
-    /// Information for the account this token will represent.
+    /// Information for the account this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount<'a>>,
     /// The bank account this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<CreateTokenBankAccount<'a>>,
+    /// The card this token will represent.
+    ///
+    /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+    /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateTokenCard<'a>>,
-    /// The customer (owned by the application's account) for which to create a token.
+    /// Create a token for the customer, which is owned by the application's account.
     ///
-    /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
-    /// For more details, see [Cloning Saved Payment Methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
+    /// You can only use this with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
+    /// Learn more about [cloning saved payment methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
-    /// The updated CVC value this token will represent.
+    /// The updated CVC value this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_update: Option<CreateTokenCvcUpdate<'a>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
-    /// Information for the person this token will represent.
+    /// Information for the person this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub person: Option<CreateTokenPerson<'a>>,
-    /// The PII this token will represent.
+    /// The PII this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pii: Option<CreateTokenPii<'a>>,
 }
@@ -53,7 +57,7 @@ impl<'a> CreateToken<'a> {
         Self::default()
     }
 }
-/// Information for the account this token will represent.
+/// Information for the account this token represents.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenAccount<'a> {
     /// The business type.
@@ -334,6 +338,7 @@ pub enum CreateTokenAccountCompanyStructure {
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
+    IncorporatedPartnership,
     LimitedLiabilityPartnership,
     Llc,
     MultiMemberLlc,
@@ -349,6 +354,7 @@ pub enum CreateTokenAccountCompanyStructure {
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
     UnincorporatedNonProfit,
+    UnincorporatedPartnership,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -362,6 +368,7 @@ impl CreateTokenAccountCompanyStructure {
             GovernmentInstrumentality => "government_instrumentality",
             GovernmentalUnit => "governmental_unit",
             IncorporatedNonProfit => "incorporated_non_profit",
+            IncorporatedPartnership => "incorporated_partnership",
             LimitedLiabilityPartnership => "limited_liability_partnership",
             Llc => "llc",
             MultiMemberLlc => "multi_member_llc",
@@ -377,6 +384,7 @@ impl CreateTokenAccountCompanyStructure {
             TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             UnincorporatedAssociation => "unincorporated_association",
             UnincorporatedNonProfit => "unincorporated_non_profit",
+            UnincorporatedPartnership => "unincorporated_partnership",
             Unknown => "unknown",
         }
     }
@@ -392,6 +400,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "government_instrumentality" => Ok(GovernmentInstrumentality),
             "governmental_unit" => Ok(GovernmentalUnit),
             "incorporated_non_profit" => Ok(IncorporatedNonProfit),
+            "incorporated_partnership" => Ok(IncorporatedPartnership),
             "limited_liability_partnership" => Ok(LimitedLiabilityPartnership),
             "llc" => Ok(Llc),
             "multi_member_llc" => Ok(MultiMemberLlc),
@@ -407,6 +416,7 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "tax_exempt_government_instrumentality" => Ok(TaxExemptGovernmentInstrumentality),
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
+            "unincorporated_partnership" => Ok(UnincorporatedPartnership),
             _ => Err(()),
         }
     }
@@ -501,16 +511,16 @@ pub struct CreateTokenAccountIndividual<'a> {
     /// The individual's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<&'a str>,
-    /// The government-issued ID number of the individual, as appropriate for the representative’s country.
+    /// The government-issued ID number of the individual, as appropriate for the representative's country.
     ///
     /// (Examples are a Social Security Number in the U.S., or a Social Insurance Number in Canada).
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The government-issued secondary ID number of the individual, as appropriate for the representative's country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token created with Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The individual's last name.
@@ -960,34 +970,58 @@ impl serde::Serialize for CreateTokenBankAccountAccountType {
         serializer.serialize_str(self.as_str())
     }
 }
+/// The card this token will represent.
+///
+/// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+/// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum CreateTokenCard<'a> {
     CreditCardSpecs(CreateTokenCreditCardSpecs<'a>),
     Str(&'a str),
 }
+/// The card this token will represent.
+///
+/// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
+/// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTokenCreditCardSpecs<'a> {
+    /// City / District / Suburb / Town / Village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<&'a str>,
+    /// Billing address country, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_country: Option<&'a str>,
+    /// Address line 1 (Street address / PO Box / Company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1: Option<&'a str>,
+    /// Address line 2 (Apartment / Suite / Unit / Building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line2: Option<&'a str>,
+    /// State / County / Province / Region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_state: Option<&'a str>,
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip: Option<&'a str>,
+    /// Required in order to add the card to an account; in all other cases, this parameter is not used.
+    ///
+    /// When added to an account, the card (which must be a debit card) can be used as a transfer destination for funds in this currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
+    /// Card security code.
+    ///
+    /// Highly recommended to always include this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<&'a str>,
+    /// Two-digit number representing the card's expiration month.
     pub exp_month: &'a str,
+    /// Two- or four-digit number representing the card's expiration year.
     pub exp_year: &'a str,
+    /// Cardholder's full name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
+    /// The card number, as a string without any separators.
     pub number: &'a str,
 }
 impl<'a> CreateTokenCreditCardSpecs<'a> {
@@ -1008,7 +1042,7 @@ impl<'a> CreateTokenCreditCardSpecs<'a> {
         }
     }
 }
-/// The updated CVC value this token will represent.
+/// The updated CVC value this token represents.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTokenCvcUpdate<'a> {
     /// The CVC value, in string form.
@@ -1019,9 +1053,12 @@ impl<'a> CreateTokenCvcUpdate<'a> {
         Self { cvc }
     }
 }
-/// Information for the person this token will represent.
+/// Information for the person this token represents.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenPerson<'a> {
+    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<CreateTokenPersonAdditionalTosAcceptances<'a>>,
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreateTokenPersonAddress<'a>>,
@@ -1058,13 +1095,13 @@ pub struct CreateTokenPerson<'a> {
     /// The person's ID number, as appropriate for their country.
     ///
     /// For example, a social security number in the U.S., social insurance number in Canada, etc.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<&'a str>,
     /// The person's secondary ID number, as appropriate for their country, will be used for enhanced verification checks.
     ///
     /// In Thailand, this would be the laser code found on the back of an ID card.
-    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens_sources/create_token?type=pii).
+    /// Instead of the number itself, you can also provide a [PII token provided by Stripe.js](https://stripe.com/docs/js/tokens/create_token?type=pii).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_secondary: Option<&'a str>,
     /// The person's last name.
@@ -1113,6 +1150,36 @@ pub struct CreateTokenPerson<'a> {
     pub verification: Option<CreateTokenPersonVerification<'a>>,
 }
 impl<'a> CreateTokenPerson<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the required Stripe agreements.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptances<'a> {
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<CreateTokenPersonAdditionalTosAcceptancesAccount<'a>>,
+}
+impl<'a> CreateTokenPersonAdditionalTosAcceptances<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Details on the legal guardian's acceptance of the main Stripe service agreement.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptancesAccount<'a> {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<&'a str>,
+    /// The user agent of the browser from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<&'a str>,
+}
+impl<'a> CreateTokenPersonAdditionalTosAcceptancesAccount<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -1311,6 +1378,9 @@ pub struct CreateTokenPersonRelationship<'a> {
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
+    /// Whether the person is the legal guardian of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -1386,7 +1456,7 @@ impl<'a> CreateTokenPersonVerificationDocument<'a> {
         Self::default()
     }
 }
-/// The PII this token will represent.
+/// The PII this token represents.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenPii<'a> {
     /// The `id_number` for the PII, in string form.
@@ -1400,9 +1470,10 @@ impl<'a> CreateTokenPii<'a> {
 }
 impl<'a> CreateToken<'a> {
     /// Creates a single-use token that represents a bank account’s details.
-    /// This token can be used with any API method in place of a bank account dictionary.
+    /// You can use this token with any API method in place of a bank account dictionary.
     ///
-    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
+    /// You can only use this token once.
+    /// To do so, attach it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_core::Token> {
         client.send_form("/tokens", self, http_types::Method::Post)
     }

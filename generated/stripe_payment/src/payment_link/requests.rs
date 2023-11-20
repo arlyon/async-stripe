@@ -185,7 +185,7 @@ pub struct CreatePaymentLink<'a> {
     pub on_behalf_of: Option<&'a str>,
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
+    pub payment_intent_data: Option<CreatePaymentLinkPaymentIntentData<'a>>,
     /// Specify whether Checkout should collect a payment method.
     ///
     /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
@@ -794,6 +794,10 @@ pub struct CreatePaymentLinkCustomText<'a> {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<CreatePaymentLinkCustomTextSubmit<'a>>,
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance:
+        Option<CreatePaymentLinkCustomTextTermsOfServiceAcceptance<'a>>,
 }
 impl<'a> CreatePaymentLinkCustomText<'a> {
     pub fn new() -> Self {
@@ -803,7 +807,7 @@ impl<'a> CreatePaymentLinkCustomText<'a> {
 /// Custom text that should be displayed alongside shipping address collection.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkCustomTextShippingAddress<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> CreatePaymentLinkCustomTextShippingAddress<'a> {
@@ -814,10 +818,21 @@ impl<'a> CreatePaymentLinkCustomTextShippingAddress<'a> {
 /// Custom text that should be displayed alongside the payment confirmation button.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkCustomTextSubmit<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> CreatePaymentLinkCustomTextSubmit<'a> {
+    pub fn new(message: &'a str) -> Self {
+        Self { message }
+    }
+}
+/// Custom text that should be displayed in place of the default terms of service agreement text.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentLinkCustomTextTermsOfServiceAcceptance<'a> {
+    /// Text may be up to 1200 characters in length.
+    pub message: &'a str,
+}
+impl<'a> CreatePaymentLinkCustomTextTermsOfServiceAcceptance<'a> {
     pub fn new(message: &'a str) -> Self {
         Self { message }
     }
@@ -1067,10 +1082,21 @@ impl CreatePaymentLinkLineItemsAdjustableQuantity {
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentLinkPaymentIntentData {
+pub struct CreatePaymentLinkPaymentIntentData<'a> {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
     ///
     /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
@@ -1084,8 +1110,19 @@ pub struct CreatePaymentLinkPaymentIntentData {
     /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<&'a str>,
 }
-impl CreatePaymentLinkPaymentIntentData {
+impl<'a> CreatePaymentLinkPaymentIntentData<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -2281,9 +2318,15 @@ impl serde::Serialize for CreatePaymentLinkSubmitType {
 pub struct CreatePaymentLinkSubscriptionData<'a> {
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     ///
     /// Has to be at least 1.
@@ -2380,6 +2423,9 @@ pub struct UpdatePaymentLink<'a> {
     /// Metadata associated with this Payment Link will automatically be copied to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData<'a>>,
     /// Specify whether Checkout should collect a payment method.
     ///
     /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
@@ -2387,12 +2433,17 @@ pub struct UpdatePaymentLink<'a> {
     pub payment_method_collection: Option<UpdatePaymentLinkPaymentMethodCollection>,
     /// The list of payment method types that customers can use.
     ///
-    /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+    /// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<&'a [UpdatePaymentLinkPaymentMethodTypes]>,
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection<'a>>,
+    /// When creating a subscription, the specified configuration data will be used.
+    ///
+    /// There must be at least one line item with a recurring price to use `subscription_data`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_data: Option<UpdatePaymentLinkSubscriptionData<'a>>,
 }
 impl<'a> UpdatePaymentLink<'a> {
     pub fn new() -> Self {
@@ -2806,6 +2857,10 @@ pub struct UpdatePaymentLinkCustomText<'a> {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<UpdatePaymentLinkCustomTextSubmit<'a>>,
+    /// Custom text that should be displayed in place of the default terms of service agreement text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service_acceptance:
+        Option<UpdatePaymentLinkCustomTextTermsOfServiceAcceptance<'a>>,
 }
 impl<'a> UpdatePaymentLinkCustomText<'a> {
     pub fn new() -> Self {
@@ -2815,7 +2870,7 @@ impl<'a> UpdatePaymentLinkCustomText<'a> {
 /// Custom text that should be displayed alongside shipping address collection.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomTextShippingAddress<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> UpdatePaymentLinkCustomTextShippingAddress<'a> {
@@ -2826,10 +2881,21 @@ impl<'a> UpdatePaymentLinkCustomTextShippingAddress<'a> {
 /// Custom text that should be displayed alongside the payment confirmation button.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomTextSubmit<'a> {
-    /// Text may be up to 1000 characters in length.
+    /// Text may be up to 1200 characters in length.
     pub message: &'a str,
 }
 impl<'a> UpdatePaymentLinkCustomTextSubmit<'a> {
+    pub fn new(message: &'a str) -> Self {
+        Self { message }
+    }
+}
+/// Custom text that should be displayed in place of the default terms of service agreement text.
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentLinkCustomTextTermsOfServiceAcceptance<'a> {
+    /// Text may be up to 1200 characters in length.
+    pub message: &'a str,
+}
+impl<'a> UpdatePaymentLinkCustomTextTermsOfServiceAcceptance<'a> {
     pub fn new(message: &'a str) -> Self {
         Self { message }
     }
@@ -3078,6 +3144,37 @@ impl UpdatePaymentLinkLineItemsAdjustableQuantity {
         Self { enabled, maximum: Default::default(), minimum: Default::default() }
     }
 }
+/// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentLinkPaymentIntentData<'a> {
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that's set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<&'a str>,
+}
+impl<'a> UpdatePaymentLinkPaymentIntentData<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 /// Specify whether Checkout should collect a payment method.
 ///
 /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
@@ -3136,7 +3233,7 @@ impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
 }
 /// The list of payment method types that customers can use.
 ///
-/// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
+/// Pass an empty string to enable dynamic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkPaymentMethodTypes {
@@ -4052,6 +4149,23 @@ impl serde::Serialize for UpdatePaymentLinkShippingAddressCollectionAllowedCount
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+/// When creating a subscription, the specified configuration data will be used.
+///
+/// There must be at least one line item with a recurring price to use `subscription_data`.
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentLinkSubscriptionData<'a> {
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    ///
+    /// Unlike object-level metadata, this field is declarative.
+    /// Updates will clear prior values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdatePaymentLinkSubscriptionData<'a> {
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 impl<'a> UpdatePaymentLink<'a> {

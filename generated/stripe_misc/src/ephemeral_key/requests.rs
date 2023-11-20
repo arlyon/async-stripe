@@ -9,6 +9,9 @@ pub struct CreateEphemeralKey<'a> {
     /// The ID of the Issuing Card you'd like to access using the resulting ephemeral key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_card: Option<&'a str>,
+    /// A single-use token, created by Stripe.js, used for creating ephemeral keys for Issuing Cards without exchanging sensitive information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nonce: Option<&'a str>,
     /// The ID of the Identity VerificationSession you'd like to access using the resulting ephemeral key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_session: Option<&'a str>,

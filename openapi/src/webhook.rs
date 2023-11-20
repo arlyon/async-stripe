@@ -1,16 +1,13 @@
 use std::path::Path;
 
-use anyhow::{bail, Context};
 use indexmap::IndexMap;
 
-use crate::components::{Components, RequestSource};
+use crate::components::Components;
 use crate::crate_inference::Crate;
-use crate::rust_object::{ObjectRef, RustObject};
-use crate::stripe_object::OperationType;
-use crate::templates::derives::Derives;
+use crate::rust_object::ObjectRef;
 use crate::templates::ObjectWriter;
 use crate::types::{ComponentPath, RustIdent};
-use crate::utils::{append_to_file, get_request_param_field};
+use crate::utils::append_to_file;
 
 /// Paths to components which will be options in the `EventObject` union.
 const WEBHOOK_OBJ_PATHS: &[&str] = &[
@@ -61,7 +58,6 @@ const WEBHOOK_OBJ_PATHS: &[&str] = &[
 
 pub fn write_generated_for_webhooks(components: &Components) -> anyhow::Result<()> {
     let base = Path::new("stripe_webhook");
-    write_event_type(components, base)?;
     write_event_object(components, base)?;
     Ok(())
 }
@@ -78,7 +74,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
             obj_name,
             ObjectRef {
                 path: comp_path,
-                feature_gate: if belonging_crate != Crate::Types {
+                feature_gate: if belonging_crate != Crate::TYPES {
                     Some(belonging_crate.name())
                 } else {
                     None
@@ -93,28 +89,4 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
     writer.write_enum_of_objects(&mut out, components, &objects);
     append_to_file(out, out_path.join("mod.rs"))?;
     Ok(())
-}
-
-fn write_event_type(components: &Components, out_path: &Path) -> anyhow::Result<()> {
-    let event_type_src = RequestSource {
-        path: "/webhook_endpoints",
-        op: OperationType::Post,
-        field_name: "enabled_events",
-    };
-    let spec = components.get_request_spec(event_type_src).context("Webhook endpoint not found")?;
-    let typ = get_request_param_field(spec, event_type_src.field_name)
-        .context("Could not extract object field")?;
-    let obj = typ.as_rust_object().context("No inner object")?;
-    let RustObject::FieldlessEnum(enum_) = obj else {
-        bail!("Expected enum");
-    };
-    let event_enum_variants =
-        enum_.iter().filter(|v| v.wire_name != "*").cloned().collect::<Vec<_>>();
-    let mut out = String::new();
-    let ident = RustIdent::unchanged("EventType");
-    ObjectWriter::new(components, &ident)
-        .derives(Derives::new_deser())
-        .provide_unknown_variant(true)
-        .write_fieldless_enum_variants(&mut out, &event_enum_variants);
-    append_to_file(out, out_path.join("mod.rs"))
 }

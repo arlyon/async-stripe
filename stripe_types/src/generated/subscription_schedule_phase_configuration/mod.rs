@@ -38,12 +38,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub default_tax_rates: Option<Vec<stripe_types::TaxRate>>,
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
     /// The end of this phase of the subscription schedule.
     pub end_date: stripe_types::Timestamp,
     /// The invoice settings applicable during this phase.
-    pub invoice_settings: Option<stripe_types::InvoiceSettingPhaseSetting>,
+    pub invoice_settings: Option<stripe_types::InvoiceSettingSubscriptionSchedulePhaseSetting>,
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<stripe_types::SubscriptionScheduleConfigurationItem>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.

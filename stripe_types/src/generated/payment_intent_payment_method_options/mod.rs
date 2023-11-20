@@ -57,6 +57,8 @@ pub struct PaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<stripe_types::PaymentMethodOptionsPromptpay>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<stripe_types::PaymentMethodOptionsRevolutPay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<stripe_types::PaymentIntentPaymentMethodOptionsSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<stripe_types::PaymentMethodOptionsSofort>,

@@ -1,6 +1,6 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ConnectCollectionTransfer {
-    /// Amount transferred, in %s.
+    /// Amount transferred, in cents (or local equivalent).
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///

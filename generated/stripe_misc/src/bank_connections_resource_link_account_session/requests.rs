@@ -12,6 +12,9 @@ pub struct CreateBankConnectionsResourceLinkAccountSession<'a> {
     ///
     /// Possible values are `balances`, `transactions`, `ownership`, and `payment_method`.
     pub permissions: &'a [CreateBankConnectionsResourceLinkAccountSessionPermissions],
+    /// List of data features that you would like to retrieve upon account creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<&'a [CreateBankConnectionsResourceLinkAccountSessionPrefetch]>,
     /// For webview integrations only.
     ///
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
@@ -28,6 +31,7 @@ impl<'a> CreateBankConnectionsResourceLinkAccountSession<'a> {
             expand: Default::default(),
             filters: Default::default(),
             permissions,
+            prefetch: Default::default(),
             return_url: Default::default(),
         }
     }
@@ -174,6 +178,60 @@ impl std::fmt::Debug for CreateBankConnectionsResourceLinkAccountSessionPermissi
     }
 }
 impl serde::Serialize for CreateBankConnectionsResourceLinkAccountSessionPermissions {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+/// List of data features that you would like to retrieve upon account creation.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    Balances,
+    Ownership,
+}
+
+impl CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    pub fn as_str(self) -> &'static str {
+        use CreateBankConnectionsResourceLinkAccountSessionPrefetch::*;
+        match self {
+            Balances => "balances",
+            Ownership => "ownership",
+        }
+    }
+}
+
+impl std::str::FromStr for CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBankConnectionsResourceLinkAccountSessionPrefetch::*;
+        match s {
+            "balances" => Ok(Balances),
+            "ownership" => Ok(Ownership),
+            _ => Err(()),
+        }
+    }
+}
+
+impl AsRef<str> for CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateBankConnectionsResourceLinkAccountSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateBankConnectionsResourceLinkAccountSessionPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

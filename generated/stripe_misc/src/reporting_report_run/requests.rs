@@ -105,6 +105,7 @@ pub enum CreateReportingReportRunParametersReportingCategory {
     IssuingDispute,
     IssuingTransaction,
     NetworkCost,
+    Obligation,
     OtherAdjustment,
     PartialCaptureReversal,
     Payout,
@@ -119,6 +120,7 @@ pub enum CreateReportingReportRunParametersReportingCategory {
     TopupReversal,
     Transfer,
     TransferReversal,
+    UnreconciledCustomerFunds,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
 }
@@ -147,6 +149,7 @@ impl CreateReportingReportRunParametersReportingCategory {
             IssuingDispute => "issuing_dispute",
             IssuingTransaction => "issuing_transaction",
             NetworkCost => "network_cost",
+            Obligation => "obligation",
             OtherAdjustment => "other_adjustment",
             PartialCaptureReversal => "partial_capture_reversal",
             Payout => "payout",
@@ -161,6 +164,7 @@ impl CreateReportingReportRunParametersReportingCategory {
             TopupReversal => "topup_reversal",
             Transfer => "transfer",
             TransferReversal => "transfer_reversal",
+            UnreconciledCustomerFunds => "unreconciled_customer_funds",
             Unknown => "unknown",
         }
     }
@@ -191,6 +195,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "issuing_dispute" => Ok(IssuingDispute),
             "issuing_transaction" => Ok(IssuingTransaction),
             "network_cost" => Ok(NetworkCost),
+            "obligation" => Ok(Obligation),
             "other_adjustment" => Ok(OtherAdjustment),
             "partial_capture_reversal" => Ok(PartialCaptureReversal),
             "payout" => Ok(Payout),
@@ -205,6 +210,7 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "topup_reversal" => Ok(TopupReversal),
             "transfer" => Ok(Transfer),
             "transfer_reversal" => Ok(TransferReversal),
+            "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
             _ => Err(()),
         }
     }

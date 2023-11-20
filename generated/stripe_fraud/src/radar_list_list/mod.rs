@@ -15,7 +15,7 @@ pub struct RadarListList {
     pub id: stripe_fraud::radar_list_list::RadarValueListId,
     /// The type of items in the value list.
     ///
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    /// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
     pub item_type: RadarListListItemType,
     /// List of items contained within this value list.
     pub list_items: stripe_types::List<stripe_fraud::RadarListListItem>,
@@ -30,7 +30,7 @@ pub struct RadarListList {
 }
 /// The type of items in the value list.
 ///
-/// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+/// One of `card_fingerprint`, `us_bank_account_fingerprint`, `sepa_debit_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RadarListListItemType {
     CardBin,
@@ -40,7 +40,9 @@ pub enum RadarListListItemType {
     CustomerId,
     Email,
     IpAddress,
+    SepaDebitFingerprint,
     String,
+    UsBankAccountFingerprint,
 }
 
 impl RadarListListItemType {
@@ -54,7 +56,9 @@ impl RadarListListItemType {
             CustomerId => "customer_id",
             Email => "email",
             IpAddress => "ip_address",
+            SepaDebitFingerprint => "sepa_debit_fingerprint",
             String => "string",
+            UsBankAccountFingerprint => "us_bank_account_fingerprint",
         }
     }
 }
@@ -71,7 +75,9 @@ impl std::str::FromStr for RadarListListItemType {
             "customer_id" => Ok(CustomerId),
             "email" => Ok(Email),
             "ip_address" => Ok(IpAddress),
+            "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
             "string" => Ok(String),
+            "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
             _ => Err(()),
         }
     }

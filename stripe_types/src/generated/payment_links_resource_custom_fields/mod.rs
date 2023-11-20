@@ -1,19 +1,19 @@
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct PaymentLinksResourceCustomFields {
-    /// Configuration for `type=dropdown` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dropdown: Option<stripe_types::PaymentLinksResourceCustomFieldsDropdown>,
     /// String of your choice that your integration can use to reconcile this field.
     ///
     /// Must be unique to this field, alphanumeric, and up to 200 characters.
     pub key: String,
     pub label: stripe_types::PaymentLinksResourceCustomFieldsLabel,
-    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub numeric: Option<stripe_types::PaymentLinksResourceCustomFieldsNumeric>,
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     pub optional: bool,
-    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<stripe_types::PaymentLinksResourceCustomFieldsText>,
     /// The type of the field.
     #[serde(rename = "type")]

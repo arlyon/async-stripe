@@ -28,15 +28,15 @@ pub struct Invoice {
     /// If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account.
     /// The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
     pub amount_due: i64,
-    /// The amount, in %s, that was paid.
+    /// The amount, in cents (or local equivalent), that was paid.
     pub amount_paid: i64,
-    /// The difference between amount_due and amount_paid, in %s.
+    /// The difference between amount_due and amount_paid, in cents (or local equivalent).
     pub amount_remaining: i64,
     /// This is the sum of all the shipping amounts.
     pub amount_shipping: i64,
     /// ID of the Connect Application that created the invoice.
     pub application: Option<stripe_types::Expandable<stripe_types::Application>>,
-    /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
+    /// The fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
     pub application_fee_amount: Option<i64>,
     /// Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
     ///
@@ -55,13 +55,10 @@ pub struct Invoice {
     pub automatic_tax: stripe_types::AutomaticTax,
     /// Indicates the reason why the invoice was created.
     ///
-    /// `subscription_cycle` indicates an invoice created by a subscription advancing into a new period.
-    /// `subscription_create` indicates an invoice created due to creating a subscription.
-    /// `subscription_update` indicates an invoice created due to updating a subscription.
-    /// `subscription` is set for all old invoices to indicate either a change to a subscription or a period advancement.
-    /// `manual` is set for all invoices unrelated to a subscription (for example: created via the invoice editor).
-    /// The `upcoming` value is reserved for simulated invoices per the upcoming invoice endpoint.
-    /// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
+    /// * `manual`: Unrelated to a subscription, for example, created via the invoice editor.
+    /// * `subscription`: No longer in use.
+    ///
+    /// Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds. * `subscription_create`: A new subscription was created. * `subscription_cycle`: A subscription advanced into a new period. * `subscription_threshold`: A subscription reached a billing threshold. * `subscription_update`: A subscription was updated. * `upcoming`: Reserved for simulated invoices, per the upcoming invoice endpoint.
     pub billing_reason: Option<InvoiceBillingReason>,
     /// ID of the latest charge generated for this invoice, if any.
     pub charge: Option<stripe_types::Expandable<stripe_types::Charge>>,
@@ -233,6 +230,11 @@ pub struct Invoice {
     pub quote: Option<stripe_types::Expandable<stripe_types::Quote>>,
     /// This is the transaction number that appears on email receipts sent for this invoice.
     pub receipt_number: Option<String>,
+    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    pub rendering: Option<stripe_types::InvoicesInvoiceRendering>,
+    /// This is a legacy field that will be removed soon.
+    ///
+    /// For details about `rendering_options`, refer to `rendering` instead.
     /// Options for invoice PDF rendering.
     pub rendering_options: Option<stripe_types::InvoiceSettingRenderingOptions>,
     /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
@@ -256,7 +258,6 @@ pub struct Invoice {
     /// The subscription that this invoice was prepared for, if any.
     pub subscription: Option<stripe_types::Expandable<stripe_types::Subscription>>,
     /// Details about the subscription that created this invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_details: Option<stripe_types::SubscriptionDetailsData>,
     /// Only set for upcoming invoices that preview prorations.
     ///
@@ -267,7 +268,7 @@ pub struct Invoice {
     ///
     /// Item discounts are already incorporated.
     pub subtotal: i64,
-    /// The integer amount in %s representing the subtotal of the invoice before any invoice level discount or tax is applied.
+    /// The integer amount in cents (or local equivalent) representing the subtotal of the invoice before any invoice level discount or tax is applied.
     ///
     /// Item discounts are already incorporated.
     pub subtotal_excluding_tax: Option<i64>,
@@ -283,7 +284,7 @@ pub struct Invoice {
     pub total: i64,
     /// The aggregate amounts calculated per discount across all line items.
     pub total_discount_amounts: Option<Vec<stripe_types::DiscountsResourceDiscountAmount>>,
-    /// The integer amount in %s representing the total amount of the invoice including all discounts but excluding all tax.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the invoice including all discounts but excluding all tax.
     pub total_excluding_tax: Option<i64>,
     /// The aggregate amounts calculated per tax rate for all line items.
     pub total_tax_amounts: Vec<stripe_types::InvoiceTaxAmount>,
@@ -297,13 +298,10 @@ pub struct Invoice {
 }
 /// Indicates the reason why the invoice was created.
 ///
-/// `subscription_cycle` indicates an invoice created by a subscription advancing into a new period.
-/// `subscription_create` indicates an invoice created due to creating a subscription.
-/// `subscription_update` indicates an invoice created due to updating a subscription.
-/// `subscription` is set for all old invoices to indicate either a change to a subscription or a period advancement.
-/// `manual` is set for all invoices unrelated to a subscription (for example: created via the invoice editor).
-/// The `upcoming` value is reserved for simulated invoices per the upcoming invoice endpoint.
-/// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
+/// * `manual`: Unrelated to a subscription, for example, created via the invoice editor.
+/// * `subscription`: No longer in use.
+///
+/// Applies to subscriptions from before May 2018 where no distinction was made between updates, cycles, and thresholds. * `subscription_create`: A new subscription was created. * `subscription_cycle`: A subscription advanced into a new period. * `subscription_threshold`: A subscription reached a billing threshold. * `subscription_update`: A subscription was updated. * `upcoming`: Reserved for simulated invoices, per the upcoming invoice endpoint.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceBillingReason {
     AutomaticPendingInvoiceItemInvoice,

@@ -14,11 +14,11 @@ pub struct CurrencyOption {
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<stripe_types::PriceTier>>,
-    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount: Option<i64>,
-    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount_decimal: Option<String>,

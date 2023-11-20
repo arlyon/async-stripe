@@ -502,7 +502,7 @@ pub struct CreatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
         &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
     /// Whether the feature is enabled.
     pub enabled: bool,
-    /// The list of products that support subscription updates.
+    /// The list of up to 10 products that support subscription updates.
     pub products: &'a [CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a>],
     /// Determines how to handle prorations resulting from subscription updates.
     ///
@@ -583,7 +583,7 @@ impl serde::Serialize for CreatePortalConfigurationFeaturesSubscriptionUpdateDef
         serializer.serialize_str(self.as_str())
     }
 }
-/// The list of products that support subscription updates.
+/// The list of up to 10 products that support subscription updates.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
     /// The list of price IDs for the product that a subscription can be updated to.
@@ -1126,7 +1126,7 @@ pub struct UpdatePortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The list of products that support subscription updates.
+    /// The list of up to 10 products that support subscription updates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<&'a [UpdatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a>]>,
     /// Determines how to handle prorations resulting from subscription updates.
@@ -1204,7 +1204,7 @@ impl serde::Serialize for UpdatePortalConfigurationFeaturesSubscriptionUpdateDef
         serializer.serialize_str(self.as_str())
     }
 }
-/// The list of products that support subscription updates.
+/// The list of up to 10 products that support subscription updates.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePortalConfigurationFeaturesSubscriptionUpdateProducts<'a> {
     /// The list of price IDs for the product that a subscription can be updated to.

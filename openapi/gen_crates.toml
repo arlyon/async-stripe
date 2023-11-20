@@ -1,0 +1,110 @@
+[[crates]]
+name = "billing"
+packages = ["test_helpers", "billing_portal"]
+paths =  [
+    "credit_note",
+    "tax_id",
+    "invoice",
+    "item",
+    "plan",
+    "quote",
+    "subscription"
+]
+
+[[crates]]
+name = "checkout"
+packages = ["checkout"]
+
+[[crates]]
+name = "connect"
+paths = ["country_spec", "account", "topup", "application_fee", "transfer", "application"]
+packages = ["apps"]
+
+[[crates]]
+name = "core"
+paths = [
+    "balance",
+    "balance_transaction",
+    "charge",
+    "customer",
+    "dispute",
+    "event",
+    "file",
+    "mandate",
+    "payment_intent",
+    "setup_intent",
+    "setup_attempt",
+    "payout",
+    "refund",
+    "token"
+]
+
+[[crates]]
+name = "fraud"
+paths = ["review"]
+packages = ["radar"]
+
+[[crates]]
+name = "issuing"
+paths = ["funding_instructions"]
+packages = ["issuing"]
+
+[[crates]]
+name = "payment"
+paths = [
+    "card",
+    "payment_method",
+    "source",
+    "bank_account",
+    "payment_link"
+]
+
+[[crates]]
+name = "product"
+paths = [
+    "product",
+    "price",
+    "coupon",
+    "promotion_code",
+    "discount",
+    "tax_code",
+    "tax_rate",
+    "shipping_rate"
+]
+
+[[crates]]
+name = "terminal"
+packages = ["terminal"]
+
+[[crates]]
+name = "treasury"
+packages = ["treasury"]
+
+[[crates]]
+name = "types"
+paths = [
+    "api_errors",
+    "shipping",
+    "address",
+
+    # These should not need to be manually specified, but currently
+    # cannot have their crate inferred
+    "linked_account_options_us_bank_account",
+    "radar_radar_options"
+]
+
+[[crates]]
+name = "misc"
+paths = [
+    "apple_pay_domain",
+    "ephemeral_key",
+    "exchange_rate",
+    "webhook_endpoint"
+]
+packages = [
+    "tax",
+    "identity",
+    "reporting",
+    "sigma",
+    "financial_connections"
+]
