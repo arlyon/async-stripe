@@ -16,6 +16,6 @@ impl<'a> RetrieveMandate<'a> {
         client: &stripe::Client,
         mandate: &stripe_types::mandate::MandateId,
     ) -> stripe::Response<stripe_types::Mandate> {
-        client.get_query(&format!("/mandates/{mandate}", mandate = mandate), self)
+        client.get_query(&format!("/mandates/{mandate}"), self)
     }
 }

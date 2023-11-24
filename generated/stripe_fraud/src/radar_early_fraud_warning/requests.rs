@@ -63,14 +63,8 @@ impl<'a> RetrieveRadarEarlyFraudWarning<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        early_fraud_warning: &stripe_fraud::radar_early_fraud_warning::RadarEarlyFraudWarningId,
+        early_fraud_warning: &str,
     ) -> stripe::Response<stripe_fraud::RadarEarlyFraudWarning> {
-        client.get_query(
-            &format!(
-                "/radar/early_fraud_warnings/{early_fraud_warning}",
-                early_fraud_warning = early_fraud_warning
-            ),
-            self,
-        )
+        client.get_query(&format!("/radar/early_fraud_warnings/{early_fraud_warning}"), self)
     }
 }

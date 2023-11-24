@@ -433,12 +433,9 @@ impl<'a> RetrieveTerminalConfigurationConfiguration<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+        configuration: &str,
     ) -> stripe::Response<RetrieveReturned> {
-        client.get_query(
-            &format!("/terminal/configurations/{configuration}", configuration = configuration),
-            self,
-        )
+        client.get_query(&format!("/terminal/configurations/{configuration}"), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -817,10 +814,10 @@ impl<'a> UpdateTerminalConfigurationConfiguration<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+        configuration: &str,
     ) -> stripe::Response<UpdateReturned> {
         client.send_form(
-            &format!("/terminal/configurations/{configuration}", configuration = configuration),
+            &format!("/terminal/configurations/{configuration}"),
             self,
             http_types::Method::Post,
         )
@@ -846,10 +843,10 @@ impl DeleteTerminalConfigurationConfiguration {
     pub fn send(
         &self,
         client: &stripe::Client,
-        configuration:&stripe_terminal::terminal_configuration_configuration::TerminalConfigurationId,
+        configuration: &str,
     ) -> stripe::Response<stripe_terminal::TerminalConfigurationDeletedConfiguration> {
         client.send_form(
-            &format!("/terminal/configurations/{configuration}", configuration = configuration),
+            &format!("/terminal/configurations/{configuration}"),
             self,
             http_types::Method::Delete,
         )

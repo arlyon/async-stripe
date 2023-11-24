@@ -68,7 +68,7 @@ impl<'a> RetrieveTaxRate<'a> {
         client: &stripe::Client,
         tax_rate: &stripe_types::tax_rate::TaxRateId,
     ) -> stripe::Response<stripe_types::TaxRate> {
-        client.get_query(&format!("/tax_rates/{tax_rate}", tax_rate = tax_rate), self)
+        client.get_query(&format!("/tax_rates/{tax_rate}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -377,10 +377,6 @@ impl<'a> UpdateTaxRate<'a> {
         client: &stripe::Client,
         tax_rate: &stripe_types::tax_rate::TaxRateId,
     ) -> stripe::Response<stripe_types::TaxRate> {
-        client.send_form(
-            &format!("/tax_rates/{tax_rate}", tax_rate = tax_rate),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/tax_rates/{tax_rate}"), self, http_types::Method::Post)
     }
 }

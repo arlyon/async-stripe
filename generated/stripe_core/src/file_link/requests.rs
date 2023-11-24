@@ -14,9 +14,9 @@ impl<'a> RetrieveFileLink<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        link: &stripe_types::file_link::FileLinkId,
+        link: &str,
     ) -> stripe::Response<stripe_types::FileLink> {
-        client.get_query(&format!("/file_links/{link}", link = link), self)
+        client.get_query(&format!("/file_links/{link}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -90,13 +90,9 @@ impl<'a> UpdateFileLink<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        link: &stripe_types::file_link::FileLinkId,
+        link: &str,
     ) -> stripe::Response<stripe_types::FileLink> {
-        client.send_form(
-            &format!("/file_links/{link}", link = link),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/file_links/{link}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

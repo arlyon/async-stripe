@@ -59,7 +59,7 @@ fn get_override_object(
     let req = components.get_request_spec(data.source).context("Request source not found")?;
     let (obj, _) = get_request_param_field(req, data.source.field_name)
         .context("Could not extract field")?
-        .as_object()
+        .extract_object()
         .context("Not an object")?;
     Ok((
         obj.clone(),

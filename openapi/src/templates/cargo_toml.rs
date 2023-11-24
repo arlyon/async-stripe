@@ -14,7 +14,11 @@ const CORE_FEATURES: &[&str] = &[
     "runtime-async-std-surf",
 ];
 
-pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<String>) -> String {
+pub fn gen_crate_toml(
+    krate: Crate,
+    crate_deps: Vec<Crate>,
+    mut crate_features: Vec<String>,
+) -> String {
     let crate_name = krate.name();
     let mut crate_dep_section = String::new();
     for dep in crate_deps {
@@ -29,9 +33,30 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
     for feature in CORE_FEATURES {
         let _ = writeln!(feature_section, r#"{feature} = ["async-stripe/{feature}"]"#);
     }
-    for feature in crate_features {
-        let _ = writeln!(feature_section, r"{feature} = []");
+    feature_section.push('\n');
+
+    crate_features.sort_unstable();
+    for feature in &crate_features {
+        let _ = writeln!(feature_section, "{feature} = []");
     }
+    if !crate_features.is_empty() {
+        feature_section.push('\n');
+        let _ = writeln!(
+            feature_section,
+            "full = [{}]",
+            crate_features
+                .iter()
+                .map(|feat| format!(r#""{feat}""#))
+                .collect::<Vec<_>>()
+                .join(",\n")
+        );
+    }
+
+    let mut docs_rs_features = String::from(r#"["runtime-tokio-hyper""#);
+    if !crate_features.is_empty() {
+        docs_rs_features.push_str(r#", "full""#);
+    }
+    docs_rs_features.push(']');
     formatdoc! {
         r#"
         [package]
@@ -50,14 +75,17 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         [lib]
         path = "src/mod.rs"
         
+        [package.metadata.docs.rs]
+        features = {docs_rs_features}
+        
         [dependencies]
         serde.workspace = true
         http-types.workspace = true
         smol_str.workspace = true
         serde_json.workspace = true
         async-stripe = {{path = "../../async-stripe"}}
-        {crate_dep_section}
         
+        {crate_dep_section}
         [features]
         {feature_section}
         "#

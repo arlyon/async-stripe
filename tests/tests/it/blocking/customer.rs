@@ -19,7 +19,10 @@ fn customer_create_and_delete_without_account() {
 #[test]
 fn customer_create_and_delete_with_account() {
     mock::with_client(|client| {
-        let client = client.to_owned().with_client_id("ca_123".parse().unwrap()).with_stripe_account("acct_123".parse().unwrap());
+        let client = client
+            .to_owned()
+            .with_client_id("ca_123".parse().unwrap())
+            .with_stripe_account("acct_123".parse().unwrap());
         customer_create_and_delete(&client);
     });
 }

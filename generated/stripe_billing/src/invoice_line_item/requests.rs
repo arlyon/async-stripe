@@ -35,16 +35,13 @@ impl<'a> ListInvoiceLineItem<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::List<stripe_types::InvoiceLineItem>> {
-        client.get_query(&format!("/invoices/{invoice}/lines", invoice = invoice), self)
+        client.get_query(&format!("/invoices/{invoice}/lines"), self)
     }
     pub fn paginate(
         self,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::ListPaginator<stripe_types::InvoiceLineItem> {
-        stripe::ListPaginator::from_params(
-            &format!("/invoices/{invoice}/lines", invoice = invoice),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/invoices/{invoice}/lines"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListInvoiceLineItem<'a> {}
@@ -489,11 +486,7 @@ impl<'a> UpdateInvoiceLineItem<'a> {
         line_item_id: &str,
     ) -> stripe::Response<stripe_types::InvoiceLineItem> {
         client.send_form(
-            &format!(
-                "/invoices/{invoice}/lines/{line_item_id}",
-                invoice = invoice,
-                line_item_id = line_item_id
-            ),
+            &format!("/invoices/{invoice}/lines/{line_item_id}"),
             self,
             http_types::Method::Post,
         )

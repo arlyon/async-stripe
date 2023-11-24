@@ -3831,10 +3831,9 @@ impl<'a> RetrieveIssuingCardholder<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        cardholder: &stripe_types::issuing_cardholder::IssuingCardholderId,
+        cardholder: &str,
     ) -> stripe::Response<stripe_types::IssuingCardholder> {
-        client
-            .get_query(&format!("/issuing/cardholders/{cardholder}", cardholder = cardholder), self)
+        client.get_query(&format!("/issuing/cardholders/{cardholder}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7389,10 +7388,10 @@ impl<'a> UpdateIssuingCardholder<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        cardholder: &stripe_types::issuing_cardholder::IssuingCardholderId,
+        cardholder: &str,
     ) -> stripe::Response<stripe_types::IssuingCardholder> {
         client.send_form(
-            &format!("/issuing/cardholders/{cardholder}", cardholder = cardholder),
+            &format!("/issuing/cardholders/{cardholder}"),
             self,
             http_types::Method::Post,
         )

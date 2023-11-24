@@ -665,7 +665,7 @@ impl<'a> RetrievePlan<'a> {
         client: &stripe::Client,
         plan: &stripe_types::plan::PlanId,
     ) -> stripe::Response<stripe_types::Plan> {
-        client.get_query(&format!("/plans/{plan}", plan = plan), self)
+        client.get_query(&format!("/plans/{plan}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -710,7 +710,7 @@ impl<'a> UpdatePlan<'a> {
         client: &stripe::Client,
         plan: &stripe_types::plan::PlanId,
     ) -> stripe::Response<stripe_types::Plan> {
-        client.send_form(&format!("/plans/{plan}", plan = plan), self, http_types::Method::Post)
+        client.send_form(&format!("/plans/{plan}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -729,6 +729,6 @@ impl DeletePlan {
         client: &stripe::Client,
         plan: &stripe_types::plan::PlanId,
     ) -> stripe::Response<stripe_types::DeletedPlan> {
-        client.send_form(&format!("/plans/{plan}", plan = plan), self, http_types::Method::Delete)
+        client.send_form(&format!("/plans/{plan}"), self, http_types::Method::Delete)
     }
 }

@@ -17,14 +17,7 @@ impl<'a> RetrieveCustomerBalanceTransaction<'a> {
         customer: &stripe_types::customer::CustomerId,
         transaction: &str,
     ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
-        client.get_query(
-            &format!(
-                "/customers/{customer}/balance_transactions/{transaction}",
-                customer = customer,
-                transaction = transaction
-            ),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/balance_transactions/{transaction}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -62,17 +55,14 @@ impl<'a> ListCustomerBalanceTransaction<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
-        client.get_query(
-            &format!("/customers/{customer}/balance_transactions", customer = customer),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/balance_transactions"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::CustomerBalanceTransaction> {
         stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            &format!("/customers/{customer}/balance_transactions"),
             self,
         )
     }
@@ -123,7 +113,7 @@ impl<'a> CreateCustomerBalanceTransaction<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
         client.send_form(
-            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            &format!("/customers/{customer}/balance_transactions"),
             self,
             http_types::Method::Post,
         )
@@ -161,11 +151,7 @@ impl<'a> UpdateCustomerBalanceTransaction<'a> {
         transaction: &str,
     ) -> stripe::Response<stripe_types::CustomerBalanceTransaction> {
         client.send_form(
-            &format!(
-                "/customers/{customer}/balance_transactions/{transaction}",
-                customer = customer,
-                transaction = transaction
-            ),
+            &format!("/customers/{customer}/balance_transactions/{transaction}"),
             self,
             http_types::Method::Post,
         )

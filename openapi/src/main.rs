@@ -119,12 +119,14 @@ fn main() -> Result<()> {
     }
     fmt_cmd.arg("out/stripe_webhook/mod.rs");
 
+    info!("Formatting generated files");
     let out = fmt_cmd.output()?;
     if !out.status.success() {
         bail!("Rustfmt failed with outputs {:?}", out);
     }
 
     if !args.dry_run {
+        info!("Copying generated files");
         run_rsync("out/crates/", "../generated/")?;
         run_rsync("out/stripe_types/", "../stripe_types/src/generated/")?;
         run_rsync("out/stripe_webhook/", "../stripe_webhook/src/generated/")?;

@@ -252,7 +252,7 @@ impl<'a> RetrieveRefund<'a> {
         client: &stripe::Client,
         refund: &stripe_types::refund::RefundId,
     ) -> stripe::Response<stripe_types::Refund> {
-        client.get_query(&format!("/refunds/{refund}", refund = refund), self)
+        client.get_query(&format!("/refunds/{refund}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -282,11 +282,7 @@ impl<'a> UpdateRefund<'a> {
         client: &stripe::Client,
         refund: &stripe_types::refund::RefundId,
     ) -> stripe::Response<stripe_types::Refund> {
-        client.send_form(
-            &format!("/refunds/{refund}", refund = refund),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/refunds/{refund}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -311,11 +307,7 @@ impl<'a> CancelRefund<'a> {
         client: &stripe::Client,
         refund: &stripe_types::refund::RefundId,
     ) -> stripe::Response<stripe_types::Refund> {
-        client.send_form(
-            &format!("/refunds/{refund}/cancel", refund = refund),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/refunds/{refund}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -337,7 +329,7 @@ impl<'a> ExpireRefund<'a> {
         refund: &stripe_types::refund::RefundId,
     ) -> stripe::Response<stripe_types::Refund> {
         client.send_form(
-            &format!("/test_helpers/refunds/{refund}/expire", refund = refund),
+            &format!("/test_helpers/refunds/{refund}/expire"),
             self,
             http_types::Method::Post,
         )

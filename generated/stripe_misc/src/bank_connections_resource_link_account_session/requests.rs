@@ -266,11 +266,8 @@ impl<'a> RetrieveBankConnectionsResourceLinkAccountSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session:&stripe_misc::bank_connections_resource_link_account_session::FinancialConnectionsSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_misc::BankConnectionsResourceLinkAccountSession> {
-        client.get_query(
-            &format!("/financial_connections/sessions/{session}", session = session),
-            self,
-        )
+        client.get_query(&format!("/financial_connections/sessions/{session}"), self)
     }
 }

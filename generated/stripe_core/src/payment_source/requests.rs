@@ -36,16 +36,13 @@ impl<'a> ListPaymentSource<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentSource>> {
-        client.get_query(&format!("/customers/{customer}/sources", customer = customer), self)
+        client.get_query(&format!("/customers/{customer}/sources"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::PaymentSource> {
-        stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/sources", customer = customer),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/customers/{customer}/sources"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListPaymentSource<'a> {}
@@ -68,10 +65,7 @@ impl<'a> RetrievePaymentSource<'a> {
         customer: &stripe_types::customer::CustomerId,
         id: &str,
     ) -> stripe::Response<stripe_types::PaymentSource> {
-        client.get_query(
-            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/sources/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -112,10 +106,6 @@ impl<'a> CreatePaymentSource<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::PaymentSource> {
-        client.send_form(
-            &format!("/customers/{customer}/sources", customer = customer),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/customers/{customer}/sources"), self, http_types::Method::Post)
     }
 }

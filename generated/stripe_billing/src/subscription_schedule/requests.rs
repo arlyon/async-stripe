@@ -1178,9 +1178,9 @@ impl<'a> RetrieveSubscriptionSchedule<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
+        schedule: &str,
     ) -> stripe::Response<stripe_types::SubscriptionSchedule> {
-        client.get_query(&format!("/subscription_schedules/{schedule}", schedule = schedule), self)
+        client.get_query(&format!("/subscription_schedules/{schedule}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2353,10 +2353,10 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
+        schedule: &str,
     ) -> stripe::Response<stripe_types::SubscriptionSchedule> {
         client.send_form(
-            &format!("/subscription_schedules/{schedule}", schedule = schedule),
+            &format!("/subscription_schedules/{schedule}"),
             self,
             http_types::Method::Post,
         )
@@ -2390,10 +2390,10 @@ impl<'a> CancelSubscriptionSchedule<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
+        schedule: &str,
     ) -> stripe::Response<stripe_types::SubscriptionSchedule> {
         client.send_form(
-            &format!("/subscription_schedules/{schedule}/cancel", schedule = schedule),
+            &format!("/subscription_schedules/{schedule}/cancel"),
             self,
             http_types::Method::Post,
         )
@@ -2421,10 +2421,10 @@ impl<'a> ReleaseSubscriptionSchedule<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        schedule: &stripe_types::subscription_schedule::SubscriptionScheduleId,
+        schedule: &str,
     ) -> stripe::Response<stripe_types::SubscriptionSchedule> {
         client.send_form(
-            &format!("/subscription_schedules/{schedule}/release", schedule = schedule),
+            &format!("/subscription_schedules/{schedule}/release"),
             self,
             http_types::Method::Post,
         )

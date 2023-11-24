@@ -19,7 +19,7 @@ impl<'a> RetrievePayout<'a> {
         client: &stripe::Client,
         payout: &stripe_types::payout::PayoutId,
     ) -> stripe::Response<stripe_types::Payout> {
-        client.get_query(&format!("/payouts/{payout}", payout = payout), self)
+        client.get_query(&format!("/payouts/{payout}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -295,11 +295,7 @@ impl<'a> UpdatePayout<'a> {
         client: &stripe::Client,
         payout: &stripe_types::payout::PayoutId,
     ) -> stripe::Response<stripe_types::Payout> {
-        client.send_form(
-            &format!("/payouts/{payout}", payout = payout),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/payouts/{payout}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -323,11 +319,7 @@ impl<'a> CancelPayout<'a> {
         client: &stripe::Client,
         payout: &stripe_types::payout::PayoutId,
     ) -> stripe::Response<stripe_types::Payout> {
-        client.send_form(
-            &format!("/payouts/{payout}/cancel", payout = payout),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/payouts/{payout}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -358,10 +350,6 @@ impl<'a> ReversePayout<'a> {
         client: &stripe::Client,
         payout: &stripe_types::payout::PayoutId,
     ) -> stripe::Response<stripe_types::Payout> {
-        client.send_form(
-            &format!("/payouts/{payout}/reverse", payout = payout),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/payouts/{payout}/reverse"), self, http_types::Method::Post)
     }
 }

@@ -1,6 +1,8 @@
 #![recursion_limit = "128"]
 // FIXME: could be worked around in the codegen
 #![allow(clippy::large_enum_variant)]
+// FIXME: probably fixable with better doc comment formatting, but stripe might also just have doc typos at times that break the regex
+#![allow(rustdoc::broken_intra_doc_links)]
 
 mod currency;
 mod expandable;

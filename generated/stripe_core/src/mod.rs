@@ -1,4 +1,6 @@
 #![recursion_limit = "256"]
+#![allow(clippy::large_enum_variant)]
+#![allow(rustdoc::invalid_html_tags)]
 extern crate self as stripe_core;
 pub mod balance;
 pub use balance::Balance;

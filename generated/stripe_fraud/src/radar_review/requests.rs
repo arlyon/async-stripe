@@ -61,7 +61,7 @@ impl<'a> RetrieveRadarReview<'a> {
         client: &stripe::Client,
         review: &stripe_types::radar_review::ReviewId,
     ) -> stripe::Response<stripe_types::RadarReview> {
-        client.get_query(&format!("/reviews/{review}", review = review), self)
+        client.get_query(&format!("/reviews/{review}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -82,10 +82,6 @@ impl<'a> ApproveRadarReview<'a> {
         client: &stripe::Client,
         review: &stripe_types::radar_review::ReviewId,
     ) -> stripe::Response<stripe_types::RadarReview> {
-        client.send_form(
-            &format!("/reviews/{review}/approve", review = review),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/reviews/{review}/approve"), self, http_types::Method::Post)
     }
 }

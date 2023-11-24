@@ -66,6 +66,6 @@ impl<'a> RetrievePlatformFee<'a> {
         client: &stripe::Client,
         id: &stripe_types::platform_fee::ApplicationFeeId,
     ) -> stripe::Response<stripe_types::PlatformFee> {
-        client.get_query(&format!("/application_fees/{id}", id = id), self)
+        client.get_query(&format!("/application_fees/{id}"), self)
     }
 }

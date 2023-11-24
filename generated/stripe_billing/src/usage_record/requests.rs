@@ -115,10 +115,7 @@ impl<'a> CreateUsageRecord<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::Response<stripe_billing::UsageRecord> {
         client.send_form(
-            &format!(
-                "/subscription_items/{subscription_item}/usage_records",
-                subscription_item = subscription_item
-            ),
+            &format!("/subscription_items/{subscription_item}/usage_records"),
             self,
             http_types::Method::Post,
         )

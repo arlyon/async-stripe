@@ -1314,11 +1314,7 @@ impl<'a> UpdateIssuingDispute<'a> {
         client: &stripe::Client,
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::IssuingDispute> {
-        client.send_form(
-            &format!("/issuing/disputes/{dispute}", dispute = dispute),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/issuing/disputes/{dispute}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1339,7 +1335,7 @@ impl<'a> RetrieveIssuingDispute<'a> {
         client: &stripe::Client,
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::IssuingDispute> {
-        client.get_query(&format!("/issuing/disputes/{dispute}", dispute = dispute), self)
+        client.get_query(&format!("/issuing/disputes/{dispute}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1371,7 +1367,7 @@ impl<'a> SubmitIssuingDispute<'a> {
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::IssuingDispute> {
         client.send_form(
-            &format!("/issuing/disputes/{dispute}/submit", dispute = dispute),
+            &format!("/issuing/disputes/{dispute}/submit"),
             self,
             http_types::Method::Post,
         )

@@ -47,11 +47,7 @@ impl<'a> CreateTransferReversal<'a> {
         client: &stripe::Client,
         id: &stripe_types::transfer_reversal::TransferReversalId,
     ) -> stripe::Response<stripe_types::TransferReversal> {
-        client.send_form(
-            &format!("/transfers/{id}/reversals", id = id),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/transfers/{id}/reversals"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -92,13 +88,13 @@ impl<'a> ListTransferReversal<'a> {
         client: &stripe::Client,
         id: &stripe_types::transfer_reversal::TransferReversalId,
     ) -> stripe::Response<stripe_types::List<stripe_types::TransferReversal>> {
-        client.get_query(&format!("/transfers/{id}/reversals", id = id), self)
+        client.get_query(&format!("/transfers/{id}/reversals"), self)
     }
     pub fn paginate(
         self,
         id: &stripe_types::transfer_reversal::TransferReversalId,
     ) -> stripe::ListPaginator<stripe_types::TransferReversal> {
-        stripe::ListPaginator::from_params(&format!("/transfers/{id}/reversals", id = id), self)
+        stripe::ListPaginator::from_params(&format!("/transfers/{id}/reversals"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListTransferReversal<'a> {}
@@ -121,10 +117,7 @@ impl<'a> RetrieveTransferReversal<'a> {
         id: &str,
         transfer: &stripe_types::transfer::TransferId,
     ) -> stripe::Response<stripe_types::TransferReversal> {
-        client.get_query(
-            &format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer),
-            self,
-        )
+        client.get_query(&format!("/transfers/{transfer}/reversals/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -156,7 +149,7 @@ impl<'a> UpdateTransferReversal<'a> {
         transfer: &stripe_types::transfer::TransferId,
     ) -> stripe::Response<stripe_types::TransferReversal> {
         client.send_form(
-            &format!("/transfers/{transfer}/reversals/{id}", id = id, transfer = transfer),
+            &format!("/transfers/{transfer}/reversals/{id}"),
             self,
             http_types::Method::Post,
         )

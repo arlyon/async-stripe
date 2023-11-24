@@ -18,10 +18,7 @@ impl<'a> RetrievePromotionCode<'a> {
         client: &stripe::Client,
         promotion_code: &stripe_types::promotion_code::PromotionCodeId,
     ) -> stripe::Response<stripe_types::PromotionCode> {
-        client.get_query(
-            &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
-            self,
-        )
+        client.get_query(&format!("/promotion_codes/{promotion_code}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -200,7 +197,7 @@ impl<'a> UpdatePromotionCode<'a> {
         promotion_code: &stripe_types::promotion_code::PromotionCodeId,
     ) -> stripe::Response<stripe_types::PromotionCode> {
         client.send_form(
-            &format!("/promotion_codes/{promotion_code}", promotion_code = promotion_code),
+            &format!("/promotion_codes/{promotion_code}"),
             self,
             http_types::Method::Post,
         )

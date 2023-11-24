@@ -65,7 +65,7 @@ impl<'a> RetrieveSubscriptionItem<'a> {
         client: &stripe::Client,
         item: &stripe_types::line_item::ItemId,
     ) -> stripe::Response<stripe_types::SubscriptionItem> {
-        client.get_query(&format!("/subscription_items/{item}", item = item), self)
+        client.get_query(&format!("/subscription_items/{item}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -892,11 +892,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
         client: &stripe::Client,
         item: &stripe_types::line_item::ItemId,
     ) -> stripe::Response<stripe_types::SubscriptionItem> {
-        client.send_form(
-            &format!("/subscription_items/{item}", item = item),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/subscription_items/{item}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -990,11 +986,7 @@ impl DeleteSubscriptionItem {
         client: &stripe::Client,
         item: &stripe_types::line_item::ItemId,
     ) -> stripe::Response<stripe_types::DeletedSubscriptionItem> {
-        client.send_form(
-            &format!("/subscription_items/{item}", item = item),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/subscription_items/{item}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1037,10 +1029,7 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
         client.get_query(
-            &format!(
-                "/subscription_items/{subscription_item}/usage_record_summaries",
-                subscription_item = subscription_item
-            ),
+            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
             self,
         )
     }
@@ -1049,10 +1038,7 @@ impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::ListPaginator<stripe_types::UsageRecordSummary> {
         stripe::ListPaginator::from_params(
-            &format!(
-                "/subscription_items/{subscription_item}/usage_record_summaries",
-                subscription_item = subscription_item
-            ),
+            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
             self,
         )
     }

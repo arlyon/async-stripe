@@ -141,9 +141,9 @@ impl<'a> RetrieveSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_checkout::session::CheckoutSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_checkout::Session> {
-        client.get_query(&format!("/checkout/sessions/{session}", session = session), self)
+        client.get_query(&format!("/checkout/sessions/{session}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7287,17 +7287,13 @@ impl<'a> ListLineItemsSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_checkout::session::CheckoutSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-        client
-            .get_query(&format!("/checkout/sessions/{session}/line_items", session = session), self)
+        client.get_query(&format!("/checkout/sessions/{session}/line_items"), self)
     }
-    pub fn paginate(
-        self,
-        session: &stripe_checkout::session::CheckoutSessionId,
-    ) -> stripe::ListPaginator<stripe_types::LineItem> {
+    pub fn paginate(self, session: &str) -> stripe::ListPaginator<stripe_types::LineItem> {
         stripe::ListPaginator::from_params(
-            &format!("/checkout/sessions/{session}/line_items", session = session),
+            &format!("/checkout/sessions/{session}/line_items"),
             self,
         )
     }
@@ -7321,10 +7317,10 @@ impl<'a> ExpireSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_checkout::session::CheckoutSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_checkout::Session> {
         client.send_form(
-            &format!("/checkout/sessions/{session}/expire", session = session),
+            &format!("/checkout/sessions/{session}/expire"),
             self,
             http_types::Method::Post,
         )

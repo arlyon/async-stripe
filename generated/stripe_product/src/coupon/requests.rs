@@ -220,7 +220,7 @@ impl<'a> RetrieveCoupon<'a> {
         client: &stripe::Client,
         coupon: &stripe_types::coupon::CouponId,
     ) -> stripe::Response<stripe_types::Coupon> {
-        client.get_query(&format!("/coupons/{coupon}", coupon = coupon), self)
+        client.get_query(&format!("/coupons/{coupon}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -274,11 +274,7 @@ impl<'a> UpdateCoupon<'a> {
         client: &stripe::Client,
         coupon: &stripe_types::coupon::CouponId,
     ) -> stripe::Response<stripe_types::Coupon> {
-        client.send_form(
-            &format!("/coupons/{coupon}", coupon = coupon),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/coupons/{coupon}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -298,10 +294,6 @@ impl DeleteCoupon {
         client: &stripe::Client,
         coupon: &stripe_types::coupon::CouponId,
     ) -> stripe::Response<stripe_types::DeletedCoupon> {
-        client.send_form(
-            &format!("/coupons/{coupon}", coupon = coupon),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/coupons/{coupon}"), self, http_types::Method::Delete)
     }
 }

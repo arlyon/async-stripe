@@ -18,7 +18,7 @@ impl<'a> DetachSource<'a> {
         id: &str,
     ) -> stripe::Response<DetachReturned> {
         client.send_form(
-            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            &format!("/customers/{customer}/sources/{id}"),
             self,
             http_types::Method::Delete,
         )
@@ -55,7 +55,7 @@ impl<'a> RetrieveSource<'a> {
         client: &stripe::Client,
         source: &stripe_types::source::SourceId,
     ) -> stripe::Response<stripe_types::Source> {
-        client.get_query(&format!("/sources/{source}", source = source), self)
+        client.get_query(&format!("/sources/{source}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1535,11 +1535,7 @@ impl<'a> UpdateSource<'a> {
         client: &stripe::Client,
         source: &stripe_types::source::SourceId,
     ) -> stripe::Response<stripe_types::Source> {
-        client.send_form(
-            &format!("/sources/{source}", source = source),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/sources/{source}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1562,11 +1558,7 @@ impl<'a> VerifySource<'a> {
         client: &stripe::Client,
         source: &stripe_types::source::SourceId,
     ) -> stripe::Response<stripe_types::Source> {
-        client.send_form(
-            &format!("/sources/{source}/verify", source = source),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/sources/{source}/verify"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1604,16 +1596,13 @@ impl<'a> SourceTransactionsSource<'a> {
         client: &stripe::Client,
         source: &stripe_types::source::SourceId,
     ) -> stripe::Response<stripe_types::List<stripe_types::SourceTransaction>> {
-        client.get_query(&format!("/sources/{source}/source_transactions", source = source), self)
+        client.get_query(&format!("/sources/{source}/source_transactions"), self)
     }
     pub fn paginate(
         self,
         source: &stripe_types::source::SourceId,
     ) -> stripe::ListPaginator<stripe_types::SourceTransaction> {
-        stripe::ListPaginator::from_params(
-            &format!("/sources/{source}/source_transactions", source = source),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/sources/{source}/source_transactions"), self)
     }
 }
 impl<'a> stripe::PaginationParams for SourceTransactionsSource<'a> {}

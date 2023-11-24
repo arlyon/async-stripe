@@ -172,12 +172,15 @@ max_width = 260
 
                 let crate_name = krate.name();
 
-                // We set up 2 things in the base `mos.rs` file:
+                // We set up some things in the base `mod.rs` file:
                 // 1. Without this recursion limit increase, `cargo doc` fails
                 // 2. The `extern` allows generated code to use absolute paths starting with the crate name instead of `crate`
+                // 3. Allow some warnings that are not currently fixed, but could be.
                 let mod_rs = formatdoc! {
                     r#"
             #![recursion_limit = "256"]
+            #![allow(clippy::large_enum_variant)]
+            #![allow(rustdoc::invalid_html_tags)]
             extern crate self as {crate_name};
             "#
                 };

@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use std::fs::File;
 
 use anyhow::{bail, Context};
 use heck::ToSnakeCase;
+use lazy_static::lazy_static;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::debug;
 
@@ -13,6 +15,17 @@ use crate::spec_inference::Inference;
 use crate::stripe_object::{OperationType, PathParam, RequestSpec, StripeOperation};
 use crate::types::{ComponentPath, RustIdent};
 
+/// Load overrides that hardcode the id types we should use for path parameters. Keys of
+/// request path, values that map parameter name to the object name we should use when looking up the id type.
+fn load_request_path_param_id_overrides() -> anyhow::Result<HashMap<String, HashMap<String, String>>>
+{
+    Ok(serde_json::from_reader(File::open("request_path_params.json")?)?)
+}
+
+lazy_static! {
+    pub static ref PATH_PARAM_OVERRIDE: HashMap<String, HashMap<String, String>> =
+        load_request_path_param_id_overrides().expect("Unable to load path params");
+}
 /// Should we skip a currently unsupported request?
 fn should_skip_request(op: &StripeOperation) -> bool {
     // TODO: what is the relevance of the `method_on` field? A small number of requests
@@ -233,31 +246,62 @@ fn build_request(
             ObjectMetadata::new(params_ident.clone(), params_gen_info),
         )
     });
+
     let mut path_params = vec![];
     let has_single_path_param = req.path_params.len() == 1;
     for param in &req.path_params {
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
         };
-        let mut rust_type = Inference::new(&params_ident, ObjectGenInfo::new())
+        let base_param_typ = Inference::new(&params_ident, ObjectGenInfo::new())
             .can_borrow(true)
             .required(param.required)
             .maybe_description(param.description.as_deref())
             .field_name(&param.name)
             .infer_schema_or_ref_type(schema);
 
-        if rust_type != RustType::Simple(SimpleType::Str) {
+        if base_param_typ != RustType::Simple(SimpleType::Str) {
             bail!("Expected path parameter to be a string");
         }
+
         // Try our best to determine a specialized id type for this parameter, e.g. `AccountId`.
-        // First, try to use the name of the path parameter to infer the id type.
-        if let Some(id_path) = path_id_map.get(param.name.as_str()) {
-            rust_type = RustType::object_id(id_path.clone(), true);
-            // If there's just a single path parameter, try assuming the id corresponds
-            // to the parent component
-        } else if has_single_path_param && path_id_map.contains_key(component.as_ref()) {
-            rust_type = RustType::object_id(component.clone(), true);
+
+        // First, check if there is a hardcoded object name we should use. These are overrides might not be necessary
+        // with cleverer inference, but this seems useful regardless since id handling is quite finicky, so having
+        // an easy mechanism to hardcode parameter ideas is helpful
+        let inferred_id = if let Some(overridden) = PATH_PARAM_OVERRIDE.get(req.path) {
+            let obj_name = overridden.get(&param.name).with_context(|| {
+                format!(
+                    "Override on request {} missing path parameter name {}",
+                    req.path, param.name
+                )
+            })?;
+            let id_path = path_id_map.get(obj_name).with_context(|| {
+                format!("Overriden request path {} has object name with no id", req.path)
+            })?;
+            Some(id_path.clone())
         }
+        // Try to use the name of the path parameter to infer the id type.
+        else if let Some(id_path) = path_id_map.get(&param.name) {
+            Some(id_path.clone())
+            // If there's just a single path parameter with the name `id`, try assuming the id corresponds
+            // to the parent component (assuming such an id actually exists). We check for `id` explicitly
+            // because some requests like `GetApplePayDomainsDomain` has a path parameter which is a _domain_,
+            // not an id
+        } else if has_single_path_param
+            && param.name.as_str() == "id"
+            && path_id_map.contains_key(component.as_ref())
+        {
+            Some(component.clone())
+        } else {
+            None
+        };
+        let rust_type = if let Some(id_typ) = inferred_id {
+            RustType::object_id(id_typ, true)
+        } else {
+            // NB: Assuming this is safe since we check earlier that this matches the path type.
+            RustType::Simple(SimpleType::Str)
+        };
 
         path_params.push(PathParam { name: param.name.clone(), rust_type })
     }

@@ -2406,7 +2406,7 @@ impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardRequestThreeD
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsLink<'a> {
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }
@@ -2912,9 +2912,9 @@ impl<'a> RetrieveSetupIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::setup_intent::SetupIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::SetupIntent> {
-        client.get_query(&format!("/setup_intents/{intent}", intent = intent), self)
+        client.get_query(&format!("/setup_intents/{intent}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5105,7 +5105,7 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeD
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsLink<'a> {
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }
@@ -5448,13 +5448,9 @@ impl<'a> UpdateSetupIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::setup_intent::SetupIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::SetupIntent> {
-        client.send_form(
-            &format!("/setup_intents/{intent}", intent = intent),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/setup_intents/{intent}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7764,7 +7760,7 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardRequestThree
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmSetupIntentPaymentMethodOptionsLink<'a> {
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
 }
@@ -8113,10 +8109,10 @@ impl<'a> ConfirmSetupIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::setup_intent::SetupIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::SetupIntent> {
         client.send_form(
-            &format!("/setup_intents/{intent}/confirm", intent = intent),
+            &format!("/setup_intents/{intent}/confirm"),
             self,
             http_types::Method::Post,
         )
@@ -8204,13 +8200,9 @@ impl<'a> CancelSetupIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::setup_intent::SetupIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::SetupIntent> {
-        client.send_form(
-            &format!("/setup_intents/{intent}/cancel", intent = intent),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/setup_intents/{intent}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -8235,10 +8227,10 @@ impl<'a> VerifyMicrodepositsSetupIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::setup_intent::SetupIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::SetupIntent> {
         client.send_form(
-            &format!("/setup_intents/{intent}/verify_microdeposits", intent = intent),
+            &format!("/setup_intents/{intent}/verify_microdeposits"),
             self,
             http_types::Method::Post,
         )

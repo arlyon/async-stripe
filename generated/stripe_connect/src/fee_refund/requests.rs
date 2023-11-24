@@ -36,11 +36,7 @@ impl<'a> CreateFeeRefund<'a> {
         client: &stripe::Client,
         id: &stripe_types::fee_refund::FeeRefundId,
     ) -> stripe::Response<stripe_types::FeeRefund> {
-        client.send_form(
-            &format!("/application_fees/{id}/refunds", id = id),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/application_fees/{id}/refunds"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -81,16 +77,13 @@ impl<'a> ListFeeRefund<'a> {
         client: &stripe::Client,
         id: &stripe_types::fee_refund::FeeRefundId,
     ) -> stripe::Response<stripe_types::List<stripe_types::FeeRefund>> {
-        client.get_query(&format!("/application_fees/{id}/refunds", id = id), self)
+        client.get_query(&format!("/application_fees/{id}/refunds"), self)
     }
     pub fn paginate(
         self,
         id: &stripe_types::fee_refund::FeeRefundId,
     ) -> stripe::ListPaginator<stripe_types::FeeRefund> {
-        stripe::ListPaginator::from_params(
-            &format!("/application_fees/{id}/refunds", id = id),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/application_fees/{id}/refunds"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListFeeRefund<'a> {}
@@ -113,7 +106,7 @@ impl<'a> RetrieveFeeRefund<'a> {
         fee: &str,
         id: &str,
     ) -> stripe::Response<stripe_types::FeeRefund> {
-        client.get_query(&format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id), self)
+        client.get_query(&format!("/application_fees/{fee}/refunds/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -145,7 +138,7 @@ impl<'a> UpdateFeeRefund<'a> {
         id: &str,
     ) -> stripe::Response<stripe_types::FeeRefund> {
         client.send_form(
-            &format!("/application_fees/{fee}/refunds/{id}", fee = fee, id = id),
+            &format!("/application_fees/{fee}/refunds/{id}"),
             self,
             http_types::Method::Post,
         )

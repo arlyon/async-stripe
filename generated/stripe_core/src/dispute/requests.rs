@@ -65,7 +65,7 @@ impl<'a> RetrieveDispute<'a> {
         client: &stripe::Client,
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::Dispute> {
-        client.get_query(&format!("/disputes/{dispute}", dispute = dispute), self)
+        client.get_query(&format!("/disputes/{dispute}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -234,11 +234,7 @@ impl<'a> UpdateDispute<'a> {
         client: &stripe::Client,
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::Dispute> {
-        client.send_form(
-            &format!("/disputes/{dispute}", dispute = dispute),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/disputes/{dispute}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -263,10 +259,6 @@ impl<'a> CloseDispute<'a> {
         client: &stripe::Client,
         dispute: &stripe_types::dispute::DisputeId,
     ) -> stripe::Response<stripe_types::Dispute> {
-        client.send_form(
-            &format!("/disputes/{dispute}/close", dispute = dispute),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/disputes/{dispute}/close"), self, http_types::Method::Post)
     }
 }

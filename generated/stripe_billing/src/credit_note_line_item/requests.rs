@@ -35,19 +35,13 @@ impl<'a> ListCreditNoteLineItem<'a> {
         client: &stripe::Client,
         credit_note: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CreditNoteLineItem>> {
-        client.get_query(
-            &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
-            self,
-        )
+        client.get_query(&format!("/credit_notes/{credit_note}/lines"), self)
     }
     pub fn paginate(
         self,
         credit_note: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::ListPaginator<stripe_types::CreditNoteLineItem> {
-        stripe::ListPaginator::from_params(
-            &format!("/credit_notes/{credit_note}/lines", credit_note = credit_note),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/credit_notes/{credit_note}/lines"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListCreditNoteLineItem<'a> {}

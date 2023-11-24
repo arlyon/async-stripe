@@ -414,7 +414,7 @@ impl<'a> RetrieveCharge<'a> {
         client: &stripe::Client,
         charge: &stripe_types::charge::ChargeId,
     ) -> stripe::Response<stripe_types::Charge> {
-        client.get_query(&format!("/charges/{charge}", charge = charge), self)
+        client.get_query(&format!("/charges/{charge}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -606,11 +606,7 @@ impl<'a> UpdateCharge<'a> {
         client: &stripe::Client,
         charge: &stripe_types::charge::ChargeId,
     ) -> stripe::Response<stripe_types::Charge> {
-        client.send_form(
-            &format!("/charges/{charge}", charge = charge),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/charges/{charge}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -693,10 +689,6 @@ impl<'a> CaptureCharge<'a> {
         client: &stripe::Client,
         charge: &stripe_types::charge::ChargeId,
     ) -> stripe::Response<stripe_types::Charge> {
-        client.send_form(
-            &format!("/charges/{charge}/capture", charge = charge),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/charges/{charge}/capture"), self, http_types::Method::Post)
     }
 }

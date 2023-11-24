@@ -196,7 +196,7 @@ impl<'a> RetrieveTransfer<'a> {
         client: &stripe::Client,
         transfer: &stripe_types::transfer::TransferId,
     ) -> stripe::Response<stripe_types::Transfer> {
-        client.get_query(&format!("/transfers/{transfer}", transfer = transfer), self)
+        client.get_query(&format!("/transfers/{transfer}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -231,10 +231,6 @@ impl<'a> UpdateTransfer<'a> {
         client: &stripe::Client,
         transfer: &stripe_types::transfer::TransferId,
     ) -> stripe::Response<stripe_types::Transfer> {
-        client.send_form(
-            &format!("/transfers/{transfer}", transfer = transfer),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/transfers/{transfer}"), self, http_types::Method::Post)
     }
 }

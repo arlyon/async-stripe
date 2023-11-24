@@ -27,21 +27,6 @@ command = "rsync"
 # generated anymore, see https://github.com/arlyon/async-stripe/issues/229
 args = ["-a", "--delete-during", "out/", "../src/resources/generated"]
 
-[tasks.fmt]
-command = "cargo"
-toolchain = "nightly"
-install_crate = "rustfmt"
-# we set this to true because missing files currently cause rustfmt to fail
-# which impacts our weekly CI job 
-ignore_errors = true 
-args = ["fmt"]
-
-[tasks.check]
-command = "cargo"
-toolchain = "nightly"
-install_crate = "rustfmt"
-args = ["fmt", "--", "--check"]
-
 [tasks.openapi-install]
 dependencies = ["openapi-generate", "openapi-copy", "fmt"]
 

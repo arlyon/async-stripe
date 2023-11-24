@@ -401,7 +401,7 @@ impl<'a> RetrieveInvoiceItem<'a> {
         client: &stripe::Client,
         invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
     ) -> stripe::Response<stripe_types::InvoiceItem> {
-        client.get_query(&format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem), self)
+        client.get_query(&format!("/invoiceitems/{invoiceitem}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -695,11 +695,7 @@ impl<'a> UpdateInvoiceItem<'a> {
         client: &stripe::Client,
         invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
     ) -> stripe::Response<stripe_types::InvoiceItem> {
-        client.send_form(
-            &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoiceitems/{invoiceitem}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -718,10 +714,6 @@ impl DeleteInvoiceItem {
         client: &stripe::Client,
         invoiceitem: &stripe_types::invoice_item::InvoiceitemId,
     ) -> stripe::Response<stripe_types::DeletedInvoiceItem> {
-        client.send_form(
-            &format!("/invoiceitems/{invoiceitem}", invoiceitem = invoiceitem),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/invoiceitems/{invoiceitem}"), self, http_types::Method::Delete)
     }
 }

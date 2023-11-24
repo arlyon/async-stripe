@@ -16,13 +16,7 @@ impl<'a> RetrievePaymentMethodDomainResourcePaymentMethodDomain<'a> {
         client: &stripe::Client,
         payment_method_domain:&stripe_payment::payment_method_domain_resource_payment_method_domain::PaymentMethodDomainId,
     ) -> stripe::Response<stripe_payment::PaymentMethodDomainResourcePaymentMethodDomain> {
-        client.get_query(
-            &format!(
-                "/payment_method_domains/{payment_method_domain}",
-                payment_method_domain = payment_method_domain
-            ),
-            self,
-        )
+        client.get_query(&format!("/payment_method_domains/{payment_method_domain}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -129,10 +123,7 @@ impl<'a> UpdatePaymentMethodDomainResourcePaymentMethodDomain<'a> {
         payment_method_domain:&stripe_payment::payment_method_domain_resource_payment_method_domain::PaymentMethodDomainId,
     ) -> stripe::Response<stripe_payment::PaymentMethodDomainResourcePaymentMethodDomain> {
         client.send_form(
-            &format!(
-                "/payment_method_domains/{payment_method_domain}",
-                payment_method_domain = payment_method_domain
-            ),
+            &format!("/payment_method_domains/{payment_method_domain}"),
             self,
             http_types::Method::Post,
         )
@@ -159,10 +150,7 @@ impl<'a> ValidatePaymentMethodDomainResourcePaymentMethodDomain<'a> {
         payment_method_domain:&stripe_payment::payment_method_domain_resource_payment_method_domain::PaymentMethodDomainId,
     ) -> stripe::Response<stripe_payment::PaymentMethodDomainResourcePaymentMethodDomain> {
         client.send_form(
-            &format!(
-                "/payment_method_domains/{payment_method_domain}/validate",
-                payment_method_domain = payment_method_domain
-            ),
+            &format!("/payment_method_domains/{payment_method_domain}/validate"),
             self,
             http_types::Method::Post,
         )

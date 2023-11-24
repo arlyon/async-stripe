@@ -3,7 +3,7 @@ pub struct PaymentIntentPaymentMethodOptionsLink {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     pub persistent_token: Option<String>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///

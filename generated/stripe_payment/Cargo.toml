@@ -14,14 +14,17 @@ categories.workspace = true
 [lib]
 path = "src/mod.rs"
 
+[package.metadata.docs.rs]
+features = ["runtime-tokio-hyper", "full"]
+
 [dependencies]
 serde.workspace = true
 http-types.workspace = true
 smol_str.workspace = true
 serde_json.workspace = true
 async-stripe = {path = "../../async-stripe"}
-stripe_types = {path = "../../stripe_types"}
 
+stripe_types = {path = "../../stripe_types"}
 
 [features]
 runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper"]
@@ -31,6 +34,7 @@ runtime-blocking = ["async-stripe/runtime-blocking"]
 runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls"]
 runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
 runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
+
 bank_account = []
 card = []
 payment_link = []
@@ -38,4 +42,12 @@ payment_method = []
 payment_method_config_resource_payment_method_configuration = []
 payment_method_domain_resource_payment_method_domain = []
 source = []
+
+full = ["bank_account",
+"card",
+"payment_link",
+"payment_method",
+"payment_method_config_resource_payment_method_configuration",
+"payment_method_domain_resource_payment_method_domain",
+"source"]
 

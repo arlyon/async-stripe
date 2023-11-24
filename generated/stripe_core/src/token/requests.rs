@@ -16,7 +16,7 @@ impl<'a> RetrieveToken<'a> {
         client: &stripe::Client,
         token: &stripe_core::token::TokenId,
     ) -> stripe::Response<stripe_core::Token> {
-        client.get_query(&format!("/tokens/{token}", token = token), self)
+        client.get_query(&format!("/tokens/{token}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

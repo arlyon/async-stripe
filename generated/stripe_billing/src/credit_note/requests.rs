@@ -583,7 +583,7 @@ impl<'a> RetrieveCreditNote<'a> {
         client: &stripe::Client,
         id: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::Response<stripe_types::CreditNote> {
-        client.get_query(&format!("/credit_notes/{id}", id = id), self)
+        client.get_query(&format!("/credit_notes/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -661,7 +661,7 @@ impl<'a> UpdateCreditNote<'a> {
         client: &stripe::Client,
         id: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::Response<stripe_types::CreditNote> {
-        client.send_form(&format!("/credit_notes/{id}", id = id), self, http_types::Method::Post)
+        client.send_form(&format!("/credit_notes/{id}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -684,11 +684,7 @@ impl<'a> VoidCreditNoteCreditNote<'a> {
         client: &stripe::Client,
         id: &stripe_types::credit_note::CreditNoteId,
     ) -> stripe::Response<stripe_types::CreditNote> {
-        client.send_form(
-            &format!("/credit_notes/{id}/void", id = id),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/credit_notes/{id}/void"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

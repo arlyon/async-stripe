@@ -6039,10 +6039,6 @@ impl<'a> UpdateTaxProductRegistrationsResourceTaxRegistration<'a> {
         client: &stripe::Client,
         id: &stripe_misc::tax_product_registrations_resource_tax_registration::TaxRegistrationId,
     ) -> stripe::Response<stripe_misc::TaxProductRegistrationsResourceTaxRegistration> {
-        client.send_form(
-            &format!("/tax/registrations/{id}", id = id),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/tax/registrations/{id}"), self, http_types::Method::Post)
     }
 }

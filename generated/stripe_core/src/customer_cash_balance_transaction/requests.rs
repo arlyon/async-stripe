@@ -18,11 +18,7 @@ impl<'a> RetrieveCustomerCashBalanceTransaction<'a> {
         transaction: &str,
     ) -> stripe::Response<stripe_types::CustomerCashBalanceTransaction> {
         client.get_query(
-            &format!(
-                "/customers/{customer}/cash_balance_transactions/{transaction}",
-                customer = customer,
-                transaction = transaction
-            ),
+            &format!("/customers/{customer}/cash_balance_transactions/{transaction}"),
             self,
         )
     }
@@ -62,17 +58,14 @@ impl<'a> ListCustomerCashBalanceTransaction<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CustomerCashBalanceTransaction>> {
-        client.get_query(
-            &format!("/customers/{customer}/cash_balance_transactions", customer = customer),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/cash_balance_transactions"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::CustomerCashBalanceTransaction> {
         stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/cash_balance_transactions", customer = customer),
+            &format!("/customers/{customer}/cash_balance_transactions"),
             self,
         )
     }

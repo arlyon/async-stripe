@@ -83,5 +83,6 @@ fn format_doc_comment(doc: &str) -> String {
     let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
     let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
     let doc = HYPERLINK.replace_all(&doc, "$1<$2>$5"); // replace all hyperlinks that are not already in markdown with rust doc links
+    let doc = doc.replace("[Deprecated]", r"\[Deprecated\]"); // Otherwise rustdoc creates broken intra-doc links
     doc.trim().into()
 }

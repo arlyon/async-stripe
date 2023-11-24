@@ -904,7 +904,7 @@ impl<'a> RetrieveCustomer<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<RetrieveReturned> {
-        client.get_query(&format!("/customers/{customer}", customer = customer), self)
+        client.get_query(&format!("/customers/{customer}"), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -1371,11 +1371,7 @@ impl<'a> UpdateCustomer<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::Customer> {
-        client.send_form(
-            &format!("/customers/{customer}", customer = customer),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/customers/{customer}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1395,11 +1391,7 @@ impl DeleteCustomer {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::DeletedCustomer> {
-        client.send_form(
-            &format!("/customers/{customer}", customer = customer),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/customers/{customer}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1595,17 +1587,13 @@ impl<'a> ListPaymentMethodsCustomer<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::PaymentMethod>> {
-        client
-            .get_query(&format!("/customers/{customer}/payment_methods", customer = customer), self)
+        client.get_query(&format!("/customers/{customer}/payment_methods"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::PaymentMethod> {
-        stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/payment_methods", customer = customer),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/customers/{customer}/payment_methods"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListPaymentMethodsCustomer<'a> {}
@@ -1628,14 +1616,7 @@ impl<'a> RetrievePaymentMethodCustomer<'a> {
         customer: &stripe_types::customer::CustomerId,
         payment_method: &stripe_types::payment_method::PaymentMethodId,
     ) -> stripe::Response<stripe_types::PaymentMethod> {
-        client.get_query(
-            &format!(
-                "/customers/{customer}/payment_methods/{payment_method}",
-                customer = customer,
-                payment_method = payment_method
-            ),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/payment_methods/{payment_method}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1673,17 +1654,14 @@ impl<'a> BalanceTransactionsCustomer<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::CustomerBalanceTransaction>> {
-        client.get_query(
-            &format!("/customers/{customer}/balance_transactions", customer = customer),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/balance_transactions"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::CustomerBalanceTransaction> {
         stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/balance_transactions", customer = customer),
+            &format!("/customers/{customer}/balance_transactions"),
             self,
         )
     }
@@ -1722,7 +1700,7 @@ impl<'a> FundCashBalanceCustomer<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::CustomerCashBalanceTransaction> {
         client.send_form(
-            &format!("/test_helpers/customers/{customer}/fund_cash_balance", customer = customer),
+            &format!("/test_helpers/customers/{customer}/fund_cash_balance"),
             self,
             http_types::Method::Post,
         )
@@ -1979,7 +1957,7 @@ impl<'a> CreateFundingInstructionsCustomer<'a> {
         stripe_types::CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions,
     > {
         client.send_form(
-            &format!("/customers/{customer}/funding_instructions", customer = customer),
+            &format!("/customers/{customer}/funding_instructions"),
             self,
             http_types::Method::Post,
         )
@@ -2000,7 +1978,7 @@ impl DeleteDiscountCustomer {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::DeletedDiscount> {
         client.send_form(
-            &format!("/customers/{customer}/discount", customer = customer),
+            &format!("/customers/{customer}/discount"),
             self,
             http_types::Method::Delete,
         )

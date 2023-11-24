@@ -3841,7 +3841,7 @@ impl<'a> RetrieveIssuingCard<'a> {
         client: &stripe::Client,
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
-        client.get_query(&format!("/issuing/cards/{card}", card = card), self)
+        client.get_query(&format!("/issuing/cards/{card}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7224,11 +7224,7 @@ impl<'a> UpdateIssuingCard<'a> {
         client: &stripe::Client,
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
-        client.send_form(
-            &format!("/issuing/cards/{card}", card = card),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/issuing/cards/{card}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7250,7 +7246,7 @@ impl<'a> DeliverCardIssuingCard<'a> {
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
         client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/deliver", card = card),
+            &format!("/test_helpers/issuing/cards/{card}/shipping/deliver"),
             self,
             http_types::Method::Post,
         )
@@ -7275,7 +7271,7 @@ impl<'a> ShipCardIssuingCard<'a> {
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
         client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/ship", card = card),
+            &format!("/test_helpers/issuing/cards/{card}/shipping/ship"),
             self,
             http_types::Method::Post,
         )
@@ -7300,7 +7296,7 @@ impl<'a> ReturnCardIssuingCard<'a> {
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
         client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/return", card = card),
+            &format!("/test_helpers/issuing/cards/{card}/shipping/return"),
             self,
             http_types::Method::Post,
         )
@@ -7325,7 +7321,7 @@ impl<'a> FailCardIssuingCard<'a> {
         card: &stripe_types::card::CardId,
     ) -> stripe::Response<stripe_types::IssuingCard> {
         client.send_form(
-            &format!("/test_helpers/issuing/cards/{card}/shipping/fail", card = card),
+            &format!("/test_helpers/issuing/cards/{card}/shipping/fail"),
             self,
             http_types::Method::Post,
         )

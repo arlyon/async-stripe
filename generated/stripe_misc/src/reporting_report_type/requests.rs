@@ -16,12 +16,9 @@ impl<'a> RetrieveReportingReportType<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        report_type: &stripe_misc::reporting_report_type::ReportingReportTypeId,
+        report_type: &str,
     ) -> stripe::Response<stripe_misc::ReportingReportType> {
-        client.get_query(
-            &format!("/reporting/report_types/{report_type}", report_type = report_type),
-            self,
-        )
+        client.get_query(&format!("/reporting/report_types/{report_type}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

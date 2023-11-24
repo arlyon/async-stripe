@@ -60,8 +60,7 @@ impl<'a> RetrievePaymentLink<'a> {
         client: &stripe::Client,
         payment_link: &stripe_types::payment_link::PaymentLinkId,
     ) -> stripe::Response<stripe_types::PaymentLink> {
-        client
-            .get_query(&format!("/payment_links/{payment_link}", payment_link = payment_link), self)
+        client.get_query(&format!("/payment_links/{payment_link}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -101,17 +100,14 @@ impl<'a> ListLineItemsPaymentLink<'a> {
         client: &stripe::Client,
         payment_link: &stripe_types::payment_link::PaymentLinkId,
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-        client.get_query(
-            &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
-            self,
-        )
+        client.get_query(&format!("/payment_links/{payment_link}/line_items"), self)
     }
     pub fn paginate(
         self,
         payment_link: &stripe_types::payment_link::PaymentLinkId,
     ) -> stripe::ListPaginator<stripe_types::LineItem> {
         stripe::ListPaginator::from_params(
-            &format!("/payment_links/{payment_link}/line_items", payment_link = payment_link),
+            &format!("/payment_links/{payment_link}/line_items"),
             self,
         )
     }
@@ -4175,10 +4171,6 @@ impl<'a> UpdatePaymentLink<'a> {
         client: &stripe::Client,
         payment_link: &stripe_types::payment_link::PaymentLinkId,
     ) -> stripe::Response<stripe_types::PaymentLink> {
-        client.send_form(
-            &format!("/payment_links/{payment_link}", payment_link = payment_link),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/payment_links/{payment_link}"), self, http_types::Method::Post)
     }
 }

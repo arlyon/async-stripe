@@ -128,12 +128,9 @@ impl<'a> RetrieveIssuingTransaction<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        transaction: &stripe_types::issuing_transaction::IssuingTransactionId,
+        transaction: &str,
     ) -> stripe::Response<stripe_types::IssuingTransaction> {
-        client.get_query(
-            &format!("/issuing/transactions/{transaction}", transaction = transaction),
-            self,
-        )
+        client.get_query(&format!("/issuing/transactions/{transaction}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -161,10 +158,10 @@ impl<'a> UpdateIssuingTransaction<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        transaction: &stripe_types::issuing_transaction::IssuingTransactionId,
+        transaction: &str,
     ) -> stripe::Response<stripe_types::IssuingTransaction> {
         client.send_form(
-            &format!("/issuing/transactions/{transaction}", transaction = transaction),
+            &format!("/issuing/transactions/{transaction}"),
             self,
             http_types::Method::Post,
         )
@@ -2937,13 +2934,10 @@ impl<'a> RefundIssuingTransaction<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        transaction: &stripe_types::issuing_transaction::IssuingTransactionId,
+        transaction: &str,
     ) -> stripe::Response<stripe_types::IssuingTransaction> {
         client.send_form(
-            &format!(
-                "/test_helpers/issuing/transactions/{transaction}/refund",
-                transaction = transaction
-            ),
+            &format!("/test_helpers/issuing/transactions/{transaction}/refund"),
             self,
             http_types::Method::Post,
         )

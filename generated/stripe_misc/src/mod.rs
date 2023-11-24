@@ -1,4 +1,6 @@
 #![recursion_limit = "256"]
+#![allow(clippy::large_enum_variant)]
+#![allow(rustdoc::invalid_html_tags)]
 extern crate self as stripe_misc;
 pub mod apple_pay_domain;
 pub use apple_pay_domain::ApplePayDomain;

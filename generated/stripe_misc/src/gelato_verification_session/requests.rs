@@ -215,12 +215,9 @@ impl<'a> RetrieveGelatoVerificationSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
-        client.get_query(
-            &format!("/identity/verification_sessions/{session}", session = session),
-            self,
-        )
+        client.get_query(&format!("/identity/verification_sessions/{session}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -354,10 +351,10 @@ impl<'a> CancelGelatoVerificationSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
         client.send_form(
-            &format!("/identity/verification_sessions/{session}/cancel", session = session),
+            &format!("/identity/verification_sessions/{session}/cancel"),
             self,
             http_types::Method::Post,
         )
@@ -386,10 +383,10 @@ impl<'a> RedactGelatoVerificationSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
         client.send_form(
-            &format!("/identity/verification_sessions/{session}/redact", session = session),
+            &format!("/identity/verification_sessions/{session}/redact"),
             self,
             http_types::Method::Post,
         )
@@ -578,10 +575,10 @@ impl<'a> UpdateGelatoVerificationSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &stripe_misc::gelato_verification_session::IdentityVerificationSessionId,
+        session: &str,
     ) -> stripe::Response<stripe_misc::GelatoVerificationSession> {
         client.send_form(
-            &format!("/identity/verification_sessions/{session}", session = session),
+            &format!("/identity/verification_sessions/{session}"),
             self,
             http_types::Method::Post,
         )

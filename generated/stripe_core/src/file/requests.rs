@@ -168,6 +168,6 @@ impl<'a> RetrieveFile<'a> {
         client: &stripe::Client,
         file: &stripe_types::file::FileId,
     ) -> stripe::Response<stripe_types::File> {
-        client.get_query(&format!("/files/{file}", file = file), self)
+        client.get_query(&format!("/files/{file}"), self)
     }
 }

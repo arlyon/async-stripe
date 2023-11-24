@@ -14,14 +14,17 @@ categories.workspace = true
 [lib]
 path = "src/mod.rs"
 
+[package.metadata.docs.rs]
+features = ["runtime-tokio-hyper", "full"]
+
 [dependencies]
 serde.workspace = true
 http-types.workspace = true
 smol_str.workspace = true
 serde_json.workspace = true
 async-stripe = {path = "../../async-stripe"}
-stripe_types = {path = "../../stripe_types"}
 
+stripe_types = {path = "../../stripe_types"}
 
 [features]
 runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper"]
@@ -31,18 +34,34 @@ runtime-blocking = ["async-stripe/runtime-blocking"]
 runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls"]
 runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki"]
 runtime-async-std-surf = ["async-stripe/runtime-async-std-surf"]
+
 account = []
+account_capability = []
 account_link = []
 connect_embedded_method_account_session_create_method_account_session = []
-platform_fee = []
-secret_service_resource_secret = []
-account_capability = []
 country_spec = []
 external_account = []
 fee_refund = []
 login_link = []
 person = []
+platform_fee = []
+secret_service_resource_secret = []
 topup = []
 transfer = []
 transfer_reversal = []
+
+full = ["account",
+"account_capability",
+"account_link",
+"connect_embedded_method_account_session_create_method_account_session",
+"country_spec",
+"external_account",
+"fee_refund",
+"login_link",
+"person",
+"platform_fee",
+"secret_service_resource_secret",
+"topup",
+"transfer",
+"transfer_reversal"]
 

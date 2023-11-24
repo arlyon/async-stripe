@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+use anyhow::bail;
 use indexmap::{IndexMap, IndexSet};
 use petgraph::Direction;
 use tracing::{debug, info};
@@ -232,8 +233,14 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
         };
         let data = parse_stripe_schema_as_rust_object(schema, &path, stripe_resource.ident());
         if let Some(obj_name) = &data.object_name {
-            if let Some(id_typ) = data.id_type.as_ref().and_then(|t| t.as_id_path()) {
-                id_map.insert(obj_name.clone(), id_typ.clone());
+            if let Some(id_typ) = data.id_type.as_ref().and_then(|t| t.as_id_or_opt_id_path()) {
+                // We will hit duplicate object names from e.g. `account` and `deleted_account`, but sanity check nothing
+                // worse can happen
+                if let Some(orig) = id_map.insert(obj_name.clone(), id_typ.clone()) {
+                    if &orig != id_typ {
+                        bail!("Duplicate object name {}", obj_name);
+                    }
+                }
             }
         }
         resource_map.insert(path.clone(), stripe_resource);

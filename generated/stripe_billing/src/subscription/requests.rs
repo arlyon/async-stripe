@@ -4593,13 +4593,10 @@ impl<'a> UpdateSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+        subscription_exposed_id: &str,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.send_form(
-            &format!(
-                "/subscriptions/{subscription_exposed_id}",
-                subscription_exposed_id = subscription_exposed_id
-            ),
+            &format!("/subscriptions/{subscription_exposed_id}"),
             self,
             http_types::Method::Post,
         )
@@ -4621,15 +4618,9 @@ impl<'a> RetrieveSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+        subscription_exposed_id: &str,
     ) -> stripe::Response<stripe_types::Subscription> {
-        client.get_query(
-            &format!(
-                "/subscriptions/{subscription_exposed_id}",
-                subscription_exposed_id = subscription_exposed_id
-            ),
-            self,
-        )
+        client.get_query(&format!("/subscriptions/{subscription_exposed_id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4751,13 +4742,10 @@ impl<'a> CancelSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+        subscription_exposed_id: &str,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.send_form(
-            &format!(
-                "/subscriptions/{subscription_exposed_id}",
-                subscription_exposed_id = subscription_exposed_id
-            ),
+            &format!("/subscriptions/{subscription_exposed_id}"),
             self,
             http_types::Method::Delete,
         )
@@ -4920,7 +4908,7 @@ impl<'a> ResumeSubscription<'a> {
         subscription: &stripe_types::subscription::SubscriptionId,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.send_form(
-            &format!("/subscriptions/{subscription}/resume", subscription = subscription),
+            &format!("/subscriptions/{subscription}/resume"),
             self,
             http_types::Method::Post,
         )
@@ -4938,13 +4926,10 @@ impl DeleteDiscountSubscription {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
+        subscription_exposed_id: &str,
     ) -> stripe::Response<stripe_types::DeletedDiscount> {
         client.send_form(
-            &format!(
-                "/subscriptions/{subscription_exposed_id}/discount",
-                subscription_exposed_id = subscription_exposed_id
-            ),
+            &format!("/subscriptions/{subscription_exposed_id}/discount"),
             self,
             http_types::Method::Delete,
         )

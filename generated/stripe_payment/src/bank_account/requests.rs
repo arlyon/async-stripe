@@ -165,7 +165,7 @@ impl<'a> UpdateCustomerBankAccount<'a> {
         id: &str,
     ) -> stripe::Response<UpdateCustomerReturned> {
         client.send_form(
-            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            &format!("/customers/{customer}/sources/{id}"),
             self,
             http_types::Method::Post,
         )
@@ -201,7 +201,7 @@ impl<'a> DeleteCustomerBankAccount<'a> {
         id: &str,
     ) -> stripe::Response<DeleteCustomerReturned> {
         client.send_form(
-            &format!("/customers/{customer}/sources/{id}", customer = customer, id = id),
+            &format!("/customers/{customer}/sources/{id}"),
             self,
             http_types::Method::Delete,
         )
@@ -236,7 +236,7 @@ impl<'a> VerifyBankAccount<'a> {
         id: &str,
     ) -> stripe::Response<stripe_types::BankAccount> {
         client.send_form(
-            &format!("/customers/{customer}/sources/{id}/verify", customer = customer, id = id),
+            &format!("/customers/{customer}/sources/{id}/verify"),
             self,
             http_types::Method::Post,
         )
@@ -466,7 +466,7 @@ impl<'a> UpdateAccountBankAccount<'a> {
         id: &str,
     ) -> stripe::Response<stripe_types::ExternalAccount> {
         client.send_form(
-            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            &format!("/accounts/{account}/external_accounts/{id}"),
             self,
             http_types::Method::Post,
         )
@@ -488,7 +488,7 @@ impl DeleteAccountBankAccount {
         id: &str,
     ) -> stripe::Response<stripe_types::DeletedExternalAccount> {
         client.send_form(
-            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            &format!("/accounts/{account}/external_accounts/{id}"),
             self,
             http_types::Method::Delete,
         )

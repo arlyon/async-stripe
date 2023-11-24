@@ -46,7 +46,7 @@ impl ObjectGenInfo {
 
 impl Components {
     fn write_rust_type_objs(&self, typ: &RustType, out: &mut String) {
-        let Some((obj, meta)) = typ.as_object() else {
+        let Some((obj, meta)) = typ.extract_object() else {
             return;
         };
         self.write_object(obj, meta, out);
@@ -73,7 +73,7 @@ impl Components {
                 writer.write_struct(out, fields, info.include_constructor);
 
                 for field in fields {
-                    if let Some((obj, meta)) = field.rust_type.as_object() {
+                    if let Some((obj, meta)) = field.rust_type.extract_object() {
                         self.write_object(obj, meta, out);
                     }
                 }
@@ -92,7 +92,7 @@ impl Components {
                 }
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
-                        if let Some((obj, meta)) = typ.as_object() {
+                        if let Some((obj, meta)) = typ.extract_object() {
                             self.write_object(obj, meta, out);
                         }
                     }
@@ -130,7 +130,7 @@ pub fn gen_obj(
             }
         }
 
-        if let Some(path) = id_typ.as_id_path() {
+        if let Some(path) = id_typ.as_id_or_opt_id_path() {
             // Only generate the id definition if the paths match - e.g. if we're generating
             // `DeletedAccount`, we don't want to duplicate `AccountId` since `DeletedAccount`
             // uses that same id

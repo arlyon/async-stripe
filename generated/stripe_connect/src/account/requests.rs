@@ -33,7 +33,7 @@ impl<'a> RetrieveAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::Account> {
-        client.get_query(&format!("/accounts/{account}", account = account), self)
+        client.get_query(&format!("/accounts/{account}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2157,11 +2157,7 @@ impl<'a> UpdateAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::Account> {
-        client.send_form(
-            &format!("/accounts/{account}", account = account),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/accounts/{account}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4420,11 +4416,7 @@ impl DeleteAccount {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::DeletedAccount> {
-        client.send_form(
-            &format!("/accounts/{account}", account = account),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/accounts/{account}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -4453,11 +4445,7 @@ impl<'a> RejectAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::Account> {
-        client.send_form(
-            &format!("/accounts/{account}/reject", account = account),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/accounts/{account}/reject"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4524,16 +4512,13 @@ impl<'a> PersonsAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::Person>> {
-        client.get_query(&format!("/accounts/{account}/persons", account = account), self)
+        client.get_query(&format!("/accounts/{account}/persons"), self)
     }
     pub fn paginate(
         self,
         account: &stripe_types::account::AccountId,
     ) -> stripe::ListPaginator<stripe_types::Person> {
-        stripe::ListPaginator::from_params(
-            &format!("/accounts/{account}/persons", account = account),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/accounts/{account}/persons"), self)
     }
 }
 impl<'a> stripe::PaginationParams for PersonsAccount<'a> {}
@@ -4557,16 +4542,13 @@ impl<'a> CapabilitiesAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
-        client.get_query(&format!("/accounts/{account}/capabilities", account = account), self)
+        client.get_query(&format!("/accounts/{account}/capabilities"), self)
     }
     pub fn paginate(
         self,
         account: &stripe_types::account::AccountId,
     ) -> stripe::ListPaginator<stripe_types::AccountCapability> {
-        stripe::ListPaginator::from_params(
-            &format!("/accounts/{account}/capabilities", account = account),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/accounts/{account}/capabilities"), self)
     }
 }
 impl<'a> stripe::PaginationParams for CapabilitiesAccount<'a> {}

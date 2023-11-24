@@ -3339,11 +3339,7 @@ impl<'a> UpdateInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}", invoice = invoice),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoices/{invoice}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3400,11 +3396,7 @@ impl<'a> PayInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}/pay", invoice = invoice),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoices/{invoice}/pay"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7009,7 +7001,7 @@ impl<'a> RetrieveInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.get_query(&format!("/invoices/{invoice}", invoice = invoice), self)
+        client.get_query(&format!("/invoices/{invoice}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7029,11 +7021,7 @@ impl DeleteInvoice {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::DeletedInvoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}", invoice = invoice),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/invoices/{invoice}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7061,11 +7049,7 @@ impl<'a> FinalizeInvoiceInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}/finalize", invoice = invoice),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoices/{invoice}/finalize"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7089,11 +7073,7 @@ impl<'a> SendInvoiceInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}/send", invoice = invoice),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoices/{invoice}/send"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7115,7 +7095,7 @@ impl<'a> MarkUncollectibleInvoice<'a> {
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
         client.send_form(
-            &format!("/invoices/{invoice}/mark_uncollectible", invoice = invoice),
+            &format!("/invoices/{invoice}/mark_uncollectible"),
             self,
             http_types::Method::Post,
         )
@@ -7142,10 +7122,6 @@ impl<'a> VoidInvoiceInvoice<'a> {
         client: &stripe::Client,
         invoice: &stripe_types::invoice::InvoiceId,
     ) -> stripe::Response<stripe_types::Invoice> {
-        client.send_form(
-            &format!("/invoices/{invoice}/void", invoice = invoice),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/invoices/{invoice}/void"), self, http_types::Method::Post)
     }
 }

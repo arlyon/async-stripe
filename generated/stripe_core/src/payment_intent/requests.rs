@@ -5238,7 +5238,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -7184,9 +7184,9 @@ impl<'a> RetrievePaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
-        client.get_query(&format!("/payment_intents/{intent}", intent = intent), self)
+        client.get_query(&format!("/payment_intents/{intent}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -11977,7 +11977,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13823,13 +13823,9 @@ impl<'a> UpdatePaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
-        client.send_form(
-            &format!("/payment_intents/{intent}", intent = intent),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/payment_intents/{intent}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -18814,7 +18810,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsLink<'a> {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-    /// [Deprecated] This is a legacy parameter that no longer has any function.
+    /// \[Deprecated\] This is a legacy parameter that no longer has any function.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<&'a str>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -20658,10 +20654,10 @@ impl<'a> ConfirmPaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/confirm", intent = intent),
+            &format!("/payment_intents/{intent}/confirm"),
             self,
             http_types::Method::Post,
         )
@@ -20755,10 +20751,10 @@ impl<'a> CancelPaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/cancel", intent = intent),
+            &format!("/payment_intents/{intent}/cancel"),
             self,
             http_types::Method::Post,
         )
@@ -20841,10 +20837,10 @@ impl<'a> CapturePaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/capture", intent = intent),
+            &format!("/payment_intents/{intent}/capture"),
             self,
             http_types::Method::Post,
         )
@@ -20924,10 +20920,10 @@ impl<'a> IncrementAuthorizationPaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/increment_authorization", intent = intent),
+            &format!("/payment_intents/{intent}/increment_authorization"),
             self,
             http_types::Method::Post,
         )
@@ -20955,10 +20951,10 @@ impl<'a> VerifyMicrodepositsPaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/verify_microdeposits", intent = intent),
+            &format!("/payment_intents/{intent}/verify_microdeposits"),
             self,
             http_types::Method::Post,
         )
@@ -20994,10 +20990,10 @@ impl<'a> ApplyCustomerBalancePaymentIntent<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        intent: &stripe_types::payment_intent::PaymentIntentId,
+        intent: &str,
     ) -> stripe::Response<stripe_types::PaymentIntent> {
         client.send_form(
-            &format!("/payment_intents/{intent}/apply_customer_balance", intent = intent),
+            &format!("/payment_intents/{intent}/apply_customer_balance"),
             self,
             http_types::Method::Post,
         )

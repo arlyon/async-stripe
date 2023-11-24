@@ -38,10 +38,7 @@ impl<'a> ListUsageRecordSummary<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::Response<stripe_types::List<stripe_types::UsageRecordSummary>> {
         client.get_query(
-            &format!(
-                "/subscription_items/{subscription_item}/usage_record_summaries",
-                subscription_item = subscription_item
-            ),
+            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
             self,
         )
     }
@@ -50,10 +47,7 @@ impl<'a> ListUsageRecordSummary<'a> {
         subscription_item: &stripe_types::subscription_item::SubscriptionItemId,
     ) -> stripe::ListPaginator<stripe_types::UsageRecordSummary> {
         stripe::ListPaginator::from_params(
-            &format!(
-                "/subscription_items/{subscription_item}/usage_record_summaries",
-                subscription_item = subscription_item
-            ),
+            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
             self,
         )
     }

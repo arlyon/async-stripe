@@ -1,4 +1,6 @@
 #![recursion_limit = "256"]
+#![allow(clippy::large_enum_variant)]
+#![allow(rustdoc::invalid_html_tags)]
 extern crate self as stripe_terminal;
 pub mod terminal_configuration_deleted_configuration;
 pub use terminal_configuration_deleted_configuration::TerminalConfigurationDeletedConfiguration;

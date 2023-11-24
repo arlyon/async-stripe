@@ -130,12 +130,9 @@ impl<'a> RetrieveIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
-        client.get_query(
-            &format!("/issuing/authorizations/{authorization}", authorization = authorization),
-            self,
-        )
+        client.get_query(&format!("/issuing/authorizations/{authorization}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -163,10 +160,10 @@ impl<'a> UpdateIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!("/issuing/authorizations/{authorization}", authorization = authorization),
+            &format!("/issuing/authorizations/{authorization}"),
             self,
             http_types::Method::Post,
         )
@@ -196,7 +193,7 @@ impl<'a> ApproveIssuingAuthorization<'a> {
     }
 }
 impl<'a> ApproveIssuingAuthorization<'a> {
-    /// [Deprecated] Approves a pending Issuing `Authorization` object.
+    /// \[Deprecated\] Approves a pending Issuing `Authorization` object.
     ///
     /// This request should be made within the timeout window of the [real-time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
     /// This method is deprecated.
@@ -204,13 +201,10 @@ impl<'a> ApproveIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/issuing/authorizations/{authorization}/approve",
-                authorization = authorization
-            ),
+            &format!("/issuing/authorizations/{authorization}/approve"),
             self,
             http_types::Method::Post,
         )
@@ -235,20 +229,17 @@ impl<'a> DeclineIssuingAuthorization<'a> {
     }
 }
 impl<'a> DeclineIssuingAuthorization<'a> {
-    /// [Deprecated] Declines a pending Issuing `Authorization` object.
+    /// \[Deprecated\] Declines a pending Issuing `Authorization` object.
     ///
     /// This request should be made within the timeout window of the [real time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow. This method is deprecated.
     /// Instead, [respond directly to the webhook request to decline an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/issuing/authorizations/{authorization}/decline",
-                authorization = authorization
-            ),
+            &format!("/issuing/authorizations/{authorization}/decline"),
             self,
             http_types::Method::Post,
         )
@@ -2037,13 +2028,10 @@ impl<'a> IncrementIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/test_helpers/issuing/authorizations/{authorization}/increment",
-                authorization = authorization
-            ),
+            &format!("/test_helpers/issuing/authorizations/{authorization}/increment"),
             self,
             http_types::Method::Post,
         )
@@ -2071,13 +2059,10 @@ impl<'a> ReverseIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/test_helpers/issuing/authorizations/{authorization}/reverse",
-                authorization = authorization
-            ),
+            &format!("/test_helpers/issuing/authorizations/{authorization}/reverse"),
             self,
             http_types::Method::Post,
         )
@@ -2099,13 +2084,10 @@ impl<'a> ExpireIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/test_helpers/issuing/authorizations/{authorization}/expire",
-                authorization = authorization
-            ),
+            &format!("/test_helpers/issuing/authorizations/{authorization}/expire"),
             self,
             http_types::Method::Post,
         )
@@ -2396,13 +2378,10 @@ impl<'a> CaptureIssuingAuthorization<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        authorization: &stripe_types::issuing_authorization::IssuingAuthorizationId,
+        authorization: &str,
     ) -> stripe::Response<stripe_types::IssuingAuthorization> {
         client.send_form(
-            &format!(
-                "/test_helpers/issuing/authorizations/{authorization}/capture",
-                authorization = authorization
-            ),
+            &format!("/test_helpers/issuing/authorizations/{authorization}/capture"),
             self,
             http_types::Method::Post,
         )

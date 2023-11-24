@@ -14,12 +14,9 @@ impl<'a> RetrieveReportingReportRun<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        report_run: &stripe_misc::reporting_report_run::ReportingReportRunId,
+        report_run: &str,
     ) -> stripe::Response<stripe_misc::ReportingReportRun> {
-        client.get_query(
-            &format!("/reporting/report_runs/{report_run}", report_run = report_run),
-            self,
-        )
+        client.get_query(&format!("/reporting/report_runs/{report_run}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

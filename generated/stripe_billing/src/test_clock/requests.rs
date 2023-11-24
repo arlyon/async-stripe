@@ -14,12 +14,9 @@ impl<'a> RetrieveTestClock<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+        test_clock: &str,
     ) -> stripe::Response<stripe_types::TestClock> {
-        client.get_query(
-            &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
-            self,
-        )
+        client.get_query(&format!("/test_helpers/test_clocks/{test_clock}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -56,10 +53,10 @@ impl DeleteTestClock {
     pub fn send(
         &self,
         client: &stripe::Client,
-        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+        test_clock: &str,
     ) -> stripe::Response<stripe_types::DeletedTestClock> {
         client.send_form(
-            &format!("/test_helpers/test_clocks/{test_clock}", test_clock = test_clock),
+            &format!("/test_helpers/test_clocks/{test_clock}"),
             self,
             http_types::Method::Delete,
         )
@@ -89,10 +86,10 @@ impl<'a> AdvanceTestClock<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        test_clock: &stripe_types::test_clock::TestHelpersTestClockId,
+        test_clock: &str,
     ) -> stripe::Response<stripe_types::TestClock> {
         client.send_form(
-            &format!("/test_helpers/test_clocks/{test_clock}/advance", test_clock = test_clock),
+            &format!("/test_helpers/test_clocks/{test_clock}/advance"),
             self,
             http_types::Method::Post,
         )

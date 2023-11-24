@@ -114,8 +114,8 @@ impl<'a> RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
 }
 impl<'a> RetrieveTreasuryReceivedCreditsResourceCreditReversal<'a> {
     /// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
-    pub fn send(&self, client: &stripe::Client, credit_reversal: &stripe_treasury::treasury_received_credits_resource_credit_reversal::TreasuryCreditReversalId) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
-        client.get_query(&format!("/treasury/credit_reversals/{credit_reversal}", credit_reversal = credit_reversal), self)
+    pub fn send(&self, client: &stripe::Client, credit_reversal: &str) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceCreditReversal> {
+        client.get_query(&format!("/treasury/credit_reversals/{credit_reversal}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

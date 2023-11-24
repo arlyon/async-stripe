@@ -58,7 +58,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ## MSRV
 
-We currently have `1.63.0` pinned in CI, so any version of rustc newer than that should work.
+We currently have `1.67.0` pinned in CI, so any version of rustc newer than that should work.
 If this is not the case, please open an issue. As a policy, we permit MSRV increases in non-breaking releases.
 If you have a compelling usecase for bumping it, we are usually open to do so, as long as
 the rust version is not too new (generally 3 releases).

@@ -1296,13 +1296,10 @@ impl<'a> UpdatePortalConfiguration<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId,
+        configuration: &str,
     ) -> stripe::Response<stripe_billing::PortalConfiguration> {
         client.send_form(
-            &format!(
-                "/billing_portal/configurations/{configuration}",
-                configuration = configuration
-            ),
+            &format!("/billing_portal/configurations/{configuration}"),
             self,
             http_types::Method::Post,
         )
@@ -1324,14 +1321,8 @@ impl<'a> RetrievePortalConfiguration<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        configuration: &stripe_billing::portal_configuration::BillingPortalConfigurationId,
+        configuration: &str,
     ) -> stripe::Response<stripe_billing::PortalConfiguration> {
-        client.get_query(
-            &format!(
-                "/billing_portal/configurations/{configuration}",
-                configuration = configuration
-            ),
-            self,
-        )
+        client.get_query(&format!("/billing_portal/configurations/{configuration}"), self)
     }
 }

@@ -124,10 +124,14 @@ impl RustType {
         Self::Path { path, is_ref }
     }
 
-    pub fn as_id_path(&self) -> Option<&ComponentPath> {
+    /// Extract the component path from `{}Id` or `Option<{}Id>`
+    pub fn as_id_or_opt_id_path(&self) -> Option<&ComponentPath> {
         match self {
             Self::Path { path: PathToType::ObjectId(path), .. } => Some(path),
-            Self::Container(typ) => typ.value_typ().as_id_path(),
+            Self::Container(Container::Option(typ)) => match &**typ {
+                Self::Path { path: PathToType::ObjectId(path), .. } => Some(path),
+                _ => None,
+            },
             _ => None,
         }
     }
@@ -135,7 +139,6 @@ impl RustType {
     pub fn as_component_path(&self) -> Option<&ComponentPath> {
         match self {
             Self::Path { path: PathToType::Component(path), .. } => Some(path),
-            Self::Container(typ) => typ.value_typ().as_component_path(),
             _ => None,
         }
     }
@@ -200,34 +203,40 @@ impl RustType {
         }
     }
 
-    pub fn as_skip_serializing(&self) -> Option<&'static str> {
+    pub fn skip_serializing(&self) -> Option<&'static str> {
         match self {
             Self::Container(Container::Option(_)) => Some("Option::is_none"),
             _ => None,
         }
     }
 
-    pub fn as_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
+    /// Find any `RustObject` that may be contained in this type
+    pub fn extract_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
             Self::Simple(_) | Self::Path { .. } => None,
-            Self::Container(typ) => typ.value_typ().as_object(),
+            Self::Container(typ) => typ.value_typ().extract_object(),
+        }
+    }
+
+    pub fn as_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
+        match self {
+            Self::Object(obj, meta) => Some((obj, meta)),
+            _ => None,
         }
     }
 
     pub fn as_object_mut(&mut self) -> Option<(&mut RustObject, &ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
-            Self::Simple(_) | Self::Path { .. } => None,
-            Self::Container(typ) => typ.value_typ_mut().as_object_mut(),
+            _ => None,
         }
     }
 
     pub fn into_object(self) -> Option<(RustObject, ObjectMetadata)> {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
-            Self::Simple(_) | Self::Path { .. } => None,
-            Self::Container(typ) => typ.into_value_typ().into_object(),
+            _ => None,
         }
     }
 
@@ -235,7 +244,7 @@ impl RustType {
         self.as_object().map(|r| r.0)
     }
 
-    pub fn as_deser_default(&self) -> Option<DeserDefault> {
+    pub fn deser_default(&self) -> Option<DeserDefault> {
         match self {
             Self::Simple(SimpleType::Bool)
             | Self::Container(Container::Vec(_))
@@ -321,21 +330,6 @@ impl Container {
             Box(typ) => typ,
             Map { value, .. } => value,
         }
-    }
-
-    /// Extract the inner contained type.
-    pub fn into_value_typ(self) -> RustType {
-        use Container::*;
-        let res = match self {
-            List(typ) => typ,
-            Vec(typ) => typ,
-            Slice(typ) => typ,
-            Expandable(typ) => typ,
-            Option(typ) => typ,
-            Box(typ) => typ,
-            Map { value, .. } => value,
-        };
-        *res
     }
 
     /// Get a mutable reference to the inner contained type.

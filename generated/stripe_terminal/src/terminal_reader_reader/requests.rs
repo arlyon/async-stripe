@@ -23,16 +23,8 @@ impl<'a> UpdateTerminalReaderReader<'a> {
     /// Updates a `Reader` object by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
-    ) -> stripe::Response<UpdateReturned> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}", reader = reader),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, reader: &str) -> stripe::Response<UpdateReturned> {
+        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -57,9 +49,9 @@ impl<'a> RetrieveTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<RetrieveReturned> {
-        client.get_query(&format!("/terminal/readers/{reader}", reader = reader), self)
+        client.get_query(&format!("/terminal/readers/{reader}"), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -296,13 +288,9 @@ impl DeleteTerminalReaderReader {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderDeletedReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}", reader = reader),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -355,10 +343,10 @@ impl<'a> ProcessPaymentIntentTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!("/terminal/readers/{reader}/process_payment_intent", reader = reader),
+            &format!("/terminal/readers/{reader}/process_payment_intent"),
             self,
             http_types::Method::Post,
         )
@@ -392,10 +380,10 @@ impl<'a> ProcessSetupIntentTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!("/terminal/readers/{reader}/process_setup_intent", reader = reader),
+            &format!("/terminal/readers/{reader}/process_setup_intent"),
             self,
             http_types::Method::Post,
         )
@@ -417,10 +405,10 @@ impl<'a> CancelActionTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!("/terminal/readers/{reader}/cancel_action", reader = reader),
+            &format!("/terminal/readers/{reader}/cancel_action"),
             self,
             http_types::Method::Post,
         )
@@ -538,10 +526,10 @@ impl<'a> SetReaderDisplayTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!("/terminal/readers/{reader}/set_reader_display", reader = reader),
+            &format!("/terminal/readers/{reader}/set_reader_display"),
             self,
             http_types::Method::Post,
         )
@@ -592,10 +580,10 @@ impl<'a> RefundPaymentTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!("/terminal/readers/{reader}/refund_payment", reader = reader),
+            &format!("/terminal/readers/{reader}/refund_payment"),
             self,
             http_types::Method::Post,
         )
@@ -710,13 +698,10 @@ impl<'a> PresentPaymentMethodTerminalReaderReader<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        reader: &stripe_terminal::terminal_reader_reader::TerminalReaderId,
+        reader: &str,
     ) -> stripe::Response<stripe_terminal::TerminalReaderReader> {
         client.send_form(
-            &format!(
-                "/test_helpers/terminal/readers/{reader}/present_payment_method",
-                reader = reader
-            ),
+            &format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),
             self,
             http_types::Method::Post,
         )

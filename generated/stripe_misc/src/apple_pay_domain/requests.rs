@@ -75,9 +75,9 @@ impl<'a> RetrieveApplePayDomain<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
+        domain: &str,
     ) -> stripe::Response<stripe_misc::ApplePayDomain> {
-        client.get_query(&format!("/apple_pay/domains/{domain}", domain = domain), self)
+        client.get_query(&format!("/apple_pay/domains/{domain}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -92,12 +92,8 @@ impl DeleteApplePayDomain {
     pub fn send(
         &self,
         client: &stripe::Client,
-        domain: &stripe_misc::apple_pay_domain::ApplePayDomainId,
+        domain: &str,
     ) -> stripe::Response<stripe_misc::DeletedApplePayDomain> {
-        client.send_form(
-            &format!("/apple_pay/domains/{domain}", domain = domain),
-            self,
-            http_types::Method::Delete,
-        )
+        client.send_form(&format!("/apple_pay/domains/{domain}"), self, http_types::Method::Delete)
     }
 }

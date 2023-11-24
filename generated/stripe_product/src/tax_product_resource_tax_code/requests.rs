@@ -59,6 +59,6 @@ impl<'a> RetrieveTaxProductResourceTaxCode<'a> {
         client: &stripe::Client,
         id: &stripe_types::tax_product_resource_tax_code::TaxCodeId,
     ) -> stripe::Response<stripe_types::TaxProductResourceTaxCode> {
-        client.get_query(&format!("/tax_codes/{id}", id = id), self)
+        client.get_query(&format!("/tax_codes/{id}"), self)
     }
 }

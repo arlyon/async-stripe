@@ -80,6 +80,6 @@ impl<'a> RetrieveNotificationEvent<'a> {
         client: &stripe::Client,
         id: &stripe_types::notification_event::EventId,
     ) -> stripe::Response<stripe_types::NotificationEvent> {
-        client.get_query(&format!("/events/{id}", id = id), self)
+        client.get_query(&format!("/events/{id}"), self)
     }
 }

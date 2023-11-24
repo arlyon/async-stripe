@@ -702,7 +702,7 @@ impl<'a> RetrieveProduct<'a> {
         client: &stripe::Client,
         id: &stripe_types::product::ProductId,
     ) -> stripe::Response<stripe_types::Product> {
-        client.get_query(&format!("/products/{id}", id = id), self)
+        client.get_query(&format!("/products/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -820,7 +820,7 @@ impl<'a> UpdateProduct<'a> {
         client: &stripe::Client,
         id: &stripe_types::product::ProductId,
     ) -> stripe::Response<stripe_types::Product> {
-        client.send_form(&format!("/products/{id}", id = id), self, http_types::Method::Post)
+        client.send_form(&format!("/products/{id}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -958,6 +958,6 @@ impl DeleteProduct {
         client: &stripe::Client,
         id: &stripe_types::product::ProductId,
     ) -> stripe::Response<stripe_types::DeletedProduct> {
-        client.send_form(&format!("/products/{id}", id = id), self, http_types::Method::Delete)
+        client.send_form(&format!("/products/{id}"), self, http_types::Method::Delete)
     }
 }

@@ -686,8 +686,8 @@ impl serde::Serialize for UpdateTreasuryFinancialAccountsResourceFinancialAccoun
 }
 impl<'a> UpdateTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Updates the details of a FinancialAccount.
-    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
-        client.send_form(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), self, http_types::Method::Post)
+    pub fn send(&self, client: &stripe::Client, financial_account: &str) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -881,12 +881,8 @@ impl UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccountOutboundTran
 }
 impl<'a> UpdateFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Updates the Features associated with a FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
-        client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), self, http_types::Method::Post)
+    pub fn send(&self, client: &stripe::Client, financial_account: &str) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -934,8 +930,8 @@ impl<'a> RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
 }
 impl<'a> RetrieveTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Retrieves the details of a FinancialAccount.
-    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
-        client.get_query(&format!("/treasury/financial_accounts/{financial_account}", financial_account = financial_account), self)
+    pub fn send(&self, client: &stripe::Client, financial_account: &str) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccount> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -951,11 +947,7 @@ impl<'a> RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
 }
 impl<'a> RetrieveFeaturesTreasuryFinancialAccountsResourceFinancialAccount<'a> {
     /// Retrieves Features information associated with the FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::treasury_financial_accounts_resource_financial_account::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
-        client.get_query(&format!("/treasury/financial_accounts/{financial_account}/features", financial_account = financial_account), self)
+    pub fn send(&self, client: &stripe::Client, financial_account: &str) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAccountFeatures> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}/features"), self)
     }
 }

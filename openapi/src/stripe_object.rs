@@ -135,7 +135,8 @@ pub fn parse_stripe_schema_as_rust_object(
     ident: &RustIdent,
 ) -> StripeObjectData {
     let not_deleted_path = path.as_not_deleted();
-    let infer_ctx = Inference::new(ident, ObjectGenInfo::new_deser()).id_path(&not_deleted_path);
+    let infer_ctx =
+        Inference::new(ident, ObjectGenInfo::new_deser()).id_path(&not_deleted_path).required(true);
     let typ = infer_ctx.infer_schema_type(schema);
     let Some((mut rust_obj, _)) = typ.into_object() else {
         panic!("Unexpected top level schema type for {}", path);
@@ -145,7 +146,7 @@ pub fn parse_stripe_schema_as_rust_object(
             let mut id_type = None;
             let mut object_name = None;
             fields.retain(|field| {
-                if field.field_name == "id" && field.rust_type.as_id_path().is_some() {
+                if field.field_name == "id" && field.rust_type.as_id_or_opt_id_path().is_some() {
                     id_type = Some(field.rust_type.clone());
                 }
                 if field.field_name == "object" {

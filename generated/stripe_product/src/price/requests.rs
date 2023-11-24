@@ -1285,7 +1285,7 @@ impl<'a> RetrievePrice<'a> {
         client: &stripe::Client,
         price: &stripe_types::price::PriceId,
     ) -> stripe::Response<stripe_types::Price> {
-        client.get_query(&format!("/prices/{price}", price = price), self)
+        client.get_query(&format!("/prices/{price}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1577,6 +1577,6 @@ impl<'a> UpdatePrice<'a> {
         client: &stripe::Client,
         price: &stripe_types::price::PriceId,
     ) -> stripe::Response<stripe_types::Price> {
-        client.send_form(&format!("/prices/{price}", price = price), self, http_types::Method::Post)
+        client.send_form(&format!("/prices/{price}"), self, http_types::Method::Post)
     }
 }

@@ -1,4 +1,6 @@
 #![recursion_limit = "256"]
+#![allow(clippy::large_enum_variant)]
+#![allow(rustdoc::invalid_html_tags)]
 extern crate self as stripe_treasury;
 pub mod inbound_transfers;
 pub use inbound_transfers::InboundTransfers;

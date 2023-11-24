@@ -11,8 +11,8 @@ impl<'a> CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
 }
 impl<'a> CancelTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Cancels an InboundTransfer.
-    pub fn send(&self, client: &stripe::Client, inbound_transfer: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-        client.send_form(&format!("/treasury/inbound_transfers/{inbound_transfer}/cancel", inbound_transfer = inbound_transfer), self, http_types::Method::Post)
+    pub fn send(&self, client: &stripe::Client, inbound_transfer: &str) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
+        client.send_form(&format!("/treasury/inbound_transfers/{inbound_transfer}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -73,7 +73,7 @@ impl<'a> RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
 impl<'a> RetrieveTreasuryInboundTransfersResourceInboundTransfer<'a> {
     /// Retrieves the details of an existing InboundTransfer.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-        client.get_query(&format!("/treasury/inbound_transfers/{id}", id = id), self)
+        client.get_query(&format!("/treasury/inbound_transfers/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -195,7 +195,7 @@ impl<'a> SucceedTreasuryInboundTransfersResourceInboundTransfer<'a> {
     ///
     /// The InboundTransfer must already be in the `processing` state.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/succeed", id = id), self, http_types::Method::Post)
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/succeed"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -320,7 +320,7 @@ impl<'a> FailTreasuryInboundTransfersResourceInboundTransfer<'a> {
     ///
     /// The InboundTransfer must already be in the `processing` state.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/fail", id = id), self, http_types::Method::Post)
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/fail"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -339,6 +339,6 @@ impl<'a> ReturnInboundTransferTreasuryInboundTransfersResourceInboundTransfer<'a
     ///
     /// The InboundTransfer must already be in the `succeeded` state.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_inbound_transfers_resource_inbound_transfer::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfersResourceInboundTransfer> {
-        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/return", id = id), self, http_types::Method::Post)
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/return"), self, http_types::Method::Post)
     }
 }

@@ -192,7 +192,7 @@ impl<'a> RetrieveTopup<'a> {
         client: &stripe::Client,
         topup: &stripe_types::topup::TopupId,
     ) -> stripe::Response<stripe_types::Topup> {
-        client.get_query(&format!("/topups/{topup}", topup = topup), self)
+        client.get_query(&format!("/topups/{topup}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -227,7 +227,7 @@ impl<'a> UpdateTopup<'a> {
         client: &stripe::Client,
         topup: &stripe_types::topup::TopupId,
     ) -> stripe::Response<stripe_types::Topup> {
-        client.send_form(&format!("/topups/{topup}", topup = topup), self, http_types::Method::Post)
+        client.send_form(&format!("/topups/{topup}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -250,10 +250,6 @@ impl<'a> CancelTopup<'a> {
         client: &stripe::Client,
         topup: &stripe_types::topup::TopupId,
     ) -> stripe::Response<stripe_types::Topup> {
-        client.send_form(
-            &format!("/topups/{topup}/cancel", topup = topup),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/topups/{topup}/cancel"), self, http_types::Method::Post)
     }
 }

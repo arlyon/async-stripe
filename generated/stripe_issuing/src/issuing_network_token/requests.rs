@@ -131,9 +131,9 @@ impl<'a> RetrieveIssuingNetworkToken<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        token: &stripe_core::token::TokenId,
+        token: &stripe_types::issuing_network_token::IssuingTokenId,
     ) -> stripe::Response<stripe_types::IssuingNetworkToken> {
-        client.get_query(&format!("/issuing/tokens/{token}", token = token), self)
+        client.get_query(&format!("/issuing/tokens/{token}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -211,12 +211,8 @@ impl<'a> UpdateIssuingNetworkToken<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        token: &stripe_core::token::TokenId,
+        token: &stripe_types::issuing_network_token::IssuingTokenId,
     ) -> stripe::Response<stripe_types::IssuingNetworkToken> {
-        client.send_form(
-            &format!("/issuing/tokens/{token}", token = token),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/issuing/tokens/{token}"), self, http_types::Method::Post)
     }
 }

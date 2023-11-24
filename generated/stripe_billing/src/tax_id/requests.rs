@@ -271,11 +271,7 @@ impl<'a> CreateTaxId<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::TaxId> {
-        client.send_form(
-            &format!("/customers/{customer}/tax_ids", customer = customer),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/customers/{customer}/tax_ids"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -297,10 +293,7 @@ impl<'a> RetrieveTaxId<'a> {
         customer: &stripe_types::customer::CustomerId,
         id: &str,
     ) -> stripe::Response<stripe_types::TaxId> {
-        client.get_query(
-            &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
-            self,
-        )
+        client.get_query(&format!("/customers/{customer}/tax_ids/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -338,16 +331,13 @@ impl<'a> ListTaxId<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::List<stripe_types::TaxId>> {
-        client.get_query(&format!("/customers/{customer}/tax_ids", customer = customer), self)
+        client.get_query(&format!("/customers/{customer}/tax_ids"), self)
     }
     pub fn paginate(
         self,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::ListPaginator<stripe_types::TaxId> {
-        stripe::ListPaginator::from_params(
-            &format!("/customers/{customer}/tax_ids", customer = customer),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/customers/{customer}/tax_ids"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListTaxId<'a> {}
@@ -367,7 +357,7 @@ impl DeleteTaxId {
         id: &str,
     ) -> stripe::Response<stripe_types::DeletedTaxId> {
         client.send_form(
-            &format!("/customers/{customer}/tax_ids/{id}", customer = customer, id = id),
+            &format!("/customers/{customer}/tax_ids/{id}"),
             self,
             http_types::Method::Delete,
         )

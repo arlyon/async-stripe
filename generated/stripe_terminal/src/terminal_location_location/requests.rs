@@ -14,9 +14,9 @@ impl<'a> RetrieveTerminalLocationLocation<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+        location: &str,
     ) -> stripe::Response<RetrieveReturned> {
-        client.get_query(&format!("/terminal/locations/{location}", location = location), self)
+        client.get_query(&format!("/terminal/locations/{location}"), self)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -160,13 +160,9 @@ impl<'a> UpdateTerminalLocationLocation<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+        location: &str,
     ) -> stripe::Response<UpdateReturned> {
-        client.send_form(
-            &format!("/terminal/locations/{location}", location = location),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/terminal/locations/{location}"), self, http_types::Method::Post)
     }
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -228,10 +224,10 @@ impl DeleteTerminalLocationLocation {
     pub fn send(
         &self,
         client: &stripe::Client,
-        location: &stripe_terminal::terminal_location_location::TerminalLocationId,
+        location: &str,
     ) -> stripe::Response<stripe_terminal::TerminalLocationDeletedLocation> {
         client.send_form(
-            &format!("/terminal/locations/{location}", location = location),
+            &format!("/terminal/locations/{location}"),
             self,
             http_types::Method::Delete,
         )

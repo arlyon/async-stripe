@@ -74,7 +74,7 @@ impl<'a> RetrieveRadarListListItem<'a> {
         client: &stripe::Client,
         item: &stripe_types::line_item::ItemId,
     ) -> stripe::Response<stripe_fraud::RadarListListItem> {
-        client.get_query(&format!("/radar/value_list_items/{item}", item = item), self)
+        client.get_query(&format!("/radar/value_list_items/{item}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -116,7 +116,7 @@ impl DeleteRadarListListItem {
         item: &stripe_types::line_item::ItemId,
     ) -> stripe::Response<stripe_fraud::RadarListDeletedListItem> {
         client.send_form(
-            &format!("/radar/value_list_items/{item}", item = item),
+            &format!("/radar/value_list_items/{item}"),
             self,
             http_types::Method::Delete,
         )

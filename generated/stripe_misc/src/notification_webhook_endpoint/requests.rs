@@ -57,16 +57,14 @@ impl<'a> RetrieveNotificationWebhookEndpoint<'a> {
         client: &stripe::Client,
         webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
     ) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
-        client.get_query(
-            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
-            self,
-        )
+        client.get_query(&format!("/webhook_endpoints/{webhook_endpoint}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateNotificationWebhookEndpoint<'a> {
     /// Events sent to this endpoint will be generated with this Stripe Version instead of your account's default Stripe Version.
-    pub api_version: stripe_types::ApiVersion,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub api_version: Option<stripe_types::ApiVersion>,
     /// Whether this endpoint should receive events from connected accounts (`true`), or from your account (`false`).
     ///
     /// Defaults to `false`.
@@ -1659,7 +1657,7 @@ impl<'a> UpdateNotificationWebhookEndpoint<'a> {
         webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
     ) -> stripe::Response<stripe_misc::NotificationWebhookEndpoint> {
         client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
+            &format!("/webhook_endpoints/{webhook_endpoint}"),
             self,
             http_types::Method::Post,
         )
@@ -1680,7 +1678,7 @@ impl DeleteNotificationWebhookEndpoint {
         webhook_endpoint: &stripe_misc::notification_webhook_endpoint::WebhookEndpointId,
     ) -> stripe::Response<stripe_misc::NotificationWebhookEndpointDeleted> {
         client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}", webhook_endpoint = webhook_endpoint),
+            &format!("/webhook_endpoints/{webhook_endpoint}"),
             self,
             http_types::Method::Delete,
         )

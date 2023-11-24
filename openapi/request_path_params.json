@@ -1,0 +1,5 @@
+{
+  "/v1/issuing/tokens/{token}": {
+    "token": "issuing.token"
+  }
+}

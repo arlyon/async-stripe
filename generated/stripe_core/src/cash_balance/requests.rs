@@ -16,7 +16,7 @@ impl<'a> RetrieveCashBalance<'a> {
         client: &stripe::Client,
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::CashBalance> {
-        client.get_query(&format!("/customers/{customer}/cash_balance", customer = customer), self)
+        client.get_query(&format!("/customers/{customer}/cash_balance"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -116,7 +116,7 @@ impl<'a> UpdateCashBalance<'a> {
         customer: &stripe_types::customer::CustomerId,
     ) -> stripe::Response<stripe_types::CashBalance> {
         client.send_form(
-            &format!("/customers/{customer}/cash_balance", customer = customer),
+            &format!("/customers/{customer}/cash_balance"),
             self,
             http_types::Method::Post,
         )

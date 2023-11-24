@@ -183,7 +183,7 @@ impl<'a> RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
 impl<'a> RetrieveTreasuryReceivedCreditsResourceReceivedCredit<'a> {
     /// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_received_credits_resource_received_credit::TreasuryReceivedCreditId) -> stripe::Response<stripe_treasury::TreasuryReceivedCreditsResourceReceivedCredit> {
-        client.get_query(&format!("/treasury/received_credits/{id}", id = id), self)
+        client.get_query(&format!("/treasury/received_credits/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

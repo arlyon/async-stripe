@@ -90,16 +90,13 @@ impl<'a> ListExternalAccount<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::ExternalAccount>> {
-        client.get_query(&format!("/accounts/{account}/external_accounts", account = account), self)
+        client.get_query(&format!("/accounts/{account}/external_accounts"), self)
     }
     pub fn paginate(
         self,
         account: &stripe_types::account::AccountId,
     ) -> stripe::ListPaginator<stripe_types::ExternalAccount> {
-        stripe::ListPaginator::from_params(
-            &format!("/accounts/{account}/external_accounts", account = account),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/accounts/{account}/external_accounts"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListExternalAccount<'a> {}
@@ -122,10 +119,7 @@ impl<'a> RetrieveExternalAccount<'a> {
         account: &stripe_types::account::AccountId,
         id: &str,
     ) -> stripe::Response<stripe_types::ExternalAccount> {
-        client.get_query(
-            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
-            self,
-        )
+        client.get_query(&format!("/accounts/{account}/external_accounts/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -164,7 +158,7 @@ impl<'a> CreateExternalAccount<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::ExternalAccount> {
         client.send_form(
-            &format!("/accounts/{account}/external_accounts", account = account),
+            &format!("/accounts/{account}/external_accounts"),
             self,
             http_types::Method::Post,
         )
@@ -394,7 +388,7 @@ impl<'a> UpdateExternalAccount<'a> {
         id: &str,
     ) -> stripe::Response<stripe_types::ExternalAccount> {
         client.send_form(
-            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            &format!("/accounts/{account}/external_accounts/{id}"),
             self,
             http_types::Method::Post,
         )
@@ -416,7 +410,7 @@ impl DeleteExternalAccount {
         id: &str,
     ) -> stripe::Response<stripe_types::DeletedExternalAccount> {
         client.send_form(
-            &format!("/accounts/{account}/external_accounts/{id}", account = account, id = id),
+            &format!("/accounts/{account}/external_accounts/{id}"),
             self,
             http_types::Method::Delete,
         )

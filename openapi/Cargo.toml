@@ -17,7 +17,8 @@ toml = "0.8.8"
 anyhow = "1.0.34"
 tracing = "0.1.36"
 openapiv3 = "1.0.1"
-indexmap = "1"
+# So same indexmap can be used as `openapiv3` dep
+indexmap = "1.9.3"
 tracing-subscriber = "0.3.15"
 tabled = "0.14.0"
 clap = {version = "4.3", features = ["derive"]}

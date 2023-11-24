@@ -14,15 +14,9 @@ impl RequestSpec {
 
         // Parameterized request path
         if !self.path_params.is_empty() {
-            let fmt_args = self
-                .path_params
-                .iter()
-                .map(|p| format!("{0}={0}", p.name))
-                .collect::<Vec<_>>()
-                .join(",");
-            format!(r#"&format!("{req_path}", {fmt_args})"#)
-        } else {
+            format!(r#"&format!("{req_path}")"#)
             // Plain request path
+        } else {
             format!(r#""{req_path}""#)
         }
     }

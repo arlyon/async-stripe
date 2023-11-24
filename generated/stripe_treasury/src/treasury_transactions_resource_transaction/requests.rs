@@ -12,7 +12,7 @@ impl<'a> RetrieveTreasuryTransactionsResourceTransaction<'a> {
 impl<'a> RetrieveTreasuryTransactionsResourceTransaction<'a> {
     /// Retrieves the details of an existing Transaction.
     pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::treasury_transactions_resource_transaction::TreasuryTransactionId) -> stripe::Response<stripe_treasury::TreasuryTransactionsResourceTransaction> {
-        client.get_query(&format!("/treasury/transactions/{id}", id = id), self)
+        client.get_query(&format!("/treasury/transactions/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

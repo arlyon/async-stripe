@@ -81,6 +81,6 @@ impl<'a> RetrieveBalanceTransaction<'a> {
         client: &stripe::Client,
         id: &stripe_types::balance_transaction::BalanceTransactionId,
     ) -> stripe::Response<stripe_types::BalanceTransaction> {
-        client.get_query(&format!("/balance_transactions/{id}", id = id), self)
+        client.get_query(&format!("/balance_transactions/{id}"), self)
     }
 }

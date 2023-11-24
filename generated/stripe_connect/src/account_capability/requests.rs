@@ -18,16 +18,13 @@ impl<'a> ListAccountCapability<'a> {
         client: &stripe::Client,
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_types::List<stripe_types::AccountCapability>> {
-        client.get_query(&format!("/accounts/{account}/capabilities", account = account), self)
+        client.get_query(&format!("/accounts/{account}/capabilities"), self)
     }
     pub fn paginate(
         self,
         account: &stripe_types::account::AccountId,
     ) -> stripe::ListPaginator<stripe_types::AccountCapability> {
-        stripe::ListPaginator::from_params(
-            &format!("/accounts/{account}/capabilities", account = account),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/accounts/{account}/capabilities"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListAccountCapability<'a> {}
@@ -50,14 +47,7 @@ impl<'a> RetrieveAccountCapability<'a> {
         account: &stripe_types::account::AccountId,
         capability: &stripe_types::account_capability::CapabilityId,
     ) -> stripe::Response<stripe_types::AccountCapability> {
-        client.get_query(
-            &format!(
-                "/accounts/{account}/capabilities/{capability}",
-                account = account,
-                capability = capability
-            ),
-            self,
-        )
+        client.get_query(&format!("/accounts/{account}/capabilities/{capability}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -90,11 +80,7 @@ impl<'a> UpdateAccountCapability<'a> {
         capability: &stripe_types::account_capability::CapabilityId,
     ) -> stripe::Response<stripe_types::AccountCapability> {
         client.send_form(
-            &format!(
-                "/accounts/{account}/capabilities/{capability}",
-                account = account,
-                capability = capability
-            ),
+            &format!("/accounts/{account}/capabilities/{capability}"),
             self,
             http_types::Method::Post,
         )

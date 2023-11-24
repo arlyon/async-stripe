@@ -1324,10 +1324,7 @@ impl<'a> RetrievePaymentMethod<'a> {
         client: &stripe::Client,
         payment_method: &stripe_types::payment_method::PaymentMethodId,
     ) -> stripe::Response<stripe_types::PaymentMethod> {
-        client.get_query(
-            &format!("/payment_methods/{payment_method}", payment_method = payment_method),
-            self,
-        )
+        client.get_query(&format!("/payment_methods/{payment_method}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1499,7 +1496,7 @@ impl<'a> UpdatePaymentMethod<'a> {
         payment_method: &stripe_types::payment_method::PaymentMethodId,
     ) -> stripe::Response<stripe_types::PaymentMethod> {
         client.send_form(
-            &format!("/payment_methods/{payment_method}", payment_method = payment_method),
+            &format!("/payment_methods/{payment_method}"),
             self,
             http_types::Method::Post,
         )
@@ -1736,7 +1733,7 @@ impl<'a> AttachPaymentMethod<'a> {
         payment_method: &stripe_types::payment_method::PaymentMethodId,
     ) -> stripe::Response<stripe_types::PaymentMethod> {
         client.send_form(
-            &format!("/payment_methods/{payment_method}/attach", payment_method = payment_method),
+            &format!("/payment_methods/{payment_method}/attach"),
             self,
             http_types::Method::Post,
         )
@@ -1763,7 +1760,7 @@ impl<'a> DetachPaymentMethod<'a> {
         payment_method: &stripe_types::payment_method::PaymentMethodId,
     ) -> stripe::Response<stripe_types::PaymentMethod> {
         client.send_form(
-            &format!("/payment_methods/{payment_method}/detach", payment_method = payment_method),
+            &format!("/payment_methods/{payment_method}/detach"),
             self,
             http_types::Method::Post,
         )

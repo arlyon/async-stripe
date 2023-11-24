@@ -19,7 +19,7 @@ impl<'a> CreateLoginLink<'a> {
         account: &stripe_types::account::AccountId,
     ) -> stripe::Response<stripe_connect::LoginLink> {
         client.send_form(
-            &format!("/accounts/{account}/login_links", account = account),
+            &format!("/accounts/{account}/login_links"),
             self,
             http_types::Method::Post,
         )

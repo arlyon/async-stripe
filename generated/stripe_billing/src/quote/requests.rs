@@ -16,7 +16,7 @@ impl<'a> RetrieveQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::Quote> {
-        client.get_query(&format!("/quotes/{quote}", quote = quote), self)
+        client.get_query(&format!("/quotes/{quote}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1010,7 +1010,7 @@ impl<'a> UpdateQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::Quote> {
-        client.send_form(&format!("/quotes/{quote}", quote = quote), self, http_types::Method::Post)
+        client.send_form(&format!("/quotes/{quote}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1031,11 +1031,7 @@ impl<'a> CancelQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::Quote> {
-        client.send_form(
-            &format!("/quotes/{quote}/cancel", quote = quote),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/quotes/{quote}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1061,11 +1057,7 @@ impl<'a> FinalizeQuoteQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::Quote> {
-        client.send_form(
-            &format!("/quotes/{quote}/finalize", quote = quote),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/quotes/{quote}/finalize"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1086,11 +1078,7 @@ impl<'a> AcceptQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::Quote> {
-        client.send_form(
-            &format!("/quotes/{quote}/accept", quote = quote),
-            self,
-            http_types::Method::Post,
-        )
+        client.send_form(&format!("/quotes/{quote}/accept"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1242,16 +1230,13 @@ impl<'a> ListLineItemsQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-        client.get_query(&format!("/quotes/{quote}/line_items", quote = quote), self)
+        client.get_query(&format!("/quotes/{quote}/line_items"), self)
     }
     pub fn paginate(
         self,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::ListPaginator<stripe_types::LineItem> {
-        stripe::ListPaginator::from_params(
-            &format!("/quotes/{quote}/line_items", quote = quote),
-            self,
-        )
+        stripe::ListPaginator::from_params(&format!("/quotes/{quote}/line_items"), self)
     }
 }
 impl<'a> stripe::PaginationParams for ListLineItemsQuote<'a> {}
@@ -1292,15 +1277,14 @@ impl<'a> ListComputedUpfrontLineItemsQuote<'a> {
         client: &stripe::Client,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::Response<stripe_types::List<stripe_types::LineItem>> {
-        client
-            .get_query(&format!("/quotes/{quote}/computed_upfront_line_items", quote = quote), self)
+        client.get_query(&format!("/quotes/{quote}/computed_upfront_line_items"), self)
     }
     pub fn paginate(
         self,
         quote: &stripe_types::quote::QuoteId,
     ) -> stripe::ListPaginator<stripe_types::LineItem> {
         stripe::ListPaginator::from_params(
-            &format!("/quotes/{quote}/computed_upfront_line_items", quote = quote),
+            &format!("/quotes/{quote}/computed_upfront_line_items"),
             self,
         )
     }

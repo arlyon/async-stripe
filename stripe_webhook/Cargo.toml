@@ -16,3 +16,6 @@ serde.workspace = true
 stripe_core = {path = "../generated/stripe_core", optional = true}
 stripe_checkout = {path = "../generated/stripe_checkout", optional = true}
 stripe_billing = {path = "../generated/stripe_billing", optional = true}
+
+[package.metadata.docs.rs]
+features = ["stripe_core", "stripe_checkout", "stripe_billing"]
