@@ -333,7 +333,7 @@ impl<'a> Inference<'a> {
                         let variant_ident = if let Some(name) = inferred_name {
                             RustIdent::create(name)
                         } else if let RustType::Simple(typ) = &rust_type {
-                            RustIdent::create(typ.ident())
+                            RustIdent::create(typ.display_name())
                         } else {
                             bail!(
                                 "Could not infer a variant name for {item:?} and type {:?}",

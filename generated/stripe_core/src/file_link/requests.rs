@@ -81,7 +81,7 @@ impl<'a> UpdateFileLink<'a> {
 #[serde(untagged)]
 pub enum UpdateFileLinkExpiresAt {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 impl<'a> UpdateFileLink<'a> {
     /// Updates an existing file link object.

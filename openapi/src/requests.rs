@@ -15,17 +15,26 @@ use crate::spec_inference::Inference;
 use crate::stripe_object::{OperationType, PathParam, RequestSpec, StripeOperation};
 use crate::types::{ComponentPath, RustIdent};
 
-/// Load overrides that hardcode the id types we should use for path parameters. Keys of
-/// request path, values that map parameter name to the object name we should use when looking up the id type.
-fn load_request_path_param_id_overrides() -> anyhow::Result<HashMap<String, HashMap<String, String>>>
-{
+/// Load overrides that hardcode the id types we should use for path parameters.
+/// Map request path start to id path
+fn load_request_path_param_id_overrides() -> anyhow::Result<HashMap<String, String>> {
     Ok(serde_json::from_reader(File::open("request_path_params.json")?)?)
 }
 
 lazy_static! {
-    pub static ref PATH_PARAM_OVERRIDE: HashMap<String, HashMap<String, String>> =
+    pub static ref PATH_PARAM_OVERRIDE: HashMap<String, String> =
         load_request_path_param_id_overrides().expect("Unable to load path params");
 }
+
+fn find_single_path_param_override(req_path: &str) -> Option<&'static str> {
+    for (k, v) in &*PATH_PARAM_OVERRIDE {
+        if k.starts_with(req_path) {
+            return Some(v);
+        }
+    }
+    None
+}
+
 /// Should we skip a currently unsupported request?
 fn should_skip_request(op: &StripeOperation) -> bool {
     // TODO: what is the relevance of the `method_on` field? A small number of requests
@@ -247,8 +256,9 @@ fn build_request(
         )
     });
 
+    let req_path = req.path.trim_start_matches("/v1");
+
     let mut path_params = vec![];
-    let has_single_path_param = req.path_params.len() == 1;
     for param in &req.path_params {
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
@@ -264,39 +274,9 @@ fn build_request(
             bail!("Expected path parameter to be a string");
         }
 
-        // Try our best to determine a specialized id type for this parameter, e.g. `AccountId`.
-
-        // First, check if there is a hardcoded object name we should use. These are overrides might not be necessary
-        // with cleverer inference, but this seems useful regardless since id handling is quite finicky, so having
-        // an easy mechanism to hardcode parameter ideas is helpful
-        let inferred_id = if let Some(overridden) = PATH_PARAM_OVERRIDE.get(req.path) {
-            let obj_name = overridden.get(&param.name).with_context(|| {
-                format!(
-                    "Override on request {} missing path parameter name {}",
-                    req.path, param.name
-                )
-            })?;
-            let id_path = path_id_map.get(obj_name).with_context(|| {
-                format!("Overriden request path {} has object name with no id", req.path)
-            })?;
-            Some(id_path.clone())
-        }
-        // Try to use the name of the path parameter to infer the id type.
-        else if let Some(id_path) = path_id_map.get(&param.name) {
-            Some(id_path.clone())
-            // If there's just a single path parameter with the name `id`, try assuming the id corresponds
-            // to the parent component (assuming such an id actually exists). We check for `id` explicitly
-            // because some requests like `GetApplePayDomainsDomain` has a path parameter which is a _domain_,
-            // not an id
-        } else if has_single_path_param
-            && param.name.as_str() == "id"
-            && path_id_map.contains_key(component.as_ref())
+        let rust_type = if let Some(id_typ) =
+            infer_id_path(&param.name, &req.path_params, req_path, component, path_id_map)?
         {
-            Some(component.clone())
-        } else {
-            None
-        };
-        let rust_type = if let Some(id_typ) = inferred_id {
             RustType::object_id(id_typ, true)
         } else {
             // NB: Assuming this is safe since we check earlier that this matches the path type.
@@ -309,9 +289,46 @@ fn build_request(
         path_params,
         params: param_typ,
         doc_comment: req.description.map(|d| d.to_string()),
-        req_path: req.path.trim_start_matches("/v1").to_string(),
+        req_path: req_path.to_string(),
         returned: return_type,
         method_name: method_name.into(),
         method_type: req.operation_type,
     })
+}
+
+/// Try our best to determine a specialized id type for this parameter, e.g. `AccountId`.
+fn infer_id_path(
+    param_name: &str,
+    params: &[&ParameterData],
+    req_path: &str,
+    component: &ComponentPath,
+    path_id_map: &HashMap<String, ComponentPath>,
+) -> anyhow::Result<Option<ComponentPath>> {
+    let has_single_path_param = params.len() == 1;
+
+    // First, check if there is a hardcoded object name we should use. These are overrides might not be necessary
+    // with cleverer inference, but this seems useful regardless since id handling is quite finicky, so having
+    // an easy mechanism to hardcode parameter ideas is helpful
+    if has_single_path_param {
+        if let Some(obj_name) = find_single_path_param_override(req_path) {
+            let id_path = path_id_map.get(obj_name).with_context(|| {
+                format!("Overriden request path {req_path} has object name with no id")
+            })?;
+            return Ok(Some(id_path.clone()));
+        }
+    }
+
+    // Try to use the name of the path parameter to infer the id type.
+    if let Some(id_path) = path_id_map.get(param_name) {
+        return Ok(Some(id_path.clone()));
+    }
+
+    // If there's just a single path parameter with the name `id`, try assuming the id corresponds
+    // to the parent component (assuming such an id actually exists). We check for `id` explicitly
+    // because some requests like `GetApplePayDomainsDomain` has a path parameter which is a _domain_,
+    // not an id
+    if has_single_path_param && param_name == "id" && path_id_map.contains_key(component.as_ref()) {
+        return Ok(Some(component.clone()));
+    }
+    Ok(None)
 }

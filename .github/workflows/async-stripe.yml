@@ -6,52 +6,72 @@ on:
   pull_request:
     branches:
       - master
+
+env:
+  RUSTFLAGS: -Dwarnings
+  rust_min: 1.67
+
 jobs:
   format:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          components: rustfmt
-      - uses: davidB/rust-cargo-make@v1
-      - name: regenerate openapi
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: check
+      - name: Checkout sources
+        uses: actions/checkout@v3
 
-  verify-codegen:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          profile: minimal
-          toolchain: nightly
           components: rustfmt
-      - uses: davidB/rust-cargo-make@v1
-      - name: regenerate openapi
-        uses: actions-rs/cargo@v1
+
+      - name: Check formatting for workspace
+        run: cargo fmt -- --check
+
+  verify-codegen-crate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: openapi
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install nightly toolchain
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          command: make
-          args: openapi-install
-      - name: ensure generated files unchanged
+          components: rustfmt
+
+      - name: Check formatting
+        uses: dtolnay/rust-toolchain@nightly
+        run: cargo fmt -- --check
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Run clippy
+        uses: dtolnay/rust-toolchain@stable
+        run: cargo clippy
+
+      - name: Run codegen
+        uses: dtolnay/rust-toolchain@stable
+        run: cargo run --release -- --fetch current
+
+      - name: Ensure generated files unchanged
         uses: tj-actions/verify-changed-files@v11.1
         id: verify-changed-files
         with:
           files: |
             **/*.rs
-      - name: report changed files
+      - name: Report changed files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
           echo "Some files changed after code generation: ${{ steps.verify-changed-files.outputs.changed_files }}"
           exit 1
 
   clippy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         runtime:
@@ -65,29 +85,22 @@ jobs:
             blocking-rustls-webpki,
           ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
+          toolchain: ${{ env.rust_min }}
           components: clippy
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-clippy-${{ matrix.runtime }}-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: >
-            --no-default-features
-            --features runtime-${{ matrix.runtime }}
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run clippy
+        run: cargo clippy --features "runtime-${{ matrix.runtime }} full"
+
   test:
-    runs-on: ubuntu-20.04
-    env:
-      RUSTFLAGS: -D warnings
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         runtime:
@@ -107,19 +120,15 @@ jobs:
           - 12111:12111
           - 12112:12112
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: "1.63.0"
-          override: true
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-test-${{ matrix.runtime }}-${{ hashFiles('**/Cargo.lock') }}
+          toolchain: ${{ env.rust_min }}
+
+      - uses: Swatinem/rust-cache@v2
+
       - uses: taiki-e/install-action@cargo-llvm-cov
       - name: Test and gather coverage
         run: cargo llvm-cov --lcov --output-path lcov.info --features runtime-${{ matrix.runtime }}
@@ -133,3 +142,16 @@ jobs:
         with:
           name: code-coverage-report
           path: lcov.info
+
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build Documentation
+        run: cargo doc --lib --no-deps --features "runtime-tokio-hyper full"

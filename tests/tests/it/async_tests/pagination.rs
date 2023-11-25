@@ -9,7 +9,7 @@ use crate::mock::get_client;
 async fn is_account_listable() {
     use futures_util::TryStreamExt;
     let client = get_client();
-    let expected_id: AccountId = "acct_1NTAy9JtuVGV42eh".parse().unwrap();
+    let expected_id: AccountId = "acct_1O8RSFF2YyVaukgl".parse().unwrap();
 
     let result =
         ListAccount::new().paginate().stream(&client).try_collect::<Vec<_>>().await.unwrap();

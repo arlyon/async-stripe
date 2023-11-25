@@ -2276,7 +2276,7 @@ impl<'a> CreateSubscriptionTransferData<'a> {
 #[serde(untagged)]
 pub enum CreateSubscriptionTrialEnd {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -4490,7 +4490,7 @@ impl<'a> UpdateSubscriptionTransferData<'a> {
 #[serde(untagged)]
 pub enum UpdateSubscriptionTrialEnd {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -4593,7 +4593,7 @@ impl<'a> UpdateSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &str,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.send_form(
             &format!("/subscriptions/{subscription_exposed_id}"),
@@ -4618,7 +4618,7 @@ impl<'a> RetrieveSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &str,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.get_query(&format!("/subscriptions/{subscription_exposed_id}"), self)
     }
@@ -4742,7 +4742,7 @@ impl<'a> CancelSubscription<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        subscription_exposed_id: &str,
+        subscription_exposed_id: &stripe_types::subscription::SubscriptionId,
     ) -> stripe::Response<stripe_types::Subscription> {
         client.send_form(
             &format!("/subscriptions/{subscription_exposed_id}"),

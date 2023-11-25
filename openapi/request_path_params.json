@@ -1,5 +1,5 @@
 {
-  "/v1/issuing/tokens/{token}": {
-    "token": "issuing.token"
-  }
+  "/issuing/tokens/{token}": "issuing.token",
+  "/checkout/sessions/{session}": "checkout.session",
+  "/subscriptions/{subscription_exposed_id}": "subscription"
 }

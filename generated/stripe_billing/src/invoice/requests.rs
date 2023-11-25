@@ -993,7 +993,7 @@ impl serde::Serialize for UpcomingInvoiceInvoiceItemsTaxBehavior {
 pub enum UpcomingInvoiceSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1362,7 +1362,7 @@ impl serde::Serialize for UpcomingInvoiceSubscriptionResumeAt {
 #[serde(untagged)]
 pub enum UpcomingInvoiceSubscriptionTrialEnd {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 impl<'a> UpcomingInvoice<'a> {
     /// At any time, you can preview the upcoming invoice for a customer.
@@ -4298,7 +4298,7 @@ impl serde::Serialize for UpcomingLinesInvoiceInvoiceItemsTaxBehavior {
 pub enum UpcomingLinesInvoiceSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// A list of up to 20 subscription items, each with an attached price.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4667,7 +4667,7 @@ impl serde::Serialize for UpcomingLinesInvoiceSubscriptionResumeAt {
 #[serde(untagged)]
 pub enum UpcomingLinesInvoiceSubscriptionTrialEnd {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 impl<'a> UpcomingLinesInvoice<'a> {
     /// When retrieving an upcoming invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.

@@ -386,6 +386,16 @@ impl SimpleType {
             Ext(ext) => ext.ident(),
         }
     }
+
+    /// Identifier we'll use when this type is part of an enum, e.g.
+    /// `Timestamp(stripe_types::Timestamp)`
+    pub const fn display_name(self) -> &'static str {
+        use SimpleType::*;
+        match self {
+            Ext(ext) => ext.display_name(),
+            typ => typ.ident(),
+        }
+    }
 }
 
 impl Debug for SimpleType {
@@ -440,6 +450,16 @@ impl ExtType {
             Self::Timestamp => "stripe_types::Timestamp",
             Self::AlwaysTrue => "stripe_types::AlwaysTrue",
             Self::Value { .. } => "serde_json::Value",
+        }
+    }
+
+    pub const fn display_name(self) -> &'static str {
+        match self {
+            Self::Currency => "Currency",
+            Self::RangeQueryTs => "RangeQueryTs",
+            Self::Timestamp => "Timestamp",
+            Self::AlwaysTrue => "AlwaysTrue",
+            Self::Value { .. } => "Value",
         }
     }
 }

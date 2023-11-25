@@ -148,7 +148,7 @@ impl<'a> CreateTaxProductRegistrationsResourceTaxRegistration<'a> {
 #[serde(untagged)]
 pub enum CreateTaxProductRegistrationsResourceTaxRegistrationActiveFrom {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// Specific options for a registration in the specified `country`.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -6016,7 +6016,7 @@ impl<'a> UpdateTaxProductRegistrationsResourceTaxRegistration<'a> {
 #[serde(untagged)]
 pub enum UpdateTaxProductRegistrationsResourceTaxRegistrationActiveFrom {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// If set, the registration stops being active at this time.
 ///
@@ -6026,7 +6026,7 @@ pub enum UpdateTaxProductRegistrationsResourceTaxRegistrationActiveFrom {
 #[serde(untagged)]
 pub enum UpdateTaxProductRegistrationsResourceTaxRegistrationExpiresAt {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 impl<'a> UpdateTaxProductRegistrationsResourceTaxRegistration<'a> {
     /// Updates an existing Tax `Registration` object.

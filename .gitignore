@@ -13,6 +13,7 @@ stripe-mock/
 *.swp
 ~*
 .vscode
+lcov.info
 
 spec3.json
 spec3.sdk.json

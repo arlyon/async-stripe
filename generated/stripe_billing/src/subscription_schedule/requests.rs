@@ -1146,7 +1146,7 @@ impl<'a> CreateSubscriptionSchedulePhasesTransferData<'a> {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum CreateSubscriptionScheduleStartDate {
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
     Now,
 }
 impl<'a> CreateSubscriptionSchedule<'a> {
@@ -1935,7 +1935,7 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesCollectionMethod {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesEndDate {
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
     Now,
 }
 /// All invoices will be billed using the specified settings.
@@ -2260,7 +2260,7 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesProrationBehavior {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesStartDate {
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
     Now,
 }
 /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
@@ -2286,7 +2286,7 @@ impl<'a> UpdateSubscriptionSchedulePhasesTransferData<'a> {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
     Now,
 }
 /// If the update changes the current phase, indicates whether the changes should be prorated.

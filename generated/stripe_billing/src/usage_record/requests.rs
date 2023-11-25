@@ -97,7 +97,7 @@ impl serde::Serialize for CreateUsageRecordAction {
 #[serde(untagged)]
 pub enum CreateUsageRecordTimestamp {
     Now,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 impl<'a> CreateUsageRecord<'a> {
     /// Creates a usage record for a specified subscription item and date, and fills it with a quantity.

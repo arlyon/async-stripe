@@ -496,7 +496,7 @@ impl<'a> CreateQuoteSubscriptionData<'a> {
 #[serde(untagged)]
 pub enum CreateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// The data with which to automatically create a Transfer for each of the invoices.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -977,7 +977,7 @@ impl<'a> UpdateQuoteSubscriptionData<'a> {
 #[serde(untagged)]
 pub enum UpdateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
-    StripeTypesTimestamp(stripe_types::Timestamp),
+    Timestamp(stripe_types::Timestamp),
 }
 /// The data with which to automatically create a Transfer for each of the invoices.
 #[derive(Copy, Clone, Debug, serde::Serialize)]

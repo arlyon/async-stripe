@@ -12,7 +12,7 @@ fn can_create_usage_record() {
         let creator = CreateUsageRecord {
             quantity: 42,
             action: Some(CreateUsageRecordAction::Increment),
-            timestamp: Some(CreateUsageRecordTimestamp::I64(Utc::now().timestamp())),
+            timestamp: Some(CreateUsageRecordTimestamp::Timestamp(Utc::now().timestamp())),
             expand: None,
         };
         let usage_record = creator.send(client, &subscription_item_id).unwrap();

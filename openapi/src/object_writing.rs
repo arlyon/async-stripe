@@ -20,7 +20,7 @@ pub struct ObjectGenInfo {
 }
 
 impl ObjectGenInfo {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self { derives: Derives::new(), include_constructor: false }
     }
 

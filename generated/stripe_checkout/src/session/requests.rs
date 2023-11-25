@@ -141,7 +141,7 @@ impl<'a> RetrieveSession<'a> {
     pub fn send(
         &self,
         client: &stripe::Client,
-        session: &str,
+        session: &stripe_checkout::session::CheckoutSessionId,
     ) -> stripe::Response<stripe_checkout::Session> {
         client.get_query(&format!("/checkout/sessions/{session}"), self)
     }
