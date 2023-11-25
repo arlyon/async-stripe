@@ -5,6 +5,7 @@ Cargo.lock
 
 # Test artifacts
 stripe-mock/
+lcov.info
 
 # IDE artifacts
 .DS_Store
@@ -13,7 +14,6 @@ stripe-mock/
 *.swp
 ~*
 .vscode
-lcov.info
 
 spec3.json
 spec3.sdk.json
