@@ -53,6 +53,9 @@ pub struct CustomerCashBalanceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refunded_from_payment: Option<CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transferred_to_balance: Option<CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance>,
+
     /// The type of the cash balance transaction.
     ///
     /// New types may be added in future.
@@ -77,7 +80,7 @@ impl Object for CustomerCashBalanceTransaction {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
 
-    /// The [Balance Transaction](docs/api/balance_transactions/object) that corresponds to funds taken out of your Stripe balance.
+    /// The [Balance Transaction](https://stripe.com/docs/api/balance_transactions/object) that corresponds to funds taken out of your Stripe balance.
     pub balance_transaction: Expandable<BalanceTransaction>,
 
     /// The [Cash Balance Transaction](https://stripe.com/docs/api/cash_balance_transactions/object) that brought the customer balance negative, triggering the clawback of funds.
@@ -180,6 +183,13 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaym
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance {
+
+    /// The [Balance Transaction](https://stripe.com/docs/api/balance_transactions/object) that corresponds to funds transferred to your Stripe balance.
+    pub balance_transaction: Expandable<BalanceTransaction>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction {
 
     /// The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were unapplied from.
@@ -273,6 +283,7 @@ pub enum CustomerCashBalanceTransactionType {
     RefundedFromPayment,
     ReturnCanceled,
     ReturnInitiated,
+    TransferredToBalance,
     UnappliedFromPayment,
 }
 
@@ -286,6 +297,7 @@ impl CustomerCashBalanceTransactionType {
             CustomerCashBalanceTransactionType::RefundedFromPayment => "refunded_from_payment",
             CustomerCashBalanceTransactionType::ReturnCanceled => "return_canceled",
             CustomerCashBalanceTransactionType::ReturnInitiated => "return_initiated",
+            CustomerCashBalanceTransactionType::TransferredToBalance => "transferred_to_balance",
             CustomerCashBalanceTransactionType::UnappliedFromPayment => "unapplied_from_payment",
         }
     }

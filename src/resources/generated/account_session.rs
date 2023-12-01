@@ -51,11 +51,11 @@ impl Object for AccountSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
 
-    pub account_onboarding: ConnectEmbeddedBaseConfig,
+    pub account_onboarding: ConnectEmbeddedBaseConfigClaim,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ConnectEmbeddedBaseConfig {
+pub struct ConnectEmbeddedBaseConfigClaim {
 
     /// Whether the embedded component is enabled.
     pub enabled: bool,
