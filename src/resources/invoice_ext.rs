@@ -16,6 +16,17 @@ impl Invoice {
         client.get_query("/invoices/upcoming", &params)
     }
 
+    /// Finalizes an invoice.
+    ///
+    /// For more details see <https://stripe.com/docs/api/invoices/finalize.>.
+    pub fn finalize(
+        client: &Client,
+        invoice_id: &InvoiceId,
+        params: FinalizeInvoiceParams,
+    ) -> Response<Invoice> {
+        client.post_form(&format!("/invoices/{}/finalize", invoice_id), params)
+    }
+
     /// Pays an invoice.
     ///
     /// For more details see <https://stripe.com/docs/api#pay_invoice.>.
@@ -93,4 +104,10 @@ impl<'a> InvoiceSearchParams<'a> {
     pub fn new() -> InvoiceSearchParams<'a> {
         InvoiceSearchParams { query: String::new(), limit: None, page: None, expand: &[] }
     }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct FinalizeInvoiceParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    auto_advance: Option<bool>,
 }
