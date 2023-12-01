@@ -128,6 +128,9 @@ pub struct PaymentMethod {
     pub radar_options: Option<RadarRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<PaymentMethodRevolutPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<PaymentMethodSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -689,13 +692,11 @@ pub struct PaymentMethodPaypal {
     ///
     /// Values are provided by PayPal directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_email: Option<String>,
 
     /// PayPal account PayerID.
     ///
     /// This identifier uniquely identifies the PayPal customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_id: Option<String>,
 }
 
@@ -704,6 +705,9 @@ pub struct PaymentMethodPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPromptpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodRevolutPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodSepaDebit {
@@ -748,7 +752,6 @@ pub struct PaymentMethodUsBankAccount {
     pub bank_name: Option<String>,
 
     /// The ID of the Financial Connections Account used to create the payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections_account: Option<String>,
 
     /// Uniquely identifies this particular bank account.
@@ -766,7 +769,6 @@ pub struct PaymentMethodUsBankAccount {
     pub routing_number: Option<String>,
 
     /// Contains information about the future reusability of this PaymentMethod.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status_details: Option<PaymentMethodUsBankAccountStatusDetails>,
 }
 
@@ -960,6 +962,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreatePaymentMethodRadarOptions>,
 
+    /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<CreatePaymentMethodRevolutPay>,
+
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentMethodSepaDebit>,
@@ -1025,6 +1031,7 @@ impl<'a> CreatePaymentMethod<'a> {
             pix: Default::default(),
             promptpay: Default::default(),
             radar_options: Default::default(),
+            revolut_pay: Default::default(),
             sepa_debit: Default::default(),
             sofort: Default::default(),
             type_: Default::default(),
@@ -1273,6 +1280,9 @@ pub struct CreatePaymentMethodRadarOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodRevolutPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSepaDebit {
@@ -2341,6 +2351,7 @@ pub enum PaymentMethodType {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -2379,6 +2390,7 @@ impl PaymentMethodType {
             PaymentMethodType::Paypal => "paypal",
             PaymentMethodType::Pix => "pix",
             PaymentMethodType::Promptpay => "promptpay",
+            PaymentMethodType::RevolutPay => "revolut_pay",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
             PaymentMethodType::UsBankAccount => "us_bank_account",
@@ -2435,6 +2447,7 @@ pub enum PaymentMethodTypeFilter {
     Paypal,
     Pix,
     Promptpay,
+    RevolutPay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -2471,6 +2484,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Paypal => "paypal",
             PaymentMethodTypeFilter::Pix => "pix",
             PaymentMethodTypeFilter::Promptpay => "promptpay",
+            PaymentMethodTypeFilter::RevolutPay => "revolut_pay",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",
             PaymentMethodTypeFilter::UsBankAccount => "us_bank_account",

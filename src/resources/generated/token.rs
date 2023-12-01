@@ -23,7 +23,7 @@ pub struct Token {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<Card>,
 
-    /// IP address of the client that generated the token.
+    /// IP address of the client that generates the token.
     pub client_ip: Option<String>,
 
     /// Time at which the object was created.
@@ -38,15 +38,16 @@ pub struct Token {
     #[serde(rename = "type")]
     pub type_: TokenType,
 
-    /// Whether this token has already been used (tokens can be used only once).
+    /// Determines if you have already used this token (you can only use tokens once).
     pub used: bool,
 }
 
 impl Token {
     /// Creates a single-use token that represents a bank account’s details.
-    /// This token can be used with any API method in place of a bank account dictionary.
+    /// You can use this token with any API method in place of a bank account dictionary.
     ///
-    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
+    /// You can only use this token once.
+    /// To do so, attach it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
         client.post_form("/tokens", &params)
     }
@@ -70,7 +71,7 @@ impl Object for Token {
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
-    /// Information for the account this token will represent.
+    /// Information for the account this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
 
@@ -81,14 +82,14 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateTokenCardUnion>,
 
-    /// The customer (owned by the application's account) for which to create a token.
+    /// Create a token for the customer, which is owned by the application's account.
     ///
-    /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
-    /// For more details, see [Cloning Saved Payment Methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
+    /// You can only use this with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
+    /// Learn more about [cloning saved payment methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
-    /// The updated CVC value this token will represent.
+    /// The updated CVC value this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_update: Option<CreateTokenCvcUpdate>,
 
@@ -96,11 +97,11 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Information for the person this token will represent.
+    /// Information for the person this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub person: Option<CreateTokenPerson>,
 
-    /// The PII this token will represent.
+    /// The PII this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pii: Option<CreateTokenPii>,
 }
@@ -148,6 +149,10 @@ pub struct CreateTokenCvcUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPerson {
+    /// Details on the legal guardian's acceptance of the required Stripe agreements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<CreateTokenPersonAdditionalTosAcceptances>,
+
     /// The person's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -271,6 +276,13 @@ pub struct CreateTokenPii {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptances {
+    /// Details on the legal guardian's acceptance of the main Stripe service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<CreateTokenPersonAdditionalTosAcceptancesAccount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDob {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -336,6 +348,10 @@ pub struct CreateTokenPersonRelationship {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub executive: Option<bool>,
 
+    /// Whether the person is the legal guardian of the account's representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legal_guardian: Option<bool>,
+
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -366,6 +382,21 @@ pub struct PersonVerificationParams {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<VerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTokenPersonAdditionalTosAcceptancesAccount {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

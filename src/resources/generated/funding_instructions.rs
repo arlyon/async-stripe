@@ -50,6 +50,9 @@ pub struct FundingInstructionsBankTransfer {
 pub struct FundingInstructionsBankTransferFinancialAddress {
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub aba: Option<FundingInstructionsBankTransferAbaRecord>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub iban: Option<FundingInstructionsBankTransferIbanRecord>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,12 +65,28 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_networks: Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swift: Option<FundingInstructionsBankTransferSwiftRecord>,
+
     /// The type of financial address.
     #[serde(rename = "type")]
     pub type_: FundingInstructionsBankTransferFinancialAddressType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zengin: Option<FundingInstructionsBankTransferZenginRecord>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferAbaRecord {
+
+    /// The ABA account number.
+    pub account_number: String,
+
+    /// The bank name.
+    pub bank_name: String,
+
+    /// The ABA routing number.
+    pub routing_number: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -113,6 +132,19 @@ pub struct FundingInstructionsBankTransferSpeiRecord {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferSwiftRecord {
+
+    /// The account number.
+    pub account_number: String,
+
+    /// The bank name.
+    pub bank_name: String,
+
+    /// The SWIFT code.
+    pub swift_code: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferZenginRecord {
 
     /// The account holder name.
@@ -143,20 +175,26 @@ pub struct FundingInstructionsBankTransferZenginRecord {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    Ach,
     Bacs,
+    DomesticWireUs,
     Fps,
     Sepa,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     pub fn as_str(self) -> &'static str {
         match self {
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Ach => "ach",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Bacs => "bacs",
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::DomesticWireUs => "domestic_wire_us",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Fps => "fps",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Sepa => "sepa",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Spei => "spei",
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Swift => "swift",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Zengin => "zengin",
         }
     }
@@ -175,7 +213,7 @@ impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressSuppor
 }
 impl std::default::Default for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     fn default() -> Self {
-        Self::Bacs
+        Self::Ach
     }
 }
 
@@ -183,18 +221,22 @@ impl std::default::Default for FundingInstructionsBankTransferFinancialAddressSu
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FundingInstructionsBankTransferFinancialAddressType {
+    Aba,
     Iban,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl FundingInstructionsBankTransferFinancialAddressType {
     pub fn as_str(self) -> &'static str {
         match self {
+            FundingInstructionsBankTransferFinancialAddressType::Aba => "aba",
             FundingInstructionsBankTransferFinancialAddressType::Iban => "iban",
             FundingInstructionsBankTransferFinancialAddressType::SortCode => "sort_code",
             FundingInstructionsBankTransferFinancialAddressType::Spei => "spei",
+            FundingInstructionsBankTransferFinancialAddressType::Swift => "swift",
             FundingInstructionsBankTransferFinancialAddressType::Zengin => "zengin",
         }
     }
@@ -213,7 +255,7 @@ impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressType {
 }
 impl std::default::Default for FundingInstructionsBankTransferFinancialAddressType {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 

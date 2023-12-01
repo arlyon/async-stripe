@@ -73,7 +73,7 @@ async fn main() {
 
     // finally, create a checkout session for this product / price
     let checkout_session = {
-        let mut params = CreateCheckoutSession::new("http://test.com/success");
+        let mut params = CreateCheckoutSession::new();
         params.cancel_url = Some("http://test.com/cancel");
         params.customer = Some(customer.id);
         params.mode = Some(CheckoutSessionMode::Payment);

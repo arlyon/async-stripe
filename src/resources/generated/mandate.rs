@@ -25,7 +25,7 @@ pub struct Mandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multi_use: Option<MandateMultiUse>,
 
-    /// The account (if any) for which the mandate is intended.
+    /// The account (if any) that the mandate is intended for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
@@ -37,7 +37,7 @@ pub struct Mandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub single_use: Option<MandateSingleUse>,
 
-    /// The status of the mandate, which indicates whether it can be used to initiate a payment.
+    /// The mandate status indicates whether or not you can use it to initiate a payment.
     pub status: MandateStatus,
 
     /// The type of the mandate.
@@ -64,7 +64,7 @@ impl Object for Mandate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
-    /// The time at which the customer accepted the Mandate.
+    /// The time that the customer accepts the mandate.
     pub accepted_at: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -73,9 +73,7 @@ pub struct CustomerAcceptance {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub online: Option<OnlineAcceptance>,
 
-    /// The type of customer acceptance information included with the Mandate.
-    ///
-    /// One of `online` or `offline`.
+    /// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
     #[serde(rename = "type")]
     pub type_: CustomerAcceptanceType,
 }
@@ -109,10 +107,9 @@ pub struct MandatePaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<MandateSepaDebit>,
 
-    /// The type of the payment method associated with this mandate.
+    /// This mandate corresponds with a specific payment method type.
     ///
-    /// An additional hash is included on `payment_method_details` with a name matching this value.
-    /// It contains mandate information specific to the payment method.
+    /// The `payment_method_details` includes an additional hash with the same name and contains mandate information that's specific to that payment method.
     #[serde(rename = "type")]
     pub type_: String,
 
@@ -179,7 +176,6 @@ pub struct MandatePaypal {
     /// PayPal account PayerID.
     ///
     /// This identifier uniquely identifies the PayPal customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_id: Option<String>,
 }
 
@@ -196,10 +192,10 @@ pub struct MandateSepaDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateSingleUse {
-    /// On a single use mandate, the amount of the payment.
+    /// The amount of the payment on a single use mandate.
     pub amount: i64,
 
-    /// On a single use mandate, the currency of the payment.
+    /// The currency of the payment on a single use mandate.
     pub currency: Currency,
 }
 
@@ -211,10 +207,10 @@ pub struct OfflineAcceptance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
-    /// The IP address from which the Mandate was accepted by the customer.
+    /// The customer accepts the mandate from this IP address.
     pub ip_address: Option<String>,
 
-    /// The user agent of the browser from which the Mandate was accepted by the customer.
+    /// The customer accepts the mandate using the user agent of the browser.
     pub user_agent: Option<String>,
 }
 

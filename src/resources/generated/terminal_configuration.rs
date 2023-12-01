@@ -32,6 +32,9 @@ pub struct TerminalConfiguration {
     pub livemode: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<TerminalConfigurationConfigurationResourceOfflineConfig>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<TerminalConfigurationConfigurationResourceTipping>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,6 +56,14 @@ pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<Expandable<File>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalConfigurationConfigurationResourceOfflineConfig {
+    /// Determines whether to allow transactions to be collected while reader is offline.
+    ///
+    /// Defaults to false.
+    pub enabled: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

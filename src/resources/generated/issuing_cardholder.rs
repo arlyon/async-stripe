@@ -118,6 +118,7 @@ pub struct IssuingCardholderCompany {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// Information related to the card_issuing program for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<IssuingCardholderCardIssuing>,
 
     /// The date of birth of this cardholder.

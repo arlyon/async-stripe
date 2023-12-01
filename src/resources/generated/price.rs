@@ -133,7 +133,9 @@ pub struct Price {
 }
 
 impl Price {
-    /// Returns a list of your prices.
+    /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
+    ///
+    /// For the list of inactive prices, set `active` to false.
     pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
         client.get_query("/prices", &params)
     }

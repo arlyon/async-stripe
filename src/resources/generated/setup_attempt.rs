@@ -9,8 +9,7 @@ use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Customer, Mandate, PaymentMethod,
-    PaymentMethodDetailsCardChecks, PaymentMethodDetailsCardWalletApplePay,
-    PaymentMethodDetailsCardWalletGooglePay, SetupIntent,
+    PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, SetupIntent,
 };
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
@@ -73,7 +72,7 @@ pub struct SetupAttempt {
 }
 
 impl SetupAttempt {
-    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
+    /// Returns a list of SetupAttempts that associate with a provided SetupIntent.
     pub fn list(client: &Client, params: &ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
         client.get_query("/setup_attempts", &params)
     }
@@ -195,7 +194,7 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     pub brand: Option<String>,
 
     /// Check results by Card networks on Card address and CVC at the time of authorization.
-    pub checks: Option<PaymentMethodDetailsCardChecks>,
+    pub checks: Option<SetupAttemptPaymentMethodDetailsCardChecks>,
 
     /// Two-letter ISO code representing the country of the card.
     ///
@@ -251,6 +250,18 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
 
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     pub wallet: Option<SetupAttemptPaymentMethodDetailsCardWallet>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsCardChecks {
+    /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub address_line1_check: Option<String>,
+
+    /// If a address postal code was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub address_postal_code_check: Option<String>,
+
+    /// If a CVC was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub cvc_check: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -356,12 +367,21 @@ pub struct ThreeDSecureDetails {
     /// the issuing bank.
     pub authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
 
+    /// The Electronic Commerce Indicator (ECI).
+    ///
+    /// A protocol-level field indicating what degree of authentication was performed.
+    pub electronic_commerce_indicator: Option<ThreeDSecureDetailsElectronicCommerceIndicator>,
+
     /// Indicates the outcome of 3D Secure authentication.
     pub result: Option<ThreeDSecureDetailsResult>,
 
     /// Additional information about why 3D Secure succeeded or failed based
     /// on the `result`.
     pub result_reason: Option<ThreeDSecureDetailsResultReason>,
+
+    /// The 3D Secure 1 XID or 3D Secure 2 Directory Server Transaction ID
+    /// (dsTransId) for this payment.
+    pub transaction_id: Option<String>,
 
     /// The version of 3D Secure that was used.
     pub version: Option<ThreeDSecureDetailsVersion>,
@@ -372,7 +392,7 @@ pub struct ThreeDSecureDetails {
 pub struct ListSetupAttempts<'a> {
     /// A filter on the list, based on the object `created` field.
     ///
-    /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
+    /// The value can be a string with an integer Unix timestamp or a dictionary with a number of different query options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -738,6 +758,51 @@ impl std::fmt::Display for ThreeDSecureDetailsAuthenticationFlow {
 impl std::default::Default for ThreeDSecureDetailsAuthenticationFlow {
     fn default() -> Self {
         Self::Challenge
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetails`'s `electronic_commerce_indicator` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsElectronicCommerceIndicator {
+    #[serde(rename = "01")]
+    V01,
+    #[serde(rename = "02")]
+    V02,
+    #[serde(rename = "05")]
+    V05,
+    #[serde(rename = "06")]
+    V06,
+    #[serde(rename = "07")]
+    V07,
+}
+
+impl ThreeDSecureDetailsElectronicCommerceIndicator {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsElectronicCommerceIndicator::V01 => "01",
+            ThreeDSecureDetailsElectronicCommerceIndicator::V02 => "02",
+            ThreeDSecureDetailsElectronicCommerceIndicator::V05 => "05",
+            ThreeDSecureDetailsElectronicCommerceIndicator::V06 => "06",
+            ThreeDSecureDetailsElectronicCommerceIndicator::V07 => "07",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsElectronicCommerceIndicator {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsElectronicCommerceIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsElectronicCommerceIndicator {
+    fn default() -> Self {
+        Self::V01
     }
 }
 

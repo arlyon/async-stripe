@@ -10,9 +10,9 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Range
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
     ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
-    PaymentMethodDetailsCardChecks, PaymentMethodDetailsCardInstallmentsPlan,
-    PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, PaymentSource,
-    RadarRadarOptions, Refund, Review, Shipping, Transfer,
+    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardWalletApplePay,
+    PaymentMethodDetailsCardWalletGooglePay, PaymentSource, RadarRadarOptions, Refund, Review,
+    Shipping, Transfer,
 };
 
 /// The resource representing a Stripe "Charge".
@@ -452,6 +452,9 @@ pub struct PaymentMethodDetails {
     pub promptpay: Option<PaymentMethodDetailsPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay: Option<PaymentMethodDetailsRevolutPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_credit_transfer: Option<PaymentMethodDetailsSepaCreditTransfer>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -654,10 +657,18 @@ pub struct PaymentMethodDetailsBoleto {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCard {
+
+    /// The authorized amount.
+    pub amount_authorized: Option<i64>,
+
     /// Card brand.
     ///
     /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
+
+    /// When using manual capture, a future timestamp at which the charge will be automatically refunded if uncaptured.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_before: Option<Timestamp>,
 
     /// Check results by Card networks on Card address and CVC at time of payment.
     pub checks: Option<PaymentMethodDetailsCardChecks>,
@@ -679,6 +690,9 @@ pub struct PaymentMethodDetailsCard {
     /// Four-digit number representing the card's expiration year.
     pub exp_year: i64,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extended_authorization: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorization>,
+
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
@@ -696,6 +710,9 @@ pub struct PaymentMethodDetailsCard {
     /// (For internal use only and not typically available in standard API requests.).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iin: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub incremental_authorization: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorization>,
 
     /// Installment details for this payment (Mexico only).
     ///
@@ -718,6 +735,9 @@ pub struct PaymentMethodDetailsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub moto: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multicapture: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture>,
+
     /// Identifies which network this charge was processed on.
     ///
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
@@ -727,11 +747,56 @@ pub struct PaymentMethodDetailsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network_token: Option<PaymentMethodDetailsCardNetworkToken>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub overcapture: Option<PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>,
+
     /// Populated if this transaction used 3D Secure authentication.
     pub three_d_secure: Option<ThreeDSecureDetailsCharge>,
 
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     pub wallet: Option<PaymentMethodDetailsCardWallet>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorization {
+
+    /// Indicates whether or not the capture window is extended beyond the standard authorization.
+    pub status: PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorization {
+
+    /// Indicates whether or not the incremental authorization feature is supported.
+    pub status: PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture {
+
+    /// The maximum amount that can be captured.
+    pub maximum_amount_capturable: i64,
+
+    /// Indicates whether or not the authorized amount can be over-captured.
+    pub status: PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture {
+    /// Indicates whether or not multiple captures are supported.
+    pub status: PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsCardChecks {
+    /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub address_line1_check: Option<String>,
+
+    /// If a address postal code was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub address_postal_code_check: Option<String>,
+
+    /// If a CVC was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
+    pub cvc_check: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -828,6 +893,9 @@ pub struct PaymentMethodDetailsCardPresent {
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
 
+    /// Details about payments collected offline.
+    pub offline: Option<PaymentMethodDetailsCardPresentOffline>,
+
     /// Defines whether the authorized amount can be over-captured or not.
     pub overcapture_supported: bool,
 
@@ -838,6 +906,12 @@ pub struct PaymentMethodDetailsCardPresent {
     ///
     /// Only required for EMV transactions.
     pub receipt: Option<PaymentMethodDetailsCardPresentReceipt>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsCardPresentOffline {
+    /// Time at which the payment was collected while offline.
+    pub stored_at: Option<Timestamp>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1257,28 +1331,23 @@ pub struct PaymentMethodDetailsPaypal {
     ///
     /// Values are provided by PayPal directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_email: Option<String>,
 
     /// PayPal account PayerID.
     ///
     /// This identifier uniquely identifies the PayPal customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_id: Option<String>,
 
     /// Owner's full name.
     ///
     /// Values provided by PayPal directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payer_name: Option<String>,
 
     /// The level of protection offered as defined by PayPal Seller Protection for Merchants, for this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub seller_protection: Option<PaypalSellerProtection>,
 
     /// A unique ID generated by PayPal for this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_id: Option<String>,
 }
 
@@ -1294,6 +1363,9 @@ pub struct PaymentMethodDetailsPromptpay {
     /// Bill reference generated by PromptPay.
     pub reference: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsRevolutPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSepaCreditTransfer {
@@ -1326,7 +1398,9 @@ pub struct PaymentMethodDetailsSepaDebit {
     /// Last four characters of the IBAN.
     pub last4: Option<String>,
 
-    /// ID of the mandate used to make this payment.
+    /// Find the ID of the mandate used for this payment under the [payment_method_details.sepa_debit.mandate](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-sepa_debit-mandate) property on the Charge.
+    ///
+    /// Use this mandate ID to [retrieve the Mandate](https://stripe.com/docs/api/mandates/retrieve).
     pub mandate: Option<String>,
 }
 
@@ -1436,12 +1510,30 @@ pub struct ThreeDSecureDetailsCharge {
     /// the issuing bank.
     pub authentication_flow: Option<ThreeDSecureDetailsChargeAuthenticationFlow>,
 
+    /// The Electronic Commerce Indicator (ECI).
+    ///
+    /// A protocol-level field indicating what degree of authentication was performed.
+    pub electronic_commerce_indicator: Option<ThreeDSecureDetailsChargeElectronicCommerceIndicator>,
+
+    /// The exemption requested via 3DS and accepted by the issuer at authentication time.
+    pub exemption_indicator: Option<ThreeDSecureDetailsChargeExemptionIndicator>,
+
+    /// Whether Stripe requested the value of `exemption_indicator` in the transaction.
+    ///
+    /// This will depend on the outcome of Stripe's internal risk assessment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exemption_indicator_applied: Option<bool>,
+
     /// Indicates the outcome of 3D Secure authentication.
     pub result: Option<ThreeDSecureDetailsChargeResult>,
 
     /// Additional information about why 3D Secure succeeded or failed based
     /// on the `result`.
     pub result_reason: Option<ThreeDSecureDetailsChargeResultReason>,
+
+    /// The 3D Secure 1 XID or 3D Secure 2 Directory Server Transaction ID
+    /// (dsTransId) for this payment.
+    pub transaction_id: Option<String>,
 
     /// The version of 3D Secure that was used.
     pub version: Option<ThreeDSecureDetailsChargeVersion>,
@@ -1822,6 +1914,149 @@ impl std::fmt::Display for FraudDetailsParamsUserReport {
 impl std::default::Default for FraudDetailsParamsUserReport {
     fn default() -> Self {
         Self::Fraudulent
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorization`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus
+{
+    Disabled,
+    Enabled,
+}
+
+impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus::Disabled => "disabled",
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus::Enabled => "enabled",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesExtendedAuthorizationExtendedAuthorizationStatus {
+    fn default() -> Self {
+        Self::Disabled
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorization`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus
+{
+    Available,
+    Unavailable,
+}
+
+impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus::Available => "available",
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus::Unavailable => "unavailable",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorizationStatus {
+    fn default() -> Self {
+        Self::Available
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus
+{
+    Available,
+    Unavailable,
+}
+
+impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus::Available => "available",
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus::Unavailable => "unavailable",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureStatus {
+    fn default() -> Self {
+        Self::Available
+    }
+}
+
+/// An enum representing the possible values of an `PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
+    Available,
+    Unavailable,
+}
+
+impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::Available => "available",
+            PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::Unavailable => "unavailable",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus
+{
+    fn default() -> Self {
+        Self::Available
     }
 }
 
@@ -2782,6 +3017,85 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeAuthenticationFlow {
 impl std::default::Default for ThreeDSecureDetailsChargeAuthenticationFlow {
     fn default() -> Self {
         Self::Challenge
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `electronic_commerce_indicator` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    #[serde(rename = "01")]
+    V01,
+    #[serde(rename = "02")]
+    V02,
+    #[serde(rename = "05")]
+    V05,
+    #[serde(rename = "06")]
+    V06,
+    #[serde(rename = "07")]
+    V07,
+}
+
+impl ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeElectronicCommerceIndicator::V01 => "01",
+            ThreeDSecureDetailsChargeElectronicCommerceIndicator::V02 => "02",
+            ThreeDSecureDetailsChargeElectronicCommerceIndicator::V05 => "05",
+            ThreeDSecureDetailsChargeElectronicCommerceIndicator::V06 => "06",
+            ThreeDSecureDetailsChargeElectronicCommerceIndicator::V07 => "07",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    fn default() -> Self {
+        Self::V01
+    }
+}
+
+/// An enum representing the possible values of an `ThreeDSecureDetailsCharge`'s `exemption_indicator` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ThreeDSecureDetailsChargeExemptionIndicator {
+    LowRisk,
+    None,
+}
+
+impl ThreeDSecureDetailsChargeExemptionIndicator {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ThreeDSecureDetailsChargeExemptionIndicator::LowRisk => "low_risk",
+            ThreeDSecureDetailsChargeExemptionIndicator::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn default() -> Self {
+        Self::LowRisk
     }
 }
 

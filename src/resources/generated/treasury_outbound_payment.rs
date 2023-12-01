@@ -161,7 +161,7 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails
     /// This will be used to help determine if the OutboundPayment is authorized or should be blocked.
     pub ip_address: Option<String>,
 
-    /// `true`` if the OutboundPayment creation request is being made on behalf of an end user by a platform.
+    /// `true` if the OutboundPayment creation request is being made on behalf of an end user by a platform.
     ///
     /// Otherwise, `false`.
     pub present: bool,

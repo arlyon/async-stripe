@@ -179,7 +179,7 @@ pub struct PortalFlowsSubscriptionUpdateConfirmItem {
 
     /// The price the customer should subscribe to through this flow.
     ///
-    /// The price must also be included in the configuration's [`features.subscription_update.products`](docs/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
+    /// The price must also be included in the configuration's [`features.subscription_update.products`](https://stripe.com/docs/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
     pub price: Option<String>,
 
     /// [Quantity](https://stripe.com/docs/subscriptions/quantities) for this item that the customer should subscribe to through this flow.

@@ -84,6 +84,7 @@ pub enum ApiErrorsCode {
     ApplicationFeesNotAllowed,
     AuthenticationRequired,
     BalanceInsufficient,
+    BalanceInvalidParameter,
     BankAccountBadRoutingNumbers,
     BankAccountDeclined,
     BankAccountExists,
@@ -114,6 +115,7 @@ pub enum ApiErrorsCode {
     DebitNotAuthorized,
     EmailInvalid,
     ExpiredCard,
+    FinancialConnectionsAccountInactive,
     IdempotencyKeyInUse,
     IncorrectAddress,
     IncorrectCvc,
@@ -218,11 +220,13 @@ pub enum ApiErrorsCode {
     TaxesCalculationFailed,
     TerminalLocationCountryUnsupported,
     TerminalReaderBusy,
+    TerminalReaderHardwareFault,
     TerminalReaderOffline,
     TerminalReaderTimeout,
     TestmodeChargesOnly,
     TlsVersionUnsupported,
     TokenAlreadyUsed,
+    TokenCardNetworkInvalid,
     TokenInUse,
     TransferSourceBalanceParametersMismatch,
     TransfersNotAllowed,
@@ -248,6 +252,7 @@ impl ApiErrorsCode {
             ApiErrorsCode::ApplicationFeesNotAllowed => "application_fees_not_allowed",
             ApiErrorsCode::AuthenticationRequired => "authentication_required",
             ApiErrorsCode::BalanceInsufficient => "balance_insufficient",
+            ApiErrorsCode::BalanceInvalidParameter => "balance_invalid_parameter",
             ApiErrorsCode::BankAccountBadRoutingNumbers => "bank_account_bad_routing_numbers",
             ApiErrorsCode::BankAccountDeclined => "bank_account_declined",
             ApiErrorsCode::BankAccountExists => "bank_account_exists",
@@ -280,6 +285,9 @@ impl ApiErrorsCode {
             ApiErrorsCode::DebitNotAuthorized => "debit_not_authorized",
             ApiErrorsCode::EmailInvalid => "email_invalid",
             ApiErrorsCode::ExpiredCard => "expired_card",
+            ApiErrorsCode::FinancialConnectionsAccountInactive => {
+                "financial_connections_account_inactive"
+            }
             ApiErrorsCode::IdempotencyKeyInUse => "idempotency_key_in_use",
             ApiErrorsCode::IncorrectAddress => "incorrect_address",
             ApiErrorsCode::IncorrectCvc => "incorrect_cvc",
@@ -420,11 +428,13 @@ impl ApiErrorsCode {
                 "terminal_location_country_unsupported"
             }
             ApiErrorsCode::TerminalReaderBusy => "terminal_reader_busy",
+            ApiErrorsCode::TerminalReaderHardwareFault => "terminal_reader_hardware_fault",
             ApiErrorsCode::TerminalReaderOffline => "terminal_reader_offline",
             ApiErrorsCode::TerminalReaderTimeout => "terminal_reader_timeout",
             ApiErrorsCode::TestmodeChargesOnly => "testmode_charges_only",
             ApiErrorsCode::TlsVersionUnsupported => "tls_version_unsupported",
             ApiErrorsCode::TokenAlreadyUsed => "token_already_used",
+            ApiErrorsCode::TokenCardNetworkInvalid => "token_card_network_invalid",
             ApiErrorsCode::TokenInUse => "token_in_use",
             ApiErrorsCode::TransferSourceBalanceParametersMismatch => {
                 "transfer_source_balance_parameters_mismatch"

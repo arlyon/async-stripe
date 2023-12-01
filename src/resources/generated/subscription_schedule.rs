@@ -193,7 +193,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
     /// The end of this phase of the subscription schedule.
@@ -320,7 +320,7 @@ pub struct SubscriptionScheduleDefaultSettings {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
     /// The subscription schedule's default invoice settings.
@@ -603,7 +603,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -706,7 +706,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -789,7 +789,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     /// Subscription description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 

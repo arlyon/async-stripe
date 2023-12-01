@@ -17,15 +17,15 @@ pub struct Payout {
     /// Unique identifier for the object.
     pub id: PayoutId,
 
-    /// Amount (in cents (or local equivalent)) to be transferred to your bank account or debit card.
+    /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
 
-    /// Date the payout is expected to arrive in the bank.
+    /// Date that you can expect the payout to arrive in the bank.
     ///
-    /// This factors in delays like weekends or bank holidays.
+    /// This factors in delays to account for weekends or bank holidays.
     pub arrival_date: Timestamp,
 
-    /// Returns `true` if the payout was created by an [automated payout schedule](https://stripe.com/docs/payouts#payout-schedule), and `false` if it was [requested manually](https://stripe.com/docs/payouts#manual-payouts).
+    /// Returns `true` if the payout is created by an [automated payout schedule](https://stripe.com/docs/payouts#payout-schedule) and `false` if it's [requested manually](https://stripe.com/docs/payouts#manual-payouts).
     pub automatic: bool,
 
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
@@ -46,18 +46,18 @@ pub struct Payout {
     /// Often useful for displaying to users.
     pub description: Option<String>,
 
-    /// ID of the bank account or card the payout was sent to.
+    /// ID of the bank account or card the payout is sent to.
     pub destination: Option<Expandable<PayoutDestinationUnion>>,
 
-    /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
+    /// If the payout fails or cancels, this is the ID of the balance transaction that reverses the initial balance transaction and returns the funds from the failed payout back in your balance.
     pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
 
-    /// Error code explaining reason for payout failure if available.
+    /// Error code that provides a reason for a payout failure, if available.
     ///
-    /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
+    /// View our [list of failure codes](https://stripe.com/docs/api#payout_failures).
     pub failure_code: Option<String>,
 
-    /// Message to user further explaining reason for payout failure if available.
+    /// Message that provides the reason for a payout failure, if available.
     pub failure_message: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -71,31 +71,29 @@ pub struct Payout {
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
     /// `instant` is supported for payouts to debit cards and bank accounts in certain countries.
-    /// (See [Bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks) for more information.).
+    /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
     pub method: String,
 
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<Expandable<Payout>>,
 
-    /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+    /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
     pub reconciliation_status: PayoutReconciliationStatus,
 
-    /// If the payout was reversed, this is the ID of the payout that reverses this payout.
+    /// If the payout reverses, this is the ID of the payout that reverses this payout.
     pub reversed_by: Option<Expandable<Payout>>,
 
-    /// The source balance this payout came from.
-    ///
-    /// One of `card`, `fpx`, or `bank_account`.
+    /// The source balance this payout came from, which can be one of the following: `card`, `fpx`, or `bank_account`.
     pub source_type: String,
 
-    /// Extra information about a payout to be displayed on the user's bank statement.
+    /// Extra information about a payout that displays on the user's bank statement.
     pub statement_descriptor: Option<String>,
 
     /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
     ///
-    /// A payout is `pending` until it is submitted to the bank, when it becomes `in_transit`.
-    /// The status then changes to `paid` if the transaction goes through, or to `failed` or `canceled` (within 5 business days).
-    /// Some failed payouts may initially show as `paid` but then change to `failed`.
+    /// A payout is `pending` until it's submitted to the bank, when it becomes `in_transit`.
+    /// The status changes to `paid` if the transaction succeeds, or to `failed` or `canceled` (within 5 business days).
+    /// Some payouts that fail might initially show as `paid`, then change to `failed`.
     pub status: String,
 
     /// Can be `bank_account` or `card`.
@@ -104,16 +102,17 @@ pub struct Payout {
 }
 
 impl Payout {
-    /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
+    /// Returns a list of existing payouts sent to third-party bank accounts or payouts that Stripe sent to you.
     ///
-    /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
+    /// The payouts return in sorted order, with the most recently created payouts appearing first.
     pub fn list(client: &Client, params: &ListPayouts<'_>) -> Response<List<Payout>> {
         client.get_query("/payouts", &params)
     }
 
-    /// To send funds to your own bank account, you create a new payout object.
+    /// To send funds to your own bank account, create a new payout object.
     ///
-    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must cover the payout amount.
+    /// If it doesn’t, you receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though every other action occurs as if you’re in live mode.  If you create a manual payout on a Stripe account that uses multiple payment source types, you need to specify the source type balance that the payout draws from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
     pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
         client.post_form("/payouts", &params)
@@ -121,15 +120,16 @@ impl Payout {
 
     /// Retrieves the details of an existing payout.
     ///
-    /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
+    /// Supply the unique payout ID from either a payout creation request or the payout list.
+    /// Stripe returns the corresponding payout information.
     pub fn retrieve(client: &Client, id: &PayoutId, expand: &[&str]) -> Response<Payout> {
         client.get_query(&format!("/payouts/{}", id), &Expand { expand })
     }
 
-    /// Updates the specified payout by setting the values of the parameters passed.
+    /// Updates the specified payout by setting the values of the parameters you pass.
     ///
-    /// Any parameters not provided will be left unchanged.
-    /// This request accepts only the metadata as arguments.
+    /// We don’t change parameters that you don’t provide.
+    /// This request only accepts the metadata as arguments.
     pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
         client.post_form(&format!("/payouts/{}", id), &params)
     }
@@ -164,7 +164,7 @@ pub struct CreatePayout<'a> {
 
     /// The ID of a bank account or a card to send the payout to.
     ///
-    /// If no destination is supplied, the default external account for the specified currency will be used.
+    /// If you don't provide a destination, we use the default external account for the specified currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
 
@@ -180,27 +180,26 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The method used to send this payout, which can be `standard` or `instant`.
+    /// The method used to send this payout, which is `standard` or `instant`.
     ///
-    /// `instant` is supported for payouts to debit cards and bank accounts in certain countries.
-    /// (See [Bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks) for more information.).
+    /// We support `instant` for payouts to debit cards and bank accounts in certain countries.
+    /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub method: Option<PayoutMethod>,
 
     /// The balance type of your Stripe balance to draw this payout from.
     ///
     /// Balances for different payment sources are kept separately.
-    /// You can find the amounts with the balances API.
+    /// You can find the amounts with the Balances API.
     /// One of `bank_account`, `card`, or `fpx`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<PayoutSourceType>,
 
-    /// A string to be displayed on the recipient's bank or card statement.
+    /// A string that displays on the recipient's bank or card statement (up to 22 characters).
     ///
-    /// This may be at most 22 characters.
-    /// Attempting to use a `statement_descriptor` longer than 22 characters will return an error.
-    /// Note: Most banks will truncate this information and/or display it inconsistently.
-    /// Some may not display it at all.
+    /// A `statement_descriptor` that's longer than 22 characters return an error.
+    /// Most banks truncate this information and display it inconsistently.
+    /// Some banks might not display it at all.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 }

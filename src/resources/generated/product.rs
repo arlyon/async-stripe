@@ -176,7 +176,8 @@ pub struct ProductFeature {
     /// The feature's name.
     ///
     /// Up to 80 characters long.
-    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The parameters for `Product::create`.

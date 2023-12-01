@@ -526,6 +526,7 @@ def_id!(IssuingCardId, "ic_");
 def_id!(IssuingCardholderId, "ich_");
 def_id!(IssuingDisputeId, "idp_");
 def_id!(IssuingTransactionId, "ipi_");
+def_id!(IssuingTokenId: String);
 def_id!(OrderId, "or_");
 def_id!(OrderReturnId, "orret_");
 def_id!(MandateId, "mandate_");

@@ -117,6 +117,7 @@ pub use {
     generated::core::{
         address::*,
         balance::*,
+        balance_amount_by_source_type::*,
         balance_transaction::*,
         billing_details::*,
         charge::*,
@@ -132,7 +133,6 @@ pub use {
         payment_intent::*,
         payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code::*,
         linked_account_options_us_bank_account::*,
-        payment_method_details_card_checks::*,
         payment_method_details_card_wallet_apple_pay::*,
         payment_method_details_card_wallet_google_pay::*,
         payment_method_options_customer_balance_eu_bank_account::*,
@@ -294,6 +294,7 @@ pub use {
     generated::issuing::{
         issuing_authorization::*,
         issuing_card::*,
+        issuing_token::*,
         issuing_cardholder::*,
         issuing_dispute::*,
         issuing_transaction::*,

@@ -114,7 +114,7 @@ pub struct Subscription {
 
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
     /// Describes the current discount applied to this subscription, if there is one.
@@ -229,10 +229,22 @@ impl Subscription {
         client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
     }
 
-    /// Updates an existing subscription on a customer to match the specified parameters.
+    /// Updates an existing subscription to match the specified parameters.
+    /// When changing prices or quantities, we optionally prorate the price we charge next month to make up for any price changes.
+    /// To preview how the proration is calculated, use the [upcoming invoice](https://stripe.com/docs/api/invoices/upcoming) endpoint.
     ///
-    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
-    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
+    /// By default, we prorate subscription changes.
+    ///
+    /// For example, if a customer signs up on May 1 for a $100 price, they’ll be billed $100 immediately.
+    /// If on May 15 they switch to a $200 price, then on June 1 they’ll be billed $250 ($200 for a renewal of her subscription, plus a $50 prorating adjustment for half of the previous month’s $100 difference).
+    /// Similarly, a downgrade generates a credit that is applied to the next invoice.
+    /// We also prorate when you make quantity changes.  Switching prices does not normally change the billing date or generate an immediate charge unless:  <ul> <li>The billing interval is changed (for example, from monthly to yearly).</li> <li>The subscription moves from free to paid, or paid to free.</li> <li>A trial starts or ends.</li> </ul>  In these cases, we apply a credit for the unused time on the previous price, immediately charge the customer using the new price, and reset the billing date.  If you want to charge for an upgrade immediately, pass `proration_behavior` as `always_invoice` to create prorations, automatically invoice the customer for those proration adjustments, and attempt to collect payment.
+    /// If you pass `create_prorations`, the prorations are created but not automatically invoiced.
+    /// If you want to bill the customer for the prorations before the subscription’s renewal date, you need to manually [invoice the customer](https://stripe.com/docs/api/invoices/create).  If you don’t want to prorate, set the `proration_behavior` option to `none`.
+    /// With this option, the customer is billed $100 on May 1 and $200 on June 1.
+    /// Similarly, if you set `proration_behavior` to `none` when switching between different billing intervals (for example, from monthly to yearly), we don’t generate any credits for the old subscription’s unused time.
+    /// We still reset the billing date and bill immediately for the new subscription.  Updating the quantity on a subscription many times in an hour may result in [rate limiting](https://stripe.com/docs/rate-limits).
+    /// If you need to bill for a frequently changing quantity, consider integrating [usage-based billing](https://stripe.com/docs/billing/subscriptions/usage-based) instead.
     pub fn update(
         client: &Client,
         id: &SubscriptionId,
@@ -520,7 +532,7 @@ pub struct CreateSubscription<'a> {
 
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
@@ -856,7 +868,7 @@ pub struct UpdateSubscription<'a> {
 
     /// The subscription's description, meant to be displayable to the customer.
     ///
-    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 

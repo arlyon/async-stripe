@@ -318,6 +318,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<AccountCapabilitiesPromptpayPayments>,
 
+    /// The status of the RevolutPay capability of the account, or whether the account can directly process RevolutPay payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<AccountCapabilitiesRevolutPayPayments>,
+
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<AccountCapabilitiesSepaDebitPayments>,
@@ -366,7 +370,7 @@ pub struct AccountFutureRequirements {
     /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Option<Vec<String>>,
 
-    /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
+    /// This is typed as a string for consistency with `requirements.disabled_reason`.
     pub disabled_reason: Option<String>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
@@ -418,7 +422,8 @@ pub struct AccountRequirements {
 
     /// If the account is disabled, this string describes why.
     ///
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.
+    /// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
+    /// Can be `action_required.requested_capabilities`, `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.incomplete_verification`, `rejected.listed`, `rejected.other`, `rejected.terms_of_service`, `under_review`, or `other`.
     pub disabled_reason: Option<String>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
@@ -490,11 +495,20 @@ pub struct AccountSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountBacsDebitPaymentsSettings {
-    /// The Bacs Direct Debit Display Name for this account.
+    /// The Bacs Direct Debit display name for this account.
     ///
-    /// For payments made with Bacs Direct Debit, this will appear on the mandate, and as the statement descriptor.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
+    /// Mobile banking apps display it as the name of the business.
+    /// To use custom branding, set the Bacs Direct Debit Display Name during or right after creation.
+    /// Custom branding incurs an additional monthly fee for the platform.
+    /// The fee appears 5 business days after requesting Bacs.
+    /// If you don't set the display name before requesting Bacs capability, it's automatically set as "Stripe" and the account is onboarded to Stripe branding, which is free.
     pub display_name: Option<String>,
+
+    /// The Bacs Direct Debit Service user number for this account.
+    ///
+    /// For payments made with Bacs Direct Debit, this number is a unique identifier of the account with our banking partners.
+    pub service_user_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1118,6 +1132,10 @@ pub struct AcceptTos {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParams {
+    /// Settings specific to Bacs Direct Debit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<AccountSettingsParamsBacsDebitPayments>,
+
     /// Settings used to apply the account's branding to email receipts, invoices, Checkout, and other products.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branding: Option<BrandingSettingsParams>,
@@ -1348,6 +1366,10 @@ pub struct CreateAccountCapabilities {
     /// The promptpay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<CreateAccountCapabilitiesPromptpayPayments>,
+
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<CreateAccountCapabilitiesRevolutPayPayments>,
 
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1635,6 +1657,10 @@ pub struct UpdateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_payments: Option<UpdateAccountCapabilitiesPromptpayPayments>,
 
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<UpdateAccountCapabilitiesRevolutPayPayments>,
+
     /// The sepa_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
@@ -1702,6 +1728,19 @@ pub struct UpdateAccountDocuments {
     /// One or more documents showing the company’s proof of registration with the national business registry.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proof_of_registration: Option<UpdateAccountDocumentsProofOfRegistration>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountSettingsParamsBacsDebitPayments {
+    /// The Bacs Direct Debit Display Name for this account.
+    ///
+    /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
+    /// Mobile banking apps display it as the name of the business.
+    /// To use custom branding, set the Bacs Direct Debit Display Name during or right after creation.
+    /// Custom branding incurs an additional monthly fee for the platform.
+    /// If you don't set the display name before requesting Bacs capability, it's automatically set as "Stripe" and the account is onboarded to Stripe branding, which is free.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_name: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2063,6 +2102,16 @@ pub struct CreateAccountCapabilitiesPaynowPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesPromptpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesRevolutPayPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2549,6 +2598,16 @@ pub struct UpdateAccountCapabilitiesPaynowPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesPromptpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesRevolutPayPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -3629,6 +3688,42 @@ impl std::default::Default for AccountCapabilitiesPromptpayPayments {
     }
 }
 
+/// An enum representing the possible values of an `AccountCapabilities`'s `revolut_pay_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesRevolutPayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesRevolutPayPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesRevolutPayPayments::Active => "active",
+            AccountCapabilitiesRevolutPayPayments::Inactive => "inactive",
+            AccountCapabilitiesRevolutPayPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesRevolutPayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesRevolutPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesRevolutPayPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
 /// An enum representing the possible values of an `AccountCapabilities`'s `sepa_debit_payments` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3814,11 +3909,45 @@ impl std::default::Default for AccountCapabilitiesZipPayments {
 #[serde(rename_all = "snake_case")]
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
+    InvalidAddressHighwayContractBox,
+    InvalidAddressPrivateMailbox,
+    InvalidBusinessProfileName,
+    InvalidBusinessProfileNameDenylisted,
+    InvalidCompanyNameDenylisted,
+    InvalidDobAgeOverMaximum,
     #[serde(rename = "invalid_dob_age_under_18")]
     InvalidDobAgeUnder18,
+    InvalidDobAgeUnderMinimum,
+    InvalidProductDescriptionLength,
+    InvalidProductDescriptionUrlMatch,
     InvalidRepresentativeCountry,
+    InvalidStatementDescriptorBusinessMismatch,
+    InvalidStatementDescriptorDenylisted,
+    InvalidStatementDescriptorLength,
+    InvalidStatementDescriptorPrefixDenylisted,
+    InvalidStatementDescriptorPrefixMismatch,
     InvalidStreetAddress,
+    InvalidTaxId,
+    InvalidTaxIdFormat,
     InvalidTosAcceptance,
+    InvalidUrlDenylisted,
+    InvalidUrlFormat,
+    InvalidUrlLength,
+    InvalidUrlWebPresenceDetected,
+    InvalidUrlWebsiteBusinessInformationMismatch,
+    InvalidUrlWebsiteEmpty,
+    InvalidUrlWebsiteInaccessible,
+    InvalidUrlWebsiteInaccessibleGeoblocked,
+    InvalidUrlWebsiteInaccessiblePasswordProtected,
+    InvalidUrlWebsiteIncomplete,
+    InvalidUrlWebsiteIncompleteCancellationPolicy,
+    InvalidUrlWebsiteIncompleteCustomerServiceDetails,
+    InvalidUrlWebsiteIncompleteLegalRestrictions,
+    InvalidUrlWebsiteIncompleteRefundPolicy,
+    InvalidUrlWebsiteIncompleteReturnPolicy,
+    InvalidUrlWebsiteIncompleteTermsAndConditions,
+    InvalidUrlWebsiteIncompleteUnderConstruction,
+    InvalidUrlWebsiteOther,
     InvalidValueOther,
     VerificationDirectorsMismatch,
     VerificationDocumentAddressMismatch,
@@ -3873,10 +4002,44 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
+            AccountRequirementsErrorCode::InvalidAddressHighwayContractBox => "invalid_address_highway_contract_box",
+            AccountRequirementsErrorCode::InvalidAddressPrivateMailbox => "invalid_address_private_mailbox",
+            AccountRequirementsErrorCode::InvalidBusinessProfileName => "invalid_business_profile_name",
+            AccountRequirementsErrorCode::InvalidBusinessProfileNameDenylisted => "invalid_business_profile_name_denylisted",
+            AccountRequirementsErrorCode::InvalidCompanyNameDenylisted => "invalid_company_name_denylisted",
+            AccountRequirementsErrorCode::InvalidDobAgeOverMaximum => "invalid_dob_age_over_maximum",
             AccountRequirementsErrorCode::InvalidDobAgeUnder18 => "invalid_dob_age_under_18",
+            AccountRequirementsErrorCode::InvalidDobAgeUnderMinimum => "invalid_dob_age_under_minimum",
+            AccountRequirementsErrorCode::InvalidProductDescriptionLength => "invalid_product_description_length",
+            AccountRequirementsErrorCode::InvalidProductDescriptionUrlMatch => "invalid_product_description_url_match",
             AccountRequirementsErrorCode::InvalidRepresentativeCountry => "invalid_representative_country",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorBusinessMismatch => "invalid_statement_descriptor_business_mismatch",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorDenylisted => "invalid_statement_descriptor_denylisted",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorLength => "invalid_statement_descriptor_length",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorPrefixDenylisted => "invalid_statement_descriptor_prefix_denylisted",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorPrefixMismatch => "invalid_statement_descriptor_prefix_mismatch",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
+            AccountRequirementsErrorCode::InvalidTaxId => "invalid_tax_id",
+            AccountRequirementsErrorCode::InvalidTaxIdFormat => "invalid_tax_id_format",
             AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
+            AccountRequirementsErrorCode::InvalidUrlDenylisted => "invalid_url_denylisted",
+            AccountRequirementsErrorCode::InvalidUrlFormat => "invalid_url_format",
+            AccountRequirementsErrorCode::InvalidUrlLength => "invalid_url_length",
+            AccountRequirementsErrorCode::InvalidUrlWebPresenceDetected => "invalid_url_web_presence_detected",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteBusinessInformationMismatch => "invalid_url_website_business_information_mismatch",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteEmpty => "invalid_url_website_empty",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessible => "invalid_url_website_inaccessible",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessibleGeoblocked => "invalid_url_website_inaccessible_geoblocked",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessiblePasswordProtected => "invalid_url_website_inaccessible_password_protected",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncomplete => "invalid_url_website_incomplete",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteCancellationPolicy => "invalid_url_website_incomplete_cancellation_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteCustomerServiceDetails => "invalid_url_website_incomplete_customer_service_details",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteLegalRestrictions => "invalid_url_website_incomplete_legal_restrictions",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteRefundPolicy => "invalid_url_website_incomplete_refund_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteReturnPolicy => "invalid_url_website_incomplete_return_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteTermsAndConditions => "invalid_url_website_incomplete_terms_and_conditions",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteUnderConstruction => "invalid_url_website_incomplete_under_construction",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteOther => "invalid_url_website_other",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
             AccountRequirementsErrorCode::VerificationDirectorsMismatch => "verification_directors_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => "verification_document_address_mismatch",

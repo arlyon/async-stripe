@@ -14,6 +14,7 @@ pub mod core {
     pub mod address;
     pub mod api_errors;
     pub mod balance;
+    pub mod balance_amount_by_source_type;
     pub mod balance_transaction;
     pub mod billing_details;
     pub mod cash_balance;
@@ -30,7 +31,6 @@ pub mod core {
     pub mod payment_intent;
     pub mod payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code;
     pub mod payment_method_config_biz_payment_method_configuration_details;
-    pub mod payment_method_details_card_checks;
     pub mod payment_method_details_card_wallet_apple_pay;
     pub mod payment_method_details_card_wallet_google_pay;
     pub mod payment_method_options_customer_balance_eu_bank_account;
@@ -140,6 +140,7 @@ pub mod issuing {
     pub mod issuing_card;
     pub mod issuing_cardholder;
     pub mod issuing_dispute;
+    pub mod issuing_token;
     pub mod issuing_transaction;
 }
 

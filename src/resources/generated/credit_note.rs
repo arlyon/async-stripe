@@ -382,9 +382,15 @@ pub struct CreateCreditNoteLines {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// A list of up to 10 tax amounts for the credit note line item.
+    ///
+    /// Cannot be mixed with `tax_rates`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_amounts: Option<Vec<CreateCreditNoteLinesTaxAmounts>>,
+
     /// The tax rates which apply to the credit note line item.
     ///
-    /// Only valid when the `type` is `custom_line_item`.
+    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
@@ -411,6 +417,20 @@ pub struct CreateCreditNoteShippingCost {
     /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCreditNoteLinesTaxAmounts {
+    /// The amount, in cents (or local equivalent), of the tax.
+    pub amount: i64,
+
+    /// The id of the tax rate for this tax amount.
+    ///
+    /// The tax rate must have been automatically created by Stripe.
+    pub tax_rate: String,
+
+    /// The amount on which tax is calculated, in cents (or local equivalent).
+    pub taxable_amount: i64,
 }
 
 /// An enum representing the possible values of an `CreateCreditNoteLines`'s `type` field.

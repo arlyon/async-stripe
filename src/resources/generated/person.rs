@@ -21,6 +21,9 @@ pub struct Person {
     pub account: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_tos_acceptances: Option<PersonAdditionalTosAcceptances>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// The Kana variation of the person's address (Japan only).
@@ -206,6 +209,23 @@ pub struct PersonVerificationDocument {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PersonAdditionalTosAcceptances {
+    pub account: PersonAdditionalTosAcceptance,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PersonAdditionalTosAcceptance {
+    /// The Unix timestamp marking when the legal guardian accepted the service agreement.
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the legal guardian accepted the service agreement.
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the legal guardian accepted the service agreement.
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonFutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
@@ -267,6 +287,9 @@ pub struct PersonRelationship {
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     pub executive: Option<bool>,
 
+    /// Whether the person is the legal guardian of the account's representative.
+    pub legal_guardian: Option<bool>,
+
     /// Whether the person is an owner of the account’s legal entity.
     pub owner: Option<bool>,
 
@@ -319,11 +342,45 @@ pub struct PersonRequirements {
 #[serde(rename_all = "snake_case")]
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
+    InvalidAddressHighwayContractBox,
+    InvalidAddressPrivateMailbox,
+    InvalidBusinessProfileName,
+    InvalidBusinessProfileNameDenylisted,
+    InvalidCompanyNameDenylisted,
+    InvalidDobAgeOverMaximum,
     #[serde(rename = "invalid_dob_age_under_18")]
     InvalidDobAgeUnder18,
+    InvalidDobAgeUnderMinimum,
+    InvalidProductDescriptionLength,
+    InvalidProductDescriptionUrlMatch,
     InvalidRepresentativeCountry,
+    InvalidStatementDescriptorBusinessMismatch,
+    InvalidStatementDescriptorDenylisted,
+    InvalidStatementDescriptorLength,
+    InvalidStatementDescriptorPrefixDenylisted,
+    InvalidStatementDescriptorPrefixMismatch,
     InvalidStreetAddress,
+    InvalidTaxId,
+    InvalidTaxIdFormat,
     InvalidTosAcceptance,
+    InvalidUrlDenylisted,
+    InvalidUrlFormat,
+    InvalidUrlLength,
+    InvalidUrlWebPresenceDetected,
+    InvalidUrlWebsiteBusinessInformationMismatch,
+    InvalidUrlWebsiteEmpty,
+    InvalidUrlWebsiteInaccessible,
+    InvalidUrlWebsiteInaccessibleGeoblocked,
+    InvalidUrlWebsiteInaccessiblePasswordProtected,
+    InvalidUrlWebsiteIncomplete,
+    InvalidUrlWebsiteIncompleteCancellationPolicy,
+    InvalidUrlWebsiteIncompleteCustomerServiceDetails,
+    InvalidUrlWebsiteIncompleteLegalRestrictions,
+    InvalidUrlWebsiteIncompleteRefundPolicy,
+    InvalidUrlWebsiteIncompleteReturnPolicy,
+    InvalidUrlWebsiteIncompleteTermsAndConditions,
+    InvalidUrlWebsiteIncompleteUnderConstruction,
+    InvalidUrlWebsiteOther,
     InvalidValueOther,
     VerificationDirectorsMismatch,
     VerificationDocumentAddressMismatch,
@@ -378,10 +435,44 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
+            AccountRequirementsErrorCode::InvalidAddressHighwayContractBox => "invalid_address_highway_contract_box",
+            AccountRequirementsErrorCode::InvalidAddressPrivateMailbox => "invalid_address_private_mailbox",
+            AccountRequirementsErrorCode::InvalidBusinessProfileName => "invalid_business_profile_name",
+            AccountRequirementsErrorCode::InvalidBusinessProfileNameDenylisted => "invalid_business_profile_name_denylisted",
+            AccountRequirementsErrorCode::InvalidCompanyNameDenylisted => "invalid_company_name_denylisted",
+            AccountRequirementsErrorCode::InvalidDobAgeOverMaximum => "invalid_dob_age_over_maximum",
             AccountRequirementsErrorCode::InvalidDobAgeUnder18 => "invalid_dob_age_under_18",
+            AccountRequirementsErrorCode::InvalidDobAgeUnderMinimum => "invalid_dob_age_under_minimum",
+            AccountRequirementsErrorCode::InvalidProductDescriptionLength => "invalid_product_description_length",
+            AccountRequirementsErrorCode::InvalidProductDescriptionUrlMatch => "invalid_product_description_url_match",
             AccountRequirementsErrorCode::InvalidRepresentativeCountry => "invalid_representative_country",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorBusinessMismatch => "invalid_statement_descriptor_business_mismatch",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorDenylisted => "invalid_statement_descriptor_denylisted",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorLength => "invalid_statement_descriptor_length",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorPrefixDenylisted => "invalid_statement_descriptor_prefix_denylisted",
+            AccountRequirementsErrorCode::InvalidStatementDescriptorPrefixMismatch => "invalid_statement_descriptor_prefix_mismatch",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
+            AccountRequirementsErrorCode::InvalidTaxId => "invalid_tax_id",
+            AccountRequirementsErrorCode::InvalidTaxIdFormat => "invalid_tax_id_format",
             AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
+            AccountRequirementsErrorCode::InvalidUrlDenylisted => "invalid_url_denylisted",
+            AccountRequirementsErrorCode::InvalidUrlFormat => "invalid_url_format",
+            AccountRequirementsErrorCode::InvalidUrlLength => "invalid_url_length",
+            AccountRequirementsErrorCode::InvalidUrlWebPresenceDetected => "invalid_url_web_presence_detected",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteBusinessInformationMismatch => "invalid_url_website_business_information_mismatch",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteEmpty => "invalid_url_website_empty",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessible => "invalid_url_website_inaccessible",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessibleGeoblocked => "invalid_url_website_inaccessible_geoblocked",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteInaccessiblePasswordProtected => "invalid_url_website_inaccessible_password_protected",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncomplete => "invalid_url_website_incomplete",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteCancellationPolicy => "invalid_url_website_incomplete_cancellation_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteCustomerServiceDetails => "invalid_url_website_incomplete_customer_service_details",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteLegalRestrictions => "invalid_url_website_incomplete_legal_restrictions",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteRefundPolicy => "invalid_url_website_incomplete_refund_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteReturnPolicy => "invalid_url_website_incomplete_return_policy",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteTermsAndConditions => "invalid_url_website_incomplete_terms_and_conditions",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteIncompleteUnderConstruction => "invalid_url_website_incomplete_under_construction",
+            AccountRequirementsErrorCode::InvalidUrlWebsiteOther => "invalid_url_website_other",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
             AccountRequirementsErrorCode::VerificationDirectorsMismatch => "verification_directors_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => "verification_document_address_mismatch",

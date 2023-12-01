@@ -158,9 +158,9 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
-    /// For external accounts, possible values are `new` and `errored`.
+    /// For external accounts that are cards, possible values are `new` and `errored`.
     ///
-    /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
+    /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 

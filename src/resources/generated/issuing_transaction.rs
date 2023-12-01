@@ -8,7 +8,7 @@ use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingDispute, IssuingTransactionType, MerchantData,
+    IssuingDispute, IssuingToken, IssuingTransactionType, MerchantData,
 };
 
 /// The resource representing a Stripe "IssuingTransaction".
@@ -72,8 +72,17 @@ pub struct IssuingTransaction {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
+    /// Details about the transaction, such as processing dates, set by the card network.
+    pub network_data: Option<IssuingTransactionNetworkData>,
+
     /// Additional purchase information that is optionally provided by the merchant.
     pub purchase_details: Option<IssuingTransactionPurchaseDetails>,
+
+    /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this transaction.
+    ///
+    /// If a network token was not used for this transaction, this field will be null.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token: Option<Expandable<IssuingToken>>,
 
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -106,6 +115,25 @@ pub struct IssuingTransactionAmountDetails {
 
     /// The amount of cash requested by the cardholder.
     pub cashback_amount: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingTransactionNetworkData {
+    /// A code created by Stripe which is shared with the merchant to validate the authorization.
+    ///
+    /// This field will be populated if the authorization message was approved.
+    /// The code typically starts with the letter "S", followed by a six-digit number.
+    /// For example, "S498162".
+    /// Please note that the code is not guaranteed to be unique across authorizations.
+    pub authorization_code: Option<String>,
+
+    /// The date the transaction was processed by the card network.
+    ///
+    /// This can be different from the date the seller recorded the transaction depending on when the acquirer submits the transaction to the network.
+    pub processing_date: Option<String>,
+
+    /// Unique identifier for the authorization assigned by the card network used to match subsequent messages, disputes, and transactions.
+    pub transaction_id: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

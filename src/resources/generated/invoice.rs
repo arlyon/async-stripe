@@ -357,6 +357,13 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_number: Option<String>,
 
+    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering: Option<InvoicesInvoiceRendering>,
+
+    /// This is a legacy field that will be removed soon.
+    ///
+    /// For details about `rendering_options`, refer to `rendering` instead.
     /// Options for invoice PDF rendering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<InvoiceSettingRenderingOptions>,
@@ -582,6 +589,24 @@ pub struct InvoicesFromInvoice {
 
     /// The invoice that was cloned.
     pub invoice: Expandable<Invoice>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicesInvoiceRendering {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    pub amount_tax_display: Option<String>,
+
+    /// Invoice pdf rendering options.
+    pub pdf: Option<InvoiceRenderingPdf>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoiceRenderingPdf {
+    /// Page size of invoice pdf.
+    ///
+    /// Options include a4, letter, and auto.
+    /// If set to auto, page size will be switched to a4 or letter based on customer locale.
+    pub page_size: Option<InvoiceRenderingPdfPageSize>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -815,6 +840,13 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_items_behavior: Option<InvoicePendingInvoiceItemsBehavior>,
 
+    /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering: Option<CreateInvoiceRendering>,
+
+    /// This is a legacy field that will be removed soon.
+    ///
+    /// For details about `rendering_options`, refer to `rendering` instead.
     /// Options for invoice PDF rendering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateInvoiceRenderingOptions>,
@@ -874,6 +906,7 @@ impl<'a> CreateInvoice<'a> {
             on_behalf_of: Default::default(),
             payment_settings: Default::default(),
             pending_invoice_items_behavior: Default::default(),
+            rendering: Default::default(),
             rendering_options: Default::default(),
             shipping_cost: Default::default(),
             shipping_details: Default::default(),
@@ -1024,6 +1057,21 @@ pub struct CreateInvoicePaymentSettings {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceRendering {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<CreateInvoiceRenderingAmountTaxDisplay>,
+
+    /// Invoice pdf rendering options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf: Option<CreateInvoiceRenderingPdf>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
@@ -1095,6 +1143,15 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceRenderingPdf {
+    /// Page size for invoice PDF.
+    ///
+    /// Can be set to `a4`, `letter`, or `auto`.  If set to `auto`, invoice PDF page size defaults to `a4` for customers with  Japanese locale and `letter` for customers with other locales.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page_size: Option<CreateInvoiceRenderingPdfPageSize>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1921,6 +1978,40 @@ impl std::default::Default for CreateInvoicePaymentSettingsPaymentMethodTypes {
     }
 }
 
+/// An enum representing the possible values of an `CreateInvoiceRendering`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceRenderingAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CreateInvoiceRenderingAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceRenderingAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            CreateInvoiceRenderingAmountTaxDisplay::IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceRenderingAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceRenderingAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceRenderingAmountTaxDisplay {
+    fn default() -> Self {
+        Self::ExcludeTax
+    }
+}
+
 /// An enum representing the possible values of an `CreateInvoiceRenderingOptions`'s `amount_tax_display` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1954,6 +2045,42 @@ impl std::fmt::Display for CreateInvoiceRenderingOptionsAmountTaxDisplay {
 impl std::default::Default for CreateInvoiceRenderingOptionsAmountTaxDisplay {
     fn default() -> Self {
         Self::ExcludeTax
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceRenderingPdf`'s `page_size` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceRenderingPdfPageSize {
+    A4,
+    Auto,
+    Letter,
+}
+
+impl CreateInvoiceRenderingPdfPageSize {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceRenderingPdfPageSize::A4 => "a4",
+            CreateInvoiceRenderingPdfPageSize::Auto => "auto",
+            CreateInvoiceRenderingPdfPageSize::Letter => "letter",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceRenderingPdfPageSize {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceRenderingPdfPageSize {
+    fn default() -> Self {
+        Self::A4
     }
 }
 
@@ -2306,6 +2433,42 @@ impl std::fmt::Display for InvoicePendingInvoiceItemsBehavior {
 impl std::default::Default for InvoicePendingInvoiceItemsBehavior {
     fn default() -> Self {
         Self::Exclude
+    }
+}
+
+/// An enum representing the possible values of an `InvoiceRenderingPdf`'s `page_size` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoiceRenderingPdfPageSize {
+    A4,
+    Auto,
+    Letter,
+}
+
+impl InvoiceRenderingPdfPageSize {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoiceRenderingPdfPageSize::A4 => "a4",
+            InvoiceRenderingPdfPageSize::Auto => "auto",
+            InvoiceRenderingPdfPageSize::Letter => "letter",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceRenderingPdfPageSize {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceRenderingPdfPageSize {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoiceRenderingPdfPageSize {
+    fn default() -> Self {
+        Self::A4
     }
 }
 

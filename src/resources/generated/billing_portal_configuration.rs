@@ -169,7 +169,7 @@ pub struct PortalSubscriptionUpdate {
     /// Whether the feature is enabled.
     pub enabled: bool,
 
-    /// The list of products that support subscription updates.
+    /// The list of up to 10 products that support subscription updates.
     pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
 
     /// Determines how to handle prorations resulting from subscription updates.
