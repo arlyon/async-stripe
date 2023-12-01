@@ -44,7 +44,10 @@ pub fn gen_struct(
     let struct_name = meta.schema_to_rust_type(object);
     let schema = meta.spec.get_schema_unwrapped(object).as_item().expect("Expected item");
     let obj = as_object_type(schema).expect("Expected object type");
-    let schema_title = schema.schema_data.title.as_ref().expect("No title found");
+    let schema_title = schema.schema_data.title.as_ref().unwrap_or_else(|| {
+        tracing::warn!("{} has no title", object);
+        &object
+    });
 
     let deleted_schema = meta.spec.component_schemas().get(&format!("deleted_{}", object));
     let deleted_properties =
