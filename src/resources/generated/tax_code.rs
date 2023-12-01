@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::client::{Client, Response};
-use crate::ids::{TaxCodeId};
-use crate::params::{Expand, List, Object, Paginable};
 use serde::{Deserialize, Serialize};
+
+use crate::client::{Client, Response};
+use crate::ids::TaxCodeId;
+use crate::params::{Expand, List, Object, Paginable};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCode".
 ///
@@ -23,12 +24,10 @@ pub struct TaxCode {
 }
 
 impl TaxCode {
-
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
-pub fn list(client: &Client, params: &ListTaxCodes<'_>) -> Response<List<TaxCode>> {
-   client.get_query("/tax_codes", &params)
-}
-
+    pub fn list(client: &Client, params: &ListTaxCodes<'_>) -> Response<List<TaxCode>> {
+        client.get_query("/tax_codes", &params)
+    }
 
     /// Retrieves the details of an existing tax code.
     ///
@@ -51,7 +50,6 @@ impl Object for TaxCode {
 /// The parameters for `TaxCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxCodes<'a> {
-
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -90,5 +88,6 @@ impl<'a> ListTaxCodes<'a> {
 impl Paginable for ListTaxCodes<'_> {
     type O = TaxCode;
     fn set_last(&mut self, item: Self::O) {
-                self.starting_after = Some(item.id());
-            }}
+        self.starting_after = Some(item.id());
+    }
+}

@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxIdId};
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Customer};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::TaxIdId;
+use crate::params::{Expandable, Object, Timestamp};
+use crate::resources::Customer;
 
 /// The resource representing a Stripe "tax_id".
 ///
@@ -65,7 +66,6 @@ impl Object for TaxId {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdVerification {
-
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: TaxIdVerificationStatus,
 

@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingTokenId};
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{IssuingCard};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::IssuingTokenId;
+use crate::params::{Expandable, Object, Timestamp};
+use crate::resources::IssuingCard;
 
 /// The resource representing a Stripe "IssuingNetworkToken".
 ///
@@ -64,7 +65,6 @@ impl Object for IssuingToken {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenNetworkData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device: Option<IssuingNetworkTokenDevice>,
 
@@ -86,7 +86,6 @@ pub struct IssuingNetworkTokenNetworkData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenDevice {
-
     /// An obfuscated ID derived from the device ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_fingerprint: Option<String>,
@@ -117,7 +116,6 @@ pub struct IssuingNetworkTokenDevice {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenMastercard {
-
     /// A unique reference ID from MasterCard to represent the card account number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_reference_id: Option<String>,
@@ -137,7 +135,6 @@ pub struct IssuingNetworkTokenMastercard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenVisa {
-
     /// A unique reference ID from Visa to represent the card account number.
     pub card_reference_id: String,
 
@@ -156,7 +153,6 @@ pub struct IssuingNetworkTokenVisa {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenWalletProvider {
-
     /// The wallet provider-given account ID of the digital wallet the token belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_id: Option<String>,
@@ -203,7 +199,6 @@ pub struct IssuingNetworkTokenWalletProvider {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingNetworkTokenAddress {
-
     /// The street address of the cardholder tokenizing the card.
     pub line1: String,
 
