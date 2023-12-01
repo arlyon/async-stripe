@@ -2,10 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingTransactionId};
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder, IssuingDispute, IssuingToken, IssuingTransactionType, MerchantData};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::IssuingTransactionId;
+use crate::params::{Expandable, Metadata, Object, Timestamp};
+use crate::resources::{
+    BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
+    IssuingDispute, IssuingToken, IssuingTransactionType, MerchantData,
+};
 
 /// The resource representing a Stripe "IssuingTransaction".
 ///
@@ -106,7 +110,6 @@ impl Object for IssuingTransaction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
-
     /// The fee charged by the ATM for the cash withdrawal.
     pub atm_fee: Option<i64>,
 
@@ -116,7 +119,6 @@ pub struct IssuingTransactionAmountDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionNetworkData {
-
     /// A code created by Stripe which is shared with the merchant to validate the authorization.
     ///
     /// This field will be populated if the authorization message was approved.
@@ -136,7 +138,6 @@ pub struct IssuingTransactionNetworkData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
-
     /// Information about the flight that was purchased with this transaction.
     pub flight: Option<IssuingTransactionFlightData>,
 
@@ -155,7 +156,6 @@ pub struct IssuingTransactionPurchaseDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
-
     /// The time that the flight departed.
     pub departure_at: Option<i64>,
 
@@ -174,7 +174,6 @@ pub struct IssuingTransactionFlightData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
-
     /// The three-letter IATA airport code of the flight's destination.
     pub arrival_airport_code: Option<String>,
 
@@ -196,7 +195,6 @@ pub struct IssuingTransactionFlightDataLeg {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
-
     /// The type of fuel that was purchased.
     ///
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
@@ -217,7 +215,6 @@ pub struct IssuingTransactionFuelData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
-
     /// The time of checking into the lodging.
     pub check_in_at: Option<i64>,
 
@@ -227,7 +224,6 @@ pub struct IssuingTransactionLodgingData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
-
     /// The description of the item.
     ///
     /// The maximum length of this field is 26 characters.
@@ -245,7 +241,6 @@ pub struct IssuingTransactionReceiptData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionTreasury {
-
     /// The Treasury [ReceivedCredit](https://stripe.com/docs/api/treasury/received_credits) representing this Issuing transaction if it is a refund.
     pub received_credit: Option<String>,
 

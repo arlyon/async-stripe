@@ -2,9 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TestHelpersTestClockId};
-use crate::params::{Object, Timestamp};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::TestHelpersTestClockId;
+use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "TestClock".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

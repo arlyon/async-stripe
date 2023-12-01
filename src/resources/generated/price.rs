@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::client::{Client, Response};
-use crate::ids::{PriceId};
-use crate::params::{CurrencyMap, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo};
 use serde::{Deserialize, Serialize};
+
+use crate::client::{Client, Response};
+use crate::ids::PriceId;
+use crate::params::{
+    CurrencyMap, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
+    Timestamp,
+};
+use crate::resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo};
 
 /// The resource representing a Stripe "Price".
 ///
@@ -129,14 +133,12 @@ pub struct Price {
 }
 
 impl Price {
-
     /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
     ///
     /// For the list of inactive prices, set `active` to false.
-pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
-   client.get_query("/prices", &params)
-}
-
+    pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
+        client.get_query("/prices", &params)
+    }
 
     /// Creates a new price for an existing product.
     ///
@@ -170,7 +172,6 @@ impl Object for Price {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CurrencyOption {
-
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     pub custom_unit_amount: Option<CustomUnitAmount>,
 
@@ -201,7 +202,6 @@ pub struct CurrencyOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PriceTier {
-
     /// Price for the entire tier.
     pub flat_amount: Option<i64>,
 
@@ -220,7 +220,6 @@ pub struct PriceTier {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recurring {
-
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
@@ -251,7 +250,6 @@ pub struct Recurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformQuantity {
-
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -262,7 +260,6 @@ pub struct TransformQuantity {
 /// The parameters for `Price::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePrice<'a> {
-
     /// Whether the price can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -399,7 +396,6 @@ impl<'a> CreatePrice<'a> {
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPrices<'a> {
-
     /// Only return prices that are active or inactive (e.g., pass `false` to list all inactive prices).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -476,12 +472,12 @@ impl<'a> ListPrices<'a> {
 impl Paginable for ListPrices<'_> {
     type O = Price;
     fn set_last(&mut self, item: Self::O) {
-                self.starting_after = Some(item.id());
-            }}
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
-
     /// Whether the price can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -546,7 +542,6 @@ impl<'a> UpdatePrice<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptions {
-
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CreatePriceCurrencyOptionsCustomUnitAmount>,
@@ -579,7 +574,6 @@ pub struct CreatePriceCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCustomUnitAmount {
-
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
@@ -600,7 +594,6 @@ pub struct CreatePriceCustomUnitAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
-
     /// Whether the product is currently available for purchase.
     ///
     /// Defaults to `true`.
@@ -646,7 +639,6 @@ pub struct CreatePriceProductData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
-
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
@@ -682,7 +674,6 @@ pub struct CreatePriceRecurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
-
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
@@ -712,7 +703,6 @@ pub struct CreatePriceTiers {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
-
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -722,7 +712,6 @@ pub struct CreatePriceTransformQuantity {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
-
     /// Filter by billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -738,7 +727,6 @@ pub struct ListPricesRecurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptions {
-
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<UpdatePriceCurrencyOptionsCustomUnitAmount>,
@@ -771,7 +759,6 @@ pub struct UpdatePriceCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptionsCustomUnitAmount {
-
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
@@ -792,7 +779,6 @@ pub struct CreatePriceCurrencyOptionsCustomUnitAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptionsTiers {
-
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
@@ -822,7 +808,6 @@ pub struct CreatePriceCurrencyOptionsTiers {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptionsCustomUnitAmount {
-
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
@@ -843,7 +828,6 @@ pub struct UpdatePriceCurrencyOptionsCustomUnitAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptionsTiers {
-
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,

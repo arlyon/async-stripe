@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde::{Deserialize, Serialize};
+
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
 use crate::resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
 ///
@@ -42,7 +43,6 @@ pub struct Token {
 }
 
 impl Token {
-
     /// Creates a single-use token that represents a bank account’s details.
     /// You can use this token with any API method in place of a bank account dictionary.
     ///
@@ -71,7 +71,6 @@ impl Object for Token {
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
-
     /// Information for the account this token represents.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
@@ -123,7 +122,6 @@ impl<'a> CreateToken<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenAccount {
-
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<CreateTokenAccountBusinessType>,
@@ -145,14 +143,12 @@ pub struct CreateTokenAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenCvcUpdate {
-
     /// The CVC value, in string form.
     pub cvc: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPerson {
-
     /// Details on the legal guardian's acceptance of the required Stripe agreements.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_tos_acceptances: Option<CreateTokenPersonAdditionalTosAcceptances>,
@@ -274,7 +270,6 @@ pub struct CreateTokenPerson {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPii {
-
     /// The `id_number` for the PII, in string form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
@@ -282,7 +277,6 @@ pub struct CreateTokenPii {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonAdditionalTosAcceptances {
-
     /// Details on the legal guardian's acceptance of the main Stripe service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenPersonAdditionalTosAcceptancesAccount>,
@@ -290,7 +284,6 @@ pub struct CreateTokenPersonAdditionalTosAcceptances {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDob {
-
     /// The day of birth, between 1 and 31.
     pub day: i64,
 
@@ -303,7 +296,6 @@ pub struct CreateTokenPersonDob {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocuments {
-
     /// One or more documents that demonstrate proof that this person is authorized to represent the company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company_authorization: Option<CreateTokenPersonDocumentsCompanyAuthorization>,
@@ -319,7 +311,6 @@ pub struct CreateTokenPersonDocuments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonRegisteredAddress {
-
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
@@ -347,7 +338,6 @@ pub struct CreateTokenPersonRegisteredAddress {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonRelationship {
-
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
@@ -385,7 +375,6 @@ pub struct CreateTokenPersonRelationship {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerificationParams {
-
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_document: Option<VerificationDocumentParams>,
@@ -397,7 +386,6 @@ pub struct PersonVerificationParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonAdditionalTosAcceptancesAccount {
-
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -413,7 +401,6 @@ pub struct CreateTokenPersonAdditionalTosAcceptancesAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsCompanyAuthorization {
-
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -421,7 +408,6 @@ pub struct CreateTokenPersonDocumentsCompanyAuthorization {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsPassport {
-
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -429,7 +415,6 @@ pub struct CreateTokenPersonDocumentsPassport {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsVisa {
-
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -437,7 +422,6 @@ pub struct CreateTokenPersonDocumentsVisa {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct VerificationDocumentParams {
-
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     ///
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -496,8 +480,8 @@ impl std::default::Default for CreateTokenAccountBusinessType {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateTokenCardUnion {
-    pub CreditCardSpecs(CreditCardSpecs),
-    pub String(String),
+    CreditCardSpecs(CreditCardSpecs),
+    String(String),
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

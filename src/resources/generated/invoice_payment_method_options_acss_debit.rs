@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "invoice_payment_method_options_acss_debit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
 
@@ -18,7 +17,6 @@ pub struct InvoicePaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptions {
-
     /// Transaction type of the mandate.
     pub transaction_type: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
@@ -34,8 +32,12 @@ pub enum InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
 impl InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+            InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => {
+                "business"
+            }
+            InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => {
+                "personal"
+            }
         }
     }
 }
@@ -71,7 +73,9 @@ impl InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
         match self {
             InvoicePaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
             InvoicePaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            InvoicePaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            InvoicePaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }

@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::client::{Client, Response};
-use crate::ids::{CouponId};
-use crate::params::{CurrencyMap, Deleted, Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{Currency};
 use serde::{Deserialize, Serialize};
+
+use crate::client::{Client, Response};
+use crate::ids::CouponId;
+use crate::params::{
+    CurrencyMap, Deleted, Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "Coupon".
 ///
@@ -93,12 +96,10 @@ pub struct Coupon {
 }
 
 impl Coupon {
-
     /// Returns a list of your coupons.
-pub fn list(client: &Client, params: &ListCoupons<'_>) -> Response<List<Coupon>> {
-   client.get_query("/coupons", &params)
-}
-
+    pub fn list(client: &Client, params: &ListCoupons<'_>) -> Response<List<Coupon>> {
+        client.get_query("/coupons", &params)
+    }
 
     /// You can create coupons easily via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
     ///
@@ -142,14 +143,12 @@ impl Object for Coupon {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
-
     /// A list of product IDs this coupon applies to.
     pub products: Vec<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CouponCurrencyOption {
-
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: i64,
 }
@@ -157,7 +156,6 @@ pub struct CouponCurrencyOption {
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
-
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_off: Option<i64>,
@@ -250,7 +248,6 @@ impl<'a> CreateCoupon<'a> {
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
-
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
@@ -296,12 +293,12 @@ impl<'a> ListCoupons<'a> {
 impl Paginable for ListCoupons<'_> {
     type O = Coupon;
     fn set_last(&mut self, item: Self::O) {
-                self.starting_after = Some(item.id());
-            }}
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
-
     /// Coupons defined in each available currency option (only supported if the coupon is amount-based).
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -340,7 +337,6 @@ impl<'a> UpdateCoupon<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
-
     /// An array of Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
@@ -348,14 +344,12 @@ pub struct CreateCouponAppliesTo {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCouponCurrencyOptions {
-
     /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCouponCurrencyOptions {
-
     /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,
 }

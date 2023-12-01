@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{BankAccountId};
+use serde::{Deserialize, Serialize};
+
+use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, BankAccountStatus, Currency, Customer};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -119,7 +120,6 @@ impl Object for BankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ExternalAccountRequirements {
-
     /// Fields that need to be collected to keep the external account enabled.
     ///
     /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
@@ -142,7 +142,6 @@ pub struct ExternalAccountRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
-
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 

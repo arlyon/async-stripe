@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{DiscountId};
+use serde::{Deserialize, Serialize};
+
+use crate::ids::DiscountId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Coupon, Customer, PromotionCode};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Discount".
 ///
