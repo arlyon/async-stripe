@@ -1,3 +1,16 @@
+# [0.27.0](https://github.com/arlyon/async-stripe/compare/v0.26.0...v0.27.0) (2023-12-01)
+
+
+### Bug Fixes
+
+* add support for atxi id prefix ([414d534](https://github.com/arlyon/async-stripe/commit/414d53400eeb35b0b0c483c766375c3d2c15c7c4))
+
+
+### Features
+
+* added finalize invoice ([c6333bc](https://github.com/arlyon/async-stripe/commit/c6333bce94ae52454bcc90b79987baf96576da83))
+* update stripe api ([2cba3fe](https://github.com/arlyon/async-stripe/commit/2cba3fe0083c7e865e27c2795a2dfe712b421466))
+
 # [0.26.0](https://github.com/arlyon/async-stripe/compare/v0.25.2...v0.26.0) (2023-10-31)
 
 
