@@ -2,15 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::params::{Object};
 use serde::{Deserialize, Serialize};
-
-use crate::params::Object;
 
 /// The resource representing a Stripe "TerminalConnectionToken".
 ///
 /// For more details see <https://stripe.com/docs/api/terminal/connection_tokens/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConnectionToken {
+
     /// The id of the location that this connection token is scoped to.
     ///
     /// Note that location scoping only applies to internet-connected readers.

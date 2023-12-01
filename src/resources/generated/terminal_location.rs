@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TerminalLocationId;
+use crate::ids::{TerminalLocationId};
 use crate::params::{Metadata, Object};
-use crate::resources::Address;
+use crate::resources::{Address};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalLocationLocation".
 ///

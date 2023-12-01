@@ -2,16 +2,16 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::params::{Object};
+use crate::resources::{BalanceAmountBySourceType, Currency};
 use serde::{Deserialize, Serialize};
-
-use crate::params::Object;
-use crate::resources::Currency;
 
 /// The resource representing a Stripe "Balance".
 ///
 /// For more details see <https://stripe.com/docs/api/balance/balance_object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Balance {
+
     /// Available funds that you can transfer or pay out automatically by Stripe or explicitly through the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
     /// You can find the available balance for each currency and payment type in the `source_types` property.
@@ -25,7 +25,7 @@ pub struct Balance {
 
     /// Funds that you can pay out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Vec<BalanceAmount>>,
+    pub instant_available: Option<Vec<BalanceAmountNet>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing: Option<BalanceDetail>,
@@ -49,6 +49,7 @@ impl Object for Balance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceAmount {
+
     /// Balance amount.
     pub amount: i64,
 
@@ -62,22 +63,23 @@ pub struct BalanceAmount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct BalanceAmountBySourceType {
-    /// Amount for bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<i64>,
+pub struct BalanceAmountNet {
 
-    /// Amount for card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<i64>,
+    /// Balance amount.
+    pub amount: i64,
 
-    /// Amount for FPX.
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<i64>,
+    pub source_types: Option<BalanceAmountBySourceType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceDetail {
+
     /// Funds that are available for use.
     pub available: Vec<BalanceAmount>,
 }

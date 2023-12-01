@@ -38,4 +38,7 @@ pub struct MerchantData {
 
     /// An ID assigned by the seller to the location of the sale.
     pub terminal_id: Option<String>,
+
+    /// URL provided by the merchant on a 3DS request.
+    pub url: Option<String>,
 }

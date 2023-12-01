@@ -8,6 +8,8 @@ use crate::params::{Expand, List, Object, Paginable};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentMethodConfigResourcePaymentMethodConfiguration".
+///
+/// For more details see <https://stripe.com/docs/api/payment_method_configurations/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodConfiguration {
     /// Unique identifier for the object.
@@ -31,7 +33,7 @@ pub struct PaymentMethodConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_pay: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
-    /// The Connect application associated with this configuration.
+    /// For child configs, the Connect application associated with the configuration.
     pub application: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -79,7 +81,7 @@ pub struct PaymentMethodConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
-    /// The default configuration is used whenever no payment method configuration is specified.
+    /// The default configuration is used whenever a payment method configuration is not specified.
     pub is_default: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,7 +102,7 @@ pub struct PaymentMethodConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
-    /// Configuration name.
+    /// The configuration's name.
     pub name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -112,7 +114,7 @@ pub struct PaymentMethodConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<PaymentMethodConfigResourcePaymentMethodProperties>,
 
-    /// The configuration's parent configuration.
+    /// For child configs, the configuration's parent configuration.
     pub parent: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -191,9 +193,9 @@ pub struct PaymentMethodConfigResourcePaymentMethodProperties {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodConfigResourceDisplayPreference {
 
-    /// For child configurations, whether or not the account's preference will be observed.
+    /// For child configs, whether or not the account's preference will be observed.
     ///
-    /// If `false`, the parent configuration's preference is used.
+    /// If `false`, the parent configuration's default is used.
     pub overridable: Option<bool>,
 
     /// The account's display preference.
@@ -343,7 +345,7 @@ pub struct CreatePaymentMethodConfiguration<'a> {
 
     /// JCB is a credit card company based in Japan.
     ///
-    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in the US, Canada, Australia, New Zealand, UK, and Ireland.
+    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
     /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb: Option<CreatePaymentMethodConfigurationJcb>,
@@ -650,7 +652,7 @@ pub struct UpdatePaymentMethodConfiguration<'a> {
 
     /// JCB is a credit card company based in Japan.
     ///
-    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in the US, Canada, Australia, New Zealand, UK, and Ireland.
+    /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
     /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb: Option<UpdatePaymentMethodConfigurationJcb>,
