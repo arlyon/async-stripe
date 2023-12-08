@@ -907,8 +907,7 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Permitted values include: `automatic` or `any`.
-    /// If not provided, defaults to `automatic`.
+    /// If not provided, this value defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     pub request_three_d_secure: Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 
@@ -3067,8 +3066,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Permitted values include: `automatic` or `any`.
-    /// If not provided, defaults to `automatic`.
+    /// If not provided, this value defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
@@ -3951,8 +3949,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Permitted values include: `automatic` or `any`.
-    /// If not provided, defaults to `automatic`.
+    /// If not provided, this value defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
@@ -9108,8 +9105,6 @@ impl std::default::Default for PaymentIntentPaymentMethodOptionsCardRequestOverc
 pub enum PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
-    Challenge,
-    ChallengeOnly,
 }
 
 impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -9117,10 +9112,6 @@ impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
-            PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Challenge => "challenge",
-            PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::ChallengeOnly => {
-                "challenge_only"
-            }
         }
     }
 }

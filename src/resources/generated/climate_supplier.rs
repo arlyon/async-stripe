@@ -66,7 +66,6 @@ pub enum ClimateSupplierRemovalPathway {
     BiomassCarbonRemovalAndStorage,
     DirectAirCapture,
     EnhancedWeathering,
-    Various,
 }
 
 impl ClimateSupplierRemovalPathway {
@@ -75,7 +74,6 @@ impl ClimateSupplierRemovalPathway {
             ClimateSupplierRemovalPathway::BiomassCarbonRemovalAndStorage => "biomass_carbon_removal_and_storage",
             ClimateSupplierRemovalPathway::DirectAirCapture => "direct_air_capture",
             ClimateSupplierRemovalPathway::EnhancedWeathering => "enhanced_weathering",
-            ClimateSupplierRemovalPathway::Various => "various",
         }
     }
 }
