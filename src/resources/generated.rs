@@ -105,6 +105,7 @@ pub mod billing {
     pub mod subscription_item;
     pub mod subscription_item_billing_thresholds;
     pub mod subscription_schedule;
+    pub mod subscriptions_trials_resource_trial_settings;
     pub mod tax_id;
     pub mod tax_rate;
     pub mod usage_record;
