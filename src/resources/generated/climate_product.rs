@@ -33,8 +33,7 @@ pub struct ClimateProduct {
     pub livemode: bool,
 
     /// The quantity of metric tons available for reservation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metric_tons_available: Option<String>,
+    pub metric_tons_available: String,
 
     /// The Climate product's name.
     pub name: String,

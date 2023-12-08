@@ -15,7 +15,8 @@ use crate::resources::{
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
     InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
     SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
-    SubscriptionSchedule, SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+    SubscriptionSchedule, SubscriptionTransferData, SubscriptionsTrialsResourceTrialSettings,
+    TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -412,17 +413,6 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// Setting this flag to `true` together with `trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Option<bool>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SubscriptionsTrialsResourceTrialSettings {
-    pub end_behavior: SubscriptionsTrialsResourceEndBehavior,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SubscriptionsTrialsResourceEndBehavior {
-    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method: SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod,
 }
 
 /// The parameters for `Subscription::create`.
@@ -2928,44 +2918,6 @@ impl std::fmt::Display for SubscriptionsResourcePaymentSettingsSaveDefaultPaymen
 impl std::default::Default for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
     fn default() -> Self {
         Self::Off
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionsTrialsResourceEndBehavior`'s `missing_payment_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    Cancel,
-    CreateInvoice,
-    Pause,
-}
-
-impl SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Cancel => "cancel",
-            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::CreateInvoice => {
-                "create_invoice"
-            }
-            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Pause => "pause",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    fn default() -> Self {
-        Self::Cancel
     }
 }
 
