@@ -314,5 +314,5 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 	]
 	.iter()
 	.copied()
-	.collect() 
+	.collect()
 }
