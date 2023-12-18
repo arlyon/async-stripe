@@ -187,6 +187,8 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "checkout")]
 pub use {
+    checkout::checkout_session_ext::*,
+    checkout::promotion_code_ext::*,
     generated::checkout::{
         checkout_session::*,
         payment_link::*,
