@@ -62,6 +62,7 @@ mod products {
 #[cfg(feature = "checkout")]
 mod checkout {
     pub mod checkout_session_ext;
+    pub mod promotion_code_ext;
 }
 
 #[path = "resources"]
