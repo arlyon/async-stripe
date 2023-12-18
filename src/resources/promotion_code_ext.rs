@@ -105,6 +105,6 @@ impl<'a> CreatePromotionCode<'a> {
     ///
     /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
     pub fn send(&self, client: &Client) -> Response<PromotionCode> {
-        client.post("/promotion_codes", self)
+        client.post_form("/promotion_codes", self)
     }
 }
