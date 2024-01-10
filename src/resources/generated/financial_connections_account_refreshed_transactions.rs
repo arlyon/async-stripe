@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "ConnectEmbeddedBaseFeatures".
+/// The resource representing a Stripe "financial_connections.account.refreshed_transactions".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ConnectEmbeddedBaseFeatures {
+pub struct FinancialConnectionsAccountRefreshedTransactions {
 }

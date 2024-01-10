@@ -200,6 +200,8 @@ pub struct CheckoutSession {
     /// relevant text on the page, such as the submit button.
     ///
     /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
+    /// Possible values are `auto`, `pay`, `book`, `donate`.
+    /// If blank or `auto`, `pay` is used.
     pub submit_type: Option<CheckoutSessionSubmitType>,
 
     /// The ID of the subscription for Checkout Sessions in `subscription` mode.
@@ -804,6 +806,10 @@ pub struct PaymentPagesCheckoutSessionConsent {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionConsentCollection {
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    pub payment_method_reuse_agreement:
+        Option<PaymentPagesCheckoutSessionPaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
@@ -921,6 +927,9 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    pub after_submit: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     pub shipping_address: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
 
@@ -1003,6 +1012,14 @@ pub struct InvoiceSettingCustomField {
 
     /// The value of the custom field.
     pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionPaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.  When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1321,6 +1338,8 @@ pub struct CreateCheckoutSession<'a> {
     /// relevant text on the page, such as the submit button.
     ///
     /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
+    /// Possible values are `auto`, `pay`, `book`, `donate`.
+    /// If blank or `auto`, `pay` is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_type: Option<CheckoutSessionSubmitType>,
 
@@ -1486,6 +1505,13 @@ pub struct CreateCheckoutSessionAutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
+    /// Determines the display of payment method reuse agreement text in the UI.
+    ///
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_reuse_agreement:
+        Option<CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
@@ -1534,6 +1560,10 @@ pub struct CreateCheckoutSessionCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_submit: Option<CreateCheckoutSessionCustomTextAfterSubmit>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<CreateCheckoutSessionCustomTextShippingAddress>,
@@ -1977,6 +2007,15 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.
+    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsDropdown {
     /// The options available for the customer to select.
     ///
@@ -2016,6 +2055,12 @@ pub struct CreateCheckoutSessionCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomTextAfterSubmit {
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -4579,6 +4624,48 @@ impl std::default::Default for CheckoutUsBankAccountPaymentMethodOptionsVerifica
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition::Auto => {
+                "auto"
+            }
+            CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition::Hidden => {
+                "hidden"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn default() -> Self {
+        Self::Auto
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionConsentCollection`'s `promotions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -6373,12 +6460,14 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
+    Transactions,
 }
 
 impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -8012,6 +8101,40 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
 impl std::default::Default for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     fn default() -> Self {
         Self::Exempt
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionPaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::Auto => "auto",
+            PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::Hidden => "hidden",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
+    fn default() -> Self {
+        Self::Auto
     }
 }
 

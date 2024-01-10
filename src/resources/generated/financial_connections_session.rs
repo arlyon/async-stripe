@@ -220,6 +220,7 @@ impl std::default::Default for CreateFinancialConnectionsSessionPermissions {
 pub enum CreateFinancialConnectionsSessionPrefetch {
     Balances,
     Ownership,
+    Transactions,
 }
 
 impl CreateFinancialConnectionsSessionPrefetch {
@@ -227,6 +228,7 @@ impl CreateFinancialConnectionsSessionPrefetch {
         match self {
             CreateFinancialConnectionsSessionPrefetch::Balances => "balances",
             CreateFinancialConnectionsSessionPrefetch::Ownership => "ownership",
+            CreateFinancialConnectionsSessionPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -292,6 +294,7 @@ impl std::default::Default for FinancialConnectionsSessionPermissions {
 pub enum FinancialConnectionsSessionPrefetch {
     Balances,
     Ownership,
+    Transactions,
 }
 
 impl FinancialConnectionsSessionPrefetch {
@@ -299,6 +302,7 @@ impl FinancialConnectionsSessionPrefetch {
         match self {
             FinancialConnectionsSessionPrefetch::Balances => "balances",
             FinancialConnectionsSessionPrefetch::Ownership => "ownership",
+            FinancialConnectionsSessionPrefetch::Transactions => "transactions",
         }
     }
 }

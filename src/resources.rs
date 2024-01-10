@@ -136,6 +136,7 @@ pub use {
         payment_method_details_card_wallet_apple_pay::*,
         payment_method_details_card_wallet_google_pay::*,
         payment_method_options_customer_balance_eu_bank_account::*,
+        payment_method_options_us_bank_account_mandate_options::*,
         payment_method_config_biz_payment_method_configuration_details::*,
         payout::*,
         platform_tax_fee::*,

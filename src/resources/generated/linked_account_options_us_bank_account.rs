@@ -66,12 +66,14 @@ impl std::default::Default for LinkedAccountOptionsUsBankAccountPermissions {
 #[serde(rename_all = "snake_case")]
 pub enum LinkedAccountOptionsUsBankAccountPrefetch {
     Balances,
+    Transactions,
 }
 
 impl LinkedAccountOptionsUsBankAccountPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             LinkedAccountOptionsUsBankAccountPrefetch::Balances => "balances",
+            LinkedAccountOptionsUsBankAccountPrefetch::Transactions => "transactions",
         }
     }
 }

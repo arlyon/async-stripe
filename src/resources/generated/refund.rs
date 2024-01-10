@@ -42,6 +42,9 @@ pub struct Refund {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_details: Option<RefundDestinationDetails>,
+
     /// After the refund fails, this balance transaction describes the adjustment made on your account balance that reverses the initial balance transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
@@ -134,6 +137,134 @@ impl Object for Refund {
     fn object(&self) -> &'static str {
         "refund"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct RefundDestinationDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alipay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_bank_transfer: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub br_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<RefundDestinationDetailsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_cash_balance: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gb_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jp_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mx_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub th_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    /// The type of transaction-specific details of the payment method used in the refund (e.g., `card`).
+    ///
+    /// An additional hash is included on `destination_details` with a name matching this value.
+    /// It contains information specific to the refund transaction.
+    #[serde(rename = "type")]
+    pub type_: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_transfer: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<DestinationDetailsUnimplemented>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<DestinationDetailsUnimplemented>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct DestinationDetailsUnimplemented {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct RefundDestinationDetailsCard {
+    /// Value of the reference number assigned to the refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+
+    /// Status of the reference number on the refund.
+    ///
+    /// This can be `pending`, `available` or `unavailable`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_status: Option<String>,
+
+    /// Type of the reference number assigned to the refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference_type: Option<String>,
+
+    /// The type of refund.
+    ///
+    /// This can be `refund`, `reversal`, or `pending`.
+    #[serde(rename = "type")]
+    pub type_: RefundDestinationDetailsCardType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct RefundDestinationDetailsGeneric {
+    /// The reference assigned to the refund.
+    pub reference: Option<String>,
+
+    /// Status of the reference on the refund.
+    ///
+    /// This can be `pending`, `available` or `unavailable`.
+    pub reference_status: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -325,6 +456,42 @@ pub struct UpdateRefund<'a> {
 impl<'a> UpdateRefund<'a> {
     pub fn new() -> Self {
         UpdateRefund { expand: Default::default(), metadata: Default::default() }
+    }
+}
+
+/// An enum representing the possible values of an `RefundDestinationDetailsCard`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RefundDestinationDetailsCardType {
+    Pending,
+    Refund,
+    Reversal,
+}
+
+impl RefundDestinationDetailsCardType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            RefundDestinationDetailsCardType::Pending => "pending",
+            RefundDestinationDetailsCardType::Refund => "refund",
+            RefundDestinationDetailsCardType::Reversal => "reversal",
+        }
+    }
+}
+
+impl AsRef<str> for RefundDestinationDetailsCardType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RefundDestinationDetailsCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for RefundDestinationDetailsCardType {
+    fn default() -> Self {
+        Self::Pending
     }
 }
 

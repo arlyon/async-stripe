@@ -5,7 +5,6 @@
 use crate::client::{Client, Response};
 use crate::ids::{AccountId};
 use crate::params::{Expand, Object, Timestamp};
-use crate::resources::{ConnectEmbeddedBaseFeatures};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ConnectEmbeddedMethodAccountSessionCreateMethodAccountSession".
@@ -54,24 +53,11 @@ pub struct ConnectEmbeddedAccountSessionCreateComponents {
 
     pub account_onboarding: ConnectEmbeddedBaseConfigClaim,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_details: Option<ConnectEmbeddedPaymentsConfig>,
+    pub payment_details: ConnectEmbeddedPaymentsConfig,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payments: Option<ConnectEmbeddedPaymentsConfig>,
+    pub payments: ConnectEmbeddedPaymentsConfig,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payouts: Option<ConnectEmbeddedBaseConfig>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ConnectEmbeddedBaseConfig {
-
-    /// Whether the embedded component is enabled.
-    pub enabled: bool,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub features: Option<ConnectEmbeddedBaseFeatures>,
+    pub payouts: ConnectEmbeddedPayoutsConfig,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -84,13 +70,16 @@ pub struct ConnectEmbeddedBaseConfigClaim {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedBaseFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectEmbeddedPaymentsConfig {
 
     /// Whether the embedded component is enabled.
     pub enabled: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub features: Option<ConnectEmbeddedPaymentsFeatures>,
+    pub features: ConnectEmbeddedPaymentsFeatures,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -110,6 +99,34 @@ pub struct ConnectEmbeddedPaymentsFeatures {
     ///
     /// This is `true` by default.
     pub refund_management: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedPayoutsConfig {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    pub features: ConnectEmbeddedPayoutsFeatures,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedPayoutsFeatures {
+
+    /// Whether to allow payout schedule to be changed.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    pub edit_payout_schedule: bool,
+
+    /// Whether to allow creation of instant payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    pub instant_payouts: bool,
+
+    /// Whether to allow creation of standard payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    pub standard_payouts: bool,
 }
 
 /// The parameters for `AccountSession::create`.
@@ -253,4 +270,22 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountSessionComponentsPayoutsFeatures {
+
+    /// Whether to allow payout schedule to be changed.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub edit_payout_schedule: Option<bool>,
+
+    /// Whether to allow creation of instant payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_payouts: Option<bool>,
+
+    /// Whether to allow creation of standard payouts.
+    ///
+    /// Default `true` when Stripe owns Loss Liability, default `false` otherwise.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard_payouts: Option<bool>,
 }

@@ -50,7 +50,8 @@ pub struct SubscriptionSchedule {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     pub end_behavior: SubscriptionScheduleEndBehavior,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -323,8 +324,7 @@ pub struct SubscriptionScheduleDefaultSettings {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
-    /// The subscription schedule's default invoice settings.
-    pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
+    pub invoice_settings: SubscriptionScheduleInvoiceSettings,
 
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     ///
@@ -355,7 +355,8 @@ pub struct CreateSubscriptionSchedule<'a> {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_behavior: Option<SubscriptionScheduleEndBehavior>,
 
@@ -493,7 +494,8 @@ pub struct UpdateSubscriptionSchedule<'a> {
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
-    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.
+    /// `cancel` will end the subscription schedule and cancel the underlying subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_behavior: Option<SubscriptionScheduleEndBehavior>,
 

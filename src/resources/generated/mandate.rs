@@ -200,7 +200,11 @@ pub struct MandateSingleUse {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateUsBankAccount {}
+pub struct MandateUsBankAccount {
+    /// Mandate collection method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_method: Option<MandateUsBankAccountCollectionMethod>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OfflineAcceptance {}
@@ -457,5 +461,37 @@ impl std::fmt::Display for MandateType {
 impl std::default::Default for MandateType {
     fn default() -> Self {
         Self::MultiUse
+    }
+}
+
+/// An enum representing the possible values of an `MandateUsBankAccount`'s `collection_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateUsBankAccountCollectionMethod {
+    Paper,
+}
+
+impl MandateUsBankAccountCollectionMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateUsBankAccountCollectionMethod::Paper => "paper",
+        }
+    }
+}
+
+impl AsRef<str> for MandateUsBankAccountCollectionMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateUsBankAccountCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for MandateUsBankAccountCollectionMethod {
+    fn default() -> Self {
+        Self::Paper
     }
 }

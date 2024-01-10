@@ -142,7 +142,9 @@ pub struct IssuingCardholderIndividual {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderCardIssuing {
-    /// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+    /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://stripe.com/docs/issuing/cards#accept-authorized-user-terms).
+    ///
+    /// Required for cards backed by a Celtic program.
     pub user_terms_acceptance: Option<IssuingCardholderUserTermsAcceptance>,
 }
 
@@ -186,13 +188,9 @@ pub struct IssuingCardholderSpendingLimit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderUserTermsAcceptance {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
-    ///
-    /// Required for Celtic Spend Card users.
     pub date: Option<Timestamp>,
 
     /// The IP address from which the cardholder accepted the Authorized User Terms.
-    ///
-    /// Required for Celtic Spend Card users.
     pub ip: Option<String>,
 
     /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.

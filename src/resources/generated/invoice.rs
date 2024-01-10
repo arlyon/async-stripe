@@ -1821,12 +1821,14 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
+    Transactions,
 }
 
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -1910,12 +1912,14 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     CustomerBalance,
+    Eps,
     Fpx,
     Giropay,
     Grabpay,
     Ideal,
     Konbini,
     Link,
+    P24,
     Paynow,
     Paypal,
     Promptpay,
@@ -1941,12 +1945,14 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Card => "card",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             CreateInvoicePaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Eps => "eps",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Link => "link",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::P24 => "p24",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Paypal => "paypal",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
@@ -2526,12 +2532,14 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     CustomerBalance,
+    Eps,
     Fpx,
     Giropay,
     Grabpay,
     Ideal,
     Konbini,
     Link,
+    P24,
     Paynow,
     Paypal,
     Promptpay,
@@ -2555,12 +2563,14 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Card => "card",
             InvoicesPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             InvoicesPaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
+            InvoicesPaymentSettingsPaymentMethodTypes::Eps => "eps",
             InvoicesPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             InvoicesPaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             InvoicesPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             InvoicesPaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             InvoicesPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             InvoicesPaymentSettingsPaymentMethodTypes::Link => "link",
+            InvoicesPaymentSettingsPaymentMethodTypes::P24 => "p24",
             InvoicesPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             InvoicesPaymentSettingsPaymentMethodTypes::Paypal => "paypal",
             InvoicesPaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",

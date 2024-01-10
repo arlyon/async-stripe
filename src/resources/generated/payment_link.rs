@@ -63,7 +63,6 @@ pub struct PaymentLink {
     pub customer_creation: PaymentLinkCustomerCreation,
 
     /// The custom message to be displayed to a customer when a payment link is no longer active.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inactive_message: Option<String>,
 
     /// Configuration for creating invoice for payment mode payment links.
@@ -100,7 +99,6 @@ pub struct PaymentLink {
     pub phone_number_collection: PaymentLinksResourcePhoneNumberCollection,
 
     /// Settings that restrict the usage of a payment link.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub restrictions: Option<PaymentLinksResourceRestrictions>,
 
     /// Configuration for collecting the customer's shipping address.
@@ -195,6 +193,9 @@ pub struct PaymentLinksResourceCompletionBehaviorRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceConsentCollection {
+    /// Settings related to the payment method reuse text shown in the Checkout UI.
+    pub payment_method_reuse_agreement: Option<PaymentLinksResourcePaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
 
@@ -285,6 +286,9 @@ pub struct PaymentLinksResourceCustomFieldsText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    pub after_submit: Option<PaymentLinksResourceCustomTextPosition>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     pub shipping_address: Option<PaymentLinksResourceCustomTextPosition>,
 
@@ -377,6 +381,14 @@ pub struct PaymentLinksResourcePaymentIntentData {
     ///
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     pub transfer_group: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourcePaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.  When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: PaymentLinksResourcePaymentMethodReuseAgreementPosition,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -825,6 +837,13 @@ pub struct CreatePaymentLinkAutomaticTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkConsentCollection {
+    /// Determines the display of payment method reuse agreement text in the UI.
+    ///
+    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_reuse_agreement:
+        Option<CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement>,
+
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
@@ -873,6 +892,10 @@ pub struct CreatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_submit: Option<CreatePaymentLinkCustomTextAfterSubmit>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<CreatePaymentLinkCustomTextShippingAddress>,
@@ -1094,6 +1117,10 @@ pub struct UpdatePaymentLinkCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomText {
+    /// Custom text that should be displayed after the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_submit: Option<UpdatePaymentLinkCustomTextAfterSubmit>,
+
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<UpdatePaymentLinkCustomTextShippingAddress>,
@@ -1211,6 +1238,15 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    /// Determines the position and visibility of the payment method reuse agreement in the UI.
+    ///
+    /// When set to `auto`, Stripe's defaults will be used.
+    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
+    pub position: CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomFieldsDropdown {
     /// The options available for the customer to select.
     ///
@@ -1250,6 +1286,12 @@ pub struct CreatePaymentLinkCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomTextAfterSubmit {
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1390,6 +1432,12 @@ pub struct UpdatePaymentLinkCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomTextAfterSubmit {
+    /// Text may be up to 1200 characters in length.
+    pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1596,6 +1644,44 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
 impl std::default::Default for CreatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::Auto => "auto",
+            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition::Hidden => {
+                "hidden"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn default() -> Self {
+        Self::Auto
     }
 }
 
@@ -3173,6 +3259,40 @@ impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataSetupFutureUsage
 impl std::default::Default for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     fn default() -> Self {
         Self::OffSession
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourcePaymentMethodReuseAgreement`'s `position` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    Auto,
+    Hidden,
+}
+
+impl PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourcePaymentMethodReuseAgreementPosition::Auto => "auto",
+            PaymentLinksResourcePaymentMethodReuseAgreementPosition::Hidden => "hidden",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourcePaymentMethodReuseAgreementPosition {
+    fn default() -> Self {
+        Self::Auto
     }
 }
 

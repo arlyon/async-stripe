@@ -329,6 +329,7 @@ impl std::default::Default for IssuingAuthorizationAuthenticationExemptionClaime
 pub enum IssuingAuthorizationAuthenticationExemptionType {
     LowValueTransaction,
     TransactionRiskAnalysis,
+    Unknown,
 }
 
 impl IssuingAuthorizationAuthenticationExemptionType {
@@ -340,6 +341,7 @@ impl IssuingAuthorizationAuthenticationExemptionType {
             IssuingAuthorizationAuthenticationExemptionType::TransactionRiskAnalysis => {
                 "transaction_risk_analysis"
             }
+            IssuingAuthorizationAuthenticationExemptionType::Unknown => "unknown",
         }
     }
 }
