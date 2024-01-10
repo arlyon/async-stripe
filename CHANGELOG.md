@@ -1,3 +1,10 @@
+## [0.28.1](https://github.com/arlyon/async-stripe/compare/v0.28.0...v0.28.1) (2024-01-10)
+
+
+### Bug Fixes
+
+* add plan prefix to PriceId ([6655058](https://github.com/arlyon/async-stripe/commit/6655058a476adc6551643a947308f13e8ba320d3))
+
 # [0.28.0](https://github.com/arlyon/async-stripe/compare/v0.27.0...v0.28.0) (2023-12-08)
 
 
