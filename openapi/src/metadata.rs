@@ -4,7 +4,6 @@ use std::path::Path;
 
 use heck::{CamelCase, SnakeCase};
 use openapiv3::{ReferenceOr, SchemaKind};
-use tracing::trace;
 
 use crate::spec::{as_object_properties, Spec};
 use crate::{

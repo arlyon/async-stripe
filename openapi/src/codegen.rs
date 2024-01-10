@@ -1039,7 +1039,7 @@ fn gen_field_type(
 ) -> String {
     match &field.schema_kind {
         // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
-        SchemaKind::Type(Type::Boolean {}) => "bool".into(),
+        SchemaKind::Type(Type::Boolean(_)) => "bool".into(),
         SchemaKind::Type(Type::Number(_)) => "f64".into(),
         SchemaKind::Type(Type::Integer(format)) => {
             infer_integer_type(state, field_name, &format.format)
