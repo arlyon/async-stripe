@@ -8,7 +8,7 @@ use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "LoginLink".
 ///
-/// For more details see <https://stripe.com/docs/api/account/login_link>
+/// For more details see <https://stripe.com/docs/api/accounts/login_link/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LoginLink {
     /// Time at which the object was created.

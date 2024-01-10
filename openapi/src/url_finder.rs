@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use anyhow::{anyhow, Result};
 use heck::SnakeCase;
 use reqwest::blocking::Client;
@@ -7,7 +9,7 @@ const APP_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
 
 #[derive(Debug)]
 pub struct UrlFinder {
-    flattened_api_sections: serde_json::Map<String, serde_json::Value>,
+    url_lookup: HashMap<String, String>,
 }
 
 impl UrlFinder {
@@ -17,15 +19,14 @@ impl UrlFinder {
 
         if resp.status().is_success() {
             let text = resp.text()?;
-            if let Some(line) = text.lines().find(|l| l.contains("flattenedAPISections: {")) {
-                Ok(Self {
-                    flattened_api_sections: serde_json::from_str(
-                        line.trim()
-                            .trim_start_matches("flattenedAPISections: ")
-                            .trim_end_matches(","),
-                    )
-                    .expect("should be valid json"),
-                })
+            if let Some(line) = text.lines().find(|l| l.contains("window.__INITIAL_STATE__ = ")) {
+                let initial_state: StripeInitialState = serde_json::from_str(
+                    line.trim()
+                        .trim_start_matches("window.__INITIAL_STATE__ = ")
+                        .trim_end_matches(";"),
+                )
+                .expect("should be valid json");
+                Ok(Self { url_lookup: initial_state.into() })
             } else {
                 Err(anyhow!("stripe api returned unexpected document"))
             }
@@ -37,19 +38,67 @@ impl UrlFinder {
 
     pub fn url_for_object(&self, object: &str) -> Option<String> {
         let object_name = object.replace('.', "_").to_snake_case();
+        tracing::debug!("looking for {} in html", object_name);
         let object_names = [format!("{}_object", object_name), object_name];
         for name in object_names {
-            if let Some(path) = self
-                .flattened_api_sections
-                .get(&name)
-                .and_then(|o| o.as_object().expect("this should be an object").get("path"))
-                .and_then(|s| s.as_str())
-            {
-                return Some(format!("https://stripe.com/docs/api{}", path));
+            if let Some(path) = self.url_lookup.get(&name) {
+                return Some(format!("https://stripe.com{}", path));
             }
         }
 
         tracing::warn!("{} not in html", object);
         None
     }
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct StripeInitialState {
+    article: Article,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct Article {
+    lazily_loaded_content: LazilyLoadedContent,
+}
+
+impl From<StripeInitialState> for HashMap<String, String> {
+    fn from(value: StripeInitialState) -> Self {
+        value
+            .article
+            .lazily_loaded_content
+            .after
+            .into_iter()
+            .flat_map(|after| {
+                let routes = after.attributes.section_routes;
+                let anchors = after.attributes.anchors;
+                assert!(anchors.len() == routes.len());
+
+                // anchors have been rotated -1 so we need to cycle sectionRoutes to match
+                anchors.into_iter().zip(routes.into_iter().cycle().skip(1))
+            })
+            .collect()
+    }
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct LazilyLoadedContent {
+    after: Vec<AfterItem>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct AfterItem {
+    attributes: Attributes,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct Attributes {
+    #[serde(default)]
+    anchors: Vec<String>,
+    #[serde(default)]
+    section_routes: Vec<String>,
 }
