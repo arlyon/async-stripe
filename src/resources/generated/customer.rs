@@ -644,7 +644,7 @@ pub struct CreateCustomerTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
-    /// Default custom fields to be displayed on invoices for this customer.
+    /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     ///
     /// When updating, pass an empty string to remove previously-defined fields.
     #[serde(skip_serializing_if = "Option::is_none")]

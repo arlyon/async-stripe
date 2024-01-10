@@ -15,7 +15,7 @@ use crate::resources::{
     PaymentIntentOffSession, PaymentMethod,
     PaymentMethodConfigBizPaymentMethodConfigurationDetails,
     PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsCustomerBalanceEuBankAccount,
-    PaymentSource, Review, Shipping,
+    PaymentMethodOptionsUsBankAccountMandateOptions, PaymentSource, Review, Shipping,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -73,6 +73,7 @@ pub struct PaymentIntent {
     /// Make sure that you have TLS enabled on any page that includes the client secret.  Refer to our docs to [accept a payment](https://stripe.com/docs/payments/accept-a-payment?ui=elements) and learn about how `client_secret` should be handled.
     pub client_secret: Option<String>,
 
+    /// Describes whether we can confirm this PaymentIntent automatically, or if it requires customer action to confirm the payment.
     pub confirmation_method: PaymentIntentConfirmationMethod,
 
     /// Time at which the object was created.
@@ -1007,6 +1008,9 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections: Option<LinkedAccountOptionsUsBankAccount>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsUsBankAccountMandateOptions>,
+
     /// Preferred transaction settlement speed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_settlement_speed:
@@ -1540,6 +1544,7 @@ pub struct CreatePaymentIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub confirm: Option<bool>,
 
+    /// Describes whether we can confirm this PaymentIntent automatically, or if it requires customer action to confirm the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub confirmation_method: Option<PaymentIntentConfirmationMethod>,
 
@@ -3452,6 +3457,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub financial_connections:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections>,
 
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions>,
+
     /// Additional fields for network related functions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
@@ -4335,6 +4344,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub financial_connections:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections>,
 
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions>,
+
     /// Additional fields for network related functions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
@@ -4657,6 +4670,14 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
+    /// The method used to collect offline mandate customer acceptance.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_method:
+        Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4888,6 +4909,14 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
+    /// The method used to collect offline mandate customer acceptance.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_method:
+        Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -6594,6 +6623,7 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardReques
 pub enum CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
+    Challenge,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -6602,6 +6632,9 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
             CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
                 "automatic"
+            }
+            CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Challenge => {
+                "challenge"
             }
         }
     }
@@ -8150,12 +8183,14 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
+    Transactions,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -8180,6 +8215,44 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions`'s `collection_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
+    Paper,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::Paper => "paper",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn default() -> Self {
+        Self::Paper
     }
 }
 
@@ -9105,6 +9178,7 @@ impl std::default::Default for PaymentIntentPaymentMethodOptionsCardRequestOverc
 pub enum PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
+    Challenge,
 }
 
 impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -9112,6 +9186,7 @@ impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+            PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Challenge => "challenge",
         }
     }
 }
@@ -12447,6 +12522,7 @@ impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardReques
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
+    Challenge,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -12455,6 +12531,9 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
             UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
                 "automatic"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Challenge => {
+                "challenge"
             }
         }
     }
@@ -14003,12 +14082,14 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
+    Transactions,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
             UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Balances => "balances",
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -14033,6 +14114,44 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Balances
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions`'s `collection_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
+    Paper,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::Paper => "paper",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn default() -> Self {
+        Self::Paper
     }
 }
 

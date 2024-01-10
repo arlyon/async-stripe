@@ -71,6 +71,7 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
     Balances,
+    Transactions,
 }
 
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
@@ -78,6 +79,9 @@ impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
         match self {
             InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Balances => {
                 "balances"
+            }
+            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Transactions => {
+                "transactions"
             }
         }
     }

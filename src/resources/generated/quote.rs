@@ -96,8 +96,7 @@ pub struct Quote {
     /// The invoice that was created from this quote.
     pub invoice: Option<Expandable<Invoice>>,
 
-    /// All invoices will be billed using the specified settings.
-    pub invoice_settings: Option<InvoiceSettingQuoteSetting>,
+    pub invoice_settings: InvoiceSettingQuoteSetting,
 
     /// A list of items the customer is being quoted for.
     #[serde(default)]

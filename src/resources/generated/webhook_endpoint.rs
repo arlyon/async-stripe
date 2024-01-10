@@ -421,6 +421,8 @@ pub enum EventFilter {
     FinancialConnectionsAccountReactivated,
     #[serde(rename = "financial_connections.account.refreshed_balance")]
     FinancialConnectionsAccountRefreshedBalance,
+    #[serde(rename = "financial_connections.account.refreshed_transactions")]
+    FinancialConnectionsAccountRefreshedTransactions,
     #[serde(rename = "identity.verification_session.canceled")]
     IdentityVerificationSessionCanceled,
     #[serde(rename = "identity.verification_session.created")]
@@ -825,6 +827,9 @@ impl EventFilter {
             }
             EventFilter::FinancialConnectionsAccountRefreshedBalance => {
                 "financial_connections.account.refreshed_balance"
+            }
+            EventFilter::FinancialConnectionsAccountRefreshedTransactions => {
+                "financial_connections.account.refreshed_transactions"
             }
             EventFilter::IdentityVerificationSessionCanceled => {
                 "identity.verification_session.canceled"
