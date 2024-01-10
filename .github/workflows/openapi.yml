@@ -59,3 +59,18 @@ jobs:
           branch: openapi
           branch-suffix: timestamp
           reviewers: arlyon
+      - name: email if failed
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: Failed to generate latest changes from OpenApi spec
+          to: arlyon@me.com
+          from: Github Actions
+          body: |
+            This is an automated email. The workflow that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
+
+            Please visit ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} to determine what failed.
