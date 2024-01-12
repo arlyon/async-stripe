@@ -1317,7 +1317,7 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1396,7 +1396,7 @@ pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -1616,7 +1616,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1695,7 +1695,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
