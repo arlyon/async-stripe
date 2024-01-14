@@ -182,7 +182,8 @@ pub trait Paginable {
 pub trait PaginableList {
     type O: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug;
     fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> Self;
-    fn get_data(&mut self) -> &mut Vec<Self::O>;
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O>;
+    fn get_data(&self) -> &Vec<Self::O>;
     fn get_url(&self) -> String;
     fn get_total_count(&self) -> Option<u64>;
     fn has_more(&self) -> bool;
@@ -228,8 +229,12 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         Self { object: "".to_string(), url, has_more, data, next_page: None, total_count }
     }
 
-    fn get_data(&mut self) -> &mut Vec<Self::O> {
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
         &mut self.data
+    }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
     }
     fn get_url(&self) -> String {
         self.url.clone()
@@ -251,9 +256,14 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         Self { url, has_more, data, total_count }
     }
 
-    fn get_data(&mut self) -> &mut Vec<Self::O> {
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
         &mut self.data
     }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
+    }
+
     fn get_url(&self) -> String {
         self.url.clone()
     }
@@ -361,7 +371,7 @@ where
         client: &Client,
     ) -> impl futures_util::Stream<Item = Result<T::O, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
-        self.page.get_data().reverse();
+        self.page.get_data_mut().reverse();
 
         Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
     }
@@ -374,18 +384,18 @@ where
         let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.get_data().len() > 1 {
-            return Some((Ok(paginator.page.get_data().pop()?), Some((paginator, client))));
+            return Some((Ok(paginator.page.get_data_mut().pop()?), Some((paginator, client))));
             // We have more data on this page
         }
 
         if !paginator.page.has_more() {
-            return Some((Ok(paginator.page.get_data().pop()?), None)); // Final value of the stream, no errors
+            return Some((Ok(paginator.page.get_data_mut().pop()?), None)); // Final value of the stream, no errors
         }
 
         match paginator.next(&client).await {
             Ok(mut next_paginator) => {
-                let data = paginator.page.get_data().pop()?;
-                next_paginator.page.get_data().reverse();
+                let data = paginator.page.get_data_mut().pop()?;
+                next_paginator.page.get_data_mut().reverse();
 
                 // Yield last value of thimuts page, the next page (and client) becomes the state
                 Some((Ok(data), Some((next_paginator, client))))
@@ -395,11 +405,10 @@ where
     }
 
     /// Fetch an additional page of data from stripe.
-    pub fn next(&mut self, client: &Client) -> Response<Self> {
-        let page_url = self.page.get_url();
+    pub fn next(&self, client: &Client) -> Response<Self> {
         if let Some(last) = self.page.get_data().last() {
-            if page_url.starts_with("/v1/") {
-                let path = page_url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
+            if self.page.get_url().starts_with("/v1/") {
+                let path = self.page.get_url().trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
 
                 // clone the params and set the cursor
                 let params_next = {
@@ -589,7 +598,7 @@ mod tests {
         });
 
         let params = ListCustomers::new();
-        let mut res = Customer::list(&client, &params).await.unwrap().paginate(params);
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
 
         println!("{:?}", res);
 
@@ -670,7 +679,7 @@ mod tests {
         });
 
         let params = ListCustomers::new();
-        let mut res = Customer::list(&client, &params).await.unwrap().paginate(params);
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
 
         let res2 = res.next(&client).await.unwrap();
 
