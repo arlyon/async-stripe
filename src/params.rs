@@ -589,9 +589,88 @@ mod tests {
         });
 
         let params = ListCustomers::new();
-        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+        let mut res = Customer::list(&client, &params).await.unwrap().paginate(params);
 
         println!("{:?}", res);
+
+        let res2 = res.next(&client).await.unwrap();
+
+        println!("{:?}", res2);
+
+        first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
+    #[cfg(feature = "async")]
+    #[tokio::test]
+    async fn list_multiple() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let mut res = Customer::list(&client, &params).await.unwrap().paginate(params);
 
         let res2 = res.next(&client).await.unwrap();
 
@@ -666,6 +745,87 @@ mod tests {
         assert_eq!(stream.len(), 2);
 
         first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
+    #[cfg(all(feature = "async", feature = "stream"))]
+    #[tokio::test]
+    async fn stream_multiple() {
+        use futures_util::StreamExt;
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_3",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316734,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let items = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::default();
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+
+        let stream = res.stream(&client).collect::<Vec<_>>().await;
+
+        println!("{:#?}", stream.len());
+        assert_eq!(stream.len(), 3);
+
+        items.assert_hits_async(1).await;
         next_item.assert_hits_async(1).await;
     }
 }
