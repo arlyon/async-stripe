@@ -121,6 +121,7 @@ pub use {
         balance_transaction::*,
         billing_details::*,
         charge::*,
+        connect_account_reference::*,
         customer::*,
         custom_unit_amount::*,
         cash_balance::*,

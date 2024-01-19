@@ -11,12 +11,12 @@ use crate::params::{
     Timestamp,
 };
 use crate::resources::{
-    Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
-    InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
-    InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, InvoicesShippingCost,
-    PaymentIntent, PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
-    TestHelpersTestClock,
+    Account, Address, ApiErrors, Application, Charge, ConnectAccountReference, Currency, Customer,
+    Discount, InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit,
+    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCustomerBalance,
+    InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount,
+    InvoiceSettingRenderingOptions, InvoicesShippingCost, PaymentIntent, PaymentMethod,
+    PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -268,6 +268,9 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_pdf: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<ConnectAccountReference>,
+
     /// The error encountered during the previous attempt to finalize the invoice.
     ///
     /// This field is cleared when the invoice is successfully finalized.
@@ -510,6 +513,12 @@ pub struct AutomaticTax {
     ///
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 
     /// The status of the most recent automated tax calculation for this invoice.
     pub status: Option<AutomaticTaxStatus>,
@@ -812,6 +821,12 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from_invoice: Option<CreateInvoiceFromInvoice>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreateInvoiceIssuer>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -902,6 +917,7 @@ impl<'a> CreateInvoice<'a> {
             expand: Default::default(),
             footer: Default::default(),
             from_invoice: Default::default(),
+            issuer: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_settings: Default::default(),
@@ -999,6 +1015,13 @@ pub struct CreateInvoiceAutomaticTax {
     ///
     /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<CreateInvoiceAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1034,6 +1057,17 @@ pub struct CreateInvoiceFromInvoice {
 
     /// The `id` of the invoice that will be cloned.
     pub invoice: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateInvoiceIssuerType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1116,6 +1150,17 @@ pub struct CreateInvoiceTransferData {
 
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateInvoiceAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1505,6 +1550,40 @@ impl std::default::Default for CollectionMethod {
     }
 }
 
+/// An enum representing the possible values of an `CreateInvoiceAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceAutomaticTaxLiabilityType {
+    Account,
+    Self_,
+}
+
+impl CreateInvoiceAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceAutomaticTaxLiabilityType::Account => "account",
+            CreateInvoiceAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `CreateInvoiceFromInvoice`'s `action` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1534,6 +1613,40 @@ impl std::fmt::Display for CreateInvoiceFromInvoiceAction {
 impl std::default::Default for CreateInvoiceFromInvoiceAction {
     fn default() -> Self {
         Self::Revision
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceIssuerType {
+    Account,
+    Self_,
+}
+
+impl CreateInvoiceIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceIssuerType::Account => "account",
+            CreateInvoiceIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -1739,6 +1852,7 @@ impl std::default::Default
 pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
+    Challenge,
 }
 
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
@@ -1747,6 +1861,9 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
             CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
                 "automatic"
+            }
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Challenge => {
+                "challenge"
             }
         }
     }
@@ -2378,6 +2495,7 @@ impl std::default::Default for InvoiceCustomerTaxExempt {
 pub enum InvoicePaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
+    Challenge,
 }
 
 impl InvoicePaymentMethodOptionsCardRequestThreeDSecure {
@@ -2385,6 +2503,7 @@ impl InvoicePaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             InvoicePaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             InvoicePaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+            InvoicePaymentMethodOptionsCardRequestThreeDSecure::Challenge => "challenge",
         }
     }
 }

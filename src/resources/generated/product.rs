@@ -565,7 +565,7 @@ pub struct CreateProductDefaultPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }

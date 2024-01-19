@@ -46,12 +46,15 @@ pub struct CreateAccountLink<'a> {
     /// The identifier of the account to create an account link for.
     pub account: AccountId,
 
-    /// Which information the platform needs to collect from the user.
+    /// The collect parameter is deprecated.
     ///
-    /// One of `currently_due` or `eventually_due`.
-    /// Default is `currently_due`.
+    /// Use `collection_options` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collect: Option<AccountLinkCollect>,
+
+    /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_options: Option<CreateAccountLinkCollectionOptions>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -80,12 +83,27 @@ impl<'a> CreateAccountLink<'a> {
         CreateAccountLink {
             account,
             collect: Default::default(),
+            collection_options: Default::default(),
             expand: Default::default(),
             refresh_url: Default::default(),
             return_url: Default::default(),
             type_,
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountLinkCollectionOptions {
+    /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
+    ///
+    /// If you don't specify `collection_options`, the default value is `currently_due`.
+    pub fields: CreateAccountLinkCollectionOptionsFields,
+
+    /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
+    ///
+    /// The default value is `omit`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub future_requirements: Option<CreateAccountLinkCollectionOptionsFutureRequirements>,
 }
 
 /// An enum representing the possible values of an `CreateAccountLink`'s `collect` field.
@@ -153,5 +171,73 @@ impl std::fmt::Display for AccountLinkType {
 impl std::default::Default for AccountLinkType {
     fn default() -> Self {
         Self::AccountOnboarding
+    }
+}
+
+/// An enum representing the possible values of an `CreateAccountLinkCollectionOptions`'s `fields` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateAccountLinkCollectionOptionsFields {
+    CurrentlyDue,
+    EventuallyDue,
+}
+
+impl CreateAccountLinkCollectionOptionsFields {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateAccountLinkCollectionOptionsFields::CurrentlyDue => "currently_due",
+            CreateAccountLinkCollectionOptionsFields::EventuallyDue => "eventually_due",
+        }
+    }
+}
+
+impl AsRef<str> for CreateAccountLinkCollectionOptionsFields {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateAccountLinkCollectionOptionsFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateAccountLinkCollectionOptionsFields {
+    fn default() -> Self {
+        Self::CurrentlyDue
+    }
+}
+
+/// An enum representing the possible values of an `CreateAccountLinkCollectionOptions`'s `future_requirements` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateAccountLinkCollectionOptionsFutureRequirements {
+    Include,
+    Omit,
+}
+
+impl CreateAccountLinkCollectionOptionsFutureRequirements {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateAccountLinkCollectionOptionsFutureRequirements::Include => "include",
+            CreateAccountLinkCollectionOptionsFutureRequirements::Omit => "omit",
+        }
+    }
+}
+
+impl AsRef<str> for CreateAccountLinkCollectionOptionsFutureRequirements {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateAccountLinkCollectionOptionsFutureRequirements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateAccountLinkCollectionOptionsFutureRequirements {
+    fn default() -> Self {
+        Self::Include
     }
 }

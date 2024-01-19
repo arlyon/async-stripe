@@ -2236,7 +2236,7 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<CreatePaymentIntentPaymentMethodOptionsPromptpay>,
 
-    /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Demo Pay payment method options.
+    /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub revolut_pay: Option<CreatePaymentIntentPaymentMethodOptionsRevolutPay>,
 
@@ -2581,7 +2581,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<UpdatePaymentIntentPaymentMethodOptionsPromptpay>,
 
-    /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Demo Pay payment method options.
+    /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub revolut_pay: Option<UpdatePaymentIntentPaymentMethodOptionsRevolutPay>,
 
@@ -5335,6 +5335,7 @@ pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     Knab,
     Moneyou,
     N26,
+    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -5355,6 +5356,7 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
             CreatePaymentIntentPaymentMethodDataIdealBank::Knab => "knab",
             CreatePaymentIntentPaymentMethodDataIdealBank::Moneyou => "moneyou",
             CreatePaymentIntentPaymentMethodDataIdealBank::N26 => "n26",
+            CreatePaymentIntentPaymentMethodDataIdealBank::Nn => "nn",
             CreatePaymentIntentPaymentMethodDataIdealBank::Rabobank => "rabobank",
             CreatePaymentIntentPaymentMethodDataIdealBank::Regiobank => "regiobank",
             CreatePaymentIntentPaymentMethodDataIdealBank::Revolut => "revolut",
@@ -11234,6 +11236,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     Knab,
     Moneyou,
     N26,
+    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -11254,6 +11257,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
             UpdatePaymentIntentPaymentMethodDataIdealBank::Knab => "knab",
             UpdatePaymentIntentPaymentMethodDataIdealBank::Moneyou => "moneyou",
             UpdatePaymentIntentPaymentMethodDataIdealBank::N26 => "n26",
+            UpdatePaymentIntentPaymentMethodDataIdealBank::Nn => "nn",
             UpdatePaymentIntentPaymentMethodDataIdealBank::Rabobank => "rabobank",
             UpdatePaymentIntentPaymentMethodDataIdealBank::Regiobank => "regiobank",
             UpdatePaymentIntentPaymentMethodDataIdealBank::Revolut => "revolut",
