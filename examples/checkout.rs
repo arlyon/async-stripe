@@ -41,7 +41,7 @@ async fn main() {
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    // create a new exmaple project
+    // create a new example project
     let product = {
         let mut create_product = CreateProduct::new("T-Shirt");
         create_product.metadata = Some(std::collections::HashMap::from([(
