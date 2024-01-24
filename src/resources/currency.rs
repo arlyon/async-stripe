@@ -7,6 +7,10 @@ use crate::params::to_snakecase;
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum Currency {
+    #[serde(rename = "byn")]
+    BYN, // Belarusian Ruble
+    #[serde(rename = "mmk")]
+    MMK, // Myanmar Kyat
     #[serde(rename = "aed")]
     AED, // United Arab Emirates Dirham
     #[serde(rename = "afn")]
