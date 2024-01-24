@@ -1,3 +1,10 @@
+## [0.31.2](https://github.com/arlyon/async-stripe/compare/v0.31.1...v0.31.2) (2024-01-24)
+
+
+### Bug Fixes
+
+* **currency:** add BYN and MMK to currency list ([03cddce](https://github.com/arlyon/async-stripe/commit/03cddce1a9c20c25b531aab47e6e47254b6bef60))
+
 ## [0.31.1](https://github.com/arlyon/async-stripe/compare/v0.31.0...v0.31.1) (2024-01-24)
 
 
