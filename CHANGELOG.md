@@ -1,3 +1,10 @@
+## [0.30.1](https://github.com/arlyon/async-stripe/compare/v0.30.0...v0.30.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* **codegen:** generate terminal resource objects ([bf7e117](https://github.com/arlyon/async-stripe/commit/bf7e1178d61d50a83e21199d0c67bc99b5d04f60))
+
 # [0.30.0](https://github.com/arlyon/async-stripe/compare/v0.29.0...v0.30.0) (2024-01-24)
 
 
