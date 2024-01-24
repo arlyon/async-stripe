@@ -2874,7 +2874,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -3479,7 +3479,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -3761,7 +3761,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -4366,7 +4366,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
 
-    /// Verification method for the intent.
+    /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
