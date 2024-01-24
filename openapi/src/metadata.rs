@@ -209,6 +209,9 @@ pub fn metadata_requests<'a>(
             // special case for usage_records
             (_, _, Some("usage_records")) => "usage_records".to_string(),
 
+            // special case: terminal is a resource, not an object
+            (Some("terminal"), Some(x), _) => format!("terminal.{}", x),
+
             (Some(x), _, _) => x.to_string(),
             _ => {
                 // this should never happen
