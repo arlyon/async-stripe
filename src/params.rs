@@ -182,7 +182,8 @@ pub trait Paginable {
 pub trait PaginableList {
     type O: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug;
     fn new(data: Vec<Self::O>, url: String, has_more: bool, total_count: Option<u64>) -> Self;
-    fn get_data(&self) -> Vec<Self::O>;
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O>;
+    fn get_data(&self) -> &Vec<Self::O>;
     fn get_url(&self) -> String;
     fn get_total_count(&self) -> Option<u64>;
     fn has_more(&self) -> bool;
@@ -191,7 +192,7 @@ pub trait PaginableList {
 /// A single page of a cursor-paginated list of a search object.
 ///
 /// For more details, see <https://stripe.com/docs/api/pagination/search>
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct SearchList<T> {
     pub object: String,
     pub url: String,
@@ -214,19 +215,6 @@ impl<T> Default for SearchList<T> {
     }
 }
 
-impl<T: Clone> Clone for SearchList<T> {
-    fn clone(&self) -> Self {
-        SearchList {
-            object: self.object.clone(),
-            data: self.data.clone(),
-            has_more: self.has_more,
-            total_count: self.total_count,
-            url: self.url.clone(),
-            next_page: self.next_page.clone(),
-        }
-    }
-}
-
 impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug> PaginableList
     for SearchList<T>
 {
@@ -241,8 +229,12 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         Self { object: "".to_string(), url, has_more, data, next_page: None, total_count }
     }
 
-    fn get_data(&self) -> Vec<Self::O> {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
+        &mut self.data
+    }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
     }
     fn get_url(&self) -> String {
         self.url.clone()
@@ -264,9 +256,14 @@ impl<T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::
         Self { url, has_more, data, total_count }
     }
 
-    fn get_data(&self) -> Vec<Self::O> {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut Vec<Self::O> {
+        &mut self.data
     }
+
+    fn get_data(&self) -> &Vec<Self::O> {
+        &self.data
+    }
+
     fn get_url(&self) -> String {
         self.url.clone()
     }
@@ -287,7 +284,7 @@ impl<T> SearchList<T> {
 /// A single page of a cursor-paginated list of an object.
 ///
 /// For more details, see <https://stripe.com/docs/api/pagination>
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct List<T> {
     pub data: Vec<T>,
     pub has_more: bool,
@@ -298,17 +295,6 @@ pub struct List<T> {
 impl<T> Default for List<T> {
     fn default() -> Self {
         List { data: Vec::new(), has_more: false, total_count: None, url: String::new() }
-    }
-}
-
-impl<T: Clone> Clone for List<T> {
-    fn clone(&self) -> Self {
-        List {
-            data: self.data.clone(),
-            has_more: self.has_more,
-            total_count: self.total_count,
-            url: self.url.clone(),
-        }
     }
 }
 
@@ -341,11 +327,11 @@ where
         let mut paginator = self;
         loop {
             if !paginator.page.has_more() {
-                data.extend(paginator.page.get_data().into_iter());
+                data.extend(paginator.page.get_data_mut().drain(..));
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.get_data().into_iter());
+            data.extend(paginator.page.get_data_mut().drain(..));
             paginator = next_paginator
         }
         Ok(data)
@@ -381,11 +367,11 @@ where
     /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
-        self,
+        mut self,
         client: &Client,
     ) -> impl futures_util::Stream<Item = Result<T::O, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
-        self.page.get_data().reverse();
+        self.page.get_data_mut().reverse();
 
         Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
     }
@@ -395,21 +381,21 @@ where
     async fn unfold_stream(
         state: Option<(Self, Client)>,
     ) -> Option<(Result<T::O, StripeError>, Option<(Self, Client)>)> {
-        let (paginator, client) = state?; // If none, we sent the last item in the last iteration
+        let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.get_data().len() > 1 {
-            return Some((Ok(paginator.page.get_data().pop()?), Some((paginator, client))));
+            return Some((Ok(paginator.page.get_data_mut().pop()?), Some((paginator, client))));
             // We have more data on this page
         }
 
         if !paginator.page.has_more() {
-            return Some((Ok(paginator.page.get_data().pop()?), None)); // Final value of the stream, no errors
+            return Some((Ok(paginator.page.get_data_mut().pop()?), None)); // Final value of the stream, no errors
         }
 
         match paginator.next(&client).await {
-            Ok(next_paginator) => {
-                let data = paginator.page.get_data().pop()?;
-                next_paginator.page.get_data().reverse();
+            Ok(mut next_paginator) => {
+                let data = paginator.page.get_data_mut().pop()?;
+                next_paginator.page.get_data_mut().reverse();
 
                 // Yield last value of thimuts page, the next page (and client) becomes the state
                 Some((Ok(data), Some((next_paginator, client))))
@@ -624,6 +610,165 @@ mod tests {
         next_item.assert_hits_async(1).await;
     }
 
+    #[cfg(feature = "blocking")]
+    #[test]
+    fn get_all() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start();
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let res = Customer::list(&client, &params).unwrap().paginate(params);
+
+        let customers = res.get_all(&client).unwrap();
+
+        println!("{:?}", customers);
+
+        assert_eq!(customers.len(), 3);
+        first_item.assert_hits(1);
+        next_item.assert_hits(1);
+    }
+
+    #[cfg(feature = "async")]
+    #[tokio::test]
+    async fn list_multiple() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+
+        let res2 = res.next(&client).await.unwrap();
+
+        println!("{:?}", res2);
+
+        first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
     #[cfg(all(feature = "async", feature = "stream"))]
     #[tokio::test]
     async fn stream() {
@@ -689,6 +834,87 @@ mod tests {
         assert_eq!(stream.len(), 2);
 
         first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
+    }
+
+    #[cfg(all(feature = "async", feature = "stream"))]
+    #[tokio::test]
+    async fn stream_multiple() {
+        use futures_util::StreamExt;
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_3",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316734,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let items = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::default();
+        let res = Customer::list(&client, &params).await.unwrap().paginate(params);
+
+        let stream = res.stream(&client).collect::<Vec<_>>().await;
+
+        println!("{:#?}", stream.len());
+        assert_eq!(stream.len(), 3);
+
+        items.assert_hits_async(1).await;
         next_item.assert_hits_async(1).await;
     }
 }

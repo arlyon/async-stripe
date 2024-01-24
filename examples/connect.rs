@@ -48,6 +48,7 @@ async fn main() {
             expand: &[],
             refresh_url: Some("https://test.com/refresh"),
             return_url: Some("https://test.com/return"),
+            collection_options: None,
         },
     )
     .await
