@@ -1,3 +1,16 @@
+# [0.30.0](https://github.com/arlyon/async-stripe/compare/v0.29.0...v0.30.0) (2024-01-24)
+
+
+### Bug Fixes
+
+* avoid generating nested currency options ([f020df4](https://github.com/arlyon/async-stripe/commit/f020df4feb4fee89366b5bc15cc596caec697f78))
+* typo in checkout.rs ([c55541b](https://github.com/arlyon/async-stripe/commit/c55541b1ee96d91eb29ef900f7292f1337a7c3c3))
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([d0cbc71](https://github.com/arlyon/async-stripe/commit/d0cbc718a980aedee4b191a401e76a958c3e4bb5))
+
 # [0.29.0](https://github.com/arlyon/async-stripe/compare/v0.28.1...v0.29.0) (2024-01-10)
 
 
