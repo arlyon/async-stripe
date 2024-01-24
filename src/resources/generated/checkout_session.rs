@@ -13,7 +13,7 @@ use crate::params::{
     CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
-    Address, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
+    Address, CheckoutSessionItem, ConnectAccountReference, Currency, Customer, Discount, Invoice,
     InvoiceSettingRenderingOptions, LinkedAccountOptionsUsBankAccount, PaymentIntent, PaymentLink,
     PaymentMethodConfigBizPaymentMethodConfigurationDetails,
     PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent, Shipping, ShippingRate,
@@ -77,7 +77,7 @@ pub struct CheckoutSession {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     pub custom_fields: Vec<PaymentPagesCheckoutSessionCustomFields>,
 
     pub custom_text: PaymentPagesCheckoutSessionCustomText,
@@ -790,6 +790,12 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
     /// Indicates whether automatic tax is enabled for the session.
     pub enabled: bool,
 
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
+
     /// The status of the most recent automated tax calculation for this session.
     pub status: Option<PaymentPagesCheckoutSessionAutomaticTaxStatus>,
 }
@@ -996,6 +1002,11 @@ pub struct PaymentPagesCheckoutSessionInvoiceSettings {
     /// Footer displayed on the invoice.
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    pub issuer: Option<ConnectAccountReference>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1174,7 +1185,7 @@ pub struct CreateCheckoutSession<'a> {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<CreateCheckoutSessionCustomFields>>,
 
@@ -1501,6 +1512,13 @@ pub struct CreateCheckoutSessionAfterExpiration {
 pub struct CreateCheckoutSessionAutomaticTax {
     /// Set to true to enable automatic taxes.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<CreateCheckoutSessionAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1938,6 +1956,10 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// All invoices will be billed using the specified settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<CreateCheckoutSessionSubscriptionDataInvoiceSettings>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -2004,6 +2026,17 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     ///
     /// It will be attached to the Checkout Session object upon expiration.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2100,6 +2133,12 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
+
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -2702,6 +2741,15 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings {
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -2744,6 +2792,17 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
     ///
     /// This may be up to 30 characters.
     pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2796,7 +2855,7 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     /// The number of intervals between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -2937,6 +2996,17 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub currency_options: Option<
         CurrencyMap<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
     >,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -4624,6 +4694,40 @@ impl std::default::Default for CheckoutUsBankAccountPaymentMethodOptionsVerifica
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionAutomaticTaxLiabilityType {
+    Account,
+    Self_,
+}
+
+impl CreateCheckoutSessionAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionAutomaticTaxLiabilityType::Account => "account",
+            CreateCheckoutSessionAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement`'s `position` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -4901,6 +5005,40 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerUpdateShipping {
 impl std::default::Default for CreateCheckoutSessionCustomerUpdateShipping {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    Account,
+    Self_,
+}
+
+impl CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType::Account => "account",
+            CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -7687,6 +7825,40 @@ impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataT
 impl std::default::Default for CreateCheckoutSessionShippingOptionsShippingRateDataType {
     fn default() -> Self {
         Self::FixedAmount
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    Account,
+    Self_,
+}
+
+impl CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType::Account => "account",
+            CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 

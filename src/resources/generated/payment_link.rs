@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{
-    Account, Application, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions,
-    ShippingRate, SubscriptionsTrialsResourceTrialSettings, TaxId,
+    Account, Application, CheckoutSessionItem, ConnectAccountReference, Currency,
+    InvoiceSettingRenderingOptions, ShippingRate, SubscriptionsTrialsResourceTrialSettings, TaxId,
 };
 
 /// The resource representing a Stripe "PaymentLink".
@@ -54,7 +54,7 @@ pub struct PaymentLink {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     pub custom_fields: Vec<PaymentLinksResourceCustomFields>,
 
     pub custom_text: PaymentLinksResourceCustomText,
@@ -177,6 +177,12 @@ pub struct PaymentLinksResourceAfterCompletion {
 pub struct PaymentLinksResourceAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -332,6 +338,11 @@ pub struct PaymentLinksResourceInvoiceSettings {
     /// Footer to be displayed on the invoice.
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    pub issuer: Option<ConnectAccountReference>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -435,6 +446,8 @@ pub struct PaymentLinksResourceSubscriptionData {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
 
+    pub invoice_settings: PaymentLinksResourceSubscriptionDataInvoiceSettings,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
     pub metadata: Metadata,
 
@@ -443,6 +456,11 @@ pub struct PaymentLinksResourceSubscriptionData {
 
     /// Settings related to subscription trials.
     pub trial_settings: Option<SubscriptionsTrialsResourceTrialSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceSubscriptionDataInvoiceSettings {
+    pub issuer: ConnectAccountReference,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -506,7 +524,7 @@ pub struct CreatePaymentLink<'a> {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<CreatePaymentLinkCustomFields>>,
 
@@ -715,7 +733,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// Collect additional information from your customer using custom fields.
     ///
-    /// Up to 2 fields are supported.
+    /// Up to 3 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<UpdatePaymentLinkCustomFields>>,
 
@@ -833,6 +851,13 @@ pub struct CreatePaymentLinkAfterCompletion {
 pub struct CreatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<CreatePaymentLinkAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1021,6 +1046,10 @@ pub struct CreatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// All invoices will be billed using the specified settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<CreatePaymentLinkSubscriptionDataInvoiceSettings>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
     ///
     /// Unlike object-level metadata, this field is declarative.
@@ -1080,6 +1109,13 @@ pub struct UpdatePaymentLinkAfterCompletion {
 pub struct UpdatePaymentLinkAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub liability: Option<UpdatePaymentLinkAutomaticTaxLiability>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1210,6 +1246,10 @@ pub struct UpdatePaymentLinkShippingAddressCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkSubscriptionData {
+    /// All invoices will be billed using the specified settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettings>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
     ///
     /// Unlike object-level metadata, this field is declarative.
@@ -1235,6 +1275,17 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1332,6 +1383,12 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1372,6 +1429,15 @@ pub struct CreatePaymentLinkRestrictionsCompletedSessions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataInvoiceSettings {
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
@@ -1390,6 +1456,17 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkAutomaticTaxLiability {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkAutomaticTaxLiabilityType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1478,6 +1555,12 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1518,6 +1601,15 @@ pub struct UpdatePaymentLinkRestrictionsCompletedSessions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettings {
+    /// The connected account that issues the invoice.
+    ///
+    /// The invoice is presented with the branding and support information of the specified account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
@@ -1550,6 +1642,17 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
@@ -1559,6 +1662,17 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1595,6 +1709,17 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
@@ -1604,6 +1729,17 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    /// The connected account being referenced when `type` is `account`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// Type of the account referenced in the request.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1644,6 +1780,40 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
 impl std::default::Default for CreatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkAutomaticTaxLiabilityType {
+    Account,
+    Self_,
+}
+
+impl CreatePaymentLinkAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkAutomaticTaxLiabilityType::Account => "account",
+            CreatePaymentLinkAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -1818,6 +1988,40 @@ impl std::fmt::Display for CreatePaymentLinkCustomFieldsType {
 impl std::default::Default for CreatePaymentLinkCustomFieldsType {
     fn default() -> Self {
         Self::Dropdown
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkInvoiceCreationInvoiceDataIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    Account,
+    Self_,
+}
+
+impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Account => "account",
+            CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -2753,6 +2957,40 @@ impl std::fmt::Display for CreatePaymentLinkShippingAddressCollectionAllowedCoun
 impl std::default::Default for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn default() -> Self {
         Self::Ac
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    Account,
+    Self_,
+}
+
+impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Account => "account",
+            CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -4071,6 +4309,40 @@ impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
     }
 }
 
+/// An enum representing the possible values of an `UpdatePaymentLinkAutomaticTaxLiability`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkAutomaticTaxLiabilityType {
+    Account,
+    Self_,
+}
+
+impl UpdatePaymentLinkAutomaticTaxLiabilityType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkAutomaticTaxLiabilityType::Account => "account",
+            UpdatePaymentLinkAutomaticTaxLiabilityType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentLinkCustomFieldsLabel`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -4136,6 +4408,40 @@ impl std::fmt::Display for UpdatePaymentLinkCustomFieldsType {
 impl std::default::Default for UpdatePaymentLinkCustomFieldsType {
     fn default() -> Self {
         Self::Dropdown
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    Account,
+    Self_,
+}
+
+impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Account => "account",
+            UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 
@@ -5001,6 +5307,40 @@ impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
 impl std::default::Default for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn default() -> Self {
         Self::Ac
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    Account,
+    Self_,
+}
+
+impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Account => "account",
+            UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType::Self_ => "self",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn default() -> Self {
+        Self::Account
     }
 }
 

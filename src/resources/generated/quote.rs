@@ -8,8 +8,9 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
-    Account, Application, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
-    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
+    Account, Application, CheckoutSessionItem, ConnectAccountReference, Currency, Customer,
+    Discount, Invoice, QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Quote".
@@ -170,12 +171,20 @@ pub struct InvoiceSettingQuoteSetting {
     ///
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
     pub days_until_due: Option<u32>,
+
+    pub issuer: ConnectAccountReference,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceAutomaticTax {
     /// Automatically calculate taxes.
     pub enabled: bool,
+
+    /// The account that's liable for tax.
+    ///
+    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
+    /// The tax transaction is returned in the report of the connected account.
+    pub liability: Option<ConnectAccountReference>,
 
     /// The status of the most recent automated tax calculation for this quote.
     pub status: Option<QuotesResourceAutomaticTaxStatus>,

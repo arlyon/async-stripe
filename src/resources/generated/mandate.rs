@@ -156,6 +156,9 @@ pub struct MandateBacsDebit {
     /// The unique reference identifying the mandate on the Bacs network.
     pub reference: String,
 
+    /// When the mandate is revoked on the Bacs network this field displays the reason for the revocation.
+    pub revocation_reason: Option<MandateBacsDebitRevocationReason>,
+
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
@@ -391,6 +394,46 @@ impl std::fmt::Display for MandateBacsDebitNetworkStatus {
 impl std::default::Default for MandateBacsDebitNetworkStatus {
     fn default() -> Self {
         Self::Accepted
+    }
+}
+
+/// An enum representing the possible values of an `MandateBacsDebit`'s `revocation_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateBacsDebitRevocationReason {
+    AccountClosed,
+    BankAccountRestricted,
+    BankOwnershipChanged,
+    CouldNotProcess,
+    DebitNotAuthorized,
+}
+
+impl MandateBacsDebitRevocationReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateBacsDebitRevocationReason::AccountClosed => "account_closed",
+            MandateBacsDebitRevocationReason::BankAccountRestricted => "bank_account_restricted",
+            MandateBacsDebitRevocationReason::BankOwnershipChanged => "bank_ownership_changed",
+            MandateBacsDebitRevocationReason::CouldNotProcess => "could_not_process",
+            MandateBacsDebitRevocationReason::DebitNotAuthorized => "debit_not_authorized",
+        }
+    }
+}
+
+impl AsRef<str> for MandateBacsDebitRevocationReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateBacsDebitRevocationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for MandateBacsDebitRevocationReason {
+    fn default() -> Self {
+        Self::AccountClosed
     }
 }
 

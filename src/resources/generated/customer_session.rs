@@ -9,6 +9,8 @@ use crate::resources::{Customer};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerSessionResourceCustomerSession".
+///
+/// For more details see <https://stripe.com/docs/api/customer_sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSession {
 
@@ -56,11 +58,9 @@ impl Object for CustomerSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerSessionResourceComponents {
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub buy_button: Option<CustomerSessionResourceComponentsResourceBuyButton>,
+    pub buy_button: CustomerSessionResourceComponentsResourceBuyButton,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pricing_table: Option<CustomerSessionResourceComponentsResourcePricingTable>,
+    pub pricing_table: CustomerSessionResourceComponentsResourcePricingTable,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -83,7 +83,7 @@ pub struct CreateCustomerSession<'a> {
 
     /// Configuration for each component.
     ///
-    /// 1 component must be enabled.
+    /// Exactly 1 component must be enabled.
     pub components: CreateCustomerSessionComponents,
 
     /// The ID of an existing customer for which to create the customer session.
