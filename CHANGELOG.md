@@ -1,3 +1,10 @@
+## [0.31.1](https://github.com/arlyon/async-stripe/compare/v0.31.0...v0.31.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* **pagination:** prevent infinite loop caused by clone ([bc20bd4](https://github.com/arlyon/async-stripe/commit/bc20bd46f67ffb384d67d0605cb5126e1f3d6333))
+
 # [0.31.0](https://github.com/arlyon/async-stripe/compare/v0.30.1...v0.31.0) (2024-01-24)
 
 
