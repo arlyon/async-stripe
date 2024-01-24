@@ -327,11 +327,11 @@ where
         let mut paginator = self;
         loop {
             if !paginator.page.has_more() {
-                data.extend(paginator.page.get_data().into_iter());
+                data.extend(paginator.page.get_data_mut().drain(..));
                 break;
             }
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.get_data().into_iter());
+            data.extend(paginator.page.get_data_mut().drain(..));
             paginator = next_paginator
         }
         Ok(data)
@@ -608,6 +608,86 @@ mod tests {
 
         first_item.assert_hits_async(1).await;
         next_item.assert_hits_async(1).await;
+    }
+
+    #[cfg(feature = "blocking")]
+    #[test]
+    fn get_all() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start();
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_2");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": false, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316732,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }, {
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316733,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let params = ListCustomers::new();
+        let res = Customer::list(&client, &params).unwrap().paginate(params);
+
+        let customers = res.get_all(&client).unwrap();
+
+        println!("{:?}", customers);
+
+        assert_eq!(customers.len(), 3);
+        first_item.assert_hits(1);
+        next_item.assert_hits(1);
     }
 
     #[cfg(feature = "async")]
