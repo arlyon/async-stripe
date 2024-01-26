@@ -892,7 +892,7 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     pub request_extended_authorization:
         Option<PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>,
 
-    /// Request ability to [increment](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
+    /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_incremental_authorization:
         Option<PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>,
@@ -3054,7 +3054,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     pub request_extended_authorization:
         Option<CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>,
 
-    /// Request ability to [increment](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
+    /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_incremental_authorization:
         Option<CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>,
@@ -3941,7 +3941,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     pub request_extended_authorization:
         Option<UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>,
 
-    /// Request ability to [increment](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
+    /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_incremental_authorization:
         Option<UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>,
