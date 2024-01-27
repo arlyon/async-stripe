@@ -1,3 +1,10 @@
+# [0.32.0](https://github.com/arlyon/async-stripe/compare/v0.31.2...v0.32.0) (2024-01-27)
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([19ac377](https://github.com/arlyon/async-stripe/commit/19ac377c82c8b52a44092a3f93174917983d166f))
+
 ## [0.31.2](https://github.com/arlyon/async-stripe/compare/v0.31.1...v0.31.2) (2024-01-24)
 
 
