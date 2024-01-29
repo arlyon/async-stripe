@@ -504,7 +504,7 @@ def_id!(CreditNoteLineItemId, "cnli_");
 def_id!(CustomerBalanceTransactionId, "cbtxn_");
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
-def_id!(DisputeId, "dp_" | "du_");
+def_id!(DisputeId, "dp_" | "du_" | "pdp_");
 def_id!(EphemeralKeyId, "ephkey_");
 def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
