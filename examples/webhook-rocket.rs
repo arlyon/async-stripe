@@ -32,7 +32,7 @@ pub async fn stripe_webhooks(stripe_signature: StripeSignature<'_>, payload: Pay
         stripe_signature.signature,
         "webhook_secret_key",
     ) {
-        match event.event_type {
+        match event.type_ {
             EventType::CheckoutSessionCompleted => {
                 if let EventObject::CheckoutSession(session) = event.data.object {
                     match checkout_session_completed(session) {
@@ -73,17 +73,17 @@ impl<'r> FromData<'r> for Payload {
     type Error = Error;
 
     async fn from_data(req: &'r Request<'_>, data: Data<'r>) -> data::Outcome<'r, Self> {
-        use rocket::outcome::Outcome::*;
+        use rocket::outcome::Outcome;
         use Error::*;
 
         let limit = req.limits().get("form").unwrap_or_else(|| 1_000_000.bytes());
 
         let contents = match data.open(limit).into_string().await {
             Ok(string) if string.is_complete() => string.into_inner(),
-            Ok(_) => return Failure((Status::PayloadTooLarge, TooLarge)),
-            Err(e) => return Failure((Status::InternalServerError, Io(e))),
+            Ok(_) => return Outcome::Error((Status::PayloadTooLarge, TooLarge)),
+            Err(e) => return Outcome::Error((Status::InternalServerError, Io(e))),
         };
-        Success(Payload { contents })
+        Outcome::Success(Payload { contents })
     }
 }
 
@@ -97,7 +97,7 @@ impl<'r> FromRequest<'r> for StripeSignature<'r> {
 
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
         match req.headers().get_one("Stripe-Signature") {
-            None => Outcome::Failure((Status::BadRequest, "No signature provided")),
+            None => Outcome::Error((Status::BadRequest, "No signature provided")),
             Some(signature) => Outcome::Success(StripeSignature { signature }),
         }
     }
