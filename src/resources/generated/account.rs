@@ -10,7 +10,7 @@ use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
-    Address, Currency, DelayDays, ExternalAccount, File, Person, PersonVerificationParams,
+    Address, Currency, DelayDays, ExternalAccount, File, Person, PersonVerificationParams, TaxId,
     VerificationDocumentParams,
 };
 
@@ -358,6 +358,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort_payments: Option<AccountCapabilitiesSofortPayments>,
 
+    /// The status of the Swish capability of the account, or whether the account can directly process Swish payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish_payments: Option<AccountCapabilitiesSwishPayments>,
+
     /// The status of the tax reporting 1099-K (US) capability of the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_reporting_us_1099_k: Option<CapabilityStatus>,
@@ -509,6 +513,9 @@ pub struct AccountSettings {
 
     pub dashboard: DashboardSettings,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoices: Option<AccountInvoicesSettings>,
+
     pub payments: PaymentsSettings,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -612,6 +619,14 @@ pub struct DeclineChargeOn {
     ///
     /// This setting only applies when a CVC is provided and it fails bank verification.
     pub cvc_failure: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountInvoicesSettings {
+    /// The list of default Account Tax IDs to automatically include on invoices.
+    ///
+    /// Account Tax IDs get added when an invoice is finalized.
+    pub default_account_tax_ids: Option<Vec<Expandable<TaxId>>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -935,7 +950,8 @@ pub struct CreateAccount<'a> {
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.  Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
+    /// After you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
 
@@ -1098,7 +1114,8 @@ pub struct UpdateAccount<'a> {
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.  Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
+    /// After you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
 
@@ -1416,6 +1433,10 @@ pub struct CreateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort_payments: Option<CreateAccountCapabilitiesSofortPayments>,
 
+    /// The swish_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish_payments: Option<CreateAccountCapabilitiesSwishPayments>,
+
     /// The tax_reporting_us_1099_k capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_reporting_us_1099_k: Option<CreateAccountCapabilitiesTaxReportingUs1099K>,
@@ -1569,6 +1590,10 @@ pub struct PersonParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<PersonParamsRegisteredAddress>,
 
+    /// Describes the person’s relationship to the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub relationship: Option<PersonParamsRelationship>,
+
     /// The last four digits of the individual's Social Security Number (U.S.
     ///
     /// only).
@@ -1705,6 +1730,10 @@ pub struct UpdateAccountCapabilities {
     /// The sofort_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort_payments: Option<UpdateAccountCapabilitiesSofortPayments>,
+
+    /// The swish_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish_payments: Option<UpdateAccountCapabilitiesSwishPayments>,
 
     /// The tax_reporting_us_1099_k capability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2178,6 +2207,16 @@ pub struct CreateAccountCapabilitiesSofortPayments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesSwishPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTaxReportingUs1099K {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
@@ -2361,6 +2400,31 @@ pub struct PersonParamsRegisteredAddress {
     /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PersonParamsRelationship {
+    /// Whether the person is a director of the account's legal entity.
+    ///
+    /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub director: Option<bool>,
+
+    /// Whether the person has significant responsibility to control, manage, or direct the organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub executive: Option<bool>,
+
+    /// Whether the person is an owner of the account’s legal entity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<bool>,
+
+    /// The percent owned by the person of the account's legal entity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub percent_ownership: Option<f64>,
+
+    /// The person's title (e.g., CEO, Support Engineer).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2665,6 +2729,16 @@ pub struct UpdateAccountCapabilitiesSepaDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesSofortPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesSwishPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -3828,6 +3902,42 @@ impl std::fmt::Display for AccountCapabilitiesSofortPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesSofortPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `swish_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesSwishPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesSwishPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesSwishPayments::Active => "active",
+            AccountCapabilitiesSwishPayments::Inactive => "inactive",
+            AccountCapabilitiesSwishPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesSwishPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesSwishPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesSwishPayments {
     fn default() -> Self {
         Self::Active
     }

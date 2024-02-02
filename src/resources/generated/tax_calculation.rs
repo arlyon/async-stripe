@@ -66,7 +66,7 @@ impl Object for TaxCalculation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxBreakdown {
-    /// The amount of tax, in integer cents.
+    /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
     /// Specifies whether the tax amount is included in the line item amount.
@@ -79,19 +79,19 @@ pub struct TaxProductResourceTaxBreakdown {
     /// We might extend the possible values for this field to support new tax rules.
     pub taxability_reason: TaxProductResourceTaxBreakdownTaxabilityReason,
 
-    /// The amount on which tax is calculated, in integer cents.
+    /// The amount on which tax is calculated, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub taxable_amount: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxCalculationShippingCost {
-    /// The shipping amount in integer cents.
+    /// The shipping amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes were calculated on top of this amount.
     pub amount: i64,
 
-    /// The amount of tax calculated for shipping, in integer cents.
+    /// The amount of tax calculated for shipping, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_tax: i64,
 
     /// The ID of an existing [ShippingRate](https://stripe.com/docs/api/shipping_rates/object).
@@ -113,7 +113,7 @@ pub struct TaxProductResourceTaxCalculationShippingCost {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxBreakdown {
-    /// The amount of tax, in integer cents.
+    /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
     pub jurisdiction: TaxProductResourceJurisdiction,
@@ -131,7 +131,7 @@ pub struct TaxProductResourceLineItemTaxBreakdown {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: TaxProductResourceLineItemTaxBreakdownTaxabilityReason,
 
-    /// The amount on which tax is calculated, in integer cents.
+    /// The amount on which tax is calculated, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub taxable_amount: i64,
 }
 

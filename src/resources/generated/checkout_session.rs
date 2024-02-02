@@ -199,8 +199,7 @@ pub struct CheckoutSession {
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
-    /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
-    /// Possible values are `auto`, `pay`, `book`, `donate`.
+    /// `submit_type` can only be specified on Checkout Sessions in `payment` mode.
     /// If blank or `auto`, `pay` is used.
     pub submit_type: Option<CheckoutSessionSubmitType>,
 
@@ -337,6 +336,9 @@ pub struct CheckoutSessionPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CheckoutSofortPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<CheckoutSwishPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CheckoutUsBankAccountPaymentMethodOptions>,
@@ -739,6 +741,14 @@ pub struct CheckoutSofortPaymentMethodOptions {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CheckoutSofortPaymentMethodOptionsSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutSwishPaymentMethodOptions {
+    /// The order reference that will be displayed to customers in the Swish application.
+    ///
+    /// Defaults to the `id` of the Payment Intent.
+    pub reference: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1348,8 +1358,7 @@ pub struct CreateCheckoutSession<'a> {
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
-    /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
-    /// Possible values are `auto`, `pay`, `book`, `donate`.
+    /// `submit_type` can only be specified on Checkout Sessions in `payment` mode.
     /// If blank or `auto`, `pay` is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_type: Option<CheckoutSessionSubmitType>,
@@ -1872,6 +1881,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Sofort payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateCheckoutSessionPaymentMethodOptionsSofort>,
+
+    /// contains details about the Swish payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<CreateCheckoutSessionPaymentMethodOptionsSwish>,
 
     /// contains details about the Us Bank Account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2647,6 +2660,15 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsSwish {
+    /// The order reference that will be displayed to customers in the Swish application.
+    ///
+    /// Defaults to the `id` of the Payment Intent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -6818,6 +6840,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     RevolutPay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -6855,6 +6878,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::RevolutPay => "revolut_pay",
             CreateCheckoutSessionPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateCheckoutSessionPaymentMethodTypes::Sofort => "sofort",
+            CreateCheckoutSessionPaymentMethodTypes::Swish => "swish",
             CreateCheckoutSessionPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreateCheckoutSessionPaymentMethodTypes::WechatPay => "wechat_pay",
             CreateCheckoutSessionPaymentMethodTypes::Zip => "zip",

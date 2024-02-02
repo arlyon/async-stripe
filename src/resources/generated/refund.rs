@@ -211,6 +211,9 @@ pub struct RefundDestinationDetails {
     pub sofort: Option<DestinationDetailsUnimplemented>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<RefundDestinationDetailsGeneric>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub th_bank_transfer: Option<RefundDestinationDetailsGeneric>,
 
     /// The type of transaction-specific details of the payment method used in the refund (e.g., `card`).

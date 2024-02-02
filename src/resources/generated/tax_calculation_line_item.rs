@@ -13,13 +13,13 @@ pub struct TaxCalculationLineItem {
     /// Unique identifier for the object.
     pub id: TaxCalculationLineItemId,
 
-    /// The line item amount in integer cents.
+    /// The line item amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes were calculated on top of this amount.
     pub amount: i64,
 
-    /// The amount of tax calculated for this line item, in integer cents.
+    /// The amount of tax calculated for this line item, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount_tax: i64,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -60,7 +60,7 @@ impl Object for TaxCalculationLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceLineItemTaxBreakdown {
-    /// The amount of tax, in integer cents.
+    /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
     pub jurisdiction: TaxProductResourceJurisdiction,
@@ -78,7 +78,7 @@ pub struct TaxProductResourceLineItemTaxBreakdown {
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: TaxProductResourceLineItemTaxBreakdownTaxabilityReason,
 
-    /// The amount on which tax is calculated, in integer cents.
+    /// The amount on which tax is calculated, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub taxable_amount: i64,
 }
 

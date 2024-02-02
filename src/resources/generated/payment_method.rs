@@ -136,6 +136,9 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<PaymentMethodSofort>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<PaymentMethodSwish>,
+
     /// The type of the PaymentMethod.
     ///
     /// An additional hash is included on the PaymentMethod with a name matching this value.
@@ -342,6 +345,8 @@ pub struct Networks {
     pub available: Vec<String>,
 
     /// The preferred network for the card.
+    ///
+    /// Can be `cartes_bancaires`, `mastercard`, `visa` or `invalid_preference` if requested network is not valid for the card.
     pub preferred: Option<String>,
 }
 
@@ -739,6 +744,9 @@ pub struct PaymentMethodSofort {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodSwish {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodUsBankAccount {
     /// Account holder type: individual or company.
     pub account_holder_type: Option<PaymentMethodUsBankAccountAccountHolderType>,
@@ -974,6 +982,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreatePaymentMethodSofort>,
 
+    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<CreatePaymentMethodSwish>,
+
     /// The type of the PaymentMethod.
     ///
     /// An additional hash is included on the PaymentMethod with a name matching this value.
@@ -1034,6 +1046,7 @@ impl<'a> CreatePaymentMethod<'a> {
             revolut_pay: Default::default(),
             sepa_debit: Default::default(),
             sofort: Default::default(),
+            swish: Default::default(),
             type_: Default::default(),
             us_bank_account: Default::default(),
             wechat_pay: Default::default(),
@@ -1295,6 +1308,9 @@ pub struct CreatePaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreatePaymentMethodSofortCountry,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodSwish {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodUsBankAccount {
@@ -2365,6 +2381,7 @@ pub enum PaymentMethodType {
     RevolutPay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -2404,6 +2421,7 @@ impl PaymentMethodType {
             PaymentMethodType::RevolutPay => "revolut_pay",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
+            PaymentMethodType::Swish => "swish",
             PaymentMethodType::UsBankAccount => "us_bank_account",
             PaymentMethodType::WechatPay => "wechat_pay",
             PaymentMethodType::Zip => "zip",
@@ -2461,6 +2479,7 @@ pub enum PaymentMethodTypeFilter {
     RevolutPay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -2498,6 +2517,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::RevolutPay => "revolut_pay",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",
+            PaymentMethodTypeFilter::Swish => "swish",
             PaymentMethodTypeFilter::UsBankAccount => "us_bank_account",
             PaymentMethodTypeFilter::WechatPay => "wechat_pay",
             PaymentMethodTypeFilter::Zip => "zip",
