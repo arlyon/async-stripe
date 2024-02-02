@@ -2163,6 +2163,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -2196,6 +2197,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             CreatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            CreatePaymentLinkPaymentMethodTypes::Swish => "swish",
             CreatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
@@ -3166,6 +3168,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -3199,6 +3202,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             PaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             PaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            PaymentLinkPaymentMethodTypes::Swish => "swish",
             PaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             PaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
@@ -4513,6 +4517,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Promptpay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
 }
@@ -4546,6 +4551,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             UpdatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             UpdatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            UpdatePaymentLinkPaymentMethodTypes::Swish => "swish",
             UpdatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
             UpdatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }

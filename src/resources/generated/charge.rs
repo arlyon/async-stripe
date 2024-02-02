@@ -466,6 +466,9 @@ pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stripe_account: Option<PaymentMethodDetailsStripeAccount>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<PaymentMethodDetailsSwish>,
+
     /// The type of transaction-specific details of the payment method used in the payment, one of `ach_credit_transfer`, `ach_debit`, `acss_debit`, `alipay`, `au_becs_debit`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `klarna`, `multibanco`, `p24`, `sepa_debit`, `sofort`, `stripe_account`, or `wechat`.
     /// An additional hash is included on `payment_method_details` with a name matching this value.
     /// It contains information specific to the payment method.
@@ -1440,6 +1443,20 @@ pub struct PaymentMethodDetailsSofort {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsStripeAccount {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsSwish {
+    /// Uniquely identifies the payer's Swish account.
+    ///
+    /// You can use this attribute to check whether two Swish transactions were paid for by the same payer.
+    pub fingerprint: Option<String>,
+
+    /// Payer bank reference number for the payment.
+    pub payment_reference: Option<String>,
+
+    /// The last four digits of the Swish account phone number.
+    pub verified_phone_last4: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsUsBankAccount {

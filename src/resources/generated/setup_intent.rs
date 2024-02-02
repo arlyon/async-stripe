@@ -837,6 +837,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateSetupIntentPaymentMethodDataSofort>,
 
+    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<CreateSetupIntentPaymentMethodDataSwish>,
+
     /// The type of the PaymentMethod.
     ///
     /// An additional hash is included on the PaymentMethod with a name matching this value.
@@ -1034,6 +1038,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateSetupIntentPaymentMethodDataSofort>,
+
+    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish: Option<UpdateSetupIntentPaymentMethodDataSwish>,
 
     /// The type of the PaymentMethod.
     ///
@@ -1272,6 +1280,9 @@ pub struct CreateSetupIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreateSetupIntentPaymentMethodDataSofortCountry,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataSwish {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataUsBankAccount {
@@ -1571,6 +1582,9 @@ pub struct UpdateSetupIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: UpdateSetupIntentPaymentMethodDataSofortCountry,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataSwish {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataUsBankAccount {
@@ -2747,6 +2761,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -2783,6 +2798,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::RevolutPay => "revolut_pay",
             CreateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             CreateSetupIntentPaymentMethodDataType::Sofort => "sofort",
+            CreateSetupIntentPaymentMethodDataType::Swish => "swish",
             CreateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             CreateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
             CreateSetupIntentPaymentMethodDataType::Zip => "zip",
@@ -4679,6 +4695,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SepaDebit,
     Sofort,
+    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -4715,6 +4732,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::RevolutPay => "revolut_pay",
             UpdateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             UpdateSetupIntentPaymentMethodDataType::Sofort => "sofort",
+            UpdateSetupIntentPaymentMethodDataType::Swish => "swish",
             UpdateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             UpdateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
             UpdateSetupIntentPaymentMethodDataType::Zip => "zip",

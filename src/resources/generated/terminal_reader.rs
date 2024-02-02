@@ -61,7 +61,7 @@ pub struct TerminalReader {
 
     /// The networking status of the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<TerminalReaderStatus>,
 }
 
 impl TerminalReader {
@@ -548,7 +548,7 @@ impl std::default::Default for TerminalReaderReaderResourceSetReaderDisplayActio
     }
 }
 
-/// An enum representing the possible values of an `ListTerminalReaders`'s `status` field.
+/// An enum representing the possible values of an `TerminalReader`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TerminalReaderStatus {
