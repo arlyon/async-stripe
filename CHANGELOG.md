@@ -1,3 +1,15 @@
+# [0.33.0](https://github.com/arlyon/async-stripe/compare/v0.32.0...v0.33.0) (2024-02-02)
+
+
+### Bug Fixes
+
+* support pdp_ as an id prefix for dispute objects ([be506d6](https://github.com/arlyon/async-stripe/commit/be506d6fc6fa41dd6085d3887abbadbef069432c))
+
+
+### Features
+
+* generate latest changes from OpenApi spec ([29a457d](https://github.com/arlyon/async-stripe/commit/29a457d280f25ebd7d95e80ad5a4af4172e05682))
+
 # [0.32.0](https://github.com/arlyon/async-stripe/compare/v0.31.2...v0.32.0) (2024-01-27)
 
 
