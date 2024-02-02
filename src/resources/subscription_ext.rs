@@ -1,5 +1,6 @@
 use serde::Serialize;
 
+use crate::CancellationDetails;
 use crate::client::{Client, Response};
 use crate::ids::SubscriptionId;
 use crate::params::SearchList;
@@ -8,12 +9,16 @@ use crate::resources::{CreateSubscriptionItems, Subscription};
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CancelSubscription {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub at_period_end: Option<bool>,
+    pub cancellation_details: Option<CancellationDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_now: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prorate: Option<bool>,
 }
 
 impl CancelSubscription {
     pub fn new() -> CancelSubscription {
-        CancelSubscription { at_period_end: None }
+        CancelSubscription { cancellation_details: None, invoice_now: None, prorate: None }
     }
 }
 
