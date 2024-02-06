@@ -109,5 +109,5 @@ impl<'a> InvoiceSearchParams<'a> {
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct FinalizeInvoiceParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    auto_advance: Option<bool>,
+    pub auto_advance: Option<bool>,
 }
