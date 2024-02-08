@@ -1,3 +1,10 @@
+## [0.33.1](https://github.com/arlyon/async-stripe/compare/v0.33.0...v0.33.1) (2024-02-08)
+
+
+### Bug Fixes
+
+* expose the `auto_advance` field from the `FinalizeInvoiceParams` struct ([ae1a807](https://github.com/arlyon/async-stripe/commit/ae1a807e202f32f3ff8405fdbc1d14aca44c41e8))
+
 # [0.33.0](https://github.com/arlyon/async-stripe/compare/v0.32.0...v0.33.0) (2024-02-02)
 
 
