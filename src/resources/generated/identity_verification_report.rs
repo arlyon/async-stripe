@@ -163,6 +163,8 @@ pub struct GelatoIdNumberReport {
     pub first_name: Option<String>,
 
     /// ID number.
+    ///
+    /// When `id_number_type` is `us_ssn`, only the last 4 digits are present.
     pub id_number: Option<String>,
 
     /// Type of ID number.

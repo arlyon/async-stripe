@@ -344,7 +344,7 @@ pub struct Networks {
     /// All available networks for the card.
     pub available: Vec<String>,
 
-    /// The preferred network for the card.
+    /// The preferred network for co-branded cards.
     ///
     /// Can be `cartes_bancaires`, `mastercard`, `visa` or `invalid_preference` if requested network is not valid for the card.
     pub preferred: Option<String>,
@@ -1705,6 +1705,7 @@ pub enum CreatePaymentMethodP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
+    Velobank,
     VolkswagenBank,
 }
 
@@ -1735,6 +1736,7 @@ impl CreatePaymentMethodP24Bank {
             CreatePaymentMethodP24Bank::SantanderPrzelew24 => "santander_przelew24",
             CreatePaymentMethodP24Bank::TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             CreatePaymentMethodP24Bank::ToyotaBank => "toyota_bank",
+            CreatePaymentMethodP24Bank::Velobank => "velobank",
             CreatePaymentMethodP24Bank::VolkswagenBank => "volkswagen_bank",
         }
     }
@@ -2294,6 +2296,7 @@ pub enum PaymentMethodP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
+    Velobank,
     VolkswagenBank,
 }
 
@@ -2324,6 +2327,7 @@ impl PaymentMethodP24Bank {
             PaymentMethodP24Bank::SantanderPrzelew24 => "santander_przelew24",
             PaymentMethodP24Bank::TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             PaymentMethodP24Bank::ToyotaBank => "toyota_bank",
+            PaymentMethodP24Bank::Velobank => "velobank",
             PaymentMethodP24Bank::VolkswagenBank => "volkswagen_bank",
         }
     }
