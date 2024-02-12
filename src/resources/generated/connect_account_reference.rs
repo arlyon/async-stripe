@@ -24,6 +24,7 @@ pub struct ConnectAccountReference {
 #[serde(rename_all = "snake_case")]
 pub enum ConnectAccountReferenceType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 

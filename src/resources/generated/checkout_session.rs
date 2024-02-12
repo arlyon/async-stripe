@@ -4721,6 +4721,7 @@ impl std::default::Default for CheckoutUsBankAccountPaymentMethodOptionsVerifica
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -5035,6 +5036,7 @@ impl std::default::Default for CreateCheckoutSessionCustomerUpdateShipping {
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -7857,6 +7859,7 @@ impl std::default::Default for CreateCheckoutSessionShippingOptionsShippingRateD
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 

@@ -1287,6 +1287,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1571,6 +1572,7 @@ impl std::default::Default for SubscriptionScheduleDefaultSettingsCollectionMeth
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionScheduleDefaultSettingsParamsAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1681,6 +1683,7 @@ impl std::default::Default for SubscriptionScheduleEndBehavior {
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionScheduleInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1789,6 +1792,7 @@ impl std::default::Default for SubscriptionScheduleStatus {
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 

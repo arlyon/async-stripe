@@ -1788,6 +1788,7 @@ impl std::default::Default for CreatePaymentLinkAfterCompletionType {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1996,6 +1997,7 @@ impl std::default::Default for CreatePaymentLinkCustomFieldsType {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -2967,6 +2969,7 @@ impl std::default::Default for CreatePaymentLinkShippingAddressCollectionAllowed
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -4318,6 +4321,7 @@ impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentLinkAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -4420,6 +4424,7 @@ impl std::default::Default for UpdatePaymentLinkCustomFieldsType {
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -5321,6 +5326,7 @@ impl std::default::Default for UpdatePaymentLinkShippingAddressCollectionAllowed
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
