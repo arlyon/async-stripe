@@ -2625,6 +2625,7 @@ pub enum CreateSetupIntentPaymentMethodDataP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
+    Velobank,
     VolkswagenBank,
 }
 
@@ -2659,6 +2660,7 @@ impl CreateSetupIntentPaymentMethodDataP24Bank {
                 "tmobile_usbugi_bankowe"
             }
             CreateSetupIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
+            CreateSetupIntentPaymentMethodDataP24Bank::Velobank => "velobank",
             CreateSetupIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
         }
     }
@@ -4559,6 +4561,7 @@ pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
+    Velobank,
     VolkswagenBank,
 }
 
@@ -4593,6 +4596,7 @@ impl UpdateSetupIntentPaymentMethodDataP24Bank {
                 "tmobile_usbugi_bankowe"
             }
             UpdateSetupIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Velobank => "velobank",
             UpdateSetupIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
         }
     }
