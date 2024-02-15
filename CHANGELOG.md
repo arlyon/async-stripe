@@ -1,3 +1,10 @@
+## [0.34.1](https://github.com/arlyon/async-stripe/compare/v0.34.0...v0.34.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* fixes an issue with missing renames of Self_ ([9c58038](https://github.com/arlyon/async-stripe/commit/9c5803812af379a5265946afe4c177d3fcd0370e))
+
 # [0.34.0](https://github.com/arlyon/async-stripe/compare/v0.33.1...v0.34.0) (2024-02-15)
 
 
