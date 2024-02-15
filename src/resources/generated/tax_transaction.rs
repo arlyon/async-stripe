@@ -31,7 +31,7 @@ pub struct TaxTransaction {
     pub customer_details: TaxProductResourceCustomerDetails,
 
     /// The tax collected or refunded, by line item.
-    pub line_items: List<TaxTransactionLineItem>,
+    pub line_items: Option<List<TaxTransactionLineItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

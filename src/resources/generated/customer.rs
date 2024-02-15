@@ -139,8 +139,8 @@ pub struct Customer {
     pub sources: List<PaymentSource>,
 
     /// The customer's current subscriptions, if any.
-    #[serde(default)]
-    pub subscriptions: List<Subscription>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions: Option<List<Subscription>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<CustomerTax>,
@@ -152,8 +152,8 @@ pub struct Customer {
     pub tax_exempt: Option<CustomerTaxExempt>,
 
     /// The customer's tax IDs.
-    #[serde(default)]
-    pub tax_ids: List<TaxId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_ids: Option<List<TaxId>>,
 
     /// ID of the test clock that this customer belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]

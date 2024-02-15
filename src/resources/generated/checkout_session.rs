@@ -115,8 +115,8 @@ pub struct CheckoutSession {
     pub invoice_creation: Option<PaymentPagesCheckoutSessionInvoiceCreation>,
 
     /// The line items purchased by the customer.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

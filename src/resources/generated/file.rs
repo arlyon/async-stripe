@@ -29,8 +29,8 @@ pub struct File {
     pub filename: Option<String>,
 
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
-    #[serde(default)]
-    pub links: List<FileLink>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub links: Option<List<FileLink>>,
 
     /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: FilePurpose,
