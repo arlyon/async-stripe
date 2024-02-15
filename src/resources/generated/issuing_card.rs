@@ -608,7 +608,6 @@ pub enum IssuingCardSpendingLimitCategories {
     HardwareStores,
     HealthAndBeautySpas,
     HearingAidsSalesAndSupplies,
-    #[serde(rename = "heating_plumbing_a_c")]
     HeatingPlumbingAC,
     HobbyToyAndGameShops,
     HomeSupplyWarehouseStores,
@@ -737,7 +736,6 @@ pub enum IssuingCardSpendingLimitCategories {
     TruckUtilityTrailerRentals,
     TypesettingPlateMakingAndRelatedServices,
     TypewriterStores,
-    #[serde(rename = "u_s_federal_government_agencies_or_departments")]
     USFederalGovernmentAgenciesOrDepartments,
     UniformsCommercialClothing,
     UsedMerchandiseAndSecondhandStores,

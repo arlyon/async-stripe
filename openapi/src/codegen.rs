@@ -657,7 +657,7 @@ pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, me
                 .unwrap_or_else(|| schema.schema_data.title.clone().unwrap());
             let variant_name = meta.schema_to_rust_type(&object_name);
             let type_name = meta.schema_to_rust_type(variant_schema);
-            if variant_name.to_snake_case() != object_name {
+            if variant_to_serde_snake_case(&variant_name) != object_name {
                 write_serde_rename(out, &object_name);
             }
             out.push_str("    ");
@@ -692,6 +692,22 @@ pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, me
             .unwrap();
         }
     }
+}
+
+/// This code is taken from serde RenameRule::apply_to_variant
+/// It differs in some cases from heck, so we need to make sure we
+/// do exactly the same when figuring out whether we need a serde(rename)
+/// e.g. heck_snake(Self_) = self
+/// serde_snake(Self_) = self_
+pub fn variant_to_serde_snake_case(variant: &str) -> String {
+    let mut snake = String::new();
+    for (i, ch) in variant.char_indices() {
+        if i > 0 && ch.is_uppercase() {
+            snake.push('_');
+        }
+        snake.push(ch.to_ascii_lowercase());
+    }
+    snake
 }
 
 #[tracing::instrument(skip_all)]
@@ -732,7 +748,7 @@ pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta:
             if variant_name.trim().is_empty() {
                 panic!("unhandled enum variant: {:?}", wire_name)
             }
-            if &variant_name.to_snake_case() != wire_name {
+            if &variant_to_serde_snake_case(&variant_name) != wire_name {
                 write_serde_rename(out, wire_name);
             }
             out.push_str("    ");

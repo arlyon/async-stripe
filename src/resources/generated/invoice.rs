@@ -1555,6 +1555,7 @@ impl std::default::Default for CollectionMethod {
 #[serde(rename_all = "snake_case")]
 pub enum CreateInvoiceAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1621,6 +1622,7 @@ impl std::default::Default for CreateInvoiceFromInvoiceAction {
 #[serde(rename_all = "snake_case")]
 pub enum CreateInvoiceIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 

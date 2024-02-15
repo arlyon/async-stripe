@@ -1958,6 +1958,7 @@ impl std::default::Default for CancellationDetailsReason {
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -1992,6 +1993,7 @@ impl std::default::Default for CreateSubscriptionAutomaticTaxLiabilityType {
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -3173,6 +3175,7 @@ impl std::default::Default for SubscriptionsResourcePaymentSettingsSaveDefaultPa
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionAutomaticTaxLiabilityType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -3253,6 +3256,7 @@ impl std::default::Default for UpdateSubscriptionCancellationDetailsFeedback {
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionInvoiceSettingsIssuerType {
     Account,
+    #[serde(rename = "self")]
     Self_,
 }
 
