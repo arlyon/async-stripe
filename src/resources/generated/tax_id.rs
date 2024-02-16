@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::TaxIdId;
+use crate::ids::{TaxIdId};
 use crate::params::{Deleted, Expand, Expandable, List, Object, Paginable, Timestamp};
 use crate::resources::{Account, Application, Customer};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "tax_id".
 ///
@@ -43,7 +42,7 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<TaxIDsOwner>,
 
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `no_voec`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
@@ -60,10 +59,12 @@ pub struct TaxId {
 }
 
 impl TaxId {
+
     /// Returns a list of tax IDs.
-    pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
-        client.get_query("/tax_ids", &params)
-    }
+pub fn list(client: &Client, params: &ListTaxIds<'_>) -> Response<List<TaxId>> {
+   client.get_query("/tax_ids", &params)
+}
+
 
     /// Creates a new account or customer `tax_id` object.
     pub fn create(client: &Client, params: CreateTaxId<'_>) -> Response<TaxId> {
@@ -93,6 +94,7 @@ impl Object for TaxId {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIDsOwner {
+
     /// The account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Expandable<Account>>,
@@ -112,6 +114,7 @@ pub struct TaxIDsOwner {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdVerification {
+
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: TaxIdVerificationStatus,
 
@@ -125,6 +128,7 @@ pub struct TaxIdVerification {
 /// The parameters for `TaxId::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxId<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -135,7 +139,7 @@ pub struct CreateTaxId<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<CreateTaxIdOwner>,
 
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `no_voec`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: TaxIdTypeFilter,
 
@@ -145,13 +149,19 @@ pub struct CreateTaxId<'a> {
 
 impl<'a> CreateTaxId<'a> {
     pub fn new(type_: TaxIdTypeFilter, value: &'a str) -> Self {
-        CreateTaxId { expand: Default::default(), owner: Default::default(), type_, value }
+        CreateTaxId {
+            expand: Default::default(),
+            owner: Default::default(),
+            type_,
+            value,
+        }
     }
 }
 
 /// The parameters for `TaxId::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxIds<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -197,11 +207,11 @@ impl<'a> ListTaxIds<'a> {
 impl Paginable for ListTaxIds<'_> {
     type O = TaxId;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTaxIdOwner {
+
     /// Account the tax ID belongs to.
     ///
     /// Required when `type=account`.
@@ -221,6 +231,7 @@ pub struct CreateTaxIdOwner {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListTaxIdsOwner {
+
     /// Account the tax ID belongs to.
     ///
     /// Required when `type=account`.
@@ -245,6 +256,7 @@ pub enum CreateTaxIdOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -283,6 +295,7 @@ pub enum ListTaxIdsOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -321,6 +334,7 @@ pub enum TaxIDsOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -401,6 +415,7 @@ pub enum TaxIdType {
     MyItn,
     MySst,
     NoVat,
+    NoVoec,
     NzGst,
     PeRuc,
     PhTin,
@@ -473,6 +488,7 @@ impl TaxIdType {
             TaxIdType::MyItn => "my_itn",
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
+            TaxIdType::NoVoec => "no_voec",
             TaxIdType::NzGst => "nz_gst",
             TaxIdType::PeRuc => "pe_ruc",
             TaxIdType::PhTin => "ph_tin",
@@ -565,6 +581,7 @@ pub enum TaxIdTypeFilter {
     MyItn,
     MySst,
     NoVat,
+    NoVoec,
     NzGst,
     PeRuc,
     PhTin,
@@ -636,6 +653,7 @@ impl TaxIdTypeFilter {
             TaxIdTypeFilter::MyItn => "my_itn",
             TaxIdTypeFilter::MySst => "my_sst",
             TaxIdTypeFilter::NoVat => "no_vat",
+            TaxIdTypeFilter::NoVoec => "no_voec",
             TaxIdTypeFilter::NzGst => "nz_gst",
             TaxIdTypeFilter::PeRuc => "pe_ruc",
             TaxIdTypeFilter::PhTin => "ph_tin",
