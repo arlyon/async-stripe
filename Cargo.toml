@@ -120,6 +120,7 @@ hyper-rustls-native = ["hyper-rustls", "hyper-rustls/native-tokio"]
 hyper-rustls-webpki = ["hyper-rustls", "hyper-rustls/webpki-tokio"]
 
 [dependencies]
+ahash = ">=0.8.0, <=0.8.7" # pin to avoid msrv bump
 async-std = {version = "1.8,<1.11", optional = true}
 
 chrono = { version = "0.4", default-features = false, features = ["serde", "clock"], optional = true }
