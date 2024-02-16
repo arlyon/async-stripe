@@ -245,6 +245,7 @@ pub enum CreateTaxIdOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -283,6 +284,7 @@ pub enum ListTaxIdsOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
@@ -321,6 +323,7 @@ pub enum TaxIDsOwnerType {
     Account,
     Application,
     Customer,
+    #[serde(rename = "self")]
     Self_,
 }
 
