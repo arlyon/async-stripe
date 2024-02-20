@@ -19,7 +19,7 @@ See the [Rust API docs](https://docs.rs/async-stripe), the [examples](/examples)
 
 ```toml
 [dependencies]
-async-stripe = { version = "0.14", features = ["runtime-tokio-hyper"] }
+async-stripe = { version = "0.31", features = ["runtime-tokio-hyper"] }
 ```
 
 ## Feature Flags
@@ -49,12 +49,15 @@ async-stripe = { version = "*", default-features = false, features = ["runtime-a
 
 ## API Versions
 
-The latest supported version of the Stripe API is `2020-08-27`.
+This library always tracks the latest version of the stripe API.
+
+https://github.com/arlyon/async-stripe/blob/f0fd7115aa3b7500134da10f848c8e93ba8eca2e/src/resources/generated/version.rs#L1-L3
+
+If you want to find a version
+that matches the API you are on, you can easily navigate back through the git blame in that file.
 Set the corresponding crate version depending on which version of the Stripe API you are pinned to.
 If you don't see the specific version you are on, prefer the next available version.
 
-- `0.14` - stripe version `2020-08-27`
-- `0.12` - stripe version `2019-09-09`
 
 ## MSRV
 
