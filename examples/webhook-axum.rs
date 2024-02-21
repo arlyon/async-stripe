@@ -12,9 +12,9 @@
 //! stripe trigger checkout.session.completed
 //! ```
 
-use std::net::SocketAddr;
-
 use axum::{
+    async_trait,
+    body::Body,
     extract::FromRequest,
     http::{Request, StatusCode},
     response::{IntoResponse, Response},
@@ -30,25 +30,24 @@ async fn main() {
     // build our application with a route
     let app = Router::new().route("/stripe_webhooks", post(handle_webhook));
 
-    // run our app with hyper
-    // `axum::Server` is a re-export of `hyper::Server`
-    let addr = SocketAddr::from(([127, 0, 0, 1], 4242));
-    println!("listening on {}", addr);
-    axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:4242").await.unwrap();
+
+    println!("listening on {}", listener.local_addr().unwrap());
+
+    axum::serve(listener, app).await.unwrap();
 }
 
 struct StripeEvent(Event);
 
-#[async_trait::async_trait]
-impl<S, B> FromRequest<S, B> for StripeEvent
+#[async_trait]
+impl<S> FromRequest<S> for StripeEvent
 where
-    String: FromRequest<S, B>,
-    B: Send + 'static,
+    String: FromRequest<S>,
     S: Send + Sync,
 {
     type Rejection = Response;
 
-    async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+    async fn from_request(req: Request<Body>, state: &S) -> Result<Self, Self::Rejection> {
         let signature = if let Some(sig) = req.headers().get("stripe-signature") {
             sig.to_owned()
         } else {
