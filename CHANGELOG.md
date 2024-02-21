@@ -1,3 +1,10 @@
+## [0.34.2](https://github.com/arlyon/async-stripe/compare/v0.34.1...v0.34.2) (2024-02-21)
+
+
+### Bug Fixes
+
+* correctly generate types for optional lists ([63732cc](https://github.com/arlyon/async-stripe/commit/63732cc37f4bc20b4e81a671c11c904a1a600c60))
+
 ## [0.34.1](https://github.com/arlyon/async-stripe/compare/v0.34.0...v0.34.1) (2024-02-15)
 
 
