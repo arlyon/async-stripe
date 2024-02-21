@@ -100,8 +100,8 @@ pub struct Quote {
     pub invoice_settings: InvoiceSettingQuoteSetting,
 
     /// A list of items the customer is being quoted for.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -302,8 +302,8 @@ pub struct QuotesResourceUpfront {
     /// The line items that will appear on the next invoice after this quote is accepted.
     ///
     /// This does not include pending invoice items that exist on the customer but may still be included in the next invoice.
-    #[serde(default)]
-    pub line_items: List<CheckoutSessionItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_items: Option<List<CheckoutSessionItem>>,
 
     pub total_details: QuotesResourceTotalDetails,
 }

@@ -158,7 +158,7 @@ pub struct Charge {
     pub refunded: bool,
 
     /// A list of refunds that have been applied to the charge.
-    pub refunds: List<Refund>,
+    pub refunds: Option<List<Refund>>,
 
     /// ID of the review associated with this charge if one exists.
     pub review: Option<Expandable<Review>>,

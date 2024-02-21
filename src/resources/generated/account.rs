@@ -80,8 +80,8 @@ pub struct Account {
     /// External accounts (bank accounts and debit cards) currently attached to this account.
     ///
     /// External accounts are only returned for requests where `controller[is_controller]` is true.
-    #[serde(default)]
-    pub external_accounts: List<ExternalAccount>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_accounts: Option<List<ExternalAccount>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<AccountFutureRequirements>,

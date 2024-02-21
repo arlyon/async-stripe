@@ -134,7 +134,7 @@ serde_qs = "0.10.1"
 serde_path_to_error = "0.1.8"
 smol_str = "0.1"
 surf = { version = "2.1", optional = true }
-tokio = { version = "1.2", optional = true }
+tokio = { version = "1", optional = true }
 smart-default = "0.6.0"
 uuid = { version = "0.8", optional=true, features=["v4"] }
 
@@ -155,6 +155,12 @@ tokio = { version = "1.24.1", features = ["rt", "macros"] }
 axum = { version = "0.6.18", features = ["macros"] }
 async-trait = "0.1"
 actix-web = "4.2.1"
+
+# MSRV PINS
+#
+# We have a few deps that have MSRVs that are higher than our own. 
+# We pin them here to ensure that we can run tests on the MSRV
+bumpalo = ">=3.0.0, <= 3.15.0"
 
 [[example]]
 name = "checkout"

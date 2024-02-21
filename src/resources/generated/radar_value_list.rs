@@ -40,8 +40,8 @@ pub struct RadarValueList {
     pub item_type: Option<RadarValueListItemType>,
 
     /// List of items contained within this value list.
-    #[serde(default)]
-    pub list_items: List<RadarValueListItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub list_items: Option<List<RadarValueListItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]

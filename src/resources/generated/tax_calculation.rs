@@ -33,7 +33,7 @@ pub struct TaxCalculation {
     pub expires_at: Option<Timestamp>,
 
     /// The list of items the customer is purchasing.
-    pub line_items: List<TaxCalculationLineItem>,
+    pub line_items: Option<List<TaxCalculationLineItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

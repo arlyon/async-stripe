@@ -1299,10 +1299,6 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
         // Not sure why this is here, but we want to preserve it for now
         return "bool".into();
     }
-    if ty.contains("List<") {
-        // N.B. return immediately; we use `Default` for list rather than `Option`
-        return ty;
-    }
 
     // currency_options field is represented by an optional HashMap<String, T>, where the String is the currency code in ISO 4217 format.
     if field_name == "currency_options" {

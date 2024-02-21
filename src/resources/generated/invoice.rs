@@ -284,8 +284,8 @@ pub struct Invoice {
     /// The individual line items that make up the invoice.
     ///
     /// `lines` is sorted as follows: (1) pending invoice items (including prorations) in reverse chronological order, (2) subscription items in reverse chronological order, and (3) invoice items added after invoice creation in chronological order.
-    #[serde(default)]
-    pub lines: List<InvoiceLineItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lines: Option<List<InvoiceLineItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
