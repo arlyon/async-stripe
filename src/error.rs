@@ -166,7 +166,9 @@ impl std::fmt::Display for ErrorCode {
 ///
 /// For more details see <https://stripe.com/docs/api#errors>.
 #[derive(Debug, Default, Deserialize, Error)]
-#[error("{error_type} ({http_status}) with message: {message:?}")]
+#[error("{error_type} ({http_status}){}", message.as_ref().map(|msg| {
+    format!(" with message: {msg:?}")
+}).unwrap_or_default())]
 pub struct RequestError {
     /// The HTTP status in the response.
     #[serde(skip_deserializing)]
