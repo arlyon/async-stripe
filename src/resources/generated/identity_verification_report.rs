@@ -15,6 +15,11 @@ pub struct IdentityVerificationReport {
     /// Unique identifier for the object.
     pub id: IdentityVerificationReportId,
 
+    /// A string to reference this user.
+    ///
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.

@@ -15,6 +15,11 @@ pub struct IdentityVerificationSession {
     /// Unique identifier for the object.
     pub id: IdentityVerificationSessionId,
 
+    /// A string to reference this user.
+    ///
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
+
     /// The short-lived client secret used by Stripe.js to [show a verification modal](https://stripe.com/docs/js/identity/modal) inside your app.
     ///
     /// This client secret expires after 24 hours and can only be used once.
