@@ -208,7 +208,7 @@ macro_rules! def_id {
                     && !s.starts_with($alt_prefix)
                 )* {
                     // N.B. For debugging
-                    eprintln!("bad id is: {} (expected: {:?}) for {}", s, $prefix, stringify!($struct_name));
+                    // eprintln!("bad id is: {} (expected: {:?}) for {}", s, $prefix, stringify!($struct_name));
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
