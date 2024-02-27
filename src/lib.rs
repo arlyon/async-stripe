@@ -78,6 +78,7 @@ pub use crate::client::*;
 pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
-    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
+    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, SearchList,
+    Timestamp,
 };
 pub use crate::resources::*;

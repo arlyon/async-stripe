@@ -43,6 +43,7 @@ full = [
   "terminal",
   "webhook-endpoints",
   "tax-calculation",
+  "products",
 ]
 
 stream = []
@@ -58,6 +59,7 @@ sigma = []
 terminal = []
 webhook-endpoints = []
 tax-calculation = []
+products = []
 
 # deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]

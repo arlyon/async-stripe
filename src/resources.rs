@@ -192,6 +192,15 @@ pub use {
 };
 
 #[rustfmt::skip]
+#[cfg(feature = "products")]
+pub use {
+    products::{
+        product_ext::*,
+        price_ext::*,
+    }
+};
+
+#[rustfmt::skip]
 #[cfg(feature = "billing")]
 pub use {
     billing::{
