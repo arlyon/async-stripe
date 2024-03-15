@@ -7,11 +7,13 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "SubscriptionsTrialsResourceTrialSettings".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionsTrialsResourceTrialSettings {
+
     pub end_behavior: SubscriptionsTrialsResourceEndBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionsTrialsResourceEndBehavior {
+
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method: SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod,
 }
@@ -29,9 +31,7 @@ impl SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Cancel => "cancel",
-            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::CreateInvoice => {
-                "create_invoice"
-            }
+            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::CreateInvoice => "create_invoice",
             SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Pause => "pause",
         }
     }
