@@ -15,6 +15,11 @@ pub struct IdentityVerificationReport {
     /// Unique identifier for the object.
     pub id: IdentityVerificationReportId,
 
+    /// A string to reference this user.
+    ///
+    /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
+    pub client_reference_id: Option<String>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -37,8 +42,7 @@ pub struct IdentityVerificationReport {
 
     /// Type of report.
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<IdentityVerificationReportType>,
+    pub type_: IdentityVerificationReportType,
 
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,

@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::CardId;
+use crate::ids::{CardId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, Currency, Customer};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Card".
 ///
@@ -158,6 +157,9 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<TokenCardNetworks>,
+
     /// For external accounts that are cards, possible values are `new` and `errored`.
     ///
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
@@ -179,6 +181,15 @@ impl Object for Card {
     fn object(&self) -> &'static str {
         "card"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TokenCardNetworks {
+
+    /// The preferred network for co-branded cards.
+    ///
+    /// Can be `cartes_bancaires`, `mastercard`, `visa` or `invalid_preference` if requested network is not valid for the card.
+    pub preferred: Option<String>,
 }
 
 /// An enum representing the possible values of an `Card`'s `available_payout_methods` field.

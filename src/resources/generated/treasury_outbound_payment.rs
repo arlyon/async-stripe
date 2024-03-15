@@ -144,7 +144,9 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
     /// Last four digits of the bank account number.
     pub last4: Option<String>,
 
-    /// The US bank account network used to send funds.
+    /// The network rails used.
+    ///
+    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     pub network: OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.

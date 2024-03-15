@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::CheckoutSessionItemId;
-use crate::params::Object;
+use crate::ids::{CheckoutSessionItemId};
+use crate::params::{Object};
 use crate::resources::{Currency, Discount, Price, TaxRate};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -68,6 +67,7 @@ impl Object for CheckoutSessionItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LineItemsDiscountAmount {
+
     /// The amount discounted.
     pub amount: i64,
 
@@ -76,6 +76,7 @@ pub struct LineItemsDiscountAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LineItemsTaxAmount {
+
     /// Amount of tax applied for this rate.
     pub amount: i64,
 
