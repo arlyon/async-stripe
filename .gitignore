@@ -5,6 +5,7 @@ Cargo.lock
 
 # Test artifacts
 stripe-mock/
+lcov.info
 
 # IDE artifacts
 .DS_Store

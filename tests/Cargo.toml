@@ -1,0 +1,35 @@
+[package]
+name = "async-stripe-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+serde.workspace = true
+serde_json = "1"
+serde_qs = "0.12.0"
+chrono = "0.4.26"
+httpmock = "0.6.7"
+wiremock = "0.5.22"
+futures-util = { version = "0.3.21" }
+tokio = { version = "1.24.1", features = ["rt", "macros"] }
+stripe_types = {path = "../stripe_types"}
+async-stripe = {path = "../async-stripe"}
+stripe_connect = {path = "../generated/stripe_connect", features = ["account", "transfer_reversal"]}
+stripe_billing = {path = "../generated/stripe_billing", features = ["invoice", "plan", "subscription", "subscription_item", "usage_record"]}
+stripe_core = {path = "../generated/stripe_core", features = ["customer", "charge", "token"]}
+stripe_checkout = {path = "../generated/stripe_checkout", features = ["checkout_session"]}
+stripe_product = {path = "../generated/stripe_product", features = ["product", "price", "promotion_code"]}
+stripe_misc = {path = "../generated/stripe_misc"}
+
+[features]
+async = []
+blocking = []
+
+runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper", "async"]
+runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls", "async"]
+runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki", "async"]
+runtime-blocking = ["async-stripe/runtime-blocking", "blocking"]
+runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls", "blocking"]
+runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki", "blocking"]
+runtime-async-std-surf = ["async-stripe/runtime-async-std-surf", "async"]

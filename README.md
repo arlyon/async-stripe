@@ -13,39 +13,85 @@ Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/
 
 See the [Rust API docs](https://docs.rs/async-stripe), the [examples](/examples), or [payments.rs](https://payments.rs).
 
-## Installation
+## Example
+This asynchronous example uses `Tokio` to create a [Stripe Customer](https://stripe.com/docs/api/customers/object). Your `Cargo.toml` could look like this:
+```toml
+tokio = { version = "1", features = ["full"] }
+async-stripe = { version = "0.28", features = ["runtime-tokio-hyper"] }
+stripe_core = { version = "0.28", features = ["customer"]}
+```
+And then the code:
+```rust
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let secret_key = "very-secret-key-for-testing";
+    let client = stripe::Client::new(secret_key);
+    let customer = stripe_core::customer::CreateCustomer {
+        name: Some("Test User"),
+        email: Some("test@async-stripe.com"),
+        description: Some(
+            "A fake customer that is used to illustrate the examples in async-stripe.",
+        ),
+        ..Default::default()
+    }
+        .send(&client)
+        .await?;
 
+    println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
+    Ok(())
+}
+```
+A full list of examples can be found in the [examples](/examples).
+
+## Relevant Crates
+
+### Stripe Client
+The main entry point is the `async-stripe` crate which provides a client for making Stripe API requests.
 `async-stripe` is compatible with the [`async-std`](https://github.com/async-rs/async-std) and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls` and `rustls` backends. When adding the dependency, you must select a runtime feature.
 
+#### Installation
 ```toml
 [dependencies]
 async-stripe = { version = "0.31", features = ["runtime-tokio-hyper"] }
 ```
 
-## Feature Flags
-
-### Runtimes
-
+#### Feature Flags
+`async-stripe` supports the following features combining runtime and TLS choices:
 - `runtime-tokio-hyper`
 - `runtime-tokio-hyper-rustls`
+- `runtime-tokio-hyper-rustls-webpki`
 - `runtime-blocking`
 - `runtime-blocking-rustls`
+- `runtime-blocking-rustls-webpki`
 - `runtime-async-std-surf`
 
-### API Features
+### Stripe Request Crates
+To actually make requests with the client, you will have to use crates like `stripe-*`, which define requests for a subset of the `Stripe` API. For example, 
+`stripe_connect` includes all requests under the `Connect` part of the sidebar in the [Stripe API docs](https://stripe.com/docs/api)
 
-Additionally, since this is a large library, it is possible to conditionally
-enable features as required to reduce compile times and final binary size.
-Refer to the [Stripe API docs](https://stripe.com/docs/api) to determine
-which APIs are included as part of each feature flag.
+The organization of the Stripe API chunks into crates is currently:
+- `stripe_billing`: `Billing`
+- `stripe_checkout`: `Checkout`
+- `stripe_connect`: `Connect`
+- `stripe_core`: `Core Resources`
+- `stripe_fraud`: `Fraud`
+- `stripe_issuing`: `Issuing`
+- `stripe_payment`: `Payment Methods` and `Payment Links`
+- `stripe_product`: `Products`
+- `stripe_terminal`: `Terminal`
+- `stripe_treasury`: `Treasury`
+- `stripe_misc`: `Tax`, `Identity`, `Reporting`, `Sigma`, `Financial Connections`
+  and `Webhooks`
 
-```toml
-# Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
-async-stripe = { version = "*", default-features = false, features = ["runtime-async-std-surf"] }
+To help minimize compile times, within each of these crates, API requests are gated by features. For example,
+making requests related to [Accounts](https://stripe.com/docs/api/accounts) requires enabling the `account`
+feature flag in `stripe_connect`.
 
-# Example: Support for "Subscriptions" and "Invoices"
-async-stripe = { version = "*", default-features = false, features = ["runtime-async-std-surf", "billing"] }
-```
+For a full, up-to-date list of where each Stripe API request lives, please see [this table](crate_info.md)
+
+### Stripe Webhooks
+The `stripe_webhook` crate includes functionality for receiving and validating [Stripe Webhook Events](https://stripe.com/docs/webhooks).
+The [examples](/examples) directory includes examples for listening to webhooks with `axum`, `actix-web`, and `rocket`.
 
 ## API Versions
 
