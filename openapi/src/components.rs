@@ -198,7 +198,7 @@ impl Components {
 
             debug!("Filtering unused components: {unused:#?}");
             for unused_mod in unused {
-                self.components.remove(unused_mod.as_ref());
+                self.components.shift_remove(unused_mod.as_ref());
             }
         }
     }
