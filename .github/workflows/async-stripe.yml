@@ -11,7 +11,7 @@ on:
 
 env:
   RUSTFLAGS: -Dwarnings
-  rust_min: 1.68
+  rust_min: 1.73
 
 jobs:
   format:
