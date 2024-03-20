@@ -1,4 +1,4 @@
-use stripe_connect::transfer_reversal::CreateTransferReversal;
+use stripe_connect::transfer_reversal::CreateIdTransferReversal;
 
 use crate::mock::get_client;
 
@@ -7,7 +7,7 @@ use crate::mock::get_client;
 fn create_transfer_reversal() {
     let client = get_client();
 
-    let mut create = CreateTransferReversal::new();
+    let mut create = CreateIdTransferReversal::new();
     let id = "tr_Ll53U0VONALFk36".parse().unwrap();
     create.refund_application_fee = Some(true);
     create.amount = Some(4);

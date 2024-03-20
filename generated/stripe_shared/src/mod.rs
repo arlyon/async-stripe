@@ -985,10 +985,6 @@ pub mod payment_flows_automatic_payment_methods_setup_intent;
 #[doc(inline)]
 pub use payment_flows_automatic_payment_methods_setup_intent::*;
 #[doc(hidden)]
-pub mod us_bank_account_networks;
-#[doc(inline)]
-pub use us_bank_account_networks::*;
-#[doc(hidden)]
 pub mod payment_flows_private_payment_methods_alipay;
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_alipay::*;
@@ -1176,10 +1172,6 @@ pub use payment_intent_processing::*;
 pub mod payment_intent_processing_customer_notification;
 #[doc(inline)]
 pub use payment_intent_processing_customer_notification::*;
-#[doc(hidden)]
-pub mod usage_record_summary;
-#[doc(inline)]
-pub use usage_record_summary::*;
 #[doc(hidden)]
 pub mod payment_link;
 #[doc(inline)]
@@ -2460,6 +2452,14 @@ pub use transform_quantity::*;
 pub mod transform_usage;
 #[doc(inline)]
 pub use transform_usage::*;
+#[doc(hidden)]
+pub mod us_bank_account_networks;
+#[doc(inline)]
+pub use us_bank_account_networks::*;
+#[doc(hidden)]
+pub mod usage_record_summary;
+#[doc(inline)]
+pub use usage_record_summary::*;
 pub mod api_version;
 pub use api_version::ApiVersion;
 pub mod version;
