@@ -1,0 +1,21 @@
+[package]
+name = "pagination"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures-util = "0.3.28"
+tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+async-stripe = {path = "../../async-stripe"}
+stripe_core = {path = "../../generated/stripe_core", features = ["customer"]}
+
+[features]
+async = []
+
+runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper", "async"]
+runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls", "async"]
+runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki", "async"]
+runtime-async-std-surf = ["async-stripe/runtime-async-std-surf", "async"]

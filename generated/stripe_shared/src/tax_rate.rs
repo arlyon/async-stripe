@@ -1,0 +1,212 @@
+/// Tax rates can be applied to [invoices](https://stripe.com/docs/billing/invoices/tax-rates), [subscriptions](https://stripe.com/docs/billing/subscriptions/taxes) and [Checkout Sessions](https://stripe.com/docs/payments/checkout/set-up-a-subscription#tax-rates) to collect tax.
+///
+/// Related guide: [Tax rates](https://stripe.com/docs/billing/taxes/tax-rates)
+///
+/// For more details see <<https://stripe.com/docs/api/tax_rates/object>>.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct TaxRate {
+    /// Defaults to `true`.
+    /// When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
+    pub active: bool,
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: Option<String>,
+    /// Time at which the object was created. Measured in seconds since the Unix epoch.
+    pub created: stripe_types::Timestamp,
+    /// An arbitrary string attached to the tax rate for your internal use only.
+    /// It will not be visible to your customers.
+    pub description: Option<String>,
+    /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
+    pub display_name: String,
+    /// Actual/effective tax rate percentage out of 100.
+    /// For tax calculations with automatic_tax[enabled]=true,.
+    /// this percentage reflects the rate actually used to calculate tax based on the product's taxability
+    /// and whether the user is registered to collect taxes in the corresponding jurisdiction.
+    pub effective_percentage: Option<f64>,
+    /// Unique identifier for the object.
+    pub id: stripe_shared::TaxRateId,
+    /// This specifies if the tax rate is inclusive or exclusive.
+    pub inclusive: bool,
+    /// The jurisdiction for the tax rate.
+    /// You can use this label field for tax reporting purposes.
+    /// It also appears on your customer’s invoice.
+    pub jurisdiction: Option<String>,
+    /// The level of the jurisdiction that imposes this tax rate.
+    /// Will be `null` for manually defined tax rates.
+    pub jurisdiction_level: Option<TaxRateJurisdictionLevel>,
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// Tax rate percentage out of 100.
+    /// For tax calculations with automatic_tax[enabled]=true, this percentage includes the statutory tax rate of non-taxable jurisdictions.
+    pub percentage: f64,
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    /// For example, "NY" for New York, United States.
+    pub state: Option<String>,
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    pub tax_type: Option<stripe_shared::TaxRateTaxType>,
+}
+/// The level of the jurisdiction that imposes this tax rate.
+/// Will be `null` for manually defined tax rates.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum TaxRateJurisdictionLevel {
+    City,
+    Country,
+    County,
+    District,
+    Multiple,
+    State,
+}
+impl TaxRateJurisdictionLevel {
+    pub fn as_str(self) -> &'static str {
+        use TaxRateJurisdictionLevel::*;
+        match self {
+            City => "city",
+            Country => "country",
+            County => "county",
+            District => "district",
+            Multiple => "multiple",
+            State => "state",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxRateJurisdictionLevel {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxRateJurisdictionLevel::*;
+        match s {
+            "city" => Ok(City),
+            "country" => Ok(Country),
+            "county" => Ok(County),
+            "district" => Ok(District),
+            "multiple" => Ok(Multiple),
+            "state" => Ok(State),
+            _ => Err(()),
+        }
+    }
+}
+impl std::fmt::Display for TaxRateJurisdictionLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxRateJurisdictionLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for TaxRateJurisdictionLevel {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TaxRateJurisdictionLevel {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for TaxRateJurisdictionLevel"))
+    }
+}
+impl stripe_types::Object for TaxRate {
+    type Id = stripe_shared::TaxRateId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+}
+stripe_types::def_id!(TaxRateId, "txr_");
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum TaxRateTaxType {
+    AmusementTax,
+    CommunicationsTax,
+    Gst,
+    Hst,
+    Igst,
+    Jct,
+    LeaseTax,
+    Pst,
+    Qst,
+    Rst,
+    SalesTax,
+    ServiceTax,
+    Vat,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
+}
+impl TaxRateTaxType {
+    pub fn as_str(self) -> &'static str {
+        use TaxRateTaxType::*;
+        match self {
+            AmusementTax => "amusement_tax",
+            CommunicationsTax => "communications_tax",
+            Gst => "gst",
+            Hst => "hst",
+            Igst => "igst",
+            Jct => "jct",
+            LeaseTax => "lease_tax",
+            Pst => "pst",
+            Qst => "qst",
+            Rst => "rst",
+            SalesTax => "sales_tax",
+            ServiceTax => "service_tax",
+            Vat => "vat",
+            Unknown => "unknown",
+        }
+    }
+}
+
+impl std::str::FromStr for TaxRateTaxType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use TaxRateTaxType::*;
+        match s {
+            "amusement_tax" => Ok(AmusementTax),
+            "communications_tax" => Ok(CommunicationsTax),
+            "gst" => Ok(Gst),
+            "hst" => Ok(Hst),
+            "igst" => Ok(Igst),
+            "jct" => Ok(Jct),
+            "lease_tax" => Ok(LeaseTax),
+            "pst" => Ok(Pst),
+            "qst" => Ok(Qst),
+            "rst" => Ok(Rst),
+            "sales_tax" => Ok(SalesTax),
+            "service_tax" => Ok(ServiceTax),
+            "vat" => Ok(Vat),
+            _ => Err(()),
+        }
+    }
+}
+impl std::fmt::Display for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for TaxRateTaxType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(TaxRateTaxType::Unknown))
+    }
+}
