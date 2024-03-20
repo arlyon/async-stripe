@@ -78,12 +78,6 @@ fn deduplicate_method_names<'a>(
         let has_dup_name =
             base_names.iter().any(|(&key, name)| key != req_key && name == curr_name);
         if has_dup_name {
-            if req.path_params.is_empty() {
-                dbg!(req);
-                dbg!(curr_name);
-                dbg!(req_key);
-                dbg!(base_names);
-            }
             let path_param =
                 req.path_params.first().expect("Expected path parameter on duplicate method");
             dedupped.insert(req_key, format!("{curr_name}_{}", path_param.name));

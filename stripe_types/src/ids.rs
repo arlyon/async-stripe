@@ -27,7 +27,7 @@ macro_rules! def_id_serde_impls {
 #[macro_export]
 macro_rules! def_id {
     ($struct_name:ident) => {
-        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
@@ -115,7 +115,7 @@ macro_rules! def_id {
         ///
         /// This type _typically_ will not allocate and
         /// therefore is usually cheaply clonable.
-        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {

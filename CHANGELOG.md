@@ -163,6 +163,7 @@ they stay up to date, preventing errors error deserialization errors like (https
   does not include the status code.
 - The `id` method on `Expandable<T>` now returns a reference: `&T::Id`. All id types implement `Clone` so 
 to achieve the previous behavior, use `.id().clone()`.
+- `*Id` types no longer derive `default`. The previous default was an empty string, which will never be a valid id
 - Removed the `AsRef<str>` implementation for enums, use `as_str` instead.
 
 Since most of these changes are related to code generation, it is likely there are some
