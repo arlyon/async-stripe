@@ -1,9 +1,11 @@
-use anyhow::Context;
 use indexmap::IndexMap;
 use openapiv3::{
-    Components, ObjectType, OpenAPI, Operation, Parameter, ParameterData, ParameterSchemaOrContent,
-    PathItem, QueryStyle, ReferenceOr, Response, Schema, SchemaKind, StatusCode, Type,
+    Components, ObjectType, OpenAPI, Operation, PathItem, ReferenceOr, Response, Schema,
+    SchemaKind, StatusCode, Type,
 };
+
+use crate::stripe_object::OperationType;
+use crate::types::ComponentPath;
 
 #[derive(Debug, Clone)]
 pub struct Spec(OpenAPI);
@@ -21,24 +23,30 @@ impl Spec {
         self.0.components.as_ref().expect("Spec did not contain `components`!")
     }
 
-    /// Return an iterator over the paths to each endpoint
-    pub fn paths(&self) -> impl Iterator<Item = &String> {
-        self.0.paths.paths.keys()
+    pub fn get_component_schema(&self, path: &ComponentPath) -> &Schema {
+        let schema_or_ref =
+            &self.components().schemas.get(path.as_ref()).expect("Schema not found");
+        schema_or_ref.as_item().expect("Expected top level component to be an item")
     }
 
     pub fn component_schemas(&self) -> &IndexMap<String, ReferenceOr<Schema>> {
         &self.components().schemas
     }
 
-    pub fn get_schema_unwrapped(&self, name: &str) -> &ReferenceOr<Schema> {
-        self.component_schemas()
-            .get(name)
-            .as_ref()
-            .unwrap_or_else(|| panic!("Expected to find a schema with name = {}", name))
+    pub fn get_request(&self, path: &str) -> Option<&ReferenceOr<PathItem>> {
+        self.0.paths.paths.get(path)
     }
 
-    pub fn get_request_unwrapped(&self, path: &str) -> &ReferenceOr<PathItem> {
-        self.0.paths.paths.get(path).expect("Path not found")
+    pub fn get_request_operation(&self, path: &str, op: OperationType) -> Option<&Operation> {
+        let item = self.get_request(path)?.as_item().expect("Expected Stripe requests to be items");
+        let operation = match op {
+            OperationType::Get => &item.get,
+            OperationType::Post => &item.post,
+            OperationType::Delete => &item.delete,
+        }
+        .as_ref()
+        .expect("No operation found on request");
+        Some(operation)
     }
 }
 
@@ -67,6 +75,12 @@ pub fn as_enum_strings(schema: &Schema) -> Option<Vec<String>> {
         }
         _ => None,
     }
+}
+
+pub fn is_enum_with_just_empty_string(item: &ReferenceOr<Schema>) -> bool {
+    let ReferenceOr::Item(item) = item else { return false };
+    let Some(enum_strings) = as_enum_strings(item) else { return false };
+    enum_strings.len() == 1 && enum_strings.first().unwrap().is_empty()
 }
 
 /// Untyped equivalent: `schema["enum"][0]`
@@ -98,85 +112,23 @@ pub fn get_ok_response_schema(operation: &Operation) -> Option<&ReferenceOr<Sche
     resp.content.get("application/json")?.schema.as_ref()
 }
 
-/// Untyped equivalent: `schema["anyOf"][0]["title"]`
-pub fn as_any_of_first_item_title(schema: &Schema) -> Option<&str> {
-    let any_of = match &schema.schema_kind {
-        SchemaKind::AnyOf { any_of } => any_of,
-        _ => return None,
-    };
-    any_of.first()?.as_item()?.schema_data.title.as_deref()
-}
-
-pub fn err_schema_expected(operation: &Operation) -> bool {
-    operation
-        .responses
-        .default
-        .as_ref()
-        .map(|err_schema| match err_schema {
-            ReferenceOr::Reference { reference } => reference == "#/components/schemas/error",
-            ReferenceOr::Item(_) => true,
-        })
-        .unwrap_or_default()
-}
-
-pub fn non_path_ref_params(operation: &Operation) -> Vec<Parameter> {
-    operation.parameters.iter().flat_map(|p| p.as_item()).cloned().collect()
-}
-
-pub fn get_request_form_parameters(operation: &Operation) -> anyhow::Result<Vec<Parameter>> {
-    let form_schema = operation
+pub fn get_request_form_parameters(operation: &Operation) -> Option<&ReferenceOr<Schema>> {
+    let schema = operation
         .request_body
-        .as_ref()
-        .context("No request body")?
-        .as_item()
-        .context("Expected item")?
+        .as_ref()?
+        .as_item()?
         .content
-        .get("application/x-www-form-urlencoded")
-        .context("No form content found")?
+        .get("application/x-www-form-urlencoded")?
         .schema
-        .as_ref()
-        .context("No request schema")?
-        .as_item()
-        .context("Expected item")?;
-    let obj_type = as_object_type(form_schema).context("Expected object type schema")?;
-    let properties = &obj_type.properties;
-    Ok(properties
-        .iter()
-        .map(|(key, value)| {
-            let maybe_item = value.as_item();
-            Parameter::Query {
-                parameter_data: ParameterData {
-                    name: key.clone(),
-                    description: maybe_item.and_then(|i| i.schema_data.description.clone()),
-                    required: obj_type.required.iter().any(|v| v.as_str() == key),
-                    deprecated: None,
-                    format: ParameterSchemaOrContent::Schema(value.clone().unbox()),
-                    example: None,
-                    examples: Default::default(),
-                    explode: None,
-                    extensions: Default::default(),
-                },
-                allow_reserved: false,
-                style: QueryStyle::DeepObject,
-                allow_empty_value: None,
-            }
-        })
-        .collect())
-}
+        .as_ref();
 
-pub fn find_param_by_name<'a>(operation: &'a Operation, name: &str) -> Option<&'a Parameter> {
-    operation.parameters.iter().find_map(|p| {
-        p.as_item().and_then(|p| if p.parameter_data_ref().name == name { Some(p) } else { None })
-    })
-}
-
-/// Untyped equivalent:
-/// `params["parameters"].as_array().and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")))`
-pub fn get_id_param(params: &[ReferenceOr<Parameter>]) -> Option<&Parameter> {
-    params.iter().find_map(|p| match p {
-        ReferenceOr::Item(param @ Parameter::Path { .. }) => Some(param),
-        _ => None,
-    })
+    // Treat empty object as `None`
+    if let Some(obj_type) = schema.and_then(|s| s.as_item().and_then(as_object_type)) {
+        if obj_type.properties.is_empty() {
+            return None;
+        }
+    }
+    schema
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]

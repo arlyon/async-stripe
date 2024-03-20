@@ -48,21 +48,26 @@ It is expected that code is uniformly formatted. Before submitting code, make su
 to run `cargo fmt` to make sure it conforms to the standard.
 
 ## Code Generation
-
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
-To automatically update the generated code, copy it into the `generated` folder, and format, use the `cargo make` target
-`openapi-install`. This will also fetch the spec matching the OpenAPI release used for the generated
-code on `master`.
+It consists of 3 main pieces:
+- `async-stripe`: The definition of the `Stripe` client
+- `stripe_types`: Core type definitions, used a ton in generated code
+- `generated/*`: Generated crates which implement `Stripe` API requests and related types.
+- `stripe_webhook`: Glue code for parsing and validating `Stripe` webhook events and generated
+code for deserializing the events themselves.
 
+No changes should be made to code in a `generated/*` folder. If you'd like to change that
+code, please see the `README` in the `openapi` crate which explains the code generation process
+in more detail.
+
+If you'd like to update the version of the OpenAPI specification being used to generated code, you
+can run (in the `openapi` directory)
 ```sh
-cargo make openapi-install
+cargo run --release -- --fetch latest
 ```
 
-To instead update the generated code using the latest OpenAPI specification release, use
-
-```sh
-cargo make openapi-install-latest
-```
+This will automatically pull the latest OpenAPI spec, generate new code, format it, and copy it into
+library.
 
 ## Testing
 
