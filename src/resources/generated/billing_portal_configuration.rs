@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::BillingPortalConfigurationId;
+use crate::ids::{BillingPortalConfigurationId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::Application;
+use crate::resources::{Application};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -67,6 +66,7 @@ impl Object for BillingPortalConfiguration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
+
     /// The messaging shown to customers in the portal.
     pub headline: Option<String>,
 
@@ -79,6 +79,7 @@ pub struct PortalBusinessProfile {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalFeatures {
+
     pub customer_update: PortalCustomerUpdate,
 
     pub invoice_history: PortalInvoiceList,
@@ -94,6 +95,7 @@ pub struct PortalFeatures {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalCustomerUpdate {
+
     /// The types of customer updates that are supported.
     ///
     /// When empty, customers are not updateable.
@@ -105,12 +107,14 @@ pub struct PortalCustomerUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalInvoiceList {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalLoginPage {
+
     /// If `true`, a shareable `url` will be generated that will take your customers to a hosted login page for the customer portal.
     ///
     /// If `false`, the previously generated `url`, if any, will be deactivated.
@@ -124,12 +128,14 @@ pub struct PortalLoginPage {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalPaymentMethodUpdate {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancel {
+
     pub cancellation_reason: PortalSubscriptionCancellationReason,
 
     /// Whether the feature is enabled.
@@ -146,6 +152,7 @@ pub struct PortalSubscriptionCancel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancellationReason {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -155,12 +162,14 @@ pub struct PortalSubscriptionCancellationReason {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionPause {
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdate {
+
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     ///
     /// When empty, subscriptions are not updateable.
@@ -175,11 +184,13 @@ pub struct PortalSubscriptionUpdate {
     /// Determines how to handle prorations resulting from subscription updates.
     ///
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
+    /// Defaults to a value of `none` if you don't set it during creation.
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdateProduct {
+
     /// The list of price IDs which, when subscribed to, a subscription can be updated.
     pub prices: Vec<String>,
 

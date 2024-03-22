@@ -90,6 +90,9 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
 
     /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://stripe.com/docs/api#issuing_disputes) object.
     pub issuing_transaction: Option<String>,
+
+    /// Set if the ReceivedDebit was created due to a [Payout](https://stripe.com/docs/api#payouts) object.
+    pub payout: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "invoice_payment_method_options_us_bank_account".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsUsBankAccount {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections: Option<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
 
@@ -17,12 +18,12 @@ pub struct InvoicePaymentMethodOptionsUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions {
+
     /// The list of permissions to request.
     ///
     /// The `payment_method` permission must be included.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions:
-        Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
+    pub permissions: Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions>>,
 
     /// Data features requested to be retrieved upon account creation.
     pub prefetch: Option<Vec<InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch>>,
@@ -58,9 +59,7 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
-{
+impl std::default::Default for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
     fn default() -> Self {
         Self::Balances
     }
@@ -77,12 +76,8 @@ pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Balances => {
-                "balances"
-            }
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Transactions => {
-                "transactions"
-            }
+            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Balances => "balances",
+            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::Transactions => "transactions",
         }
     }
 }
@@ -98,9 +93,7 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch
-{
+impl std::default::Default for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
     fn default() -> Self {
         Self::Balances
     }
@@ -120,9 +113,7 @@ impl InvoicePaymentMethodOptionsUsBankAccountVerificationMethod {
         match self {
             InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
             InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => {
-                "microdeposits"
-            }
+            InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }

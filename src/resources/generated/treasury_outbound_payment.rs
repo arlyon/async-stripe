@@ -4,7 +4,7 @@
 
 use crate::ids::{TreasuryOutboundPaymentId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
+use crate::resources::{Currency, Mandate, TreasurySharedResourceBillingDetails, TreasuryTransaction};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryOutboundPaymentsResourceOutboundPayment".
@@ -144,7 +144,13 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
     /// Last four digits of the bank account number.
     pub last4: Option<String>,
 
-    /// The US bank account network used to send funds.
+    /// ID of the mandate used to make this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate: Option<Expandable<Mandate>>,
+
+    /// The network rails used.
+    ///
+    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     pub network: OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.
