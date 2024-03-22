@@ -2,17 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::AccountId;
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{
-    Address, Currency, DelayDays, ExternalAccount, File, Person, PersonVerificationParams, TaxId,
-    VerificationDocumentParams,
-};
+use crate::ids::{AccountId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
+use crate::resources::{Address, Currency, DelayDays, ExternalAccount, File, Person, PersonVerificationParams, TaxId, VerificationDocumentParams};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Account".
 ///
@@ -118,12 +112,14 @@ pub struct Account {
 }
 
 impl Account {
+
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
     /// If you’re not a platform, the list is empty.
-    pub fn list(client: &Client, params: &ListAccounts<'_>) -> Response<List<Account>> {
-        client.get_query("/accounts", &params)
-    }
+pub fn list(client: &Client, params: &ListAccounts<'_>) -> Response<List<Account>> {
+   client.get_query("/accounts", &params)
+}
+
 
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
@@ -174,6 +170,7 @@ impl Object for Account {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BusinessProfile {
+
     /// The applicant's gross annual revenue for its preceding fiscal year.
     pub annual_revenue: Option<AccountAnnualRevenue>,
 
@@ -217,6 +214,7 @@ pub struct BusinessProfile {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountAnnualRevenue {
+
     /// A non-negative integer representing the amount in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: Option<i64>,
 
@@ -234,6 +232,7 @@ pub struct AccountAnnualRevenue {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCapabilities {
+
     /// The status of the Canadian pre-authorized debits payments capability of the account, or whether the account can directly process Canadian pre-authorized debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<AccountCapabilitiesAcssDebitPayments>,
@@ -330,6 +329,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_payments: Option<AccountCapabilitiesLinkPayments>,
 
+    /// The status of the MobilepPay capability of the account, or whether the account can directly process MobilePay charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<AccountCapabilitiesMobilepayPayments>,
+
     /// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<AccountCapabilitiesOxxoPayments>,
@@ -389,6 +392,7 @@ pub struct AccountCapabilities {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountFutureRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
@@ -428,6 +432,7 @@ pub struct AccountFutureRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountMonthlyEstimatedRevenue {
+
     /// A non-negative integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
@@ -439,6 +444,7 @@ pub struct AccountMonthlyEstimatedRevenue {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
@@ -480,6 +486,7 @@ pub struct AccountRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsAlternative {
+
     /// Fields that can be provided to satisfy all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
 
@@ -489,6 +496,7 @@ pub struct AccountRequirementsAlternative {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
@@ -501,6 +509,7 @@ pub struct AccountRequirementsError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit_payments: Option<AccountBacsDebitPaymentsSettings>,
 
@@ -530,6 +539,7 @@ pub struct AccountSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountBacsDebitPaymentsSettings {
+
     /// The Bacs Direct Debit display name for this account.
     ///
     /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
@@ -548,6 +558,7 @@ pub struct AccountBacsDebitPaymentsSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BrandingSettings {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) An icon for the account.
     ///
     /// Must be square and at least 128px x 128px.
@@ -567,12 +578,14 @@ pub struct BrandingSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCardIssuingSettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<CardIssuingAccountTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardPaymentsSettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub decline_on: Option<DeclineChargeOn>,
 
@@ -597,6 +610,7 @@ pub struct CardPaymentsSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DashboardSettings {
+
     /// The display name for this account.
     ///
     /// This is used on the Stripe Dashboard to differentiate between accounts.
@@ -610,6 +624,7 @@ pub struct DashboardSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DeclineChargeOn {
+
     /// Whether Stripe automatically declines charges with an incorrect ZIP or postal code.
     ///
     /// This setting only applies when a ZIP or postal code is provided and they fail bank verification.
@@ -623,6 +638,7 @@ pub struct DeclineChargeOn {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountInvoicesSettings {
+
     /// The list of default Account Tax IDs to automatically include on invoices.
     ///
     /// Account Tax IDs get added when an invoice is finalized.
@@ -631,6 +647,7 @@ pub struct AccountInvoicesSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentsSettings {
+
     /// The default text that appears on credit card statements when a charge is made.
     ///
     /// This field prefixes any dynamic `statement_descriptor` specified on the charge.
@@ -657,6 +674,7 @@ pub struct PaymentsSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PayoutSettings {
+
     /// A Boolean indicating if Stripe should try to reclaim negative balances from an attached bank account.
     ///
     /// See our [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances) documentation for details.
@@ -673,6 +691,7 @@ pub struct PayoutSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSepaDebitPaymentsSettings {
+
     /// SEPA creditor identifier that identifies the company making the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creditor_id: Option<String>,
@@ -680,6 +699,7 @@ pub struct AccountSepaDebitPaymentsSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TosAcceptance {
+
     /// The Unix timestamp marking when the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -699,12 +719,14 @@ pub struct TosAcceptance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountTreasurySettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AccountTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountTermsOfService {
+
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     pub date: Option<Timestamp>,
 
@@ -718,6 +740,7 @@ pub struct AccountTermsOfService {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountUnificationAccountController {
+
     /// `true` if the Connect application retrieving the resource controls the account and can therefore exercise [platform controls](https://stripe.com/docs/connect/platform-controls-for-standard-accounts).
     ///
     /// Otherwise, this field is null.
@@ -733,6 +756,7 @@ pub struct AccountUnificationAccountController {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardIssuingAccountTermsOfService {
+
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     pub date: Option<Timestamp>,
 
@@ -746,6 +770,7 @@ pub struct CardIssuingAccountTermsOfService {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Company {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
@@ -829,11 +854,13 @@ pub struct Company {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CompanyVerification {
+
     pub document: CompanyVerificationDocument,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CompanyVerificationDocument {
+
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
     pub back: Option<Expandable<File>>,
 
@@ -851,6 +878,7 @@ pub struct CompanyVerificationDocument {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LegalEntityUboDeclaration {
+
     /// The Unix timestamp marking when the beneficial owner attestation was made.
     pub date: Option<Timestamp>,
 
@@ -863,6 +891,7 @@ pub struct LegalEntityUboDeclaration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransferSchedule {
+
     /// The number of days charges for the account will be held before being paid out.
     pub delay_days: u32,
 
@@ -888,6 +917,7 @@ pub struct TransferSchedule {
 /// The parameters for `Account::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateAccount<'a> {
+
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
@@ -1012,6 +1042,8 @@ impl<'a> CreateAccount<'a> {
 /// The parameters for `Account::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListAccounts<'a> {
+
+    /// Only return connected accounts that were created during the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -1054,12 +1086,12 @@ impl<'a> ListAccounts<'a> {
 impl Paginable for ListAccounts<'_> {
     type O = Account;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Account::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateAccount<'a> {
+
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
@@ -1166,6 +1198,7 @@ impl<'a> UpdateAccount<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AcceptTos {
+
     /// The Unix timestamp marking when the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -1185,6 +1218,7 @@ pub struct AcceptTos {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParams {
+
     /// Settings specific to Bacs Direct Debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit_payments: Option<AccountSettingsParamsBacsDebitPayments>,
@@ -1216,6 +1250,7 @@ pub struct AccountSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CompanyParams {
+
     /// The company's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -1309,6 +1344,7 @@ pub struct CompanyParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilities {
+
     /// The acss_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<CreateAccountCapabilitiesAcssDebitPayments>,
@@ -1405,6 +1441,10 @@ pub struct CreateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_payments: Option<CreateAccountCapabilitiesLinkPayments>,
 
+    /// The mobilepay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<CreateAccountCapabilitiesMobilepayPayments>,
+
     /// The oxxo_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<CreateAccountCapabilitiesOxxoPayments>,
@@ -1464,12 +1504,12 @@ pub struct CreateAccountCapabilities {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocuments {
+
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     ///
     /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification:
-        Option<CreateAccountDocumentsBankAccountOwnershipVerification>,
+    pub bank_account_ownership_verification: Option<CreateAccountDocumentsBankAccountOwnershipVerification>,
 
     /// One or more documents that demonstrate proof of a company's license to operate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1477,8 +1517,7 @@ pub struct CreateAccountDocuments {
 
     /// One or more documents showing the company's Memorandum of Association.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_memorandum_of_association:
-        Option<CreateAccountDocumentsCompanyMemorandumOfAssociation>,
+    pub company_memorandum_of_association: Option<CreateAccountDocumentsCompanyMemorandumOfAssociation>,
 
     /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1486,8 +1525,7 @@ pub struct CreateAccountDocuments {
 
     /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_registration_verification:
-        Option<CreateAccountDocumentsCompanyRegistrationVerification>,
+    pub company_registration_verification: Option<CreateAccountDocumentsCompanyRegistrationVerification>,
 
     /// One or more documents that demonstrate proof of a company's tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1500,6 +1538,7 @@ pub struct CreateAccountDocuments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonParams {
+
     /// The individual's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -1607,6 +1646,7 @@ pub struct PersonParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilities {
+
     /// The acss_debit_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<UpdateAccountCapabilitiesAcssDebitPayments>,
@@ -1703,6 +1743,10 @@ pub struct UpdateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_payments: Option<UpdateAccountCapabilitiesLinkPayments>,
 
+    /// The mobilepay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<UpdateAccountCapabilitiesMobilepayPayments>,
+
     /// The oxxo_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<UpdateAccountCapabilitiesOxxoPayments>,
@@ -1762,12 +1806,12 @@ pub struct UpdateAccountCapabilities {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocuments {
+
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     ///
     /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a voided check.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification:
-        Option<UpdateAccountDocumentsBankAccountOwnershipVerification>,
+    pub bank_account_ownership_verification: Option<UpdateAccountDocumentsBankAccountOwnershipVerification>,
 
     /// One or more documents that demonstrate proof of a company's license to operate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1775,8 +1819,7 @@ pub struct UpdateAccountDocuments {
 
     /// One or more documents showing the company's Memorandum of Association.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_memorandum_of_association:
-        Option<UpdateAccountDocumentsCompanyMemorandumOfAssociation>,
+    pub company_memorandum_of_association: Option<UpdateAccountDocumentsCompanyMemorandumOfAssociation>,
 
     /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1784,8 +1827,7 @@ pub struct UpdateAccountDocuments {
 
     /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_registration_verification:
-        Option<UpdateAccountDocumentsCompanyRegistrationVerification>,
+    pub company_registration_verification: Option<UpdateAccountDocumentsCompanyRegistrationVerification>,
 
     /// One or more documents that demonstrate proof of a company's tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1798,6 +1840,7 @@ pub struct UpdateAccountDocuments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsBacsDebitPayments {
+
     /// The Bacs Direct Debit Display Name for this account.
     ///
     /// For payments made with Bacs Direct Debit, this name appears on the mandate as the statement descriptor.
@@ -1811,6 +1854,7 @@ pub struct AccountSettingsParamsBacsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsCardIssuing {
+
     /// Details on the account's acceptance of the [Stripe Issuing Terms and Disclosures](https://stripe.com/docs/issuing/connect/tos_acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AccountSettingsParamsCardIssuingTosAcceptance>,
@@ -1818,6 +1862,7 @@ pub struct AccountSettingsParamsCardIssuing {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsTreasury {
+
     /// Details on the account's acceptance of the Stripe Treasury Services Agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AccountSettingsParamsTreasuryTosAcceptance>,
@@ -1825,6 +1870,7 @@ pub struct AccountSettingsParamsTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BrandingSettingsParams {
+
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) An icon for the account.
     ///
     /// Must be square and at least 128px x 128px.
@@ -1848,6 +1894,7 @@ pub struct BrandingSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardPaymentsSettingsParams {
+
     /// Automatically declines certain charge types regardless of whether the card issuer accepted or declined the charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub decline_on: Option<DeclineChargeOnParams>,
@@ -1876,6 +1923,7 @@ pub struct CardPaymentsSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CompanyParamsOwnershipDeclaration {
+
     /// The Unix timestamp marking when the beneficial owner attestation was made.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -1891,6 +1939,7 @@ pub struct CompanyParamsOwnershipDeclaration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CompanyVerificationParams {
+
     /// A document verifying the business.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<VerificationDocumentParams>,
@@ -1898,6 +1947,7 @@ pub struct CompanyVerificationParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesAcssDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1908,6 +1958,7 @@ pub struct CreateAccountCapabilitiesAcssDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesAffirmPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1918,6 +1969,7 @@ pub struct CreateAccountCapabilitiesAffirmPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesAfterpayClearpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1928,6 +1980,7 @@ pub struct CreateAccountCapabilitiesAfterpayClearpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesAuBecsDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1938,6 +1991,7 @@ pub struct CreateAccountCapabilitiesAuBecsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBacsDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1948,6 +2002,7 @@ pub struct CreateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBancontactPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1958,6 +2013,7 @@ pub struct CreateAccountCapabilitiesBancontactPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBankTransferPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1968,6 +2024,7 @@ pub struct CreateAccountCapabilitiesBankTransferPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBlikPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1978,6 +2035,7 @@ pub struct CreateAccountCapabilitiesBlikPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBoletoPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1988,6 +2046,7 @@ pub struct CreateAccountCapabilitiesBoletoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesCardIssuing {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -1998,6 +2057,7 @@ pub struct CreateAccountCapabilitiesCardIssuing {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesCardPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2008,6 +2068,7 @@ pub struct CreateAccountCapabilitiesCardPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesCartesBancairesPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2018,6 +2079,7 @@ pub struct CreateAccountCapabilitiesCartesBancairesPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesCashappPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2028,6 +2090,7 @@ pub struct CreateAccountCapabilitiesCashappPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesEpsPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2038,6 +2101,7 @@ pub struct CreateAccountCapabilitiesEpsPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesFpxPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2048,6 +2112,7 @@ pub struct CreateAccountCapabilitiesFpxPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesGiropayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2058,6 +2123,7 @@ pub struct CreateAccountCapabilitiesGiropayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesGrabpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2068,6 +2134,7 @@ pub struct CreateAccountCapabilitiesGrabpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesIdealPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2078,6 +2145,7 @@ pub struct CreateAccountCapabilitiesIdealPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesIndiaInternationalPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2088,6 +2156,7 @@ pub struct CreateAccountCapabilitiesIndiaInternationalPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesJcbPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2098,6 +2167,7 @@ pub struct CreateAccountCapabilitiesJcbPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesKlarnaPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2108,6 +2178,7 @@ pub struct CreateAccountCapabilitiesKlarnaPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesKonbiniPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2118,6 +2189,7 @@ pub struct CreateAccountCapabilitiesKonbiniPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesLegacyPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2128,6 +2200,18 @@ pub struct CreateAccountCapabilitiesLegacyPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesLinkPayments {
+
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesMobilepayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2138,6 +2222,7 @@ pub struct CreateAccountCapabilitiesLinkPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesOxxoPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2148,6 +2233,7 @@ pub struct CreateAccountCapabilitiesOxxoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesP24Payments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2158,6 +2244,7 @@ pub struct CreateAccountCapabilitiesP24Payments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesPaynowPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2168,6 +2255,7 @@ pub struct CreateAccountCapabilitiesPaynowPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesPromptpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2178,6 +2266,7 @@ pub struct CreateAccountCapabilitiesPromptpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesRevolutPayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2188,6 +2277,7 @@ pub struct CreateAccountCapabilitiesRevolutPayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesSepaDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2198,6 +2288,7 @@ pub struct CreateAccountCapabilitiesSepaDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesSofortPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2208,6 +2299,7 @@ pub struct CreateAccountCapabilitiesSofortPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesSwishPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2218,6 +2310,7 @@ pub struct CreateAccountCapabilitiesSwishPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTaxReportingUs1099K {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2228,6 +2321,7 @@ pub struct CreateAccountCapabilitiesTaxReportingUs1099K {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTaxReportingUs1099Misc {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2238,6 +2332,7 @@ pub struct CreateAccountCapabilitiesTaxReportingUs1099Misc {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTransfers {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2248,6 +2343,7 @@ pub struct CreateAccountCapabilitiesTransfers {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTreasury {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2258,6 +2354,7 @@ pub struct CreateAccountCapabilitiesTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesUsBankAccountAchPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2268,6 +2365,7 @@ pub struct CreateAccountCapabilitiesUsBankAccountAchPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesZipPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2278,6 +2376,7 @@ pub struct CreateAccountCapabilitiesZipPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2285,6 +2384,7 @@ pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsCompanyLicense {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2292,6 +2392,7 @@ pub struct CreateAccountDocumentsCompanyLicense {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsCompanyMemorandumOfAssociation {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2299,6 +2400,7 @@ pub struct CreateAccountDocumentsCompanyMemorandumOfAssociation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsCompanyMinisterialDecree {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2306,6 +2408,7 @@ pub struct CreateAccountDocumentsCompanyMinisterialDecree {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsCompanyRegistrationVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2313,6 +2416,7 @@ pub struct CreateAccountDocumentsCompanyRegistrationVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsCompanyTaxIdVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2320,6 +2424,7 @@ pub struct CreateAccountDocumentsCompanyTaxIdVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsProofOfRegistration {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2327,6 +2432,7 @@ pub struct CreateAccountDocumentsProofOfRegistration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentsSettingsParams {
+
     /// The default text that appears on credit card statements when a charge is made.
     ///
     /// This field prefixes any dynamic `statement_descriptor` specified on the charge.
@@ -2344,6 +2450,7 @@ pub struct PaymentsSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PayoutSettingsParams {
+
     /// A Boolean indicating whether Stripe should try to reclaim negative balances from an attached bank account.
     ///
     /// For details, see [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances).
@@ -2365,6 +2472,7 @@ pub struct PayoutSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonParamsDob {
+
     /// The day of birth, between 1 and 31.
     pub day: i64,
 
@@ -2377,6 +2485,7 @@ pub struct PersonParamsDob {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonParamsRegisteredAddress {
+
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
@@ -2404,6 +2513,7 @@ pub struct PersonParamsRegisteredAddress {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonParamsRelationship {
+
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
@@ -2429,6 +2539,7 @@ pub struct PersonParamsRelationship {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesAcssDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2439,6 +2550,7 @@ pub struct UpdateAccountCapabilitiesAcssDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesAffirmPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2449,6 +2561,7 @@ pub struct UpdateAccountCapabilitiesAffirmPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesAfterpayClearpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2459,6 +2572,7 @@ pub struct UpdateAccountCapabilitiesAfterpayClearpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesAuBecsDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2469,6 +2583,7 @@ pub struct UpdateAccountCapabilitiesAuBecsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBacsDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2479,6 +2594,7 @@ pub struct UpdateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBancontactPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2489,6 +2605,7 @@ pub struct UpdateAccountCapabilitiesBancontactPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBankTransferPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2499,6 +2616,7 @@ pub struct UpdateAccountCapabilitiesBankTransferPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBlikPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2509,6 +2627,7 @@ pub struct UpdateAccountCapabilitiesBlikPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBoletoPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2519,6 +2638,7 @@ pub struct UpdateAccountCapabilitiesBoletoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesCardIssuing {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2529,6 +2649,7 @@ pub struct UpdateAccountCapabilitiesCardIssuing {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesCardPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2539,6 +2660,7 @@ pub struct UpdateAccountCapabilitiesCardPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesCartesBancairesPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2549,6 +2671,7 @@ pub struct UpdateAccountCapabilitiesCartesBancairesPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesCashappPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2559,6 +2682,7 @@ pub struct UpdateAccountCapabilitiesCashappPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesEpsPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2569,6 +2693,7 @@ pub struct UpdateAccountCapabilitiesEpsPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesFpxPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2579,6 +2704,7 @@ pub struct UpdateAccountCapabilitiesFpxPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesGiropayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2589,6 +2715,7 @@ pub struct UpdateAccountCapabilitiesGiropayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesGrabpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2599,6 +2726,7 @@ pub struct UpdateAccountCapabilitiesGrabpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesIdealPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2609,6 +2737,7 @@ pub struct UpdateAccountCapabilitiesIdealPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesIndiaInternationalPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2619,6 +2748,7 @@ pub struct UpdateAccountCapabilitiesIndiaInternationalPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesJcbPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2629,6 +2759,7 @@ pub struct UpdateAccountCapabilitiesJcbPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesKlarnaPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2639,6 +2770,7 @@ pub struct UpdateAccountCapabilitiesKlarnaPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesKonbiniPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2649,6 +2781,7 @@ pub struct UpdateAccountCapabilitiesKonbiniPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesLegacyPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2659,6 +2792,18 @@ pub struct UpdateAccountCapabilitiesLegacyPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesLinkPayments {
+
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesMobilepayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2669,6 +2814,7 @@ pub struct UpdateAccountCapabilitiesLinkPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesOxxoPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2679,6 +2825,7 @@ pub struct UpdateAccountCapabilitiesOxxoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesP24Payments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2689,6 +2836,7 @@ pub struct UpdateAccountCapabilitiesP24Payments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesPaynowPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2699,6 +2847,7 @@ pub struct UpdateAccountCapabilitiesPaynowPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesPromptpayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2709,6 +2858,7 @@ pub struct UpdateAccountCapabilitiesPromptpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesRevolutPayPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2719,6 +2869,7 @@ pub struct UpdateAccountCapabilitiesRevolutPayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesSepaDebitPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2729,6 +2880,7 @@ pub struct UpdateAccountCapabilitiesSepaDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesSofortPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2739,6 +2891,7 @@ pub struct UpdateAccountCapabilitiesSofortPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesSwishPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2749,6 +2902,7 @@ pub struct UpdateAccountCapabilitiesSwishPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTaxReportingUs1099K {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2759,6 +2913,7 @@ pub struct UpdateAccountCapabilitiesTaxReportingUs1099K {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2769,6 +2924,7 @@ pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTransfers {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2779,6 +2935,7 @@ pub struct UpdateAccountCapabilitiesTransfers {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTreasury {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2789,6 +2946,7 @@ pub struct UpdateAccountCapabilitiesTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesUsBankAccountAchPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2799,6 +2957,7 @@ pub struct UpdateAccountCapabilitiesUsBankAccountAchPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesZipPayments {
+
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2809,6 +2968,7 @@ pub struct UpdateAccountCapabilitiesZipPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsBankAccountOwnershipVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2816,6 +2976,7 @@ pub struct UpdateAccountDocumentsBankAccountOwnershipVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsCompanyLicense {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2823,6 +2984,7 @@ pub struct UpdateAccountDocumentsCompanyLicense {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsCompanyMemorandumOfAssociation {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2830,6 +2992,7 @@ pub struct UpdateAccountDocumentsCompanyMemorandumOfAssociation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsCompanyMinisterialDecree {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2837,6 +3000,7 @@ pub struct UpdateAccountDocumentsCompanyMinisterialDecree {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsCompanyRegistrationVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2844,6 +3008,7 @@ pub struct UpdateAccountDocumentsCompanyRegistrationVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsCompanyTaxIdVerification {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2851,6 +3016,7 @@ pub struct UpdateAccountDocumentsCompanyTaxIdVerification {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountDocumentsProofOfRegistration {
+
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -2858,6 +3024,7 @@ pub struct UpdateAccountDocumentsProofOfRegistration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsCardIssuingTosAcceptance {
+
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -2873,6 +3040,7 @@ pub struct AccountSettingsParamsCardIssuingTosAcceptance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsTreasuryTosAcceptance {
+
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -2888,6 +3056,7 @@ pub struct AccountSettingsParamsTreasuryTosAcceptance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DeclineChargeOnParams {
+
     /// Whether Stripe automatically declines charges with an incorrect ZIP or postal code.
     ///
     /// This setting only applies when a ZIP or postal code is provided and they fail bank verification.
@@ -2903,6 +3072,7 @@ pub struct DeclineChargeOnParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransferScheduleParams {
+
     /// The number of days charge funds are held before being paid out.
     ///
     /// May also be set to `minimum`, representing the lowest available value for the account country.
@@ -3650,6 +3820,42 @@ impl std::fmt::Display for AccountCapabilitiesLinkPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesLinkPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `mobilepay_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesMobilepayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesMobilepayPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesMobilepayPayments::Active => "active",
+            AccountCapabilitiesMobilepayPayments::Inactive => "inactive",
+            AccountCapabilitiesMobilepayPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesMobilepayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesMobilepayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesMobilepayPayments {
     fn default() -> Self {
         Self::Active
     }
@@ -4413,9 +4619,7 @@ impl CompanyParamsStructure {
             CompanyParamsStructure::SingleMemberLlc => "single_member_llc",
             CompanyParamsStructure::SoleEstablishment => "sole_establishment",
             CompanyParamsStructure::SoleProprietorship => "sole_proprietorship",
-            CompanyParamsStructure::TaxExemptGovernmentInstrumentality => {
-                "tax_exempt_government_instrumentality"
-            }
+            CompanyParamsStructure::TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             CompanyParamsStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyParamsStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
             CompanyParamsStructure::UnincorporatedPartnership => "unincorporated_partnership",
@@ -4491,9 +4695,7 @@ impl CompanyStructure {
             CompanyStructure::SingleMemberLlc => "single_member_llc",
             CompanyStructure::SoleEstablishment => "sole_establishment",
             CompanyStructure::SoleProprietorship => "sole_proprietorship",
-            CompanyStructure::TaxExemptGovernmentInstrumentality => {
-                "tax_exempt_government_instrumentality"
-            }
+            CompanyStructure::TaxExemptGovernmentInstrumentality => "tax_exempt_government_instrumentality",
             CompanyStructure::UnincorporatedAssociation => "unincorporated_association",
             CompanyStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
             CompanyStructure::UnincorporatedPartnership => "unincorporated_partnership",

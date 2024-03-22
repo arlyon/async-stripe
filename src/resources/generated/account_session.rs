@@ -51,13 +51,28 @@ impl Object for AccountSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
 
-    pub account_onboarding: ConnectEmbeddedBaseConfigClaim,
+    pub account_onboarding: ConnectEmbeddedAccountConfig,
+
+    pub documents: ConnectEmbeddedBaseConfigClaim,
 
     pub payment_details: ConnectEmbeddedPaymentsConfig,
 
     pub payments: ConnectEmbeddedPaymentsConfig,
 
     pub payouts: ConnectEmbeddedPayoutsConfig,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountConfig {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    pub features: ConnectEmbeddedAccountFeatures,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -163,6 +178,10 @@ pub struct CreateAccountSessionComponents {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_onboarding: Option<CreateAccountSessionComponentsAccountOnboarding>,
 
+    /// Configuration for the documents embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documents: Option<CreateAccountSessionComponentsDocuments>,
+
     /// Configuration for the payment details embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_details: Option<CreateAccountSessionComponentsPaymentDetails>,
@@ -185,6 +204,17 @@ pub struct CreateAccountSessionComponentsAccountOnboarding {
     /// The list of features enabled in the embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsAccountOnboardingFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocuments {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsDocumentsFeatures>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -222,6 +252,10 @@ pub struct CreateAccountSessionComponentsPayouts {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountSessionComponentsAccountOnboardingFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocumentsFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
