@@ -3,7 +3,7 @@ use std::pin::Pin;
 
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
-use serde::de::DeserializeOwned;
+use stripe_types::StripeDeserialize;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::StripeError;
@@ -26,7 +26,7 @@ impl AsyncStdClient {
         Self { client: surf::Client::new() }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+    pub fn execute<T: StripeDeserialize + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
@@ -101,10 +101,16 @@ async fn send_inner(
 
                 if !status.is_success() {
                     tries += 1;
-                    let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-                    last_error = serde_path_to_error::deserialize(json_deserializer)
+                    let str = std::str::from_utf8(bytes.as_ref()).map_err(|_| {
+                        StripeError::JSONDeserialize("Response was not valid UTF-8".into())
+                    })?;
+                    last_error = stripe_shared::Error::deserialize(str)
                         .map(|e: stripe_shared::Error| StripeError::Stripe(*e.error, status.into()))
-                        .unwrap_or_else(StripeError::from);
+                        .unwrap_or_else(|_| {
+                            StripeError::JSONDeserialize(
+                                "Could not deserialize Stripe error".into(),
+                            )
+                        });
                     last_status = Some(status);
                     last_retry_header = retry;
 

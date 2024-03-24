@@ -66,7 +66,7 @@ impl<'a> ObjectWriter<'a> {
                 for (obj_name, obj) in objects {
                     let name = &obj.ident;
                     let printable = self.components.construct_printable_type_from_path(&obj.path);
-                    write_gated_serde_rename(&mut enum_body, &obj_name);
+                    write_gated_serde_rename(&mut enum_body, obj_name);
                     let _ = writeln!(enum_body, "{name}({printable}),");
                 }
             }

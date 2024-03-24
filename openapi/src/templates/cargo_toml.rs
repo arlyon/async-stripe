@@ -23,6 +23,7 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         let _ = writeln!(crate_dep_section, r#"{} = {{path = "{}"}}"#, dep.name(), dep_path);
         min_ser_features.push(format!("{}/min-ser", dep.name()));
     }
+
     let min_ser_features_str =
         min_ser_features.into_iter().map(|f| format!(r#""{f}""#)).collect::<Vec<_>>().join(",");
 

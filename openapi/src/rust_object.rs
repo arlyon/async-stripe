@@ -275,10 +275,8 @@ pub fn as_enum_of_objects(
 ) -> Option<EnumOfObjects> {
     if let Some(obj_union) = as_object_union(components, variants) {
         Some(EnumOfObjects::ObjectUnion(obj_union))
-    } else if let Some(maybe_deleted) = as_maybe_deleted(components, variants) {
-        Some(EnumOfObjects::MaybeDeleted(maybe_deleted))
     } else {
-        None
+        as_maybe_deleted(components, variants).map(EnumOfObjects::MaybeDeleted)
     }
 }
 
