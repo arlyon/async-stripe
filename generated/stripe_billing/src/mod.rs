@@ -7,6 +7,9 @@
 //! for requests mentioned in the `Billing` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_billing;
+
+#[cfg(feature = "min-ser")]
+miniserde::make_place!(Place);
 pub use billing_portal_configuration::types::*;
 pub use stripe_shared::automatic_tax::*;
 pub mod billing_portal_configuration;
@@ -26,7 +29,31 @@ pub use stripe_shared::deleted_tax_id::*;
 pub use stripe_shared::deleted_test_helpers_test_clock::*;
 pub use stripe_shared::discounts_resource_discount_amount::*;
 pub mod invoice;
-pub use stripe_shared::invoice::*;pub use stripe_shared::invoice_installments_card::*;pub use stripe_shared::invoice_item_threshold_reason::*;pub use stripe_shared::invoice_line_item_period::*;pub use stripe_shared::invoice_mandate_options_card::*;pub use stripe_shared::invoice_payment_method_options_acss_debit::*;pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;pub use stripe_shared::invoice_payment_method_options_bancontact::*;pub use stripe_shared::invoice_payment_method_options_card::*;pub use stripe_shared::invoice_payment_method_options_customer_balance::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;pub use stripe_shared::invoice_payment_method_options_konbini::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;pub use stripe_shared::invoice_rendering_pdf::*;pub use stripe_shared::invoice_setting_custom_field::*;pub use stripe_shared::invoice_setting_customer_setting::*;pub use stripe_shared::invoice_setting_quote_setting::*;pub use stripe_shared::invoice_setting_rendering_options::*;pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;pub use stripe_shared::invoice_tax_amount::*;pub use stripe_shared::invoice_threshold_reason::*;pub use stripe_shared::invoice_transfer_data::*;
+pub use stripe_shared::invoice::*;
+pub use stripe_shared::invoice_installments_card::*;
+pub use stripe_shared::invoice_item_threshold_reason::*;
+pub use stripe_shared::invoice_line_item_period::*;
+pub use stripe_shared::invoice_mandate_options_card::*;
+pub use stripe_shared::invoice_payment_method_options_acss_debit::*;
+pub use stripe_shared::invoice_payment_method_options_acss_debit_mandate_options::*;
+pub use stripe_shared::invoice_payment_method_options_bancontact::*;
+pub use stripe_shared::invoice_payment_method_options_card::*;
+pub use stripe_shared::invoice_payment_method_options_customer_balance::*;
+pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer::*;
+pub use stripe_shared::invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_transfer::*;
+pub use stripe_shared::invoice_payment_method_options_konbini::*;
+pub use stripe_shared::invoice_payment_method_options_us_bank_account::*;
+pub use stripe_shared::invoice_payment_method_options_us_bank_account_linked_account_options::*;
+pub use stripe_shared::invoice_rendering_pdf::*;
+pub use stripe_shared::invoice_setting_custom_field::*;
+pub use stripe_shared::invoice_setting_customer_setting::*;
+pub use stripe_shared::invoice_setting_quote_setting::*;
+pub use stripe_shared::invoice_setting_rendering_options::*;
+pub use stripe_shared::invoice_setting_subscription_schedule_phase_setting::*;
+pub use stripe_shared::invoice_setting_subscription_schedule_setting::*;
+pub use stripe_shared::invoice_tax_amount::*;
+pub use stripe_shared::invoice_threshold_reason::*;
+pub use stripe_shared::invoice_transfer_data::*;
 pub mod invoice_item;
 pub use stripe_shared::checkout_session_item::*;
 pub use stripe_shared::invoice_item::*;
@@ -165,12 +192,10 @@ pub use stripe_shared::subscription_schedule_phase_configuration::*;
 pub use stripe_shared::subscription_schedules_resource_default_settings::*;
 pub use stripe_shared::subscription_schedules_resource_default_settings_automatic_tax::*;
 pub use stripe_shared::subscription_transfer_data::*;
-pub use stripe_shared::subscriptions_resource_billing_cycle_anchor_config::*;
 pub use stripe_shared::subscriptions_resource_pause_collection::*;
 pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;
 pub use stripe_shared::subscriptions_resource_pending_update::*;
-pub use stripe_shared::tax_i_ds_owner::*;
 pub mod tax_id;
 pub use stripe_shared::tax_id::*;
 pub use stripe_shared::tax_id_verification::*;

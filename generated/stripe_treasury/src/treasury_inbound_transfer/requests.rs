@@ -1,3 +1,75 @@
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CancelTreasuryInboundTransfer<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> CancelTreasuryInboundTransfer<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> CancelTreasuryInboundTransfer<'a> {
+    /// Cancels an InboundTransfer.
+    pub fn send(&self, client: &stripe::Client, inbound_transfer: &stripe_treasury::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.send_form(&format!("/treasury/inbound_transfers/{inbound_transfer}/cancel"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryInboundTransfer<'a> {
+    /// Amount (in cents) to be transferred.
+    pub amount: i64,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// An arbitrary string attached to the object. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// The FinancialAccount to send funds to.
+    pub financial_account: &'a str,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// The origin payment method to be debited for the InboundTransfer.
+    pub origin_payment_method: &'a str,
+    /// The complete description that appears on your customers' statements. Maximum 10 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
+}
+impl<'a> CreateTreasuryInboundTransfer<'a> {
+    pub fn new(amount: i64, currency: stripe_types::Currency, financial_account: &'a str, origin_payment_method: &'a str) -> Self {
+        Self { amount, currency, description: None, expand: None, financial_account, metadata: None, origin_payment_method, statement_descriptor: None }
+    }
+}
+impl<'a> CreateTreasuryInboundTransfer<'a> {
+    /// Creates an InboundTransfer.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.send_form("/treasury/inbound_transfers", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTreasuryInboundTransfer<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryInboundTransfer<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryInboundTransfer<'a> {
+    /// Retrieves the details of an existing InboundTransfer.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::TreasuryInboundTransferId) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.get_query(&format!("/treasury/inbound_transfers/{id}"), self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryInboundTransfer<'a> {
     /// A cursor for use in pagination.
@@ -25,49 +97,34 @@ pub struct ListTreasuryInboundTransfer<'a> {
 }
 impl<'a> ListTreasuryInboundTransfer<'a> {
     pub fn new(financial_account: &'a str) -> Self {
-        Self {
-            ending_before: None,
-            expand: None,
-            financial_account,
-            limit: None,
-            starting_after: None,
-            status: None,
-        }
+        Self { ending_before: None, expand: None, financial_account, limit: None, starting_after: None, status: None }
     }
 }
 impl<'a> ListTreasuryInboundTransfer<'a> {
     /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryInboundTransfer>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryInboundTransfer>> {
         client.get_query("/treasury/inbound_transfers", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryInboundTransfer>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryInboundTransfer>> {
         stripe::ListPaginator::from_list_params("/treasury/inbound_transfers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryInboundTransfer<'a> {
+pub struct SucceedTreasuryInboundTransfer<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
 }
-impl<'a> RetrieveTreasuryInboundTransfer<'a> {
+impl<'a> SucceedTreasuryInboundTransfer<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-impl<'a> RetrieveTreasuryInboundTransfer<'a> {
-    /// Retrieves the details of an existing InboundTransfer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryInboundTransferId,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.get_query(&format!("/treasury/inbound_transfers/{id}"), self)
+impl<'a> SucceedTreasuryInboundTransfer<'a> {
+    /// Transitions a test mode created InboundTransfer to the `succeeded` status.
+    /// The InboundTransfer must already be in the `processing` state.
+    pub fn send(&self, client: &stripe::Client, id: &str) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/succeed"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -182,16 +239,8 @@ impl serde::Serialize for FailTreasuryInboundTransferFailureDetailsCode {
 impl<'a> FailTreasuryInboundTransfer<'a> {
     /// Transitions a test mode created InboundTransfer to the `failed` status.
     /// The InboundTransfer must already be in the `processing` state.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.send_form(
-            &format!("/test_helpers/treasury/inbound_transfers/{id}/fail"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, id: &str) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/fail"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -208,121 +257,7 @@ impl<'a> ReturnInboundTransferTreasuryInboundTransfer<'a> {
 impl<'a> ReturnInboundTransferTreasuryInboundTransfer<'a> {
     /// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
     /// The InboundTransfer must already be in the `succeeded` state.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.send_form(
-            &format!("/test_helpers/treasury/inbound_transfers/{id}/return"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct SucceedTreasuryInboundTransfer<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> SucceedTreasuryInboundTransfer<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> SucceedTreasuryInboundTransfer<'a> {
-    /// Transitions a test mode created InboundTransfer to the `succeeded` status.
-    /// The InboundTransfer must already be in the `processing` state.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &str,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.send_form(
-            &format!("/test_helpers/treasury/inbound_transfers/{id}/succeed"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryInboundTransfer<'a> {
-    /// Amount (in cents) to be transferred.
-    pub amount: i64,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// An arbitrary string attached to the object. Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The FinancialAccount to send funds to.
-    pub financial_account: &'a str,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The origin payment method to be debited for the InboundTransfer.
-    pub origin_payment_method: &'a str,
-    /// The complete description that appears on your customers' statements. Maximum 10 characters.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
-}
-impl<'a> CreateTreasuryInboundTransfer<'a> {
-    pub fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        origin_payment_method: &'a str,
-    ) -> Self {
-        Self {
-            amount,
-            currency,
-            description: None,
-            expand: None,
-            financial_account,
-            metadata: None,
-            origin_payment_method,
-            statement_descriptor: None,
-        }
-    }
-}
-impl<'a> CreateTreasuryInboundTransfer<'a> {
-    /// Creates an InboundTransfer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.send_form("/treasury/inbound_transfers", self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelTreasuryInboundTransfer<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelTreasuryInboundTransfer<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CancelTreasuryInboundTransfer<'a> {
-    /// Cancels an InboundTransfer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        inbound_transfer: &stripe_treasury::TreasuryInboundTransferId,
-    ) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
-        client.send_form(
-            &format!("/treasury/inbound_transfers/{inbound_transfer}/cancel"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, id: &str) -> stripe::Response<stripe_treasury::TreasuryInboundTransfer> {
+        client.send_form(&format!("/test_helpers/treasury/inbound_transfers/{id}/return"), self, http_types::Method::Post)
     }
 }

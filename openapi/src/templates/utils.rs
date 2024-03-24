@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::fmt::{Display, Write};
 
 use lazy_static::lazy_static;
 use regex_lite::Regex;
@@ -8,8 +8,12 @@ lazy_static! {
     static ref PERIOD_THEN_WHITESPACE: Regex = Regex::new(r"\.\s[\s]?").unwrap();
 }
 
-pub fn write_serde_rename(out: &mut String, rename: &str) {
-    let _ = writeln!(out, r#"#[serde(rename = "{rename}")]"#);
+pub fn write_gated_serde_rename(out: &mut String, rename: &str) {
+    write_gated_serde_tag(out, format!(r#"rename = "{rename}""#));
+}
+
+pub fn write_gated_serde_tag(out: &mut String, tag: impl Display) {
+    let _ = writeln!(out, r#"#[cfg_attr(not(feature = "min-ser"), serde({tag}))]"#);
 }
 
 /// Write a formatted doc comment.

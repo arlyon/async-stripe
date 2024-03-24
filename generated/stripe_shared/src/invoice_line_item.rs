@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct InvoiceLineItem {
     /// The amount, in cents (or local equivalent).
     pub amount: i64,
@@ -20,7 +22,6 @@ pub struct InvoiceLineItem {
     /// Unique identifier for the object.
     pub id: stripe_shared::InvoiceLineItemId,
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_item: Option<stripe_types::Expandable<stripe_shared::InvoiceItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -43,20 +44,239 @@ pub struct InvoiceLineItem {
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// The subscription item that generated this line item.
     /// Left empty if the line item is not an explicit result of a subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_item: Option<stripe_types::Expandable<stripe_shared::SubscriptionItem>>,
     /// The amount of tax calculated per tax rate for this line item
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<stripe_shared::InvoiceTaxAmount>>,
     /// The tax rates which apply to the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: InvoiceLineItemType,
     /// The amount in cents (or local equivalent) representing the unit amount for this line item, excluding all tax and discounts.
     pub unit_amount_excluding_tax: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct InvoiceLineItemBuilder {
+    amount: Option<i64>,
+    amount_excluding_tax: Option<Option<i64>>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<Option<String>>,
+    discount_amounts: Option<Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>>,
+    discountable: Option<bool>,
+    discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
+    id: Option<stripe_shared::InvoiceLineItemId>,
+    invoice_item: Option<Option<stripe_types::Expandable<stripe_shared::InvoiceItem>>>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    period: Option<stripe_shared::InvoiceLineItemPeriod>,
+    plan: Option<Option<stripe_shared::Plan>>,
+    price: Option<Option<stripe_shared::Price>>,
+    proration: Option<bool>,
+    proration_details: Option<Option<stripe_shared::InvoicesResourceLineItemsProrationDetails>>,
+    quantity: Option<Option<u64>>,
+    subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
+    subscription_item: Option<Option<stripe_types::Expandable<stripe_shared::SubscriptionItem>>>,
+    tax_amounts: Option<Option<Vec<stripe_shared::InvoiceTaxAmount>>>,
+    tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
+    type_: Option<InvoiceLineItemType>,
+    unit_amount_excluding_tax: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for InvoiceLineItem {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<InvoiceLineItem>,
+        builder: InvoiceLineItemBuilder,
+    }
+
+    impl Visitor for Place<InvoiceLineItem> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: InvoiceLineItemBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for InvoiceLineItemBuilder {
+        type Out = InvoiceLineItem;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_excluding_tax" => Deserialize::begin(&mut self.amount_excluding_tax),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
+                "discountable" => Deserialize::begin(&mut self.discountable),
+                "discounts" => Deserialize::begin(&mut self.discounts),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice_item" => Deserialize::begin(&mut self.invoice_item),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "period" => Deserialize::begin(&mut self.period),
+                "plan" => Deserialize::begin(&mut self.plan),
+                "price" => Deserialize::begin(&mut self.price),
+                "proration" => Deserialize::begin(&mut self.proration),
+                "proration_details" => Deserialize::begin(&mut self.proration_details),
+                "quantity" => Deserialize::begin(&mut self.quantity),
+                "subscription" => Deserialize::begin(&mut self.subscription),
+                "subscription_item" => Deserialize::begin(&mut self.subscription_item),
+                "tax_amounts" => Deserialize::begin(&mut self.tax_amounts),
+                "tax_rates" => Deserialize::begin(&mut self.tax_rates),
+                "type" => Deserialize::begin(&mut self.type_),
+                "unit_amount_excluding_tax" => Deserialize::begin(&mut self.unit_amount_excluding_tax),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_excluding_tax: Deserialize::default(),
+                currency: Deserialize::default(),
+                description: Deserialize::default(),
+                discount_amounts: Deserialize::default(),
+                discountable: Deserialize::default(),
+                discounts: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice_item: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                period: Deserialize::default(),
+                plan: Deserialize::default(),
+                price: Deserialize::default(),
+                proration: Deserialize::default(),
+                proration_details: Deserialize::default(),
+                quantity: Deserialize::default(),
+                subscription: Deserialize::default(),
+                subscription_item: Deserialize::default(),
+                tax_amounts: Deserialize::default(),
+                tax_rates: Deserialize::default(),
+                type_: Deserialize::default(),
+                unit_amount_excluding_tax: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let amount = self.amount.take()?;
+            let amount_excluding_tax = self.amount_excluding_tax.take()?;
+            let currency = self.currency.take()?;
+            let description = self.description.take()?;
+            let discount_amounts = self.discount_amounts.take()?;
+            let discountable = self.discountable.take()?;
+            let discounts = self.discounts.take()?;
+            let id = self.id.take()?;
+            let invoice_item = self.invoice_item.take()?;
+            let livemode = self.livemode.take()?;
+            let metadata = self.metadata.take()?;
+            let period = self.period.take()?;
+            let plan = self.plan.take()?;
+            let price = self.price.take()?;
+            let proration = self.proration.take()?;
+            let proration_details = self.proration_details.take()?;
+            let quantity = self.quantity.take()?;
+            let subscription = self.subscription.take()?;
+            let subscription_item = self.subscription_item.take()?;
+            let tax_amounts = self.tax_amounts.take()?;
+            let tax_rates = self.tax_rates.take()?;
+            let type_ = self.type_.take()?;
+            let unit_amount_excluding_tax = self.unit_amount_excluding_tax.take()?;
+
+            Some(Self::Out {
+                amount,
+                amount_excluding_tax,
+                currency,
+                description,
+                discount_amounts,
+                discountable,
+                discounts,
+                id,
+                invoice_item,
+                livemode,
+                metadata,
+                period,
+                plan,
+                price,
+                proration,
+                proration_details,
+                quantity,
+                subscription,
+                subscription_item,
+                tax_amounts,
+                tax_rates,
+                type_,
+                unit_amount_excluding_tax,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for InvoiceLineItem {
+        type Builder = InvoiceLineItemBuilder;
+    }
+
+    impl FromValueOpt for InvoiceLineItem {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = InvoiceLineItemBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_excluding_tax" => b.amount_excluding_tax = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "discount_amounts" => b.discount_amounts = Some(FromValueOpt::from_value(v)?),
+                    "discountable" => b.discountable = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice_item" => b.invoice_item = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "period" => b.period = Some(FromValueOpt::from_value(v)?),
+                    "plan" => b.plan = Some(FromValueOpt::from_value(v)?),
+                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
+                    "proration" => b.proration = Some(FromValueOpt::from_value(v)?),
+                    "proration_details" => b.proration_details = Some(FromValueOpt::from_value(v)?),
+                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
+                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
+                    "subscription_item" => b.subscription_item = Some(FromValueOpt::from_value(v)?),
+                    "tax_amounts" => b.tax_amounts = Some(FromValueOpt::from_value(v)?),
+                    "tax_rates" => b.tax_rates = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "unit_amount_excluding_tax" => b.unit_amount_excluding_tax = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceLineItemType {
@@ -107,10 +327,27 @@ impl<'de> serde::Deserialize<'de> for InvoiceLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceLineItemType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for InvoiceLineItemType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<InvoiceLineItemType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(InvoiceLineItemType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(InvoiceLineItemType);
 impl stripe_types::Object for InvoiceLineItem {
     type Id = stripe_shared::InvoiceLineItemId;
     fn id(&self) -> &Self::Id {

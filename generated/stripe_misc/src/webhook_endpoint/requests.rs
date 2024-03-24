@@ -1,25 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteWebhookEndpoint {}
-impl DeleteWebhookEndpoint {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeleteWebhookEndpoint {
-    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::DeletedWebhookEndpoint> {
-        client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}"),
-            self,
-            http_types::Method::Delete,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListWebhookEndpoint<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
@@ -46,15 +25,10 @@ impl<'a> ListWebhookEndpoint<'a> {
 }
 impl<'a> ListWebhookEndpoint<'a> {
     /// Returns a list of your webhook endpoints.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::WebhookEndpoint>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_misc::WebhookEndpoint>> {
         client.get_query("/webhook_endpoints", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::WebhookEndpoint>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_misc::WebhookEndpoint>> {
         stripe::ListPaginator::from_list_params("/webhook_endpoints", self)
     }
 }
@@ -71,11 +45,7 @@ impl<'a> RetrieveWebhookEndpoint<'a> {
 }
 impl<'a> RetrieveWebhookEndpoint<'a> {
     /// Retrieves the webhook endpoint with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::WebhookEndpoint> {
+    pub fn send(&self, client: &stripe::Client, webhook_endpoint: &stripe_misc::WebhookEndpointId) -> stripe::Response<stripe_misc::WebhookEndpoint> {
         client.get_query(&format!("/webhook_endpoints/{webhook_endpoint}"), self)
     }
 }
@@ -108,15 +78,7 @@ pub struct CreateWebhookEndpoint<'a> {
 }
 impl<'a> CreateWebhookEndpoint<'a> {
     pub fn new(enabled_events: &'a [CreateWebhookEndpointEnabledEvents], url: &'a str) -> Self {
-        Self {
-            api_version: None,
-            connect: None,
-            description: None,
-            enabled_events,
-            expand: None,
-            metadata: None,
-            url,
-        }
+        Self { api_version: None, connect: None, description: None, enabled_events, expand: None, metadata: None, url }
     }
 }
 /// The list of events to enable for this endpoint.
@@ -157,13 +119,6 @@ pub enum CreateWebhookEndpointEnabledEvents {
     CheckoutSessionAsyncPaymentSucceeded,
     CheckoutSessionCompleted,
     CheckoutSessionExpired,
-    ClimateOrderCanceled,
-    ClimateOrderCreated,
-    ClimateOrderDelayed,
-    ClimateOrderDelivered,
-    ClimateOrderProductSubstituted,
-    ClimateProductCreated,
-    ClimateProductPricingUpdated,
     CouponCreated,
     CouponDeleted,
     CouponUpdated,
@@ -198,7 +153,6 @@ pub enum CreateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountDisconnected,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
-    FinancialConnectionsAccountRefreshedTransactions,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -390,13 +344,6 @@ impl CreateWebhookEndpointEnabledEvents {
             CheckoutSessionAsyncPaymentSucceeded => "checkout.session.async_payment_succeeded",
             CheckoutSessionCompleted => "checkout.session.completed",
             CheckoutSessionExpired => "checkout.session.expired",
-            ClimateOrderCanceled => "climate.order.canceled",
-            ClimateOrderCreated => "climate.order.created",
-            ClimateOrderDelayed => "climate.order.delayed",
-            ClimateOrderDelivered => "climate.order.delivered",
-            ClimateOrderProductSubstituted => "climate.order.product_substituted",
-            ClimateProductCreated => "climate.product.created",
-            ClimateProductPricingUpdated => "climate.product.pricing_updated",
             CouponCreated => "coupon.created",
             CouponDeleted => "coupon.deleted",
             CouponUpdated => "coupon.updated",
@@ -415,12 +362,8 @@ impl CreateWebhookEndpointEnabledEvents {
             CustomerSubscriptionCreated => "customer.subscription.created",
             CustomerSubscriptionDeleted => "customer.subscription.deleted",
             CustomerSubscriptionPaused => "customer.subscription.paused",
-            CustomerSubscriptionPendingUpdateApplied => {
-                "customer.subscription.pending_update_applied"
-            }
-            CustomerSubscriptionPendingUpdateExpired => {
-                "customer.subscription.pending_update_expired"
-            }
+            CustomerSubscriptionPendingUpdateApplied => "customer.subscription.pending_update_applied",
+            CustomerSubscriptionPendingUpdateExpired => "customer.subscription.pending_update_expired",
             CustomerSubscriptionResumed => "customer.subscription.resumed",
             CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             CustomerSubscriptionUpdated => "customer.subscription.updated",
@@ -434,19 +377,12 @@ impl CreateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
-            FinancialConnectionsAccountRefreshedBalance => {
-                "financial_connections.account.refreshed_balance"
-            }
-            FinancialConnectionsAccountRefreshedTransactions => {
-                "financial_connections.account.refreshed_transactions"
-            }
+            FinancialConnectionsAccountRefreshedBalance => "financial_connections.account.refreshed_balance",
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
             IdentityVerificationSessionProcessing => "identity.verification_session.processing",
             IdentityVerificationSessionRedacted => "identity.verification_session.redacted",
-            IdentityVerificationSessionRequiresInput => {
-                "identity.verification_session.requires_input"
-            }
+            IdentityVerificationSessionRequiresInput => "identity.verification_session.requires_input",
             IdentityVerificationSessionVerified => "identity.verification_session.verified",
             InvoiceCreated => "invoice.created",
             InvoiceDeleted => "invoice.deleted",
@@ -569,31 +505,23 @@ impl CreateWebhookEndpointEnabledEvents {
             TreasuryCreditReversalPosted => "treasury.credit_reversal.posted",
             TreasuryDebitReversalCompleted => "treasury.debit_reversal.completed",
             TreasuryDebitReversalCreated => "treasury.debit_reversal.created",
-            TreasuryDebitReversalInitialCreditGranted => {
-                "treasury.debit_reversal.initial_credit_granted"
-            }
+            TreasuryDebitReversalInitialCreditGranted => "treasury.debit_reversal.initial_credit_granted",
             TreasuryFinancialAccountClosed => "treasury.financial_account.closed",
             TreasuryFinancialAccountCreated => "treasury.financial_account.created",
-            TreasuryFinancialAccountFeaturesStatusUpdated => {
-                "treasury.financial_account.features_status_updated"
-            }
+            TreasuryFinancialAccountFeaturesStatusUpdated => "treasury.financial_account.features_status_updated",
             TreasuryInboundTransferCanceled => "treasury.inbound_transfer.canceled",
             TreasuryInboundTransferCreated => "treasury.inbound_transfer.created",
             TreasuryInboundTransferFailed => "treasury.inbound_transfer.failed",
             TreasuryInboundTransferSucceeded => "treasury.inbound_transfer.succeeded",
             TreasuryOutboundPaymentCanceled => "treasury.outbound_payment.canceled",
             TreasuryOutboundPaymentCreated => "treasury.outbound_payment.created",
-            TreasuryOutboundPaymentExpectedArrivalDateUpdated => {
-                "treasury.outbound_payment.expected_arrival_date_updated"
-            }
+            TreasuryOutboundPaymentExpectedArrivalDateUpdated => "treasury.outbound_payment.expected_arrival_date_updated",
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
-            TreasuryOutboundTransferExpectedArrivalDateUpdated => {
-                "treasury.outbound_transfer.expected_arrival_date_updated"
-            }
+            TreasuryOutboundTransferExpectedArrivalDateUpdated => "treasury.outbound_transfer.expected_arrival_date_updated",
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
@@ -644,13 +572,6 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "checkout.session.async_payment_succeeded" => Ok(CheckoutSessionAsyncPaymentSucceeded),
             "checkout.session.completed" => Ok(CheckoutSessionCompleted),
             "checkout.session.expired" => Ok(CheckoutSessionExpired),
-            "climate.order.canceled" => Ok(ClimateOrderCanceled),
-            "climate.order.created" => Ok(ClimateOrderCreated),
-            "climate.order.delayed" => Ok(ClimateOrderDelayed),
-            "climate.order.delivered" => Ok(ClimateOrderDelivered),
-            "climate.order.product_substituted" => Ok(ClimateOrderProductSubstituted),
-            "climate.product.created" => Ok(ClimateProductCreated),
-            "climate.product.pricing_updated" => Ok(ClimateProductPricingUpdated),
             "coupon.created" => Ok(CouponCreated),
             "coupon.deleted" => Ok(CouponDeleted),
             "coupon.updated" => Ok(CouponUpdated),
@@ -669,12 +590,8 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "customer.subscription.created" => Ok(CustomerSubscriptionCreated),
             "customer.subscription.deleted" => Ok(CustomerSubscriptionDeleted),
             "customer.subscription.paused" => Ok(CustomerSubscriptionPaused),
-            "customer.subscription.pending_update_applied" => {
-                Ok(CustomerSubscriptionPendingUpdateApplied)
-            }
-            "customer.subscription.pending_update_expired" => {
-                Ok(CustomerSubscriptionPendingUpdateExpired)
-            }
+            "customer.subscription.pending_update_applied" => Ok(CustomerSubscriptionPendingUpdateApplied),
+            "customer.subscription.pending_update_expired" => Ok(CustomerSubscriptionPendingUpdateExpired),
             "customer.subscription.resumed" => Ok(CustomerSubscriptionResumed),
             "customer.subscription.trial_will_end" => Ok(CustomerSubscriptionTrialWillEnd),
             "customer.subscription.updated" => Ok(CustomerSubscriptionUpdated),
@@ -682,33 +599,18 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "customer.tax_id.deleted" => Ok(CustomerTaxIdDeleted),
             "customer.tax_id.updated" => Ok(CustomerTaxIdUpdated),
             "customer.updated" => Ok(CustomerUpdated),
-            "customer_cash_balance_transaction.created" => {
-                Ok(CustomerCashBalanceTransactionCreated)
-            }
+            "customer_cash_balance_transaction.created" => Ok(CustomerCashBalanceTransactionCreated),
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
-            "financial_connections.account.deactivated" => {
-                Ok(FinancialConnectionsAccountDeactivated)
-            }
-            "financial_connections.account.disconnected" => {
-                Ok(FinancialConnectionsAccountDisconnected)
-            }
-            "financial_connections.account.reactivated" => {
-                Ok(FinancialConnectionsAccountReactivated)
-            }
-            "financial_connections.account.refreshed_balance" => {
-                Ok(FinancialConnectionsAccountRefreshedBalance)
-            }
-            "financial_connections.account.refreshed_transactions" => {
-                Ok(FinancialConnectionsAccountRefreshedTransactions)
-            }
+            "financial_connections.account.deactivated" => Ok(FinancialConnectionsAccountDeactivated),
+            "financial_connections.account.disconnected" => Ok(FinancialConnectionsAccountDisconnected),
+            "financial_connections.account.reactivated" => Ok(FinancialConnectionsAccountReactivated),
+            "financial_connections.account.refreshed_balance" => Ok(FinancialConnectionsAccountRefreshedBalance),
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),
             "identity.verification_session.processing" => Ok(IdentityVerificationSessionProcessing),
             "identity.verification_session.redacted" => Ok(IdentityVerificationSessionRedacted),
-            "identity.verification_session.requires_input" => {
-                Ok(IdentityVerificationSessionRequiresInput)
-            }
+            "identity.verification_session.requires_input" => Ok(IdentityVerificationSessionRequiresInput),
             "identity.verification_session.verified" => Ok(IdentityVerificationSessionVerified),
             "invoice.created" => Ok(InvoiceCreated),
             "invoice.deleted" => Ok(InvoiceDeleted),
@@ -831,31 +733,23 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.credit_reversal.posted" => Ok(TreasuryCreditReversalPosted),
             "treasury.debit_reversal.completed" => Ok(TreasuryDebitReversalCompleted),
             "treasury.debit_reversal.created" => Ok(TreasuryDebitReversalCreated),
-            "treasury.debit_reversal.initial_credit_granted" => {
-                Ok(TreasuryDebitReversalInitialCreditGranted)
-            }
+            "treasury.debit_reversal.initial_credit_granted" => Ok(TreasuryDebitReversalInitialCreditGranted),
             "treasury.financial_account.closed" => Ok(TreasuryFinancialAccountClosed),
             "treasury.financial_account.created" => Ok(TreasuryFinancialAccountCreated),
-            "treasury.financial_account.features_status_updated" => {
-                Ok(TreasuryFinancialAccountFeaturesStatusUpdated)
-            }
+            "treasury.financial_account.features_status_updated" => Ok(TreasuryFinancialAccountFeaturesStatusUpdated),
             "treasury.inbound_transfer.canceled" => Ok(TreasuryInboundTransferCanceled),
             "treasury.inbound_transfer.created" => Ok(TreasuryInboundTransferCreated),
             "treasury.inbound_transfer.failed" => Ok(TreasuryInboundTransferFailed),
             "treasury.inbound_transfer.succeeded" => Ok(TreasuryInboundTransferSucceeded),
             "treasury.outbound_payment.canceled" => Ok(TreasuryOutboundPaymentCanceled),
             "treasury.outbound_payment.created" => Ok(TreasuryOutboundPaymentCreated),
-            "treasury.outbound_payment.expected_arrival_date_updated" => {
-                Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated)
-            }
+            "treasury.outbound_payment.expected_arrival_date_updated" => Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated),
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
-            "treasury.outbound_transfer.expected_arrival_date_updated" => {
-                Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated)
-            }
+            "treasury.outbound_transfer.expected_arrival_date_updated" => Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated),
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),
@@ -963,13 +857,6 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     CheckoutSessionAsyncPaymentSucceeded,
     CheckoutSessionCompleted,
     CheckoutSessionExpired,
-    ClimateOrderCanceled,
-    ClimateOrderCreated,
-    ClimateOrderDelayed,
-    ClimateOrderDelivered,
-    ClimateOrderProductSubstituted,
-    ClimateProductCreated,
-    ClimateProductPricingUpdated,
     CouponCreated,
     CouponDeleted,
     CouponUpdated,
@@ -1004,7 +891,6 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountDisconnected,
     FinancialConnectionsAccountReactivated,
     FinancialConnectionsAccountRefreshedBalance,
-    FinancialConnectionsAccountRefreshedTransactions,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -1196,13 +1082,6 @@ impl UpdateWebhookEndpointEnabledEvents {
             CheckoutSessionAsyncPaymentSucceeded => "checkout.session.async_payment_succeeded",
             CheckoutSessionCompleted => "checkout.session.completed",
             CheckoutSessionExpired => "checkout.session.expired",
-            ClimateOrderCanceled => "climate.order.canceled",
-            ClimateOrderCreated => "climate.order.created",
-            ClimateOrderDelayed => "climate.order.delayed",
-            ClimateOrderDelivered => "climate.order.delivered",
-            ClimateOrderProductSubstituted => "climate.order.product_substituted",
-            ClimateProductCreated => "climate.product.created",
-            ClimateProductPricingUpdated => "climate.product.pricing_updated",
             CouponCreated => "coupon.created",
             CouponDeleted => "coupon.deleted",
             CouponUpdated => "coupon.updated",
@@ -1221,12 +1100,8 @@ impl UpdateWebhookEndpointEnabledEvents {
             CustomerSubscriptionCreated => "customer.subscription.created",
             CustomerSubscriptionDeleted => "customer.subscription.deleted",
             CustomerSubscriptionPaused => "customer.subscription.paused",
-            CustomerSubscriptionPendingUpdateApplied => {
-                "customer.subscription.pending_update_applied"
-            }
-            CustomerSubscriptionPendingUpdateExpired => {
-                "customer.subscription.pending_update_expired"
-            }
+            CustomerSubscriptionPendingUpdateApplied => "customer.subscription.pending_update_applied",
+            CustomerSubscriptionPendingUpdateExpired => "customer.subscription.pending_update_expired",
             CustomerSubscriptionResumed => "customer.subscription.resumed",
             CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             CustomerSubscriptionUpdated => "customer.subscription.updated",
@@ -1240,19 +1115,12 @@ impl UpdateWebhookEndpointEnabledEvents {
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
             FinancialConnectionsAccountReactivated => "financial_connections.account.reactivated",
-            FinancialConnectionsAccountRefreshedBalance => {
-                "financial_connections.account.refreshed_balance"
-            }
-            FinancialConnectionsAccountRefreshedTransactions => {
-                "financial_connections.account.refreshed_transactions"
-            }
+            FinancialConnectionsAccountRefreshedBalance => "financial_connections.account.refreshed_balance",
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
             IdentityVerificationSessionProcessing => "identity.verification_session.processing",
             IdentityVerificationSessionRedacted => "identity.verification_session.redacted",
-            IdentityVerificationSessionRequiresInput => {
-                "identity.verification_session.requires_input"
-            }
+            IdentityVerificationSessionRequiresInput => "identity.verification_session.requires_input",
             IdentityVerificationSessionVerified => "identity.verification_session.verified",
             InvoiceCreated => "invoice.created",
             InvoiceDeleted => "invoice.deleted",
@@ -1375,31 +1243,23 @@ impl UpdateWebhookEndpointEnabledEvents {
             TreasuryCreditReversalPosted => "treasury.credit_reversal.posted",
             TreasuryDebitReversalCompleted => "treasury.debit_reversal.completed",
             TreasuryDebitReversalCreated => "treasury.debit_reversal.created",
-            TreasuryDebitReversalInitialCreditGranted => {
-                "treasury.debit_reversal.initial_credit_granted"
-            }
+            TreasuryDebitReversalInitialCreditGranted => "treasury.debit_reversal.initial_credit_granted",
             TreasuryFinancialAccountClosed => "treasury.financial_account.closed",
             TreasuryFinancialAccountCreated => "treasury.financial_account.created",
-            TreasuryFinancialAccountFeaturesStatusUpdated => {
-                "treasury.financial_account.features_status_updated"
-            }
+            TreasuryFinancialAccountFeaturesStatusUpdated => "treasury.financial_account.features_status_updated",
             TreasuryInboundTransferCanceled => "treasury.inbound_transfer.canceled",
             TreasuryInboundTransferCreated => "treasury.inbound_transfer.created",
             TreasuryInboundTransferFailed => "treasury.inbound_transfer.failed",
             TreasuryInboundTransferSucceeded => "treasury.inbound_transfer.succeeded",
             TreasuryOutboundPaymentCanceled => "treasury.outbound_payment.canceled",
             TreasuryOutboundPaymentCreated => "treasury.outbound_payment.created",
-            TreasuryOutboundPaymentExpectedArrivalDateUpdated => {
-                "treasury.outbound_payment.expected_arrival_date_updated"
-            }
+            TreasuryOutboundPaymentExpectedArrivalDateUpdated => "treasury.outbound_payment.expected_arrival_date_updated",
             TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
             TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
             TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
             TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
             TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
-            TreasuryOutboundTransferExpectedArrivalDateUpdated => {
-                "treasury.outbound_transfer.expected_arrival_date_updated"
-            }
+            TreasuryOutboundTransferExpectedArrivalDateUpdated => "treasury.outbound_transfer.expected_arrival_date_updated",
             TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
             TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
             TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
@@ -1450,13 +1310,6 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "checkout.session.async_payment_succeeded" => Ok(CheckoutSessionAsyncPaymentSucceeded),
             "checkout.session.completed" => Ok(CheckoutSessionCompleted),
             "checkout.session.expired" => Ok(CheckoutSessionExpired),
-            "climate.order.canceled" => Ok(ClimateOrderCanceled),
-            "climate.order.created" => Ok(ClimateOrderCreated),
-            "climate.order.delayed" => Ok(ClimateOrderDelayed),
-            "climate.order.delivered" => Ok(ClimateOrderDelivered),
-            "climate.order.product_substituted" => Ok(ClimateOrderProductSubstituted),
-            "climate.product.created" => Ok(ClimateProductCreated),
-            "climate.product.pricing_updated" => Ok(ClimateProductPricingUpdated),
             "coupon.created" => Ok(CouponCreated),
             "coupon.deleted" => Ok(CouponDeleted),
             "coupon.updated" => Ok(CouponUpdated),
@@ -1475,12 +1328,8 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "customer.subscription.created" => Ok(CustomerSubscriptionCreated),
             "customer.subscription.deleted" => Ok(CustomerSubscriptionDeleted),
             "customer.subscription.paused" => Ok(CustomerSubscriptionPaused),
-            "customer.subscription.pending_update_applied" => {
-                Ok(CustomerSubscriptionPendingUpdateApplied)
-            }
-            "customer.subscription.pending_update_expired" => {
-                Ok(CustomerSubscriptionPendingUpdateExpired)
-            }
+            "customer.subscription.pending_update_applied" => Ok(CustomerSubscriptionPendingUpdateApplied),
+            "customer.subscription.pending_update_expired" => Ok(CustomerSubscriptionPendingUpdateExpired),
             "customer.subscription.resumed" => Ok(CustomerSubscriptionResumed),
             "customer.subscription.trial_will_end" => Ok(CustomerSubscriptionTrialWillEnd),
             "customer.subscription.updated" => Ok(CustomerSubscriptionUpdated),
@@ -1488,33 +1337,18 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "customer.tax_id.deleted" => Ok(CustomerTaxIdDeleted),
             "customer.tax_id.updated" => Ok(CustomerTaxIdUpdated),
             "customer.updated" => Ok(CustomerUpdated),
-            "customer_cash_balance_transaction.created" => {
-                Ok(CustomerCashBalanceTransactionCreated)
-            }
+            "customer_cash_balance_transaction.created" => Ok(CustomerCashBalanceTransactionCreated),
             "file.created" => Ok(FileCreated),
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
-            "financial_connections.account.deactivated" => {
-                Ok(FinancialConnectionsAccountDeactivated)
-            }
-            "financial_connections.account.disconnected" => {
-                Ok(FinancialConnectionsAccountDisconnected)
-            }
-            "financial_connections.account.reactivated" => {
-                Ok(FinancialConnectionsAccountReactivated)
-            }
-            "financial_connections.account.refreshed_balance" => {
-                Ok(FinancialConnectionsAccountRefreshedBalance)
-            }
-            "financial_connections.account.refreshed_transactions" => {
-                Ok(FinancialConnectionsAccountRefreshedTransactions)
-            }
+            "financial_connections.account.deactivated" => Ok(FinancialConnectionsAccountDeactivated),
+            "financial_connections.account.disconnected" => Ok(FinancialConnectionsAccountDisconnected),
+            "financial_connections.account.reactivated" => Ok(FinancialConnectionsAccountReactivated),
+            "financial_connections.account.refreshed_balance" => Ok(FinancialConnectionsAccountRefreshedBalance),
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),
             "identity.verification_session.processing" => Ok(IdentityVerificationSessionProcessing),
             "identity.verification_session.redacted" => Ok(IdentityVerificationSessionRedacted),
-            "identity.verification_session.requires_input" => {
-                Ok(IdentityVerificationSessionRequiresInput)
-            }
+            "identity.verification_session.requires_input" => Ok(IdentityVerificationSessionRequiresInput),
             "identity.verification_session.verified" => Ok(IdentityVerificationSessionVerified),
             "invoice.created" => Ok(InvoiceCreated),
             "invoice.deleted" => Ok(InvoiceDeleted),
@@ -1637,31 +1471,23 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.credit_reversal.posted" => Ok(TreasuryCreditReversalPosted),
             "treasury.debit_reversal.completed" => Ok(TreasuryDebitReversalCompleted),
             "treasury.debit_reversal.created" => Ok(TreasuryDebitReversalCreated),
-            "treasury.debit_reversal.initial_credit_granted" => {
-                Ok(TreasuryDebitReversalInitialCreditGranted)
-            }
+            "treasury.debit_reversal.initial_credit_granted" => Ok(TreasuryDebitReversalInitialCreditGranted),
             "treasury.financial_account.closed" => Ok(TreasuryFinancialAccountClosed),
             "treasury.financial_account.created" => Ok(TreasuryFinancialAccountCreated),
-            "treasury.financial_account.features_status_updated" => {
-                Ok(TreasuryFinancialAccountFeaturesStatusUpdated)
-            }
+            "treasury.financial_account.features_status_updated" => Ok(TreasuryFinancialAccountFeaturesStatusUpdated),
             "treasury.inbound_transfer.canceled" => Ok(TreasuryInboundTransferCanceled),
             "treasury.inbound_transfer.created" => Ok(TreasuryInboundTransferCreated),
             "treasury.inbound_transfer.failed" => Ok(TreasuryInboundTransferFailed),
             "treasury.inbound_transfer.succeeded" => Ok(TreasuryInboundTransferSucceeded),
             "treasury.outbound_payment.canceled" => Ok(TreasuryOutboundPaymentCanceled),
             "treasury.outbound_payment.created" => Ok(TreasuryOutboundPaymentCreated),
-            "treasury.outbound_payment.expected_arrival_date_updated" => {
-                Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated)
-            }
+            "treasury.outbound_payment.expected_arrival_date_updated" => Ok(TreasuryOutboundPaymentExpectedArrivalDateUpdated),
             "treasury.outbound_payment.failed" => Ok(TreasuryOutboundPaymentFailed),
             "treasury.outbound_payment.posted" => Ok(TreasuryOutboundPaymentPosted),
             "treasury.outbound_payment.returned" => Ok(TreasuryOutboundPaymentReturned),
             "treasury.outbound_transfer.canceled" => Ok(TreasuryOutboundTransferCanceled),
             "treasury.outbound_transfer.created" => Ok(TreasuryOutboundTransferCreated),
-            "treasury.outbound_transfer.expected_arrival_date_updated" => {
-                Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated)
-            }
+            "treasury.outbound_transfer.expected_arrival_date_updated" => Ok(TreasuryOutboundTransferExpectedArrivalDateUpdated),
             "treasury.outbound_transfer.failed" => Ok(TreasuryOutboundTransferFailed),
             "treasury.outbound_transfer.posted" => Ok(TreasuryOutboundTransferPosted),
             "treasury.outbound_transfer.returned" => Ok(TreasuryOutboundTransferReturned),
@@ -1695,15 +1521,20 @@ impl serde::Serialize for UpdateWebhookEndpointEnabledEvents {
 impl<'a> UpdateWebhookEndpoint<'a> {
     /// Updates the webhook endpoint.
     /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        webhook_endpoint: &stripe_misc::WebhookEndpointId,
-    ) -> stripe::Response<stripe_misc::WebhookEndpoint> {
-        client.send_form(
-            &format!("/webhook_endpoints/{webhook_endpoint}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, webhook_endpoint: &stripe_misc::WebhookEndpointId) -> stripe::Response<stripe_misc::WebhookEndpoint> {
+        client.send_form(&format!("/webhook_endpoints/{webhook_endpoint}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteWebhookEndpoint {}
+impl DeleteWebhookEndpoint {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteWebhookEndpoint {
+    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
+    pub fn send(&self, client: &stripe::Client, webhook_endpoint: &stripe_misc::WebhookEndpointId) -> stripe::Response<stripe_misc::DeletedWebhookEndpoint> {
+        client.send_form(&format!("/webhook_endpoints/{webhook_endpoint}"), self, http_types::Method::Delete)
     }
 }

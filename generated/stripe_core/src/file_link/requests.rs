@@ -1,49 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListFileLink<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Filter links by their expiration status. By default, Stripe returns all links.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expired: Option<bool>,
-    /// Only return links for the given file.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub file: Option<&'a str>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListFileLink<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListFileLink<'a> {
-    /// Returns a list of file links.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::FileLink>> {
-        client.get_query("/file_links", self)
-    }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::FileLink>> {
-        stripe::ListPaginator::from_list_params("/file_links", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,11 +11,7 @@ impl<'a> RetrieveFileLink<'a> {
 }
 impl<'a> RetrieveFileLink<'a> {
     /// Retrieves the file link with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        link: &stripe_shared::FileLinkId,
-    ) -> stripe::Response<stripe_shared::FileLink> {
+    pub fn send(&self, client: &stripe::Client, link: &stripe_shared::FileLinkId) -> stripe::Response<stripe_shared::FileLink> {
         client.get_query(&format!("/file_links/{link}"), self)
     }
 }
@@ -122,11 +73,49 @@ pub enum UpdateFileLinkExpiresAt {
 }
 impl<'a> UpdateFileLink<'a> {
     /// Updates an existing file link object. Expired links can no longer be updated.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        link: &stripe_shared::FileLinkId,
-    ) -> stripe::Response<stripe_shared::FileLink> {
+    pub fn send(&self, client: &stripe::Client, link: &stripe_shared::FileLinkId) -> stripe::Response<stripe_shared::FileLink> {
         client.send_form(&format!("/file_links/{link}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListFileLink<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Filter links by their expiration status. By default, Stripe returns all links.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expired: Option<bool>,
+    /// Only return links for the given file.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file: Option<&'a str>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListFileLink<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListFileLink<'a> {
+    /// Returns a list of file links.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::FileLink>> {
+        client.get_query("/file_links", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::FileLink>> {
+        stripe::ListPaginator::from_list_params("/file_links", self)
     }
 }

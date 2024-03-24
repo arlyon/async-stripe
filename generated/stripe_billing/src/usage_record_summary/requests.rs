@@ -30,23 +30,10 @@ impl<'a> ListSubscriptionItemUsageRecordSummary<'a> {
     /// The list is sorted in reverse-chronological order (newest first).
     /// The first list item represents the most current usage period that hasn’t ended yet.
     /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        subscription_item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::UsageRecordSummary>> {
-        client.get_query(
-            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            self,
-        )
+    pub fn send(&self, client: &stripe::Client, subscription_item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_types::List<stripe_shared::UsageRecordSummary>> {
+        client.get_query(&format!("/subscription_items/{subscription_item}/usage_record_summaries"), self)
     }
-    pub fn paginate(
-        self,
-        subscription_item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            self,
-        )
+    pub fn paginate(self, subscription_item: &stripe_shared::SubscriptionItemId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>> {
+        stripe::ListPaginator::from_list_params(&format!("/subscription_items/{subscription_item}/usage_record_summaries"), self)
     }
 }

@@ -1,23 +1,36 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveApplicationFeeRefund<'a> {
+pub struct CreateIdApplicationFeeRefund<'a> {
+    /// A positive integer, in _cents (or local equivalent)_, representing how much of this fee to refund.
+    /// Can refund only up to the remaining unrefunded amount of the fee.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
-impl<'a> RetrieveApplicationFeeRefund<'a> {
+impl<'a> CreateIdApplicationFeeRefund<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-impl<'a> RetrieveApplicationFeeRefund<'a> {
-    /// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        fee: &stripe_shared::ApplicationFeeId,
-        id: &str,
-    ) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
-        client.get_query(&format!("/application_fees/{fee}/refunds/{id}"), self)
+impl<'a> CreateIdApplicationFeeRefund<'a> {
+    /// Refunds an application fee that has previously been collected but not yet refunded.
+    /// Funds will be refunded to the Stripe account from which the fee was originally collected.
+    ///
+    /// You can optionally refund only part of an application fee.
+    /// You can do so multiple times, until the entire fee has been refunded.
+    ///
+    /// Once entirely refunded, an application fee can’t be refunded again.
+    /// This method will raise an error when called on an already-refunded application fee,
+    /// or when trying to refund more money than is left on an application fee.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ApplicationFeeId) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
+        client.send_form(&format!("/application_fees/{id}/refunds"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -49,18 +62,28 @@ impl<'a> ListIdApplicationFeeRefund<'a> {
     /// You can see a list of the refunds belonging to a specific application fee.
     /// Note that the 10 most recent refunds are always available by default on the application fee object.
     /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional refunds.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ApplicationFeeId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::ApplicationFeeRefund>> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ApplicationFeeId) -> stripe::Response<stripe_types::List<stripe_shared::ApplicationFeeRefund>> {
         client.get_query(&format!("/application_fees/{id}/refunds"), self)
     }
-    pub fn paginate(
-        self,
-        id: &stripe_shared::ApplicationFeeId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ApplicationFeeRefund>> {
+    pub fn paginate(self, id: &stripe_shared::ApplicationFeeId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ApplicationFeeRefund>> {
         stripe::ListPaginator::from_list_params(&format!("/application_fees/{id}/refunds"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveApplicationFeeRefund<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveApplicationFeeRefund<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveApplicationFeeRefund<'a> {
+    /// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
+    pub fn send(&self, client: &stripe::Client, fee: &stripe_shared::ApplicationFeeId, id: &str) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
+        client.get_query(&format!("/application_fees/{fee}/refunds/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -85,55 +108,7 @@ impl<'a> UpdateApplicationFeeRefund<'a> {
     /// Any parameters not provided will be left unchanged.
     ///
     /// This request only accepts metadata as an argument.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        fee: &stripe_shared::ApplicationFeeId,
-        id: &str,
-    ) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
-        client.send_form(
-            &format!("/application_fees/{fee}/refunds/{id}"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateIdApplicationFeeRefund<'a> {
-    /// A positive integer, in _cents (or local equivalent)_, representing how much of this fee to refund.
-    /// Can refund only up to the remaining unrefunded amount of the fee.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> CreateIdApplicationFeeRefund<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CreateIdApplicationFeeRefund<'a> {
-    /// Refunds an application fee that has previously been collected but not yet refunded.
-    /// Funds will be refunded to the Stripe account from which the fee was originally collected.
-    ///
-    /// You can optionally refund only part of an application fee.
-    /// You can do so multiple times, until the entire fee has been refunded.
-    ///
-    /// Once entirely refunded, an application fee can’t be refunded again.
-    /// This method will raise an error when called on an already-refunded application fee,
-    /// or when trying to refund more money than is left on an application fee.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ApplicationFeeId,
-    ) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
-        client.send_form(&format!("/application_fees/{id}/refunds"), self, http_types::Method::Post)
+    pub fn send(&self, client: &stripe::Client, fee: &stripe_shared::ApplicationFeeId, id: &str) -> stripe::Response<stripe_shared::ApplicationFeeRefund> {
+        client.send_form(&format!("/application_fees/{fee}/refunds/{id}"), self, http_types::Method::Post)
     }
 }

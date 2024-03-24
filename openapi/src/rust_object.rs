@@ -219,24 +219,79 @@ impl StructField {
         self.doc_comment = Some(doc_comment.to_string());
         self
     }
+
+    /// Expected name of the field when (de)serializing
+    pub fn wire_name(&self) -> &str {
+        self.rename_as.as_ref().unwrap_or(&self.field_name)
+    }
 }
 
-pub fn as_enum_of_objects<'a>(
-    components: &'a Components,
-    variants: &'a [EnumVariant],
-) -> Option<IndexMap<&'a str, ComponentPath>> {
-    let mut object_map = IndexMap::new();
+fn as_object_union(
+    components: &Components,
+    variants: &[EnumVariant],
+) -> Option<IndexMap<String, ObjectRef>> {
+    let mut objects = IndexMap::new();
     for variant in variants {
-        let path = variant.rust_type.as_ref().and_then(|t| t.as_component_path())?;
+        let path = variant.rust_type.as_ref()?.as_component_path()?;
         let obj = components.get(path);
-        let name = obj.data.object_name.as_deref()?;
 
-        // If we have duplicate object names, we cannot distinguish by the object tag, so give up here
-        if object_map.insert(name, path.clone()).is_some() {
+        let name = obj.data.object_name.as_deref()?;
+        let obj_ref = ObjectRef { path: path.clone(), ident: obj.ident().clone() };
+
+        // Union of objects cannot have duplicate object names since then we cannot discriminate
+        // by the object key
+        if objects.insert(name.to_string(), obj_ref).is_some() {
             return None;
         }
     }
-    Some(object_map)
+    Some(objects)
+}
+
+fn as_maybe_deleted(components: &Components, variants: &[EnumVariant]) -> Option<MaybeDeleted> {
+    if variants.len() != 2 {
+        return None;
+    }
+
+    let mut base = None;
+    let mut deleted = None;
+
+    for variant in variants {
+        let path = variant.rust_type.as_ref()?.as_component_path()?;
+        let obj = components.get(path);
+        let item = PathAndIdent { path: path.clone(), ident: obj.ident().clone() };
+        if path.starts_with("deleted_") {
+            deleted = Some(item);
+        } else {
+            base = Some(item);
+        }
+    }
+
+    Some(MaybeDeleted { base: base?, deleted: deleted? })
+}
+
+pub fn as_enum_of_objects(
+    components: &Components,
+    variants: &[EnumVariant],
+) -> Option<EnumOfObjects> {
+    if let Some(obj_union) = as_object_union(components, variants) {
+        Some(EnumOfObjects::ObjectUnion(obj_union))
+    } else if let Some(maybe_deleted) = as_maybe_deleted(components, variants) {
+        Some(EnumOfObjects::MaybeDeleted(maybe_deleted))
+    } else {
+        None
+    }
+}
+
+#[derive(Debug)]
+pub struct ObjectRef {
+    pub path: ComponentPath,
+    pub ident: RustIdent,
+}
+
+#[derive(Debug)]
+pub enum EnumOfObjects {
+    MaybeDeleted(MaybeDeleted),
+    ObjectUnion(IndexMap<String, ObjectRef>),
 }
 
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
@@ -249,13 +304,35 @@ pub enum ObjectKind {
     Type,
 }
 
+#[derive(Debug)]
+pub struct PathAndIdent {
+    pub path: ComponentPath,
+    pub ident: RustIdent,
+}
+
+#[derive(Debug)]
+pub struct MaybeDeleted {
+    pub base: PathAndIdent,
+    pub deleted: PathAndIdent,
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+pub enum ShouldImplSerialize {
+    Always,
+    SkipIfMinSer,
+    Never,
+}
+
 impl ObjectKind {
     pub fn is_request_param(self) -> bool {
         matches!(self, Self::RequestParam)
     }
 
-    pub fn should_impl_serialize(self) -> bool {
-        true
+    pub fn should_impl_serialize(self) -> ShouldImplSerialize {
+        match self {
+            Self::RequestParam => ShouldImplSerialize::Always,
+            Self::Type | Self::RequestReturned => ShouldImplSerialize::SkipIfMinSer,
+        }
     }
 
     pub fn should_impl_deserialize(self) -> bool {

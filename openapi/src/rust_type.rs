@@ -195,8 +195,12 @@ impl RustType {
         Self::path(PathToType::Component(path), false)
     }
 
+    pub fn json_value(is_ref: bool) -> Self {
+        Self::Simple(SimpleType::Ext(ExtType::Value { is_ref, force_serde_json: false }))
+    }
+
     pub fn serde_json_value(is_ref: bool) -> Self {
-        Self::Simple(SimpleType::Ext(ExtType::Value { is_ref }))
+        Self::Simple(SimpleType::Ext(ExtType::Value { is_ref, force_serde_json: true }))
     }
 
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
@@ -207,13 +211,6 @@ impl RustType {
         match self {
             Self::Container(Container::Option(_)) => self,
             _ => Self::option(self),
-        }
-    }
-
-    pub fn skip_serializing(&self) -> Option<&'static str> {
-        match self {
-            Self::Container(Container::Option(_)) => Some("Option::is_none"),
-            _ => None,
         }
     }
 
@@ -369,12 +366,12 @@ pub enum SimpleType {
 impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
-        !matches!(self, Self::String | Self::Ext(ExtType::Value { is_ref: false }))
+        !matches!(self, Self::String | Self::Ext(ExtType::Value { is_ref: false, .. }))
     }
 
     /// Is this type a reference?
     pub const fn is_reference(self) -> bool {
-        matches!(self, Self::Str | Self::Ext(ExtType::Value { is_ref: true }))
+        matches!(self, Self::Str | Self::Ext(ExtType::Value { is_ref: true, .. }))
     }
 
     pub const fn ident(self) -> &'static str {
@@ -438,9 +435,10 @@ pub enum ExtType {
     RangeQueryTs,
     Timestamp,
     AlwaysTrue,
-    /// serde_json::Value
+    /// Arbitrary JSON value
     Value {
         is_ref: bool,
+        force_serde_json: bool,
     },
 }
 
@@ -451,7 +449,13 @@ impl ExtType {
             Self::RangeQueryTs => "stripe_types::RangeQueryTs",
             Self::Timestamp => "stripe_types::Timestamp",
             Self::AlwaysTrue => "stripe_types::AlwaysTrue",
-            Self::Value { .. } => "serde_json::Value",
+            Self::Value { force_serde_json, .. } => {
+                if force_serde_json {
+                    "serde_json::Value"
+                } else {
+                    "stripe_types::Value"
+                }
+            }
         }
     }
 

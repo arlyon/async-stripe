@@ -1,5 +1,5 @@
 use stripe_product::{CurrencyOptionTaxBehavior, Price};
-use stripe_types::Currency;
+use stripe_types::{Currency, StripeDeserialize};
 
 // Using fixture for this test because the stripe-mock server does not (currently [2023-05-25]) support the `currency_options` field.
 // See: https://github.com/stripe/stripe-mock/issues/420
@@ -49,10 +49,7 @@ fn deserialize_currency_options() {
     }
     "#;
 
-    let result: Result<Price, serde_json::Error> = serde_json::from_str(fixture);
-    assert!(result.is_ok());
-
-    let price = result.unwrap();
+    let price = Price::deserialize(fixture).unwrap();
     assert!(&price.currency_options.is_some());
 
     let currency_options = price.currency_options.unwrap();

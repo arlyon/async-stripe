@@ -1,4 +1,21 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveCustomerCashBalanceTransaction<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveCustomerCashBalanceTransaction<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveCustomerCashBalanceTransaction<'a> {
+    /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId, transaction: &str) -> stripe::Response<stripe_shared::CustomerCashBalanceTransaction> {
+        client.get_query(&format!("/customers/{customer}/cash_balance_transactions/{transaction}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListCustomerCustomerCashBalanceTransaction<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
@@ -25,46 +42,10 @@ impl<'a> ListCustomerCustomerCashBalanceTransaction<'a> {
 }
 impl<'a> ListCustomerCustomerCashBalanceTransaction<'a> {
     /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CustomerCashBalanceTransaction>> {
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId) -> stripe::Response<stripe_types::List<stripe_shared::CustomerCashBalanceTransaction>> {
         client.get_query(&format!("/customers/{customer}/cash_balance_transactions"), self)
     }
-    pub fn paginate(
-        self,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CustomerCashBalanceTransaction>>
-    {
-        stripe::ListPaginator::from_list_params(
-            &format!("/customers/{customer}/cash_balance_transactions"),
-            self,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveCustomerCashBalanceTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveCustomerCashBalanceTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveCustomerCashBalanceTransaction<'a> {
-    /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        transaction: &str,
-    ) -> stripe::Response<stripe_shared::CustomerCashBalanceTransaction> {
-        client.get_query(
-            &format!("/customers/{customer}/cash_balance_transactions/{transaction}"),
-            self,
-        )
+    pub fn paginate(self, customer: &stripe_shared::CustomerId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CustomerCashBalanceTransaction>> {
+        stripe::ListPaginator::from_list_params(&format!("/customers/{customer}/cash_balance_transactions"), self)
     }
 }

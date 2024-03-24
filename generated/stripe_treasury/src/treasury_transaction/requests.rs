@@ -1,3 +1,20 @@
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTreasuryTransaction<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryTransaction<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryTransaction<'a> {
+    /// Retrieves the details of an existing Transaction.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::TreasuryTransactionId) -> stripe::Response<stripe_treasury::TreasuryTransaction> {
+        client.get_query(&format!("/treasury/transactions/{id}"), self)
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryTransaction<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,17 +52,7 @@ pub struct ListTreasuryTransaction<'a> {
 }
 impl<'a> ListTreasuryTransaction<'a> {
     pub fn new(financial_account: &'a str) -> Self {
-        Self {
-            created: None,
-            ending_before: None,
-            expand: None,
-            financial_account,
-            limit: None,
-            order_by: None,
-            starting_after: None,
-            status: None,
-            status_transitions: None,
-        }
+        Self { created: None, ending_before: None, expand: None, financial_account, limit: None, order_by: None, starting_after: None, status: None, status_transitions: None }
     }
 }
 /// The results are in reverse chronological order by `created` or `posted_at`.
@@ -110,36 +117,10 @@ impl ListTreasuryTransactionStatusTransitions {
 }
 impl<'a> ListTreasuryTransaction<'a> {
     /// Retrieves a list of Transaction objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransaction>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryTransaction>> {
         client.get_query("/treasury/transactions", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryTransaction>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryTransaction>> {
         stripe::ListPaginator::from_list_params("/treasury/transactions", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryTransaction<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryTransaction<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTreasuryTransaction<'a> {
-    /// Retrieves the details of an existing Transaction.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryTransactionId,
-    ) -> stripe::Response<stripe_treasury::TreasuryTransaction> {
-        client.get_query(&format!("/treasury/transactions/{id}"), self)
     }
 }

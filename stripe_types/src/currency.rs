@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Default)]
+#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
 pub enum Currency {
     #[serde(rename = "byn")]
     BYN, // Belarusian Ruble

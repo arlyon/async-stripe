@@ -35,10 +35,7 @@ impl<'a> ListTaxRate<'a> {
 impl<'a> ListTaxRate<'a> {
     /// Returns a list of your tax rates.
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::TaxRate>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::TaxRate>> {
         client.get_query("/tax_rates", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TaxRate>> {
@@ -58,11 +55,7 @@ impl<'a> RetrieveTaxRate<'a> {
 }
 impl<'a> RetrieveTaxRate<'a> {
     /// Retrieves a tax rate with the given ID
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        tax_rate: &stripe_shared::TaxRateId,
-    ) -> stripe::Response<stripe_shared::TaxRate> {
+    pub fn send(&self, client: &stripe::Client, tax_rate: &stripe_shared::TaxRateId) -> stripe::Response<stripe_shared::TaxRate> {
         client.get_query(&format!("/tax_rates/{tax_rate}"), self)
     }
 }
@@ -109,19 +102,7 @@ pub struct CreateTaxRate<'a> {
 }
 impl<'a> CreateTaxRate<'a> {
     pub fn new(display_name: &'a str, inclusive: bool, percentage: f64) -> Self {
-        Self {
-            active: None,
-            country: None,
-            description: None,
-            display_name,
-            expand: None,
-            inclusive,
-            jurisdiction: None,
-            metadata: None,
-            percentage,
-            state: None,
-            tax_type: None,
-        }
+        Self { active: None, country: None, description: None, display_name, expand: None, inclusive, jurisdiction: None, metadata: None, percentage, state: None, tax_type: None }
     }
 }
 impl<'a> CreateTaxRate<'a> {
@@ -175,11 +156,7 @@ impl<'a> UpdateTaxRate<'a> {
 }
 impl<'a> UpdateTaxRate<'a> {
     /// Updates an existing tax rate.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        tax_rate: &stripe_shared::TaxRateId,
-    ) -> stripe::Response<stripe_shared::TaxRate> {
+    pub fn send(&self, client: &stripe::Client, tax_rate: &stripe_shared::TaxRateId) -> stripe::Response<stripe_shared::TaxRate> {
         client.send_form(&format!("/tax_rates/{tax_rate}"), self, http_types::Method::Post)
     }
 }

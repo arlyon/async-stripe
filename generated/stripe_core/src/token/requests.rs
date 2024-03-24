@@ -11,11 +11,7 @@ impl<'a> RetrieveToken<'a> {
 }
 impl<'a> RetrieveToken<'a> {
     /// Retrieves the token with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        token: &stripe_core::TokenId,
-    ) -> stripe::Response<stripe_core::Token> {
+    pub fn send(&self, client: &stripe::Client, token: &stripe_core::TokenId) -> stripe::Response<stripe_core::Token> {
         client.get_query(&format!("/tokens/{token}"), self)
     }
 }
@@ -184,7 +180,6 @@ pub struct CreateTokenAccountCompany<'a> {
     pub registration_number: Option<&'a str>,
     /// The category identifying the legal structure of the company or legal entity.
     /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-    /// Pass an empty string to unset this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub structure: Option<CreateTokenAccountCompanyStructure>,
     /// The business ID number of the company, as appropriate for the company’s country.
@@ -286,7 +281,6 @@ impl<'a> CreateTokenAccountCompanyOwnershipDeclaration<'a> {
 }
 /// The category identifying the legal structure of the company or legal entity.
 /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
-/// Pass an empty string to unset this value.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateTokenAccountCompanyStructure {
@@ -305,7 +299,6 @@ pub enum CreateTokenAccountCompanyStructure {
     PublicCompany,
     PublicCorporation,
     PublicPartnership,
-    RegisteredCharity,
     SingleMemberLlc,
     SoleEstablishment,
     SoleProprietorship,
@@ -335,7 +328,6 @@ impl CreateTokenAccountCompanyStructure {
             PublicCompany => "public_company",
             PublicCorporation => "public_corporation",
             PublicPartnership => "public_partnership",
-            RegisteredCharity => "registered_charity",
             SingleMemberLlc => "single_member_llc",
             SoleEstablishment => "sole_establishment",
             SoleProprietorship => "sole_proprietorship",
@@ -368,7 +360,6 @@ impl std::str::FromStr for CreateTokenAccountCompanyStructure {
             "public_company" => Ok(PublicCompany),
             "public_corporation" => Ok(PublicCorporation),
             "public_partnership" => Ok(PublicPartnership),
-            "registered_charity" => Ok(RegisteredCharity),
             "single_member_llc" => Ok(SingleMemberLlc),
             "sole_establishment" => Ok(SoleEstablishment),
             "sole_proprietorship" => Ok(SoleProprietorship),
@@ -498,9 +489,6 @@ pub struct CreateTokenAccountIndividual<'a> {
     /// The individual's registered address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registered_address: Option<AddressSpecs<'a>>,
-    /// Describes the person’s relationship to the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<CreateTokenAccountIndividualRelationship<'a>>,
     /// The last four digits of the individual's Social Security Number (U.S. only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4: Option<&'a str>,
@@ -619,31 +607,6 @@ impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
         serializer.serialize_str(self.as_str())
     }
 }
-/// Describes the person’s relationship to the account.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateTokenAccountIndividualRelationship<'a> {
-    /// Whether the person is a director of the account's legal entity.
-    /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub director: Option<bool>,
-    /// Whether the person has significant responsibility to control, manage, or direct the organization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub executive: Option<bool>,
-    /// Whether the person is an owner of the account’s legal entity.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<bool>,
-    /// The percent owned by the person of the account's legal entity.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percent_ownership: Option<f64>,
-    /// The person's title (e.g., CEO, Support Engineer).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<&'a str>,
-}
-impl<'a> CreateTokenAccountIndividualRelationship<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// The bank account this token will represent.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTokenBankAccount<'a> {
@@ -676,15 +639,7 @@ pub struct CreateTokenBankAccount<'a> {
 }
 impl<'a> CreateTokenBankAccount<'a> {
     pub fn new(account_number: &'a str, country: &'a str) -> Self {
-        Self {
-            account_holder_name: None,
-            account_holder_type: None,
-            account_number,
-            account_type: None,
-            country,
-            currency: None,
-            routing_number: None,
-        }
+        Self { account_holder_name: None, account_holder_type: None, account_number, account_type: None, country, currency: None, routing_number: None }
     }
 }
 /// The type of entity that holds the account.

@@ -35,15 +35,10 @@ impl<'a> ListShippingRate<'a> {
 }
 impl<'a> ListShippingRate<'a> {
     /// Returns a list of your shipping rates.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::ShippingRate>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::ShippingRate>> {
         client.get_query("/shipping_rates", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ShippingRate>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ShippingRate>> {
         stripe::ListPaginator::from_list_params("/shipping_rates", self)
     }
 }
@@ -60,11 +55,7 @@ impl<'a> RetrieveShippingRate<'a> {
 }
 impl<'a> RetrieveShippingRate<'a> {
     /// Returns the shipping rate object with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        shipping_rate_token: &stripe_shared::ShippingRateId,
-    ) -> stripe::Response<stripe_shared::ShippingRate> {
+    pub fn send(&self, client: &stripe::Client, shipping_rate_token: &stripe_shared::ShippingRateId) -> stripe::Response<stripe_shared::ShippingRate> {
         client.get_query(&format!("/shipping_rates/{shipping_rate_token}"), self)
     }
 }
@@ -98,22 +89,13 @@ pub struct CreateShippingRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<&'a str>,
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<stripe_shared::ShippingRateType>,
 }
 impl<'a> CreateShippingRate<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self {
-            delivery_estimate: None,
-            display_name,
-            expand: None,
-            fixed_amount: None,
-            metadata: None,
-            tax_behavior: None,
-            tax_code: None,
-            type_: None,
-        }
+        Self { delivery_estimate: None, display_name, expand: None, fixed_amount: None, metadata: None, tax_behavior: None, tax_code: None, type_: None }
     }
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
@@ -279,12 +261,7 @@ pub struct CreateShippingRateFixedAmount<'a> {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateShippingRateFixedAmountCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateShippingRateFixedAmountCurrencyOptions>>,
 }
 impl<'a> CreateShippingRateFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -346,12 +323,7 @@ pub struct UpdateShippingRateFixedAmount<'a> {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            UpdateShippingRateFixedAmountCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, UpdateShippingRateFixedAmountCurrencyOptions>>,
 }
 impl<'a> UpdateShippingRateFixedAmount<'a> {
     pub fn new() -> Self {
@@ -377,15 +349,7 @@ impl UpdateShippingRateFixedAmountCurrencyOptions {
 }
 impl<'a> UpdateShippingRate<'a> {
     /// Updates an existing shipping rate object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        shipping_rate_token: &stripe_shared::ShippingRateId,
-    ) -> stripe::Response<stripe_shared::ShippingRate> {
-        client.send_form(
-            &format!("/shipping_rates/{shipping_rate_token}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, shipping_rate_token: &stripe_shared::ShippingRateId) -> stripe::Response<stripe_shared::ShippingRate> {
+        client.send_form(&format!("/shipping_rates/{shipping_rate_token}"), self, http_types::Method::Post)
     }
 }

@@ -6,6 +6,7 @@ use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use stripe_shared::event::EventType;
 use stripe_shared::ApiVersion;
+use stripe_types::StripeDeserialize;
 
 use crate::{EventObject, WebhookError};
 
@@ -44,7 +45,7 @@ pub struct EventData {
     ///
     /// If an array attribute has any updated elements, this object contains the entire array.
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
-    pub previous_attributes: Option<serde_json::Value>,
+    pub previous_attributes: Option<stripe_types::Value>,
 }
 
 pub struct Webhook {
@@ -109,7 +110,17 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
-        let base_evt: stripe_shared::Event = serde_json::from_str(payload)?;
+        let base_evt =
+            stripe_shared::Event::deserialize(payload).map_err(WebhookError::BadParse)?;
+        #[cfg(not(feature = "min-ser"))]
+        let event_obj = EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)
+            .map_err(|err| {
+            WebhookError::BadParse(format!("could not parse event object: {err}"))
+        })?;
+        #[cfg(feature = "min-ser")]
+        let event_obj =
+            EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)
+                .ok_or_else(|| WebhookError::BadParse("could not parse event object".into()))?;
 
         Ok(Event {
             account: base_evt.account,
@@ -118,7 +129,7 @@ impl Webhook {
                 .map(|s| ApiVersion::from_str(&s).unwrap_or(ApiVersion::Unknown)),
             created: base_evt.created,
             data: EventData {
-                object: EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)?,
+                object: event_obj,
                 previous_attributes: base_evt.data.previous_attributes,
             },
             id: base_evt.id,

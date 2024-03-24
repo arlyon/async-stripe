@@ -1,82 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListTreasuryFinancialAccount<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// An object ID cursor for use in pagination.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit ranging from 1 to 100 (defaults to 10).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// An object ID cursor for use in pagination.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListTreasuryFinancialAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListTreasuryFinancialAccount<'a> {
-    /// Returns a list of FinancialAccounts.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccount>> {
-        client.get_query("/treasury/financial_accounts", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryFinancialAccount>> {
-        stripe::ListPaginator::from_list_params("/treasury/financial_accounts", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryFinancialAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryFinancialAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTreasuryFinancialAccount<'a> {
-    /// Retrieves the details of a FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
-        client.get_query(&format!("/treasury/financial_accounts/{financial_account}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveFeaturesTreasuryFinancialAccount<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveFeaturesTreasuryFinancialAccount<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveFeaturesTreasuryFinancialAccount<'a> {
-    /// Retrieves Features information associated with the FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountFeatures> {
-        client
-            .get_query(&format!("/treasury/financial_accounts/{financial_account}/features"), self)
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccount<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -100,13 +21,7 @@ pub struct CreateTreasuryFinancialAccount<'a> {
 }
 impl<'a> CreateTreasuryFinancialAccount<'a> {
     pub fn new(supported_currencies: &'a [&'a str]) -> Self {
-        Self {
-            expand: None,
-            features: None,
-            metadata: None,
-            platform_restrictions: None,
-            supported_currencies,
-        }
+        Self { expand: None, features: None, metadata: None, platform_restrictions: None, supported_currencies }
     }
 }
 /// Encodes whether a FinancialAccount has access to a particular feature.
@@ -229,8 +144,7 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub ach: Option<CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch>,
     /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
+    pub us_domestic_wire: Option<CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub fn new() -> Self {
@@ -267,8 +181,7 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub ach: Option<CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch>,
     /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
+    pub us_domestic_wire: Option<CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub fn new() -> Self {
@@ -406,10 +319,7 @@ impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsOutb
 }
 impl<'a> CreateTreasuryFinancialAccount<'a> {
     /// Creates a new FinancialAccount. For now, each connected account can only have one FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
         client.send_form("/treasury/financial_accounts", self, http_types::Method::Post)
     }
 }
@@ -557,8 +467,7 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub ach: Option<UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch>,
     /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
+    pub us_domestic_wire: Option<UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub fn new() -> Self {
@@ -595,8 +504,7 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub ach: Option<UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch>,
     /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
+    pub us_domestic_wire: Option<UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub fn new() -> Self {
@@ -734,16 +642,8 @@ impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsOutb
 }
 impl<'a> UpdateTreasuryFinancialAccount<'a> {
     /// Updates the details of a FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
-        client.send_form(
-            &format!("/treasury/financial_accounts/{financial_account}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -867,8 +767,7 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     pub ach: Option<UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch>,
     /// Enables US domestic wire transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire>,
+    pub us_domestic_wire: Option<UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire>,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     pub fn new() -> Self {
@@ -905,8 +804,7 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     pub ach: Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch>,
     /// Enables US domestic wire transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire:
-        Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire>,
+    pub us_domestic_wire: Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire>,
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     pub fn new() -> Self {
@@ -937,15 +835,72 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
 }
 impl<'a> UpdateFeaturesTreasuryFinancialAccount<'a> {
     /// Updates the Features associated with a FinancialAccount.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        financial_account: &stripe_treasury::TreasuryFinancialAccountId,
-    ) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountFeatures> {
-        client.send_form(
-            &format!("/treasury/financial_accounts/{financial_account}/features"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountFeatures> {
+        client.send_form(&format!("/treasury/financial_accounts/{financial_account}/features"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListTreasuryFinancialAccount<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// An object ID cursor for use in pagination.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit ranging from 1 to 100 (defaults to 10).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// An object ID cursor for use in pagination.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListTreasuryFinancialAccount<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListTreasuryFinancialAccount<'a> {
+    /// Returns a list of FinancialAccounts.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryFinancialAccount>> {
+        client.get_query("/treasury/financial_accounts", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryFinancialAccount>> {
+        stripe::ListPaginator::from_list_params("/treasury/financial_accounts", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTreasuryFinancialAccount<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryFinancialAccount<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryFinancialAccount<'a> {
+    /// Retrieves the details of a FinancialAccount.
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccount> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveFeaturesTreasuryFinancialAccount<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveFeaturesTreasuryFinancialAccount<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveFeaturesTreasuryFinancialAccount<'a> {
+    /// Retrieves Features information associated with the FinancialAccount.
+    pub fn send(&self, client: &stripe::Client, financial_account: &stripe_treasury::TreasuryFinancialAccountId) -> stripe::Response<stripe_treasury::TreasuryFinancialAccountFeatures> {
+        client.get_query(&format!("/treasury/financial_accounts/{financial_account}/features"), self)
     }
 }

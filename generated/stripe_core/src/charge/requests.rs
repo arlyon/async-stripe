@@ -1,3 +1,40 @@
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchCharge<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for charges](https://stripe.com/docs/search#query-fields-for-charges).
+    pub query: &'a str,
+}
+impl<'a> SearchCharge<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self { expand: None, limit: None, page: None, query }
+    }
+}
+impl<'a> SearchCharge<'a> {
+    /// Search for charges you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    /// Under normal operating.
+    /// conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up.
+    /// to an hour behind during outages. Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::SearchList<stripe_shared::Charge>> {
+        client.get_query("/charges/search", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Charge>> {
+        stripe::ListPaginator::from_search_params("/charges/search", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,79 +74,11 @@ impl<'a> ListCharge<'a> {
 impl<'a> ListCharge<'a> {
     /// Returns a list of charges you’ve previously created.
     /// The charges are returned in sorted order, with the most recent charges appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Charge>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Charge>> {
         client.get_query("/charges", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Charge>> {
         stripe::ListPaginator::from_list_params("/charges", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveCharge<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveCharge<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveCharge<'a> {
-    /// Retrieves the details of a charge that has previously been created.
-    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
-    /// The same information is returned when creating or refunding the charge.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        charge: &stripe_shared::ChargeId,
-    ) -> stripe::Response<stripe_shared::Charge> {
-        client.get_query(&format!("/charges/{charge}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchCharge<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for charges](https://stripe.com/docs/search#query-fields-for-charges).
-    pub query: &'a str,
-}
-impl<'a> SearchCharge<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
-    }
-}
-impl<'a> SearchCharge<'a> {
-    /// Search for charges you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-    /// Don’t use search in read-after-write flows where strict consistency is necessary.
-    /// Under normal operating.
-    /// conditions, data is searchable in less than a minute.
-    /// Occasionally, propagation of new or updated data can be up.
-    /// to an hour behind during outages. Search functionality is not available to merchants in India.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::SearchList<stripe_shared::Charge>> {
-        client.get_query("/charges/search", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Charge>> {
-        stripe::ListPaginator::from_search_params("/charges/search", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -249,11 +218,30 @@ impl<'a> CreateChargeTransferData<'a> {
     }
 }
 impl<'a> CreateCharge<'a> {
-    /// This method is no longer recommended—use the [Payment Intents API](https://stripe.com/docs/api/payment_intents).
-    /// to initiate a new payment instead. Confirmation of the PaymentIntent creates the `Charge`
-    /// object used to request payment.
+    /// Use the [Payment Intents API](https://stripe.com/docs/api/payment_intents) to initiate a new payment instead.
+    /// of using this method. Confirmation of the PaymentIntent creates the `Charge`
+    /// object used to request payment, so this method is limited to legacy integrations.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Charge> {
         client.send_form("/charges", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveCharge<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveCharge<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveCharge<'a> {
+    /// Retrieves the details of a charge that has previously been created.
+    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
+    /// The same information is returned when creating or refunding the charge.
+    pub fn send(&self, client: &stripe::Client, charge: &stripe_shared::ChargeId) -> stripe::Response<stripe_shared::Charge> {
+        client.get_query(&format!("/charges/{charge}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -363,11 +351,7 @@ impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
 impl<'a> UpdateCharge<'a> {
     /// Updates the specified charge by setting the values of the parameters passed.
     /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        charge: &stripe_shared::ChargeId,
-    ) -> stripe::Response<stripe_shared::Charge> {
+    pub fn send(&self, client: &stripe::Client, charge: &stripe_shared::ChargeId) -> stripe::Response<stripe_shared::Charge> {
         client.send_form(&format!("/charges/{charge}"), self, http_types::Method::Post)
     }
 }
@@ -437,11 +421,7 @@ impl<'a> CaptureCharge<'a> {
     ///
     /// Don’t use this method to capture a PaymentIntent-initiated charge.
     /// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        charge: &stripe_shared::ChargeId,
-    ) -> stripe::Response<stripe_shared::Charge> {
+    pub fn send(&self, client: &stripe::Client, charge: &stripe_shared::ChargeId) -> stripe::Response<stripe_shared::Charge> {
         client.send_form(&format!("/charges/{charge}/capture"), self, http_types::Method::Post)
     }
 }

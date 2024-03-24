@@ -3,9 +3,6 @@ pub struct ListRadarEarlyFraudWarning<'a> {
     /// Only return early fraud warnings for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<&'a str>,
-    /// Only return early fraud warnings that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
@@ -34,15 +31,10 @@ impl<'a> ListRadarEarlyFraudWarning<'a> {
 }
 impl<'a> ListRadarEarlyFraudWarning<'a> {
     /// Returns a list of early fraud warnings.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
         client.get_query("/radar/early_fraud_warnings", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_fraud::RadarEarlyFraudWarning>> {
         stripe::ListPaginator::from_list_params("/radar/early_fraud_warnings", self)
     }
 }
@@ -61,11 +53,7 @@ impl<'a> RetrieveRadarEarlyFraudWarning<'a> {
     /// Retrieves the details of an early fraud warning that has previously been created.
     ///
     /// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        early_fraud_warning: &stripe_fraud::RadarEarlyFraudWarningId,
-    ) -> stripe::Response<stripe_fraud::RadarEarlyFraudWarning> {
+    pub fn send(&self, client: &stripe::Client, early_fraud_warning: &stripe_fraud::RadarEarlyFraudWarningId) -> stripe::Response<stripe_fraud::RadarEarlyFraudWarning> {
         client.get_query(&format!("/radar/early_fraud_warnings/{early_fraud_warning}"), self)
     }
 }

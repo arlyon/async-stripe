@@ -1,5 +1,7 @@
 /// Result from a selfie check
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct GelatoSelfieReport {
     /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the identity document used in this check.
     pub document: Option<String>,
@@ -10,6 +12,104 @@ pub struct GelatoSelfieReport {
     /// Status of this `selfie` check.
     pub status: GelatoSelfieReportStatus,
 }
+#[cfg(feature = "min-ser")]
+pub struct GelatoSelfieReportBuilder {
+    document: Option<Option<String>>,
+    error: Option<Option<stripe_misc::GelatoSelfieReportError>>,
+    selfie: Option<Option<String>>,
+    status: Option<GelatoSelfieReportStatus>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for GelatoSelfieReport {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<GelatoSelfieReport>,
+        builder: GelatoSelfieReportBuilder,
+    }
+
+    impl Visitor for Place<GelatoSelfieReport> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: GelatoSelfieReportBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for GelatoSelfieReportBuilder {
+        type Out = GelatoSelfieReport;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "document" => Deserialize::begin(&mut self.document),
+                "error" => Deserialize::begin(&mut self.error),
+                "selfie" => Deserialize::begin(&mut self.selfie),
+                "status" => Deserialize::begin(&mut self.status),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { document: Deserialize::default(), error: Deserialize::default(), selfie: Deserialize::default(), status: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let document = self.document.take()?;
+            let error = self.error.take()?;
+            let selfie = self.selfie.take()?;
+            let status = self.status.take()?;
+
+            Some(Self::Out { document, error, selfie, status })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for GelatoSelfieReport {
+        type Builder = GelatoSelfieReportBuilder;
+    }
+
+    impl FromValueOpt for GelatoSelfieReport {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = GelatoSelfieReportBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
+                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
+                    "selfie" => b.selfie = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Status of this `selfie` check.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum GelatoSelfieReportStatus {
@@ -60,7 +160,24 @@ impl<'de> serde::Deserialize<'de> for GelatoSelfieReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoSelfieReportStatus"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for GelatoSelfieReportStatus"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for GelatoSelfieReportStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<GelatoSelfieReportStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(GelatoSelfieReportStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(GelatoSelfieReportStatus);

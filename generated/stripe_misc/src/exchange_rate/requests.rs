@@ -26,10 +26,7 @@ impl<'a> ListExchangeRate<'a> {
 impl<'a> ListExchangeRate<'a> {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     /// Only shows the currencies for which Stripe supports.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::ExchangeRate>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_misc::ExchangeRate>> {
         client.get_query("/exchange_rates", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_misc::ExchangeRate>> {
@@ -49,11 +46,7 @@ impl<'a> RetrieveExchangeRate<'a> {
 }
 impl<'a> RetrieveExchangeRate<'a> {
     /// Retrieves the exchange rates from the given currency to every supported currency.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        rate_id: &stripe_misc::ExchangeRateId,
-    ) -> stripe::Response<stripe_misc::ExchangeRate> {
+    pub fn send(&self, client: &stripe::Client, rate_id: &stripe_misc::ExchangeRateId) -> stripe::Response<stripe_misc::ExchangeRate> {
         client.get_query(&format!("/exchange_rates/{rate_id}"), self)
     }
 }

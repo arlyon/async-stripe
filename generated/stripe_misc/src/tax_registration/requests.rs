@@ -80,37 +80,11 @@ impl serde::Serialize for ListTaxRegistrationStatus {
 }
 impl<'a> ListTaxRegistration<'a> {
     /// Returns a list of Tax `Registration` objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxRegistration>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_misc::TaxRegistration>> {
         client.get_query("/tax/registrations", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxRegistration>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxRegistration>> {
         stripe::ListPaginator::from_list_params("/tax/registrations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTaxRegistration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTaxRegistration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTaxRegistration<'a> {
-    /// Returns a Tax `Registration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_misc::TaxRegistrationId,
-    ) -> stripe::Response<stripe_misc::TaxRegistration> {
-        client.get_query(&format!("/tax/registrations/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -132,11 +106,7 @@ pub struct CreateTaxRegistration<'a> {
     pub expires_at: Option<stripe_types::Timestamp>,
 }
 impl<'a> CreateTaxRegistration<'a> {
-    pub fn new(
-        active_from: CreateTaxRegistrationActiveFrom,
-        country: &'a str,
-        country_options: CreateTaxRegistrationCountryOptions<'a>,
-    ) -> Self {
+    pub fn new(active_from: CreateTaxRegistrationActiveFrom, country: &'a str, country_options: CreateTaxRegistrationCountryOptions<'a>) -> Self {
         Self { active_from, country, country_options, expand: None, expires_at: None }
     }
 }
@@ -308,7 +278,7 @@ impl<'a> CreateTaxRegistrationCountryOptions<'a> {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAe {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsAeType,
 }
 impl CreateTaxRegistrationCountryOptionsAe {
@@ -366,7 +336,7 @@ pub struct CreateTaxRegistrationCountryOptionsAt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsAtStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsAtType,
 }
 impl CreateTaxRegistrationCountryOptionsAt {
@@ -381,9 +351,7 @@ pub struct CreateTaxRegistrationCountryOptionsAtStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsAtStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -489,7 +457,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAu {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsAuType,
 }
 impl CreateTaxRegistrationCountryOptionsAu {
@@ -547,7 +515,7 @@ pub struct CreateTaxRegistrationCountryOptionsBe {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsBeStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsBeType,
 }
 impl CreateTaxRegistrationCountryOptionsBe {
@@ -562,9 +530,7 @@ pub struct CreateTaxRegistrationCountryOptionsBeStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsBeStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -673,7 +639,7 @@ pub struct CreateTaxRegistrationCountryOptionsBg {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsBgStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsBgType,
 }
 impl CreateTaxRegistrationCountryOptionsBg {
@@ -688,9 +654,7 @@ pub struct CreateTaxRegistrationCountryOptionsBgStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsBgStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -799,7 +763,7 @@ pub struct CreateTaxRegistrationCountryOptionsCa<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub province_standard: Option<CreateTaxRegistrationCountryOptionsCaProvinceStandard<'a>>,
     /// Type of registration to be created in Canada.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsCaType,
 }
 impl<'a> CreateTaxRegistrationCountryOptionsCa<'a> {
@@ -871,7 +835,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCaType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCh {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsChType,
 }
 impl CreateTaxRegistrationCountryOptionsCh {
@@ -926,7 +890,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsChType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCl {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsClType,
 }
 impl CreateTaxRegistrationCountryOptionsCl {
@@ -981,7 +945,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsClType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCo {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsCoType,
 }
 impl CreateTaxRegistrationCountryOptionsCo {
@@ -1039,7 +1003,7 @@ pub struct CreateTaxRegistrationCountryOptionsCy {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsCyStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsCyType,
 }
 impl CreateTaxRegistrationCountryOptionsCy {
@@ -1054,9 +1018,7 @@ pub struct CreateTaxRegistrationCountryOptionsCyStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsCyStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1165,7 +1127,7 @@ pub struct CreateTaxRegistrationCountryOptionsCz {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsCzStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsCzType,
 }
 impl CreateTaxRegistrationCountryOptionsCz {
@@ -1180,9 +1142,7 @@ pub struct CreateTaxRegistrationCountryOptionsCzStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsCzStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1291,7 +1251,7 @@ pub struct CreateTaxRegistrationCountryOptionsDe {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsDeStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsDeType,
 }
 impl CreateTaxRegistrationCountryOptionsDe {
@@ -1306,9 +1266,7 @@ pub struct CreateTaxRegistrationCountryOptionsDeStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsDeStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1417,7 +1375,7 @@ pub struct CreateTaxRegistrationCountryOptionsDk {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsDkStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsDkType,
 }
 impl CreateTaxRegistrationCountryOptionsDk {
@@ -1432,9 +1390,7 @@ pub struct CreateTaxRegistrationCountryOptionsDkStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsDkStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1543,7 +1499,7 @@ pub struct CreateTaxRegistrationCountryOptionsEe {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsEeStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsEeType,
 }
 impl CreateTaxRegistrationCountryOptionsEe {
@@ -1558,9 +1514,7 @@ pub struct CreateTaxRegistrationCountryOptionsEeStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsEeStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1669,7 +1623,7 @@ pub struct CreateTaxRegistrationCountryOptionsEs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsEsStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsEsType,
 }
 impl CreateTaxRegistrationCountryOptionsEs {
@@ -1684,9 +1638,7 @@ pub struct CreateTaxRegistrationCountryOptionsEsStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsEsStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1795,7 +1747,7 @@ pub struct CreateTaxRegistrationCountryOptionsFi {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsFiStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsFiType,
 }
 impl CreateTaxRegistrationCountryOptionsFi {
@@ -1810,9 +1762,7 @@ pub struct CreateTaxRegistrationCountryOptionsFiStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsFiStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -1921,7 +1871,7 @@ pub struct CreateTaxRegistrationCountryOptionsFr {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsFrStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsFrType,
 }
 impl CreateTaxRegistrationCountryOptionsFr {
@@ -1936,9 +1886,7 @@ pub struct CreateTaxRegistrationCountryOptionsFrStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsFrStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2044,7 +1992,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGb {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsGbType,
 }
 impl CreateTaxRegistrationCountryOptionsGb {
@@ -2102,7 +2050,7 @@ pub struct CreateTaxRegistrationCountryOptionsGr {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsGrStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsGrType,
 }
 impl CreateTaxRegistrationCountryOptionsGr {
@@ -2117,9 +2065,7 @@ pub struct CreateTaxRegistrationCountryOptionsGrStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsGrStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2228,7 +2174,7 @@ pub struct CreateTaxRegistrationCountryOptionsHr {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsHrStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsHrType,
 }
 impl CreateTaxRegistrationCountryOptionsHr {
@@ -2243,9 +2189,7 @@ pub struct CreateTaxRegistrationCountryOptionsHrStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsHrStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2354,7 +2298,7 @@ pub struct CreateTaxRegistrationCountryOptionsHu {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsHuStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsHuType,
 }
 impl CreateTaxRegistrationCountryOptionsHu {
@@ -2369,9 +2313,7 @@ pub struct CreateTaxRegistrationCountryOptionsHuStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsHuStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2477,7 +2419,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsId {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsIdType,
 }
 impl CreateTaxRegistrationCountryOptionsId {
@@ -2535,7 +2477,7 @@ pub struct CreateTaxRegistrationCountryOptionsIe {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsIeStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsIeType,
 }
 impl CreateTaxRegistrationCountryOptionsIe {
@@ -2550,9 +2492,7 @@ pub struct CreateTaxRegistrationCountryOptionsIeStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsIeStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2658,7 +2598,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIs {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsIsType,
 }
 impl CreateTaxRegistrationCountryOptionsIs {
@@ -2716,7 +2656,7 @@ pub struct CreateTaxRegistrationCountryOptionsIt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsItStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsItType,
 }
 impl CreateTaxRegistrationCountryOptionsIt {
@@ -2731,9 +2671,7 @@ pub struct CreateTaxRegistrationCountryOptionsItStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsItStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -2839,7 +2777,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsItType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJp {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsJpType,
 }
 impl CreateTaxRegistrationCountryOptionsJp {
@@ -2894,7 +2832,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsJpType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKr {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsKrType,
 }
 impl CreateTaxRegistrationCountryOptionsKr {
@@ -2952,7 +2890,7 @@ pub struct CreateTaxRegistrationCountryOptionsLt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLtStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsLtType,
 }
 impl CreateTaxRegistrationCountryOptionsLt {
@@ -2967,9 +2905,7 @@ pub struct CreateTaxRegistrationCountryOptionsLtStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsLtStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3078,7 +3014,7 @@ pub struct CreateTaxRegistrationCountryOptionsLu {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLuStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsLuType,
 }
 impl CreateTaxRegistrationCountryOptionsLu {
@@ -3093,9 +3029,7 @@ pub struct CreateTaxRegistrationCountryOptionsLuStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsLuStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3204,7 +3138,7 @@ pub struct CreateTaxRegistrationCountryOptionsLv {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsLvStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsLvType,
 }
 impl CreateTaxRegistrationCountryOptionsLv {
@@ -3219,9 +3153,7 @@ pub struct CreateTaxRegistrationCountryOptionsLvStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsLvStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3330,7 +3262,7 @@ pub struct CreateTaxRegistrationCountryOptionsMt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsMtStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsMtType,
 }
 impl CreateTaxRegistrationCountryOptionsMt {
@@ -3345,9 +3277,7 @@ pub struct CreateTaxRegistrationCountryOptionsMtStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsMtStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3453,7 +3383,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMx {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsMxType,
 }
 impl CreateTaxRegistrationCountryOptionsMx {
@@ -3508,7 +3438,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMxType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMy {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsMyType,
 }
 impl CreateTaxRegistrationCountryOptionsMy {
@@ -3566,7 +3496,7 @@ pub struct CreateTaxRegistrationCountryOptionsNl {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsNlStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsNlType,
 }
 impl CreateTaxRegistrationCountryOptionsNl {
@@ -3581,9 +3511,7 @@ pub struct CreateTaxRegistrationCountryOptionsNlStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsNlStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3689,7 +3617,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNo {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsNoType,
 }
 impl CreateTaxRegistrationCountryOptionsNo {
@@ -3744,7 +3672,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNoType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsNzType,
 }
 impl CreateTaxRegistrationCountryOptionsNz {
@@ -3802,7 +3730,7 @@ pub struct CreateTaxRegistrationCountryOptionsPl {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsPlStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsPlType,
 }
 impl CreateTaxRegistrationCountryOptionsPl {
@@ -3817,9 +3745,7 @@ pub struct CreateTaxRegistrationCountryOptionsPlStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsPlStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -3928,7 +3854,7 @@ pub struct CreateTaxRegistrationCountryOptionsPt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsPtStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsPtType,
 }
 impl CreateTaxRegistrationCountryOptionsPt {
@@ -3943,9 +3869,7 @@ pub struct CreateTaxRegistrationCountryOptionsPtStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsPtStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -4054,7 +3978,7 @@ pub struct CreateTaxRegistrationCountryOptionsRo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsRoStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsRoType,
 }
 impl CreateTaxRegistrationCountryOptionsRo {
@@ -4069,9 +3993,7 @@ pub struct CreateTaxRegistrationCountryOptionsRoStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsRoStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -4177,7 +4099,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSa {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsSaType,
 }
 impl CreateTaxRegistrationCountryOptionsSa {
@@ -4235,7 +4157,7 @@ pub struct CreateTaxRegistrationCountryOptionsSe {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSeStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsSeType,
 }
 impl CreateTaxRegistrationCountryOptionsSe {
@@ -4250,9 +4172,7 @@ pub struct CreateTaxRegistrationCountryOptionsSeStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsSeStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -4358,7 +4278,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSg {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsSgType,
 }
 impl CreateTaxRegistrationCountryOptionsSg {
@@ -4416,7 +4336,7 @@ pub struct CreateTaxRegistrationCountryOptionsSi {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSiStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsSiType,
 }
 impl CreateTaxRegistrationCountryOptionsSi {
@@ -4431,9 +4351,7 @@ pub struct CreateTaxRegistrationCountryOptionsSiStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsSiStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -4542,7 +4460,7 @@ pub struct CreateTaxRegistrationCountryOptionsSk {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard: Option<CreateTaxRegistrationCountryOptionsSkStandard>,
     /// Type of registration to be created in an EU country.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsSkType,
 }
 impl CreateTaxRegistrationCountryOptionsSk {
@@ -4557,9 +4475,7 @@ pub struct CreateTaxRegistrationCountryOptionsSkStandard {
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme,
 }
 impl CreateTaxRegistrationCountryOptionsSkStandard {
-    pub fn new(
-        place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme,
-    ) -> Self {
+    pub fn new(place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme) -> Self {
         Self { place_of_supply_scheme }
     }
 }
@@ -4665,7 +4581,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTh {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsThType,
 }
 impl CreateTaxRegistrationCountryOptionsTh {
@@ -4720,7 +4636,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsThType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTr {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsTrType,
 }
 impl CreateTaxRegistrationCountryOptionsTr {
@@ -4783,7 +4699,7 @@ pub struct CreateTaxRegistrationCountryOptionsUs<'a> {
     /// Two-letter US state code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: &'a str,
     /// Type of registration to be created in the US.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsUsType,
 }
 impl<'a> CreateTaxRegistrationCountryOptionsUs<'a> {
@@ -4871,7 +4787,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsUsType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsVn {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsVnType,
 }
 impl CreateTaxRegistrationCountryOptionsVn {
@@ -4926,7 +4842,7 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsVnType {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZa {
     /// Type of registration to be created in `country`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxRegistrationCountryOptionsZaType,
 }
 impl CreateTaxRegistrationCountryOptionsZa {
@@ -5025,11 +4941,7 @@ impl<'a> UpdateTaxRegistration<'a> {
     ///
     /// A registration cannot be deleted after it has been created.
     /// If you wish to end a registration you may do so by setting `expires_at`.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_misc::TaxRegistrationId,
-    ) -> stripe::Response<stripe_misc::TaxRegistration> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_misc::TaxRegistrationId) -> stripe::Response<stripe_misc::TaxRegistration> {
         client.send_form(&format!("/tax/registrations/{id}"), self, http_types::Method::Post)
     }
 }

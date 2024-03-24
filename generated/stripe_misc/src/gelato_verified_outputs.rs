@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct GelatoVerifiedOutputs {
     /// The user's verified address.
     pub address: Option<stripe_shared::Address>,
@@ -13,6 +15,119 @@ pub struct GelatoVerifiedOutputs {
     /// The user's verified last name.
     pub last_name: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct GelatoVerifiedOutputsBuilder {
+    address: Option<Option<stripe_shared::Address>>,
+    dob: Option<Option<stripe_misc::GelatoDataVerifiedOutputsDate>>,
+    first_name: Option<Option<String>>,
+    id_number: Option<Option<String>>,
+    id_number_type: Option<Option<GelatoVerifiedOutputsIdNumberType>>,
+    last_name: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for GelatoVerifiedOutputs {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<GelatoVerifiedOutputs>,
+        builder: GelatoVerifiedOutputsBuilder,
+    }
+
+    impl Visitor for Place<GelatoVerifiedOutputs> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: GelatoVerifiedOutputsBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for GelatoVerifiedOutputsBuilder {
+        type Out = GelatoVerifiedOutputs;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "address" => Deserialize::begin(&mut self.address),
+                "dob" => Deserialize::begin(&mut self.dob),
+                "first_name" => Deserialize::begin(&mut self.first_name),
+                "id_number" => Deserialize::begin(&mut self.id_number),
+                "id_number_type" => Deserialize::begin(&mut self.id_number_type),
+                "last_name" => Deserialize::begin(&mut self.last_name),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                address: Deserialize::default(),
+                dob: Deserialize::default(),
+                first_name: Deserialize::default(),
+                id_number: Deserialize::default(),
+                id_number_type: Deserialize::default(),
+                last_name: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let address = self.address.take()?;
+            let dob = self.dob.take()?;
+            let first_name = self.first_name.take()?;
+            let id_number = self.id_number.take()?;
+            let id_number_type = self.id_number_type.take()?;
+            let last_name = self.last_name.take()?;
+
+            Some(Self::Out { address, dob, first_name, id_number, id_number_type, last_name })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for GelatoVerifiedOutputs {
+        type Builder = GelatoVerifiedOutputsBuilder;
+    }
+
+    impl FromValueOpt for GelatoVerifiedOutputs {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = GelatoVerifiedOutputsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
+                    "dob" => b.dob = Some(FromValueOpt::from_value(v)?),
+                    "first_name" => b.first_name = Some(FromValueOpt::from_value(v)?),
+                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
+                    "id_number_type" => b.id_number_type = Some(FromValueOpt::from_value(v)?),
+                    "last_name" => b.last_name = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The user's verified id number type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum GelatoVerifiedOutputsIdNumberType {
@@ -66,8 +181,24 @@ impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsIdNumberType")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsIdNumberType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for GelatoVerifiedOutputsIdNumberType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsIdNumberType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(GelatoVerifiedOutputsIdNumberType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(GelatoVerifiedOutputsIdNumberType);

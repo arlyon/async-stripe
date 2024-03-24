@@ -7,6 +7,9 @@
 //! centered around [Checkout Sessions](https://stripe.com/docs/api/checkout/sessions).
 
 extern crate self as stripe_checkout;
+
+#[cfg(feature = "min-ser")]
+miniserde::make_place!(Place);
 pub use checkout_session::types::*;
 #[doc(hidden)]
 pub mod checkout_acss_debit_mandate_options;
@@ -134,10 +137,6 @@ pub mod checkout_sofort_payment_method_options;
 #[doc(inline)]
 pub use checkout_sofort_payment_method_options::*;
 #[doc(hidden)]
-pub mod checkout_swish_payment_method_options;
-#[doc(inline)]
-pub use checkout_swish_payment_method_options::*;
-#[doc(hidden)]
 pub mod checkout_us_bank_account_payment_method_options;
 #[doc(inline)]
 pub use checkout_us_bank_account_payment_method_options::*;
@@ -209,10 +208,6 @@ pub use payment_pages_checkout_session_invoice_creation::*;
 pub mod payment_pages_checkout_session_invoice_settings;
 #[doc(inline)]
 pub use payment_pages_checkout_session_invoice_settings::*;
-#[doc(hidden)]
-pub mod payment_pages_checkout_session_payment_method_reuse_agreement;
-#[doc(inline)]
-pub use payment_pages_checkout_session_payment_method_reuse_agreement::*;
 #[doc(hidden)]
 pub mod payment_pages_checkout_session_phone_number_collection;
 #[doc(inline)]

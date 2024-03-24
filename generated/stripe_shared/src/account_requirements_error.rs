@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct AccountRequirementsError {
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
@@ -7,6 +9,100 @@ pub struct AccountRequirementsError {
     /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
     pub requirement: String,
 }
+#[cfg(feature = "min-ser")]
+pub struct AccountRequirementsErrorBuilder {
+    code: Option<AccountRequirementsErrorCode>,
+    reason: Option<String>,
+    requirement: Option<String>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for AccountRequirementsError {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<AccountRequirementsError>,
+        builder: AccountRequirementsErrorBuilder,
+    }
+
+    impl Visitor for Place<AccountRequirementsError> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: AccountRequirementsErrorBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for AccountRequirementsErrorBuilder {
+        type Out = AccountRequirementsError;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "code" => Deserialize::begin(&mut self.code),
+                "reason" => Deserialize::begin(&mut self.reason),
+                "requirement" => Deserialize::begin(&mut self.requirement),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { code: Deserialize::default(), reason: Deserialize::default(), requirement: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let code = self.code.take()?;
+            let reason = self.reason.take()?;
+            let requirement = self.requirement.take()?;
+
+            Some(Self::Out { code, reason, requirement })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for AccountRequirementsError {
+        type Builder = AccountRequirementsErrorBuilder;
+    }
+
+    impl FromValueOpt for AccountRequirementsError {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = AccountRequirementsErrorBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
+                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+                    "requirement" => b.requirement = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The code for the type of error.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -117,17 +213,11 @@ impl AccountRequirementsErrorCode {
             InvalidProductDescriptionLength => "invalid_product_description_length",
             InvalidProductDescriptionUrlMatch => "invalid_product_description_url_match",
             InvalidRepresentativeCountry => "invalid_representative_country",
-            InvalidStatementDescriptorBusinessMismatch => {
-                "invalid_statement_descriptor_business_mismatch"
-            }
+            InvalidStatementDescriptorBusinessMismatch => "invalid_statement_descriptor_business_mismatch",
             InvalidStatementDescriptorDenylisted => "invalid_statement_descriptor_denylisted",
             InvalidStatementDescriptorLength => "invalid_statement_descriptor_length",
-            InvalidStatementDescriptorPrefixDenylisted => {
-                "invalid_statement_descriptor_prefix_denylisted"
-            }
-            InvalidStatementDescriptorPrefixMismatch => {
-                "invalid_statement_descriptor_prefix_mismatch"
-            }
+            InvalidStatementDescriptorPrefixDenylisted => "invalid_statement_descriptor_prefix_denylisted",
+            InvalidStatementDescriptorPrefixMismatch => "invalid_statement_descriptor_prefix_mismatch",
             InvalidStreetAddress => "invalid_street_address",
             InvalidTaxId => "invalid_tax_id",
             InvalidTaxIdFormat => "invalid_tax_id_format",
@@ -136,48 +226,26 @@ impl AccountRequirementsErrorCode {
             InvalidUrlFormat => "invalid_url_format",
             InvalidUrlLength => "invalid_url_length",
             InvalidUrlWebPresenceDetected => "invalid_url_web_presence_detected",
-            InvalidUrlWebsiteBusinessInformationMismatch => {
-                "invalid_url_website_business_information_mismatch"
-            }
+            InvalidUrlWebsiteBusinessInformationMismatch => "invalid_url_website_business_information_mismatch",
             InvalidUrlWebsiteEmpty => "invalid_url_website_empty",
             InvalidUrlWebsiteInaccessible => "invalid_url_website_inaccessible",
-            InvalidUrlWebsiteInaccessibleGeoblocked => {
-                "invalid_url_website_inaccessible_geoblocked"
-            }
-            InvalidUrlWebsiteInaccessiblePasswordProtected => {
-                "invalid_url_website_inaccessible_password_protected"
-            }
+            InvalidUrlWebsiteInaccessibleGeoblocked => "invalid_url_website_inaccessible_geoblocked",
+            InvalidUrlWebsiteInaccessiblePasswordProtected => "invalid_url_website_inaccessible_password_protected",
             InvalidUrlWebsiteIncomplete => "invalid_url_website_incomplete",
-            InvalidUrlWebsiteIncompleteCancellationPolicy => {
-                "invalid_url_website_incomplete_cancellation_policy"
-            }
-            InvalidUrlWebsiteIncompleteCustomerServiceDetails => {
-                "invalid_url_website_incomplete_customer_service_details"
-            }
-            InvalidUrlWebsiteIncompleteLegalRestrictions => {
-                "invalid_url_website_incomplete_legal_restrictions"
-            }
-            InvalidUrlWebsiteIncompleteRefundPolicy => {
-                "invalid_url_website_incomplete_refund_policy"
-            }
-            InvalidUrlWebsiteIncompleteReturnPolicy => {
-                "invalid_url_website_incomplete_return_policy"
-            }
-            InvalidUrlWebsiteIncompleteTermsAndConditions => {
-                "invalid_url_website_incomplete_terms_and_conditions"
-            }
-            InvalidUrlWebsiteIncompleteUnderConstruction => {
-                "invalid_url_website_incomplete_under_construction"
-            }
+            InvalidUrlWebsiteIncompleteCancellationPolicy => "invalid_url_website_incomplete_cancellation_policy",
+            InvalidUrlWebsiteIncompleteCustomerServiceDetails => "invalid_url_website_incomplete_customer_service_details",
+            InvalidUrlWebsiteIncompleteLegalRestrictions => "invalid_url_website_incomplete_legal_restrictions",
+            InvalidUrlWebsiteIncompleteRefundPolicy => "invalid_url_website_incomplete_refund_policy",
+            InvalidUrlWebsiteIncompleteReturnPolicy => "invalid_url_website_incomplete_return_policy",
+            InvalidUrlWebsiteIncompleteTermsAndConditions => "invalid_url_website_incomplete_terms_and_conditions",
+            InvalidUrlWebsiteIncompleteUnderConstruction => "invalid_url_website_incomplete_under_construction",
             InvalidUrlWebsiteOther => "invalid_url_website_other",
             InvalidValueOther => "invalid_value_other",
             VerificationDirectorsMismatch => "verification_directors_mismatch",
             VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
             VerificationDocumentAddressMissing => "verification_document_address_missing",
             VerificationDocumentCorrupt => "verification_document_corrupt",
-            VerificationDocumentCountryNotSupported => {
-                "verification_document_country_not_supported"
-            }
+            VerificationDocumentCountryNotSupported => "verification_document_country_not_supported",
             VerificationDocumentDirectorsMismatch => "verification_document_directors_mismatch",
             VerificationDocumentDobMismatch => "verification_document_dob_mismatch",
             VerificationDocumentDuplicateType => "verification_document_duplicate_type",
@@ -191,9 +259,7 @@ impl AccountRequirementsErrorCode {
             VerificationDocumentIdNumberMissing => "verification_document_id_number_missing",
             VerificationDocumentIncomplete => "verification_document_incomplete",
             VerificationDocumentInvalid => "verification_document_invalid",
-            VerificationDocumentIssueOrExpiryDateMissing => {
-                "verification_document_issue_or_expiry_date_missing"
-            }
+            VerificationDocumentIssueOrExpiryDateMissing => "verification_document_issue_or_expiry_date_missing",
             VerificationDocumentManipulated => "verification_document_manipulated",
             VerificationDocumentMissingBack => "verification_document_missing_back",
             VerificationDocumentMissingFront => "verification_document_missing_front",
@@ -221,9 +287,7 @@ impl AccountRequirementsErrorCode {
             VerificationMissingDirectors => "verification_missing_directors",
             VerificationMissingExecutives => "verification_missing_executives",
             VerificationMissingOwners => "verification_missing_owners",
-            VerificationRequiresAdditionalMemorandumOfAssociations => {
-                "verification_requires_additional_memorandum_of_associations"
-            }
+            VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
             Unknown => "unknown",
         }
     }
@@ -246,17 +310,11 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "invalid_product_description_length" => Ok(InvalidProductDescriptionLength),
             "invalid_product_description_url_match" => Ok(InvalidProductDescriptionUrlMatch),
             "invalid_representative_country" => Ok(InvalidRepresentativeCountry),
-            "invalid_statement_descriptor_business_mismatch" => {
-                Ok(InvalidStatementDescriptorBusinessMismatch)
-            }
+            "invalid_statement_descriptor_business_mismatch" => Ok(InvalidStatementDescriptorBusinessMismatch),
             "invalid_statement_descriptor_denylisted" => Ok(InvalidStatementDescriptorDenylisted),
             "invalid_statement_descriptor_length" => Ok(InvalidStatementDescriptorLength),
-            "invalid_statement_descriptor_prefix_denylisted" => {
-                Ok(InvalidStatementDescriptorPrefixDenylisted)
-            }
-            "invalid_statement_descriptor_prefix_mismatch" => {
-                Ok(InvalidStatementDescriptorPrefixMismatch)
-            }
+            "invalid_statement_descriptor_prefix_denylisted" => Ok(InvalidStatementDescriptorPrefixDenylisted),
+            "invalid_statement_descriptor_prefix_mismatch" => Ok(InvalidStatementDescriptorPrefixMismatch),
             "invalid_street_address" => Ok(InvalidStreetAddress),
             "invalid_tax_id" => Ok(InvalidTaxId),
             "invalid_tax_id_format" => Ok(InvalidTaxIdFormat),
@@ -265,48 +323,26 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "invalid_url_format" => Ok(InvalidUrlFormat),
             "invalid_url_length" => Ok(InvalidUrlLength),
             "invalid_url_web_presence_detected" => Ok(InvalidUrlWebPresenceDetected),
-            "invalid_url_website_business_information_mismatch" => {
-                Ok(InvalidUrlWebsiteBusinessInformationMismatch)
-            }
+            "invalid_url_website_business_information_mismatch" => Ok(InvalidUrlWebsiteBusinessInformationMismatch),
             "invalid_url_website_empty" => Ok(InvalidUrlWebsiteEmpty),
             "invalid_url_website_inaccessible" => Ok(InvalidUrlWebsiteInaccessible),
-            "invalid_url_website_inaccessible_geoblocked" => {
-                Ok(InvalidUrlWebsiteInaccessibleGeoblocked)
-            }
-            "invalid_url_website_inaccessible_password_protected" => {
-                Ok(InvalidUrlWebsiteInaccessiblePasswordProtected)
-            }
+            "invalid_url_website_inaccessible_geoblocked" => Ok(InvalidUrlWebsiteInaccessibleGeoblocked),
+            "invalid_url_website_inaccessible_password_protected" => Ok(InvalidUrlWebsiteInaccessiblePasswordProtected),
             "invalid_url_website_incomplete" => Ok(InvalidUrlWebsiteIncomplete),
-            "invalid_url_website_incomplete_cancellation_policy" => {
-                Ok(InvalidUrlWebsiteIncompleteCancellationPolicy)
-            }
-            "invalid_url_website_incomplete_customer_service_details" => {
-                Ok(InvalidUrlWebsiteIncompleteCustomerServiceDetails)
-            }
-            "invalid_url_website_incomplete_legal_restrictions" => {
-                Ok(InvalidUrlWebsiteIncompleteLegalRestrictions)
-            }
-            "invalid_url_website_incomplete_refund_policy" => {
-                Ok(InvalidUrlWebsiteIncompleteRefundPolicy)
-            }
-            "invalid_url_website_incomplete_return_policy" => {
-                Ok(InvalidUrlWebsiteIncompleteReturnPolicy)
-            }
-            "invalid_url_website_incomplete_terms_and_conditions" => {
-                Ok(InvalidUrlWebsiteIncompleteTermsAndConditions)
-            }
-            "invalid_url_website_incomplete_under_construction" => {
-                Ok(InvalidUrlWebsiteIncompleteUnderConstruction)
-            }
+            "invalid_url_website_incomplete_cancellation_policy" => Ok(InvalidUrlWebsiteIncompleteCancellationPolicy),
+            "invalid_url_website_incomplete_customer_service_details" => Ok(InvalidUrlWebsiteIncompleteCustomerServiceDetails),
+            "invalid_url_website_incomplete_legal_restrictions" => Ok(InvalidUrlWebsiteIncompleteLegalRestrictions),
+            "invalid_url_website_incomplete_refund_policy" => Ok(InvalidUrlWebsiteIncompleteRefundPolicy),
+            "invalid_url_website_incomplete_return_policy" => Ok(InvalidUrlWebsiteIncompleteReturnPolicy),
+            "invalid_url_website_incomplete_terms_and_conditions" => Ok(InvalidUrlWebsiteIncompleteTermsAndConditions),
+            "invalid_url_website_incomplete_under_construction" => Ok(InvalidUrlWebsiteIncompleteUnderConstruction),
             "invalid_url_website_other" => Ok(InvalidUrlWebsiteOther),
             "invalid_value_other" => Ok(InvalidValueOther),
             "verification_directors_mismatch" => Ok(VerificationDirectorsMismatch),
             "verification_document_address_mismatch" => Ok(VerificationDocumentAddressMismatch),
             "verification_document_address_missing" => Ok(VerificationDocumentAddressMissing),
             "verification_document_corrupt" => Ok(VerificationDocumentCorrupt),
-            "verification_document_country_not_supported" => {
-                Ok(VerificationDocumentCountryNotSupported)
-            }
+            "verification_document_country_not_supported" => Ok(VerificationDocumentCountryNotSupported),
             "verification_document_directors_mismatch" => Ok(VerificationDocumentDirectorsMismatch),
             "verification_document_dob_mismatch" => Ok(VerificationDocumentDobMismatch),
             "verification_document_duplicate_type" => Ok(VerificationDocumentDuplicateType),
@@ -320,17 +356,13 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_document_id_number_missing" => Ok(VerificationDocumentIdNumberMissing),
             "verification_document_incomplete" => Ok(VerificationDocumentIncomplete),
             "verification_document_invalid" => Ok(VerificationDocumentInvalid),
-            "verification_document_issue_or_expiry_date_missing" => {
-                Ok(VerificationDocumentIssueOrExpiryDateMissing)
-            }
+            "verification_document_issue_or_expiry_date_missing" => Ok(VerificationDocumentIssueOrExpiryDateMissing),
             "verification_document_manipulated" => Ok(VerificationDocumentManipulated),
             "verification_document_missing_back" => Ok(VerificationDocumentMissingBack),
             "verification_document_missing_front" => Ok(VerificationDocumentMissingFront),
             "verification_document_name_mismatch" => Ok(VerificationDocumentNameMismatch),
             "verification_document_name_missing" => Ok(VerificationDocumentNameMissing),
-            "verification_document_nationality_mismatch" => {
-                Ok(VerificationDocumentNationalityMismatch)
-            }
+            "verification_document_nationality_mismatch" => Ok(VerificationDocumentNationalityMismatch),
             "verification_document_not_readable" => Ok(VerificationDocumentNotReadable),
             "verification_document_not_signed" => Ok(VerificationDocumentNotSigned),
             "verification_document_not_uploaded" => Ok(VerificationDocumentNotUploaded),
@@ -352,9 +384,7 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
             "verification_missing_directors" => Ok(VerificationMissingDirectors),
             "verification_missing_executives" => Ok(VerificationMissingExecutives),
             "verification_missing_owners" => Ok(VerificationMissingOwners),
-            "verification_requires_additional_memorandum_of_associations" => {
-                Ok(VerificationRequiresAdditionalMemorandumOfAssociations)
-            }
+            "verification_requires_additional_memorandum_of_associations" => Ok(VerificationRequiresAdditionalMemorandumOfAssociations),
             _ => Err(()),
         }
     }
@@ -382,6 +412,24 @@ impl<'de> serde::Deserialize<'de> for AccountRequirementsErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(AccountRequirementsErrorCode::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for AccountRequirementsErrorCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<AccountRequirementsErrorCode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(AccountRequirementsErrorCode::from_str(s).unwrap_or(AccountRequirementsErrorCode::Unknown));
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(AccountRequirementsErrorCode);

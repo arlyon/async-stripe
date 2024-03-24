@@ -1,22 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteInvoiceItem {}
-impl DeleteInvoiceItem {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeleteInvoiceItem {
-    /// Deletes an invoice item, removing it from an invoice.
-    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        invoiceitem: &stripe_shared::InvoiceItemId,
-    ) -> stripe::Response<stripe_shared::DeletedInvoiceitem> {
-        client.send_form(&format!("/invoiceitems/{invoiceitem}"), self, http_types::Method::Delete)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<stripe_types::RangeQueryTs>,
@@ -60,35 +42,11 @@ impl<'a> ListInvoiceItem<'a> {
 impl<'a> ListInvoiceItem<'a> {
     /// Returns a list of your invoice items.
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::InvoiceItem>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::InvoiceItem>> {
         client.get_query("/invoiceitems", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::InvoiceItem>> {
         stripe::ListPaginator::from_list_params("/invoiceitems", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveInvoiceItem<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveInvoiceItem<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveInvoiceItem<'a> {
-    /// Retrieves the invoice item with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        invoiceitem: &stripe_shared::InvoiceItemId,
-    ) -> stripe::Response<stripe_shared::InvoiceItem> {
-        client.get_query(&format!("/invoiceitems/{invoiceitem}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -337,6 +295,23 @@ impl<'a> CreateInvoiceItem<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveInvoiceItem<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveInvoiceItem<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveInvoiceItem<'a> {
+    /// Retrieves the invoice item with the given ID.
+    pub fn send(&self, client: &stripe::Client, invoiceitem: &stripe_shared::InvoiceItemId) -> stripe::Response<stripe_shared::InvoiceItem> {
+        client.get_query(&format!("/invoiceitems/{invoiceitem}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateInvoiceItem<'a> {
     /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     /// If you want to apply a credit to the customer's account, pass a negative amount.
@@ -543,12 +518,22 @@ impl serde::Serialize for UpdateInvoiceItemTaxBehavior {
 impl<'a> UpdateInvoiceItem<'a> {
     /// Updates the amount or description of an invoice item on an upcoming invoice.
     /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        invoiceitem: &stripe_shared::InvoiceItemId,
-    ) -> stripe::Response<stripe_shared::InvoiceItem> {
+    pub fn send(&self, client: &stripe::Client, invoiceitem: &stripe_shared::InvoiceItemId) -> stripe::Response<stripe_shared::InvoiceItem> {
         client.send_form(&format!("/invoiceitems/{invoiceitem}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteInvoiceItem {}
+impl DeleteInvoiceItem {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteInvoiceItem {
+    /// Deletes an invoice item, removing it from an invoice.
+    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
+    pub fn send(&self, client: &stripe::Client, invoiceitem: &stripe_shared::InvoiceItemId) -> stripe::Response<stripe_shared::DeletedInvoiceitem> {
+        client.send_form(&format!("/invoiceitems/{invoiceitem}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

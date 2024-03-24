@@ -83,6 +83,10 @@ impl StripeObject {
         self.resource.mod_path()
     }
 
+    pub fn object_name(&self) -> Option<&str> {
+        self.data.object_name.as_deref()
+    }
+
     pub fn types_split_from_requests(&self) -> bool {
         self.types_are_shared() && self.krate_unwrapped().base() != Crate::SHARED
     }

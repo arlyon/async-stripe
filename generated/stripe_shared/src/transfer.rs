@@ -11,7 +11,9 @@
 /// Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/separate-charges-and-transfers).
 ///
 /// For more details see <<https://stripe.com/docs/api/transfers/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Transfer {
     /// Amount in cents (or local equivalent) to be transferred.
     pub amount: i64,
@@ -29,7 +31,6 @@ pub struct Transfer {
     /// ID of the Stripe account the transfer was sent to.
     pub destination: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// If the destination is a Stripe account, this will be the ID of the payment that the destination account received for the transfer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_payment: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TransferId,
@@ -47,12 +48,191 @@ pub struct Transfer {
     /// If null, the transfer was funded from the available balance.
     pub source_transaction: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// The source balance this transfer came from. One of `card`, `fpx`, or `bank_account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<String>,
     /// A string that identifies this transaction as part of a group.
     /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct TransferBuilder {
+    amount: Option<i64>,
+    amount_reversed: Option<i64>,
+    balance_transaction: Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<Option<String>>,
+    destination: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    destination_payment: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    id: Option<stripe_shared::TransferId>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    reversals: Option<stripe_types::List<stripe_shared::TransferReversal>>,
+    reversed: Option<bool>,
+    source_transaction: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
+    source_type: Option<Option<String>>,
+    transfer_group: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Transfer {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Transfer>,
+        builder: TransferBuilder,
+    }
+
+    impl Visitor for Place<Transfer> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TransferBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TransferBuilder {
+        type Out = Transfer;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_reversed" => Deserialize::begin(&mut self.amount_reversed),
+                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "destination" => Deserialize::begin(&mut self.destination),
+                "destination_payment" => Deserialize::begin(&mut self.destination_payment),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "reversals" => Deserialize::begin(&mut self.reversals),
+                "reversed" => Deserialize::begin(&mut self.reversed),
+                "source_transaction" => Deserialize::begin(&mut self.source_transaction),
+                "source_type" => Deserialize::begin(&mut self.source_type),
+                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_reversed: Deserialize::default(),
+                balance_transaction: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                description: Deserialize::default(),
+                destination: Deserialize::default(),
+                destination_payment: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                reversals: Deserialize::default(),
+                reversed: Deserialize::default(),
+                source_transaction: Deserialize::default(),
+                source_type: Deserialize::default(),
+                transfer_group: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let amount = self.amount.take()?;
+            let amount_reversed = self.amount_reversed.take()?;
+            let balance_transaction = self.balance_transaction.take()?;
+            let created = self.created.take()?;
+            let currency = self.currency.take()?;
+            let description = self.description.take()?;
+            let destination = self.destination.take()?;
+            let destination_payment = self.destination_payment.take()?;
+            let id = self.id.take()?;
+            let livemode = self.livemode.take()?;
+            let metadata = self.metadata.take()?;
+            let reversals = self.reversals.take()?;
+            let reversed = self.reversed.take()?;
+            let source_transaction = self.source_transaction.take()?;
+            let source_type = self.source_type.take()?;
+            let transfer_group = self.transfer_group.take()?;
+
+            Some(Self::Out {
+                amount,
+                amount_reversed,
+                balance_transaction,
+                created,
+                currency,
+                description,
+                destination,
+                destination_payment,
+                id,
+                livemode,
+                metadata,
+                reversals,
+                reversed,
+                source_transaction,
+                source_type,
+                transfer_group,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Transfer {
+        type Builder = TransferBuilder;
+    }
+
+    impl FromValueOpt for Transfer {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TransferBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_reversed" => b.amount_reversed = Some(FromValueOpt::from_value(v)?),
+                    "balance_transaction" => b.balance_transaction = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "destination" => b.destination = Some(FromValueOpt::from_value(v)?),
+                    "destination_payment" => b.destination_payment = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "reversals" => b.reversals = Some(FromValueOpt::from_value(v)?),
+                    "reversed" => b.reversed = Some(FromValueOpt::from_value(v)?),
+                    "source_transaction" => b.source_transaction = Some(FromValueOpt::from_value(v)?),
+                    "source_type" => b.source_type = Some(FromValueOpt::from_value(v)?),
+                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for Transfer {
     type Id = stripe_shared::TransferId;
     fn id(&self) -> &Self::Id {

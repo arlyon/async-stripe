@@ -1,84 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteSubscriptionItem {
-    /// Delete all usage for the given subscription item.
-    /// Allowed only when the current plan's `usage_type` is `metered`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub clear_usage: Option<bool>,
-    /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-    /// The default value is `create_prorations`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior: Option<DeleteSubscriptionItemProrationBehavior>,
-    /// If set, the proration will be calculated as though the subscription was updated at the given time.
-    /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_date: Option<stripe_types::Timestamp>,
-}
-impl DeleteSubscriptionItem {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-/// The default value is `create_prorations`.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum DeleteSubscriptionItemProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-impl DeleteSubscriptionItemProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        use DeleteSubscriptionItemProrationBehavior::*;
-        match self {
-            AlwaysInvoice => "always_invoice",
-            CreateProrations => "create_prorations",
-            None => "none",
-        }
-    }
-}
-
-impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DeleteSubscriptionItemProrationBehavior::*;
-        match s {
-            "always_invoice" => Ok(AlwaysInvoice),
-            "create_prorations" => Ok(CreateProrations),
-            "none" => Ok(None),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for DeleteSubscriptionItemProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for DeleteSubscriptionItemProrationBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for DeleteSubscriptionItemProrationBehavior {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl DeleteSubscriptionItem {
-    /// Deletes an item from the subscription.
-    /// Removing a subscription item from a subscription will not cancel the subscription.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_shared::DeletedSubscriptionItem> {
-        client.send_form(&format!("/subscription_items/{item}"), self, http_types::Method::Delete)
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListSubscriptionItem<'a> {
     /// A cursor for use in pagination.
@@ -108,15 +27,10 @@ impl<'a> ListSubscriptionItem<'a> {
 }
 impl<'a> ListSubscriptionItem<'a> {
     /// Returns a list of your subscription items for a given subscription.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SubscriptionItem>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::SubscriptionItem>> {
         client.get_query("/subscription_items", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SubscriptionItem>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SubscriptionItem>> {
         stripe::ListPaginator::from_list_params("/subscription_items", self)
     }
 }
@@ -133,64 +47,8 @@ impl<'a> RetrieveSubscriptionItem<'a> {
 }
 impl<'a> RetrieveSubscriptionItem<'a> {
     /// Retrieves the subscription item with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_shared::SubscriptionItem> {
+    pub fn send(&self, client: &stripe::Client, item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_shared::SubscriptionItem> {
         client.get_query(&format!("/subscription_items/{item}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UsageRecordSummariesSubscriptionItem<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
-    /// For the specified subscription item, returns a list of summary objects.
-    /// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).
-    ///
-    /// The list is sorted in reverse-chronological order (newest first).
-    /// The first list item represents the most current usage period that hasn’t ended yet.
-    /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        subscription_item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::UsageRecordSummary>> {
-        client.get_query(
-            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            self,
-        )
-    }
-    pub fn paginate(
-        self,
-        subscription_item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/subscription_items/{subscription_item}/usage_record_summaries"),
-            self,
-        )
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -366,19 +224,8 @@ pub struct CreateSubscriptionItemPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> CreateSubscriptionItemPriceData<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: CreateSubscriptionItemPriceDataRecurring,
-    ) -> Self {
-        Self {
-            currency,
-            product,
-            recurring,
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
+    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: CreateSubscriptionItemPriceDataRecurring) -> Self {
+        Self { currency, product, recurring, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
@@ -388,7 +235,7 @@ pub struct CreateSubscriptionItemPriceDataRecurring {
     pub interval: CreateSubscriptionItemPriceDataRecurringInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -553,10 +400,7 @@ impl serde::Serialize for CreateSubscriptionItemProrationBehavior {
 }
 impl<'a> CreateSubscriptionItem<'a> {
     /// Adds a new item to an existing subscription. No existing items will be changed or replaced.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_shared::SubscriptionItem> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::SubscriptionItem> {
         client.send_form("/subscription_items", self, http_types::Method::Post)
     }
 }
@@ -722,19 +566,8 @@ pub struct UpdateSubscriptionItemPriceData<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 impl<'a> UpdateSubscriptionItemPriceData<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        product: &'a str,
-        recurring: UpdateSubscriptionItemPriceDataRecurring,
-    ) -> Self {
-        Self {
-            currency,
-            product,
-            recurring,
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
+    pub fn new(currency: stripe_types::Currency, product: &'a str, recurring: UpdateSubscriptionItemPriceDataRecurring) -> Self {
+        Self { currency, product, recurring, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
@@ -744,7 +577,7 @@ pub struct UpdateSubscriptionItemPriceDataRecurring {
     pub interval: UpdateSubscriptionItemPriceDataRecurringInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -909,12 +742,124 @@ impl serde::Serialize for UpdateSubscriptionItemProrationBehavior {
 }
 impl<'a> UpdateSubscriptionItem<'a> {
     /// Updates the plan or quantity of an item on a current subscription.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_shared::SubscriptionItem> {
+    pub fn send(&self, client: &stripe::Client, item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_shared::SubscriptionItem> {
         client.send_form(&format!("/subscription_items/{item}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteSubscriptionItem {
+    /// Delete all usage for the given subscription item.
+    /// Allowed only when the current plan's `usage_type` is `metered`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clear_usage: Option<bool>,
+    /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// The default value is `create_prorations`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior: Option<DeleteSubscriptionItemProrationBehavior>,
+    /// If set, the proration will be calculated as though the subscription was updated at the given time.
+    /// This can be used to apply the same proration that was previewed with the [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_date: Option<stripe_types::Timestamp>,
+}
+impl DeleteSubscriptionItem {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+/// The default value is `create_prorations`.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum DeleteSubscriptionItemProrationBehavior {
+    AlwaysInvoice,
+    CreateProrations,
+    None,
+}
+impl DeleteSubscriptionItemProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        use DeleteSubscriptionItemProrationBehavior::*;
+        match self {
+            AlwaysInvoice => "always_invoice",
+            CreateProrations => "create_prorations",
+            None => "none",
+        }
+    }
+}
+
+impl std::str::FromStr for DeleteSubscriptionItemProrationBehavior {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeleteSubscriptionItemProrationBehavior::*;
+        match s {
+            "always_invoice" => Ok(AlwaysInvoice),
+            "create_prorations" => Ok(CreateProrations),
+            "none" => Ok(None),
+            _ => Err(()),
+        }
+    }
+}
+impl std::fmt::Display for DeleteSubscriptionItemProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DeleteSubscriptionItemProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for DeleteSubscriptionItemProrationBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl DeleteSubscriptionItem {
+    /// Deletes an item from the subscription.
+    /// Removing a subscription item from a subscription will not cancel the subscription.
+    pub fn send(&self, client: &stripe::Client, item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_shared::DeletedSubscriptionItem> {
+        client.send_form(&format!("/subscription_items/{item}"), self, http_types::Method::Delete)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct UsageRecordSummariesSubscriptionItem<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> UsageRecordSummariesSubscriptionItem<'a> {
+    /// For the specified subscription item, returns a list of summary objects.
+    /// Each object in the list provides usage information that’s been summarized from multiple usage records and over a subscription billing period (e.g., 15 usage records in the month of September).
+    ///
+    /// The list is sorted in reverse-chronological order (newest first).
+    /// The first list item represents the most current usage period that hasn’t ended yet.
+    /// Since new usage records can still be added, the returned summary information for the subscription item’s ID should be seen as unstable until the subscription billing period ends.
+    pub fn send(&self, client: &stripe::Client, subscription_item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_types::List<stripe_shared::UsageRecordSummary>> {
+        client.get_query(&format!("/subscription_items/{subscription_item}/usage_record_summaries"), self)
+    }
+    pub fn paginate(self, subscription_item: &stripe_shared::SubscriptionItemId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::UsageRecordSummary>> {
+        stripe::ListPaginator::from_list_params(&format!("/subscription_items/{subscription_item}/usage_record_summaries"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

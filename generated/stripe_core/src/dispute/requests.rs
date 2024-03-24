@@ -33,10 +33,7 @@ impl<'a> ListDispute<'a> {
 }
 impl<'a> ListDispute<'a> {
     /// Returns a list of your disputes.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Dispute>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Dispute>> {
         client.get_query("/disputes", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Dispute>> {
@@ -56,11 +53,7 @@ impl<'a> RetrieveDispute<'a> {
 }
 impl<'a> RetrieveDispute<'a> {
     /// Retrieves the dispute with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::DisputeId,
-    ) -> stripe::Response<stripe_shared::Dispute> {
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::DisputeId) -> stripe::Response<stripe_shared::Dispute> {
         client.get_query(&format!("/disputes/{dispute}"), self)
     }
 }
@@ -205,11 +198,7 @@ impl<'a> UpdateDispute<'a> {
     ///
     /// Depending on your dispute type, different evidence fields will give you a better chance of winning your dispute.
     /// To figure out which evidence fields to provide, see our [guide to dispute types](https://stripe.com/docs/disputes/categories).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::DisputeId,
-    ) -> stripe::Response<stripe_shared::Dispute> {
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::DisputeId) -> stripe::Response<stripe_shared::Dispute> {
         client.send_form(&format!("/disputes/{dispute}"), self, http_types::Method::Post)
     }
 }
@@ -229,11 +218,7 @@ impl<'a> CloseDispute<'a> {
     ///
     /// The status of the dispute will change from `needs_response` to `lost`.
     /// _Closing a dispute is irreversible_.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::DisputeId,
-    ) -> stripe::Response<stripe_shared::Dispute> {
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::DisputeId) -> stripe::Response<stripe_shared::Dispute> {
         client.send_form(&format!("/disputes/{dispute}/close"), self, http_types::Method::Post)
     }
 }

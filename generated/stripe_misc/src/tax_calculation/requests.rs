@@ -1,47 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListLineItemsTaxCalculation<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListLineItemsTaxCalculation<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListLineItemsTaxCalculation<'a> {
-    /// Retrieves the line items of a persisted tax calculation as a collection.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        calculation: &stripe_misc::TaxCalculationId,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::TaxCalculationLineItem>> {
-        client.get_query(&format!("/tax/calculations/{calculation}/line_items"), self)
-    }
-    pub fn paginate(
-        self,
-        calculation: &stripe_misc::TaxCalculationId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxCalculationLineItem>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/tax/calculations/{calculation}/line_items"),
-            self,
-        )
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxCalculation<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -69,19 +25,8 @@ pub struct CreateTaxCalculation<'a> {
     pub tax_date: Option<stripe_types::Timestamp>,
 }
 impl<'a> CreateTaxCalculation<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        line_items: &'a [CreateTaxCalculationLineItems<'a>],
-    ) -> Self {
-        Self {
-            currency,
-            customer: None,
-            customer_details: None,
-            expand: None,
-            line_items,
-            shipping_cost: None,
-            tax_date: None,
-        }
+    pub fn new(currency: stripe_types::Currency, line_items: &'a [CreateTaxCalculationLineItems<'a>]) -> Self {
+        Self { currency, customer: None, customer_details: None, expand: None, line_items, shipping_cost: None, tax_date: None }
     }
 }
 /// Details about the customer, including address and tax IDs.
@@ -97,8 +42,6 @@ pub struct CreateTaxCalculationCustomerDetails<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<&'a str>,
     /// The customer's tax IDs.
-    /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
-    /// Stripe Tax doesn't validate tax IDs for correctness.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<&'a [CreateTaxCalculationCustomerDetailsTaxIds<'a>]>,
     /// Overrides the tax calculation result to allow you to not collect tax from your customer.
@@ -186,12 +129,10 @@ impl serde::Serialize for CreateTaxCalculationCustomerDetailsAddressSource {
     }
 }
 /// The customer's tax IDs.
-/// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
-/// Stripe Tax doesn't validate tax IDs for correctness.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxCalculationCustomerDetailsTaxIds<'a> {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTaxCalculationCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
     pub value: &'a str,
@@ -497,7 +438,7 @@ impl serde::Serialize for CreateTaxCalculationCustomerDetailsTaxabilityOverride 
 /// A list of items the customer is purchasing.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxCalculationLineItems<'a> {
-    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) representing the line item's total price.
+    /// A positive integer in cents representing the line item's total price.
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes are calculated on top of this amount.
     pub amount: i64,
@@ -524,14 +465,7 @@ pub struct CreateTaxCalculationLineItems<'a> {
 }
 impl<'a> CreateTaxCalculationLineItems<'a> {
     pub fn new(amount: i64) -> Self {
-        Self {
-            amount,
-            product: None,
-            quantity: None,
-            reference: None,
-            tax_behavior: None,
-            tax_code: None,
-        }
+        Self { amount, product: None, quantity: None, reference: None, tax_behavior: None, tax_code: None }
     }
 }
 /// Specifies whether the `amount` includes taxes. Defaults to `exclusive`.
@@ -583,7 +517,7 @@ impl serde::Serialize for CreateTaxCalculationLineItemsTaxBehavior {
 /// Shipping cost details to be used for the calculation.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTaxCalculationShippingCost<'a> {
-    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) representing the shipping charge.
+    /// A positive integer in cents representing the shipping charge.
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes are calculated on top of this amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -659,5 +593,39 @@ impl<'a> CreateTaxCalculation<'a> {
     /// Calculates tax based on input and returns a Tax `Calculation` object.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::TaxCalculation> {
         client.send_form("/tax/calculations", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListLineItemsTaxCalculation<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListLineItemsTaxCalculation<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListLineItemsTaxCalculation<'a> {
+    /// Retrieves the line items of a persisted tax calculation as a collection.
+    pub fn send(&self, client: &stripe::Client, calculation: &stripe_misc::TaxCalculationId) -> stripe::Response<stripe_types::List<stripe_misc::TaxCalculationLineItem>> {
+        client.get_query(&format!("/tax/calculations/{calculation}/line_items"), self)
+    }
+    pub fn paginate(self, calculation: &stripe_misc::TaxCalculationId) -> stripe::ListPaginator<stripe_types::List<stripe_misc::TaxCalculationLineItem>> {
+        stripe::ListPaginator::from_list_params(&format!("/tax/calculations/{calculation}/line_items"), self)
     }
 }

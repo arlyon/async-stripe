@@ -26,17 +26,10 @@ impl<'a> ListCreditNoteCreditNoteLineItem<'a> {
 impl<'a> ListCreditNoteCreditNoteLineItem<'a> {
     /// When retrieving a credit note, you’ll get a **lines** property containing the the first handful of those items.
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        credit_note: &stripe_shared::CreditNoteId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CreditNoteLineItem>> {
+    pub fn send(&self, client: &stripe::Client, credit_note: &stripe_shared::CreditNoteId) -> stripe::Response<stripe_types::List<stripe_shared::CreditNoteLineItem>> {
         client.get_query(&format!("/credit_notes/{credit_note}/lines"), self)
     }
-    pub fn paginate(
-        self,
-        credit_note: &stripe_shared::CreditNoteId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CreditNoteLineItem>> {
+    pub fn paginate(self, credit_note: &stripe_shared::CreditNoteId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CreditNoteLineItem>> {
         stripe::ListPaginator::from_list_params(&format!("/credit_notes/{credit_note}/lines"), self)
     }
 }

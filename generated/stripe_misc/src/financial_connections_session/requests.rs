@@ -1,24 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveFinancialConnectionsSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveFinancialConnectionsSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveFinancialConnectionsSession<'a> {
-    /// Retrieves the details of a Financial Connections `Session`
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_misc::FinancialConnectionsSessionId,
-    ) -> stripe::Response<stripe_misc::FinancialConnectionsSession> {
-        client.get_query(&format!("/financial_connections/sessions/{session}"), self)
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateFinancialConnectionsSession<'a> {
     /// The account holder to link accounts for.
@@ -42,18 +21,8 @@ pub struct CreateFinancialConnectionsSession<'a> {
     pub return_url: Option<&'a str>,
 }
 impl<'a> CreateFinancialConnectionsSession<'a> {
-    pub fn new(
-        account_holder: CreateFinancialConnectionsSessionAccountHolder<'a>,
-        permissions: &'a [stripe_misc::FinancialConnectionsSessionPermissions],
-    ) -> Self {
-        Self {
-            account_holder,
-            expand: None,
-            filters: None,
-            permissions,
-            prefetch: None,
-            return_url: None,
-        }
+    pub fn new(account_holder: CreateFinancialConnectionsSessionAccountHolder<'a>, permissions: &'a [stripe_misc::FinancialConnectionsSessionPermissions]) -> Self {
+        Self { account_holder, expand: None, filters: None, permissions, prefetch: None, return_url: None }
     }
 }
 /// The account holder to link accounts for.
@@ -68,7 +37,7 @@ pub struct CreateFinancialConnectionsSessionAccountHolder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// Type of account holder to collect accounts for.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateFinancialConnectionsSessionAccountHolderType,
 }
 impl<'a> CreateFinancialConnectionsSessionAccountHolder<'a> {
@@ -136,10 +105,24 @@ impl<'a> CreateFinancialConnectionsSessionFilters<'a> {
 impl<'a> CreateFinancialConnectionsSession<'a> {
     /// To launch the Financial Connections authorization flow, create a `Session`.
     /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_misc::FinancialConnectionsSession> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::FinancialConnectionsSession> {
         client.send_form("/financial_connections/sessions", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveFinancialConnectionsSession<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveFinancialConnectionsSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveFinancialConnectionsSession<'a> {
+    /// Retrieves the details of a Financial Connections `Session`
+    pub fn send(&self, client: &stripe::Client, session: &stripe_misc::FinancialConnectionsSessionId) -> stripe::Response<stripe_misc::FinancialConnectionsSession> {
+        client.get_query(&format!("/financial_connections/sessions/{session}"), self)
     }
 }

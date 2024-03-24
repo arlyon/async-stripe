@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsCard {
     /// Configuration options for setting up an eMandate for cards issued in India.
     pub mandate_options: Option<stripe_shared::SetupIntentPaymentMethodOptionsCardMandateOptions>,
@@ -8,10 +10,105 @@ pub struct SetupIntentPaymentMethodOptionsCard {
     pub network: Option<SetupIntentPaymentMethodOptionsCardNetwork>,
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// If not provided, this value defaults to `automatic`.
+    /// Permitted values include: `automatic` or `any`.
+    /// If not provided, defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     pub request_three_d_secure: Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
+#[cfg(feature = "min-ser")]
+pub struct SetupIntentPaymentMethodOptionsCardBuilder {
+    mandate_options: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsCardMandateOptions>>,
+    network: Option<Option<SetupIntentPaymentMethodOptionsCardNetwork>>,
+    request_three_d_secure: Option<Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for SetupIntentPaymentMethodOptionsCard {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<SetupIntentPaymentMethodOptionsCard>,
+        builder: SetupIntentPaymentMethodOptionsCardBuilder,
+    }
+
+    impl Visitor for Place<SetupIntentPaymentMethodOptionsCard> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: SetupIntentPaymentMethodOptionsCardBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for SetupIntentPaymentMethodOptionsCardBuilder {
+        type Out = SetupIntentPaymentMethodOptionsCard;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
+                "network" => Deserialize::begin(&mut self.network),
+                "request_three_d_secure" => Deserialize::begin(&mut self.request_three_d_secure),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { mandate_options: Deserialize::default(), network: Deserialize::default(), request_three_d_secure: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let mandate_options = self.mandate_options.take()?;
+            let network = self.network.take()?;
+            let request_three_d_secure = self.request_three_d_secure.take()?;
+
+            Some(Self::Out { mandate_options, network, request_three_d_secure })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for SetupIntentPaymentMethodOptionsCard {
+        type Builder = SetupIntentPaymentMethodOptionsCardBuilder;
+    }
+
+    impl FromValueOpt for SetupIntentPaymentMethodOptionsCard {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = SetupIntentPaymentMethodOptionsCardBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "mandate_options" => b.mandate_options = Some(FromValueOpt::from_value(v)?),
+                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
+                    "request_three_d_secure" => b.request_three_d_secure = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Selected network to process this SetupIntent on.
 /// Depends on the available networks of the card attached to the setup intent.
 /// Can be only set confirm-time.
@@ -91,20 +188,37 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardNetwork
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardNetwork")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardNetwork"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardNetwork> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentPaymentMethodOptionsCardNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardNetwork);
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// If not provided, this value defaults to `automatic`.
+/// Permitted values include: `automatic` or `any`.
+/// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
-    Challenge,
+    ChallengeOnly,
 }
 impl SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
@@ -112,7 +226,7 @@ impl SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Any => "any",
             Automatic => "automatic",
-            Challenge => "challenge",
+            ChallengeOnly => "challenge_only",
         }
     }
 }
@@ -124,7 +238,7 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardRequestThreeDSecur
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
-            "challenge" => Ok(Challenge),
+            "challenge_only" => Ok(ChallengeOnly),
             _ => Err(()),
         }
     }
@@ -152,10 +266,24 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardRequest
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(SetupIntentPaymentMethodOptionsCardRequestThreeDSecure);

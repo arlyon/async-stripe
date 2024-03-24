@@ -116,11 +116,27 @@ impl CodeGen {
             
             {doc_comment}
             extern crate self as {crate_name};
+
+            #[cfg(feature = "min-ser")]
+            miniserde::make_place!(Place);
             "#
             };
 
             let mod_path = base_path.join("src/mod.rs");
             write_to_file(mod_rs, &mod_path)?;
+
+            // NB: a hack to avoid the insanely long lines generated because of _very_ long
+            // type names causing `rustfmt` errors (https://github.com/rust-lang/rustfmt/issues/5315)
+            write_to_file(
+                r#"
+use_small_heuristics = "Max"
+reorder_imports = true
+group_imports = "StdExternalCrate"
+error_on_line_overflow = true
+max_width = 200
+                    "#,
+                base_path.join(".rustfmt.toml"),
+            )?;
         }
         Ok(())
     }

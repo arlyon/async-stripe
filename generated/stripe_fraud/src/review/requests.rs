@@ -28,10 +28,7 @@ impl<'a> ListReview<'a> {
 impl<'a> ListReview<'a> {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Review>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Review>> {
         client.get_query("/reviews", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Review>> {
@@ -51,11 +48,7 @@ impl<'a> RetrieveReview<'a> {
 }
 impl<'a> RetrieveReview<'a> {
     /// Retrieves a `Review` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        review: &stripe_shared::ReviewId,
-    ) -> stripe::Response<stripe_shared::Review> {
+    pub fn send(&self, client: &stripe::Client, review: &stripe_shared::ReviewId) -> stripe::Response<stripe_shared::Review> {
         client.get_query(&format!("/reviews/{review}"), self)
     }
 }
@@ -72,11 +65,7 @@ impl<'a> ApproveReview<'a> {
 }
 impl<'a> ApproveReview<'a> {
     /// Approves a `Review` object, closing it and removing it from the list of reviews.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        review: &stripe_shared::ReviewId,
-    ) -> stripe::Response<stripe_shared::Review> {
+    pub fn send(&self, client: &stripe::Client, review: &stripe_shared::ReviewId) -> stripe::Response<stripe_shared::Review> {
         client.send_form(&format!("/reviews/{review}/approve"), self, http_types::Method::Post)
     }
 }

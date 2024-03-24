@@ -1,3 +1,45 @@
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTopup<'a> {
+    /// A positive integer representing how much to transfer.
+    pub amount: i64,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: stripe_types::Currency,
+    /// An arbitrary string attached to the object. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// The ID of a source to transfer funds from.
+    /// For most users, this should be left unspecified which will use the bank account that was set up in the dashboard for the specified currency.
+    /// In test mode, this can be a test bank token (see [Testing Top-ups](https://stripe.com/docs/connect/testing#testing-top-ups)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<&'a str>,
+    /// Extra information about a top-up for the source's bank statement. Limited to 15 ASCII characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
+    /// A string that identifies this top-up as part of a group.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_group: Option<&'a str>,
+}
+impl<'a> CreateTopup<'a> {
+    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
+        Self { amount, currency, description: None, expand: None, metadata: None, source: None, statement_descriptor: None, transfer_group: None }
+    }
+}
+impl<'a> CreateTopup<'a> {
+    /// Top up the balance of an account
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Topup> {
+        client.send_form("/topups", self, http_types::Method::Post)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListTopup<'a> {
     /// A positive integer representing how much to transfer.
@@ -89,10 +131,7 @@ impl serde::Serialize for ListTopupStatus {
 }
 impl<'a> ListTopup<'a> {
     /// Returns a list of top-ups.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Topup>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Topup>> {
         client.get_query("/topups", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Topup>> {
@@ -113,63 +152,8 @@ impl<'a> RetrieveTopup<'a> {
 impl<'a> RetrieveTopup<'a> {
     /// Retrieves the details of a top-up that has previously been created.
     /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        topup: &stripe_shared::TopupId,
-    ) -> stripe::Response<stripe_shared::Topup> {
+    pub fn send(&self, client: &stripe::Client, topup: &stripe_shared::TopupId) -> stripe::Response<stripe_shared::Topup> {
         client.get_query(&format!("/topups/{topup}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTopup<'a> {
-    /// A positive integer representing how much to transfer.
-    pub amount: i64,
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: stripe_types::Currency,
-    /// An arbitrary string attached to the object. Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The ID of a source to transfer funds from.
-    /// For most users, this should be left unspecified which will use the bank account that was set up in the dashboard for the specified currency.
-    /// In test mode, this can be a test bank token (see [Testing Top-ups](https://stripe.com/docs/connect/testing#testing-top-ups)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<&'a str>,
-    /// Extra information about a top-up for the source's bank statement. Limited to 15 ASCII characters.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
-    /// A string that identifies this top-up as part of a group.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<&'a str>,
-}
-impl<'a> CreateTopup<'a> {
-    pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
-        Self {
-            amount,
-            currency,
-            description: None,
-            expand: None,
-            metadata: None,
-            source: None,
-            statement_descriptor: None,
-            transfer_group: None,
-        }
-    }
-}
-impl<'a> CreateTopup<'a> {
-    /// Top up the balance of an account
-    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Topup> {
-        client.send_form("/topups", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -194,11 +178,7 @@ impl<'a> UpdateTopup<'a> {
 }
 impl<'a> UpdateTopup<'a> {
     /// Updates the metadata of a top-up. Other top-up details are not editable by design.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        topup: &stripe_shared::TopupId,
-    ) -> stripe::Response<stripe_shared::Topup> {
+    pub fn send(&self, client: &stripe::Client, topup: &stripe_shared::TopupId) -> stripe::Response<stripe_shared::Topup> {
         client.send_form(&format!("/topups/{topup}"), self, http_types::Method::Post)
     }
 }
@@ -215,11 +195,7 @@ impl<'a> CancelTopup<'a> {
 }
 impl<'a> CancelTopup<'a> {
     /// Cancels a top-up. Only pending top-ups can be canceled.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        topup: &stripe_shared::TopupId,
-    ) -> stripe::Response<stripe_shared::Topup> {
+    pub fn send(&self, client: &stripe::Client, topup: &stripe_shared::TopupId) -> stripe::Response<stripe_shared::Topup> {
         client.send_form(&format!("/topups/{topup}/cancel"), self, http_types::Method::Post)
     }
 }

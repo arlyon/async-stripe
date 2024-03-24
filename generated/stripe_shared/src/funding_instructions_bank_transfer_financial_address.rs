@@ -1,26 +1,143 @@
 /// FinancialAddresses contain identifying information that resolves to a FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct FundingInstructionsBankTransferFinancialAddress {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<stripe_shared::FundingInstructionsBankTransferAbaRecord>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub iban: Option<stripe_shared::FundingInstructionsBankTransferIbanRecord>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<stripe_shared::FundingInstructionsBankTransferSortCodeRecord>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spei: Option<stripe_shared::FundingInstructionsBankTransferSpeiRecord>,
     /// The payment networks supported by this FinancialAddress
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks:
-        Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supported_networks: Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
     pub swift: Option<stripe_shared::FundingInstructionsBankTransferSwiftRecord>,
     /// The type of financial address
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: FundingInstructionsBankTransferFinancialAddressType,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub zengin: Option<stripe_shared::FundingInstructionsBankTransferZenginRecord>,
 }
+#[cfg(feature = "min-ser")]
+pub struct FundingInstructionsBankTransferFinancialAddressBuilder {
+    aba: Option<Option<stripe_shared::FundingInstructionsBankTransferAbaRecord>>,
+    iban: Option<Option<stripe_shared::FundingInstructionsBankTransferIbanRecord>>,
+    sort_code: Option<Option<stripe_shared::FundingInstructionsBankTransferSortCodeRecord>>,
+    spei: Option<Option<stripe_shared::FundingInstructionsBankTransferSpeiRecord>>,
+    supported_networks: Option<Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>>,
+    swift: Option<Option<stripe_shared::FundingInstructionsBankTransferSwiftRecord>>,
+    type_: Option<FundingInstructionsBankTransferFinancialAddressType>,
+    zengin: Option<Option<stripe_shared::FundingInstructionsBankTransferZenginRecord>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for FundingInstructionsBankTransferFinancialAddress {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<FundingInstructionsBankTransferFinancialAddress>,
+        builder: FundingInstructionsBankTransferFinancialAddressBuilder,
+    }
+
+    impl Visitor for Place<FundingInstructionsBankTransferFinancialAddress> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: FundingInstructionsBankTransferFinancialAddressBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for FundingInstructionsBankTransferFinancialAddressBuilder {
+        type Out = FundingInstructionsBankTransferFinancialAddress;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "aba" => Deserialize::begin(&mut self.aba),
+                "iban" => Deserialize::begin(&mut self.iban),
+                "sort_code" => Deserialize::begin(&mut self.sort_code),
+                "spei" => Deserialize::begin(&mut self.spei),
+                "supported_networks" => Deserialize::begin(&mut self.supported_networks),
+                "swift" => Deserialize::begin(&mut self.swift),
+                "type" => Deserialize::begin(&mut self.type_),
+                "zengin" => Deserialize::begin(&mut self.zengin),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                aba: Deserialize::default(),
+                iban: Deserialize::default(),
+                sort_code: Deserialize::default(),
+                spei: Deserialize::default(),
+                supported_networks: Deserialize::default(),
+                swift: Deserialize::default(),
+                type_: Deserialize::default(),
+                zengin: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let aba = self.aba.take()?;
+            let iban = self.iban.take()?;
+            let sort_code = self.sort_code.take()?;
+            let spei = self.spei.take()?;
+            let supported_networks = self.supported_networks.take()?;
+            let swift = self.swift.take()?;
+            let type_ = self.type_.take()?;
+            let zengin = self.zengin.take()?;
+
+            Some(Self::Out { aba, iban, sort_code, spei, supported_networks, swift, type_, zengin })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for FundingInstructionsBankTransferFinancialAddress {
+        type Builder = FundingInstructionsBankTransferFinancialAddressBuilder;
+    }
+
+    impl FromValueOpt for FundingInstructionsBankTransferFinancialAddress {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = FundingInstructionsBankTransferFinancialAddressBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "aba" => b.aba = Some(FromValueOpt::from_value(v)?),
+                    "iban" => b.iban = Some(FromValueOpt::from_value(v)?),
+                    "sort_code" => b.sort_code = Some(FromValueOpt::from_value(v)?),
+                    "spei" => b.spei = Some(FromValueOpt::from_value(v)?),
+                    "supported_networks" => b.supported_networks = Some(FromValueOpt::from_value(v)?),
+                    "swift" => b.swift = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "zengin" => b.zengin = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The payment networks supported by this FinancialAddress
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
@@ -85,15 +202,31 @@ impl serde::Serialize for FundingInstructionsBankTransferFinancialAddressSupport
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'de> serde::Deserialize<'de>
-    for FundingInstructionsBankTransferFinancialAddressSupportedNetworks
-{
+impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FundingInstructionsBankTransferFinancialAddressSupportedNetworks"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFinancialAddressSupportedNetworks> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FundingInstructionsBankTransferFinancialAddressSupportedNetworks::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(FundingInstructionsBankTransferFinancialAddressSupportedNetworks);
 /// The type of financial address
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum FundingInstructionsBankTransferFinancialAddressType {
@@ -156,10 +289,24 @@ impl<'de> serde::Deserialize<'de> for FundingInstructionsBankTransferFinancialAd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for FundingInstructionsBankTransferFinancialAddressType",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for FundingInstructionsBankTransferFinancialAddressType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FundingInstructionsBankTransferFinancialAddressType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<FundingInstructionsBankTransferFinancialAddressType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FundingInstructionsBankTransferFinancialAddressType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(FundingInstructionsBankTransferFinancialAddressType);

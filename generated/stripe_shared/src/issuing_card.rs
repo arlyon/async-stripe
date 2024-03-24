@@ -1,7 +1,9 @@
 /// You can [create physical or virtual cards](https://stripe.com/docs/issuing/cards) that are issued to cardholders.
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cards/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct IssuingCard {
     /// The brand of the card.
     pub brand: String,
@@ -16,14 +18,12 @@ pub struct IssuingCard {
     /// The card's CVC.
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
     /// The expiration month of the card.
     pub exp_month: i64,
     /// The expiration year of the card.
     pub exp_year: i64,
     /// The financial account this card is attached to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingCardId,
@@ -37,7 +37,6 @@ pub struct IssuingCard {
     /// The full unredacted card number.
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
     /// The latest card that replaces this card, if any.
     pub replaced_by: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
@@ -53,11 +52,227 @@ pub struct IssuingCard {
     /// Defaults to `inactive`.
     pub status: stripe_shared::IssuingCardStatus,
     /// The type of the card.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: stripe_shared::IssuingCardType,
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
     pub wallets: Option<stripe_shared::IssuingCardWallets>,
 }
+#[cfg(feature = "min-ser")]
+pub struct IssuingCardBuilder {
+    brand: Option<String>,
+    cancellation_reason: Option<Option<IssuingCardCancellationReason>>,
+    cardholder: Option<stripe_shared::IssuingCardholder>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    cvc: Option<Option<String>>,
+    exp_month: Option<i64>,
+    exp_year: Option<i64>,
+    financial_account: Option<Option<String>>,
+    id: Option<stripe_shared::IssuingCardId>,
+    last4: Option<String>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    number: Option<Option<String>>,
+    replaced_by: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
+    replacement_for: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
+    replacement_reason: Option<Option<stripe_shared::IssuingCardReplacementReason>>,
+    shipping: Option<Option<stripe_shared::IssuingCardShipping>>,
+    spending_controls: Option<stripe_shared::IssuingCardAuthorizationControls>,
+    status: Option<stripe_shared::IssuingCardStatus>,
+    type_: Option<stripe_shared::IssuingCardType>,
+    wallets: Option<Option<stripe_shared::IssuingCardWallets>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingCard {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingCard>,
+        builder: IssuingCardBuilder,
+    }
+
+    impl Visitor for Place<IssuingCard> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: IssuingCardBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for IssuingCardBuilder {
+        type Out = IssuingCard;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "brand" => Deserialize::begin(&mut self.brand),
+                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "cardholder" => Deserialize::begin(&mut self.cardholder),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "cvc" => Deserialize::begin(&mut self.cvc),
+                "exp_month" => Deserialize::begin(&mut self.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.exp_year),
+                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "id" => Deserialize::begin(&mut self.id),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "number" => Deserialize::begin(&mut self.number),
+                "replaced_by" => Deserialize::begin(&mut self.replaced_by),
+                "replacement_for" => Deserialize::begin(&mut self.replacement_for),
+                "replacement_reason" => Deserialize::begin(&mut self.replacement_reason),
+                "shipping" => Deserialize::begin(&mut self.shipping),
+                "spending_controls" => Deserialize::begin(&mut self.spending_controls),
+                "status" => Deserialize::begin(&mut self.status),
+                "type" => Deserialize::begin(&mut self.type_),
+                "wallets" => Deserialize::begin(&mut self.wallets),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                brand: Deserialize::default(),
+                cancellation_reason: Deserialize::default(),
+                cardholder: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                cvc: Deserialize::default(),
+                exp_month: Deserialize::default(),
+                exp_year: Deserialize::default(),
+                financial_account: Deserialize::default(),
+                id: Deserialize::default(),
+                last4: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                number: Deserialize::default(),
+                replaced_by: Deserialize::default(),
+                replacement_for: Deserialize::default(),
+                replacement_reason: Deserialize::default(),
+                shipping: Deserialize::default(),
+                spending_controls: Deserialize::default(),
+                status: Deserialize::default(),
+                type_: Deserialize::default(),
+                wallets: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let brand = self.brand.take()?;
+            let cancellation_reason = self.cancellation_reason.take()?;
+            let cardholder = self.cardholder.take()?;
+            let created = self.created.take()?;
+            let currency = self.currency.take()?;
+            let cvc = self.cvc.take()?;
+            let exp_month = self.exp_month.take()?;
+            let exp_year = self.exp_year.take()?;
+            let financial_account = self.financial_account.take()?;
+            let id = self.id.take()?;
+            let last4 = self.last4.take()?;
+            let livemode = self.livemode.take()?;
+            let metadata = self.metadata.take()?;
+            let number = self.number.take()?;
+            let replaced_by = self.replaced_by.take()?;
+            let replacement_for = self.replacement_for.take()?;
+            let replacement_reason = self.replacement_reason.take()?;
+            let shipping = self.shipping.take()?;
+            let spending_controls = self.spending_controls.take()?;
+            let status = self.status.take()?;
+            let type_ = self.type_.take()?;
+            let wallets = self.wallets.take()?;
+
+            Some(Self::Out {
+                brand,
+                cancellation_reason,
+                cardholder,
+                created,
+                currency,
+                cvc,
+                exp_month,
+                exp_year,
+                financial_account,
+                id,
+                last4,
+                livemode,
+                metadata,
+                number,
+                replaced_by,
+                replacement_for,
+                replacement_reason,
+                shipping,
+                spending_controls,
+                status,
+                type_,
+                wallets,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingCard {
+        type Builder = IssuingCardBuilder;
+    }
+
+    impl FromValueOpt for IssuingCard {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingCardBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
+                    "cancellation_reason" => b.cancellation_reason = Some(FromValueOpt::from_value(v)?),
+                    "cardholder" => b.cardholder = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "cvc" => b.cvc = Some(FromValueOpt::from_value(v)?),
+                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
+                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
+                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "number" => b.number = Some(FromValueOpt::from_value(v)?),
+                    "replaced_by" => b.replaced_by = Some(FromValueOpt::from_value(v)?),
+                    "replacement_for" => b.replacement_for = Some(FromValueOpt::from_value(v)?),
+                    "replacement_reason" => b.replacement_reason = Some(FromValueOpt::from_value(v)?),
+                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
+                    "spending_controls" => b.spending_controls = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "wallets" => b.wallets = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The reason why the card was canceled.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingCardCancellationReason {
@@ -111,11 +326,27 @@ impl<'de> serde::Deserialize<'de> for IssuingCardCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardCancellationReason")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardCancellationReason"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IssuingCardCancellationReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<IssuingCardCancellationReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardCancellationReason::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(IssuingCardCancellationReason);
 impl stripe_types::Object for IssuingCard {
     type Id = stripe_shared::IssuingCardId;
     fn id(&self) -> &Self::Id {
@@ -178,10 +409,27 @@ impl<'de> serde::Deserialize<'de> for IssuingCardReplacementReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardReplacementReason"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardReplacementReason"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IssuingCardReplacementReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<IssuingCardReplacementReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardReplacementReason::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(IssuingCardReplacementReason);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingCardStatus {
     Active,
@@ -234,10 +482,27 @@ impl<'de> serde::Deserialize<'de> for IssuingCardStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardStatus"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardStatus"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IssuingCardStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<IssuingCardStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(IssuingCardStatus);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingCardType {
     Physical,
@@ -287,7 +552,24 @@ impl<'de> serde::Deserialize<'de> for IssuingCardType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardType"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for IssuingCardType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<IssuingCardType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(IssuingCardType);

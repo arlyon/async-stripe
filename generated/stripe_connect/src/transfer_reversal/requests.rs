@@ -1,69 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListIdTransferReversal<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListIdTransferReversal<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListIdTransferReversal<'a> {
-    /// You can see a list of the reversals belonging to a specific transfer.
-    /// Note that the 10 most recent reversals are always available by default on the transfer object.
-    /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional reversals.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::TransferId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::TransferReversal>> {
-        client.get_query(&format!("/transfers/{id}/reversals"), self)
-    }
-    pub fn paginate(
-        self,
-        id: &stripe_shared::TransferId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TransferReversal>> {
-        stripe::ListPaginator::from_list_params(&format!("/transfers/{id}/reversals"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTransferReversal<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTransferReversal<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTransferReversal<'a> {
-    /// By default, you can see the 10 most recent reversals stored directly on the transfer object, but you can also retrieve details about a specific reversal stored on the transfer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &str,
-        transfer: &stripe_shared::TransferId,
-    ) -> stripe::Response<stripe_shared::TransferReversal> {
-        client.get_query(&format!("/transfers/{transfer}/reversals/{id}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIdTransferReversal<'a> {
     /// A positive integer in cents (or local equivalent) representing how much of this transfer to reverse.
     /// Can only reverse up to the unreversed amount remaining of the transfer.
@@ -104,12 +39,61 @@ impl<'a> CreateIdTransferReversal<'a> {
     ///
     /// Once entirely reversed, a transfer can’t be reversed again.
     /// This method will return an error when called on an already-reversed transfer, or when trying to reverse more money than is left on a transfer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::TransferId,
-    ) -> stripe::Response<stripe_shared::TransferReversal> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::TransferId) -> stripe::Response<stripe_shared::TransferReversal> {
         client.send_form(&format!("/transfers/{id}/reversals"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListIdTransferReversal<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListIdTransferReversal<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListIdTransferReversal<'a> {
+    /// You can see a list of the reversals belonging to a specific transfer.
+    /// Note that the 10 most recent reversals are always available by default on the transfer object.
+    /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional reversals.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::TransferId) -> stripe::Response<stripe_types::List<stripe_shared::TransferReversal>> {
+        client.get_query(&format!("/transfers/{id}/reversals"), self)
+    }
+    pub fn paginate(self, id: &stripe_shared::TransferId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TransferReversal>> {
+        stripe::ListPaginator::from_list_params(&format!("/transfers/{id}/reversals"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTransferReversal<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTransferReversal<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTransferReversal<'a> {
+    /// By default, you can see the 10 most recent reversals stored directly on the transfer object, but you can also retrieve details about a specific reversal stored on the transfer.
+    pub fn send(&self, client: &stripe::Client, id: &str, transfer: &stripe_shared::TransferId) -> stripe::Response<stripe_shared::TransferReversal> {
+        client.get_query(&format!("/transfers/{transfer}/reversals/{id}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -134,16 +118,7 @@ impl<'a> UpdateTransferReversal<'a> {
     /// Any parameters not provided will be left unchanged.
     ///
     /// This request only accepts metadata and description as arguments.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &str,
-        transfer: &stripe_shared::TransferId,
-    ) -> stripe::Response<stripe_shared::TransferReversal> {
-        client.send_form(
-            &format!("/transfers/{transfer}/reversals/{id}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, id: &str, transfer: &stripe_shared::TransferId) -> stripe::Response<stripe_shared::TransferReversal> {
+        client.send_form(&format!("/transfers/{transfer}/reversals/{id}"), self, http_types::Method::Post)
     }
 }

@@ -8,7 +8,9 @@
 /// data), and will error when queried without a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).
 ///
 /// For more details see <<https://stripe.com/docs/api/reporting/report_run/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct ReportingReportRun {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -33,6 +35,134 @@ pub struct ReportingReportRun {
     ///  `status=succeeded`). Measured in seconds since the Unix epoch.
     pub succeeded_at: Option<stripe_types::Timestamp>,
 }
+#[cfg(feature = "min-ser")]
+pub struct ReportingReportRunBuilder {
+    created: Option<stripe_types::Timestamp>,
+    error: Option<Option<String>>,
+    id: Option<stripe_misc::ReportingReportRunId>,
+    livemode: Option<bool>,
+    parameters: Option<stripe_misc::FinancialReportingFinanceReportRunRunParameters>,
+    report_type: Option<String>,
+    result: Option<Option<stripe_shared::File>>,
+    status: Option<String>,
+    succeeded_at: Option<Option<stripe_types::Timestamp>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for ReportingReportRun {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<ReportingReportRun>,
+        builder: ReportingReportRunBuilder,
+    }
+
+    impl Visitor for Place<ReportingReportRun> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: ReportingReportRunBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for ReportingReportRunBuilder {
+        type Out = ReportingReportRun;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.created),
+                "error" => Deserialize::begin(&mut self.error),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "parameters" => Deserialize::begin(&mut self.parameters),
+                "report_type" => Deserialize::begin(&mut self.report_type),
+                "result" => Deserialize::begin(&mut self.result),
+                "status" => Deserialize::begin(&mut self.status),
+                "succeeded_at" => Deserialize::begin(&mut self.succeeded_at),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                created: Deserialize::default(),
+                error: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                parameters: Deserialize::default(),
+                report_type: Deserialize::default(),
+                result: Deserialize::default(),
+                status: Deserialize::default(),
+                succeeded_at: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let created = self.created.take()?;
+            let error = self.error.take()?;
+            let id = self.id.take()?;
+            let livemode = self.livemode.take()?;
+            let parameters = self.parameters.take()?;
+            let report_type = self.report_type.take()?;
+            let result = self.result.take()?;
+            let status = self.status.take()?;
+            let succeeded_at = self.succeeded_at.take()?;
+
+            Some(Self::Out { created, error, id, livemode, parameters, report_type, result, status, succeeded_at })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for ReportingReportRun {
+        type Builder = ReportingReportRunBuilder;
+    }
+
+    impl FromValueOpt for ReportingReportRun {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = ReportingReportRunBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "error" => b.error = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "parameters" => b.parameters = Some(FromValueOpt::from_value(v)?),
+                    "report_type" => b.report_type = Some(FromValueOpt::from_value(v)?),
+                    "result" => b.result = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "succeeded_at" => b.succeeded_at = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for ReportingReportRun {
     type Id = stripe_misc::ReportingReportRunId;
     fn id(&self) -> &Self::Id {

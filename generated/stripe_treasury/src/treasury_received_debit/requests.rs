@@ -25,27 +25,15 @@ pub struct ListTreasuryReceivedDebit<'a> {
 }
 impl<'a> ListTreasuryReceivedDebit<'a> {
     pub fn new(financial_account: &'a str) -> Self {
-        Self {
-            ending_before: None,
-            expand: None,
-            financial_account,
-            limit: None,
-            starting_after: None,
-            status: None,
-        }
+        Self { ending_before: None, expand: None, financial_account, limit: None, starting_after: None, status: None }
     }
 }
 impl<'a> ListTreasuryReceivedDebit<'a> {
     /// Returns a list of ReceivedDebits.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebit>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryReceivedDebit>> {
         client.get_query("/treasury/received_debits", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryReceivedDebit>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryReceivedDebit>> {
         stripe::ListPaginator::from_list_params("/treasury/received_debits", self)
     }
 }
@@ -62,11 +50,7 @@ impl<'a> RetrieveTreasuryReceivedDebit<'a> {
 }
 impl<'a> RetrieveTreasuryReceivedDebit<'a> {
     /// Retrieves the details of an existing ReceivedDebit by passing the unique ReceivedDebit ID from the ReceivedDebit list.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_treasury::TreasuryReceivedDebitId,
-    ) -> stripe::Response<stripe_treasury::TreasuryReceivedDebit> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_treasury::TreasuryReceivedDebitId) -> stripe::Response<stripe_treasury::TreasuryReceivedDebit> {
         client.get_query(&format!("/treasury/received_debits/{id}"), self)
     }
 }
@@ -87,39 +71,24 @@ pub struct CreateTreasuryReceivedDebit<'a> {
     pub financial_account: &'a str,
     /// Initiating payment method details for the object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub initiating_payment_method_details:
-        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a>>,
+    pub initiating_payment_method_details: Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a>>,
     /// The rails used for the object.
     pub network: CreateTreasuryReceivedDebitNetwork,
 }
 impl<'a> CreateTreasuryReceivedDebit<'a> {
-    pub fn new(
-        amount: i64,
-        currency: stripe_types::Currency,
-        financial_account: &'a str,
-        network: CreateTreasuryReceivedDebitNetwork,
-    ) -> Self {
-        Self {
-            amount,
-            currency,
-            description: None,
-            expand: None,
-            financial_account,
-            initiating_payment_method_details: None,
-            network,
-        }
+    pub fn new(amount: i64, currency: stripe_types::Currency, financial_account: &'a str, network: CreateTreasuryReceivedDebitNetwork) -> Self {
+        Self { amount, currency, description: None, expand: None, financial_account, initiating_payment_method_details: None, network }
     }
 }
 /// Initiating payment method details for the object.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a> {
     /// The source type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType,
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account:
-        Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a>>,
+    pub us_bank_account: Option<CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a>>,
 }
 impl<'a> CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails<'a> {
     pub fn new(type_: CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType) -> Self {
@@ -233,10 +202,7 @@ impl serde::Serialize for CreateTreasuryReceivedDebitNetwork {
 impl<'a> CreateTreasuryReceivedDebit<'a> {
     /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.
     /// In live mode, you can’t directly create ReceivedDebits initiated by third parties.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryReceivedDebit> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryReceivedDebit> {
         client.send_form("/test_helpers/treasury/received_debits", self, http_types::Method::Post)
     }
 }

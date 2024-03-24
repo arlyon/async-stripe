@@ -1,21 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeletePlan {}
-impl DeletePlan {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeletePlan {
-    /// Deleting plans means new subscribers can’t be added. Existing subscribers aren’t affected.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        plan: &stripe_shared::PlanId,
-    ) -> stripe::Response<stripe_shared::DeletedPlan> {
-        client.send_form(&format!("/plans/{plan}"), self, http_types::Method::Delete)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListPlan<'a> {
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,35 +35,11 @@ impl<'a> ListPlan<'a> {
 }
 impl<'a> ListPlan<'a> {
     /// Returns a list of your plans.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Plan>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Plan>> {
         client.get_query("/plans", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Plan>> {
         stripe::ListPaginator::from_list_params("/plans", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrievePlan<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrievePlan<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrievePlan<'a> {
-    /// Retrieves the plan with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        plan: &stripe_shared::PlanId,
-    ) -> stripe::Response<stripe_shared::Plan> {
-        client.get_query(&format!("/plans/{plan}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -122,7 +81,7 @@ pub struct CreatePlan<'a> {
     pub interval: stripe_shared::PlanInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -226,15 +185,7 @@ pub struct CreatePlanInlineProductParams<'a> {
 }
 impl<'a> CreatePlanInlineProductParams<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self {
-            active: None,
-            id: None,
-            metadata: None,
-            name,
-            statement_descriptor: None,
-            tax_code: None,
-            unit_label: None,
-        }
+        Self { active: None, id: None, metadata: None, name, statement_descriptor: None, tax_code: None, unit_label: None }
     }
 }
 /// Each element represents a pricing tier.
@@ -263,13 +214,7 @@ pub struct CreatePlanTiers<'a> {
 }
 impl<'a> CreatePlanTiers<'a> {
     pub fn new(up_to: CreatePlanTiersUpTo) -> Self {
-        Self {
-            flat_amount: None,
-            flat_amount_decimal: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-            up_to,
-        }
+        Self { flat_amount: None, flat_amount_decimal: None, unit_amount: None, unit_amount_decimal: None, up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -349,6 +294,23 @@ impl<'a> CreatePlan<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrievePlan<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrievePlan<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrievePlan<'a> {
+    /// Retrieves the plan with the given ID.
+    pub fn send(&self, client: &stripe::Client, plan: &stripe_shared::PlanId) -> stripe::Response<stripe_shared::Plan> {
+        client.get_query(&format!("/plans/{plan}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePlan<'a> {
     /// Whether the plan is currently available for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,11 +344,20 @@ impl<'a> UpdatePlan<'a> {
     /// Updates the specified plan by setting the values of the parameters passed.
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        plan: &stripe_shared::PlanId,
-    ) -> stripe::Response<stripe_shared::Plan> {
+    pub fn send(&self, client: &stripe::Client, plan: &stripe_shared::PlanId) -> stripe::Response<stripe_shared::Plan> {
         client.send_form(&format!("/plans/{plan}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeletePlan {}
+impl DeletePlan {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeletePlan {
+    /// Deleting plans means new subscribers can’t be added. Existing subscribers aren’t affected.
+    pub fn send(&self, client: &stripe::Client, plan: &stripe_shared::PlanId) -> stripe::Response<stripe_shared::DeletedPlan> {
+        client.send_form(&format!("/plans/{plan}"), self, http_types::Method::Delete)
     }
 }

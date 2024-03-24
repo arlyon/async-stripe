@@ -1,3 +1,4 @@
+#[allow(clippy::crate_in_macro_def)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! def_id_serde_impls {
@@ -20,6 +21,30 @@ macro_rules! def_id_serde_impls {
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
+
+        impl stripe_types::FromCursor for $struct_name {
+            fn from_cursor(val: &str) -> Option<Self> {
+                use std::str::FromStr;
+                Self::from_str(val).ok()
+            }
+        }
+
+        #[cfg(feature = "min-ser")]
+        impl miniserde::Deserialize for $struct_name {
+            fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+                crate::Place::new(out)
+            }
+        }
+
+        #[cfg(feature = "min-ser")]
+        impl miniserde::de::Visitor for crate::Place<$struct_name> {
+            fn string(&mut self, s: &str) -> miniserde::Result<()> {
+                self.out = Some(s.parse::<$struct_name>().map_err(|_| miniserde::Error)?);
+                Ok(())
+            }
+        }
+        #[cfg(feature = "min-ser")]
+        $crate::impl_from_val_with_from_str!($struct_name);
     };
 }
 

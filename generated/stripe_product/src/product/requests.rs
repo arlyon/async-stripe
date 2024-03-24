@@ -1,102 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteProduct {}
-impl DeleteProduct {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeleteProduct {
-    /// Delete a product.
-    /// Deleting a product is only possible if it has no prices associated with it.
-    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ProductId,
-    ) -> stripe::Response<stripe_shared::DeletedProduct> {
-        client.send_form(&format!("/products/{id}"), self, http_types::Method::Delete)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListProduct<'a> {
-    /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<bool>,
-    /// Only return products that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Only return products with the given IDs.
-    /// Cannot be used with [starting_after](https://stripe.com/docs/api#list_products-starting_after) or [ending_before](https://stripe.com/docs/api#list_products-ending_before).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ids: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// Only return products that can be shipped (i.e., physical, not digital products).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shippable: Option<bool>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return products of this type.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<stripe_shared::ProductType>,
-    /// Only return products with the given url.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<&'a str>,
-}
-impl<'a> ListProduct<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListProduct<'a> {
-    /// Returns a list of your products.
-    /// The products are returned sorted by creation date, with the most recently created products appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Product>> {
-        client.get_query("/products", self)
-    }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Product>> {
-        stripe::ListPaginator::from_list_params("/products", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveProduct<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveProduct<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveProduct<'a> {
-    /// Retrieves the details of an existing product.
-    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ProductId,
-    ) -> stripe::Response<stripe_shared::Product> {
-        client.get_query(&format!("/products/{id}"), self)
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct SearchProduct<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -127,15 +28,10 @@ impl<'a> SearchProduct<'a> {
     /// conditions, data is searchable in less than a minute.
     /// Occasionally, propagation of new or updated data can be up.
     /// to an hour behind during outages. Search functionality is not available to merchants in India.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::SearchList<stripe_shared::Product>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::SearchList<stripe_shared::Product>> {
         client.get_query("/products/search", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Product>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Product>> {
         stripe::ListPaginator::from_search_params("/products/search", self)
     }
 }
@@ -196,7 +92,7 @@ pub struct CreateProduct<'a> {
     /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
     /// Set this parameter to `good` to use this product with Orders and SKUs.
     /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<stripe_shared::ProductType>,
     /// A label that represents units of this product.
@@ -239,12 +135,7 @@ pub struct CreateProductDefaultPriceData<'a> {
     /// Prices defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateProductDefaultPriceDataCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateProductDefaultPriceDataCurrencyOptions>>,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
@@ -265,14 +156,7 @@ pub struct CreateProductDefaultPriceData<'a> {
 }
 impl<'a> CreateProductDefaultPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self {
-            currency,
-            currency_options: None,
-            recurring: None,
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
+        Self { currency, currency_options: None, recurring: None, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
     }
 }
 /// Prices defined in each available currency option.
@@ -405,13 +289,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
 }
 impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
     pub fn new(up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo) -> Self {
-        Self {
-            flat_amount: None,
-            flat_amount_decimal: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-            up_to,
-        }
+        Self { flat_amount: None, flat_amount_decimal: None, unit_amount: None, unit_amount_decimal: None, up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -430,7 +308,7 @@ pub struct CreateProductDefaultPriceDataRecurring {
     pub interval: CreateProductDefaultPriceDataRecurringInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -550,6 +428,24 @@ impl<'a> CreateProduct<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveProduct<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveProduct<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveProduct<'a> {
+    /// Retrieves the details of an existing product.
+    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ProductId) -> stripe::Response<stripe_shared::Product> {
+        client.get_query(&format!("/products/{id}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateProduct<'a> {
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -615,12 +511,78 @@ impl<'a> UpdateProduct<'a> {
 impl<'a> UpdateProduct<'a> {
     /// Updates the specific product by setting the values of the parameters passed.
     /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ProductId,
-    ) -> stripe::Response<stripe_shared::Product> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ProductId) -> stripe::Response<stripe_shared::Product> {
         client.send_form(&format!("/products/{id}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListProduct<'a> {
+    /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
+    /// Only return products that were created during the given date interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Only return products with the given IDs.
+    /// Cannot be used with [starting_after](https://stripe.com/docs/api#list_products-starting_after) or [ending_before](https://stripe.com/docs/api#list_products-ending_before).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ids: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// Only return products that can be shipped (i.e., physical, not digital products).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shippable: Option<bool>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+    /// Only return products of this type.
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<stripe_shared::ProductType>,
+    /// Only return products with the given url.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<&'a str>,
+}
+impl<'a> ListProduct<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListProduct<'a> {
+    /// Returns a list of your products.
+    /// The products are returned sorted by creation date, with the most recently created products appearing first.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Product>> {
+        client.get_query("/products", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Product>> {
+        stripe::ListPaginator::from_list_params("/products", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteProduct {}
+impl DeleteProduct {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteProduct {
+    /// Delete a product.
+    /// Deleting a product is only possible if it has no prices associated with it.
+    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ProductId) -> stripe::Response<stripe_shared::DeletedProduct> {
+        client.send_form(&format!("/products/{id}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

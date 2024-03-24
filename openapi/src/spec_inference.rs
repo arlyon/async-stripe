@@ -224,9 +224,13 @@ impl<'a> Inference<'a> {
         // when there is no specification of object shape.
 
         // FIXME: The unfortunate `field_name.is_some()` is used to avoid substituting
-        // a serde_json::Value for a top level component type (see for example mandate_us_bank_account)
+        // an arbitrary JSON value for a top level component type (see for example mandate_us_bank_account)
         if typ.properties.is_empty() && self.field_name.is_some() {
-            return RustType::serde_json_value(self.can_borrow);
+            return if self.kind.is_request_param() {
+                RustType::serde_json_value(self.can_borrow)
+            } else {
+                RustType::json_value(self.can_borrow)
+            };
         }
 
         // Generate the struct type

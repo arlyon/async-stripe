@@ -31,7 +31,6 @@
 | [Topup](https://stripe.com/docs/api/topups/object)                                               | stripe_connect  | topup                             |
 | [TransferReversal](https://stripe.com/docs/api/transfer_reversals/object)                        | stripe_connect  | transfer_reversal                 |
 | [Transfer](https://stripe.com/docs/api/transfers/object)                                         | stripe_connect  | transfer                          |
-| CustomerSession                                                                                  | stripe_core     | customer_session                  |
 | PaymentSource                                                                                    | stripe_core     | payment_source                    |
 | [BalanceTransaction](https://stripe.com/docs/api/balance_transactions/object)                    | stripe_core     | balance_transaction               |
 | [Balance](https://stripe.com/docs/api/balance/balance_object)                                    | stripe_core     | balance                           |
@@ -62,12 +61,8 @@
 | [IssuingToken](https://stripe.com/docs/api/issuing/tokens/object)                                | stripe_issuing  | issuing_token                     |
 | [IssuingTransaction](https://stripe.com/docs/api/issuing/transactions/object)                    | stripe_issuing  | issuing_transaction               |
 | ApplePayDomain                                                                                   | stripe_misc     | apple_pay_domain                  |
-| ClimateOrder                                                                                     | stripe_misc     | climate_order                     |
-| ClimateProduct                                                                                   | stripe_misc     | climate_product                   |
-| ClimateSupplier                                                                                  | stripe_misc     | climate_supplier                  |
 | EphemeralKey                                                                                     | stripe_misc     | ephemeral_key                     |
 | ExchangeRate                                                                                     | stripe_misc     | exchange_rate                     |
-| FinancialConnectionsTransaction                                                                  | stripe_misc     | financial_connections_transaction |
 | TaxRegistration                                                                                  | stripe_misc     | tax_registration                  |
 | [FinancialConnectionsAccount](https://stripe.com/docs/api/financial_connections/accounts/object) | stripe_misc     | financial_connections_account     |
 | [FinancialConnectionsSession](https://stripe.com/docs/api/financial_connections/sessions/object) | stripe_misc     | financial_connections_session     |

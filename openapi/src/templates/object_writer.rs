@@ -2,9 +2,8 @@ use std::fmt::Write;
 
 use crate::components::Components;
 use crate::printable::{Lifetime, PrintableType};
-use crate::rust_object::ObjectKind;
+use crate::rust_object::{ObjectKind, ShouldImplSerialize};
 use crate::rust_type::RustType;
-use crate::templates::derives::Derives;
 use crate::types::RustIdent;
 
 #[derive(Copy, Clone)]
@@ -86,11 +85,62 @@ pub fn write_derives_line(out: &mut String, derives: Derives) {
     if derives.eq {
         let _ = write!(out, "Eq, PartialEq,");
     }
-    if derives.serialize {
-        let _ = write!(out, "serde::Serialize,");
-    }
-    if derives.deserialize {
-        let _ = write!(out, "serde::Deserialize,");
-    }
     let _ = out.write_str(")]");
+    match derives.serialize {
+        ShouldImplSerialize::Always => {
+            let _ = write!(out, "#[derive(serde::Serialize)]");
+        }
+        ShouldImplSerialize::SkipIfMinSer => {
+            let _ =
+                write!(out, r#"#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]"#);
+        }
+        ShouldImplSerialize::Never => {}
+    }
+
+    if derives.deserialize {
+        let _ = write!(out, r#"#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]"#);
+    }
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+pub struct Derives {
+    pub copy: bool,
+    pub debug: bool,
+    pub default: bool,
+    pub eq: bool,
+    pub serialize: ShouldImplSerialize,
+    pub deserialize: bool,
+}
+
+impl Derives {
+    pub const fn new() -> Self {
+        Self {
+            debug: true,
+            copy: false,
+            default: false,
+            eq: false,
+            serialize: ShouldImplSerialize::Never,
+            deserialize: false,
+        }
+    }
+
+    pub fn debug(mut self, debug: bool) -> Self {
+        self.debug = debug;
+        self
+    }
+
+    pub fn copy(mut self, copy: bool) -> Self {
+        self.copy = copy;
+        self
+    }
+
+    pub fn default(mut self, default: bool) -> Self {
+        self.default = default;
+        self
+    }
+
+    pub fn eq(mut self, eq: bool) -> Self {
+        self.eq = eq;
+        self
+    }
 }

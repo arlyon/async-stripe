@@ -5,11 +5,12 @@
 /// Related guide: [Card payments with Sources](https://stripe.com/docs/sources/cards)
 ///
 /// For more details see <<https://stripe.com/docs/api/cards/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Card {
     /// The account this card belongs to.
     /// This attribute will not be in the card object if the card belongs to a customer or recipient instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// City/District/Suburb/Town/Village.
     pub address_city: Option<String>,
@@ -29,7 +30,6 @@ pub struct Card {
     pub address_zip_check: Option<String>,
     /// A set of available payout methods for this card.
     /// Only values from this set should be passed as the `method` when creating a payout.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub available_payout_methods: Option<Vec<CardAvailablePayoutMethods>>,
     /// Card brand.
     /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
@@ -40,11 +40,9 @@ pub struct Card {
     /// Three-letter [ISO code for currency](https://stripe.com/docs/payouts).
     /// Only applicable on accounts (not customers or recipients).
     /// The card can be used as a transfer destination for funds in this currency.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// The customer that this card belongs to.
     /// This attribute will not be in the card object if the card belongs to an account or recipient instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// If a CVC was provided, results of the check: `pass`, `fail`, `unavailable`, or `unchecked`.
     /// A result of unchecked indicates that CVC was provided but hasn't been checked yet.
@@ -52,11 +50,9 @@ pub struct Card {
     /// For more details, see [Check if a card is valid without a charge](https://support.stripe.com/questions/check-if-a-card-is-valid-without-a-charge).
     pub cvc_check: Option<String>,
     /// Whether this card is the default external account for its currency.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_for_currency: Option<bool>,
     /// A high-level description of the type of cards issued in this range.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// (For tokenized numbers only.) The last four digits of the device account number.
     pub dynamic_last4: Option<String>,
@@ -69,7 +65,6 @@ pub struct Card {
     /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
     ///
     /// *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
     /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
     pub funding: String,
@@ -77,11 +72,9 @@ pub struct Card {
     pub id: stripe_shared::CardId,
     /// Issuer identification number of the card.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub iin: Option<String>,
     /// The name of the card's issuing bank.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: String,
@@ -92,12 +85,275 @@ pub struct Card {
     pub name: Option<String>,
     /// For external accounts that are cards, possible values are `new` and `errored`.
     /// If a payout fails, the status is set to `errored` and [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) are stopped until account details are updated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// If the card number is tokenized, this is the method that was used.
     /// Can be `android_pay` (includes Google Pay), `apple_pay`, `masterpass`, `visa_checkout`, or null.
     pub tokenization_method: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct CardBuilder {
+    account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    address_city: Option<Option<String>>,
+    address_country: Option<Option<String>>,
+    address_line1: Option<Option<String>>,
+    address_line1_check: Option<Option<String>>,
+    address_line2: Option<Option<String>>,
+    address_state: Option<Option<String>>,
+    address_zip: Option<Option<String>>,
+    address_zip_check: Option<Option<String>>,
+    available_payout_methods: Option<Option<Vec<CardAvailablePayoutMethods>>>,
+    brand: Option<String>,
+    country: Option<Option<String>>,
+    currency: Option<Option<stripe_types::Currency>>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    cvc_check: Option<Option<String>>,
+    default_for_currency: Option<Option<bool>>,
+    description: Option<Option<String>>,
+    dynamic_last4: Option<Option<String>>,
+    exp_month: Option<i64>,
+    exp_year: Option<i64>,
+    fingerprint: Option<Option<String>>,
+    funding: Option<String>,
+    id: Option<stripe_shared::CardId>,
+    iin: Option<Option<String>>,
+    issuer: Option<Option<String>>,
+    last4: Option<String>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    name: Option<Option<String>>,
+    status: Option<Option<String>>,
+    tokenization_method: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Card {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Card>,
+        builder: CardBuilder,
+    }
+
+    impl Visitor for Place<Card> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CardBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CardBuilder {
+        type Out = Card;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "account" => Deserialize::begin(&mut self.account),
+                "address_city" => Deserialize::begin(&mut self.address_city),
+                "address_country" => Deserialize::begin(&mut self.address_country),
+                "address_line1" => Deserialize::begin(&mut self.address_line1),
+                "address_line1_check" => Deserialize::begin(&mut self.address_line1_check),
+                "address_line2" => Deserialize::begin(&mut self.address_line2),
+                "address_state" => Deserialize::begin(&mut self.address_state),
+                "address_zip" => Deserialize::begin(&mut self.address_zip),
+                "address_zip_check" => Deserialize::begin(&mut self.address_zip_check),
+                "available_payout_methods" => Deserialize::begin(&mut self.available_payout_methods),
+                "brand" => Deserialize::begin(&mut self.brand),
+                "country" => Deserialize::begin(&mut self.country),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "cvc_check" => Deserialize::begin(&mut self.cvc_check),
+                "default_for_currency" => Deserialize::begin(&mut self.default_for_currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
+                "exp_month" => Deserialize::begin(&mut self.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
+                "funding" => Deserialize::begin(&mut self.funding),
+                "id" => Deserialize::begin(&mut self.id),
+                "iin" => Deserialize::begin(&mut self.iin),
+                "issuer" => Deserialize::begin(&mut self.issuer),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
+                "status" => Deserialize::begin(&mut self.status),
+                "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                account: Deserialize::default(),
+                address_city: Deserialize::default(),
+                address_country: Deserialize::default(),
+                address_line1: Deserialize::default(),
+                address_line1_check: Deserialize::default(),
+                address_line2: Deserialize::default(),
+                address_state: Deserialize::default(),
+                address_zip: Deserialize::default(),
+                address_zip_check: Deserialize::default(),
+                available_payout_methods: Deserialize::default(),
+                brand: Deserialize::default(),
+                country: Deserialize::default(),
+                currency: Deserialize::default(),
+                customer: Deserialize::default(),
+                cvc_check: Deserialize::default(),
+                default_for_currency: Deserialize::default(),
+                description: Deserialize::default(),
+                dynamic_last4: Deserialize::default(),
+                exp_month: Deserialize::default(),
+                exp_year: Deserialize::default(),
+                fingerprint: Deserialize::default(),
+                funding: Deserialize::default(),
+                id: Deserialize::default(),
+                iin: Deserialize::default(),
+                issuer: Deserialize::default(),
+                last4: Deserialize::default(),
+                metadata: Deserialize::default(),
+                name: Deserialize::default(),
+                status: Deserialize::default(),
+                tokenization_method: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let account = self.account.take()?;
+            let address_city = self.address_city.take()?;
+            let address_country = self.address_country.take()?;
+            let address_line1 = self.address_line1.take()?;
+            let address_line1_check = self.address_line1_check.take()?;
+            let address_line2 = self.address_line2.take()?;
+            let address_state = self.address_state.take()?;
+            let address_zip = self.address_zip.take()?;
+            let address_zip_check = self.address_zip_check.take()?;
+            let available_payout_methods = self.available_payout_methods.take()?;
+            let brand = self.brand.take()?;
+            let country = self.country.take()?;
+            let currency = self.currency.take()?;
+            let customer = self.customer.take()?;
+            let cvc_check = self.cvc_check.take()?;
+            let default_for_currency = self.default_for_currency.take()?;
+            let description = self.description.take()?;
+            let dynamic_last4 = self.dynamic_last4.take()?;
+            let exp_month = self.exp_month.take()?;
+            let exp_year = self.exp_year.take()?;
+            let fingerprint = self.fingerprint.take()?;
+            let funding = self.funding.take()?;
+            let id = self.id.take()?;
+            let iin = self.iin.take()?;
+            let issuer = self.issuer.take()?;
+            let last4 = self.last4.take()?;
+            let metadata = self.metadata.take()?;
+            let name = self.name.take()?;
+            let status = self.status.take()?;
+            let tokenization_method = self.tokenization_method.take()?;
+
+            Some(Self::Out {
+                account,
+                address_city,
+                address_country,
+                address_line1,
+                address_line1_check,
+                address_line2,
+                address_state,
+                address_zip,
+                address_zip_check,
+                available_payout_methods,
+                brand,
+                country,
+                currency,
+                customer,
+                cvc_check,
+                default_for_currency,
+                description,
+                dynamic_last4,
+                exp_month,
+                exp_year,
+                fingerprint,
+                funding,
+                id,
+                iin,
+                issuer,
+                last4,
+                metadata,
+                name,
+                status,
+                tokenization_method,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Card {
+        type Builder = CardBuilder;
+    }
+
+    impl FromValueOpt for Card {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CardBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "account" => b.account = Some(FromValueOpt::from_value(v)?),
+                    "address_city" => b.address_city = Some(FromValueOpt::from_value(v)?),
+                    "address_country" => b.address_country = Some(FromValueOpt::from_value(v)?),
+                    "address_line1" => b.address_line1 = Some(FromValueOpt::from_value(v)?),
+                    "address_line1_check" => b.address_line1_check = Some(FromValueOpt::from_value(v)?),
+                    "address_line2" => b.address_line2 = Some(FromValueOpt::from_value(v)?),
+                    "address_state" => b.address_state = Some(FromValueOpt::from_value(v)?),
+                    "address_zip" => b.address_zip = Some(FromValueOpt::from_value(v)?),
+                    "address_zip_check" => b.address_zip_check = Some(FromValueOpt::from_value(v)?),
+                    "available_payout_methods" => b.available_payout_methods = Some(FromValueOpt::from_value(v)?),
+                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "cvc_check" => b.cvc_check = Some(FromValueOpt::from_value(v)?),
+                    "default_for_currency" => b.default_for_currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "dynamic_last4" => b.dynamic_last4 = Some(FromValueOpt::from_value(v)?),
+                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
+                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
+                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
+                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
+                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "tokenization_method" => b.tokenization_method = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// A set of available payout methods for this card.
 /// Only values from this set should be passed as the `method` when creating a payout.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -149,10 +405,27 @@ impl<'de> serde::Deserialize<'de> for CardAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CardAvailablePayoutMethods"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CardAvailablePayoutMethods"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CardAvailablePayoutMethods {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<CardAvailablePayoutMethods> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CardAvailablePayoutMethods::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(CardAvailablePayoutMethods);
 impl stripe_types::Object for Card {
     type Id = stripe_shared::CardId;
     fn id(&self) -> &Self::Id {

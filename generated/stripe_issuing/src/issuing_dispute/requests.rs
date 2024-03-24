@@ -35,37 +35,11 @@ impl<'a> ListIssuingDispute<'a> {
 impl<'a> ListIssuingDispute<'a> {
     /// Returns a list of Issuing `Dispute` objects.
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::IssuingDispute>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::IssuingDispute>> {
         client.get_query("/issuing/disputes", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingDispute>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingDispute>> {
         stripe::ListPaginator::from_list_params("/issuing/disputes", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIssuingDispute<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIssuingDispute<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIssuingDispute<'a> {
-    /// Retrieves an Issuing `Dispute` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::IssuingDisputeId,
-    ) -> stripe::Response<stripe_shared::IssuingDispute> {
-        client.get_query(&format!("/issuing/disputes/{dispute}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -113,8 +87,7 @@ pub struct CreateIssuingDisputeEvidence<'a> {
     pub fraudulent: Option<Fraudulent<'a>>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described:
-        Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
+    pub merchandise_not_as_described: Option<CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<CreateIssuingDisputeEvidenceNotReceived<'a>>,
@@ -592,8 +565,7 @@ pub struct UpdateIssuingDisputeEvidence<'a> {
     pub fraudulent: Option<Fraudulent<'a>>,
     /// Evidence provided when `reason` is 'merchandise_not_as_described'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merchandise_not_as_described:
-        Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
+    pub merchandise_not_as_described: Option<UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed<'a>>,
     /// Evidence provided when `reason` is 'not_received'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub not_received: Option<UpdateIssuingDisputeEvidenceNotReceived<'a>>,
@@ -1018,12 +990,25 @@ impl<'a> UpdateIssuingDispute<'a> {
     /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.
     /// Any parameters not provided will be left unchanged.
     /// Properties on the `evidence` object can be unset by passing in an empty string.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::IssuingDisputeId,
-    ) -> stripe::Response<stripe_shared::IssuingDispute> {
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::IssuingDisputeId) -> stripe::Response<stripe_shared::IssuingDispute> {
         client.send_form(&format!("/issuing/disputes/{dispute}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveIssuingDispute<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveIssuingDispute<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveIssuingDispute<'a> {
+    /// Retrieves an Issuing `Dispute` object.
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::IssuingDisputeId) -> stripe::Response<stripe_shared::IssuingDispute> {
+        client.get_query(&format!("/issuing/disputes/{dispute}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1047,16 +1032,8 @@ impl<'a> SubmitIssuingDispute<'a> {
     /// Submits an Issuing `Dispute` to the card network.
     /// Stripe validates that all evidence fields required for the dispute’s reason are present.
     /// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        dispute: &stripe_shared::IssuingDisputeId,
-    ) -> stripe::Response<stripe_shared::IssuingDispute> {
-        client.send_form(
-            &format!("/issuing/disputes/{dispute}/submit"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, dispute: &stripe_shared::IssuingDisputeId) -> stripe::Response<stripe_shared::IssuingDispute> {
+        client.send_form(&format!("/issuing/disputes/{dispute}/submit"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

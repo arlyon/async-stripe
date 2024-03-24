@@ -28,28 +28,15 @@ pub struct ListIssuingToken<'a> {
 }
 impl<'a> ListIssuingToken<'a> {
     pub fn new(card: &'a str) -> Self {
-        Self {
-            card,
-            created: None,
-            ending_before: None,
-            expand: None,
-            limit: None,
-            starting_after: None,
-            status: None,
-        }
+        Self { card, created: None, ending_before: None, expand: None, limit: None, starting_after: None, status: None }
     }
 }
 impl<'a> ListIssuingToken<'a> {
     /// Lists all Issuing `Token` objects for a given card.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::IssuingToken>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::IssuingToken>> {
         client.get_query("/issuing/tokens", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingToken>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::IssuingToken>> {
         stripe::ListPaginator::from_list_params("/issuing/tokens", self)
     }
 }
@@ -66,11 +53,7 @@ impl<'a> RetrieveIssuingToken<'a> {
 }
 impl<'a> RetrieveIssuingToken<'a> {
     /// Retrieves an Issuing `Token` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        token: &stripe_shared::IssuingTokenId,
-    ) -> stripe::Response<stripe_shared::IssuingToken> {
+    pub fn send(&self, client: &stripe::Client, token: &stripe_shared::IssuingTokenId) -> stripe::Response<stripe_shared::IssuingToken> {
         client.get_query(&format!("/issuing/tokens/{token}"), self)
     }
 }
@@ -138,11 +121,7 @@ impl serde::Serialize for UpdateIssuingTokenStatus {
 }
 impl<'a> UpdateIssuingToken<'a> {
     /// Attempts to update the specified Issuing `Token` object to the status specified.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        token: &stripe_shared::IssuingTokenId,
-    ) -> stripe::Response<stripe_shared::IssuingToken> {
+    pub fn send(&self, client: &stripe::Client, token: &stripe_shared::IssuingTokenId) -> stripe::Response<stripe_shared::IssuingToken> {
         client.send_form(&format!("/issuing/tokens/{token}"), self, http_types::Method::Post)
     }
 }

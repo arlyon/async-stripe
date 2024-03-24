@@ -1,88 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListSetupIntent<'a> {
-    /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
-    ///
-    /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
-    /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attach_to_self: Option<bool>,
-    /// A filter on the list, based on the object `created` field.
-    /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// Only return SetupIntents for the customer specified by this customer ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// Only return SetupIntents that associate with the specified payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method: Option<&'a str>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListSetupIntent<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListSetupIntent<'a> {
-    /// Returns a list of SetupIntents.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SetupIntent>> {
-        client.get_query("/setup_intents", self)
-    }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SetupIntent>> {
-        stripe::ListPaginator::from_list_params("/setup_intents", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveSetupIntent<'a> {
-    /// The client secret of the SetupIntent.
-    /// We require this string if you use a publishable key to retrieve the SetupIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_secret: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveSetupIntent<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveSetupIntent<'a> {
-    /// Retrieves the details of a SetupIntent that has previously been created.
-    ///
-    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
-    ///
-    ///
-    /// When retrieved with a publishable key, only a subset of properties will be returned.
-    /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        intent: &stripe_shared::SetupIntentId,
-    ) -> stripe::Response<stripe_shared::SetupIntent> {
-        client.get_query(&format!("/setup_intents/{intent}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSetupIntent<'a> {
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
     ///
@@ -260,7 +176,7 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance<'a> {
     pub online: Option<OnlineParam<'a>>,
     /// The type of customer acceptance information included with the Mandate.
     /// One of `online` or `offline`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateSetupIntentMandateDataCustomerAcceptanceType,
 }
 impl<'a> CreateSetupIntentMandateDataCustomerAcceptance<'a> {
@@ -419,13 +335,10 @@ pub struct CreateSetupIntentPaymentMethodData<'a> {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateSetupIntentPaymentMethodDataSofort>,
-    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateSetupIntentPaymentMethodDataType,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -472,7 +385,6 @@ impl<'a> CreateSetupIntentPaymentMethodData<'a> {
             revolut_pay: None,
             sepa_debit: None,
             sofort: None,
-            swish: None,
             type_,
             us_bank_account: None,
             wechat_pay: None,
@@ -853,7 +765,6 @@ pub enum CreateSetupIntentPaymentMethodDataIdealBank {
     Knab,
     Moneyou,
     N26,
-    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -876,7 +787,6 @@ impl CreateSetupIntentPaymentMethodDataIdealBank {
             Knab => "knab",
             Moneyou => "moneyou",
             N26 => "n26",
-            Nn => "nn",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -902,7 +812,6 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataIdealBank {
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
-            "nn" => Ok(Nn),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -985,7 +894,6 @@ pub enum CreateSetupIntentPaymentMethodDataP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
-    Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
@@ -1018,7 +926,6 @@ impl CreateSetupIntentPaymentMethodDataP24Bank {
             SantanderPrzelew24 => "santander_przelew24",
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
             Unknown => "unknown",
         }
@@ -1054,7 +961,6 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataP24Bank {
             "santander_przelew24" => Ok(SantanderPrzelew24),
             "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
             "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             _ => Err(()),
         }
@@ -1193,7 +1099,6 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SepaDebit,
     Sofort,
-    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1232,7 +1137,6 @@ impl CreateSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
-            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1274,7 +1178,6 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -1306,8 +1209,7 @@ impl serde::Serialize for CreateSetupIntentPaymentMethodDataType {
 pub struct CreateSetupIntentPaymentMethodDataUsBankAccount<'a> {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type:
-        Option<CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
     /// Account number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<&'a str>,
@@ -1455,10 +1357,9 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
@@ -1522,20 +1423,17 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub custom_mandate_url: Option<&'a str>,
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for:
-        Option<&'a [CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
+    pub default_for: Option<&'a [CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
     /// Description of the mandate interval.
     /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<&'a str>,
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule:
-        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type:
-        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
@@ -1606,9 +1504,7 @@ impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
     }
 }
 
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
@@ -1620,24 +1516,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1661,9 +1551,7 @@ impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
     }
 }
 
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
@@ -1674,24 +1562,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1699,7 +1581,7 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
@@ -1766,15 +1648,11 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard<'a> {
     pub network: Option<CreateSetupIntentPaymentMethodOptionsCardNetwork>,
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// If not provided, this value defaults to `automatic`.
+    /// Permitted values include: `automatic` or `any`.
+    /// If not provided, defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure:
-        Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
-    /// If 3D Secure authentication was performed with a third-party provider,
-    /// the authentication details to use for this setup.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure: Option<CreateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a>>,
+    pub request_three_d_secure: Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsCard<'a> {
     pub fn new() -> Self {
@@ -1816,8 +1694,7 @@ pub struct CreateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub start_date: stripe_types::Timestamp,
     /// Specifies the type of mandates supported. Possible values are `india`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_types:
-        Option<&'a [CreateSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
+    pub supported_types: Option<&'a [CreateSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub fn new(
@@ -1828,18 +1705,7 @@ impl<'a> CreateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
         reference: &'a str,
         start_date: stripe_types::Timestamp,
     ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            currency,
-            description: None,
-            end_date: None,
-            interval,
-            interval_count: None,
-            reference,
-            start_date,
-            supported_types: None,
-        }
+        Self { amount, amount_type, currency, description: None, end_date: None, interval, interval_count: None, reference, start_date, supported_types: None }
     }
 }
 /// One of `fixed` or `maximum`.
@@ -2065,13 +1931,13 @@ impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardNetwork {
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// If not provided, this value defaults to `automatic`.
+/// Permitted values include: `automatic` or `any`.
+/// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
-    Challenge,
 }
 impl CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
@@ -2079,7 +1945,6 @@ impl CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Any => "any",
             Automatic => "automatic",
-            Challenge => "challenge",
         }
     }
 }
@@ -2091,7 +1956,6 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardRequestThree
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
-            "challenge" => Ok(Challenge),
             _ => Err(()),
         }
     }
@@ -2108,333 +1972,6 @@ impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsCardRequestThreeDS
     }
 }
 impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// If 3D Secure authentication was performed with a third-party provider,
-/// the authentication details to use for this setup.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ares_trans_status:
-        Option<CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus>,
-    /// The cryptogram, also known as the "authentication value" (AAV, CAVV or
-    /// AEVV). This value is 20 bytes, base64-encoded into a 28-character string.
-    /// (Most 3D Secure providers will return the base64-encoded version, which
-    /// is what you should specify here.)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cryptogram: Option<&'a str>,
-    /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-    /// provider and indicates what degree of authentication was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub electronic_commerce_indicator:
-        Option<CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator>,
-    /// Network specific 3DS fields. Network specific arguments require an
-    /// explicit card brand choice. The parameter `payment_method_options.card.network``
-    /// must be populated accordingly
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network_options:
-        Option<CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a>>,
-    /// The challenge indicator (`threeDSRequestorChallengeInd`) which was requested in the
-    /// AReq sent to the card Issuer's ACS. A string containing 2 digits from 01-99.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requestor_challenge_indicator: Option<&'a str>,
-    /// For 3D Secure 1, the XID. For 3D Secure 2, the Directory Server
-    /// Transaction ID (dsTransID).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_id: Option<&'a str>,
-    /// The version of 3D Secure that was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion>,
-}
-impl<'a> CreateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    A,
-    C,
-    I,
-    N,
-    R,
-    U,
-    Y,
-}
-impl CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    pub fn as_str(self) -> &'static str {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match self {
-            A => "A",
-            C => "C",
-            I => "I",
-            N => "N",
-            R => "R",
-            U => "U",
-            Y => "Y",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match s {
-            "A" => Ok(A),
-            "C" => Ok(C),
-            "I" => Ok(I),
-            "N" => Ok(N),
-            "R" => Ok(R),
-            "U" => Ok(U),
-            "Y" => Ok(Y),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-/// provider and indicates what degree of authentication was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    V01,
-    V02,
-    V05,
-    V06,
-    V07,
-}
-impl CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    pub fn as_str(self) -> &'static str {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match self {
-            V01 => "01",
-            V02 => "02",
-            V05 => "05",
-            V06 => "06",
-            V07 => "07",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match s {
-            "01" => Ok(V01),
-            "02" => Ok(V02),
-            "05" => Ok(V05),
-            "06" => Ok(V06),
-            "07" => Ok(V07),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Network specific 3DS fields. Network specific arguments require an
-/// explicit card brand choice. The parameter `payment_method_options.card.network``
-/// must be populated accordingly
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    /// Cartes Bancaires-specific 3DS fields.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires: Option<
-        CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a>,
-    >,
-}
-impl<'a> CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Cartes Bancaires-specific 3DS fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    /// The cryptogram calculation algorithm used by the card Issuer's ACS
-    /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-    /// messageExtension: CB-AVALGO
-    pub cb_avalgo:
-        CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    /// The exemption indicator returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-EXEMPTION; string (4 characters)
-    /// This is a 3 byte bitmap (low significant byte first and most significant
-    /// bit first) that has been Base64 encoded
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_exemption: Option<&'a str>,
-    /// The risk score returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-SCORE; numeric value 0-99
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_score: Option<i64>,
-}
-impl<'a> CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    pub fn new(
-        cb_avalgo: CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    ) -> Self {
-        Self { cb_avalgo, cb_exemption: None, cb_score: None }
-    }
-}
-/// The cryptogram calculation algorithm used by the card Issuer's ACS
-/// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-/// messageExtension: CB-AVALGO
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    V0,
-    V1,
-    V2,
-    V3,
-    V4,
-    A,
-}
-impl CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
-    pub fn as_str(self) -> &'static str {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match self {
-            V0 => "0",
-            V1 => "1",
-            V2 => "2",
-            V3 => "3",
-            V4 => "4",
-            A => "A",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match s {
-            "0" => Ok(V0),
-            "1" => Ok(V1),
-            "2" => Ok(V2),
-            "3" => Ok(V3),
-            "4" => Ok(V4),
-            "A" => Ok(A),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The version of 3D Secure that was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    V1_0_2,
-    V2_1_0,
-    V2_2_0,
-}
-impl CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    pub fn as_str(self) -> &'static str {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match self {
-            V1_0_2 => "1.0.2",
-            V2_1_0 => "2.1.0",
-            V2_2_0 => "2.2.0",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match s {
-            "1.0.2" => Ok(V1_0_2),
-            "2.1.0" => Ok(V2_1_0),
-            "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2459,18 +1996,13 @@ impl<'a> CreateSetupIntentPaymentMethodOptionsSepaDebit<'a> {
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections:
-        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
-    /// Additional fields for Mandate creation
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions>,
+    pub financial_connections: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
@@ -2484,14 +2016,10 @@ pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<
-        &'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions],
-    >,
+    pub permissions: Option<&'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
     /// List of data features that you would like to retrieve upon account creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prefetch: Option<
-        &'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch],
-    >,
+    pub prefetch: Option<&'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2524,9 +2052,7 @@ impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermi
     }
 }
 
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
@@ -2539,24 +2065,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2568,113 +2088,38 @@ impl serde::Serialize
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
-    Transactions,
 }
 impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         use CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
-            Transactions => "transactions",
         }
     }
 }
 
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
-            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
 }
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    /// The method used to collect offline mandate customer acceptance.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method:
-        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
-}
-impl CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The method used to collect offline mandate customer acceptance.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    Paper,
-}
-impl CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        use CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match self {
-            Paper => "paper",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match s {
-            "paper" => Ok(Paper),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for CreateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2687,8 +2132,7 @@ impl serde::Serialize
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested:
-        Option<&'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
+    pub requested: Option<&'a [CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
 }
 impl<'a> CreateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     pub fn new() -> Self {
@@ -2741,7 +2185,7 @@ impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsUsBankAccountNetw
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
@@ -2861,6 +2305,83 @@ impl<'a> CreateSetupIntent<'a> {
     /// it to collect any required permissions to charge the payment method later.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::SetupIntent> {
         client.send_form("/setup_intents", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListSetupIntent<'a> {
+    /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
+    ///
+    /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
+    /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attach_to_self: Option<bool>,
+    /// A filter on the list, based on the object `created` field.
+    /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// Only return SetupIntents for the customer specified by this customer ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// Only return SetupIntents that associate with the specified payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<&'a str>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListSetupIntent<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListSetupIntent<'a> {
+    /// Returns a list of SetupIntents.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::SetupIntent>> {
+        client.get_query("/setup_intents", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SetupIntent>> {
+        stripe::ListPaginator::from_list_params("/setup_intents", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveSetupIntent<'a> {
+    /// The client secret of the SetupIntent.
+    /// We require this string if you use a publishable key to retrieve the SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveSetupIntent<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveSetupIntent<'a> {
+    /// Retrieves the details of a SetupIntent that has previously been created.
+    ///
+    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
+    ///
+    ///
+    /// When retrieved with a publishable key, only a subset of properties will be returned.
+    /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
+    pub fn send(&self, client: &stripe::Client, intent: &stripe_shared::SetupIntentId) -> stripe::Response<stripe_shared::SetupIntent> {
+        client.get_query(&format!("/setup_intents/{intent}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3023,13 +2544,10 @@ pub struct UpdateSetupIntentPaymentMethodData<'a> {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateSetupIntentPaymentMethodDataSofort>,
-    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: UpdateSetupIntentPaymentMethodDataType,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3076,7 +2594,6 @@ impl<'a> UpdateSetupIntentPaymentMethodData<'a> {
             revolut_pay: None,
             sepa_debit: None,
             sofort: None,
-            swish: None,
             type_,
             us_bank_account: None,
             wechat_pay: None,
@@ -3457,7 +2974,6 @@ pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
     Knab,
     Moneyou,
     N26,
-    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -3480,7 +2996,6 @@ impl UpdateSetupIntentPaymentMethodDataIdealBank {
             Knab => "knab",
             Moneyou => "moneyou",
             N26 => "n26",
-            Nn => "nn",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -3506,7 +3021,6 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataIdealBank {
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
-            "nn" => Ok(Nn),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -3589,7 +3103,6 @@ pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
-    Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
@@ -3622,7 +3135,6 @@ impl UpdateSetupIntentPaymentMethodDataP24Bank {
             SantanderPrzelew24 => "santander_przelew24",
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
             Unknown => "unknown",
         }
@@ -3658,7 +3170,6 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataP24Bank {
             "santander_przelew24" => Ok(SantanderPrzelew24),
             "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
             "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             _ => Err(()),
         }
@@ -3797,7 +3308,6 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SepaDebit,
     Sofort,
-    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -3836,7 +3346,6 @@ impl UpdateSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
-            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -3878,7 +3387,6 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -3910,8 +3418,7 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodDataType {
 pub struct UpdateSetupIntentPaymentMethodDataUsBankAccount<'a> {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type:
-        Option<UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
     /// Account number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<&'a str>,
@@ -4059,10 +3566,9 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
@@ -4126,20 +3632,17 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub custom_mandate_url: Option<&'a str>,
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for:
-        Option<&'a [UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
+    pub default_for: Option<&'a [UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
     /// Description of the mandate interval.
     /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<&'a str>,
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule:
-        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type:
-        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
@@ -4210,9 +3713,7 @@ impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
     }
 }
 
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
@@ -4224,24 +3725,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -4265,9 +3760,7 @@ impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
     }
 }
 
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
@@ -4278,24 +3771,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -4303,7 +3790,7 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
@@ -4370,15 +3857,11 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard<'a> {
     pub network: Option<UpdateSetupIntentPaymentMethodOptionsCardNetwork>,
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// If not provided, this value defaults to `automatic`.
+    /// Permitted values include: `automatic` or `any`.
+    /// If not provided, defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure:
-        Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
-    /// If 3D Secure authentication was performed with a third-party provider,
-    /// the authentication details to use for this setup.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure: Option<UpdateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a>>,
+    pub request_three_d_secure: Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsCard<'a> {
     pub fn new() -> Self {
@@ -4420,8 +3903,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub start_date: stripe_types::Timestamp,
     /// Specifies the type of mandates supported. Possible values are `india`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_types:
-        Option<&'a [UpdateSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
+    pub supported_types: Option<&'a [UpdateSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub fn new(
@@ -4432,18 +3914,7 @@ impl<'a> UpdateSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
         reference: &'a str,
         start_date: stripe_types::Timestamp,
     ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            currency,
-            description: None,
-            end_date: None,
-            interval,
-            interval_count: None,
-            reference,
-            start_date,
-            supported_types: None,
-        }
+        Self { amount, amount_type, currency, description: None, end_date: None, interval, interval_count: None, reference, start_date, supported_types: None }
     }
 }
 /// One of `fixed` or `maximum`.
@@ -4669,13 +4140,13 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardNetwork {
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// If not provided, this value defaults to `automatic`.
+/// Permitted values include: `automatic` or `any`.
+/// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
-    Challenge,
 }
 impl UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
@@ -4683,7 +4154,6 @@ impl UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Any => "any",
             Automatic => "automatic",
-            Challenge => "challenge",
         }
     }
 }
@@ -4695,7 +4165,6 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardRequestThree
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
-            "challenge" => Ok(Challenge),
             _ => Err(()),
         }
     }
@@ -4712,333 +4181,6 @@ impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDS
     }
 }
 impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// If 3D Secure authentication was performed with a third-party provider,
-/// the authentication details to use for this setup.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ares_trans_status:
-        Option<UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus>,
-    /// The cryptogram, also known as the "authentication value" (AAV, CAVV or
-    /// AEVV). This value is 20 bytes, base64-encoded into a 28-character string.
-    /// (Most 3D Secure providers will return the base64-encoded version, which
-    /// is what you should specify here.)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cryptogram: Option<&'a str>,
-    /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-    /// provider and indicates what degree of authentication was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub electronic_commerce_indicator:
-        Option<UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator>,
-    /// Network specific 3DS fields. Network specific arguments require an
-    /// explicit card brand choice. The parameter `payment_method_options.card.network``
-    /// must be populated accordingly
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network_options:
-        Option<UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a>>,
-    /// The challenge indicator (`threeDSRequestorChallengeInd`) which was requested in the
-    /// AReq sent to the card Issuer's ACS. A string containing 2 digits from 01-99.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requestor_challenge_indicator: Option<&'a str>,
-    /// For 3D Secure 1, the XID. For 3D Secure 2, the Directory Server
-    /// Transaction ID (dsTransID).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_id: Option<&'a str>,
-    /// The version of 3D Secure that was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion>,
-}
-impl<'a> UpdateSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    A,
-    C,
-    I,
-    N,
-    R,
-    U,
-    Y,
-}
-impl UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    pub fn as_str(self) -> &'static str {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match self {
-            A => "A",
-            C => "C",
-            I => "I",
-            N => "N",
-            R => "R",
-            U => "U",
-            Y => "Y",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match s {
-            "A" => Ok(A),
-            "C" => Ok(C),
-            "I" => Ok(I),
-            "N" => Ok(N),
-            "R" => Ok(R),
-            "U" => Ok(U),
-            "Y" => Ok(Y),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-/// provider and indicates what degree of authentication was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    V01,
-    V02,
-    V05,
-    V06,
-    V07,
-}
-impl UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    pub fn as_str(self) -> &'static str {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match self {
-            V01 => "01",
-            V02 => "02",
-            V05 => "05",
-            V06 => "06",
-            V07 => "07",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match s {
-            "01" => Ok(V01),
-            "02" => Ok(V02),
-            "05" => Ok(V05),
-            "06" => Ok(V06),
-            "07" => Ok(V07),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Network specific 3DS fields. Network specific arguments require an
-/// explicit card brand choice. The parameter `payment_method_options.card.network``
-/// must be populated accordingly
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    /// Cartes Bancaires-specific 3DS fields.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires: Option<
-        UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a>,
-    >,
-}
-impl<'a> UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Cartes Bancaires-specific 3DS fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    /// The cryptogram calculation algorithm used by the card Issuer's ACS
-    /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-    /// messageExtension: CB-AVALGO
-    pub cb_avalgo:
-        UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    /// The exemption indicator returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-EXEMPTION; string (4 characters)
-    /// This is a 3 byte bitmap (low significant byte first and most significant
-    /// bit first) that has been Base64 encoded
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_exemption: Option<&'a str>,
-    /// The risk score returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-SCORE; numeric value 0-99
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_score: Option<i64>,
-}
-impl<'a> UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    pub fn new(
-        cb_avalgo: UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    ) -> Self {
-        Self { cb_avalgo, cb_exemption: None, cb_score: None }
-    }
-}
-/// The cryptogram calculation algorithm used by the card Issuer's ACS
-/// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-/// messageExtension: CB-AVALGO
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    V0,
-    V1,
-    V2,
-    V3,
-    V4,
-    A,
-}
-impl UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
-    pub fn as_str(self) -> &'static str {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match self {
-            V0 => "0",
-            V1 => "1",
-            V2 => "2",
-            V3 => "3",
-            V4 => "4",
-            A => "A",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match s {
-            "0" => Ok(V0),
-            "1" => Ok(V1),
-            "2" => Ok(V2),
-            "3" => Ok(V3),
-            "4" => Ok(V4),
-            "A" => Ok(A),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The version of 3D Secure that was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    V1_0_2,
-    V2_1_0,
-    V2_2_0,
-}
-impl UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    pub fn as_str(self) -> &'static str {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match self {
-            V1_0_2 => "1.0.2",
-            V2_1_0 => "2.1.0",
-            V2_2_0 => "2.2.0",
-        }
-    }
-}
-
-impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match s {
-            "1.0.2" => Ok(V1_0_2),
-            "2.1.0" => Ok(V2_1_0),
-            "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5063,18 +4205,13 @@ impl<'a> UpdateSetupIntentPaymentMethodOptionsSepaDebit<'a> {
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections:
-        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
-    /// Additional fields for Mandate creation
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions>,
+    pub financial_connections: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
@@ -5088,14 +4225,10 @@ pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnection
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<
-        &'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions],
-    >,
+    pub permissions: Option<&'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
     /// List of data features that you would like to retrieve upon account creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prefetch: Option<
-        &'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch],
-    >,
+    pub prefetch: Option<&'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5128,9 +4261,7 @@ impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermi
     }
 }
 
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
@@ -5143,24 +4274,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5172,113 +4297,38 @@ impl serde::Serialize
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
-    Transactions,
 }
 impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         use UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
-            Transactions => "transactions",
         }
     }
 }
 
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
-            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
 }
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    /// The method used to collect offline mandate customer acceptance.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method:
-        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
-}
-impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The method used to collect offline mandate customer acceptance.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    Paper,
-}
-impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        use UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match self {
-            Paper => "paper",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match s {
-            "paper" => Ok(Paper),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5291,8 +4341,7 @@ impl serde::Serialize
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested:
-        Option<&'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
+    pub requested: Option<&'a [UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
 }
 impl<'a> UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     pub fn new() -> Self {
@@ -5345,7 +4394,7 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsUsBankAccountNetw
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
@@ -5396,40 +4445,8 @@ impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsUsBankAccountVeri
 }
 impl<'a> UpdateSetupIntent<'a> {
     /// Updates a SetupIntent object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        intent: &stripe_shared::SetupIntentId,
-    ) -> stripe::Response<stripe_shared::SetupIntent> {
+    pub fn send(&self, client: &stripe::Client, intent: &stripe_shared::SetupIntentId) -> stripe::Response<stripe_shared::SetupIntent> {
         client.send_form(&format!("/setup_intents/{intent}"), self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelSetupIntent<'a> {
-    /// Reason for canceling this SetupIntent.
-    /// Possible values are: `abandoned`, `requested_by_customer`, or `duplicate`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<stripe_shared::SetupIntentCancellationReason>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelSetupIntent<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CancelSetupIntent<'a> {
-    /// You can cancel a SetupIntent object when it’s in one of these statuses: `requires_payment_method`, `requires_confirmation`, or `requires_action`.
-    ///
-    ///
-    /// After you cancel it, setup is abandoned and any operations on the SetupIntent fail with an error.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        intent: &stripe_shared::SetupIntentId,
-    ) -> stripe::Response<stripe_shared::SetupIntent> {
-        client.send_form(&format!("/setup_intents/{intent}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5475,9 +4492,7 @@ pub struct ConfirmSetupIntentSecretKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentSecretKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -5495,7 +4510,7 @@ pub struct ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
     pub online: Option<OnlineParam<'a>>,
     /// The type of customer acceptance information included with the Mandate.
     /// One of `online` or `offline`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: ConfirmSetupIntentSecretKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmSetupIntentSecretKeyParamCustomerAcceptance<'a> {
@@ -5556,9 +4571,7 @@ pub struct ConfirmSetupIntentClientKeyParam<'a> {
     pub customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
 }
 impl<'a> ConfirmSetupIntentClientKeyParam<'a> {
-    pub fn new(
-        customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>,
-    ) -> Self {
+    pub fn new(customer_acceptance: ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a>) -> Self {
         Self { customer_acceptance }
     }
 }
@@ -5568,14 +4581,11 @@ pub struct ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
     /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
     pub online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>,
     /// The type of customer acceptance information included with the Mandate.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
 }
 impl<'a> ConfirmSetupIntentClientKeyParamCustomerAcceptance<'a> {
-    pub fn new(
-        online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>,
-        type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType,
-    ) -> Self {
+    pub fn new(online: ConfirmSetupIntentClientKeyParamCustomerAcceptanceOnline<'a>, type_: ConfirmSetupIntentClientKeyParamCustomerAcceptanceType) -> Self {
         Self { online, type_ }
     }
 }
@@ -5741,13 +4751,10 @@ pub struct ConfirmSetupIntentPaymentMethodData<'a> {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<ConfirmSetupIntentPaymentMethodDataSofort>,
-    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: ConfirmSetupIntentPaymentMethodDataType,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5794,7 +4801,6 @@ impl<'a> ConfirmSetupIntentPaymentMethodData<'a> {
             revolut_pay: None,
             sepa_debit: None,
             sofort: None,
-            swish: None,
             type_,
             us_bank_account: None,
             wechat_pay: None,
@@ -6175,7 +5181,6 @@ pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
     Knab,
     Moneyou,
     N26,
-    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -6198,7 +5203,6 @@ impl ConfirmSetupIntentPaymentMethodDataIdealBank {
             Knab => "knab",
             Moneyou => "moneyou",
             N26 => "n26",
-            Nn => "nn",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -6224,7 +5228,6 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataIdealBank {
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
-            "nn" => Ok(Nn),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -6307,7 +5310,6 @@ pub enum ConfirmSetupIntentPaymentMethodDataP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
-    Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
@@ -6340,7 +5342,6 @@ impl ConfirmSetupIntentPaymentMethodDataP24Bank {
             SantanderPrzelew24 => "santander_przelew24",
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
             Unknown => "unknown",
         }
@@ -6376,7 +5377,6 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataP24Bank {
             "santander_przelew24" => Ok(SantanderPrzelew24),
             "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
             "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             _ => Err(()),
         }
@@ -6515,7 +5515,6 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     RevolutPay,
     SepaDebit,
     Sofort,
-    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -6554,7 +5553,6 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
-            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -6596,7 +5594,6 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -6628,8 +5625,7 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodDataType {
 pub struct ConfirmSetupIntentPaymentMethodDataUsBankAccount<'a> {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type:
-        Option<ConfirmSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<ConfirmSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
     /// Account number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<&'a str>,
@@ -6777,10 +5773,9 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
@@ -6844,20 +5839,17 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub custom_mandate_url: Option<&'a str>,
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for:
-        Option<&'a [ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
+    pub default_for: Option<&'a [ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
     /// Description of the mandate interval.
     /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<&'a str>,
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule:
-        Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule: Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type:
-        Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type: Option<ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
@@ -6928,9 +5920,7 @@ impl ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedul
     }
 }
 
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
@@ -6942,24 +5932,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6983,9 +5967,7 @@ impl ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionTyp
     }
 }
 
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
@@ -6996,24 +5978,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -7021,7 +5997,7 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
@@ -7088,15 +6064,11 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsCard<'a> {
     pub network: Option<ConfirmSetupIntentPaymentMethodOptionsCardNetwork>,
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// If not provided, this value defaults to `automatic`.
+    /// Permitted values include: `automatic` or `any`.
+    /// If not provided, defaults to `automatic`.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure:
-        Option<ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
-    /// If 3D Secure authentication was performed with a third-party provider,
-    /// the authentication details to use for this setup.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure: Option<ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecure<'a>>,
+    pub request_three_d_secure: Option<ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsCard<'a> {
     pub fn new() -> Self {
@@ -7138,8 +6110,7 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub start_date: stripe_types::Timestamp,
     /// Specifies the type of mandates supported. Possible values are `india`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_types:
-        Option<&'a [ConfirmSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
+    pub supported_types: Option<&'a [ConfirmSetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes]>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
     pub fn new(
@@ -7150,18 +6121,7 @@ impl<'a> ConfirmSetupIntentPaymentMethodOptionsCardMandateOptions<'a> {
         reference: &'a str,
         start_date: stripe_types::Timestamp,
     ) -> Self {
-        Self {
-            amount,
-            amount_type,
-            currency,
-            description: None,
-            end_date: None,
-            interval,
-            interval_count: None,
-            reference,
-            start_date,
-            supported_types: None,
-        }
+        Self { amount, amount_type, currency, description: None, end_date: None, interval, interval_count: None, reference, start_date, supported_types: None }
     }
 }
 /// One of `fixed` or `maximum`.
@@ -7387,13 +6347,13 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardNetwork {
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// If not provided, this value defaults to `automatic`.
+/// Permitted values include: `automatic` or `any`.
+/// If not provided, defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
-    Challenge,
 }
 impl ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
@@ -7401,7 +6361,6 @@ impl ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             Any => "any",
             Automatic => "automatic",
-            Challenge => "challenge",
         }
     }
 }
@@ -7413,7 +6372,6 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardRequestThre
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
-            "challenge" => Ok(Challenge),
             _ => Err(()),
         }
     }
@@ -7430,333 +6388,6 @@ impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeD
     }
 }
 impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// If 3D Secure authentication was performed with a third-party provider,
-/// the authentication details to use for this setup.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ares_trans_status:
-        Option<ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus>,
-    /// The cryptogram, also known as the "authentication value" (AAV, CAVV or
-    /// AEVV). This value is 20 bytes, base64-encoded into a 28-character string.
-    /// (Most 3D Secure providers will return the base64-encoded version, which
-    /// is what you should specify here.)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cryptogram: Option<&'a str>,
-    /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-    /// provider and indicates what degree of authentication was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub electronic_commerce_indicator:
-        Option<ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator>,
-    /// Network specific 3DS fields. Network specific arguments require an
-    /// explicit card brand choice. The parameter `payment_method_options.card.network``
-    /// must be populated accordingly
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network_options:
-        Option<ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a>>,
-    /// The challenge indicator (`threeDSRequestorChallengeInd`) which was requested in the
-    /// AReq sent to the card Issuer's ACS. A string containing 2 digits from 01-99.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requestor_challenge_indicator: Option<&'a str>,
-    /// For 3D Secure 1, the XID. For 3D Secure 2, the Directory Server
-    /// Transaction ID (dsTransID).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_id: Option<&'a str>,
-    /// The version of 3D Secure that was performed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion>,
-}
-impl<'a> ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecure<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The `transStatus` returned from the card Issuer’s ACS in the ARes.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    A,
-    C,
-    I,
-    N,
-    R,
-    U,
-    Y,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    pub fn as_str(self) -> &'static str {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match self {
-            A => "A",
-            C => "C",
-            I => "I",
-            N => "N",
-            R => "R",
-            U => "U",
-            Y => "Y",
-        }
-    }
-}
-
-impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus::*;
-        match s {
-            "A" => Ok(A),
-            "C" => Ok(C),
-            "I" => Ok(I),
-            "N" => Ok(N),
-            "R" => Ok(R),
-            "U" => Ok(U),
-            "Y" => Ok(Y),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
-/// provider and indicates what degree of authentication was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    V01,
-    V02,
-    V05,
-    V06,
-    V07,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator {
-    pub fn as_str(self) -> &'static str {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match self {
-            V01 => "01",
-            V02 => "02",
-            V05 => "05",
-            V06 => "06",
-            V07 => "07",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator::*;
-        match s {
-            "01" => Ok(V01),
-            "02" => Ok(V02),
-            "05" => Ok(V05),
-            "06" => Ok(V06),
-            "07" => Ok(V07),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Network specific 3DS fields. Network specific arguments require an
-/// explicit card brand choice. The parameter `payment_method_options.card.network``
-/// must be populated accordingly
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    /// Cartes Bancaires-specific 3DS fields.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires: Option<
-        ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a>,
-    >,
-}
-impl<'a> ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// Cartes Bancaires-specific 3DS fields.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    /// The cryptogram calculation algorithm used by the card Issuer's ACS
-    /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-    /// messageExtension: CB-AVALGO
-    pub cb_avalgo:
-        ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    /// The exemption indicator returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-EXEMPTION; string (4 characters)
-    /// This is a 3 byte bitmap (low significant byte first and most significant
-    /// bit first) that has been Base64 encoded
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_exemption: Option<&'a str>,
-    /// The risk score returned from Cartes Bancaires in the ARes.
-    /// message extension: CB-SCORE; numeric value 0-99
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cb_score: Option<i64>,
-}
-impl<'a> ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires<'a> {
-    pub fn new(
-        cb_avalgo: ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo,
-    ) -> Self {
-        Self { cb_avalgo, cb_exemption: None, cb_score: None }
-    }
-}
-/// The cryptogram calculation algorithm used by the card Issuer's ACS
-/// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
-/// messageExtension: CB-AVALGO
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    V0,
-    V1,
-    V2,
-    V3,
-    V4,
-    A,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
-    pub fn as_str(self) -> &'static str {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match self {
-            V0 => "0",
-            V1 => "1",
-            V2 => "2",
-            V3 => "3",
-            V4 => "4",
-            A => "A",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo::*;
-        match s {
-            "0" => Ok(V0),
-            "1" => Ok(V1),
-            "2" => Ok(V2),
-            "3" => Ok(V3),
-            "4" => Ok(V4),
-            "A" => Ok(A),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// The version of 3D Secure that was performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    V1_0_2,
-    V2_1_0,
-    V2_2_0,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    pub fn as_str(self) -> &'static str {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match self {
-            V1_0_2 => "1.0.2",
-            V2_1_0 => "2.1.0",
-            V2_2_0 => "2.2.0",
-        }
-    }
-}
-
-impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion::*;
-        match s {
-            "1.0.2" => Ok(V1_0_2),
-            "2.1.0" => Ok(V2_1_0),
-            "2.2.0" => Ok(V2_2_0),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -7781,18 +6412,13 @@ impl<'a> ConfirmSetupIntentPaymentMethodOptionsSepaDebit<'a> {
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections:
-        Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
-    /// Additional fields for Mandate creation
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions>,
+    pub financial_connections: Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a>>,
-    /// Bank account verification method.
+    /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method: Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
@@ -7806,14 +6432,10 @@ pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectio
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<
-        &'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions],
-    >,
+    pub permissions: Option<&'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
     /// List of data features that you would like to retrieve upon account creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prefetch: Option<
-        &'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch],
-    >,
+    pub prefetch: Option<&'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7846,9 +6468,7 @@ impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPerm
     }
 }
 
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
@@ -7861,24 +6481,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -7890,113 +6504,38 @@ impl serde::Serialize
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
-    Transactions,
 }
 impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
-            Transactions => "transactions",
         }
     }
 }
 
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
-            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
 }
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-/// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    /// The method used to collect offline mandate customer acceptance.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method:
-        Option<ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptions {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The method used to collect offline mandate customer acceptance.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    Paper,
-}
-impl ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match self {
-            Paper => "paper",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
-        match s {
-            "paper" => Ok(Paper),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
-{
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -8009,8 +6548,7 @@ impl serde::Serialize
 pub struct ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested:
-        Option<&'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
+    pub requested: Option<&'a [ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworksRequested]>,
 }
 impl<'a> ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
     pub fn new() -> Self {
@@ -8063,7 +6601,7 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsUsBankAccountNet
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account verification method.
+/// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
@@ -8127,16 +6665,32 @@ impl<'a> ConfirmSetupIntent<'a> {
     /// the SetupIntent will transition to the
     /// `requires_payment_method` status or the `canceled` status if the
     /// confirmation limit is reached.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        intent: &stripe_shared::SetupIntentId,
-    ) -> stripe::Response<stripe_shared::SetupIntent> {
-        client.send_form(
-            &format!("/setup_intents/{intent}/confirm"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, intent: &stripe_shared::SetupIntentId) -> stripe::Response<stripe_shared::SetupIntent> {
+        client.send_form(&format!("/setup_intents/{intent}/confirm"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CancelSetupIntent<'a> {
+    /// Reason for canceling this SetupIntent.
+    /// Possible values are: `abandoned`, `requested_by_customer`, or `duplicate`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<stripe_shared::SetupIntentCancellationReason>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> CancelSetupIntent<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> CancelSetupIntent<'a> {
+    /// You can cancel a SetupIntent object when it’s in one of these statuses: `requires_payment_method`, `requires_confirmation`, or `requires_action`.
+    ///
+    ///
+    /// After you cancel it, setup is abandoned and any operations on the SetupIntent fail with an error.
+    pub fn send(&self, client: &stripe::Client, intent: &stripe_shared::SetupIntentId) -> stripe::Response<stripe_shared::SetupIntent> {
+        client.send_form(&format!("/setup_intents/{intent}/cancel"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -8158,16 +6712,8 @@ impl<'a> VerifyMicrodepositsSetupIntent<'a> {
 }
 impl<'a> VerifyMicrodepositsSetupIntent<'a> {
     /// Verifies microdeposits on a SetupIntent object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        intent: &stripe_shared::SetupIntentId,
-    ) -> stripe::Response<stripe_shared::SetupIntent> {
-        client.send_form(
-            &format!("/setup_intents/{intent}/verify_microdeposits"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, intent: &stripe_shared::SetupIntentId) -> stripe::Response<stripe_shared::SetupIntent> {
+        client.send_form(&format!("/setup_intents/{intent}/verify_microdeposits"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -8192,11 +6738,7 @@ pub struct PaymentMethodParam<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> PaymentMethodParam<'a> {
-    pub fn new(
-        account_number: &'a str,
-        institution_number: &'a str,
-        transit_number: &'a str,
-    ) -> Self {
+    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }

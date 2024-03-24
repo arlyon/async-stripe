@@ -1,7 +1,9 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsP24 {
     /// The customer's bank.
-    /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `velobank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
+    /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
     pub bank: Option<PaymentMethodDetailsP24Bank>,
     /// Unique reference for this Przelewy24 payment.
     pub reference: Option<String>,
@@ -10,8 +12,102 @@ pub struct PaymentMethodDetailsP24 {
     /// Przelewy24 rarely provides this information so the attribute is usually empty.
     pub verified_name: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct PaymentMethodDetailsP24Builder {
+    bank: Option<Option<PaymentMethodDetailsP24Bank>>,
+    reference: Option<Option<String>>,
+    verified_name: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodDetailsP24 {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodDetailsP24>,
+        builder: PaymentMethodDetailsP24Builder,
+    }
+
+    impl Visitor for Place<PaymentMethodDetailsP24> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: PaymentMethodDetailsP24Builder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodDetailsP24Builder {
+        type Out = PaymentMethodDetailsP24;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "bank" => Deserialize::begin(&mut self.bank),
+                "reference" => Deserialize::begin(&mut self.reference),
+                "verified_name" => Deserialize::begin(&mut self.verified_name),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { bank: Deserialize::default(), reference: Deserialize::default(), verified_name: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let bank = self.bank.take()?;
+            let reference = self.reference.take()?;
+            let verified_name = self.verified_name.take()?;
+
+            Some(Self::Out { bank, reference, verified_name })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodDetailsP24 {
+        type Builder = PaymentMethodDetailsP24Builder;
+    }
+
+    impl FromValueOpt for PaymentMethodDetailsP24 {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodDetailsP24Builder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "verified_name" => b.verified_name = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The customer's bank.
-/// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `velobank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
+/// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsP24Bank {
@@ -39,7 +135,6 @@ pub enum PaymentMethodDetailsP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
-    Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
@@ -72,7 +167,6 @@ impl PaymentMethodDetailsP24Bank {
             SantanderPrzelew24 => "santander_przelew24",
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
             Unknown => "unknown",
         }
@@ -108,7 +202,6 @@ impl std::str::FromStr for PaymentMethodDetailsP24Bank {
             "santander_przelew24" => Ok(SantanderPrzelew24),
             "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
             "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             _ => Err(()),
         }
@@ -137,6 +230,24 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(PaymentMethodDetailsP24Bank::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentMethodDetailsP24Bank {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsP24Bank> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodDetailsP24Bank::from_str(s).unwrap_or(PaymentMethodDetailsP24Bank::Unknown));
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PaymentMethodDetailsP24Bank);

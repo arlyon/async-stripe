@@ -1,24 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteRadarValueListItem {}
-impl DeleteRadarValueListItem {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeleteRadarValueListItem {
-    /// Deletes a `ValueListItem` object, removing it from its parent value list.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        item: &stripe_fraud::RadarValueListItemId,
-    ) -> stripe::Response<stripe_fraud::DeletedRadarValueListItem> {
-        client.send_form(
-            &format!("/radar/value_list_items/{item}"),
-            self,
-            http_types::Method::Delete,
-        )
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListRadarValueListItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -48,29 +27,16 @@ pub struct ListRadarValueListItem<'a> {
 }
 impl<'a> ListRadarValueListItem<'a> {
     pub fn new(value_list: &'a str) -> Self {
-        Self {
-            created: None,
-            ending_before: None,
-            expand: None,
-            limit: None,
-            starting_after: None,
-            value: None,
-            value_list,
-        }
+        Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None, value: None, value_list }
     }
 }
 impl<'a> ListRadarValueListItem<'a> {
     /// Returns a list of `ValueListItem` objects.
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_fraud::RadarValueListItem>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_fraud::RadarValueListItem>> {
         client.get_query("/radar/value_list_items", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_fraud::RadarValueListItem>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_fraud::RadarValueListItem>> {
         stripe::ListPaginator::from_list_params("/radar/value_list_items", self)
     }
 }
@@ -87,11 +53,7 @@ impl<'a> RetrieveRadarValueListItem<'a> {
 }
 impl<'a> RetrieveRadarValueListItem<'a> {
     /// Retrieves a `ValueListItem` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        item: &stripe_fraud::RadarValueListItemId,
-    ) -> stripe::Response<stripe_fraud::RadarValueListItem> {
+    pub fn send(&self, client: &stripe::Client, item: &stripe_fraud::RadarValueListItemId) -> stripe::Response<stripe_fraud::RadarValueListItem> {
         client.get_query(&format!("/radar/value_list_items/{item}"), self)
     }
 }
@@ -112,10 +74,20 @@ impl<'a> CreateRadarValueListItem<'a> {
 }
 impl<'a> CreateRadarValueListItem<'a> {
     /// Creates a new `ValueListItem` object, which is added to the specified parent value list.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_fraud::RadarValueListItem> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_fraud::RadarValueListItem> {
         client.send_form("/radar/value_list_items", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteRadarValueListItem {}
+impl DeleteRadarValueListItem {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteRadarValueListItem {
+    /// Deletes a `ValueListItem` object, removing it from its parent value list.
+    pub fn send(&self, client: &stripe::Client, item: &stripe_fraud::RadarValueListItemId) -> stripe::Response<stripe_fraud::DeletedRadarValueListItem> {
+        client.send_form(&format!("/radar/value_list_items/{item}"), self, http_types::Method::Delete)
     }
 }

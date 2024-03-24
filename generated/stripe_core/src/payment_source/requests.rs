@@ -28,17 +28,10 @@ impl<'a> ListCustomerPaymentSource<'a> {
 }
 impl<'a> ListCustomerPaymentSource<'a> {
     /// List sources for a specified customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::PaymentSource>> {
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId) -> stripe::Response<stripe_types::List<stripe_shared::PaymentSource>> {
         client.get_query(&format!("/customers/{customer}/sources"), self)
     }
-    pub fn paginate(
-        self,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::PaymentSource>> {
+    pub fn paginate(self, customer: &stripe_shared::CustomerId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::PaymentSource>> {
         stripe::ListPaginator::from_list_params(&format!("/customers/{customer}/sources"), self)
     }
 }
@@ -55,12 +48,7 @@ impl<'a> RetrievePaymentSource<'a> {
 }
 impl<'a> RetrievePaymentSource<'a> {
     /// Retrieve a specified source for a given customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        id: &str,
-    ) -> stripe::Response<stripe_shared::PaymentSource> {
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId, id: &str) -> stripe::Response<stripe_shared::PaymentSource> {
         client.get_query(&format!("/customers/{customer}/sources/{id}"), self)
     }
 }
@@ -91,11 +79,7 @@ impl<'a> CreateCustomerPaymentSource<'a> {
     /// If the card’s owner has no default card, then the new card will become the default.
     /// However, if the owner already has a default, then it will not change.
     /// To change the default, you should [update the customer](https://stripe.com/docs/api#update_customer) to have a new `default_source`.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-    ) -> stripe::Response<stripe_shared::PaymentSource> {
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId) -> stripe::Response<stripe_shared::PaymentSource> {
         client.send_form(&format!("/customers/{customer}/sources"), self, http_types::Method::Post)
     }
 }

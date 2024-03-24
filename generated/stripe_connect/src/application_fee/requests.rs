@@ -31,15 +31,10 @@ impl<'a> ListApplicationFee<'a> {
 impl<'a> ListApplicationFee<'a> {
     /// Returns a list of application fees you’ve previously collected.
     /// The application fees are returned in sorted order, with the most recent fees appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::ApplicationFee>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::ApplicationFee>> {
         client.get_query("/application_fees", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ApplicationFee>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::ApplicationFee>> {
         stripe::ListPaginator::from_list_params("/application_fees", self)
     }
 }
@@ -57,11 +52,7 @@ impl<'a> RetrieveApplicationFee<'a> {
 impl<'a> RetrieveApplicationFee<'a> {
     /// Retrieves the details of an application fee that your account has collected.
     /// The same information is returned when refunding the application fee.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::ApplicationFeeId,
-    ) -> stripe::Response<stripe_shared::ApplicationFee> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::ApplicationFeeId) -> stripe::Response<stripe_shared::ApplicationFee> {
         client.get_query(&format!("/application_fees/{id}"), self)
     }
 }

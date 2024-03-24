@@ -18,6 +18,7 @@ path = "src/mod.rs"
 serde.workspace = true
 smol_str.workspace = true
 serde_json.workspace = true
+miniserde = { workspace = true, optional = true }
 stripe_types = {path = "../../stripe_types"}
 
 http-types.workspace = true
@@ -28,6 +29,7 @@ stripe_shared = {path = "../../generated/stripe_shared"}
 
 
 [features]
+min-ser = ["miniserde","stripe_types/min-ser","stripe_shared/min-ser"]
 runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper"]
 runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls"]
 runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki"]

@@ -25,15 +25,10 @@ impl<'a> ListScheduledQueryRun<'a> {
 }
 impl<'a> ListScheduledQueryRun<'a> {
     /// Returns a list of scheduled query runs.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
         client.get_query("/sigma/scheduled_query_runs", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_misc::ScheduledQueryRun>> {
         stripe::ListPaginator::from_list_params("/sigma/scheduled_query_runs", self)
     }
 }
@@ -50,11 +45,7 @@ impl<'a> RetrieveScheduledQueryRun<'a> {
 }
 impl<'a> RetrieveScheduledQueryRun<'a> {
     /// Retrieves the details of an scheduled query run.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        scheduled_query_run: &str,
-    ) -> stripe::Response<stripe_misc::ScheduledQueryRun> {
+    pub fn send(&self, client: &stripe::Client, scheduled_query_run: &str) -> stripe::Response<stripe_misc::ScheduledQueryRun> {
         client.get_query(&format!("/sigma/scheduled_query_runs/{scheduled_query_run}"), self)
     }
 }

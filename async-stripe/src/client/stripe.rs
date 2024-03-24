@@ -1,9 +1,9 @@
 // Necessary under tokio-blocking since `Response` is a type alias to a `Result`
 #![allow(clippy::missing_errors_doc)]
 use http_types::{Body, Method, Request, Url};
-use serde::de::DeserializeOwned;
 use serde::Serialize;
 use stripe_shared::version::VERSION;
+use stripe_types::StripeDeserialize;
 
 use crate::client::headers::{AppInfo, Headers};
 use crate::{
@@ -86,12 +86,12 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn get<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
         self.send(path, Method::Get)
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    pub fn get_query<T: StripeDeserialize + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
@@ -103,7 +103,7 @@ impl Client {
         self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
     }
 
-    pub fn send<T: DeserializeOwned + Send + 'static>(
+    pub fn send<T: StripeDeserialize + Send + 'static>(
         &self,
         path: &str,
         method: Method,
@@ -113,17 +113,17 @@ impl Client {
     }
 
     /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn delete<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
         self.send(path, Method::Delete)
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn post<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
         self.send(path, Method::Post)
     }
 
     /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    pub fn post_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,
@@ -132,7 +132,7 @@ impl Client {
     }
 
     /// Make a `DELETE` http request with urlencoded body
-    pub fn delete_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    pub fn delete_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,
@@ -141,7 +141,7 @@ impl Client {
     }
 
     /// Make an http request with urlencoded body
-    pub fn send_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    pub fn send_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,

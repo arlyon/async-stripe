@@ -95,15 +95,7 @@ impl<'a> CreateSubscriptionItemUsageRecord<'a> {
     ///
     /// The default pricing model for metered billing is [per-unit pricing](https://stripe.com/docs/api/plans/object#plan_object-billing_scheme).
     /// For finer granularity, you can configure metered billing to have a [tiered pricing](https://stripe.com/docs/billing/subscriptions/tiers) model.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        subscription_item: &stripe_shared::SubscriptionItemId,
-    ) -> stripe::Response<stripe_billing::UsageRecord> {
-        client.send_form(
-            &format!("/subscription_items/{subscription_item}/usage_records"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, subscription_item: &stripe_shared::SubscriptionItemId) -> stripe::Response<stripe_billing::UsageRecord> {
+        client.send_form(&format!("/subscription_items/{subscription_item}/usage_records"), self, http_types::Method::Post)
     }
 }

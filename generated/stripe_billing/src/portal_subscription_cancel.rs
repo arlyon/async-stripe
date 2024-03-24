@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct PortalSubscriptionCancel {
     pub cancellation_reason: stripe_billing::PortalSubscriptionCancellationReason,
     /// Whether the feature is enabled.
@@ -9,6 +11,104 @@ pub struct PortalSubscriptionCancel {
     /// Possible values are `none` and `create_prorations`.
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
 }
+#[cfg(feature = "min-ser")]
+pub struct PortalSubscriptionCancelBuilder {
+    cancellation_reason: Option<stripe_billing::PortalSubscriptionCancellationReason>,
+    enabled: Option<bool>,
+    mode: Option<PortalSubscriptionCancelMode>,
+    proration_behavior: Option<PortalSubscriptionCancelProrationBehavior>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PortalSubscriptionCancel {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PortalSubscriptionCancel>,
+        builder: PortalSubscriptionCancelBuilder,
+    }
+
+    impl Visitor for Place<PortalSubscriptionCancel> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: PortalSubscriptionCancelBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for PortalSubscriptionCancelBuilder {
+        type Out = PortalSubscriptionCancel;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "cancellation_reason" => Deserialize::begin(&mut self.cancellation_reason),
+                "enabled" => Deserialize::begin(&mut self.enabled),
+                "mode" => Deserialize::begin(&mut self.mode),
+                "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { cancellation_reason: Deserialize::default(), enabled: Deserialize::default(), mode: Deserialize::default(), proration_behavior: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let cancellation_reason = self.cancellation_reason.take()?;
+            let enabled = self.enabled.take()?;
+            let mode = self.mode.take()?;
+            let proration_behavior = self.proration_behavior.take()?;
+
+            Some(Self::Out { cancellation_reason, enabled, mode, proration_behavior })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PortalSubscriptionCancel {
+        type Builder = PortalSubscriptionCancelBuilder;
+    }
+
+    impl FromValueOpt for PortalSubscriptionCancel {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PortalSubscriptionCancelBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "cancellation_reason" => b.cancellation_reason = Some(FromValueOpt::from_value(v)?),
+                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
+                    "mode" => b.mode = Some(FromValueOpt::from_value(v)?),
+                    "proration_behavior" => b.proration_behavior = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PortalSubscriptionCancelMode {
@@ -59,10 +159,27 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancelMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PortalSubscriptionCancelMode"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PortalSubscriptionCancelMode"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PortalSubscriptionCancelMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancelMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PortalSubscriptionCancelMode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PortalSubscriptionCancelMode);
 /// Whether to create prorations when canceling subscriptions.
 /// Possible values are `none` and `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -117,8 +234,24 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancelProrationBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PortalSubscriptionCancelProrationBehavior")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PortalSubscriptionCancelProrationBehavior"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PortalSubscriptionCancelProrationBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancelProrationBehavior> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PortalSubscriptionCancelProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PortalSubscriptionCancelProrationBehavior);

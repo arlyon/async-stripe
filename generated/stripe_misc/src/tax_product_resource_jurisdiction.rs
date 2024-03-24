@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct TaxProductResourceJurisdiction {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
@@ -10,6 +12,104 @@ pub struct TaxProductResourceJurisdiction {
     /// For example, "NY" for New York, United States.
     pub state: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct TaxProductResourceJurisdictionBuilder {
+    country: Option<String>,
+    display_name: Option<String>,
+    level: Option<TaxProductResourceJurisdictionLevel>,
+    state: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxProductResourceJurisdiction {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxProductResourceJurisdiction>,
+        builder: TaxProductResourceJurisdictionBuilder,
+    }
+
+    impl Visitor for Place<TaxProductResourceJurisdiction> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TaxProductResourceJurisdictionBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TaxProductResourceJurisdictionBuilder {
+        type Out = TaxProductResourceJurisdiction;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "country" => Deserialize::begin(&mut self.country),
+                "display_name" => Deserialize::begin(&mut self.display_name),
+                "level" => Deserialize::begin(&mut self.level),
+                "state" => Deserialize::begin(&mut self.state),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { country: Deserialize::default(), display_name: Deserialize::default(), level: Deserialize::default(), state: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let country = self.country.take()?;
+            let display_name = self.display_name.take()?;
+            let level = self.level.take()?;
+            let state = self.state.take()?;
+
+            Some(Self::Out { country, display_name, level, state })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxProductResourceJurisdiction {
+        type Builder = TaxProductResourceJurisdictionBuilder;
+    }
+
+    impl FromValueOpt for TaxProductResourceJurisdiction {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxProductResourceJurisdictionBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
+                    "level" => b.level = Some(FromValueOpt::from_value(v)?),
+                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Indicates the level of the jurisdiction imposing the tax.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxProductResourceJurisdictionLevel {
@@ -69,8 +169,24 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceJurisdictionLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TaxProductResourceJurisdictionLevel")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceJurisdictionLevel"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TaxProductResourceJurisdictionLevel {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<TaxProductResourceJurisdictionLevel> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxProductResourceJurisdictionLevel::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(TaxProductResourceJurisdictionLevel);

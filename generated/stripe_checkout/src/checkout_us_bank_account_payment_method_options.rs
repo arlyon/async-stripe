@@ -1,6 +1,7 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct CheckoutUsBankAccountPaymentMethodOptions {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections: Option<stripe_shared::LinkedAccountOptionsUsBankAccount>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -8,12 +9,104 @@ pub struct CheckoutUsBankAccountPaymentMethodOptions {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage>,
     /// Bank account verification method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod>,
 }
+#[cfg(feature = "min-ser")]
+pub struct CheckoutUsBankAccountPaymentMethodOptionsBuilder {
+    financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsUsBankAccount>>,
+    setup_future_usage: Option<Option<CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage>>,
+    verification_method: Option<Option<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CheckoutUsBankAccountPaymentMethodOptions {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CheckoutUsBankAccountPaymentMethodOptions>,
+        builder: CheckoutUsBankAccountPaymentMethodOptionsBuilder,
+    }
+
+    impl Visitor for Place<CheckoutUsBankAccountPaymentMethodOptions> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CheckoutUsBankAccountPaymentMethodOptionsBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CheckoutUsBankAccountPaymentMethodOptionsBuilder {
+        type Out = CheckoutUsBankAccountPaymentMethodOptions;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "financial_connections" => Deserialize::begin(&mut self.financial_connections),
+                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "verification_method" => Deserialize::begin(&mut self.verification_method),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { financial_connections: Deserialize::default(), setup_future_usage: Deserialize::default(), verification_method: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let financial_connections = self.financial_connections.take()?;
+            let setup_future_usage = self.setup_future_usage.take()?;
+            let verification_method = self.verification_method.take()?;
+
+            Some(Self::Out { financial_connections, setup_future_usage, verification_method })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CheckoutUsBankAccountPaymentMethodOptions {
+        type Builder = CheckoutUsBankAccountPaymentMethodOptionsBuilder;
+    }
+
+    impl FromValueOpt for CheckoutUsBankAccountPaymentMethodOptions {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CheckoutUsBankAccountPaymentMethodOptionsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "financial_connections" => b.financial_connections = Some(FromValueOpt::from_value(v)?),
+                    "setup_future_usage" => b.setup_future_usage = Some(FromValueOpt::from_value(v)?),
+                    "verification_method" => b.verification_method = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -72,13 +165,27 @@ impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsS
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(CheckoutUsBankAccountPaymentMethodOptionsSetupFutureUsage);
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
@@ -129,10 +236,24 @@ impl<'de> serde::Deserialize<'de> for CheckoutUsBankAccountPaymentMethodOptionsV
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod);

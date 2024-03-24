@@ -1,4 +1,21 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrievePaymentMethodDomain<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrievePaymentMethodDomain<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrievePaymentMethodDomain<'a> {
+    /// Retrieves the details of an existing payment method domain.
+    pub fn send(&self, client: &stripe::Client, payment_method_domain: &stripe_payment::PaymentMethodDomainId) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
+        client.get_query(&format!("/payment_method_domains/{payment_method_domain}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListPaymentMethodDomain<'a> {
     /// The domain name that this payment method domain object represents.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,37 +49,11 @@ impl<'a> ListPaymentMethodDomain<'a> {
 }
 impl<'a> ListPaymentMethodDomain<'a> {
     /// Lists the details of existing payment method domains.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_payment::PaymentMethodDomain>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_payment::PaymentMethodDomain>> {
         client.get_query("/payment_method_domains", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_payment::PaymentMethodDomain>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_payment::PaymentMethodDomain>> {
         stripe::ListPaginator::from_list_params("/payment_method_domains", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrievePaymentMethodDomain<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrievePaymentMethodDomain<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrievePaymentMethodDomain<'a> {
-    /// Retrieves the details of an existing payment method domain.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method_domain: &stripe_payment::PaymentMethodDomainId,
-    ) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
-        client.get_query(&format!("/payment_method_domains/{payment_method_domain}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -84,10 +75,7 @@ impl<'a> CreatePaymentMethodDomain<'a> {
 }
 impl<'a> CreatePaymentMethodDomain<'a> {
     /// Creates a payment method domain.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
         client.send_form("/payment_method_domains", self, http_types::Method::Post)
     }
 }
@@ -108,16 +96,8 @@ impl<'a> UpdatePaymentMethodDomain<'a> {
 }
 impl<'a> UpdatePaymentMethodDomain<'a> {
     /// Updates an existing payment method domain.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method_domain: &stripe_payment::PaymentMethodDomainId,
-    ) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
-        client.send_form(
-            &format!("/payment_method_domains/{payment_method_domain}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, payment_method_domain: &stripe_payment::PaymentMethodDomainId) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
+        client.send_form(&format!("/payment_method_domains/{payment_method_domain}"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -139,15 +119,7 @@ impl<'a> ValidatePaymentMethodDomain<'a> {
     /// To activate a payment method on an existing payment method domain, complete the required validation steps specific to the payment method, and then validate the payment method domain with this endpoint.
     ///
     /// Related guides: [Payment method domains](https://stripe.com/docs/payments/payment-methods/pmd-registration).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method_domain: &stripe_payment::PaymentMethodDomainId,
-    ) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
-        client.send_form(
-            &format!("/payment_method_domains/{payment_method_domain}/validate"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, payment_method_domain: &stripe_payment::PaymentMethodDomainId) -> stripe::Response<stripe_payment::PaymentMethodDomain> {
+        client.send_form(&format!("/payment_method_domains/{payment_method_domain}/validate"), self, http_types::Method::Post)
     }
 }

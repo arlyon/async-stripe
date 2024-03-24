@@ -28,27 +28,15 @@ pub struct ListSetupAttempt<'a> {
 }
 impl<'a> ListSetupAttempt<'a> {
     pub fn new(setup_intent: &'a str) -> Self {
-        Self {
-            created: None,
-            ending_before: None,
-            expand: None,
-            limit: None,
-            setup_intent,
-            starting_after: None,
-        }
+        Self { created: None, ending_before: None, expand: None, limit: None, setup_intent, starting_after: None }
     }
 }
 impl<'a> ListSetupAttempt<'a> {
     /// Returns a list of SetupAttempts that associate with a provided SetupIntent.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SetupAttempt>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::SetupAttempt>> {
         client.get_query("/setup_attempts", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SetupAttempt>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SetupAttempt>> {
         stripe::ListPaginator::from_list_params("/setup_attempts", self)
     }
 }

@@ -11,25 +11,90 @@ impl<'a> DetachSource<'a> {
 }
 impl<'a> DetachSource<'a> {
     /// Delete a specified source for a given customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        customer: &stripe_shared::CustomerId,
-        id: &str,
-    ) -> stripe::Response<DetachSourceReturned> {
-        client.send_form(
-            &format!("/customers/{customer}/sources/{id}"),
-            self,
-            http_types::Method::Delete,
-        )
+    pub fn send(&self, client: &stripe::Client, customer: &stripe_shared::CustomerId, id: &str) -> stripe::Response<DetachSourceReturned> {
+        client.send_form(&format!("/customers/{customer}/sources/{id}"), self, http_types::Method::Delete)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(not(feature = "min-ser"), serde(untagged))]
 pub enum DetachSourceReturned {
     PaymentSource(stripe_shared::PaymentSource),
     DeletedPaymentSource(stripe_shared::DeletedPaymentSource),
 }
+
+#[cfg(feature = "min-ser")]
+#[derive(Default)]
+pub struct DetachSourceReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+#[cfg(feature = "min-ser")]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<DetachSourceReturned>,
+        builder: DetachSourceReturnedBuilder,
+    }
+
+    impl Deserialize for DetachSourceReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<DetachSourceReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for DetachSourceReturnedBuilder {
+        type Out = DetachSourceReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                DetachSourceReturned::DeletedPaymentSource(FromValueOpt::from_value(Value::Object(o))?)
+            } else {
+                DetachSourceReturned::PaymentSource(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for DetachSourceReturned {
+        type Builder = DetachSourceReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSource<'a> {
     /// The client secret of the source. Required if a publishable key is used to retrieve the source.
@@ -47,56 +112,8 @@ impl<'a> RetrieveSource<'a> {
 impl<'a> RetrieveSource<'a> {
     /// Retrieves an existing source object.
     /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
+    pub fn send(&self, client: &stripe::Client, source: &stripe_shared::SourceId) -> stripe::Response<stripe_shared::Source> {
         client.get_query(&format!("/sources/{source}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct SourceTransactionsSource<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> SourceTransactionsSource<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> SourceTransactionsSource<'a> {
-    /// List source transactions for a given source.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::SourceTransaction>> {
-        client.get_query(&format!("/sources/{source}/source_transactions"), self)
-    }
-    pub fn paginate(
-        self,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SourceTransaction>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/sources/{source}/source_transactions"),
-            self,
-        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -156,7 +173,7 @@ pub struct CreateSource<'a> {
     pub token: Option<&'a str>,
     /// The `type` of the source to create.
     /// Required unless `customer` and `original_source` are specified (see the [Cloning card Sources](https://stripe.com/docs/sources/connect#cloning-card-sources) guide).
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -268,7 +285,7 @@ pub struct CreateSourceMandateAcceptance<'a> {
     /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
     pub status: CreateSourceMandateAcceptanceStatus,
     /// The type of acceptance information included with the mandate. Either `online` or `offline`
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateSourceMandateAcceptanceType>,
     /// The user agent of the browser from which the mandate was accepted or refused by the customer.
@@ -277,15 +294,7 @@ pub struct CreateSourceMandateAcceptance<'a> {
 }
 impl<'a> CreateSourceMandateAcceptance<'a> {
     pub fn new(status: CreateSourceMandateAcceptanceStatus) -> Self {
-        Self {
-            date: None,
-            ip: None,
-            offline: None,
-            online: None,
-            status,
-            type_: None,
-            user_agent: None,
-        }
+        Self { date: None, ip: None, offline: None, online: None, status, type_: None, user_agent: None }
     }
 }
 /// The status of the mandate acceptance.
@@ -605,7 +614,7 @@ pub struct CreateSourceSourceOrderItems<'a> {
     /// When type is `sku`, this is the number of instances of the SKU to be ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateSourceSourceOrderItemsType>,
 }
@@ -793,7 +802,7 @@ pub struct UpdateSourceMandateAcceptance<'a> {
     /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
     pub status: UpdateSourceMandateAcceptanceStatus,
     /// The type of acceptance information included with the mandate. Either `online` or `offline`
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateSourceMandateAcceptanceType>,
     /// The user agent of the browser from which the mandate was accepted or refused by the customer.
@@ -802,15 +811,7 @@ pub struct UpdateSourceMandateAcceptance<'a> {
 }
 impl<'a> UpdateSourceMandateAcceptance<'a> {
     pub fn new(status: UpdateSourceMandateAcceptanceStatus) -> Self {
-        Self {
-            date: None,
-            ip: None,
-            offline: None,
-            online: None,
-            status,
-            type_: None,
-            user_agent: None,
-        }
+        Self { date: None, ip: None, offline: None, online: None, status, type_: None, user_agent: None }
     }
 }
 /// The status of the mandate acceptance.
@@ -1051,7 +1052,7 @@ pub struct UpdateSourceSourceOrderItems<'a> {
     /// When type is `sku`, this is the number of instances of the SKU to be ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateSourceSourceOrderItemsType>,
 }
@@ -1118,11 +1119,7 @@ impl<'a> UpdateSource<'a> {
     /// This request accepts the `metadata` and `owner` as arguments.
     /// It is also possible to update type specific information for selected payment methods.
     /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
+    pub fn send(&self, client: &stripe::Client, source: &stripe_shared::SourceId) -> stripe::Response<stripe_shared::Source> {
         client.send_form(&format!("/sources/{source}"), self, http_types::Method::Post)
     }
 }
@@ -1141,12 +1138,42 @@ impl<'a> VerifySource<'a> {
 }
 impl<'a> VerifySource<'a> {
     /// Verify a given source.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        source: &stripe_shared::SourceId,
-    ) -> stripe::Response<stripe_shared::Source> {
+    pub fn send(&self, client: &stripe::Client, source: &stripe_shared::SourceId) -> stripe::Response<stripe_shared::Source> {
         client.send_form(&format!("/sources/{source}/verify"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct SourceTransactionsSource<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> SourceTransactionsSource<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> SourceTransactionsSource<'a> {
+    /// List source transactions for a given source.
+    pub fn send(&self, client: &stripe::Client, source: &stripe_shared::SourceId) -> stripe::Response<stripe_types::List<stripe_shared::SourceTransaction>> {
+        client.get_query(&format!("/sources/{source}/source_transactions"), self)
+    }
+    pub fn paginate(self, source: &stripe_shared::SourceId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::SourceTransaction>> {
+        stripe::ListPaginator::from_list_params(&format!("/sources/{source}/source_transactions"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

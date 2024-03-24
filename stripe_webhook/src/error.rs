@@ -11,6 +11,6 @@ pub enum WebhookError {
     BadSignature,
     #[error("error comparing timestamps - over tolerance")]
     BadTimestamp(i64),
-    #[error("error parsing event object")]
-    BadParse(#[from] serde_json::Error),
+    #[error("error parsing event object: {0}")]
+    BadParse(String),
 }

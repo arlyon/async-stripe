@@ -1,28 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeletePerson {}
-impl DeletePerson {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeletePerson {
-    /// Deletes an existing person’s relationship to the account’s legal entity.
-    /// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
-    /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-        person: &str,
-    ) -> stripe::Response<stripe_shared::DeletedPerson> {
-        client.send_form(
-            &format!("/accounts/{account}/persons/{person}"),
-            self,
-            http_types::Method::Delete,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListAccountPerson<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
@@ -77,17 +53,10 @@ impl ListAccountPersonRelationship {
 impl<'a> ListAccountPerson<'a> {
     /// Returns a list of people associated with the account’s legal entity.
     /// The people are returned sorted by creation date, with the most recent people appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Person>> {
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId) -> stripe::Response<stripe_types::List<stripe_shared::Person>> {
         client.get_query(&format!("/accounts/{account}/persons"), self)
     }
-    pub fn paginate(
-        self,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Person>> {
+    pub fn paginate(self, account: &stripe_shared::AccountId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Person>> {
         stripe::ListPaginator::from_list_params(&format!("/accounts/{account}/persons"), self)
     }
 }
@@ -104,12 +73,7 @@ impl<'a> RetrievePerson<'a> {
 }
 impl<'a> RetrievePerson<'a> {
     /// Retrieves an existing person.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-        person: &str,
-    ) -> stripe::Response<stripe_shared::Person> {
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId, person: &str) -> stripe::Response<stripe_shared::Person> {
         client.get_query(&format!("/accounts/{account}/persons/{person}"), self)
     }
 }
@@ -275,11 +239,7 @@ impl<'a> CreateAccountPersonAddressKanji<'a> {
 }
 impl<'a> CreateAccountPerson<'a> {
     /// Creates a new person.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_shared::Person> {
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId) -> stripe::Response<stripe_shared::Person> {
         client.send_form(&format!("/accounts/{account}/persons"), self, http_types::Method::Post)
     }
 }
@@ -445,17 +405,23 @@ impl<'a> UpdatePersonAddressKanji<'a> {
 }
 impl<'a> UpdatePerson<'a> {
     /// Updates an existing person.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-        person: &str,
-    ) -> stripe::Response<stripe_shared::Person> {
-        client.send_form(
-            &format!("/accounts/{account}/persons/{person}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId, person: &str) -> stripe::Response<stripe_shared::Person> {
+        client.send_form(&format!("/accounts/{account}/persons/{person}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeletePerson {}
+impl DeletePerson {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeletePerson {
+    /// Deletes an existing person’s relationship to the account’s legal entity.
+    /// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
+    /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId, person: &str) -> stripe::Response<stripe_shared::DeletedPerson> {
+        client.send_form(&format!("/accounts/{account}/persons/{person}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

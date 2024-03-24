@@ -4,7 +4,7 @@ use indoc::{formatdoc, writedoc};
 
 use crate::printable::PrintableWithLifetime;
 use crate::rust_object::{StructField, Visibility};
-use crate::templates::utils::{write_doc_comment, write_serde_rename};
+use crate::templates::utils::{write_doc_comment, write_gated_serde_rename};
 use crate::templates::ObjectWriter;
 
 impl<'a> ObjectWriter<'a> {
@@ -72,6 +72,9 @@ impl<'a> ObjectWriter<'a> {
                 "
             );
         }
+        if self.obj_kind.should_impl_deserialize() {
+            self.gen_miniserde_struct_deserialize(out, fields)
+        }
     }
 
     fn write_struct_field(&self, out: &mut String, field: &StructField) {
@@ -79,12 +82,16 @@ impl<'a> ObjectWriter<'a> {
             let _ = writeln!(out, "{}", write_doc_comment(doc_comment, 1).trim_end());
         }
         if let Some(renamer) = &field.rename_as {
-            write_serde_rename(out, renamer);
+            write_gated_serde_rename(out, renamer);
         }
-        if !field.required {
-            if let Some(skip_ser) = field.rust_type.skip_serializing() {
-                let _ = writeln!(out, r#"#[serde(skip_serializing_if = "{skip_ser}")]"#);
-            }
+
+        if !field.required && self.obj_kind.is_request_param() && field.rust_type.is_option() {
+            let _ = writeln!(out, r#"#[serde(skip_serializing_if = "Option::is_none")]"#);
+        }
+        // For the private `AlwaysTrue` field used as a serde discriminant. For `miniserde`, it
+        // is unused
+        if field.rust_type.implies_private_field() {
+            let _ = writeln!(out, "#[allow(dead_code)]");
         }
 
         let printable = self.get_printable(&field.rust_type);

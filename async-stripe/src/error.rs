@@ -10,6 +10,8 @@ pub enum StripeError {
     QueryStringSerialize(#[from] serde_path_to_error::Error<serde_qs::Error>),
     #[error("error serializing or deserializing a request")]
     JSONSerialize(#[from] serde_path_to_error::Error<serde_json::Error>),
+    #[error("error serializing a request")]
+    JSONDeserialize(String),
     #[error("attempted to access an unsupported version of the api")]
     UnsupportedVersion,
     #[error("error communicating with stripe: {0}")]

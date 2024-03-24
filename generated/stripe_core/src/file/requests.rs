@@ -32,10 +32,7 @@ impl<'a> ListFile<'a> {
 impl<'a> ListFile<'a> {
     /// Returns a list of the files that your account has access to.
     /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::File>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::File>> {
         client.get_query("/files", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::File>> {
@@ -57,11 +54,7 @@ impl<'a> RetrieveFile<'a> {
     /// Retrieves the details of an existing file object.
     /// After you supply a unique file ID, Stripe returns the corresponding file object.
     /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        file: &stripe_shared::FileId,
-    ) -> stripe::Response<stripe_shared::File> {
+    pub fn send(&self, client: &stripe::Client, file: &stripe_shared::FileId) -> stripe::Response<stripe_shared::File> {
         client.get_query(&format!("/files/{file}"), self)
     }
 }

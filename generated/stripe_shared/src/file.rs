@@ -1,13 +1,15 @@
 /// This object represents files hosted on Stripe's servers. You can upload
 /// files with the [create file](https://stripe.com/docs/api#create_file) request
 /// (for example, when uploading dispute evidence). Stripe also
-/// creates files independently (for example, the results of a [Sigma scheduled
+/// creates files independetly (for example, the results of a [Sigma scheduled
 /// query](#scheduled_queries)).
 ///
 /// Related guide: [File upload guide](https://stripe.com/docs/file-upload)
 ///
 /// For more details see <<https://stripe.com/docs/api/files/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct File {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -18,7 +20,6 @@ pub struct File {
     /// Unique identifier for the object.
     pub id: stripe_shared::FileId,
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub links: Option<stripe_types::List<stripe_shared::FileLink>>,
     /// The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.
     pub purpose: stripe_shared::FilePurpose,
@@ -27,11 +28,144 @@ pub struct File {
     /// A suitable title for the document.
     pub title: Option<String>,
     /// The returned file type (for example, `csv`, `pdf`, `jpg`, or `png`).
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: Option<String>,
     /// Use your live secret API key to download the file from this URL.
     pub url: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct FileBuilder {
+    created: Option<stripe_types::Timestamp>,
+    expires_at: Option<Option<stripe_types::Timestamp>>,
+    filename: Option<Option<String>>,
+    id: Option<stripe_shared::FileId>,
+    links: Option<Option<stripe_types::List<stripe_shared::FileLink>>>,
+    purpose: Option<stripe_shared::FilePurpose>,
+    size: Option<u64>,
+    title: Option<Option<String>>,
+    type_: Option<Option<String>>,
+    url: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for File {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<File>,
+        builder: FileBuilder,
+    }
+
+    impl Visitor for Place<File> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: FileBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for FileBuilder {
+        type Out = File;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.created),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "filename" => Deserialize::begin(&mut self.filename),
+                "id" => Deserialize::begin(&mut self.id),
+                "links" => Deserialize::begin(&mut self.links),
+                "purpose" => Deserialize::begin(&mut self.purpose),
+                "size" => Deserialize::begin(&mut self.size),
+                "title" => Deserialize::begin(&mut self.title),
+                "type" => Deserialize::begin(&mut self.type_),
+                "url" => Deserialize::begin(&mut self.url),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                created: Deserialize::default(),
+                expires_at: Deserialize::default(),
+                filename: Deserialize::default(),
+                id: Deserialize::default(),
+                links: Deserialize::default(),
+                purpose: Deserialize::default(),
+                size: Deserialize::default(),
+                title: Deserialize::default(),
+                type_: Deserialize::default(),
+                url: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let created = self.created.take()?;
+            let expires_at = self.expires_at.take()?;
+            let filename = self.filename.take()?;
+            let id = self.id.take()?;
+            let links = self.links.take()?;
+            let purpose = self.purpose.take()?;
+            let size = self.size.take()?;
+            let title = self.title.take()?;
+            let type_ = self.type_.take()?;
+            let url = self.url.take()?;
+
+            Some(Self::Out { created, expires_at, filename, id, links, purpose, size, title, type_, url })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for File {
+        type Builder = FileBuilder;
+    }
+
+    impl FromValueOpt for File {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = FileBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "filename" => b.filename = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "links" => b.links = Some(FromValueOpt::from_value(v)?),
+                    "purpose" => b.purpose = Some(FromValueOpt::from_value(v)?),
+                    "size" => b.size = Some(FromValueOpt::from_value(v)?),
+                    "title" => b.title = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for File {
     type Id = stripe_shared::FileId;
     fn id(&self) -> &Self::Id {
@@ -131,6 +265,24 @@ impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(FilePurpose::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for FilePurpose {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<FilePurpose> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(FilePurpose::from_str(s).unwrap_or(FilePurpose::Unknown));
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(FilePurpose);

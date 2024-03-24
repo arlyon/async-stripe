@@ -1,3 +1,40 @@
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct SearchPrice<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for pagination across multiple pages of results.
+    /// Don't include this parameter on the first call.
+    /// Use the next_page value returned in a previous response to request subsequent results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<&'a str>,
+    /// The search query string.
+    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for prices](https://stripe.com/docs/search#query-fields-for-prices).
+    pub query: &'a str,
+}
+impl<'a> SearchPrice<'a> {
+    pub fn new(query: &'a str) -> Self {
+        Self { expand: None, limit: None, page: None, query }
+    }
+}
+impl<'a> SearchPrice<'a> {
+    /// Search for prices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
+    /// Don’t use search in read-after-write flows where strict consistency is necessary.
+    /// Under normal operating.
+    /// conditions, data is searchable in less than a minute.
+    /// Occasionally, propagation of new or updated data can be up.
+    /// to an hour behind during outages. Search functionality is not available to merchants in India.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::SearchList<stripe_shared::Price>> {
+        client.get_query("/prices/search", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Price>> {
+        stripe::ListPaginator::from_search_params("/prices/search", self)
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListPrice<'a> {
     /// Only return prices that are active or inactive (e.g., pass `false` to list all inactive prices).
@@ -37,7 +74,7 @@ pub struct ListPrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<&'a str>,
     /// Only return prices of type `recurring` or `one_time`.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<stripe_shared::PriceType>,
 }
@@ -162,75 +199,11 @@ impl serde::Serialize for ListPriceRecurringUsageType {
 impl<'a> ListPrice<'a> {
     /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
     /// For the list of inactive prices, set `active` to false.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Price>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Price>> {
         client.get_query("/prices", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Price>> {
         stripe::ListPaginator::from_list_params("/prices", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrievePrice<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrievePrice<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrievePrice<'a> {
-    /// Retrieves the price with the given ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        price: &stripe_shared::PriceId,
-    ) -> stripe::Response<stripe_shared::Price> {
-        client.get_query(&format!("/prices/{price}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct SearchPrice<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for pagination across multiple pages of results.
-    /// Don't include this parameter on the first call.
-    /// Use the next_page value returned in a previous response to request subsequent results.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page: Option<&'a str>,
-    /// The search query string.
-    /// See [search query language](https://stripe.com/docs/search#search-query-language) and the list of supported [query fields for prices](https://stripe.com/docs/search#query-fields-for-prices).
-    pub query: &'a str,
-}
-impl<'a> SearchPrice<'a> {
-    pub fn new(query: &'a str) -> Self {
-        Self { expand: None, limit: None, page: None, query }
-    }
-}
-impl<'a> SearchPrice<'a> {
-    /// Search for prices you’ve previously created using Stripe’s [Search Query Language](https://stripe.com/docs/search#search-query-language).
-    /// Don’t use search in read-after-write flows where strict consistency is necessary.
-    /// Under normal operating.
-    /// conditions, data is searchable in less than a minute.
-    /// Occasionally, propagation of new or updated data can be up.
-    /// to an hour behind during outages. Search functionality is not available to merchants in India.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::SearchList<stripe_shared::Price>> {
-        client.get_query("/prices/search", self)
-    }
-    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::SearchList<stripe_shared::Price>> {
-        stripe::ListPaginator::from_search_params("/prices/search", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -250,8 +223,7 @@ pub struct CreatePrice<'a> {
     /// Prices defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, CreatePriceCurrencyOptions>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreatePriceCurrencyOptions>>,
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
@@ -393,13 +365,7 @@ pub struct CreatePriceCurrencyOptionsTiers {
 }
 impl CreatePriceCurrencyOptionsTiers {
     pub fn new(up_to: CreatePriceCurrencyOptionsTiersUpTo) -> Self {
-        Self {
-            flat_amount: None,
-            flat_amount_decimal: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-            up_to,
-        }
+        Self { flat_amount: None, flat_amount_decimal: None, unit_amount: None, unit_amount_decimal: None, up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -448,28 +414,22 @@ pub struct CreatePriceProductData<'a> {
 }
 impl<'a> CreatePriceProductData<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self {
-            active: None,
-            id: None,
-            metadata: None,
-            name,
-            statement_descriptor: None,
-            tax_code: None,
-            unit_label: None,
-        }
+        Self { active: None, id: None, metadata: None, name, statement_descriptor: None, tax_code: None, unit_label: None }
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePriceRecurring {
-    /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
+    /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
+    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
+    /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreatePriceRecurringInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
     /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
@@ -485,16 +445,12 @@ pub struct CreatePriceRecurring {
 }
 impl CreatePriceRecurring {
     pub fn new(interval: CreatePriceRecurringInterval) -> Self {
-        Self {
-            aggregate_usage: None,
-            interval,
-            interval_count: None,
-            trial_period_days: None,
-            usage_type: None,
-        }
+        Self { aggregate_usage: None, interval, interval_count: None, trial_period_days: None, usage_type: None }
     }
 }
-/// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
+/// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
+/// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
+/// Defaults to `sum`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceRecurringAggregateUsage {
     LastDuringPeriod,
@@ -674,13 +630,7 @@ pub struct CreatePriceTiers<'a> {
 }
 impl<'a> CreatePriceTiers<'a> {
     pub fn new(up_to: CreatePriceTiersUpTo) -> Self {
-        Self {
-            flat_amount: None,
-            flat_amount_decimal: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-            up_to,
-        }
+        Self { flat_amount: None, flat_amount_decimal: None, unit_amount: None, unit_amount_decimal: None, up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -759,6 +709,23 @@ impl<'a> CreatePrice<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrievePrice<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrievePrice<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrievePrice<'a> {
+    /// Retrieves the price with the given ID.
+    pub fn send(&self, client: &stripe::Client, price: &stripe_shared::PriceId) -> stripe::Response<stripe_shared::Price> {
+        client.get_query(&format!("/prices/{price}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePrice<'a> {
     /// Whether the price can be used for new purchases. Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -766,8 +733,7 @@ pub struct UpdatePrice<'a> {
     /// Prices defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<&'a std::collections::HashMap<stripe_types::Currency, UpdatePriceCurrencyOptions>>,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, UpdatePriceCurrencyOptions>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -856,13 +822,7 @@ pub struct UpdatePriceCurrencyOptionsTiers {
 }
 impl UpdatePriceCurrencyOptionsTiers {
     pub fn new(up_to: UpdatePriceCurrencyOptionsTiersUpTo) -> Self {
-        Self {
-            flat_amount: None,
-            flat_amount_decimal: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-            up_to,
-        }
+        Self { flat_amount: None, flat_amount_decimal: None, unit_amount: None, unit_amount_decimal: None, up_to }
     }
 }
 /// Specifies the upper bound of this tier.
@@ -877,11 +837,7 @@ pub enum UpdatePriceCurrencyOptionsTiersUpTo {
 impl<'a> UpdatePrice<'a> {
     /// Updates the specified price by setting the values of the parameters passed.
     /// Any parameters not provided are left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        price: &stripe_shared::PriceId,
-    ) -> stripe::Response<stripe_shared::Price> {
+    pub fn send(&self, client: &stripe::Client, price: &stripe_shared::PriceId) -> stripe::Response<stripe_shared::Price> {
         client.send_form(&format!("/prices/{price}"), self, http_types::Method::Post)
     }
 }

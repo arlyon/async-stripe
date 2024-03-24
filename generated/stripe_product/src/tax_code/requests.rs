@@ -25,10 +25,7 @@ impl<'a> ListTaxCode<'a> {
 }
 impl<'a> ListTaxCode<'a> {
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::TaxCode>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::TaxCode>> {
         client.get_query("/tax_codes", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::TaxCode>> {
@@ -49,11 +46,7 @@ impl<'a> RetrieveTaxCode<'a> {
 impl<'a> RetrieveTaxCode<'a> {
     /// Retrieves the details of an existing tax code.
     /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::TaxCodeId,
-    ) -> stripe::Response<stripe_shared::TaxCode> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::TaxCodeId) -> stripe::Response<stripe_shared::TaxCode> {
         client.get_query(&format!("/tax_codes/{id}"), self)
     }
 }

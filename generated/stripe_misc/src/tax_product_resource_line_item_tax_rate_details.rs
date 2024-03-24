@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct TaxProductResourceLineItemTaxRateDetails {
     /// A localized display name for tax type, intended to be human-readable.
     /// For example, "Local Sales and Use Tax", "Value-added tax (VAT)", or "Umsatzsteuer (USt.)".
@@ -8,6 +10,100 @@ pub struct TaxProductResourceLineItemTaxRateDetails {
     /// The tax type, such as `vat` or `sales_tax`.
     pub tax_type: TaxProductResourceLineItemTaxRateDetailsTaxType,
 }
+#[cfg(feature = "min-ser")]
+pub struct TaxProductResourceLineItemTaxRateDetailsBuilder {
+    display_name: Option<String>,
+    percentage_decimal: Option<String>,
+    tax_type: Option<TaxProductResourceLineItemTaxRateDetailsTaxType>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxProductResourceLineItemTaxRateDetails {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxProductResourceLineItemTaxRateDetails>,
+        builder: TaxProductResourceLineItemTaxRateDetailsBuilder,
+    }
+
+    impl Visitor for Place<TaxProductResourceLineItemTaxRateDetails> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TaxProductResourceLineItemTaxRateDetailsBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TaxProductResourceLineItemTaxRateDetailsBuilder {
+        type Out = TaxProductResourceLineItemTaxRateDetails;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "display_name" => Deserialize::begin(&mut self.display_name),
+                "percentage_decimal" => Deserialize::begin(&mut self.percentage_decimal),
+                "tax_type" => Deserialize::begin(&mut self.tax_type),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { display_name: Deserialize::default(), percentage_decimal: Deserialize::default(), tax_type: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let display_name = self.display_name.take()?;
+            let percentage_decimal = self.percentage_decimal.take()?;
+            let tax_type = self.tax_type.take()?;
+
+            Some(Self::Out { display_name, percentage_decimal, tax_type })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxProductResourceLineItemTaxRateDetails {
+        type Builder = TaxProductResourceLineItemTaxRateDetailsBuilder;
+    }
+
+    impl FromValueOpt for TaxProductResourceLineItemTaxRateDetails {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxProductResourceLineItemTaxRateDetailsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
+                    "percentage_decimal" => b.percentage_decimal = Some(FromValueOpt::from_value(v)?),
+                    "tax_type" => b.tax_type = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The tax type, such as `vat` or `sales_tax`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxProductResourceLineItemTaxRateDetailsTaxType {
@@ -88,10 +184,24 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxRateDetailsTa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceLineItemTaxRateDetailsTaxType",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceLineItemTaxRateDetailsTaxType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TaxProductResourceLineItemTaxRateDetailsTaxType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<TaxProductResourceLineItemTaxRateDetailsTaxType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxProductResourceLineItemTaxRateDetailsTaxType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(TaxProductResourceLineItemTaxRateDetailsTaxType);

@@ -18,10 +18,13 @@ path = "src/mod.rs"
 serde.workspace = true
 smol_str.workspace = true
 serde_json.workspace = true
+miniserde = { workspace = true, optional = true }
 stripe_types = {path = "../../stripe_types"}
 
 
 
 
 
+[features]
+min-ser = ["miniserde","stripe_types/min-ser"]
 

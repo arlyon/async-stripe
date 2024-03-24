@@ -16,10 +16,15 @@ const CORE_FEATURES: &[&str] = &[
 
 pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<String>) -> String {
     let mut crate_dep_section = String::new();
+
+    let mut min_ser_features = vec!["miniserde".into(), "stripe_types/min-ser".into()];
     for dep in crate_deps {
         let dep_path = format!("../../generated/{}", dep.name());
         let _ = writeln!(crate_dep_section, r#"{} = {{path = "{}"}}"#, dep.name(), dep_path);
+        min_ser_features.push(format!("{}/min-ser", dep.name()));
     }
+    let min_ser_features_str =
+        min_ser_features.into_iter().map(|f| format!(r#""{f}""#)).collect::<Vec<_>>().join(",");
 
     // Dependencies only needed for libraries which implement Stripe requests
     let request_deps = if krate == Crate::SHARED {
@@ -57,12 +62,15 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         serde.workspace = true
         smol_str.workspace = true
         serde_json.workspace = true
+        miniserde = {{ workspace = true, optional = true }}
         stripe_types = {{path = "../../stripe_types"}}
         
         {request_deps}
         
         {crate_dep_section}
-        
+
+        [features]
+        min-ser = [{min_ser_features_str}]
         {features}
         "#
     }
@@ -99,7 +107,6 @@ fn gen_feature_section(mut crate_features: Vec<String>) -> String {
     docs_rs_features.push(']');
     formatdoc! {
         r#"
-        [features]
         {feature_section}
         
         [package.metadata.docs.rs]

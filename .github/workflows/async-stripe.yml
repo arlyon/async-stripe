@@ -99,6 +99,9 @@ jobs:
       - name: Run clippy
         run: cargo clippy --features "runtime-${{ matrix.runtime }} full"
 
+      - name: Run clippy with min-ser
+        run: cargo clippy --features "runtime-${{ matrix.runtime }} full min-ser"
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -128,6 +131,9 @@ jobs:
           toolchain: ${{ env.rust_min }}
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Test with min-ser
+        run: cargo test --features runtime-${{ matrix.runtime }} min-ser
 
       - uses: taiki-e/install-action@cargo-llvm-cov
       - name: Test and gather coverage

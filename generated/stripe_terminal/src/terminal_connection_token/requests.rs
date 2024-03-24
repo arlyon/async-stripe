@@ -18,10 +18,7 @@ impl<'a> CreateTerminalConnectionToken<'a> {
 impl<'a> CreateTerminalConnectionToken<'a> {
     /// To connect to a reader the Stripe Terminal SDK needs to retrieve a short-lived connection token from Stripe, proxied through your server.
     /// On your backend, add an endpoint that creates and returns a connection token.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalConnectionToken> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_terminal::TerminalConnectionToken> {
         client.send_form("/terminal/connection_tokens", self, http_types::Method::Post)
     }
 }

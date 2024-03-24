@@ -12,7 +12,9 @@
 /// and billing details.
 ///
 /// Learn more in the [integration guide](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal).
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct BillingPortalSession {
     /// The configuration used by this session, describing the features available.
     pub configuration: stripe_types::Expandable<stripe_billing::BillingPortalConfiguration>,
@@ -40,6 +42,139 @@ pub struct BillingPortalSession {
     /// The short-lived URL of the session that gives customers access to the customer portal.
     pub url: String,
 }
+#[cfg(feature = "min-ser")]
+pub struct BillingPortalSessionBuilder {
+    configuration: Option<stripe_types::Expandable<stripe_billing::BillingPortalConfiguration>>,
+    created: Option<stripe_types::Timestamp>,
+    customer: Option<String>,
+    flow: Option<Option<stripe_billing::PortalFlowsFlow>>,
+    id: Option<stripe_billing::BillingPortalSessionId>,
+    livemode: Option<bool>,
+    locale: Option<Option<stripe_billing::BillingPortalSessionLocale>>,
+    on_behalf_of: Option<Option<String>>,
+    return_url: Option<Option<String>>,
+    url: Option<String>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for BillingPortalSession {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<BillingPortalSession>,
+        builder: BillingPortalSessionBuilder,
+    }
+
+    impl Visitor for Place<BillingPortalSession> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: BillingPortalSessionBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for BillingPortalSessionBuilder {
+        type Out = BillingPortalSession;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "configuration" => Deserialize::begin(&mut self.configuration),
+                "created" => Deserialize::begin(&mut self.created),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "flow" => Deserialize::begin(&mut self.flow),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "locale" => Deserialize::begin(&mut self.locale),
+                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "return_url" => Deserialize::begin(&mut self.return_url),
+                "url" => Deserialize::begin(&mut self.url),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                configuration: Deserialize::default(),
+                created: Deserialize::default(),
+                customer: Deserialize::default(),
+                flow: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                locale: Deserialize::default(),
+                on_behalf_of: Deserialize::default(),
+                return_url: Deserialize::default(),
+                url: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let configuration = self.configuration.take()?;
+            let created = self.created.take()?;
+            let customer = self.customer.take()?;
+            let flow = self.flow.take()?;
+            let id = self.id.take()?;
+            let livemode = self.livemode.take()?;
+            let locale = self.locale.take()?;
+            let on_behalf_of = self.on_behalf_of.take()?;
+            let return_url = self.return_url.take()?;
+            let url = self.url.take()?;
+
+            Some(Self::Out { configuration, created, customer, flow, id, livemode, locale, on_behalf_of, return_url, url })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for BillingPortalSession {
+        type Builder = BillingPortalSessionBuilder;
+    }
+
+    impl FromValueOpt for BillingPortalSession {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = BillingPortalSessionBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "configuration" => b.configuration = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "flow" => b.flow = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "locale" => b.locale = Some(FromValueOpt::from_value(v)?),
+                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
+                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for BillingPortalSession {
     type Id = stripe_billing::BillingPortalSessionId;
     fn id(&self) -> &Self::Id {
@@ -235,6 +370,24 @@ impl<'de> serde::Deserialize<'de> for BillingPortalSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(BillingPortalSessionLocale::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for BillingPortalSessionLocale {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<BillingPortalSessionLocale> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(BillingPortalSessionLocale::from_str(s).unwrap_or(BillingPortalSessionLocale::Unknown));
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(BillingPortalSessionLocale);

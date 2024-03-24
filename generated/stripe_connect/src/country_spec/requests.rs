@@ -25,15 +25,10 @@ impl<'a> ListCountrySpec<'a> {
 }
 impl<'a> ListCountrySpec<'a> {
     /// Lists all Country Spec objects available in the API.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_connect::CountrySpec>> {
         client.get_query("/country_specs", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_connect::CountrySpec>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_connect::CountrySpec>> {
         stripe::ListPaginator::from_list_params("/country_specs", self)
     }
 }
@@ -50,11 +45,7 @@ impl<'a> RetrieveCountrySpec<'a> {
 }
 impl<'a> RetrieveCountrySpec<'a> {
     /// Returns a Country Spec for a given Country code.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        country: &stripe_connect::CountrySpecId,
-    ) -> stripe::Response<stripe_connect::CountrySpec> {
+    pub fn send(&self, client: &stripe::Client, country: &stripe_connect::CountrySpecId) -> stripe::Response<stripe_connect::CountrySpec> {
         client.get_query(&format!("/country_specs/{country}"), self)
     }
 }

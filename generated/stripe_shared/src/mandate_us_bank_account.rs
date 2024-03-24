@@ -1,58 +1,82 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
-pub struct MandateUsBankAccount {
-    /// Mandate collection method
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<MandateUsBankAccountCollectionMethod>,
-}
-/// Mandate collection method
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum MandateUsBankAccountCollectionMethod {
-    Paper,
-}
-impl MandateUsBankAccountCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        use MandateUsBankAccountCollectionMethod::*;
-        match self {
-            Paper => "paper",
+#[derive(Copy, Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+pub struct MandateUsBankAccount {}
+#[cfg(feature = "min-ser")]
+pub struct MandateUsBankAccountBuilder {}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for MandateUsBankAccount {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
         }
     }
-}
 
-impl std::str::FromStr for MandateUsBankAccountCollectionMethod {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use MandateUsBankAccountCollectionMethod::*;
-        match s {
-            "paper" => Ok(Paper),
-            _ => Err(()),
+    struct Builder<'a> {
+        out: &'a mut Option<MandateUsBankAccount>,
+        builder: MandateUsBankAccountBuilder,
+    }
+
+    impl Visitor for Place<MandateUsBankAccount> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: MandateUsBankAccountBuilder::deser_default() }))
         }
     }
-}
-impl std::fmt::Display for MandateUsBankAccountCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
 
-impl std::fmt::Debug for MandateUsBankAccountCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
+    impl MapBuilder for MandateUsBankAccountBuilder {
+        type Out = MandateUsBankAccount;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {}
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {})
+        }
     }
-}
-impl serde::Serialize for MandateUsBankAccountCollectionMethod {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
     }
-}
-impl<'de> serde::Deserialize<'de> for MandateUsBankAccountCollectionMethod {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for MandateUsBankAccountCollectionMethod")
-        })
+
+    impl ObjectDeser for MandateUsBankAccount {
+        type Builder = MandateUsBankAccountBuilder;
     }
-}
+
+    impl FromValueOpt for MandateUsBankAccount {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = MandateUsBankAccountBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};

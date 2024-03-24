@@ -7,6 +7,9 @@
 //! for requests mentioned in the `Core Resources` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_core;
+
+#[cfg(feature = "min-ser")]
+miniserde::make_place!(Place);
 pub use balance::types::*;
 pub mod balance;
 #[doc(hidden)]
@@ -37,29 +40,26 @@ pub use stripe_shared::charge_outcome::*;
 pub use stripe_shared::charge_transfer_data::*;
 pub use stripe_shared::connect_collection_transfer::*;
 pub mod customer;
-pub use stripe_shared::customer::*;pub use stripe_shared::customer_acceptance::*;pub use stripe_shared::customer_balance_customer_balance_settings::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_adjusted_for_overdraft::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_applied_to_payment_transaction::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_eu_bank_transfer::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_gb_bank_transfer::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_jp_bank_transfer::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_us_bank_transfer::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_refunded_from_payment_transaction::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_transferred_to_balance::*;pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_unapplied_from_payment_transaction::*;
+pub use stripe_shared::customer::*;
+pub use stripe_shared::customer_acceptance::*;
+pub use stripe_shared::customer_balance_customer_balance_settings::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_adjusted_for_overdraft::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_applied_to_payment_transaction::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_eu_bank_transfer::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_gb_bank_transfer::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_jp_bank_transfer::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_funded_transaction_resource_bank_transfer_resource_us_bank_transfer::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_refunded_from_payment_transaction::*;
+pub use stripe_shared::customer_balance_resource_cash_balance_transaction_resource_unapplied_from_payment_transaction::*;
 pub mod customer_balance_transaction;
 pub use stripe_shared::customer_balance_transaction::*;
 pub mod customer_cash_balance_transaction;
-pub use customer_session::types::*;
 pub use stripe_shared::customer_cash_balance_transaction::*;
-pub mod customer_session;
-#[doc(hidden)]
-pub mod customer_session_resource_components;
-#[doc(inline)]
-pub use customer_session_resource_components::*;
-#[doc(hidden)]
-pub mod customer_session_resource_components_resource_buy_button;
-#[doc(inline)]
-pub use customer_session_resource_components_resource_buy_button::*;
-#[doc(hidden)]
-pub mod customer_session_resource_components_resource_pricing_table;
-#[doc(inline)]
-pub use customer_session_resource_components_resource_pricing_table::*;
 pub use stripe_shared::customer_tax::*;
 pub use stripe_shared::customer_tax_location::*;
 pub use stripe_shared::deleted_customer::*;
-pub use stripe_shared::destination_details_unimplemented::*;
 pub mod dispute;
 pub use stripe_shared::dispute::*;
 pub use stripe_shared::dispute_evidence::*;
@@ -118,8 +118,6 @@ pub use stripe_shared::payment_intent_next_action_paynow_display_qr_code::*;
 pub use stripe_shared::payment_intent_next_action_pix_display_qr_code::*;
 pub use stripe_shared::payment_intent_next_action_promptpay_display_qr_code::*;
 pub use stripe_shared::payment_intent_next_action_redirect_to_url::*;
-pub use stripe_shared::payment_intent_next_action_swish_handle_redirect_or_display_qr_code::*;
-pub use stripe_shared::payment_intent_next_action_swish_qr_code::*;
 pub use stripe_shared::payment_intent_next_action_verify_with_microdeposits::*;
 pub use stripe_shared::payment_intent_next_action_wechat_pay_display_qr_code::*;
 pub use stripe_shared::payment_intent_next_action_wechat_pay_redirect_to_android_app::*;
@@ -134,7 +132,6 @@ pub use stripe_shared::payment_intent_payment_method_options_link::*;
 pub use stripe_shared::payment_intent_payment_method_options_mandate_options_acss_debit::*;
 pub use stripe_shared::payment_intent_payment_method_options_mandate_options_sepa_debit::*;
 pub use stripe_shared::payment_intent_payment_method_options_sepa_debit::*;
-pub use stripe_shared::payment_intent_payment_method_options_swish::*;
 pub use stripe_shared::payment_intent_payment_method_options_us_bank_account::*;
 pub use stripe_shared::payment_intent_processing::*;
 pub use stripe_shared::payment_intent_processing_customer_notification::*;
@@ -145,9 +142,6 @@ pub use stripe_shared::payout::*;
 pub use stripe_shared::platform_tax_fee::*;
 pub mod refund;
 pub use stripe_shared::refund::*;
-pub use stripe_shared::refund_destination_details::*;
-pub use stripe_shared::refund_destination_details_card::*;
-pub use stripe_shared::refund_destination_details_generic::*;
 pub use stripe_shared::refund_next_action::*;
 pub use stripe_shared::refund_next_action_display_details::*;
 pub use stripe_shared::reserve_transaction::*;

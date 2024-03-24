@@ -12,17 +12,10 @@ impl<'a> ListAccountCapability<'a> {
 impl<'a> ListAccountCapability<'a> {
     /// Returns a list of capabilities associated with the account.
     /// The capabilities are returned sorted by creation date, with the most recent capability appearing first.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Capability>> {
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId) -> stripe::Response<stripe_types::List<stripe_shared::Capability>> {
         client.get_query(&format!("/accounts/{account}/capabilities"), self)
     }
-    pub fn paginate(
-        self,
-        account: &stripe_shared::AccountId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Capability>> {
+    pub fn paginate(self, account: &stripe_shared::AccountId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Capability>> {
         stripe::ListPaginator::from_list_params(&format!("/accounts/{account}/capabilities"), self)
     }
 }
@@ -39,12 +32,7 @@ impl<'a> RetrieveCapability<'a> {
 }
 impl<'a> RetrieveCapability<'a> {
     /// Retrieves information about the specified Account Capability.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-        capability: &str,
-    ) -> stripe::Response<stripe_shared::Capability> {
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId, capability: &str) -> stripe::Response<stripe_shared::Capability> {
         client.get_query(&format!("/accounts/{account}/capabilities/{capability}"), self)
     }
 }
@@ -71,16 +59,7 @@ impl<'a> UpdateCapability<'a> {
 impl<'a> UpdateCapability<'a> {
     /// Updates an existing Account Capability.
     /// Request or remove a capability by updating its `requested` parameter.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        account: &stripe_shared::AccountId,
-        capability: &str,
-    ) -> stripe::Response<stripe_shared::Capability> {
-        client.send_form(
-            &format!("/accounts/{account}/capabilities/{capability}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, account: &stripe_shared::AccountId, capability: &str) -> stripe::Response<stripe_shared::Capability> {
+        client.send_form(&format!("/accounts/{account}/capabilities/{capability}"), self, http_types::Method::Post)
     }
 }

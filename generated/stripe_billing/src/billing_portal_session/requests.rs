@@ -29,15 +29,7 @@ pub struct CreateBillingPortalSession<'a> {
 }
 impl<'a> CreateBillingPortalSession<'a> {
     pub fn new(customer: &'a str) -> Self {
-        Self {
-            configuration: None,
-            customer,
-            expand: None,
-            flow_data: None,
-            locale: None,
-            on_behalf_of: None,
-            return_url: None,
-        }
+        Self { configuration: None, customer, expand: None, flow_data: None, locale: None, on_behalf_of: None, return_url: None }
     }
 }
 /// Information about a specific flow for the customer to go through.
@@ -55,21 +47,14 @@ pub struct CreateBillingPortalSessionFlowData<'a> {
     pub subscription_update: Option<CreateBillingPortalSessionFlowDataSubscriptionUpdate<'a>>,
     /// Configuration when `flow_data.type=subscription_update_confirm`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_update_confirm:
-        Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a>>,
+    pub subscription_update_confirm: Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a>>,
     /// Type of flow that the customer will go through.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateBillingPortalSessionFlowDataType,
 }
 impl<'a> CreateBillingPortalSessionFlowData<'a> {
     pub fn new(type_: CreateBillingPortalSessionFlowDataType) -> Self {
-        Self {
-            after_completion: None,
-            subscription_cancel: None,
-            subscription_update: None,
-            subscription_update_confirm: None,
-            type_,
-        }
+        Self { after_completion: None, subscription_cancel: None, subscription_update: None, subscription_update_confirm: None, type_ }
     }
 }
 /// Behavior after the flow is completed.
@@ -77,13 +62,12 @@ impl<'a> CreateBillingPortalSessionFlowData<'a> {
 pub struct CreateBillingPortalSessionFlowDataAfterCompletion<'a> {
     /// Configuration when `after_completion.type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation:
-        Option<CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'a>>,
+    pub hosted_confirmation: Option<CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation<'a>>,
     /// Configuration when `after_completion.type=redirect`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<CreateBillingPortalSessionFlowDataAfterCompletionRedirect<'a>>,
     /// The specified behavior after the flow is completed.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateBillingPortalSessionFlowDataAfterCompletionType,
 }
 impl<'a> CreateBillingPortalSessionFlowDataAfterCompletion<'a> {
@@ -183,14 +167,11 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention<'a> {
     /// Configuration when `retention.type=coupon_offer`.
     pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a>,
     /// Type of retention strategy to use with the customer.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType,
 }
 impl<'a> CreateBillingPortalSessionFlowDataSubscriptionCancelRetention<'a> {
-    pub fn new(
-        coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a>,
-        type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType,
-    ) -> Self {
+    pub fn new(coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer<'a>, type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType) -> Self {
         Self { coupon_offer, type_ }
     }
 }
@@ -265,8 +246,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
     /// The coupon or promotion code to apply to this subscription update.
     /// Currently, only up to one may be specified.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts:
-        Option<&'a [CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<'a>]>,
+    pub discounts: Option<&'a [CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts<'a>]>,
     /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
     /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
     pub items: &'a [CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems<'a>],
@@ -274,10 +254,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
     pub subscription: &'a str,
 }
 impl<'a> CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm<'a> {
-    pub fn new(
-        items: &'a [CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems<'a>],
-        subscription: &'a str,
-    ) -> Self {
+    pub fn new(items: &'a [CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems<'a>], subscription: &'a str) -> Self {
         Self { discounts: None, items, subscription }
     }
 }
@@ -370,10 +347,7 @@ impl serde::Serialize for CreateBillingPortalSessionFlowDataType {
 }
 impl<'a> CreateBillingPortalSession<'a> {
     /// Creates a session of the customer portal.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_billing::BillingPortalSession> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_billing::BillingPortalSession> {
         client.send_form("/billing_portal/sessions", self, http_types::Method::Post)
     }
 }

@@ -11,7 +11,9 @@
 /// Related guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription) and more about [products and prices](https://stripe.com/docs/products-prices/overview).
 ///
 /// For more details see <<https://stripe.com/docs/api/plans/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Plan {
     /// Whether the plan can be used for new purchases.
     pub active: bool,
@@ -54,7 +56,6 @@ pub struct Plan {
     /// Each element represents a pricing tier.
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<stripe_shared::PlanTier>>,
     /// Defines if the tiering price should be `graduated` or `volume` based.
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
@@ -72,6 +73,204 @@ pub struct Plan {
     /// Defaults to `licensed`.
     pub usage_type: stripe_shared::PlanUsageType,
 }
+#[cfg(feature = "min-ser")]
+pub struct PlanBuilder {
+    active: Option<bool>,
+    aggregate_usage: Option<Option<stripe_shared::PlanAggregateUsage>>,
+    amount: Option<Option<i64>>,
+    amount_decimal: Option<Option<String>>,
+    billing_scheme: Option<stripe_shared::PlanBillingScheme>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    id: Option<stripe_shared::PlanId>,
+    interval: Option<stripe_shared::PlanInterval>,
+    interval_count: Option<u64>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    nickname: Option<Option<String>>,
+    product: Option<Option<stripe_types::Expandable<stripe_shared::Product>>>,
+    tiers: Option<Option<Vec<stripe_shared::PlanTier>>>,
+    tiers_mode: Option<Option<stripe_shared::PlanTiersMode>>,
+    transform_usage: Option<Option<stripe_shared::TransformUsage>>,
+    trial_period_days: Option<Option<u32>>,
+    usage_type: Option<stripe_shared::PlanUsageType>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Plan {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Plan>,
+        builder: PlanBuilder,
+    }
+
+    impl Visitor for Place<Plan> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: PlanBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for PlanBuilder {
+        type Out = Plan;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active" => Deserialize::begin(&mut self.active),
+                "aggregate_usage" => Deserialize::begin(&mut self.aggregate_usage),
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_decimal" => Deserialize::begin(&mut self.amount_decimal),
+                "billing_scheme" => Deserialize::begin(&mut self.billing_scheme),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "id" => Deserialize::begin(&mut self.id),
+                "interval" => Deserialize::begin(&mut self.interval),
+                "interval_count" => Deserialize::begin(&mut self.interval_count),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "nickname" => Deserialize::begin(&mut self.nickname),
+                "product" => Deserialize::begin(&mut self.product),
+                "tiers" => Deserialize::begin(&mut self.tiers),
+                "tiers_mode" => Deserialize::begin(&mut self.tiers_mode),
+                "transform_usage" => Deserialize::begin(&mut self.transform_usage),
+                "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
+                "usage_type" => Deserialize::begin(&mut self.usage_type),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active: Deserialize::default(),
+                aggregate_usage: Deserialize::default(),
+                amount: Deserialize::default(),
+                amount_decimal: Deserialize::default(),
+                billing_scheme: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                id: Deserialize::default(),
+                interval: Deserialize::default(),
+                interval_count: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                nickname: Deserialize::default(),
+                product: Deserialize::default(),
+                tiers: Deserialize::default(),
+                tiers_mode: Deserialize::default(),
+                transform_usage: Deserialize::default(),
+                trial_period_days: Deserialize::default(),
+                usage_type: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let active = self.active.take()?;
+            let aggregate_usage = self.aggregate_usage.take()?;
+            let amount = self.amount.take()?;
+            let amount_decimal = self.amount_decimal.take()?;
+            let billing_scheme = self.billing_scheme.take()?;
+            let created = self.created.take()?;
+            let currency = self.currency.take()?;
+            let id = self.id.take()?;
+            let interval = self.interval.take()?;
+            let interval_count = self.interval_count.take()?;
+            let livemode = self.livemode.take()?;
+            let metadata = self.metadata.take()?;
+            let nickname = self.nickname.take()?;
+            let product = self.product.take()?;
+            let tiers = self.tiers.take()?;
+            let tiers_mode = self.tiers_mode.take()?;
+            let transform_usage = self.transform_usage.take()?;
+            let trial_period_days = self.trial_period_days.take()?;
+            let usage_type = self.usage_type.take()?;
+
+            Some(Self::Out {
+                active,
+                aggregate_usage,
+                amount,
+                amount_decimal,
+                billing_scheme,
+                created,
+                currency,
+                id,
+                interval,
+                interval_count,
+                livemode,
+                metadata,
+                nickname,
+                product,
+                tiers,
+                tiers_mode,
+                transform_usage,
+                trial_period_days,
+                usage_type,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Plan {
+        type Builder = PlanBuilder;
+    }
+
+    impl FromValueOpt for Plan {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PlanBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
+                    "aggregate_usage" => b.aggregate_usage = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_decimal" => b.amount_decimal = Some(FromValueOpt::from_value(v)?),
+                    "billing_scheme" => b.billing_scheme = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
+                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "nickname" => b.nickname = Some(FromValueOpt::from_value(v)?),
+                    "product" => b.product = Some(FromValueOpt::from_value(v)?),
+                    "tiers" => b.tiers = Some(FromValueOpt::from_value(v)?),
+                    "tiers_mode" => b.tiers_mode = Some(FromValueOpt::from_value(v)?),
+                    "transform_usage" => b.transform_usage = Some(FromValueOpt::from_value(v)?),
+                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
+                    "usage_type" => b.usage_type = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for Plan {
     type Id = stripe_shared::PlanId;
     fn id(&self) -> &Self::Id {
@@ -134,10 +333,27 @@ impl<'de> serde::Deserialize<'de> for PlanAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanAggregateUsage"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanAggregateUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PlanAggregateUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PlanAggregateUsage);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanBillingScheme {
     PerUnit,
@@ -187,10 +403,27 @@ impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanBillingScheme {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanBillingScheme::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PlanBillingScheme);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanInterval {
     Day,
@@ -249,6 +482,24 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PlanInterval> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanInterval::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PlanInterval);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanTiersMode {
     Graduated,
@@ -301,6 +552,24 @@ impl<'de> serde::Deserialize<'de> for PlanTiersMode {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanTiersMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanTiersMode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PlanTiersMode);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PlanUsageType {
     Licensed,
@@ -353,3 +622,21 @@ impl<'de> serde::Deserialize<'de> for PlanUsageType {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PlanUsageType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PlanUsageType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PlanUsageType);

@@ -25,7 +25,7 @@ pub struct ListEvent<'a> {
     pub starting_after: Option<&'a str>,
     /// A string containing a specific event name, or group of events using * as a wildcard.
     /// The list will be filtered to include only events with a matching event property.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
     /// An array of up to 20 strings containing specific event names.
@@ -42,10 +42,7 @@ impl<'a> ListEvent<'a> {
 impl<'a> ListEvent<'a> {
     /// List events, going back up to 30 days.
     /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::Event>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::Event>> {
         client.get_query("/events", self)
     }
     pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::Event>> {
@@ -66,11 +63,7 @@ impl<'a> RetrieveEvent<'a> {
 impl<'a> RetrieveEvent<'a> {
     /// Retrieves the details of an event.
     /// Supply the unique identifier of the event, which you might have received in a webhook.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::EventId,
-    ) -> stripe::Response<stripe_shared::Event> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::EventId) -> stripe::Response<stripe_shared::Event> {
         client.get_query(&format!("/events/{id}"), self)
     }
 }

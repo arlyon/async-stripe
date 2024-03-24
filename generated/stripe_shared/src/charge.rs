@@ -4,7 +4,9 @@
 /// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
 ///
 /// For more details see <<https://stripe.com/docs/api/charges/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct Charge {
     /// Amount intended to be collected by this payment.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -24,7 +26,6 @@ pub struct Charge {
     /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees) for details.
     pub application_fee_amount: Option<i64>,
     /// Authorization code on the charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub authorization_code: Option<String>,
     /// ID of the balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).
     pub balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
@@ -46,8 +47,7 @@ pub struct Charge {
     /// Whether the charge has been disputed.
     pub disputed: bool,
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
-    pub failure_balance_transaction:
-        Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
+    pub failure_balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/error-codes) for a list of codes).
     pub failure_code: Option<String>,
     /// Message to user further explaining reason for charge failure if available.
@@ -58,7 +58,6 @@ pub struct Charge {
     pub id: stripe_shared::ChargeId,
     /// ID of the invoice this charge is for if one exists.
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub level3: Option<stripe_shared::Level3>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -79,7 +78,6 @@ pub struct Charge {
     pub payment_method: Option<String>,
     /// Details about the payment method at the time of the transaction.
     pub payment_method_details: Option<stripe_shared::PaymentMethodDetails>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<stripe_shared::RadarRadarOptions>,
     /// This is the email address that the receipt for this charge was sent to.
     pub receipt_email: Option<String>,
@@ -118,7 +116,6 @@ pub struct Charge {
     /// The status of the payment is either `succeeded`, `pending`, or `failed`.
     pub status: ChargeStatus,
     /// ID of the transfer to the `destination` account (only applicable if the charge was created using the `destination` parameter).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer: Option<stripe_types::Expandable<stripe_shared::Transfer>>,
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
     /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
@@ -127,6 +124,372 @@ pub struct Charge {
     /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct ChargeBuilder {
+    amount: Option<i64>,
+    amount_captured: Option<i64>,
+    amount_refunded: Option<i64>,
+    application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
+    application_fee: Option<Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>>,
+    application_fee_amount: Option<Option<i64>>,
+    authorization_code: Option<Option<String>>,
+    balance_transaction: Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    billing_details: Option<stripe_shared::BillingDetails>,
+    calculated_statement_descriptor: Option<Option<String>>,
+    captured: Option<bool>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    description: Option<Option<String>>,
+    disputed: Option<bool>,
+    failure_balance_transaction: Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    failure_code: Option<Option<String>>,
+    failure_message: Option<Option<String>>,
+    fraud_details: Option<Option<stripe_shared::ChargeFraudDetails>>,
+    id: Option<stripe_shared::ChargeId>,
+    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    level3: Option<Option<stripe_shared::Level3>>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
+    outcome: Option<Option<stripe_shared::ChargeOutcome>>,
+    paid: Option<bool>,
+    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    payment_method: Option<Option<String>>,
+    payment_method_details: Option<Option<stripe_shared::PaymentMethodDetails>>,
+    radar_options: Option<Option<stripe_shared::RadarRadarOptions>>,
+    receipt_email: Option<Option<String>>,
+    receipt_number: Option<Option<String>>,
+    receipt_url: Option<Option<String>>,
+    refunded: Option<bool>,
+    refunds: Option<Option<stripe_types::List<stripe_shared::Refund>>>,
+    review: Option<Option<stripe_types::Expandable<stripe_shared::Review>>>,
+    shipping: Option<Option<stripe_shared::Shipping>>,
+    source: Option<Option<stripe_shared::PaymentSource>>,
+    source_transfer: Option<Option<stripe_types::Expandable<stripe_shared::Transfer>>>,
+    statement_descriptor: Option<Option<String>>,
+    statement_descriptor_suffix: Option<Option<String>>,
+    status: Option<ChargeStatus>,
+    transfer: Option<Option<stripe_types::Expandable<stripe_shared::Transfer>>>,
+    transfer_data: Option<Option<stripe_shared::ChargeTransferData>>,
+    transfer_group: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Charge {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Charge>,
+        builder: ChargeBuilder,
+    }
+
+    impl Visitor for Place<Charge> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: ChargeBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for ChargeBuilder {
+        type Out = Charge;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_captured" => Deserialize::begin(&mut self.amount_captured),
+                "amount_refunded" => Deserialize::begin(&mut self.amount_refunded),
+                "application" => Deserialize::begin(&mut self.application),
+                "application_fee" => Deserialize::begin(&mut self.application_fee),
+                "application_fee_amount" => Deserialize::begin(&mut self.application_fee_amount),
+                "authorization_code" => Deserialize::begin(&mut self.authorization_code),
+                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "billing_details" => Deserialize::begin(&mut self.billing_details),
+                "calculated_statement_descriptor" => Deserialize::begin(&mut self.calculated_statement_descriptor),
+                "captured" => Deserialize::begin(&mut self.captured),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "description" => Deserialize::begin(&mut self.description),
+                "disputed" => Deserialize::begin(&mut self.disputed),
+                "failure_balance_transaction" => Deserialize::begin(&mut self.failure_balance_transaction),
+                "failure_code" => Deserialize::begin(&mut self.failure_code),
+                "failure_message" => Deserialize::begin(&mut self.failure_message),
+                "fraud_details" => Deserialize::begin(&mut self.fraud_details),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice" => Deserialize::begin(&mut self.invoice),
+                "level3" => Deserialize::begin(&mut self.level3),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
+                "outcome" => Deserialize::begin(&mut self.outcome),
+                "paid" => Deserialize::begin(&mut self.paid),
+                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
+                "radar_options" => Deserialize::begin(&mut self.radar_options),
+                "receipt_email" => Deserialize::begin(&mut self.receipt_email),
+                "receipt_number" => Deserialize::begin(&mut self.receipt_number),
+                "receipt_url" => Deserialize::begin(&mut self.receipt_url),
+                "refunded" => Deserialize::begin(&mut self.refunded),
+                "refunds" => Deserialize::begin(&mut self.refunds),
+                "review" => Deserialize::begin(&mut self.review),
+                "shipping" => Deserialize::begin(&mut self.shipping),
+                "source" => Deserialize::begin(&mut self.source),
+                "source_transfer" => Deserialize::begin(&mut self.source_transfer),
+                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "statement_descriptor_suffix" => Deserialize::begin(&mut self.statement_descriptor_suffix),
+                "status" => Deserialize::begin(&mut self.status),
+                "transfer" => Deserialize::begin(&mut self.transfer),
+                "transfer_data" => Deserialize::begin(&mut self.transfer_data),
+                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_captured: Deserialize::default(),
+                amount_refunded: Deserialize::default(),
+                application: Deserialize::default(),
+                application_fee: Deserialize::default(),
+                application_fee_amount: Deserialize::default(),
+                authorization_code: Deserialize::default(),
+                balance_transaction: Deserialize::default(),
+                billing_details: Deserialize::default(),
+                calculated_statement_descriptor: Deserialize::default(),
+                captured: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                customer: Deserialize::default(),
+                description: Deserialize::default(),
+                disputed: Deserialize::default(),
+                failure_balance_transaction: Deserialize::default(),
+                failure_code: Deserialize::default(),
+                failure_message: Deserialize::default(),
+                fraud_details: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice: Deserialize::default(),
+                level3: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                on_behalf_of: Deserialize::default(),
+                outcome: Deserialize::default(),
+                paid: Deserialize::default(),
+                payment_intent: Deserialize::default(),
+                payment_method: Deserialize::default(),
+                payment_method_details: Deserialize::default(),
+                radar_options: Deserialize::default(),
+                receipt_email: Deserialize::default(),
+                receipt_number: Deserialize::default(),
+                receipt_url: Deserialize::default(),
+                refunded: Deserialize::default(),
+                refunds: Deserialize::default(),
+                review: Deserialize::default(),
+                shipping: Deserialize::default(),
+                source: Deserialize::default(),
+                source_transfer: Deserialize::default(),
+                statement_descriptor: Deserialize::default(),
+                statement_descriptor_suffix: Deserialize::default(),
+                status: Deserialize::default(),
+                transfer: Deserialize::default(),
+                transfer_data: Deserialize::default(),
+                transfer_group: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let amount = self.amount.take()?;
+            let amount_captured = self.amount_captured.take()?;
+            let amount_refunded = self.amount_refunded.take()?;
+            let application = self.application.take()?;
+            let application_fee = self.application_fee.take()?;
+            let application_fee_amount = self.application_fee_amount.take()?;
+            let authorization_code = self.authorization_code.take()?;
+            let balance_transaction = self.balance_transaction.take()?;
+            let billing_details = self.billing_details.take()?;
+            let calculated_statement_descriptor = self.calculated_statement_descriptor.take()?;
+            let captured = self.captured.take()?;
+            let created = self.created.take()?;
+            let currency = self.currency.take()?;
+            let customer = self.customer.take()?;
+            let description = self.description.take()?;
+            let disputed = self.disputed.take()?;
+            let failure_balance_transaction = self.failure_balance_transaction.take()?;
+            let failure_code = self.failure_code.take()?;
+            let failure_message = self.failure_message.take()?;
+            let fraud_details = self.fraud_details.take()?;
+            let id = self.id.take()?;
+            let invoice = self.invoice.take()?;
+            let level3 = self.level3.take()?;
+            let livemode = self.livemode.take()?;
+            let metadata = self.metadata.take()?;
+            let on_behalf_of = self.on_behalf_of.take()?;
+            let outcome = self.outcome.take()?;
+            let paid = self.paid.take()?;
+            let payment_intent = self.payment_intent.take()?;
+            let payment_method = self.payment_method.take()?;
+            let payment_method_details = self.payment_method_details.take()?;
+            let radar_options = self.radar_options.take()?;
+            let receipt_email = self.receipt_email.take()?;
+            let receipt_number = self.receipt_number.take()?;
+            let receipt_url = self.receipt_url.take()?;
+            let refunded = self.refunded.take()?;
+            let refunds = self.refunds.take()?;
+            let review = self.review.take()?;
+            let shipping = self.shipping.take()?;
+            let source = self.source.take()?;
+            let source_transfer = self.source_transfer.take()?;
+            let statement_descriptor = self.statement_descriptor.take()?;
+            let statement_descriptor_suffix = self.statement_descriptor_suffix.take()?;
+            let status = self.status.take()?;
+            let transfer = self.transfer.take()?;
+            let transfer_data = self.transfer_data.take()?;
+            let transfer_group = self.transfer_group.take()?;
+
+            Some(Self::Out {
+                amount,
+                amount_captured,
+                amount_refunded,
+                application,
+                application_fee,
+                application_fee_amount,
+                authorization_code,
+                balance_transaction,
+                billing_details,
+                calculated_statement_descriptor,
+                captured,
+                created,
+                currency,
+                customer,
+                description,
+                disputed,
+                failure_balance_transaction,
+                failure_code,
+                failure_message,
+                fraud_details,
+                id,
+                invoice,
+                level3,
+                livemode,
+                metadata,
+                on_behalf_of,
+                outcome,
+                paid,
+                payment_intent,
+                payment_method,
+                payment_method_details,
+                radar_options,
+                receipt_email,
+                receipt_number,
+                receipt_url,
+                refunded,
+                refunds,
+                review,
+                shipping,
+                source,
+                source_transfer,
+                statement_descriptor,
+                statement_descriptor_suffix,
+                status,
+                transfer,
+                transfer_data,
+                transfer_group,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Charge {
+        type Builder = ChargeBuilder;
+    }
+
+    impl FromValueOpt for Charge {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = ChargeBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_captured" => b.amount_captured = Some(FromValueOpt::from_value(v)?),
+                    "amount_refunded" => b.amount_refunded = Some(FromValueOpt::from_value(v)?),
+                    "application" => b.application = Some(FromValueOpt::from_value(v)?),
+                    "application_fee" => b.application_fee = Some(FromValueOpt::from_value(v)?),
+                    "application_fee_amount" => b.application_fee_amount = Some(FromValueOpt::from_value(v)?),
+                    "authorization_code" => b.authorization_code = Some(FromValueOpt::from_value(v)?),
+                    "balance_transaction" => b.balance_transaction = Some(FromValueOpt::from_value(v)?),
+                    "billing_details" => b.billing_details = Some(FromValueOpt::from_value(v)?),
+                    "calculated_statement_descriptor" => b.calculated_statement_descriptor = Some(FromValueOpt::from_value(v)?),
+                    "captured" => b.captured = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "disputed" => b.disputed = Some(FromValueOpt::from_value(v)?),
+                    "failure_balance_transaction" => b.failure_balance_transaction = Some(FromValueOpt::from_value(v)?),
+                    "failure_code" => b.failure_code = Some(FromValueOpt::from_value(v)?),
+                    "failure_message" => b.failure_message = Some(FromValueOpt::from_value(v)?),
+                    "fraud_details" => b.fraud_details = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
+                    "level3" => b.level3 = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "on_behalf_of" => b.on_behalf_of = Some(FromValueOpt::from_value(v)?),
+                    "outcome" => b.outcome = Some(FromValueOpt::from_value(v)?),
+                    "paid" => b.paid = Some(FromValueOpt::from_value(v)?),
+                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_details" => b.payment_method_details = Some(FromValueOpt::from_value(v)?),
+                    "radar_options" => b.radar_options = Some(FromValueOpt::from_value(v)?),
+                    "receipt_email" => b.receipt_email = Some(FromValueOpt::from_value(v)?),
+                    "receipt_number" => b.receipt_number = Some(FromValueOpt::from_value(v)?),
+                    "receipt_url" => b.receipt_url = Some(FromValueOpt::from_value(v)?),
+                    "refunded" => b.refunded = Some(FromValueOpt::from_value(v)?),
+                    "refunds" => b.refunds = Some(FromValueOpt::from_value(v)?),
+                    "review" => b.review = Some(FromValueOpt::from_value(v)?),
+                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
+                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
+                    "source_transfer" => b.source_transfer = Some(FromValueOpt::from_value(v)?),
+                    "statement_descriptor" => b.statement_descriptor = Some(FromValueOpt::from_value(v)?),
+                    "statement_descriptor_suffix" => b.statement_descriptor_suffix = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "transfer" => b.transfer = Some(FromValueOpt::from_value(v)?),
+                    "transfer_data" => b.transfer_data = Some(FromValueOpt::from_value(v)?),
+                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The status of the payment is either `succeeded`, `pending`, or `failed`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ChargeStatus {
@@ -183,6 +546,24 @@ impl<'de> serde::Deserialize<'de> for ChargeStatus {
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeStatus"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ChargeStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<ChargeStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ChargeStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(ChargeStatus);
 impl stripe_types::Object for Charge {
     type Id = stripe_shared::ChargeId;
     fn id(&self) -> &Self::Id {

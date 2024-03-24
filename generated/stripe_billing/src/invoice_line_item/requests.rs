@@ -26,17 +26,10 @@ impl<'a> ListInvoiceInvoiceLineItem<'a> {
 impl<'a> ListInvoiceInvoiceLineItem<'a> {
     /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
     /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        invoice: &stripe_shared::InvoiceId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::InvoiceLineItem>> {
+    pub fn send(&self, client: &stripe::Client, invoice: &stripe_shared::InvoiceId) -> stripe::Response<stripe_types::List<stripe_shared::InvoiceLineItem>> {
         client.get_query(&format!("/invoices/{invoice}/lines"), self)
     }
-    pub fn paginate(
-        self,
-        invoice: &stripe_shared::InvoiceId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::InvoiceLineItem>> {
+    pub fn paginate(self, invoice: &stripe_shared::InvoiceId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::InvoiceLineItem>> {
         stripe::ListPaginator::from_list_params(&format!("/invoices/{invoice}/lines"), self)
     }
 }
@@ -164,14 +157,7 @@ pub struct UpdateInvoiceLineItemPriceData<'a> {
 }
 impl<'a> UpdateInvoiceLineItemPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self {
-            currency,
-            product: None,
-            product_data: None,
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
+        Self { currency, product: None, product_data: None, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
     }
 }
 /// Data used to generate a new product object inline. One of `product` or `product_data` is required.
@@ -271,11 +257,7 @@ pub struct UpdateInvoiceLineItemTaxAmounts<'a> {
     pub taxable_amount: i64,
 }
 impl<'a> UpdateInvoiceLineItemTaxAmounts<'a> {
-    pub fn new(
-        amount: i64,
-        tax_rate_data: UpdateInvoiceLineItemTaxAmountsTaxRateData<'a>,
-        taxable_amount: i64,
-    ) -> Self {
+    pub fn new(amount: i64, tax_rate_data: UpdateInvoiceLineItemTaxAmountsTaxRateData<'a>, taxable_amount: i64) -> Self {
         Self { amount, tax_rate_data, taxable_amount }
     }
 }
@@ -317,16 +299,7 @@ pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData<'a> {
 }
 impl<'a> UpdateInvoiceLineItemTaxAmountsTaxRateData<'a> {
     pub fn new(display_name: &'a str, inclusive: bool, percentage: f64) -> Self {
-        Self {
-            country: None,
-            description: None,
-            display_name,
-            inclusive,
-            jurisdiction: None,
-            percentage,
-            state: None,
-            tax_type: None,
-        }
+        Self { country: None, description: None, display_name, inclusive, jurisdiction: None, percentage, state: None, tax_type: None }
     }
 }
 /// The high-level tax type, such as `vat` or `sales_tax`.
@@ -419,16 +392,7 @@ impl<'a> UpdateInvoiceLineItem<'a> {
     /// Other fields, such as `amount`, live on both the invoice.
     /// item and the invoice line item, so updates on this endpoint will propagate to the invoice item as well.
     /// Updating an invoice’s line item is only possible before the invoice is finalized.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        invoice: &stripe_shared::InvoiceId,
-        line_item_id: &str,
-    ) -> stripe::Response<stripe_shared::InvoiceLineItem> {
-        client.send_form(
-            &format!("/invoices/{invoice}/lines/{line_item_id}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, invoice: &stripe_shared::InvoiceId, line_item_id: &str) -> stripe::Response<stripe_shared::InvoiceLineItem> {
+        client.send_form(&format!("/invoices/{invoice}/lines/{line_item_id}"), self, http_types::Method::Post)
     }
 }

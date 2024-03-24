@@ -1,10 +1,13 @@
-use serde_json::json;
-use stripe_core::{Charge, ChargeStatus, Customer};
-use stripe_types::Currency;
+use serde_json::{json, Value};
+use stripe_connect::Account;
+use stripe_core::customer::RetrieveCustomerReturned;
+use stripe_core::{
+    Charge, ChargeStatus, Customer, CustomerTaxExempt, File, FileLink, FilePurpose, PaymentSource,
+};
+use stripe_types::{Currency, StripeDeserialize, Timestamp};
 
-#[test]
-fn deserialize_customer_with_card() {
-    let example = json!({
+fn mock_customer_with_card() -> Value {
+    json!({
       "id": "cus_1234",
       "object": "customer",
       "account_balance": 0,
@@ -61,8 +64,13 @@ fn deserialize_customer_with_card() {
       },
       "tax_info": null,
       "tax_info_verification": null
-    });
-    let result = serde_json::from_value::<Customer>(example);
+    })
+}
+
+#[test]
+fn deserialize_customer_with_card() {
+    let example = mock_customer_with_card().to_string();
+    let result = Customer::deserialize(&example);
     assert!(result.is_ok(), "expected ok; was {:?}", result);
 }
 
@@ -142,8 +150,10 @@ fn deserialize_customer_with_source() {
       },
       "tax_info": null,
       "tax_info_verification": null
-    });
-    let result = serde_json::from_value::<Customer>(example);
+    })
+    .to_string();
+
+    let result = Customer::deserialize(&example);
     assert!(result.is_ok(), "expected ok; was {:?}", result);
 }
 
@@ -195,8 +205,9 @@ fn deserialize_checkout_event() {
           "success_url": "https://example.com/success"
         }
       }
-    });
-    let result = serde_json::from_value::<Event>(example);
+    })
+    .to_string();
+    let result = Event::deserialize(&example);
     assert!(result.is_ok(), "expected ok; was {:?}", result);
 }
 
@@ -219,10 +230,175 @@ fn deserialize_charge_with_no_refunds() {
       "paid": false,
       "status": "pending",
       "refunded": false,
-    });
-    let charge: Charge = serde_json::from_value(example).unwrap();
+    })
+    .to_string();
+    let charge = Charge::deserialize(&example).unwrap();
     assert_eq!(charge.id.as_str(), "ch_123");
     assert_eq!(charge.currency, Currency::CAD);
     assert_eq!(charge.status, ChargeStatus::Pending);
     assert_eq!(charge.created, 1703349829);
+}
+
+const FILE_CREATED: Timestamp = 1704511150;
+fn mock_file() -> Value {
+    json!({
+      "created": FILE_CREATED,
+      "id": "file_123",
+      "size": 0,
+      "purpose": "account_requirement"
+    })
+}
+
+#[test]
+fn deserialize_file() {
+    let file = mock_file();
+    let file = File::deserialize(&file.to_string()).unwrap();
+    assert_eq!(file.purpose, FilePurpose::AccountRequirement);
+    assert_eq!(file.created, FILE_CREATED);
+}
+
+#[cfg(feature = "min-ser")]
+#[test]
+fn deserialize_id() {
+    use std::str::FromStr;
+
+    use stripe_core::FileId;
+
+    #[derive(miniserde::Deserialize)]
+    struct Id {
+        id: FileId,
+    }
+    let data = json!({"id": "file_123"});
+    let id: Id = miniserde::json::from_str(&data.to_string()).unwrap();
+    assert_eq!(id.id, FileId::from_str("file_123").unwrap());
+}
+
+#[test]
+fn deserialize_account() {
+    let acct_url = "/v1/accounts/acct_123/external_accounts";
+    let account = json!({
+      "id": "acct_123",
+      "external_accounts": {
+        "data": [],
+        "has_more": false,
+        "object": "list",
+        "url": acct_url
+      },
+    });
+    let result = Account::deserialize(&account.to_string()).unwrap();
+    assert_eq!(result.id.as_str(), "acct_123");
+
+    let external_accts = result.external_accounts.as_ref().unwrap();
+    assert_eq!(external_accts.url, acct_url);
+    assert!(external_accts.data.is_empty());
+}
+
+fn mock_payment_source() -> Value {
+    json!({
+      "object": "bank_account",
+      "currency": "usd",
+      "country": "us",
+      "id": "ba_123",
+      "status": "new",
+      "last4": "1234",
+    })
+}
+
+#[track_caller]
+fn assert_payment_source_matches(result: &PaymentSource) {
+    let PaymentSource::BankAccount(bank) = result else {
+        panic!("Expected bank account");
+    };
+    assert_eq!(bank.last4, "1234");
+    assert_eq!(bank.status, "new");
+}
+
+#[test]
+fn deserialize_polymorphic() {
+    let payment_source = mock_payment_source();
+    let result = PaymentSource::deserialize(&payment_source.to_string()).unwrap();
+    assert_payment_source_matches(&result);
+}
+
+#[test]
+fn deserialize_expandable() {
+    let file_link_base = json!({
+      "created": 1704511150,
+      "expired": false,
+      "livemode": false,
+      "metadata": {},
+      "url": "http://localhost:3000",
+      "id": "link_123",
+    });
+
+    let mut file_link = file_link_base.clone();
+    file_link.as_object_mut().unwrap().insert("file".into(), Value::String("file_123".into()));
+
+    let result = FileLink::deserialize(&file_link.to_string()).unwrap();
+    assert!(result.metadata.is_empty());
+    assert!(!result.livemode);
+    assert!(!result.expired);
+
+    assert_eq!(result.url.as_ref().unwrap(), "http://localhost:3000");
+    assert_eq!(result.created, 1704511150);
+    assert_eq!(result.file.id().as_str(), "file_123");
+
+    let mut file_link = file_link_base.clone();
+    file_link.as_object_mut().unwrap().insert("file".into(), mock_file());
+
+    let result = FileLink::deserialize(&file_link.to_string()).unwrap();
+    let file = result.file.as_object().unwrap();
+
+    assert_eq!(file.created, FILE_CREATED);
+    assert_eq!(file.purpose, FilePurpose::AccountRequirement);
+    assert_eq!(file.id.as_str(), "file_123");
+}
+
+#[test]
+fn deserialize_expandable_polymorphic() {
+    let base_cust = json!({
+        "currency": "usd",
+        "created": 1704511150,
+        "id": "cus_123",
+        "livemode": false,
+        "tax_exempt": "exempt",
+    });
+
+    let mut cust = base_cust.clone();
+    cust.as_object_mut().unwrap().insert("default_source".into(), Value::String("ba_123".into()));
+
+    let result = Customer::deserialize(&cust.to_string()).unwrap();
+    assert_eq!(result.created, 1704511150);
+    assert_eq!(result.currency, Some(Currency::USD));
+    assert_eq!(result.tax_exempt, Some(CustomerTaxExempt::Exempt));
+    assert_eq!(result.id.as_str(), "cus_123");
+    assert_eq!(result.default_source.as_ref().unwrap().id().as_str(), "ba_123");
+
+    let mut cust = base_cust.clone();
+    cust.as_object_mut().unwrap().insert("default_source".into(), mock_payment_source());
+
+    let result = Customer::deserialize(&cust.to_string()).unwrap();
+    let payment_source = result.default_source.as_ref().unwrap().as_object().unwrap();
+    assert_payment_source_matches(&payment_source);
+}
+
+#[test]
+fn deserialize_customer_deleted_or_not() {
+    let deleted_cust = json!({
+        "deleted": true,
+        "id": "cus_123"
+    });
+    let result = RetrieveCustomerReturned::deserialize(&deleted_cust.to_string()).unwrap();
+    let RetrieveCustomerReturned::DeletedCustomer(deleted) = result else {
+        panic!("expected deleted variant");
+    };
+    assert_eq!(deleted.id.as_str(), "cus_123");
+
+    let cust = mock_customer_with_card().to_string();
+    let result = RetrieveCustomerReturned::deserialize(&cust).unwrap();
+    let RetrieveCustomerReturned::Customer(cust) = result else {
+        panic!("did not expected deleted variant")
+    };
+    assert_eq!(cust.id.as_str(), "cus_1234");
+    assert_eq!(cust.sources.unwrap().data.len(), 1);
 }

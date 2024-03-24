@@ -8,14 +8,13 @@
 //! reexported.
 
 extern crate self as stripe_shared;
+
+#[cfg(feature = "min-ser")]
+miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod account;
 #[doc(inline)]
 pub use account::*;
-#[doc(hidden)]
-pub mod account_annual_revenue;
-#[doc(inline)]
-pub use account_annual_revenue::*;
 #[doc(hidden)]
 pub mod account_bacs_debit_payments_settings;
 #[doc(inline)]
@@ -60,10 +59,6 @@ pub use account_decline_charge_on::*;
 pub mod account_future_requirements;
 #[doc(inline)]
 pub use account_future_requirements::*;
-#[doc(hidden)]
-pub mod account_invoices_settings;
-#[doc(inline)]
-pub use account_invoices_settings::*;
 #[doc(hidden)]
 pub mod account_monthly_estimated_revenue;
 #[doc(inline)]
@@ -189,10 +184,6 @@ pub mod charge_transfer_data;
 #[doc(inline)]
 pub use charge_transfer_data::*;
 #[doc(hidden)]
-pub mod connect_account_reference;
-#[doc(inline)]
-pub use connect_account_reference::*;
-#[doc(hidden)]
 pub mod connect_collection_transfer;
 #[doc(inline)]
 pub use connect_collection_transfer::*;
@@ -277,10 +268,6 @@ pub mod customer_balance_resource_cash_balance_transaction_resource_refunded_fro
 #[doc(inline)]
 pub use customer_balance_resource_cash_balance_transaction_resource_refunded_from_payment_transaction::*;
 #[doc(hidden)]
-pub mod customer_balance_resource_cash_balance_transaction_resource_transferred_to_balance;
-#[doc(inline)]
-pub use customer_balance_resource_cash_balance_transaction_resource_transferred_to_balance::*;
-#[doc(hidden)]
 pub mod customer_balance_resource_cash_balance_transaction_resource_unapplied_from_payment_transaction;
 #[doc(inline)]
 pub use customer_balance_resource_cash_balance_transaction_resource_unapplied_from_payment_transaction::*;
@@ -364,10 +351,6 @@ pub use deleted_tax_id::*;
 pub mod deleted_test_helpers_test_clock;
 #[doc(inline)]
 pub use deleted_test_helpers_test_clock::*;
-#[doc(hidden)]
-pub mod destination_details_unimplemented;
-#[doc(inline)]
-pub use destination_details_unimplemented::*;
 #[doc(hidden)]
 pub mod discount;
 #[doc(inline)]
@@ -1093,14 +1076,6 @@ pub mod payment_intent_next_action_redirect_to_url;
 #[doc(inline)]
 pub use payment_intent_next_action_redirect_to_url::*;
 #[doc(hidden)]
-pub mod payment_intent_next_action_swish_handle_redirect_or_display_qr_code;
-#[doc(inline)]
-pub use payment_intent_next_action_swish_handle_redirect_or_display_qr_code::*;
-#[doc(hidden)]
-pub mod payment_intent_next_action_swish_qr_code;
-#[doc(inline)]
-pub use payment_intent_next_action_swish_qr_code::*;
-#[doc(hidden)]
 pub mod payment_intent_next_action_verify_with_microdeposits;
 #[doc(inline)]
 pub use payment_intent_next_action_verify_with_microdeposits::*;
@@ -1157,10 +1132,6 @@ pub mod payment_intent_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_sepa_debit::*;
 #[doc(hidden)]
-pub mod payment_intent_payment_method_options_swish;
-#[doc(inline)]
-pub use payment_intent_payment_method_options_swish::*;
-#[doc(hidden)]
 pub mod payment_intent_payment_method_options_us_bank_account;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_us_bank_account::*;
@@ -1184,10 +1155,6 @@ pub use payment_links_resource_after_completion::*;
 pub mod payment_links_resource_automatic_tax;
 #[doc(inline)]
 pub use payment_links_resource_automatic_tax::*;
-#[doc(hidden)]
-pub mod payment_links_resource_completed_sessions;
-#[doc(inline)]
-pub use payment_links_resource_completed_sessions::*;
 #[doc(hidden)]
 pub mod payment_links_resource_completion_behavior_confirmation_page;
 #[doc(inline)]
@@ -1245,17 +1212,9 @@ pub mod payment_links_resource_payment_intent_data;
 #[doc(inline)]
 pub use payment_links_resource_payment_intent_data::*;
 #[doc(hidden)]
-pub mod payment_links_resource_payment_method_reuse_agreement;
-#[doc(inline)]
-pub use payment_links_resource_payment_method_reuse_agreement::*;
-#[doc(hidden)]
 pub mod payment_links_resource_phone_number_collection;
 #[doc(inline)]
 pub use payment_links_resource_phone_number_collection::*;
-#[doc(hidden)]
-pub mod payment_links_resource_restrictions;
-#[doc(inline)]
-pub use payment_links_resource_restrictions::*;
 #[doc(hidden)]
 pub mod payment_links_resource_shipping_address_collection;
 #[doc(inline)]
@@ -1268,10 +1227,6 @@ pub use payment_links_resource_shipping_option::*;
 pub mod payment_links_resource_subscription_data;
 #[doc(inline)]
 pub use payment_links_resource_subscription_data::*;
-#[doc(hidden)]
-pub mod payment_links_resource_subscription_data_invoice_settings;
-#[doc(inline)]
-pub use payment_links_resource_subscription_data_invoice_settings::*;
 #[doc(hidden)]
 pub mod payment_links_resource_tax_id_collection;
 #[doc(inline)]
@@ -1585,10 +1540,6 @@ pub mod payment_method_details_stripe_account;
 #[doc(inline)]
 pub use payment_method_details_stripe_account::*;
 #[doc(hidden)]
-pub mod payment_method_details_swish;
-#[doc(inline)]
-pub use payment_method_details_swish::*;
-#[doc(hidden)]
 pub mod payment_method_details_us_bank_account;
 #[doc(inline)]
 pub use payment_method_details_us_bank_account::*;
@@ -1753,10 +1704,6 @@ pub mod payment_method_options_sofort;
 #[doc(inline)]
 pub use payment_method_options_sofort::*;
 #[doc(hidden)]
-pub mod payment_method_options_us_bank_account_mandate_options;
-#[doc(inline)]
-pub use payment_method_options_us_bank_account_mandate_options::*;
-#[doc(hidden)]
 pub mod payment_method_options_wechat_pay;
 #[doc(inline)]
 pub use payment_method_options_wechat_pay::*;
@@ -1800,10 +1747,6 @@ pub use payment_method_sepa_debit::*;
 pub mod payment_method_sofort;
 #[doc(inline)]
 pub use payment_method_sofort::*;
-#[doc(hidden)]
-pub mod payment_method_swish;
-#[doc(inline)]
-pub use payment_method_swish::*;
 #[doc(hidden)]
 pub mod payment_method_us_bank_account;
 #[doc(inline)]
@@ -1968,18 +1911,6 @@ pub use recurring::*;
 pub mod refund;
 #[doc(inline)]
 pub use refund::*;
-#[doc(hidden)]
-pub mod refund_destination_details;
-#[doc(inline)]
-pub use refund_destination_details::*;
-#[doc(hidden)]
-pub mod refund_destination_details_card;
-#[doc(inline)]
-pub use refund_destination_details_card::*;
-#[doc(hidden)]
-pub mod refund_destination_details_generic;
-#[doc(inline)]
-pub use refund_destination_details_generic::*;
 #[doc(hidden)]
 pub mod refund_next_action;
 #[doc(inline)]
@@ -2357,10 +2288,6 @@ pub mod subscription_transfer_data;
 #[doc(inline)]
 pub use subscription_transfer_data::*;
 #[doc(hidden)]
-pub mod subscriptions_resource_billing_cycle_anchor_config;
-#[doc(inline)]
-pub use subscriptions_resource_billing_cycle_anchor_config::*;
-#[doc(hidden)]
 pub mod subscriptions_resource_pause_collection;
 #[doc(inline)]
 pub use subscriptions_resource_pause_collection::*;
@@ -2392,10 +2319,6 @@ pub use tax_code::*;
 pub mod tax_deducted_at_source;
 #[doc(inline)]
 pub use tax_deducted_at_source::*;
-#[doc(hidden)]
-pub mod tax_i_ds_owner;
-#[doc(inline)]
-pub use tax_i_ds_owner::*;
 #[doc(hidden)]
 pub mod tax_id;
 #[doc(inline)]

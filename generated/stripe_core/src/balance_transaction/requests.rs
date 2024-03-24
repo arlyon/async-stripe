@@ -31,8 +31,8 @@ pub struct ListBalanceTransaction<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<&'a str>,
     /// Only returns transactions of the given type.
-    /// One of: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`, `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
-    #[serde(rename = "type")]
+    /// One of: `adjustment`, `advance`, `advance_funding`, `anticipation_repayment`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `contribution`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`, `obligation_inbound`, `obligation_outbound`, `obligation_reversal_inbound`, `obligation_reversal_outbound`, `obligation_payout`, `obligation_payout_failure`, `payment`, `payment_failure_refund`, `payment_refund`, `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
 }
@@ -46,15 +46,10 @@ impl<'a> ListBalanceTransaction<'a> {
     /// The transactions are returned in sorted order, with the most recent transactions appearing first.
     ///
     /// Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::BalanceTransaction>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::BalanceTransaction>> {
         client.get_query("/balance_transactions", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::BalanceTransaction>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::BalanceTransaction>> {
         stripe::ListPaginator::from_list_params("/balance_transactions", self)
     }
 }
@@ -73,11 +68,7 @@ impl<'a> RetrieveBalanceTransaction<'a> {
     /// Retrieves the balance transaction with the given ID.
     ///
     /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        id: &stripe_shared::BalanceTransactionId,
-    ) -> stripe::Response<stripe_shared::BalanceTransaction> {
+    pub fn send(&self, client: &stripe::Client, id: &stripe_shared::BalanceTransactionId) -> stripe::Response<stripe_shared::BalanceTransaction> {
         client.get_query(&format!("/balance_transactions/{id}"), self)
     }
 }

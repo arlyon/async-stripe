@@ -1,220 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListPaymentMethod<'a> {
-    /// The ID of the customer whose PaymentMethods will be retrieved.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// An optional filter on the list, based on the object `type` field.
-    /// Without the filter, the list includes all current and future payment method types.
-    /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ListPaymentMethodType>,
-}
-impl<'a> ListPaymentMethod<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// An optional filter on the list, based on the object `type` field.
-/// Without the filter, the list includes all current and future payment method types.
-/// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ListPaymentMethodType {
-    AcssDebit,
-    Affirm,
-    AfterpayClearpay,
-    Alipay,
-    AuBecsDebit,
-    BacsDebit,
-    Bancontact,
-    Blik,
-    Boleto,
-    Card,
-    Cashapp,
-    CustomerBalance,
-    Eps,
-    Fpx,
-    Giropay,
-    Grabpay,
-    Ideal,
-    Klarna,
-    Konbini,
-    Link,
-    Oxxo,
-    P24,
-    Paynow,
-    Paypal,
-    Pix,
-    Promptpay,
-    RevolutPay,
-    SepaDebit,
-    Sofort,
-    Swish,
-    UsBankAccount,
-    WechatPay,
-    Zip,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown,
-}
-impl ListPaymentMethodType {
-    pub fn as_str(self) -> &'static str {
-        use ListPaymentMethodType::*;
-        match self {
-            AcssDebit => "acss_debit",
-            Affirm => "affirm",
-            AfterpayClearpay => "afterpay_clearpay",
-            Alipay => "alipay",
-            AuBecsDebit => "au_becs_debit",
-            BacsDebit => "bacs_debit",
-            Bancontact => "bancontact",
-            Blik => "blik",
-            Boleto => "boleto",
-            Card => "card",
-            Cashapp => "cashapp",
-            CustomerBalance => "customer_balance",
-            Eps => "eps",
-            Fpx => "fpx",
-            Giropay => "giropay",
-            Grabpay => "grabpay",
-            Ideal => "ideal",
-            Klarna => "klarna",
-            Konbini => "konbini",
-            Link => "link",
-            Oxxo => "oxxo",
-            P24 => "p24",
-            Paynow => "paynow",
-            Paypal => "paypal",
-            Pix => "pix",
-            Promptpay => "promptpay",
-            RevolutPay => "revolut_pay",
-            SepaDebit => "sepa_debit",
-            Sofort => "sofort",
-            Swish => "swish",
-            UsBankAccount => "us_bank_account",
-            WechatPay => "wechat_pay",
-            Zip => "zip",
-            Unknown => "unknown",
-        }
-    }
-}
-
-impl std::str::FromStr for ListPaymentMethodType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ListPaymentMethodType::*;
-        match s {
-            "acss_debit" => Ok(AcssDebit),
-            "affirm" => Ok(Affirm),
-            "afterpay_clearpay" => Ok(AfterpayClearpay),
-            "alipay" => Ok(Alipay),
-            "au_becs_debit" => Ok(AuBecsDebit),
-            "bacs_debit" => Ok(BacsDebit),
-            "bancontact" => Ok(Bancontact),
-            "blik" => Ok(Blik),
-            "boleto" => Ok(Boleto),
-            "card" => Ok(Card),
-            "cashapp" => Ok(Cashapp),
-            "customer_balance" => Ok(CustomerBalance),
-            "eps" => Ok(Eps),
-            "fpx" => Ok(Fpx),
-            "giropay" => Ok(Giropay),
-            "grabpay" => Ok(Grabpay),
-            "ideal" => Ok(Ideal),
-            "klarna" => Ok(Klarna),
-            "konbini" => Ok(Konbini),
-            "link" => Ok(Link),
-            "oxxo" => Ok(Oxxo),
-            "p24" => Ok(P24),
-            "paynow" => Ok(Paynow),
-            "paypal" => Ok(Paypal),
-            "pix" => Ok(Pix),
-            "promptpay" => Ok(Promptpay),
-            "revolut_pay" => Ok(RevolutPay),
-            "sepa_debit" => Ok(SepaDebit),
-            "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
-            "us_bank_account" => Ok(UsBankAccount),
-            "wechat_pay" => Ok(WechatPay),
-            "zip" => Ok(Zip),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for ListPaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for ListPaymentMethodType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for ListPaymentMethodType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl<'a> ListPaymentMethod<'a> {
-    /// Returns a list of PaymentMethods for Treasury flows.
-    /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::PaymentMethod>> {
-        client.get_query("/payment_methods", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::PaymentMethod>> {
-        stripe::ListPaginator::from_list_params("/payment_methods", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrievePaymentMethod<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrievePaymentMethod<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrievePaymentMethod<'a> {
-    /// Retrieves a PaymentMethod object attached to the StripeAccount.
-    /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method: &stripe_shared::PaymentMethodId,
-    ) -> stripe::Response<stripe_shared::PaymentMethod> {
-        client.get_query(&format!("/payment_methods/{payment_method}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethod<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -331,13 +115,10 @@ pub struct CreatePaymentMethod<'a> {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreatePaymentMethodSofort>,
-    /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreatePaymentMethodType>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -366,11 +147,7 @@ pub struct CreatePaymentMethodAcssDebit<'a> {
     pub transit_number: &'a str,
 }
 impl<'a> CreatePaymentMethodAcssDebit<'a> {
-    pub fn new(
-        account_number: &'a str,
-        institution_number: &'a str,
-        transit_number: &'a str,
-    ) -> Self {
+    pub fn new(account_number: &'a str, institution_number: &'a str, transit_number: &'a str) -> Self {
         Self { account_number, institution_number, transit_number }
     }
 }
@@ -792,7 +569,6 @@ pub enum CreatePaymentMethodIdealBank {
     Knab,
     Moneyou,
     N26,
-    Nn,
     Rabobank,
     Regiobank,
     Revolut,
@@ -815,7 +591,6 @@ impl CreatePaymentMethodIdealBank {
             Knab => "knab",
             Moneyou => "moneyou",
             N26 => "n26",
-            Nn => "nn",
             Rabobank => "rabobank",
             Regiobank => "regiobank",
             Revolut => "revolut",
@@ -841,7 +616,6 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "knab" => Ok(Knab),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
-            "nn" => Ok(Nn),
             "rabobank" => Ok(Rabobank),
             "regiobank" => Ok(Regiobank),
             "revolut" => Ok(Revolut),
@@ -939,7 +713,6 @@ pub enum CreatePaymentMethodP24Bank {
     SantanderPrzelew24,
     TmobileUsbugiBankowe,
     ToyotaBank,
-    Velobank,
     VolkswagenBank,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown,
@@ -972,7 +745,6 @@ impl CreatePaymentMethodP24Bank {
             SantanderPrzelew24 => "santander_przelew24",
             TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
             ToyotaBank => "toyota_bank",
-            Velobank => "velobank",
             VolkswagenBank => "volkswagen_bank",
             Unknown => "unknown",
         }
@@ -1008,7 +780,6 @@ impl std::str::FromStr for CreatePaymentMethodP24Bank {
             "santander_przelew24" => Ok(SantanderPrzelew24),
             "tmobile_usbugi_bankowe" => Ok(TmobileUsbugiBankowe),
             "toyota_bank" => Ok(ToyotaBank),
-            "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
             _ => Err(()),
         }
@@ -1161,7 +932,6 @@ pub enum CreatePaymentMethodType {
     RevolutPay,
     SepaDebit,
     Sofort,
-    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1201,7 +971,6 @@ impl CreatePaymentMethodType {
             RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
-            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1244,7 +1013,6 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -1397,6 +1165,24 @@ impl<'a> CreatePaymentMethod<'a> {
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrievePaymentMethod<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrievePaymentMethod<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrievePaymentMethod<'a> {
+    /// Retrieves a PaymentMethod object attached to the StripeAccount.
+    /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
+    pub fn send(&self, client: &stripe::Client, payment_method: &stripe_shared::PaymentMethodId) -> stripe::Response<stripe_shared::PaymentMethod> {
+        client.get_query(&format!("/payment_methods/{payment_method}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethod<'a> {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1443,19 +1229,16 @@ impl UpdatePaymentMethodCard {
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethodUsBankAccount {
-    /// Bank account holder type.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
     /// Bank account type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_type: Option<UpdatePaymentMethodUsBankAccountAccountType>,
+    pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
 }
 impl UpdatePaymentMethodUsBankAccount {
     pub fn new() -> Self {
         Self::default()
     }
 }
-/// Bank account holder type.
+/// Bank account type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentMethodUsBankAccountAccountHolderType {
     Company,
@@ -1501,45 +1284,181 @@ impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
-/// Bank account type.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum UpdatePaymentMethodUsBankAccountAccountType {
-    Checking,
-    Savings,
+impl<'a> UpdatePaymentMethod<'a> {
+    /// Updates a PaymentMethod object. A PaymentMethod must be attached a customer to be updated.
+    pub fn send(&self, client: &stripe::Client, payment_method: &stripe_shared::PaymentMethodId) -> stripe::Response<stripe_shared::PaymentMethod> {
+        client.send_form(&format!("/payment_methods/{payment_method}"), self, http_types::Method::Post)
+    }
 }
-impl UpdatePaymentMethodUsBankAccountAccountType {
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListPaymentMethod<'a> {
+    /// The ID of the customer whose PaymentMethods will be retrieved.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+    /// An optional filter on the list, based on the object `type` field.
+    /// Without the filter, the list includes all current and future payment method types.
+    /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ListPaymentMethodType>,
+}
+impl<'a> ListPaymentMethod<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+/// An optional filter on the list, based on the object `type` field.
+/// Without the filter, the list includes all current and future payment method types.
+/// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ListPaymentMethodType {
+    AcssDebit,
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Blik,
+    Boleto,
+    Card,
+    Cashapp,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Link,
+    Oxxo,
+    P24,
+    Paynow,
+    Paypal,
+    Pix,
+    Promptpay,
+    RevolutPay,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
+    Zip,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown,
+}
+impl ListPaymentMethodType {
     pub fn as_str(self) -> &'static str {
-        use UpdatePaymentMethodUsBankAccountAccountType::*;
+        use ListPaymentMethodType::*;
         match self {
-            Checking => "checking",
-            Savings => "savings",
+            AcssDebit => "acss_debit",
+            Affirm => "affirm",
+            AfterpayClearpay => "afterpay_clearpay",
+            Alipay => "alipay",
+            AuBecsDebit => "au_becs_debit",
+            BacsDebit => "bacs_debit",
+            Bancontact => "bancontact",
+            Blik => "blik",
+            Boleto => "boleto",
+            Card => "card",
+            Cashapp => "cashapp",
+            CustomerBalance => "customer_balance",
+            Eps => "eps",
+            Fpx => "fpx",
+            Giropay => "giropay",
+            Grabpay => "grabpay",
+            Ideal => "ideal",
+            Klarna => "klarna",
+            Konbini => "konbini",
+            Link => "link",
+            Oxxo => "oxxo",
+            P24 => "p24",
+            Paynow => "paynow",
+            Paypal => "paypal",
+            Pix => "pix",
+            Promptpay => "promptpay",
+            RevolutPay => "revolut_pay",
+            SepaDebit => "sepa_debit",
+            Sofort => "sofort",
+            UsBankAccount => "us_bank_account",
+            WechatPay => "wechat_pay",
+            Zip => "zip",
+            Unknown => "unknown",
         }
     }
 }
 
-impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountType {
+impl std::str::FromStr for ListPaymentMethodType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentMethodUsBankAccountAccountType::*;
+        use ListPaymentMethodType::*;
         match s {
-            "checking" => Ok(Checking),
-            "savings" => Ok(Savings),
+            "acss_debit" => Ok(AcssDebit),
+            "affirm" => Ok(Affirm),
+            "afterpay_clearpay" => Ok(AfterpayClearpay),
+            "alipay" => Ok(Alipay),
+            "au_becs_debit" => Ok(AuBecsDebit),
+            "bacs_debit" => Ok(BacsDebit),
+            "bancontact" => Ok(Bancontact),
+            "blik" => Ok(Blik),
+            "boleto" => Ok(Boleto),
+            "card" => Ok(Card),
+            "cashapp" => Ok(Cashapp),
+            "customer_balance" => Ok(CustomerBalance),
+            "eps" => Ok(Eps),
+            "fpx" => Ok(Fpx),
+            "giropay" => Ok(Giropay),
+            "grabpay" => Ok(Grabpay),
+            "ideal" => Ok(Ideal),
+            "klarna" => Ok(Klarna),
+            "konbini" => Ok(Konbini),
+            "link" => Ok(Link),
+            "oxxo" => Ok(Oxxo),
+            "p24" => Ok(P24),
+            "paynow" => Ok(Paynow),
+            "paypal" => Ok(Paypal),
+            "pix" => Ok(Pix),
+            "promptpay" => Ok(Promptpay),
+            "revolut_pay" => Ok(RevolutPay),
+            "sepa_debit" => Ok(SepaDebit),
+            "sofort" => Ok(Sofort),
+            "us_bank_account" => Ok(UsBankAccount),
+            "wechat_pay" => Ok(WechatPay),
+            "zip" => Ok(Zip),
             _ => Err(()),
         }
     }
 }
-impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountType {
+impl std::fmt::Display for ListPaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountType {
+impl std::fmt::Debug for ListPaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountType {
+impl serde::Serialize for ListPaymentMethodType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1547,18 +1466,14 @@ impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountType {
         serializer.serialize_str(self.as_str())
     }
 }
-impl<'a> UpdatePaymentMethod<'a> {
-    /// Updates a PaymentMethod object. A PaymentMethod must be attached a customer to be updated.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method: &stripe_shared::PaymentMethodId,
-    ) -> stripe::Response<stripe_shared::PaymentMethod> {
-        client.send_form(
-            &format!("/payment_methods/{payment_method}"),
-            self,
-            http_types::Method::Post,
-        )
+impl<'a> ListPaymentMethod<'a> {
+    /// Returns a list of PaymentMethods for Treasury flows.
+    /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_shared::PaymentMethod>> {
+        client.get_query("/payment_methods", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_shared::PaymentMethod>> {
+        stripe::ListPaginator::from_list_params("/payment_methods", self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -1589,16 +1504,8 @@ impl<'a> AttachPaymentMethod<'a> {
     /// To use this PaymentMethod as the default for invoice or subscription payments,
     /// set <a href="/docs/api/customers/update#update_customer-invoice_settings-default_payment_method">`invoice_settings.default_payment_method`</a>,.
     /// on the Customer to the PaymentMethod’s ID.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method: &stripe_shared::PaymentMethodId,
-    ) -> stripe::Response<stripe_shared::PaymentMethod> {
-        client.send_form(
-            &format!("/payment_methods/{payment_method}/attach"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, payment_method: &stripe_shared::PaymentMethodId) -> stripe::Response<stripe_shared::PaymentMethod> {
+        client.send_form(&format!("/payment_methods/{payment_method}/attach"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1615,16 +1522,8 @@ impl<'a> DetachPaymentMethod<'a> {
 impl<'a> DetachPaymentMethod<'a> {
     /// Detaches a PaymentMethod object from a Customer.
     /// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        payment_method: &stripe_shared::PaymentMethodId,
-    ) -> stripe::Response<stripe_shared::PaymentMethod> {
-        client.send_form(
-            &format!("/payment_methods/{payment_method}/detach"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, payment_method: &stripe_shared::PaymentMethodId) -> stripe::Response<stripe_shared::PaymentMethod> {
+        client.send_form(&format!("/payment_methods/{payment_method}/detach"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

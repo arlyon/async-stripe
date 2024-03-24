@@ -1,18 +1,237 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteTerminalReader {}
-impl DeleteTerminalReader {
+pub struct UpdateTerminalReader<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// The new label of the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<&'a str>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+}
+impl<'a> UpdateTerminalReader<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-impl DeleteTerminalReader {
-    /// Deletes a `Reader` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::DeletedTerminalReader> {
-        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Delete)
+impl<'a> UpdateTerminalReader<'a> {
+    /// Updates a `Reader` object by setting the values of the parameters passed.
+    /// Any parameters not provided will be left unchanged.
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<UpdateTerminalReaderReturned> {
+        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(not(feature = "min-ser"), serde(untagged))]
+pub enum UpdateTerminalReaderReturned {
+    TerminalReader(stripe_terminal::TerminalReader),
+    DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
+}
+
+#[cfg(feature = "min-ser")]
+#[derive(Default)]
+pub struct UpdateTerminalReaderReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+#[cfg(feature = "min-ser")]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateTerminalReaderReturned>,
+        builder: UpdateTerminalReaderReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateTerminalReaderReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateTerminalReaderReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateTerminalReaderReturnedBuilder {
+        type Out = UpdateTerminalReaderReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                UpdateTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(Value::Object(o))?)
+            } else {
+                UpdateTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateTerminalReaderReturned {
+        type Builder = UpdateTerminalReaderReturnedBuilder;
+    }
+};
+
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTerminalReader<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTerminalReader<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTerminalReader<'a> {
+    /// Retrieves a `Reader` object.
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<RetrieveTerminalReaderReturned> {
+        client.get_query(&format!("/terminal/readers/{reader}"), self)
+    }
+}
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(not(feature = "min-ser"), serde(untagged))]
+pub enum RetrieveTerminalReaderReturned {
+    TerminalReader(stripe_terminal::TerminalReader),
+    DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
+}
+
+#[cfg(feature = "min-ser")]
+#[derive(Default)]
+pub struct RetrieveTerminalReaderReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+#[cfg(feature = "min-ser")]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveTerminalReaderReturned>,
+        builder: RetrieveTerminalReaderReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveTerminalReaderReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveTerminalReaderReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveTerminalReaderReturnedBuilder {
+        type Out = RetrieveTerminalReaderReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(Value::Object(o))?)
+            } else {
+                RetrieveTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveTerminalReaderReturned {
+        type Builder = RetrieveTerminalReaderReturnedBuilder;
+    }
+};
+
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTerminalReader<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Custom label given to the reader for easier identification.
+    /// If no label is specified, the registration code will be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<&'a str>,
+    /// The location to assign the reader to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<&'a str>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// A code generated by the reader used for registering to an account.
+    pub registration_code: &'a str,
+}
+impl<'a> CreateTerminalReader<'a> {
+    pub fn new(registration_code: &'a str) -> Self {
+        Self { expand: None, label: None, location: None, metadata: None, registration_code }
+    }
+}
+impl<'a> CreateTerminalReader<'a> {
+    /// Creates a new `Reader` object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form("/terminal/readers", self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -45,149 +264,79 @@ pub struct ListTerminalReader<'a> {
     pub starting_after: Option<&'a str>,
     /// A status filter to filter readers to only offline or online readers
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_terminal::TerminalReaderStatus>,
+    pub status: Option<ListTerminalReaderStatus>,
 }
 impl<'a> ListTerminalReader<'a> {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+/// A status filter to filter readers to only offline or online readers
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ListTerminalReaderStatus {
+    Offline,
+    Online,
+}
+impl ListTerminalReaderStatus {
+    pub fn as_str(self) -> &'static str {
+        use ListTerminalReaderStatus::*;
+        match self {
+            Offline => "offline",
+            Online => "online",
+        }
+    }
+}
+
+impl std::str::FromStr for ListTerminalReaderStatus {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ListTerminalReaderStatus::*;
+        match s {
+            "offline" => Ok(Offline),
+            "online" => Ok(Online),
+            _ => Err(()),
+        }
+    }
+}
+impl std::fmt::Display for ListTerminalReaderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ListTerminalReaderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ListTerminalReaderStatus {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
     }
 }
 impl<'a> ListTerminalReader<'a> {
     /// Returns a list of `Reader` objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalReader>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalReader>> {
         client.get_query("/terminal/readers", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalReader>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalReader>> {
         stripe::ListPaginator::from_list_params("/terminal/readers", self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTerminalReader<'a> {
+pub struct DeleteTerminalReader {}
+impl DeleteTerminalReader {
     pub fn new() -> Self {
         Self::default()
     }
 }
-impl<'a> RetrieveTerminalReader<'a> {
-    /// Retrieves a `Reader` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<RetrieveTerminalReaderReturned> {
-        client.get_query(&format!("/terminal/readers/{reader}"), self)
-    }
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum RetrieveTerminalReaderReturned {
-    TerminalReader(stripe_terminal::TerminalReader),
-    DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Custom label given to the reader for easier identification.
-    /// If no label is specified, the registration code will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub label: Option<&'a str>,
-    /// The location to assign the reader to.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<&'a str>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// A code generated by the reader used for registering to an account.
-    pub registration_code: &'a str,
-}
-impl<'a> CreateTerminalReader<'a> {
-    pub fn new(registration_code: &'a str) -> Self {
-        Self { expand: None, label: None, location: None, metadata: None, registration_code }
-    }
-}
-impl<'a> CreateTerminalReader<'a> {
-    /// Creates a new `Reader` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form("/terminal/readers", self, http_types::Method::Post)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// The new label of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub label: Option<&'a str>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-}
-impl<'a> UpdateTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> UpdateTerminalReader<'a> {
-    /// Updates a `Reader` object by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<UpdateTerminalReaderReturned> {
-        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Post)
-    }
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum UpdateTerminalReaderReturned {
-    TerminalReader(stripe_terminal::TerminalReader),
-    DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelActionTerminalReader<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelActionTerminalReader<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CancelActionTerminalReader<'a> {
-    /// Cancels the current reader action.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/cancel_action"),
-            self,
-            http_types::Method::Post,
-        )
+impl DeleteTerminalReader {
+    /// Deletes a `Reader` object.
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::DeletedTerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Delete)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -236,16 +385,8 @@ impl ProcessPaymentIntentTerminalReaderProcessConfigTipping {
 }
 impl<'a> ProcessPaymentIntentTerminalReader<'a> {
     /// Initiates a payment flow on a Reader.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/process_payment_intent"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}/process_payment_intent"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -268,67 +409,25 @@ impl<'a> ProcessSetupIntentTerminalReader<'a> {
 }
 impl<'a> ProcessSetupIntentTerminalReader<'a> {
     /// Initiates a setup intent flow on a Reader.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/process_setup_intent"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}/process_setup_intent"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RefundPaymentTerminalReader<'a> {
-    /// A positive integer in __cents__ representing how much of this charge to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    /// ID of the Charge to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<&'a str>,
+pub struct CancelActionTerminalReader<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// ID of the PaymentIntent to refund.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<&'a str>,
-    /// Boolean indicating whether the application fee should be refunded when refunding this charge.
-    /// If a full charge refund is given, the full application fee will be refunded.
-    /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
-    /// An application fee can be refunded only by the application that created the charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund_application_fee: Option<bool>,
-    /// Boolean indicating whether the transfer should be reversed when refunding this charge.
-    /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
-    /// A transfer can be reversed only by the application that created the charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reverse_transfer: Option<bool>,
 }
-impl<'a> RefundPaymentTerminalReader<'a> {
+impl<'a> CancelActionTerminalReader<'a> {
     pub fn new() -> Self {
         Self::default()
     }
 }
-impl<'a> RefundPaymentTerminalReader<'a> {
-    /// Initiates a refund on a Reader
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/refund_payment"),
-            self,
-            http_types::Method::Post,
-        )
+impl<'a> CancelActionTerminalReader<'a> {
+    /// Cancels the current reader action.
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}/cancel_action"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -340,7 +439,7 @@ pub struct SetReaderDisplayTerminalReader<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
     /// Type
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: SetReaderDisplayTerminalReaderType,
 }
 impl<'a> SetReaderDisplayTerminalReader<'a> {
@@ -363,11 +462,7 @@ pub struct SetReaderDisplayTerminalReaderCart<'a> {
     pub total: i64,
 }
 impl<'a> SetReaderDisplayTerminalReaderCart<'a> {
-    pub fn new(
-        currency: stripe_types::Currency,
-        line_items: &'a [SetReaderDisplayTerminalReaderCartLineItems<'a>],
-        total: i64,
-    ) -> Self {
+    pub fn new(currency: stripe_types::Currency, line_items: &'a [SetReaderDisplayTerminalReaderCartLineItems<'a>], total: i64) -> Self {
         Self { currency, line_items, tax: None, total }
     }
 }
@@ -431,16 +526,51 @@ impl serde::Serialize for SetReaderDisplayTerminalReaderType {
 }
 impl<'a> SetReaderDisplayTerminalReader<'a> {
     /// Sets reader display to show cart details.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &stripe_terminal::TerminalReaderId,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/terminal/readers/{reader}/set_reader_display"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}/set_reader_display"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RefundPaymentTerminalReader<'a> {
+    /// A positive integer in __cents__ representing how much of this charge to refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// ID of the Charge to refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// ID of the PaymentIntent to refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<&'a str>,
+    /// Boolean indicating whether the application fee should be refunded when refunding this charge.
+    /// If a full charge refund is given, the full application fee will be refunded.
+    /// Otherwise, the application fee will be refunded in an amount proportional to the amount of the charge refunded.
+    /// An application fee can be refunded only by the application that created the charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_application_fee: Option<bool>,
+    /// Boolean indicating whether the transfer should be reversed when refunding this charge.
+    /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
+    /// A transfer can be reversed only by the application that created the charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reverse_transfer: Option<bool>,
+}
+impl<'a> RefundPaymentTerminalReader<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RefundPaymentTerminalReader<'a> {
+    /// Initiates a refund on a Reader
+    pub fn send(&self, client: &stripe::Client, reader: &stripe_terminal::TerminalReaderId) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/terminal/readers/{reader}/refund_payment"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -458,7 +588,7 @@ pub struct PresentPaymentMethodTerminalReader<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interac_present: Option<PresentPaymentMethodTerminalReaderInteracPresent<'a>>,
     /// Simulated payment type.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PresentPaymentMethodTerminalReaderType>,
 }
@@ -540,15 +670,7 @@ impl serde::Serialize for PresentPaymentMethodTerminalReaderType {
 impl<'a> PresentPaymentMethodTerminalReader<'a> {
     /// Presents a payment method on a simulated reader.
     /// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        reader: &str,
-    ) -> stripe::Response<stripe_terminal::TerminalReader> {
-        client.send_form(
-            &format!("/test_helpers/terminal/readers/{reader}/present_payment_method"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, reader: &str) -> stripe::Response<stripe_terminal::TerminalReader> {
+        client.send_form(&format!("/test_helpers/terminal/readers/{reader}/present_payment_method"), self, http_types::Method::Post)
     }
 }

@@ -8,6 +8,9 @@
 //! and `Webhooks` sections of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_misc;
+
+#[cfg(feature = "min-ser")]
+miniserde::make_place!(Place);
 pub use apple_pay_domain::types::*;
 pub mod apple_pay_domain;
 #[doc(hidden)]
@@ -39,36 +42,6 @@ pub mod bank_connections_resource_ownership_refresh;
 #[doc(inline)]
 pub use bank_connections_resource_ownership_refresh::*;
 #[doc(hidden)]
-pub mod bank_connections_resource_transaction_refresh;
-#[doc(inline)]
-pub use bank_connections_resource_transaction_refresh::*;
-#[doc(hidden)]
-pub mod bank_connections_resource_transaction_resource_status_transitions;
-#[doc(inline)]
-pub use bank_connections_resource_transaction_resource_status_transitions::*;
-pub use climate_order::types::*;
-pub mod climate_order;
-pub use climate_product::types::*;
-pub mod climate_product;
-pub use climate_supplier::types::*;
-#[doc(hidden)]
-pub mod climate_removals_beneficiary;
-pub mod climate_supplier;
-#[doc(inline)]
-pub use climate_removals_beneficiary::*;
-#[doc(hidden)]
-pub mod climate_removals_location;
-#[doc(inline)]
-pub use climate_removals_location::*;
-#[doc(hidden)]
-pub mod climate_removals_order_deliveries;
-#[doc(inline)]
-pub use climate_removals_order_deliveries::*;
-#[doc(hidden)]
-pub mod climate_removals_products_price;
-#[doc(inline)]
-pub use climate_removals_products_price::*;
-#[doc(hidden)]
 pub mod deleted_apple_pay_domain;
 #[doc(inline)]
 pub use deleted_apple_pay_domain::*;
@@ -92,8 +65,6 @@ pub mod financial_connections_account_ownership;
 pub use financial_connections_account_ownership::*;
 pub use financial_connections_session::types::*;
 pub mod financial_connections_session;
-pub use financial_connections_transaction::types::*;
-pub mod financial_connections_transaction;
 #[doc(hidden)]
 pub mod financial_reporting_finance_report_run_run_parameters;
 #[doc(inline)]

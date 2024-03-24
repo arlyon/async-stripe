@@ -1,11 +1,11 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct BankConnectionsResourceBalance {
     /// The time that the external institution calculated this balance.
     /// Measured in seconds since the Unix epoch.
     pub as_of: stripe_types::Timestamp,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cash: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCashBalance>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub credit: Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCreditBalance>,
     /// The balances owed to (or by) the account holder.
     ///
@@ -17,9 +17,111 @@ pub struct BankConnectionsResourceBalance {
     pub current: std::collections::HashMap<String, i64>,
     /// The `type` of the balance.
     /// An additional hash is included on the balance with a name matching this value.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: BankConnectionsResourceBalanceType,
 }
+#[cfg(feature = "min-ser")]
+pub struct BankConnectionsResourceBalanceBuilder {
+    as_of: Option<stripe_types::Timestamp>,
+    cash: Option<Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCashBalance>>,
+    credit: Option<Option<stripe_misc::BankConnectionsResourceBalanceApiResourceCreditBalance>>,
+    current: Option<std::collections::HashMap<String, i64>>,
+    type_: Option<BankConnectionsResourceBalanceType>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for BankConnectionsResourceBalance {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<BankConnectionsResourceBalance>,
+        builder: BankConnectionsResourceBalanceBuilder,
+    }
+
+    impl Visitor for Place<BankConnectionsResourceBalance> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: BankConnectionsResourceBalanceBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for BankConnectionsResourceBalanceBuilder {
+        type Out = BankConnectionsResourceBalance;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "as_of" => Deserialize::begin(&mut self.as_of),
+                "cash" => Deserialize::begin(&mut self.cash),
+                "credit" => Deserialize::begin(&mut self.credit),
+                "current" => Deserialize::begin(&mut self.current),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { as_of: Deserialize::default(), cash: Deserialize::default(), credit: Deserialize::default(), current: Deserialize::default(), type_: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let as_of = self.as_of.take()?;
+            let cash = self.cash.take()?;
+            let credit = self.credit.take()?;
+            let current = self.current.take()?;
+            let type_ = self.type_.take()?;
+
+            Some(Self::Out { as_of, cash, credit, current, type_ })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for BankConnectionsResourceBalance {
+        type Builder = BankConnectionsResourceBalanceBuilder;
+    }
+
+    impl FromValueOpt for BankConnectionsResourceBalance {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = BankConnectionsResourceBalanceBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "as_of" => b.as_of = Some(FromValueOpt::from_value(v)?),
+                    "cash" => b.cash = Some(FromValueOpt::from_value(v)?),
+                    "credit" => b.credit = Some(FromValueOpt::from_value(v)?),
+                    "current" => b.current = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The `type` of the balance.
 /// An additional hash is included on the balance with a name matching this value.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -71,8 +173,24 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceBalanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BankConnectionsResourceBalanceType")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceBalanceType"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for BankConnectionsResourceBalanceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceBalanceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(BankConnectionsResourceBalanceType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(BankConnectionsResourceBalanceType);

@@ -1,4 +1,46 @@
 #[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct CreateTreasuryDebitReversal<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
+    /// The ReceivedDebit to reverse.
+    pub received_debit: &'a str,
+}
+impl<'a> CreateTreasuryDebitReversal<'a> {
+    pub fn new(received_debit: &'a str) -> Self {
+        Self { expand: None, metadata: None, received_debit }
+    }
+}
+impl<'a> CreateTreasuryDebitReversal<'a> {
+    /// Reverses a ReceivedDebit and creates a DebitReversal object.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
+        client.send_form("/treasury/debit_reversals", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTreasuryDebitReversal<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTreasuryDebitReversal<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTreasuryDebitReversal<'a> {
+    /// Retrieves a DebitReversal object.
+    pub fn send(&self, client: &stripe::Client, debit_reversal: &stripe_treasury::TreasuryDebitReversalId) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
+        client.get_query(&format!("/treasury/debit_reversals/{debit_reversal}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ListTreasuryDebitReversal<'a> {
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.
@@ -31,16 +73,7 @@ pub struct ListTreasuryDebitReversal<'a> {
 }
 impl<'a> ListTreasuryDebitReversal<'a> {
     pub fn new(financial_account: &'a str) -> Self {
-        Self {
-            ending_before: None,
-            expand: None,
-            financial_account,
-            limit: None,
-            received_debit: None,
-            resolution: None,
-            starting_after: None,
-            status: None,
-        }
+        Self { ending_before: None, expand: None, financial_account, limit: None, received_debit: None, resolution: None, starting_after: None, status: None }
     }
 }
 /// Only return DebitReversals for a given resolution.
@@ -140,64 +173,10 @@ impl serde::Serialize for ListTreasuryDebitReversalStatus {
 }
 impl<'a> ListTreasuryDebitReversal<'a> {
     /// Returns a list of DebitReversals.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
         client.get_query("/treasury/debit_reversals", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_treasury::TreasuryDebitReversal>> {
         stripe::ListPaginator::from_list_params("/treasury/debit_reversals", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTreasuryDebitReversal<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTreasuryDebitReversal<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTreasuryDebitReversal<'a> {
-    /// Retrieves a DebitReversal object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        debit_reversal: &stripe_treasury::TreasuryDebitReversalId,
-    ) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
-        client.get_query(&format!("/treasury/debit_reversals/{debit_reversal}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateTreasuryDebitReversal<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    /// This can be useful for storing additional information about the object in a structured format.
-    /// Individual keys can be unset by posting an empty value to them.
-    /// All keys can be unset by posting an empty value to `metadata`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
-    /// The ReceivedDebit to reverse.
-    pub received_debit: &'a str,
-}
-impl<'a> CreateTreasuryDebitReversal<'a> {
-    pub fn new(received_debit: &'a str) -> Self {
-        Self { expand: None, metadata: None, received_debit }
-    }
-}
-impl<'a> CreateTreasuryDebitReversal<'a> {
-    /// Reverses a ReceivedDebit and creates a DebitReversal object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_treasury::TreasuryDebitReversal> {
-        client.send_form("/treasury/debit_reversals", self, http_types::Method::Post)
     }
 }

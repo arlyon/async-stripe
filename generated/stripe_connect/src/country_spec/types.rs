@@ -6,7 +6,9 @@
 /// guide](/docs/connect/required-verification-information).
 ///
 /// For more details see <<https://stripe.com/docs/api/country_specs/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct CountrySpec {
     /// The default currency for this country. This applies to both payment methods and bank accounts.
     pub default_currency: stripe_types::Currency,
@@ -24,6 +26,124 @@ pub struct CountrySpec {
     pub supported_transfer_countries: Vec<String>,
     pub verification_fields: stripe_connect::CountrySpecVerificationFields,
 }
+#[cfg(feature = "min-ser")]
+pub struct CountrySpecBuilder {
+    default_currency: Option<stripe_types::Currency>,
+    id: Option<stripe_connect::CountrySpecId>,
+    supported_bank_account_currencies: Option<std::collections::HashMap<String, Vec<String>>>,
+    supported_payment_currencies: Option<Vec<String>>,
+    supported_payment_methods: Option<Vec<String>>,
+    supported_transfer_countries: Option<Vec<String>>,
+    verification_fields: Option<stripe_connect::CountrySpecVerificationFields>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CountrySpec {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CountrySpec>,
+        builder: CountrySpecBuilder,
+    }
+
+    impl Visitor for Place<CountrySpec> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CountrySpecBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CountrySpecBuilder {
+        type Out = CountrySpec;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "default_currency" => Deserialize::begin(&mut self.default_currency),
+                "id" => Deserialize::begin(&mut self.id),
+                "supported_bank_account_currencies" => Deserialize::begin(&mut self.supported_bank_account_currencies),
+                "supported_payment_currencies" => Deserialize::begin(&mut self.supported_payment_currencies),
+                "supported_payment_methods" => Deserialize::begin(&mut self.supported_payment_methods),
+                "supported_transfer_countries" => Deserialize::begin(&mut self.supported_transfer_countries),
+                "verification_fields" => Deserialize::begin(&mut self.verification_fields),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                default_currency: Deserialize::default(),
+                id: Deserialize::default(),
+                supported_bank_account_currencies: Deserialize::default(),
+                supported_payment_currencies: Deserialize::default(),
+                supported_payment_methods: Deserialize::default(),
+                supported_transfer_countries: Deserialize::default(),
+                verification_fields: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let default_currency = self.default_currency.take()?;
+            let id = self.id.take()?;
+            let supported_bank_account_currencies = self.supported_bank_account_currencies.take()?;
+            let supported_payment_currencies = self.supported_payment_currencies.take()?;
+            let supported_payment_methods = self.supported_payment_methods.take()?;
+            let supported_transfer_countries = self.supported_transfer_countries.take()?;
+            let verification_fields = self.verification_fields.take()?;
+
+            Some(Self::Out { default_currency, id, supported_bank_account_currencies, supported_payment_currencies, supported_payment_methods, supported_transfer_countries, verification_fields })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CountrySpec {
+        type Builder = CountrySpecBuilder;
+    }
+
+    impl FromValueOpt for CountrySpec {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CountrySpecBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "default_currency" => b.default_currency = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "supported_bank_account_currencies" => b.supported_bank_account_currencies = Some(FromValueOpt::from_value(v)?),
+                    "supported_payment_currencies" => b.supported_payment_currencies = Some(FromValueOpt::from_value(v)?),
+                    "supported_payment_methods" => b.supported_payment_methods = Some(FromValueOpt::from_value(v)?),
+                    "supported_transfer_countries" => b.supported_transfer_countries = Some(FromValueOpt::from_value(v)?),
+                    "verification_fields" => b.verification_fields = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for CountrySpec {
     type Id = stripe_connect::CountrySpecId;
     fn id(&self) -> &Self::Id {

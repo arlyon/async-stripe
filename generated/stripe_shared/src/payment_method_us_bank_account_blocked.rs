@@ -1,10 +1,102 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug, Default)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct PaymentMethodUsBankAccountBlocked {
     /// The ACH network code that resulted in this block.
     pub network_code: Option<PaymentMethodUsBankAccountBlockedNetworkCode>,
     /// The reason why this PaymentMethod's fingerprint has been blocked
     pub reason: Option<PaymentMethodUsBankAccountBlockedReason>,
 }
+#[cfg(feature = "min-ser")]
+pub struct PaymentMethodUsBankAccountBlockedBuilder {
+    network_code: Option<Option<PaymentMethodUsBankAccountBlockedNetworkCode>>,
+    reason: Option<Option<PaymentMethodUsBankAccountBlockedReason>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodUsBankAccountBlocked {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodUsBankAccountBlocked>,
+        builder: PaymentMethodUsBankAccountBlockedBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodUsBankAccountBlocked> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: PaymentMethodUsBankAccountBlockedBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodUsBankAccountBlockedBuilder {
+        type Out = PaymentMethodUsBankAccountBlocked;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "network_code" => Deserialize::begin(&mut self.network_code),
+                "reason" => Deserialize::begin(&mut self.reason),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { network_code: Deserialize::default(), reason: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let network_code = self.network_code.take()?;
+            let reason = self.reason.take()?;
+
+            Some(Self::Out { network_code, reason })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodUsBankAccountBlocked {
+        type Builder = PaymentMethodUsBankAccountBlockedBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodUsBankAccountBlocked {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodUsBankAccountBlockedBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "network_code" => b.network_code = Some(FromValueOpt::from_value(v)?),
+                    "reason" => b.reason = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The ACH network code that resulted in this block.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodUsBankAccountBlockedNetworkCode {
@@ -85,13 +177,27 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedNetworkCo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodUsBankAccountBlockedNetworkCode",
-            )
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedNetworkCode"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentMethodUsBankAccountBlockedNetworkCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountBlockedNetworkCode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodUsBankAccountBlockedNetworkCode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PaymentMethodUsBankAccountBlockedNetworkCode);
 /// The reason why this PaymentMethod's fingerprint has been blocked
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodUsBankAccountBlockedReason {
@@ -154,8 +260,24 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedReason")
-        })
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedReason"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for PaymentMethodUsBankAccountBlockedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountBlockedReason> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodUsBankAccountBlockedReason::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(PaymentMethodUsBankAccountBlockedReason);

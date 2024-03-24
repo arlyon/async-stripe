@@ -1,94 +1,4 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct DeleteTerminalConfiguration {}
-impl DeleteTerminalConfiguration {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl DeleteTerminalConfiguration {
-    /// Deletes a `Configuration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<stripe_terminal::DeletedTerminalConfiguration> {
-        client.send_form(
-            &format!("/terminal/configurations/{configuration}"),
-            self,
-            http_types::Method::Delete,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListTerminalConfiguration<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// if present, only return the account default or non-default configurations.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_account_default: Option<bool>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListTerminalConfiguration<'a> {
-    /// Returns a list of `Configuration` objects.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
-        client.get_query("/terminal/configurations", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
-        stripe::ListPaginator::from_list_params("/terminal/configurations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveTerminalConfiguration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveTerminalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveTerminalConfiguration<'a> {
-    /// Retrieves a `Configuration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<RetrieveTerminalConfigurationReturned> {
-        client.get_query(&format!("/terminal/configurations/{configuration}"), self)
-    }
-}
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum RetrieveTerminalConfigurationReturned {
-    TerminalConfiguration(stripe_terminal::TerminalConfiguration),
-    DeletedTerminalConfiguration(stripe_terminal::DeletedTerminalConfiguration),
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTerminalConfiguration<'a> {
     /// An object containing device type specific settings for BBPOS WisePOS E readers
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -137,13 +47,144 @@ impl<'a> CreateTerminalConfigurationVerifoneP400<'a> {
 }
 impl<'a> CreateTerminalConfiguration<'a> {
     /// Creates a new `Configuration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_terminal::TerminalConfiguration> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_terminal::TerminalConfiguration> {
         client.send_form("/terminal/configurations", self, http_types::Method::Post)
     }
 }
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListTerminalConfiguration<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// if present, only return the account default or non-default configurations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_account_default: Option<bool>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListTerminalConfiguration<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListTerminalConfiguration<'a> {
+    /// Returns a list of `Configuration` objects.
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
+        client.get_query("/terminal/configurations", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_terminal::TerminalConfiguration>> {
+        stripe::ListPaginator::from_list_params("/terminal/configurations", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveTerminalConfiguration<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveTerminalConfiguration<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveTerminalConfiguration<'a> {
+    /// Retrieves a `Configuration` object.
+    pub fn send(&self, client: &stripe::Client, configuration: &stripe_terminal::TerminalConfigurationId) -> stripe::Response<RetrieveTerminalConfigurationReturned> {
+        client.get_query(&format!("/terminal/configurations/{configuration}"), self)
+    }
+}
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(not(feature = "min-ser"), serde(untagged))]
+pub enum RetrieveTerminalConfigurationReturned {
+    TerminalConfiguration(stripe_terminal::TerminalConfiguration),
+    DeletedTerminalConfiguration(stripe_terminal::DeletedTerminalConfiguration),
+}
+
+#[cfg(feature = "min-ser")]
+#[derive(Default)]
+pub struct RetrieveTerminalConfigurationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+#[cfg(feature = "min-ser")]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveTerminalConfigurationReturned>,
+        builder: RetrieveTerminalConfigurationReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveTerminalConfigurationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveTerminalConfigurationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveTerminalConfigurationReturnedBuilder {
+        type Out = RetrieveTerminalConfigurationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveTerminalConfigurationReturned::DeletedTerminalConfiguration(FromValueOpt::from_value(Value::Object(o))?)
+            } else {
+                RetrieveTerminalConfigurationReturned::TerminalConfiguration(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveTerminalConfigurationReturned {
+        type Builder = RetrieveTerminalConfigurationReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateTerminalConfiguration<'a> {
     /// An object containing device type specific settings for BBPOS WisePOS E readers
@@ -193,23 +234,102 @@ impl<'a> UpdateTerminalConfigurationVerifoneP400<'a> {
 }
 impl<'a> UpdateTerminalConfiguration<'a> {
     /// Updates a new `Configuration` object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        configuration: &stripe_terminal::TerminalConfigurationId,
-    ) -> stripe::Response<UpdateTerminalConfigurationReturned> {
-        client.send_form(
-            &format!("/terminal/configurations/{configuration}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, configuration: &stripe_terminal::TerminalConfigurationId) -> stripe::Response<UpdateTerminalConfigurationReturned> {
+        client.send_form(&format!("/terminal/configurations/{configuration}"), self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(not(feature = "min-ser"), serde(untagged))]
 pub enum UpdateTerminalConfigurationReturned {
     TerminalConfiguration(stripe_terminal::TerminalConfiguration),
     DeletedTerminalConfiguration(stripe_terminal::DeletedTerminalConfiguration),
+}
+
+#[cfg(feature = "min-ser")]
+#[derive(Default)]
+pub struct UpdateTerminalConfigurationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+#[cfg(feature = "min-ser")]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateTerminalConfigurationReturned>,
+        builder: UpdateTerminalConfigurationReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateTerminalConfigurationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateTerminalConfigurationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateTerminalConfigurationReturnedBuilder {
+        type Out = UpdateTerminalConfigurationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                UpdateTerminalConfigurationReturned::DeletedTerminalConfiguration(FromValueOpt::from_value(Value::Object(o))?)
+            } else {
+                UpdateTerminalConfigurationReturned::TerminalConfiguration(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateTerminalConfigurationReturned {
+        type Builder = UpdateTerminalConfigurationReturnedBuilder;
+    }
+};
+
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct DeleteTerminalConfiguration {}
+impl DeleteTerminalConfiguration {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl DeleteTerminalConfiguration {
+    /// Deletes a `Configuration` object.
+    pub fn send(&self, client: &stripe::Client, configuration: &stripe_terminal::TerminalConfigurationId) -> stripe::Response<stripe_terminal::DeletedTerminalConfiguration> {
+        client.send_form(&format!("/terminal/configurations/{configuration}"), self, http_types::Method::Delete)
+    }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct Offline {

@@ -36,7 +36,6 @@ pub async fn run_connect_example(client: &stripe::Client) -> Result<(), StripeEr
         return_url: Some("https://test.com/return"),
         expand: None,
         collect: None,
-        collection_options: None,
     }
     .send(client)
     .await?;

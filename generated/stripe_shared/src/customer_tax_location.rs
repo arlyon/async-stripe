@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct CustomerTaxLocation {
     /// The customer's country as identified by Stripe Tax.
     pub country: String,
@@ -7,6 +9,100 @@ pub struct CustomerTaxLocation {
     /// The customer's state, county, province, or region as identified by Stripe Tax.
     pub state: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct CustomerTaxLocationBuilder {
+    country: Option<String>,
+    source: Option<CustomerTaxLocationSource>,
+    state: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CustomerTaxLocation {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerTaxLocation>,
+        builder: CustomerTaxLocationBuilder,
+    }
+
+    impl Visitor for Place<CustomerTaxLocation> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CustomerTaxLocationBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CustomerTaxLocationBuilder {
+        type Out = CustomerTaxLocation;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "country" => Deserialize::begin(&mut self.country),
+                "source" => Deserialize::begin(&mut self.source),
+                "state" => Deserialize::begin(&mut self.state),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { country: Deserialize::default(), source: Deserialize::default(), state: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let country = self.country.take()?;
+            let source = self.source.take()?;
+            let state = self.state.take()?;
+
+            Some(Self::Out { country, source, state })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CustomerTaxLocation {
+        type Builder = CustomerTaxLocationBuilder;
+    }
+
+    impl FromValueOpt for CustomerTaxLocation {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CustomerTaxLocationBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
+                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The data source used to infer the customer's location.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerTaxLocationSource {
@@ -63,7 +159,24 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxLocationSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxLocationSource"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxLocationSource"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for CustomerTaxLocationSource {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<CustomerTaxLocationSource> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerTaxLocationSource::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(CustomerTaxLocationSource);

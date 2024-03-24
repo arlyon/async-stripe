@@ -1,72 +1,3 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListIdentityVerificationSession<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-    /// Only return VerificationSessions with this status.
-    /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<stripe_misc::IdentityVerificationSessionStatus>,
-}
-impl<'a> ListIdentityVerificationSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListIdentityVerificationSession<'a> {
-    /// Returns a list of VerificationSessions
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_misc::IdentityVerificationSession>> {
-        client.get_query("/identity/verification_sessions", self)
-    }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_misc::IdentityVerificationSession>> {
-        stripe::ListPaginator::from_list_params("/identity/verification_sessions", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveIdentityVerificationSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveIdentityVerificationSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveIdentityVerificationSession<'a> {
-    /// Retrieves the details of a VerificationSession that was previously created.
-    ///
-    /// When the session status is `requires_input`, you can use this method to retrieve a valid
-    /// `client_secret` or `url` to allow re-submission.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_misc::IdentityVerificationSessionId,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
-        client.get_query(&format!("/identity/verification_sessions/{session}"), self)
-    }
-}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIdentityVerificationSession<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -85,7 +16,7 @@ pub struct CreateIdentityVerificationSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: stripe_misc::IdentityVerificationSessionType,
 }
 impl<'a> CreateIdentityVerificationSession<'a> {
@@ -186,11 +117,125 @@ impl<'a> CreateIdentityVerificationSession<'a> {
     /// If your API key is in test mode, verification checks won’t actually process, though everything else will occur as if in live mode.
     ///
     /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
         client.send_form("/identity/verification_sessions", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveIdentityVerificationSession<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveIdentityVerificationSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveIdentityVerificationSession<'a> {
+    /// Retrieves the details of a VerificationSession that was previously created.
+    ///
+    /// When the session status is `requires_input`, you can use this method to retrieve a valid
+    /// `client_secret` or `url` to allow re-submission.
+    pub fn send(&self, client: &stripe::Client, session: &stripe_misc::IdentityVerificationSessionId) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
+        client.get_query(&format!("/identity/verification_sessions/{session}"), self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListIdentityVerificationSession<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<stripe_types::RangeQueryTs>,
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+    /// Only return VerificationSessions with this status.
+    /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<stripe_misc::IdentityVerificationSessionStatus>,
+}
+impl<'a> ListIdentityVerificationSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListIdentityVerificationSession<'a> {
+    /// Returns a list of VerificationSessions
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_misc::IdentityVerificationSession>> {
+        client.get_query("/identity/verification_sessions", self)
+    }
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_misc::IdentityVerificationSession>> {
+        stripe::ListPaginator::from_list_params("/identity/verification_sessions", self)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct CancelIdentityVerificationSession<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> CancelIdentityVerificationSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> CancelIdentityVerificationSession<'a> {
+    /// A VerificationSession object can be canceled when it is in `requires_input` [status](https://stripe.com/docs/identity/how-sessions-work).
+    ///
+    /// Once canceled, future submission attempts are disabled.
+    /// This cannot be undone.
+    /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
+    pub fn send(&self, client: &stripe::Client, session: &stripe_misc::IdentityVerificationSessionId) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
+        client.send_form(&format!("/identity/verification_sessions/{session}/cancel"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RedactIdentityVerificationSession<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RedactIdentityVerificationSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RedactIdentityVerificationSession<'a> {
+    /// Redact a VerificationSession to remove all collected information from Stripe. This will redact
+    /// the VerificationSession and all objects related to it, including VerificationReports, Events,
+    /// request logs, etc.
+    ///
+    /// A VerificationSession object can be redacted when it is in `requires_input` or `verified`
+    /// [status](https://stripe.com/docs/identity/how-sessions-work).
+    /// Redacting a VerificationSession in `requires_action`.
+    /// state will automatically cancel it.
+    ///
+    /// The redaction process may take up to four days. When the redaction process is in progress, the
+    /// VerificationSession’s `redaction.status` field will be set to `processing`; when the process is
+    /// finished, it will change to `redacted` and an `identity.verification_session.redacted` event
+    /// will be emitted.
+    ///
+    /// Redaction is irreversible. Redacted objects are still accessible in the Stripe API, but all the
+    /// fields that contain personal data will be replaced by the string `[redacted]` or a similar
+    /// placeholder. The `metadata` field will also be erased. Redacted objects cannot be updated or
+    /// used for any purpose.
+    ///
+    /// [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
+    pub fn send(&self, client: &stripe::Client, session: &stripe_misc::IdentityVerificationSessionId) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
+        client.send_form(&format!("/identity/verification_sessions/{session}/redact"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -208,7 +253,7 @@ pub struct UpdateIdentityVerificationSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<UpdateIdentityVerificationSessionOptions<'a>>,
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<stripe_misc::IdentityVerificationSessionType>,
 }
@@ -307,88 +352,7 @@ impl<'a> UpdateIdentityVerificationSession<'a> {
     ///
     /// When the session status is `requires_input`, you can use this method to update the
     /// verification check and options.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_misc::IdentityVerificationSessionId,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
-        client.send_form(
-            &format!("/identity/verification_sessions/{session}"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CancelIdentityVerificationSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> CancelIdentityVerificationSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> CancelIdentityVerificationSession<'a> {
-    /// A VerificationSession object can be canceled when it is in `requires_input` [status](https://stripe.com/docs/identity/how-sessions-work).
-    ///
-    /// Once canceled, future submission attempts are disabled.
-    /// This cannot be undone.
-    /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_misc::IdentityVerificationSessionId,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
-        client.send_form(
-            &format!("/identity/verification_sessions/{session}/cancel"),
-            self,
-            http_types::Method::Post,
-        )
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RedactIdentityVerificationSession<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RedactIdentityVerificationSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RedactIdentityVerificationSession<'a> {
-    /// Redact a VerificationSession to remove all collected information from Stripe. This will redact
-    /// the VerificationSession and all objects related to it, including VerificationReports, Events,
-    /// request logs, etc.
-    ///
-    /// A VerificationSession object can be redacted when it is in `requires_input` or `verified`
-    /// [status](https://stripe.com/docs/identity/how-sessions-work).
-    /// Redacting a VerificationSession in `requires_action`.
-    /// state will automatically cancel it.
-    ///
-    /// The redaction process may take up to four days. When the redaction process is in progress, the
-    /// VerificationSession’s `redaction.status` field will be set to `processing`; when the process is
-    /// finished, it will change to `redacted` and an `identity.verification_session.redacted` event
-    /// will be emitted.
-    ///
-    /// Redaction is irreversible. Redacted objects are still accessible in the Stripe API, but all the
-    /// fields that contain personal data will be replaced by the string `[redacted]` or a similar
-    /// placeholder. The `metadata` field will also be erased. Redacted objects cannot be updated or
-    /// used for any purpose.
-    ///
-    /// [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_misc::IdentityVerificationSessionId,
-    ) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
-        client.send_form(
-            &format!("/identity/verification_sessions/{session}/redact"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, session: &stripe_misc::IdentityVerificationSessionId) -> stripe::Response<stripe_misc::IdentityVerificationSession> {
+        client.send_form(&format!("/identity/verification_sessions/{session}"), self, http_types::Method::Post)
     }
 }

@@ -31,37 +31,11 @@ impl<'a> ListBillingPortalConfiguration<'a> {
 }
 impl<'a> ListBillingPortalConfiguration<'a> {
     /// Returns a list of configurations that describe the functionality of the customer portal.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_billing::BillingPortalConfiguration>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_billing::BillingPortalConfiguration>> {
         client.get_query("/billing_portal/configurations", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_billing::BillingPortalConfiguration>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_billing::BillingPortalConfiguration>> {
         stripe::ListPaginator::from_list_params("/billing_portal/configurations", self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct RetrieveBillingPortalConfiguration<'a> {
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-}
-impl<'a> RetrieveBillingPortalConfiguration<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> RetrieveBillingPortalConfiguration<'a> {
-    /// Retrieves a configuration that describes the functionality of the customer portal.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        configuration: &stripe_billing::BillingPortalConfigurationId,
-    ) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
-        client.get_query(&format!("/billing_portal/configurations/{configuration}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -89,18 +63,8 @@ pub struct CreateBillingPortalConfiguration<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> CreateBillingPortalConfiguration<'a> {
-    pub fn new(
-        business_profile: CreateBillingPortalConfigurationBusinessProfile<'a>,
-        features: CreateBillingPortalConfigurationFeatures<'a>,
-    ) -> Self {
-        Self {
-            business_profile,
-            default_return_url: None,
-            expand: None,
-            features,
-            login_page: None,
-            metadata: None,
-        }
+    pub fn new(business_profile: CreateBillingPortalConfigurationBusinessProfile<'a>, features: CreateBillingPortalConfigurationFeatures<'a>) -> Self {
+        Self { business_profile, default_return_url: None, expand: None, features, login_page: None, metadata: None }
     }
 }
 /// The business information shown to customers in the portal.
@@ -153,8 +117,7 @@ impl<'a> CreateBillingPortalConfigurationFeatures<'a> {
 pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates:
-        Option<&'a [CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
+    pub allowed_updates: Option<&'a [CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
@@ -248,8 +211,7 @@ impl CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+    pub cancellation_reason: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Whether to cancel subscriptions immediately or at the end of the billing period.
@@ -259,8 +221,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
+    pub proration_behavior: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
 impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub fn new(enabled: bool) -> Self {
@@ -273,14 +234,10 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellatio
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
-    pub options:
-        &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
+    pub options: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
 }
 impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
-    pub fn new(
-        enabled: bool,
-        options: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
-    ) -> Self {
+    pub fn new(enabled: bool, options: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions]) -> Self {
         Self { enabled, options }
     }
 }
@@ -312,9 +269,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
     }
 }
 
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
@@ -331,24 +286,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -422,9 +371,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
     }
 }
 
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
@@ -436,24 +383,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -465,8 +406,7 @@ impl serde::Serialize
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
-    pub default_allowed_updates:
-        &'a [CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
+    pub default_allowed_updates: &'a [CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// The list of up to 10 products that support subscription updates.
@@ -474,8 +414,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    pub proration_behavior: Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
 impl<'a> CreateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     pub fn new(
@@ -504,9 +443,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpd
     }
 }
 
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
@@ -518,24 +455,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -562,9 +493,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
     }
 }
 
-impl std::str::FromStr
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::str::FromStr for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
@@ -576,24 +505,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -615,10 +538,7 @@ impl CreateBillingPortalConfigurationLoginPage {
 }
 impl<'a> CreateBillingPortalConfiguration<'a> {
     /// Creates a configuration that describes the functionality and behavior of a PortalSession
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
         client.send_form("/billing_portal/configurations", self, http_types::Method::Post)
     }
 }
@@ -706,8 +626,7 @@ impl<'a> UpdateBillingPortalConfigurationFeatures<'a> {
 pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate<'a> {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_updates:
-        Option<&'a [UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
+    pub allowed_updates: Option<&'a [UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates]>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -802,8 +721,7 @@ impl UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
+    pub cancellation_reason: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a>>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -814,8 +732,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     /// Possible values are `none` and `create_prorations`, which is only compatible with `mode=immediately`.
     /// No prorations are generated when canceling a subscription at the end of its natural billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
+    pub proration_behavior: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
 impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionCancel<'a> {
     pub fn new() -> Self {
@@ -829,9 +746,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellatio
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<
-        &'a [UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions],
-    >,
+    pub options: Option<&'a [UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions]>,
 }
 impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason<'a> {
     pub fn new(enabled: bool) -> Self {
@@ -866,9 +781,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReaso
     }
 }
 
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions::*;
@@ -885,24 +798,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
-{
+impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -976,9 +883,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
     }
 }
 
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior::*;
@@ -990,24 +895,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
-{
+impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1020,9 +919,7 @@ impl serde::Serialize
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_allowed_updates: Option<
-        &'a [UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates],
-    >,
+    pub default_allowed_updates: Option<&'a [UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates]>,
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1032,8 +929,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     /// Determines how to handle prorations resulting from subscription updates.
     /// Valid values are `none`, `create_prorations`, and `always_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_behavior:
-        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
+    pub proration_behavior: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior>,
 }
 impl<'a> UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate<'a> {
     pub fn new() -> Self {
@@ -1058,9 +954,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpd
     }
 }
 
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates::*;
@@ -1072,24 +966,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
-{
+impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1116,9 +1004,7 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
     }
 }
 
-impl std::str::FromStr
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::str::FromStr for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior::*;
@@ -1130,24 +1016,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
-{
+impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1171,16 +1051,25 @@ impl UpdateBillingPortalConfigurationLoginPage {
 }
 impl<'a> UpdateBillingPortalConfiguration<'a> {
     /// Updates a configuration that describes the functionality of the customer portal.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        configuration: &stripe_billing::BillingPortalConfigurationId,
-    ) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
-        client.send_form(
-            &format!("/billing_portal/configurations/{configuration}"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, configuration: &stripe_billing::BillingPortalConfigurationId) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
+        client.send_form(&format!("/billing_portal/configurations/{configuration}"), self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct RetrieveBillingPortalConfiguration<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+}
+impl<'a> RetrieveBillingPortalConfiguration<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> RetrieveBillingPortalConfiguration<'a> {
+    /// Retrieves a configuration that describes the functionality of the customer portal.
+    pub fn send(&self, client: &stripe::Client, configuration: &stripe_billing::BillingPortalConfigurationId) -> stripe::Response<stripe_billing::BillingPortalConfiguration> {
+        client.get_query(&format!("/billing_portal/configurations/{configuration}"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

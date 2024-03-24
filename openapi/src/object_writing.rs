@@ -3,6 +3,7 @@ use std::fmt::Write;
 use crate::components::Components;
 use crate::ids::write_object_id;
 use crate::printable::Lifetime;
+use crate::rust_object::EnumOfObjects::ObjectUnion;
 use crate::rust_object::{as_enum_of_objects, ObjectMetadata, RustObject};
 use crate::rust_type::RustType;
 use crate::stripe_object::{RequestSpec, StripeObject};
@@ -89,7 +90,10 @@ pub fn gen_obj(
                 let Some(object_names) = as_enum_of_objects(components, variants) else {
                     panic!("Object {} is an enum that is not a union of stripe objects", ident);
                 };
-                write_object_trait_for_enum(components, &mut out, ident, &object_names)
+                let ObjectUnion(objects) = object_names else {
+                    panic!("Object {} is an enum that is not a union of stripe objects", ident);
+                };
+                write_object_trait_for_enum(&mut out, ident, &objects)
             }
             RustObject::FieldlessEnum(_) => {
                 panic!("Did not expect enum to have an id");

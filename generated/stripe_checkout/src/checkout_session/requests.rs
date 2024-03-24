@@ -1,8 +1,5 @@
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ListCheckoutSession<'a> {
-    /// Only return the Checkout Sessions that were created during the given date interval.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<stripe_types::RangeQueryTs>,
     /// Only return the Checkout Sessions for the Customer specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
@@ -57,15 +54,10 @@ impl<'a> ListCheckoutSessionCustomerDetails<'a> {
 }
 impl<'a> ListCheckoutSession<'a> {
     /// Returns a list of Checkout Sessions.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_types::List<stripe_checkout::CheckoutSession>> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_types::List<stripe_checkout::CheckoutSession>> {
         client.get_query("/checkout/sessions", self)
     }
-    pub fn paginate(
-        self,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_checkout::CheckoutSession>> {
+    pub fn paginate(self) -> stripe::ListPaginator<stripe_types::List<stripe_checkout::CheckoutSession>> {
         stripe::ListPaginator::from_list_params("/checkout/sessions", self)
     }
 }
@@ -82,57 +74,8 @@ impl<'a> RetrieveCheckoutSession<'a> {
 }
 impl<'a> RetrieveCheckoutSession<'a> {
     /// Retrieves a Session object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
+    pub fn send(&self, client: &stripe::Client, session: &stripe_checkout::CheckoutSessionId) -> stripe::Response<stripe_checkout::CheckoutSession> {
         client.get_query(&format!("/checkout/sessions/{session}"), self)
-    }
-}
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ListLineItemsCheckoutSession<'a> {
-    /// A cursor for use in pagination.
-    /// `ending_before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<&'a str>,
-    /// Specifies which fields in the response should be expanded.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expand: Option<&'a [&'a str]>,
-    /// A limit on the number of objects to be returned.
-    /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    /// A cursor for use in pagination.
-    /// `starting_after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a str>,
-}
-impl<'a> ListLineItemsCheckoutSession<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl<'a> ListLineItemsCheckoutSession<'a> {
-    /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
-    /// There is also a URL where you can retrieve the full (paginated) list of line items.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        client.get_query(&format!("/checkout/sessions/{session}/line_items"), self)
-    }
-    pub fn paginate(
-        self,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
-        stripe::ListPaginator::from_list_params(
-            &format!("/checkout/sessions/{session}/line_items"),
-            self,
-        )
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -145,11 +88,10 @@ pub struct CreateCheckoutSession<'a> {
     pub allow_promotion_codes: Option<bool>,
     /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreateCheckoutSessionAutomaticTax<'a>>,
+    pub automatic_tax: Option<CreateCheckoutSessionAutomaticTax>,
     /// Specify whether Checkout should collect the customer's billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_address_collection:
-        Option<stripe_checkout::CheckoutSessionBillingAddressCollection>,
+    pub billing_address_collection: Option<stripe_checkout::CheckoutSessionBillingAddressCollection>,
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancel_url: Option<&'a str>,
@@ -167,7 +109,7 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// Collect additional information from your customer using custom fields.
-    /// Up to 3 fields are supported.
+    /// Up to 2 fields are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<&'a [CreateCheckoutSessionCustomFields<'a>]>,
     /// Display additional text for your customers using custom text.
@@ -308,7 +250,8 @@ pub struct CreateCheckoutSession<'a> {
     pub shipping_options: Option<&'a [CreateCheckoutSessionShippingOptions<'a>]>,
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button. `submit_type` can only be
-    /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
+    /// specified on Checkout Sessions in `payment` mode, but not Checkout Sessions
+    /// in `subscription` or `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_type: Option<stripe_checkout::CheckoutSessionSubmitType>,
     /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
@@ -363,91 +306,18 @@ impl CreateCheckoutSessionAfterExpirationRecovery {
 }
 /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCheckoutSessionAutomaticTax<'a> {
+pub struct CreateCheckoutSessionAutomaticTax {
     /// Set to true to enable automatic taxes.
     pub enabled: bool,
-    /// The account that's liable for tax.
-    /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
-    /// The tax transaction is returned in the report of the connected account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub liability: Option<CreateCheckoutSessionAutomaticTaxLiability<'a>>,
 }
-impl<'a> CreateCheckoutSessionAutomaticTax<'a> {
+impl CreateCheckoutSessionAutomaticTax {
     pub fn new(enabled: bool) -> Self {
-        Self { enabled, liability: None }
-    }
-}
-/// The account that's liable for tax.
-/// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
-/// The tax transaction is returned in the report of the connected account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCheckoutSessionAutomaticTaxLiability<'a> {
-    /// The connected account being referenced when `type` is `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
-    /// Type of the account referenced in the request.
-    #[serde(rename = "type")]
-    pub type_: CreateCheckoutSessionAutomaticTaxLiabilityType,
-}
-impl<'a> CreateCheckoutSessionAutomaticTaxLiability<'a> {
-    pub fn new(type_: CreateCheckoutSessionAutomaticTaxLiabilityType) -> Self {
-        Self { account: None, type_ }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateCheckoutSessionAutomaticTaxLiabilityType {
-    Account,
-    Self_,
-}
-impl CreateCheckoutSessionAutomaticTaxLiabilityType {
-    pub fn as_str(self) -> &'static str {
-        use CreateCheckoutSessionAutomaticTaxLiabilityType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCheckoutSessionAutomaticTaxLiabilityType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCheckoutSessionAutomaticTaxLiabilityType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for CreateCheckoutSessionAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxLiabilityType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreateCheckoutSessionAutomaticTaxLiabilityType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
+        Self { enabled }
     }
 }
 /// Configure fields for the Checkout Session to gather active consent from customers.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
-    /// Determines the display of payment method reuse agreement text in the UI.
-    /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_reuse_agreement:
-        Option<CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement>,
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     /// The Checkout.
     /// Session will determine whether to display an option to opt into promotional communication
@@ -462,78 +332,6 @@ pub struct CreateCheckoutSessionConsentCollection {
 impl CreateCheckoutSessionConsentCollection {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// Determines the display of payment method reuse agreement text in the UI.
-/// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
-    /// Determines the position and visibility of the payment method reuse agreement in the UI.
-    /// When set to `auto`, Stripe's.
-    /// defaults will be used.
-    /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-    pub position: CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition,
-}
-impl CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
-    pub fn new(
-        position: CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition,
-    ) -> Self {
-        Self { position }
-    }
-}
-/// Determines the position and visibility of the payment method reuse agreement in the UI.
-/// When set to `auto`, Stripe's.
-/// defaults will be used.
-/// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
-    Auto,
-    Hidden,
-}
-impl CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
-    pub fn as_str(self) -> &'static str {
-        use CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match self {
-            Auto => "auto",
-            Hidden => "hidden",
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
-{
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition::*;
-        match s {
-            "auto" => Ok(Auto),
-            "hidden" => Ok(Hidden),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display
-    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
@@ -633,7 +431,7 @@ impl serde::Serialize for CreateCheckoutSessionConsentCollectionTermsOfService {
     }
 }
 /// Collect additional information from your customer using custom fields.
-/// Up to 3 fields are supported.
+/// Up to 2 fields are supported.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFields<'a> {
     /// Configuration for `type=dropdown` fields.
@@ -655,15 +453,11 @@ pub struct CreateCheckoutSessionCustomFields<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<CreateCheckoutSessionCustomFieldsText>,
     /// The type of the field.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateCheckoutSessionCustomFieldsType,
 }
 impl<'a> CreateCheckoutSessionCustomFields<'a> {
-    pub fn new(
-        key: &'a str,
-        label: CreateCheckoutSessionCustomFieldsLabel<'a>,
-        type_: CreateCheckoutSessionCustomFieldsType,
-    ) -> Self {
+    pub fn new(key: &'a str, label: CreateCheckoutSessionCustomFieldsLabel<'a>, type_: CreateCheckoutSessionCustomFieldsType) -> Self {
         Self { dropdown: None, key, label, numeric: None, optional: None, text: None, type_ }
     }
 }
@@ -698,7 +492,7 @@ pub struct CreateCheckoutSessionCustomFieldsLabel<'a> {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: &'a str,
     /// The type of the label.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     pub type_: CreateCheckoutSessionCustomFieldsLabelType,
 }
 impl<'a> CreateCheckoutSessionCustomFieldsLabel<'a> {
@@ -831,9 +625,6 @@ impl serde::Serialize for CreateCheckoutSessionCustomFieldsType {
 /// Display additional text for your customers using custom text.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomText<'a> {
-    /// Custom text that should be displayed after the payment confirmation button.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub after_submit: Option<CustomTextPositionParam<'a>>,
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<CustomTextPositionParam<'a>>,
@@ -1102,18 +893,13 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceData<'a> {
     pub account_tax_ids: Option<&'a [&'a str]>,
     /// Default custom fields to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields:
-        Option<&'a [CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields<'a>]>,
+    pub custom_fields: Option<&'a [CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields<'a>]>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<&'a str>,
-    /// The connected account that issues the invoice.
-    /// The invoice is presented with the branding and support information of the specified account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -1142,68 +928,6 @@ impl<'a> CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields<'a> {
         Self { name, value }
     }
 }
-/// The connected account that issues the invoice.
-/// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer<'a> {
-    /// The connected account being referenced when `type` is `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
-    /// Type of the account referenced in the request.
-    #[serde(rename = "type")]
-    pub type_: CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType,
-}
-impl<'a> CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer<'a> {
-    pub fn new(type_: CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType) -> Self {
-        Self { account: None, type_ }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    Account,
-    Self_,
-}
-impl CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    pub fn as_str(self) -> &'static str {
-        use CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
@@ -1212,8 +936,7 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
     /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax_display:
-        Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+    pub amount_tax_display: Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
@@ -1239,9 +962,7 @@ impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDis
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::str::FromStr for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::*;
@@ -1252,24 +973,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::fmt::Display for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
-{
+impl serde::Serialize for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -1369,15 +1084,7 @@ pub struct CreateCheckoutSessionLineItemsPriceData<'a> {
 }
 impl<'a> CreateCheckoutSessionLineItemsPriceData<'a> {
     pub fn new(currency: stripe_types::Currency) -> Self {
-        Self {
-            currency,
-            product: None,
-            product_data: None,
-            recurring: None,
-            tax_behavior: None,
-            unit_amount: None,
-            unit_amount_decimal: None,
-        }
+        Self { currency, product: None, product_data: None, recurring: None, tax_behavior: None, unit_amount: None, unit_amount_decimal: None }
     }
 }
 /// Data used to generate a new product object inline. One of `product` or `product_data` is required.
@@ -1414,7 +1121,7 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
     /// The number of intervals between subscription billings.
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
@@ -1737,10 +1444,7 @@ pub struct CreateCheckoutSessionPaymentIntentDataShipping<'a> {
     pub tracking_number: Option<&'a str>,
 }
 impl<'a> CreateCheckoutSessionPaymentIntentDataShipping<'a> {
-    pub fn new(
-        address: CreateCheckoutSessionPaymentIntentDataShippingAddress<'a>,
-        name: &'a str,
-    ) -> Self {
+    pub fn new(address: CreateCheckoutSessionPaymentIntentDataShippingAddress<'a>, name: &'a str) -> Self {
         Self { address, carrier: None, name, phone: None, tracking_number: None }
     }
 }
@@ -1924,9 +1628,6 @@ pub struct CreateCheckoutSessionPaymentMethodOptions<'a> {
     /// contains details about the Sofort payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateCheckoutSessionPaymentMethodOptionsSofort>,
-    /// contains details about the Swish payment method options.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<CreateCheckoutSessionPaymentMethodOptionsSwish<'a>>,
     /// contains details about the Us Bank Account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a>>,
@@ -1949,8 +1650,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
     pub currency: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency>,
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
+    pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a>>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -1958,12 +1658,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage>,
     /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsAcssDebit<'a> {
     pub fn new() -> Self {
@@ -2029,20 +1727,17 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> 
     /// List of Stripe products where this mandate can be selected automatically.
     /// Only usable in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for:
-        Option<&'a [CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
+    pub default_for: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor]>,
     /// Description of the mandate interval.
     /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<&'a str>,
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
     pub fn new() -> Self {
@@ -2066,9 +1761,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor 
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::*;
@@ -2079,24 +1772,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2122,9 +1809,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSche
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::*;
@@ -2136,24 +1821,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2177,9 +1856,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransaction
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
@@ -2190,24 +1867,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2393,8 +2064,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -2420,9 +2090,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::*;
@@ -2432,9 +2100,7 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -2445,9 +2111,7 @@ impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearp
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2530,8 +2194,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
@@ -2596,8 +2259,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
@@ -2668,8 +2330,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -2905,8 +2566,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
@@ -2972,8 +2632,7 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCashappSetupF
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer:
-        Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
+    pub bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a>>,
     /// The funding method type to be used when there are not enough funds in the customer balance.
     /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2985,8 +2644,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
     pub fn new() -> Self {
@@ -2997,23 +2655,20 @@ impl<'a> CreateCheckoutSessionPaymentMethodOptionsCustomerBalance<'a> {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
     /// Configuration for eu_bank_transfer funding type.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub eu_bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
-        /// List of address types that should be returned in the financial_addresses response.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer<'a>>,
+    /// List of address types that should be returned in the financial_addresses response.
     /// If not specified, all valid types will be returned.
     ///
     /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub requested_address_types: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes]>,
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
-#[serde(rename = "type")]
-pub type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
-
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
+    pub type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer<'a> {
-    pub fn new(
-        type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
-    ) -> Self {
+    pub fn new(type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType) -> Self {
         Self { eu_bank_transfer: None, requested_address_types: None, type_ }
     }
 }
@@ -3058,9 +2713,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequest
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::*;
@@ -3076,24 +2729,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -3123,9 +2770,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::*;
@@ -3139,9 +2784,7 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -3223,9 +2866,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
@@ -3235,9 +2876,7 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -3396,8 +3035,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
@@ -3462,8 +3100,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
@@ -3663,8 +3300,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
@@ -4247,8 +3883,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
@@ -4316,8 +3951,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage>,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
@@ -4443,26 +4077,12 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFu
         serializer.serialize_str(self.as_str())
     }
 }
-/// contains details about the Swish payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
-    /// The order reference that will be displayed to customers in the Swish application.
-    /// Defaults to the `id` of the Payment Intent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reference: Option<&'a str>,
-}
-impl<'a> CreateCheckoutSessionPaymentMethodOptionsSwish<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 /// contains details about the Us Bank Account payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_connections:
-        Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
+    pub financial_connections: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a>>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4470,12 +4090,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
     /// Verification method for the intent
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method:
-        Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
+    pub verification_method: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
     pub fn new() -> Self {
@@ -4485,15 +4103,14 @@ impl<'a> CreateCheckoutSessionPaymentMethodOptionsUsBankAccount<'a> {
 /// Additional fields for Financial Connections Session creation
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
-        /// The list of permissions to request.
+    /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub permissions: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions]>,
     /// List of data features that you would like to retrieve upon account creation.
-#[serde(skip_serializing_if = "Option::is_none")]
-pub prefetch: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
-
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prefetch: Option<&'a [CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch]>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections<'a> {
     pub fn new() -> Self {
@@ -4522,9 +4139,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsP
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
@@ -4537,24 +4152,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -4566,49 +4175,38 @@ impl serde::Serialize
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     Balances,
-    Transactions,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     pub fn as_str(self) -> &'static str {
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
-            Transactions => "transactions",
         }
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
-            "transactions" => Ok(Transactions),
             _ => Err(()),
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
-{
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -4686,9 +4284,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
-{
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod::*;
@@ -4699,9 +4295,7 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
-{
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -4735,8 +4329,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay<'a> {
     ///
     /// When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage:
-        Option<CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 impl<'a> CreateCheckoutSessionPaymentMethodOptionsWechatPay<'a> {
     pub fn new(client: CreateCheckoutSessionPaymentMethodOptionsWechatPayClient) -> Self {
@@ -4883,7 +4476,6 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     RevolutPay,
     SepaDebit,
     Sofort,
-    Swish,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -4923,7 +4515,6 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             RevolutPay => "revolut_pay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
-            Swish => "swish",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -4966,7 +4557,6 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "revolut_pay" => Ok(RevolutPay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
-            "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -5038,9 +4628,7 @@ pub struct CreateCheckoutSessionShippingAddressCollection<'a> {
     pub allowed_countries: &'a [CreateCheckoutSessionShippingAddressCollectionAllowedCountries],
 }
 impl<'a> CreateCheckoutSessionShippingAddressCollection<'a> {
-    pub fn new(
-        allowed_countries: &'a [CreateCheckoutSessionShippingAddressCollectionAllowedCountries],
-    ) -> Self {
+    pub fn new(allowed_countries: &'a [CreateCheckoutSessionShippingAddressCollectionAllowedCountries]) -> Self {
         Self { allowed_countries }
     }
 }
@@ -5822,8 +5410,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData<'a> {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate:
-        Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate>,
+    pub delivery_estimate: Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate>,
     /// The name of the shipping rate, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     pub display_name: &'a str,
@@ -5845,21 +5432,13 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<&'a str>,
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
-    #[serde(rename = "type")]
+    #[cfg_attr(not(feature = "min-ser"), serde(rename = "type"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateCheckoutSessionShippingOptionsShippingRateDataType>,
 }
 impl<'a> CreateCheckoutSessionShippingOptionsShippingRateData<'a> {
     pub fn new(display_name: &'a str) -> Self {
-        Self {
-            delivery_estimate: None,
-            display_name,
-            fixed_amount: None,
-            metadata: None,
-            tax_behavior: None,
-            tax_code: None,
-            type_: None,
-        }
+        Self { delivery_estimate: None, display_name, fixed_amount: None, metadata: None, tax_behavior: None, tax_code: None, type_: None }
     }
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
@@ -5868,12 +5447,10 @@ impl<'a> CreateCheckoutSessionShippingOptionsShippingRateData<'a> {
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum:
-        Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum>,
+    pub maximum: Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum>,
     /// The lower bound of the estimated range. If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum:
-        Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
+    pub minimum: Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     pub fn new() -> Self {
@@ -5889,10 +5466,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateM
     pub value: i64,
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
-    pub fn new(
-        unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
-        value: i64,
-    ) -> Self {
+    pub fn new(unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit, value: i64) -> Self {
         Self { unit, value }
     }
 }
@@ -5918,9 +5492,7 @@ impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
-{
+impl std::str::FromStr for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::*;
@@ -5934,24 +5506,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
-{
+impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
-{
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
-{
+impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -5968,10 +5534,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateM
     pub value: i64,
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
-    pub fn new(
-        unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
-        value: i64,
-    ) -> Self {
+    pub fn new(unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit, value: i64) -> Self {
         Self { unit, value }
     }
 }
@@ -5997,9 +5560,7 @@ impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
-{
+impl std::str::FromStr for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::*;
@@ -6013,24 +5574,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
-{
+impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
-{
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
-{
+impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6049,12 +5604,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<
-        &'a std::collections::HashMap<
-            stripe_types::Currency,
-            CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions,
-        >,
-    >,
+    pub currency_options: Option<&'a std::collections::HashMap<stripe_types::Currency, CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>>,
 }
 impl<'a> CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -6070,9 +5620,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurren
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<
-        CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior,
-    >,
+    pub tax_behavior: Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     pub fn new(amount: i64) -> Self {
@@ -6098,9 +5646,7 @@ impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOpti
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
+impl std::str::FromStr for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::*;
@@ -6112,24 +5658,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
+impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
-{
+impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6252,9 +5792,6 @@ pub struct CreateCheckoutSessionSubscriptionData<'a> {
     /// for rendering in the [customer portal](https://stripe.com/docs/customer-management).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
-    /// All invoices will be billed using the specified settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -6287,81 +5824,6 @@ pub struct CreateCheckoutSessionSubscriptionData<'a> {
 impl<'a> CreateCheckoutSessionSubscriptionData<'a> {
     pub fn new() -> Self {
         Self::default()
-    }
-}
-/// All invoices will be billed using the specified settings.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
-    /// The connected account that issues the invoice.
-    /// The invoice is presented with the branding and support information of the specified account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer<'a>>,
-}
-impl<'a> CreateCheckoutSessionSubscriptionDataInvoiceSettings<'a> {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-/// The connected account that issues the invoice.
-/// The invoice is presented with the branding and support information of the specified account.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer<'a> {
-    /// The connected account being referenced when `type` is `account`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<&'a str>,
-    /// Type of the account referenced in the request.
-    #[serde(rename = "type")]
-    pub type_: CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType,
-}
-impl<'a> CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer<'a> {
-    pub fn new(type_: CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType) -> Self {
-        Self { account: None, type_ }
-    }
-}
-/// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    Account,
-    Self_,
-}
-impl CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    pub fn as_str(self) -> &'static str {
-        use CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType::*;
-        match self {
-            Account => "account",
-            Self_ => "self",
-        }
-    }
-}
-
-impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType::*;
-        match s {
-            "account" => Ok(Account),
-            "self" => Ok(Self_),
-            _ => Err(()),
-        }
-    }
-}
-impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }
 /// Determines how to handle prorations resulting from the `billing_cycle_anchor`.
@@ -6434,9 +5896,7 @@ pub struct CreateCheckoutSessionSubscriptionDataTrialSettings {
     pub end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
 }
 impl CreateCheckoutSessionSubscriptionDataTrialSettings {
-    pub fn new(
-        end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
-    ) -> Self {
+    pub fn new(end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior) -> Self {
         Self { end_behavior }
     }
 }
@@ -6444,13 +5904,10 @@ impl CreateCheckoutSessionSubscriptionDataTrialSettings {
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-    pub missing_payment_method:
-        CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+    pub missing_payment_method: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 impl CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
-    pub fn new(
-        missing_payment_method: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
-    ) -> Self {
+    pub fn new(missing_payment_method: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod) -> Self {
         Self { missing_payment_method }
     }
 }
@@ -6472,9 +5929,7 @@ impl CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPayment
     }
 }
 
-impl std::str::FromStr
-    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
+impl std::str::FromStr for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::*;
@@ -6486,24 +5941,18 @@ impl std::str::FromStr
         }
     }
 }
-impl std::fmt::Display
-    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
+impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize
-    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
-{
+impl serde::Serialize for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -6524,11 +5973,43 @@ impl CreateCheckoutSessionTaxIdCollection {
 }
 impl<'a> CreateCheckoutSession<'a> {
     /// Creates a Session object.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
+    pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_checkout::CheckoutSession> {
         client.send_form("/checkout/sessions", self, http_types::Method::Post)
+    }
+}
+#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+pub struct ListLineItemsCheckoutSession<'a> {
+    /// A cursor for use in pagination.
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expand: Option<&'a [&'a str]>,
+    /// A limit on the number of objects to be returned.
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    /// A cursor for use in pagination.
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+impl<'a> ListLineItemsCheckoutSession<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl<'a> ListLineItemsCheckoutSession<'a> {
+    /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
+    /// There is also a URL where you can retrieve the full (paginated) list of line items.
+    pub fn send(&self, client: &stripe::Client, session: &stripe_checkout::CheckoutSessionId) -> stripe::Response<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
+        client.get_query(&format!("/checkout/sessions/{session}/line_items"), self)
+    }
+    pub fn paginate(self, session: &stripe_checkout::CheckoutSessionId) -> stripe::ListPaginator<stripe_types::List<stripe_shared::CheckoutSessionItem>> {
+        stripe::ListPaginator::from_list_params(&format!("/checkout/sessions/{session}/line_items"), self)
     }
 }
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -6546,16 +6027,8 @@ impl<'a> ExpireCheckoutSession<'a> {
     /// A Session can be expired when it is in one of these statuses: `open`
     ///
     /// After it expires, a customer can’t complete a Session and customers loading the Session see a message saying the Session is expired.
-    pub fn send(
-        &self,
-        client: &stripe::Client,
-        session: &stripe_checkout::CheckoutSessionId,
-    ) -> stripe::Response<stripe_checkout::CheckoutSession> {
-        client.send_form(
-            &format!("/checkout/sessions/{session}/expire"),
-            self,
-            http_types::Method::Post,
-        )
+    pub fn send(&self, client: &stripe::Client, session: &stripe_checkout::CheckoutSessionId) -> stripe::Response<stripe_checkout::CheckoutSession> {
+        client.send_form(&format!("/checkout/sessions/{session}/expire"), self, http_types::Method::Post)
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

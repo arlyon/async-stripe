@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct DeletedDiscount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     /// Will not be present for subscription mode.
@@ -7,6 +9,7 @@ pub struct DeletedDiscount {
     /// The ID of the customer associated with this discount.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     /// Always true for a deleted object
+    #[allow(dead_code)]
     deleted: stripe_types::AlwaysTrue,
     /// The ID of the discount object.
     /// Discounts cannot be fetched by ID.
@@ -23,6 +26,139 @@ pub struct DeletedDiscount {
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     pub subscription: Option<String>,
 }
+#[cfg(feature = "min-ser")]
+pub struct DeletedDiscountBuilder {
+    checkout_session: Option<Option<String>>,
+    coupon: Option<stripe_shared::Coupon>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    deleted: Option<stripe_types::AlwaysTrue>,
+    id: Option<stripe_shared::DiscountId>,
+    invoice: Option<Option<String>>,
+    invoice_item: Option<Option<String>>,
+    promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
+    start: Option<stripe_types::Timestamp>,
+    subscription: Option<Option<String>>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for DeletedDiscount {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<DeletedDiscount>,
+        builder: DeletedDiscountBuilder,
+    }
+
+    impl Visitor for Place<DeletedDiscount> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: DeletedDiscountBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for DeletedDiscountBuilder {
+        type Out = DeletedDiscount;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "checkout_session" => Deserialize::begin(&mut self.checkout_session),
+                "coupon" => Deserialize::begin(&mut self.coupon),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "deleted" => Deserialize::begin(&mut self.deleted),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice" => Deserialize::begin(&mut self.invoice),
+                "invoice_item" => Deserialize::begin(&mut self.invoice_item),
+                "promotion_code" => Deserialize::begin(&mut self.promotion_code),
+                "start" => Deserialize::begin(&mut self.start),
+                "subscription" => Deserialize::begin(&mut self.subscription),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                checkout_session: Deserialize::default(),
+                coupon: Deserialize::default(),
+                customer: Deserialize::default(),
+                deleted: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice: Deserialize::default(),
+                invoice_item: Deserialize::default(),
+                promotion_code: Deserialize::default(),
+                start: Deserialize::default(),
+                subscription: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let checkout_session = self.checkout_session.take()?;
+            let coupon = self.coupon.take()?;
+            let customer = self.customer.take()?;
+            let deleted = self.deleted.take()?;
+            let id = self.id.take()?;
+            let invoice = self.invoice.take()?;
+            let invoice_item = self.invoice_item.take()?;
+            let promotion_code = self.promotion_code.take()?;
+            let start = self.start.take()?;
+            let subscription = self.subscription.take()?;
+
+            Some(Self::Out { checkout_session, coupon, customer, deleted, id, invoice, invoice_item, promotion_code, start, subscription })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for DeletedDiscount {
+        type Builder = DeletedDiscountBuilder;
+    }
+
+    impl FromValueOpt for DeletedDiscount {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = DeletedDiscountBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "checkout_session" => b.checkout_session = Some(FromValueOpt::from_value(v)?),
+                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "deleted" => b.deleted = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
+                    "invoice_item" => b.invoice_item = Some(FromValueOpt::from_value(v)?),
+                    "promotion_code" => b.promotion_code = Some(FromValueOpt::from_value(v)?),
+                    "start" => b.start = Some(FromValueOpt::from_value(v)?),
+                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 impl stripe_types::Object for DeletedDiscount {
     type Id = stripe_shared::DiscountId;
     fn id(&self) -> &Self::Id {

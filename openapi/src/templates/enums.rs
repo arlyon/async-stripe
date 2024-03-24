@@ -1,13 +1,12 @@
 use std::fmt::Write as _;
 
-use indexmap::IndexMap;
 use indoc::writedoc;
 
 use crate::printable::PrintableWithLifetime;
-use crate::rust_object::{EnumVariant, FieldlessVariant};
+use crate::rust_object::{EnumOfObjects, EnumVariant, FieldlessVariant, ShouldImplSerialize};
+use crate::templates::miniserde::gen_enum_of_objects_miniserde;
 use crate::templates::object_writer::{write_derives_line, ObjectWriter};
-use crate::templates::utils::write_serde_rename;
-use crate::types::ComponentPath;
+use crate::templates::utils::{write_gated_serde_rename, write_gated_serde_tag};
 
 impl<'a> ObjectWriter<'a> {
     pub fn write_enum_variants(&self, out: &mut String, variants: &[EnumVariant]) {
@@ -26,47 +25,74 @@ impl<'a> ObjectWriter<'a> {
         }
         self.write_automatic_derives(out);
         let lifetime_str = self.lifetime_param();
+        let serde_tag = if self.obj_kind.is_request_param() {
+            r#"#[serde(untagged)]"#
+        } else {
+            r#"#[cfg_attr(not(feature = "min-ser"), serde(untagged))]"#
+        };
         let _ = writedoc!(
             out,
             r#"
-            #[serde(untagged)]
+            {serde_tag}
             pub enum {enum_name}{lifetime_str} {{
             {enum_body}
             }}
         "#
         );
+        if self.obj_kind.should_impl_deserialize() {
+            unimplemented!();
+        }
     }
 
-    pub fn write_enum_of_objects(&self, out: &mut String, objects: &IndexMap<&str, ComponentPath>) {
-        if self.lifetime.is_some() {
+    pub fn write_enum_of_objects(&self, out: &mut String, objects: &EnumOfObjects) {
+        if self.lifetime.is_some()
+            || self.obj_kind.should_impl_serialize() != ShouldImplSerialize::SkipIfMinSer
+        {
             unimplemented!();
         }
         let enum_name = self.ident;
 
         // Build the body of the enum definition
         let mut enum_body = String::with_capacity(64);
-        for (obj_name, obj_path) in objects {
-            let comp = self.components.get(obj_path);
-            let name = comp.ident();
-            let printable = self.components.construct_printable_type_from_path(obj_path);
-
-            write_serde_rename(&mut enum_body, obj_name);
-            let _ = writeln!(enum_body, "{name}({printable}),");
+        match objects {
+            EnumOfObjects::MaybeDeleted(maybe_deleted) => {
+                for item in [&maybe_deleted.base, &maybe_deleted.deleted] {
+                    let name = &item.ident;
+                    let printable = self.components.construct_printable_type_from_path(&item.path);
+                    let _ = writeln!(enum_body, "{name}({printable}),");
+                }
+            }
+            EnumOfObjects::ObjectUnion(objects) => {
+                for (obj_name, obj) in objects {
+                    let name = &obj.ident;
+                    let printable = self.components.construct_printable_type_from_path(&obj.path);
+                    write_gated_serde_rename(&mut enum_body, &obj_name);
+                    let _ = writeln!(enum_body, "{name}({printable}),");
+                }
+            }
         }
         if self.provide_unknown_variant {
-            let _ = writeln!(enum_body, "#[serde(other)]");
+            write_gated_serde_tag(&mut enum_body, "other");
             let _ = writeln!(enum_body, "Unknown");
         }
 
         self.write_automatic_derives(out);
         self.write_nonexhaustive_attr(out);
+
+        match objects {
+            EnumOfObjects::MaybeDeleted(_) => write_gated_serde_tag(out, "untagged"),
+            EnumOfObjects::ObjectUnion(_) => write_gated_serde_tag(out, r#"tag = "object""#),
+        }
+
+        let miniserde_impl = gen_enum_of_objects_miniserde(enum_name, objects);
         let _ = writedoc!(
             out,
             r#"
-            #[serde(tag = "object")]
             pub enum {enum_name} {{
             {enum_body}
             }}
+
+            {miniserde_impl}
         "#
         );
     }
@@ -151,26 +177,30 @@ impl<'a> ObjectWriter<'a> {
         "#
         );
 
-        if self.obj_kind.should_impl_serialize() {
-            let _ = writedoc!(
-                out,
-                r#"
+        let _ = writedoc!(
+            out,
+            r#"
             impl serde::Serialize for {enum_name} {{
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {{
                     serializer.serialize_str(self.as_str())
                 }}
             }}
             "#
-            );
-        }
+        );
 
         if self.obj_kind.should_impl_deserialize() {
-            let ret_line = if self.provide_unknown_variant {
-                format!("Ok(Self::from_str(&s).unwrap_or({enum_name}::Unknown))")
+            let serde_ret_line = if self.provide_unknown_variant {
+                "Ok(Self::from_str(&s).unwrap_or(Self::Unknown))".into()
             } else {
                 format!(
                     r#"Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))"#
                 )
+            };
+
+            let miniserde_assign_line = if self.provide_unknown_variant {
+                format!("Some({enum_name}::from_str(s).unwrap_or({enum_name}::Unknown))")
+            } else {
+                format!("Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?)")
             };
             let _ = writedoc!(
                 out,
@@ -179,9 +209,27 @@ impl<'a> ObjectWriter<'a> {
                 fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {{
                     use std::str::FromStr;
                     let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-                    {ret_line}
+                    {serde_ret_line}
                 }}
             }}
+            #[cfg(feature = "min-ser")]
+            impl miniserde::Deserialize for {enum_name} {{
+                fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {{
+                    crate::Place::new(out)
+                }}
+            }}
+
+            #[cfg(feature = "min-ser")]
+            impl miniserde::de::Visitor for crate::Place<{enum_name}> {{
+                fn string(&mut self, s: &str) -> miniserde::Result<()> {{
+                    use std::str::FromStr;
+                    self.out = {miniserde_assign_line};
+                    Ok(())
+                }}
+            }}
+
+            #[cfg(feature = "min-ser")]
+            stripe_types::impl_from_val_with_from_str!({enum_name});
             "#
             );
         }

@@ -4,7 +4,9 @@
 /// For more information on how to register to collect tax, see [our guide](https://stripe.com/docs/tax/registering).
 ///
 /// Related guide: [Using the Registrations API](https://stripe.com/docs/tax/registrations-api)
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Serialize))]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct TaxRegistration {
     /// Time at which the registration becomes active. Measured in seconds since the Unix epoch.
     pub active_from: stripe_types::Timestamp,
@@ -25,6 +27,129 @@ pub struct TaxRegistration {
     /// This field is present for convenience and can be deduced from `active_from` and `expires_at`.
     pub status: TaxRegistrationStatus,
 }
+#[cfg(feature = "min-ser")]
+pub struct TaxRegistrationBuilder {
+    active_from: Option<stripe_types::Timestamp>,
+    country: Option<String>,
+    country_options: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptions>,
+    created: Option<stripe_types::Timestamp>,
+    expires_at: Option<Option<stripe_types::Timestamp>>,
+    id: Option<stripe_misc::TaxRegistrationId>,
+    livemode: Option<bool>,
+    status: Option<TaxRegistrationStatus>,
+}
+
+#[cfg(feature = "min-ser")]
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxRegistration {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxRegistration>,
+        builder: TaxRegistrationBuilder,
+    }
+
+    impl Visitor for Place<TaxRegistration> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TaxRegistrationBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TaxRegistrationBuilder {
+        type Out = TaxRegistration;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active_from" => Deserialize::begin(&mut self.active_from),
+                "country" => Deserialize::begin(&mut self.country),
+                "country_options" => Deserialize::begin(&mut self.country_options),
+                "created" => Deserialize::begin(&mut self.created),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "status" => Deserialize::begin(&mut self.status),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active_from: Deserialize::default(),
+                country: Deserialize::default(),
+                country_options: Deserialize::default(),
+                created: Deserialize::default(),
+                expires_at: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                status: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let active_from = self.active_from.take()?;
+            let country = self.country.take()?;
+            let country_options = self.country_options.take()?;
+            let created = self.created.take()?;
+            let expires_at = self.expires_at.take()?;
+            let id = self.id.take()?;
+            let livemode = self.livemode.take()?;
+            let status = self.status.take()?;
+
+            Some(Self::Out { active_from, country, country_options, created, expires_at, id, livemode, status })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxRegistration {
+        type Builder = TaxRegistrationBuilder;
+    }
+
+    impl FromValueOpt for TaxRegistration {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxRegistrationBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active_from" => b.active_from = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "country_options" => b.country_options = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The status of the registration.
 /// This field is present for convenience and can be deduced from `active_from` and `expires_at`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -79,10 +204,27 @@ impl<'de> serde::Deserialize<'de> for TaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxRegistrationStatus"))
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxRegistrationStatus"))
     }
 }
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for TaxRegistrationStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+#[cfg(feature = "min-ser")]
+impl miniserde::de::Visitor for crate::Place<TaxRegistrationStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxRegistrationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+#[cfg(feature = "min-ser")]
+stripe_types::impl_from_val_with_from_str!(TaxRegistrationStatus);
 impl stripe_types::Object for TaxRegistration {
     type Id = stripe_misc::TaxRegistrationId;
     fn id(&self) -> &Self::Id {
