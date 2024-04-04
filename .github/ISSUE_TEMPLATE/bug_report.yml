@@ -1,6 +1,6 @@
 name: Bug report
 description: Create a report to help us improve
-labels: ["bug"]
+labels: [ "bug" ]
 body:
   - type: markdown
     attributes:
@@ -51,7 +51,7 @@ body:
     id: language-version
     attributes:
       label: Rust version
-      placeholder: Our MSRV is 1.68.0
+      placeholder: Our MSRV is 1.73.0
     validations:
       required: true
   - type: input
