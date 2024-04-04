@@ -1,3 +1,18 @@
+# [0.35.0](https://github.com/arlyon/async-stripe/compare/v0.34.2...v0.35.0) (2024-04-04)
+
+
+### Bug Fixes
+
+* add products to features list in cargo.toml and export from resourses ([d26860f](https://github.com/arlyon/async-stripe/commit/d26860f9049dd3a9ef934ad1a5f5ed3e6b365e70))
+* export SearchList ([a427943](https://github.com/arlyon/async-stripe/commit/a42794314a5c41b34c349835e705d890cbc62d3e))
+* Remove "Some()" from RequestError's display ([e609cad](https://github.com/arlyon/async-stripe/commit/e609cadb1321cd097d9a2fb9fc23d87a13eff1f5))
+* rename redirect_url to return_url on ConfirmSetupIntent ([9da5a28](https://github.com/arlyon/async-stripe/commit/9da5a28864215967d39ddb432cc593820a797a9e)), closes [#504](https://github.com/arlyon/async-stripe/issues/504)
+
+
+### Features
+
+* **webhook_events:** support construct_event with timestamp ([88fe501](https://github.com/arlyon/async-stripe/commit/88fe501f3b735b87b10f80acb227bd05765355b8))
+
 ## [0.34.2](https://github.com/arlyon/async-stripe/compare/v0.34.1...v0.34.2) (2024-02-21)
 
 
