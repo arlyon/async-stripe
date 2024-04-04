@@ -1,0 +1,96 @@
+{
+  "account": "acct",
+  "application_fee": "fee",
+  "application": "ca",
+  "bank_account": [
+    "ba",
+    "card"
+  ],
+  "balance_transaction": "txn",
+  "billing_portal.session": "bps",
+  "billing_portal.configuration": "bpc",
+  "card": "card",
+  "charge": [
+    "ch",
+    "py"
+  ],
+  "checkout.session": "cs",
+  "credit_note": "cn",
+  "credit_note_line_item": "cnli",
+  "connect_collection_transfer": "connct",
+  "customer": "cus",
+  "customer_balance_transaction": "cbtxn",
+  "discount": "di",
+  "dispute": [
+    "dp",
+    "du",
+    "pdp"
+  ],
+  "ephemeral_key": "ephkey",
+  "event": "evt",
+  "fee_refund": "fr",
+  "file": "file",
+  "file_link": "link",
+  "invoice": "in",
+  "invoiceitem": "ii",
+  "item": "li",
+  "issuing.dispute": "idp",
+  "issuing.cardholder": "ich",
+  "issuing.card": "ic",
+  "issuing.transaction": "ipi",
+  "issuing.authorization": "iauth",
+  "mandate": "mandate",
+  "order": "or",
+  "payout": "po",
+  "payment_intent": "pi",
+  "payment_link": "plink",
+  "payment_method": [
+    "pm",
+    "card",
+    "src",
+    "ba"
+  ],
+  "person": "person",
+  "platform_tax_fee": "ptf",
+  "price": [
+    "price",
+    "plan"
+  ],
+  "promotion_code": "promo",
+  "quote": "qt",
+  "review": "prv",
+  "refund": [
+    "re",
+    "pyr"
+  ],
+  "reserve_transaction": "rtx",
+  "scheduled_query_run": "sqr",
+  "setup_attempt": "setatt",
+  "setup_intent": "seti",
+  "sku": "sku",
+  "source": "src",
+  "shipping_rate": "shr",
+  "subscription": "sub",
+  "subscription_item": "si",
+  "subscription_schedule": "sub_sched",
+  "tax_code": "txcd",
+  "tax_id": [
+    "txi",
+    "atxi"
+  ],
+  "tax_rate": "txr",
+  "tax_deducted_at_source": "itds",
+  "terminal.reader": "tmr",
+  "terminal.location": "tml",
+  "terminal.configuration": "tmc",
+  "test_helpers.test_clock": "clock",
+  "topup": "tu",
+  "transfer": "tr",
+  "transfer_reversal": "trr",
+  "usage_record": "mbur",
+  "usage_record_summary": [
+    "urs",
+    "sis"
+  ],
+  "webhook_endpoint": "we"
+}

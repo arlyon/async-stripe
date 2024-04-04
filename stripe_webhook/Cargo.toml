@@ -1,0 +1,30 @@
+[package]
+name = "stripe_webhook"
+version.workspace = true
+description.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[dependencies]
+stripe_types = {path = "../stripe_types"}
+stripe_shared = {path = "../generated/stripe_shared"}
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+thiserror = "1.0.24"
+serde_json.workspace = true
+serde.workspace = true
+
+stripe_core = {path = "../generated/stripe_core", optional = true}
+stripe_checkout = {path = "../generated/stripe_checkout", optional = true}
+stripe_billing = {path = "../generated/stripe_billing", optional = true}
+
+[package.metadata.docs.rs]
+features = ["stripe_core", "stripe_checkout", "stripe_billing"]

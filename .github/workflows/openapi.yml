@@ -7,55 +7,24 @@ jobs:
   update-openapi:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install minimal nightly with rustfmt
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+
+      - name: Install Rust with rustfmt
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          profile: minimal
-          toolchain: nightly
           components: rustfmt
-      - uses: davidB/rust-cargo-make@v1
-      - name: regenerate openapi
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: openapi-install-latest
-      - name: verify
-        id: verify
-        # currently waiting for https://github.com/actions-rs/cargo/pull/206
-        # so we use this in the mean time
-        uses: arlyon/cargo@v1.0.4
-        with:
-          command: make
-          args: verify
-      - name: duplicates
-        id: duplicates
-        # currently waiting for https://github.com/actions-rs/cargo/pull/206
-        # so we use this in the mean time
-        uses: arlyon/cargo@v1.0.4
-        with:
-          command: make
-          args: duplicates
+
+      - name: Run Codegen
+        run: cargo run --release -- --fetch latest
+
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
-          commit-message: "feat: generate latest changes from OpenApi spec"
+          commit-message: Generate latest changes from OpenApi spec
           title: Generate latest changes from OpenApi spec
           body: |
             This is an automated PR that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
-
-            Here are the missing exports:
-
-            ```
-            ${{ steps.verify.outputs.stdout }}
-            ```
-
-            Here are the duplicate exports:
-
-            ```
-            ${{ steps.duplicates.outputs.stdout }}
-            ```
           branch: openapi
           branch-suffix: timestamp
           reviewers: arlyon
