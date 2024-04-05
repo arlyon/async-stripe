@@ -21,9 +21,7 @@ pub struct Client {
     secret_key: String,
     headers: Headers,
     strategy: RequestStrategy,
-    app_info: Option<AppInfo>,
     api_base: Url,
-    api_root: String,
 }
 
 impl Client {
@@ -47,9 +45,7 @@ impl Client {
                 stripe_account: None,
             },
             strategy: RequestStrategy::Once,
-            app_info: None,
             api_base: Url::parse(url.into()).expect("invalid url"),
-            api_root: "v1".to_string(),
         }
     }
 
@@ -95,8 +91,7 @@ impl Client {
         url: Option<String>,
     ) -> Self {
         let app_info = AppInfo { name, version, url };
-        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info.to_string());
-        self.app_info = Some(app_info);
+        self.headers.user_agent = format!("{USER_AGENT} {app_info}");
         self
     }
 
@@ -174,9 +169,8 @@ impl Client {
             return err(StripeError::QueryStringSerialize(qs_ser_err));
         }
 
-        let body = std::str::from_utf8(params_buffer.as_slice())
-            .expect("Unable to extract string from params_buffer")
-            .to_string();
+        let body =
+            String::from_utf8(params_buffer).expect("Unable to extract string from params_buffer");
 
         req.set_body(Body::from_string(body));
 
@@ -186,7 +180,7 @@ impl Client {
 
     fn url(&self, path: &str) -> Url {
         let mut url = self.api_base.clone();
-        url.set_path(&format!("{}/{}", self.api_root, path.trim_start_matches('/')));
+        url.set_path(&format!("v1/{}", path.trim_start_matches('/')));
         url
     }
 
@@ -197,9 +191,8 @@ impl Client {
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
         serde_path_to_error::serialize(&params, qs_ser).map_err(StripeError::from)?;
 
-        let params = std::str::from_utf8(params_buffer.as_slice())
-            .expect("Unable to extract string from params_buffer")
-            .to_string();
+        let params =
+            String::from_utf8(params_buffer).expect("Unable to extract string from params_buffer");
 
         url.set_query(Some(&params));
         Ok(url)
