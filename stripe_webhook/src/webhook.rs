@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::str::FromStr;
 
 use chrono::Utc;
@@ -138,22 +137,24 @@ struct Signature<'r> {
 
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
-        let headers: HashMap<&str, &str> = raw
-            .split(',')
-            .map(|header| {
-                let mut key_and_value = header.split('=');
-                let key = key_and_value.next();
-                let value = key_and_value.next();
-                (key, value)
-            })
-            .filter_map(|(key, value)| match (key, value) {
-                (Some(key), Some(value)) => Some((key, value)),
-                _ => None,
-            })
-            .collect();
-        let t = headers.get("t").ok_or(WebhookError::BadSignature)?;
-        let v1 = headers.get("v1").ok_or(WebhookError::BadSignature)?;
-        Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1 })
+        let mut t: Option<i64> = None;
+        let mut v1: Option<&'r str> = None;
+        for pair in raw.split(',') {
+            let (key, val) = pair.split_once('=').ok_or(WebhookError::BadSignature)?;
+            match key {
+                "t" => {
+                    t = Some(val.parse().map_err(WebhookError::BadHeader)?);
+                }
+                "v1" => {
+                    v1 = Some(val);
+                }
+                _ => {}
+            }
+        }
+        Ok(Signature {
+            t: t.ok_or(WebhookError::BadSignature)?,
+            v1: v1.ok_or(WebhookError::BadSignature)?,
+        })
     }
 }
 
