@@ -51,13 +51,28 @@ impl Object for AccountSession {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectEmbeddedAccountSessionCreateComponents {
 
-    pub account_onboarding: ConnectEmbeddedBaseConfigClaim,
+    pub account_onboarding: ConnectEmbeddedAccountConfig,
+
+    pub documents: ConnectEmbeddedBaseConfigClaim,
 
     pub payment_details: ConnectEmbeddedPaymentsConfig,
 
     pub payments: ConnectEmbeddedPaymentsConfig,
 
     pub payouts: ConnectEmbeddedPayoutsConfig,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountConfig {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    pub features: ConnectEmbeddedAccountFeatures,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ConnectEmbeddedAccountFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -89,6 +104,12 @@ pub struct ConnectEmbeddedPaymentsFeatures {
     ///
     /// This is `true` by default.
     pub capture_payments: bool,
+
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
 
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
@@ -163,6 +184,10 @@ pub struct CreateAccountSessionComponents {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_onboarding: Option<CreateAccountSessionComponentsAccountOnboarding>,
 
+    /// Configuration for the documents embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documents: Option<CreateAccountSessionComponentsDocuments>,
+
     /// Configuration for the payment details embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_details: Option<CreateAccountSessionComponentsPaymentDetails>,
@@ -185,6 +210,17 @@ pub struct CreateAccountSessionComponentsAccountOnboarding {
     /// The list of features enabled in the embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsAccountOnboardingFeatures>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocuments {
+
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+
+    /// The list of features enabled in the embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub features: Option<CreateAccountSessionComponentsDocumentsFeatures>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -225,6 +261,10 @@ pub struct CreateAccountSessionComponentsAccountOnboardingFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountSessionComponentsDocumentsFeatures {
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
 
     /// Whether to allow capturing and cancelling payment intents.
@@ -232,6 +272,12 @@ pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
+
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
 
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
@@ -254,6 +300,12 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_payments: Option<bool>,
+
+    /// Whether to allow connected accounts to manage destination charges that are created on behalf of them.
+    ///
+    /// This is `false` by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_on_behalf_of_charge_management: Option<bool>,
 
     /// Whether to allow responding to disputes, including submitting evidence and accepting disputes.
     ///
