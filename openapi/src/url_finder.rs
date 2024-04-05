@@ -24,9 +24,7 @@ impl UrlFinder {
     }
 
     pub fn url_for_object(&self, object: &str) -> Option<String> {
-        let Some(unprefixed_link) = self.doc_links.get(object) else {
-            return None;
-        };
+        let unprefixed_link = self.doc_links.get(object)?;
         Some(format!("https://stripe.com/docs/api{}", unprefixed_link))
     }
 }
