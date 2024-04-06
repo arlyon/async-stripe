@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 use crate::AccountId;
 use crate::ApiVersion;
 use crate::ApplicationId;
@@ -9,16 +11,16 @@ pub struct AppInfo {
     pub version: Option<String>,
 }
 
-impl ToString for AppInfo {
+impl Display for AppInfo {
     /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
     ///
     /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
-    fn to_string(&self) -> String {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match (&self.version, &self.url) {
-            (Some(a), Some(b)) => format!("{}/{} ({})", &self.name, a, b),
-            (Some(a), None) => format!("{}/{}", &self.name, a),
-            (None, Some(b)) => format!("{} ({})", &self.name, b),
-            _ => self.name.to_string(),
+            (Some(a), Some(b)) => write!(f, "{}/{a} ({b})", &self.name),
+            (Some(a), None) => write!(f, "{}/{a}", &self.name),
+            (None, Some(b)) => write!(f, "{} ({b})", &self.name),
+            _ => f.write_str(&self.name),
         }
     }
 }
