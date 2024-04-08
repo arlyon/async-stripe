@@ -124,4 +124,4 @@ impl stripe_types::Object for Refund {
         &self.id
     }
 }
-stripe_types::def_id!(RefundId, "re_" | "pyr_");
+stripe_types::def_id!(RefundId);

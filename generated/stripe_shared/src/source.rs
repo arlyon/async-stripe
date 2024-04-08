@@ -221,4 +221,4 @@ impl stripe_types::Object for Source {
         &self.id
     }
 }
-stripe_types::def_id!(SourceId, "src_");
+stripe_types::def_id!(SourceId);

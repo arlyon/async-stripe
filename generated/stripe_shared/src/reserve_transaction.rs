@@ -15,4 +15,4 @@ impl stripe_types::Object for ReserveTransaction {
         &self.id
     }
 }
-stripe_types::def_id!(ReserveTransactionId, "rtx_");
+stripe_types::def_id!(ReserveTransactionId);

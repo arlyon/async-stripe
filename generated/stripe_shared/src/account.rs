@@ -81,7 +81,7 @@ impl stripe_types::Object for Account {
         &self.id
     }
 }
-stripe_types::def_id!(AccountId, "acct_");
+stripe_types::def_id!(AccountId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum AccountBusinessType {
     Company,

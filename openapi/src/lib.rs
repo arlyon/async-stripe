@@ -5,7 +5,6 @@ mod crate_table;
 pub mod crates;
 mod deduplication;
 mod graph;
-mod ids;
 mod object_writing;
 mod overrides;
 mod printable;

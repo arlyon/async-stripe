@@ -35,4 +35,4 @@ impl stripe_types::Object for CheckoutSessionItem {
         &self.id
     }
 }
-stripe_types::def_id!(CheckoutSessionItemId, "li_");
+stripe_types::def_id!(CheckoutSessionItemId);

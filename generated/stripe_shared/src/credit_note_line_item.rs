@@ -98,4 +98,4 @@ impl stripe_types::Object for CreditNoteLineItem {
         &self.id
     }
 }
-stripe_types::def_id!(CreditNoteLineItemId, "cnli_");
+stripe_types::def_id!(CreditNoteLineItemId);

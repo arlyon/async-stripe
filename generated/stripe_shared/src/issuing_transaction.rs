@@ -121,7 +121,7 @@ impl stripe_types::Object for IssuingTransaction {
         &self.id
     }
 }
-stripe_types::def_id!(IssuingTransactionId, "ipi_");
+stripe_types::def_id!(IssuingTransactionId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingTransactionType {
     Capture,

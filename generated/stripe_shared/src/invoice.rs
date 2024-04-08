@@ -422,7 +422,7 @@ impl stripe_types::Object for Invoice {
         &self.id
     }
 }
-stripe_types::def_id!(InvoiceId, "in_");
+stripe_types::def_id!(InvoiceId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum InvoiceCollectionMethod {
     ChargeAutomatically,

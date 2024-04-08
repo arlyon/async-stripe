@@ -154,4 +154,4 @@ impl stripe_types::Object for Person {
         &self.id
     }
 }
-stripe_types::def_id!(PersonId, "person_");
+stripe_types::def_id!(PersonId);

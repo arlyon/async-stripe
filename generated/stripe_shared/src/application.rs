@@ -11,4 +11,4 @@ impl stripe_types::Object for Application {
         &self.id
     }
 }
-stripe_types::def_id!(ApplicationId, "ca_");
+stripe_types::def_id!(ApplicationId);

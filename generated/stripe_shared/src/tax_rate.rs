@@ -120,7 +120,7 @@ impl stripe_types::Object for TaxRate {
         &self.id
     }
 }
-stripe_types::def_id!(TaxRateId, "txr_");
+stripe_types::def_id!(TaxRateId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum TaxRateTaxType {

@@ -16,4 +16,4 @@ impl stripe_types::Object for TaxCode {
         &self.id
     }
 }
-stripe_types::def_id!(TaxCodeId, "txcd_");
+stripe_types::def_id!(TaxCodeId);

@@ -30,4 +30,4 @@ impl stripe_types::Object for ApplicationFeeRefund {
         &self.id
     }
 }
-stripe_types::def_id!(ApplicationFeeRefundId, "fr_");
+stripe_types::def_id!(ApplicationFeeRefundId);

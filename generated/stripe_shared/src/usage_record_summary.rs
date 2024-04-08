@@ -18,4 +18,4 @@ impl stripe_types::Object for UsageRecordSummary {
         &self.id
     }
 }
-stripe_types::def_id!(UsageRecordSummaryId, "urs_" | "sis_");
+stripe_types::def_id!(UsageRecordSummaryId);

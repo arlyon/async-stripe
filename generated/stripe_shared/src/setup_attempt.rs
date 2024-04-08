@@ -106,4 +106,4 @@ impl stripe_types::Object for SetupAttempt {
         &self.id
     }
 }
-stripe_types::def_id!(SetupAttemptId, "setatt_");
+stripe_types::def_id!(SetupAttemptId);

@@ -159,4 +159,4 @@ impl stripe_types::Object for Card {
         &self.id
     }
 }
-stripe_types::def_id!(CardId, "card_");
+stripe_types::def_id!(CardId);

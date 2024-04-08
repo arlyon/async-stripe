@@ -17,4 +17,4 @@ impl stripe_types::Object for TaxDeductedAtSource {
         &self.id
     }
 }
-stripe_types::def_id!(TaxDeductedAtSourceId, "itds_");
+stripe_types::def_id!(TaxDeductedAtSourceId);

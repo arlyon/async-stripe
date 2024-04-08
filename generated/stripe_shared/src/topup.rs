@@ -113,4 +113,4 @@ impl stripe_types::Object for Topup {
         &self.id
     }
 }
-stripe_types::def_id!(TopupId, "tu_");
+stripe_types::def_id!(TopupId);

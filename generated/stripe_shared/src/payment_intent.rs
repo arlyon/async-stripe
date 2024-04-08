@@ -275,7 +275,7 @@ impl stripe_types::Object for PaymentIntent {
         &self.id
     }
 }
-stripe_types::def_id!(PaymentIntentId, "pi_");
+stripe_types::def_id!(PaymentIntentId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentIntentCaptureMethod {
     Automatic,

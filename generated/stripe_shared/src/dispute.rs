@@ -121,4 +121,4 @@ impl stripe_types::Object for Dispute {
         &self.id
     }
 }
-stripe_types::def_id!(DisputeId, "dp_" | "du_" | "pdp_");
+stripe_types::def_id!(DisputeId);

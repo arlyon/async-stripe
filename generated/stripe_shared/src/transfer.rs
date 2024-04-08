@@ -59,4 +59,4 @@ impl stripe_types::Object for Transfer {
         &self.id
     }
 }
-stripe_types::def_id!(TransferId, "tr_");
+stripe_types::def_id!(TransferId);

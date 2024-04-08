@@ -225,4 +225,4 @@ impl stripe_types::Object for BalanceTransaction {
         &self.id
     }
 }
-stripe_types::def_id!(BalanceTransactionId, "txn_");
+stripe_types::def_id!(BalanceTransactionId);
