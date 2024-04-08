@@ -182,4 +182,4 @@ impl stripe_types::Object for Payout {
         &self.id
     }
 }
-stripe_types::def_id!(PayoutId, "po_");
+stripe_types::def_id!(PayoutId);

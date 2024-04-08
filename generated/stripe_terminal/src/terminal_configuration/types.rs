@@ -26,4 +26,4 @@ impl stripe_types::Object for TerminalConfiguration {
         &self.id
     }
 }
-stripe_types::def_id!(TerminalConfigurationId, "tmc_");
+stripe_types::def_id!(TerminalConfigurationId);

@@ -38,7 +38,7 @@ impl stripe_types::Object for File {
         &self.id
     }
 }
-stripe_types::def_id!(FileId, "file_");
+stripe_types::def_id!(FileId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum FilePurpose {

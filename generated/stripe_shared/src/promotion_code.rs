@@ -37,4 +37,4 @@ impl stripe_types::Object for PromotionCode {
         &self.id
     }
 }
-stripe_types::def_id!(PromotionCodeId, "promo_");
+stripe_types::def_id!(PromotionCodeId);

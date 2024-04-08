@@ -46,7 +46,7 @@ impl stripe_types::Object for BillingPortalSession {
         &self.id
     }
 }
-stripe_types::def_id!(BillingPortalSessionId, "bps_");
+stripe_types::def_id!(BillingPortalSessionId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum BillingPortalSessionLocale {

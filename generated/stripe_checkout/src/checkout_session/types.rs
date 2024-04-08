@@ -329,7 +329,7 @@ impl stripe_types::Object for CheckoutSession {
         &self.id
     }
 }
-stripe_types::def_id!(CheckoutSessionId, "cs_");
+stripe_types::def_id!(CheckoutSessionId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CheckoutSessionBillingAddressCollection {
     Auto,

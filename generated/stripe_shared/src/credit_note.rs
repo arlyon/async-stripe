@@ -189,7 +189,7 @@ impl stripe_types::Object for CreditNote {
         &self.id
     }
 }
-stripe_types::def_id!(CreditNoteId, "cn_");
+stripe_types::def_id!(CreditNoteId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreditNoteReason {
     Duplicate,

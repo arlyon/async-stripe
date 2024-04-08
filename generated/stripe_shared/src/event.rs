@@ -829,4 +829,4 @@ impl stripe_types::Object for Event {
         &self.id
     }
 }
-stripe_types::def_id!(EventId, "evt_");
+stripe_types::def_id!(EventId);

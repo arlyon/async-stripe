@@ -42,4 +42,4 @@ impl stripe_types::Object for WebhookEndpoint {
         &self.id
     }
 }
-stripe_types::def_id!(WebhookEndpointId, "we_");
+stripe_types::def_id!(WebhookEndpointId);

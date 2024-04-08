@@ -32,4 +32,4 @@ impl stripe_types::Object for BillingPortalConfiguration {
         &self.id
     }
 }
-stripe_types::def_id!(BillingPortalConfigurationId, "bpc_");
+stripe_types::def_id!(BillingPortalConfigurationId);

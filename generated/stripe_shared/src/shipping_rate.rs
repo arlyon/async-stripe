@@ -40,7 +40,7 @@ impl stripe_types::Object for ShippingRate {
         &self.id
     }
 }
-stripe_types::def_id!(ShippingRateId, "shr_");
+stripe_types::def_id!(ShippingRateId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ShippingRateTaxBehavior {
     Exclusive,

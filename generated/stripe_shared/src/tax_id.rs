@@ -283,4 +283,4 @@ impl stripe_types::Object for TaxId {
         &self.id
     }
 }
-stripe_types::def_id!(TaxIdId, "txi_" | "atxi_");
+stripe_types::def_id!(TaxIdId);

@@ -189,4 +189,4 @@ impl stripe_types::Object for Charge {
         &self.id
     }
 }
-stripe_types::def_id!(ChargeId, "ch_" | "py_");
+stripe_types::def_id!(ChargeId);

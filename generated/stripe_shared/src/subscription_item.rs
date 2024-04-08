@@ -30,4 +30,4 @@ impl stripe_types::Object for SubscriptionItem {
         &self.id
     }
 }
-stripe_types::def_id!(SubscriptionItemId, "si_");
+stripe_types::def_id!(SubscriptionItemId);

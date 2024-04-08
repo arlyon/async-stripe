@@ -23,4 +23,4 @@ impl stripe_types::Object for UsageRecord {
         &self.id
     }
 }
-stripe_types::def_id!(UsageRecordId, "mbur_");
+stripe_types::def_id!(UsageRecordId);

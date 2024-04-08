@@ -36,7 +36,7 @@ impl stripe_types::Object for IssuingDispute {
         &self.id
     }
 }
-stripe_types::def_id!(IssuingDisputeId, "idp_");
+stripe_types::def_id!(IssuingDisputeId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingDisputeStatus {
     Expired,

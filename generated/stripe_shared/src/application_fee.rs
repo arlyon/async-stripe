@@ -36,4 +36,4 @@ impl stripe_types::Object for ApplicationFee {
         &self.id
     }
 }
-stripe_types::def_id!(ApplicationFeeId, "fee_");
+stripe_types::def_id!(ApplicationFeeId);

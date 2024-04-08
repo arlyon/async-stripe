@@ -68,5 +68,3 @@ Where possible, keeping hardcoded logic in configuration files read by the code 
 itself is preferred. Currently, these files are:
 - `gen_crates.toml`: Specifications for the crates we generate, including which core parts of the 
 OpenAPI spec belong in each crate. Modifying this file is how you would change which items are included in which crate, or add additional crate splitting.
-- `id_prefixes.json`: A mapping of components to the specification for the allowed prefixes of their `Id`
-

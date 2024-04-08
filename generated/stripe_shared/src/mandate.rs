@@ -139,4 +139,4 @@ impl stripe_types::Object for Mandate {
         &self.id
     }
 }
-stripe_types::def_id!(MandateId, "mandate_");
+stripe_types::def_id!(MandateId);

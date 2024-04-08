@@ -161,4 +161,4 @@ impl stripe_types::Object for Review {
         &self.id
     }
 }
-stripe_types::def_id!(ReviewId, "prv_");
+stripe_types::def_id!(ReviewId);

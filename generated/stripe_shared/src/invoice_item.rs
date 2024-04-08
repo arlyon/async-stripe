@@ -75,4 +75,4 @@ impl stripe_types::Object for InvoiceItem {
         &self.id
     }
 }
-stripe_types::def_id!(InvoiceItemId, "ii_");
+stripe_types::def_id!(InvoiceItemId);

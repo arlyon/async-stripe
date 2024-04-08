@@ -81,7 +81,7 @@ impl stripe_types::Object for IssuingAuthorization {
         &self.id
     }
 }
-stripe_types::def_id!(IssuingAuthorizationId, "iauth_");
+stripe_types::def_id!(IssuingAuthorizationId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingAuthorizationAuthorizationMethod {
     Chip,

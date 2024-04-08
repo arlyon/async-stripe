@@ -25,4 +25,4 @@ impl stripe_types::Object for TerminalLocation {
         &self.id
     }
 }
-stripe_types::def_id!(TerminalLocationId, "tml_");
+stripe_types::def_id!(TerminalLocationId);

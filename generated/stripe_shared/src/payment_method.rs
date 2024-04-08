@@ -262,4 +262,4 @@ impl stripe_types::Object for PaymentMethod {
         &self.id
     }
 }
-stripe_types::def_id!(PaymentMethodId, "pm_" | "card_" | "src_" | "ba_");
+stripe_types::def_id!(PaymentMethodId);
