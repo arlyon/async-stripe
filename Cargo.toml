@@ -9,7 +9,7 @@ members = [
 name = "async-stripe"
 version = "0.35.0"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.68.0"
+rust-version = "1.74.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
