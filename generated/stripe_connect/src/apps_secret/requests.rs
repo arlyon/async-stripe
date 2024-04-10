@@ -89,6 +89,15 @@ impl serde::Serialize for ListAppsSecretScopeType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ListAppsSecretScopeType"))
+    }
+}
 impl<'a> ListAppsSecret<'a> {
     /// List all secrets stored on the given scope.
     pub fn send(
@@ -178,6 +187,15 @@ impl serde::Serialize for FindAppsSecretScopeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for FindAppsSecretScopeType"))
     }
 }
 impl<'a> FindAppsSecret<'a> {
@@ -270,6 +288,15 @@ impl serde::Serialize for CreateAppsSecretScopeType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAppsSecretScopeType"))
+    }
+}
 impl<'a> CreateAppsSecret<'a> {
     /// Create or replace a secret in the secret store.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_connect::AppsSecret> {
@@ -353,6 +380,16 @@ impl serde::Serialize for DeleteWhereAppsSecretScopeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for DeleteWhereAppsSecretScopeType")
+        })
     }
 }
 impl<'a> DeleteWhereAppsSecret<'a> {

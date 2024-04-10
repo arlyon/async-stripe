@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Products` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_product;
+
+miniserde::make_place!(Place);
 pub mod coupon;
 pub use stripe_shared::coupon::*;
 pub use stripe_shared::coupon_applies_to::*;

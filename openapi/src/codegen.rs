@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use anyhow::Context;
 use indoc::formatdoc;
+use serde::Serialize;
 
 use crate::components::{get_components, Components};
 use crate::crate_table::write_crate_table;
@@ -63,8 +64,8 @@ impl CodeGen {
         let crate_mod_path = crate_path.join("mod.rs");
         for (ident, typ_info) in &self.components.extra_types {
             let mut out = String::new();
-            let metadata = ObjectMetadata::new(ident.clone(), ObjectKind::Type);
-            self.components.write_object(&typ_info.obj, &metadata, &mut out);
+            let metadata = ObjectMetadata::new(ident.clone());
+            self.components.write_object(&typ_info.obj, &metadata, typ_info.usage, &mut out);
             write_to_file(out, crate_path.join(format!("{}.rs", typ_info.mod_path)))?;
             append_to_file(
                 format!("pub mod {0}; pub use {0}::{1};", typ_info.mod_path, ident),
@@ -80,7 +81,8 @@ impl CodeGen {
         self.write_api_version_file()?;
         write_generated_for_webhooks(&self.components)
             .context("Could not write webhook generated code")?;
-        write_crate_table(&self.components)
+        write_crate_table(&self.components)?;
+        self.write_object_info_for_testing()
     }
 
     fn write_crate_base(&self) -> anyhow::Result<()> {
@@ -116,11 +118,16 @@ impl CodeGen {
             
             {doc_comment}
             extern crate self as {crate_name};
+
+            miniserde::make_place!(Place);
             "#
             };
 
             let mod_path = base_path.join("src/mod.rs");
             write_to_file(mod_rs, &mod_path)?;
+
+            // NB: a hack to avoid the insanely long lines generated because of _very_ long
+            // type names causing `rustfmt` errors (https://github.com/rust-lang/rustfmt/issues/5315)
         }
         Ok(())
     }
@@ -183,9 +190,9 @@ impl CodeGen {
 
         for (ident, obj) in &comp.deduplicated_objects {
             let mut out = String::new();
-            let metadata = ObjectMetadata::new(ident.clone(), obj.info.kind);
-            self.components.write_object(&obj.object, &metadata, &mut out);
-            let dst_file = match obj.info.kind {
+            let metadata = ObjectMetadata::new(ident.clone());
+            self.components.write_object(&obj.object, &metadata, obj.info.usage, &mut out);
+            let dst_file = match obj.info.usage.kind {
                 ObjectKind::RequestParam | ObjectKind::RequestReturned => {
                     comp.get_requests_content_path()
                 }
@@ -201,8 +208,36 @@ impl CodeGen {
         let base_obj = comp.rust_obj();
         let schema = self.spec.get_component_schema(comp.path());
         let doc_comment = infer_doc_comment(schema, comp.stripe_doc_url.as_deref());
-        let meta = ObjectMetadata::new(comp.ident().clone(), ObjectKind::Type).doc(doc_comment);
+        let meta = ObjectMetadata::new(comp.ident().clone()).doc(doc_comment);
 
         gen_obj(base_obj, &meta, comp, &self.components)
+    }
+
+    fn write_object_info_for_testing(&self) -> anyhow::Result<()> {
+        #[derive(Serialize)]
+        struct ObjectInfo {
+            path: String,
+            import_type: String,
+        }
+        let mut checks = String::new();
+        for (path, obj) in &self.components.components {
+            if obj.object_name().is_none() {
+                continue;
+            }
+            let krate = obj.krate().unwrap().base();
+            let import_path = format!("{krate}::{}", obj.ident());
+            let _ = writeln!(checks, r#"check_object::<{import_path}>(resources, "{path}");"#);
+        }
+        let content = formatdoc! {
+            r#"
+            use crate::deserialization_fixture::check_object;
+
+            pub fn check_fixtures(resources: &serde_json::Value) {{
+                {checks}
+            }}
+            "#
+        };
+
+        write_to_file(content, "tests/mod.rs")
     }
 }

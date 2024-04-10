@@ -1,6 +1,7 @@
 // Needed for `json!` usage in tests
 #![recursion_limit = "256"]
 mod deser;
+pub mod generated;
 mod mock;
 mod price;
 
@@ -10,5 +11,6 @@ mod async_tests;
 mod blocking;
 // NB: pagination utils ideally could be used for blocking tests as well, but tricky because the `MockServer` is async
 // and the blocking client unconditionally creates its own runtime already
+mod deserialization_fixture;
 #[cfg(feature = "async")]
 mod pagination_utils;

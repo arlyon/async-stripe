@@ -12,7 +12,7 @@ use crate::deduplication::{deduplicate_types, DeduppedObject};
 use crate::overrides::Overrides;
 use crate::printable::{PrintableContainer, PrintableType};
 use crate::requests::parse_requests;
-use crate::rust_object::{ObjectKind, RustObject};
+use crate::rust_object::{ObjectKind, ObjectUsage, RustObject};
 use crate::rust_type::{Container, PathToType, RustType};
 use crate::spec::Spec;
 use crate::stripe_object::{
@@ -29,6 +29,7 @@ pub struct TypeSpec {
     pub doc: Option<String>,
     pub ident: RustIdent,
     pub mod_path: String,
+    pub usage: ObjectUsage,
 }
 
 pub struct Components {
@@ -107,7 +108,7 @@ impl Components {
             RustType::Path { path: PathToType::Deduplicated { path, ident }, is_ref } => {
                 let referred_typ = self.get_dedupped_type(ident, path);
                 let has_ref = referred_typ.object.has_reference(self);
-                let path = if referred_typ.info.kind == ObjectKind::Type {
+                let path = if referred_typ.info.usage.kind == ObjectKind::Type {
                     Some(PathInfo {
                         krate: self.get(path).krate_unwrapped().for_types(),
                         path: None,
@@ -158,7 +159,7 @@ impl Components {
     pub fn deps_for_webhooks(&self) -> IndexSet<&ComponentPath> {
         let mut dep_collector = DependencyCollector::new();
         for obj in &self.webhook_objs {
-            dep_collector.visit_typ(&obj.typ);
+            dep_collector.visit_typ(&obj.typ, ObjectUsage::type_def());
         }
         dep_collector.deps
     }
@@ -237,6 +238,7 @@ impl Components {
                     doc: override_meta.metadata.doc,
                     ident: override_meta.metadata.ident,
                     mod_path: override_meta.mod_path,
+                    usage: ObjectUsage { kind: ObjectKind::Type, used_as_request_param: true },
                 },
             );
         }
@@ -352,7 +354,7 @@ impl<'a> DependencyCollector<'a> {
 }
 
 impl<'a> Visit<'a> for DependencyCollector<'a> {
-    fn visit_typ(&mut self, typ: &'a RustType)
+    fn visit_typ(&mut self, typ: &'a RustType, object_usage: ObjectUsage)
     where
         Self: Sized,
     {
@@ -360,7 +362,7 @@ impl<'a> Visit<'a> for DependencyCollector<'a> {
             RustType::Path { path: PathToType::Component(path), .. } => {
                 self.deps.insert(path);
             }
-            _ => typ.visit(self),
+            _ => typ.visit(self, object_usage),
         }
     }
 }

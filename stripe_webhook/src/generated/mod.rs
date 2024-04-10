@@ -1,71 +1,690 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum AccountExternalAccountCreated {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct AccountExternalAccountCreatedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<AccountExternalAccountCreated>,
+        builder: AccountExternalAccountCreatedBuilder,
+    }
+
+    impl Deserialize for AccountExternalAccountCreated {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<AccountExternalAccountCreated> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for AccountExternalAccountCreatedBuilder {
+        type Out = AccountExternalAccountCreated;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            AccountExternalAccountCreated::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for AccountExternalAccountCreated {
+        type Builder = AccountExternalAccountCreatedBuilder;
+    }
+    impl AccountExternalAccountCreated {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for AccountExternalAccountCreated {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum AccountExternalAccountDeleted {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct AccountExternalAccountDeletedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<AccountExternalAccountDeleted>,
+        builder: AccountExternalAccountDeletedBuilder,
+    }
+
+    impl Deserialize for AccountExternalAccountDeleted {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<AccountExternalAccountDeleted> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for AccountExternalAccountDeletedBuilder {
+        type Out = AccountExternalAccountDeleted;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            AccountExternalAccountDeleted::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for AccountExternalAccountDeleted {
+        type Builder = AccountExternalAccountDeletedBuilder;
+    }
+    impl AccountExternalAccountDeleted {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for AccountExternalAccountDeleted {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum AccountExternalAccountUpdated {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct AccountExternalAccountUpdatedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<AccountExternalAccountUpdated>,
+        builder: AccountExternalAccountUpdatedBuilder,
+    }
+
+    impl Deserialize for AccountExternalAccountUpdated {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<AccountExternalAccountUpdated> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for AccountExternalAccountUpdatedBuilder {
+        type Out = AccountExternalAccountUpdated;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            AccountExternalAccountUpdated::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for AccountExternalAccountUpdated {
+        type Builder = AccountExternalAccountUpdatedBuilder;
+    }
+    impl AccountExternalAccountUpdated {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for AccountExternalAccountUpdated {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum CustomerSourceCreated {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct CustomerSourceCreatedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerSourceCreated>,
+        builder: CustomerSourceCreatedBuilder,
+    }
+
+    impl Deserialize for CustomerSourceCreated {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<CustomerSourceCreated> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for CustomerSourceCreatedBuilder {
+        type Out = CustomerSourceCreated;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            CustomerSourceCreated::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for CustomerSourceCreated {
+        type Builder = CustomerSourceCreatedBuilder;
+    }
+    impl CustomerSourceCreated {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for CustomerSourceCreated {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum CustomerSourceDeleted {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct CustomerSourceDeletedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerSourceDeleted>,
+        builder: CustomerSourceDeletedBuilder,
+    }
+
+    impl Deserialize for CustomerSourceDeleted {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<CustomerSourceDeleted> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for CustomerSourceDeletedBuilder {
+        type Out = CustomerSourceDeleted;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            CustomerSourceDeleted::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for CustomerSourceDeleted {
+        type Builder = CustomerSourceDeletedBuilder;
+    }
+    impl CustomerSourceDeleted {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for CustomerSourceDeleted {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum CustomerSourceExpiring {
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+
+#[derive(Default)]
+pub struct CustomerSourceExpiringBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerSourceExpiring>,
+        builder: CustomerSourceExpiringBuilder,
+    }
+
+    impl Deserialize for CustomerSourceExpiring {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<CustomerSourceExpiring> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for CustomerSourceExpiringBuilder {
+        type Out = CustomerSourceExpiring;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            CustomerSourceExpiring::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for CustomerSourceExpiring {
+        type Builder = CustomerSourceExpiringBuilder;
+    }
+    impl CustomerSourceExpiring {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for CustomerSourceExpiring {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum CustomerSourceUpdated {
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
+
+#[derive(Default)]
+pub struct CustomerSourceUpdatedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerSourceUpdated>,
+        builder: CustomerSourceUpdatedBuilder,
+    }
+
+    impl Deserialize for CustomerSourceUpdated {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<CustomerSourceUpdated> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for CustomerSourceUpdatedBuilder {
+        type Out = CustomerSourceUpdated;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            CustomerSourceUpdated::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for CustomerSourceUpdated {
+        type Builder = CustomerSourceUpdatedBuilder;
+    }
+    impl CustomerSourceUpdated {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for CustomerSourceUpdated {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
 #[derive(Clone, Debug)]
 #[non_exhaustive]
 /// The event data for a webhook event.
@@ -601,627 +1220,576 @@ pub enum EventObject {
     /// Occurs whenever a received_debit is created as a result of funds being pulled by another account.
     #[cfg(feature = "stripe_treasury")]
     TreasuryReceivedDebitCreated(stripe_treasury::TreasuryReceivedDebit),
-    Unknown(serde_json::Value),
+    Unknown(miniserde::json::Value),
 }
 impl EventObject {
-    pub(crate) fn from_raw_data(typ: &str, data: serde_json::Value) -> serde_json::Result<Self> {
-        Ok(match typ {
+    pub(crate) fn from_raw_data(typ: &str, data: miniserde::json::Value) -> Option<Self> {
+        use stripe_types::miniserde_helpers::FromValueOpt;
+        Some(match typ {
             "account.application.authorized" => {
-                EventObject::AccountApplicationAuthorized(serde_json::from_value(data)?)
+                Self::AccountApplicationAuthorized(FromValueOpt::from_value(data)?)
             }
             "account.application.deauthorized" => {
-                EventObject::AccountApplicationDeauthorized(serde_json::from_value(data)?)
+                Self::AccountApplicationDeauthorized(FromValueOpt::from_value(data)?)
             }
             "account.external_account.created" => {
-                EventObject::AccountExternalAccountCreated(serde_json::from_value(data)?)
+                Self::AccountExternalAccountCreated(FromValueOpt::from_value(data)?)
             }
             "account.external_account.deleted" => {
-                EventObject::AccountExternalAccountDeleted(serde_json::from_value(data)?)
+                Self::AccountExternalAccountDeleted(FromValueOpt::from_value(data)?)
             }
             "account.external_account.updated" => {
-                EventObject::AccountExternalAccountUpdated(serde_json::from_value(data)?)
+                Self::AccountExternalAccountUpdated(FromValueOpt::from_value(data)?)
             }
-            "account.updated" => EventObject::AccountUpdated(serde_json::from_value(data)?),
+            "account.updated" => Self::AccountUpdated(FromValueOpt::from_value(data)?),
             "application_fee.created" => {
-                EventObject::ApplicationFeeCreated(serde_json::from_value(data)?)
+                Self::ApplicationFeeCreated(FromValueOpt::from_value(data)?)
             }
             "application_fee.refund.updated" => {
-                EventObject::ApplicationFeeRefundUpdated(serde_json::from_value(data)?)
+                Self::ApplicationFeeRefundUpdated(FromValueOpt::from_value(data)?)
             }
             "application_fee.refunded" => {
-                EventObject::ApplicationFeeRefunded(serde_json::from_value(data)?)
+                Self::ApplicationFeeRefunded(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_core")]
-            "balance.available" => EventObject::BalanceAvailable(serde_json::from_value(data)?),
+            "balance.available" => Self::BalanceAvailable(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_billing")]
             "billing_portal.configuration.created" => {
-                EventObject::BillingPortalConfigurationCreated(serde_json::from_value(data)?)
+                Self::BillingPortalConfigurationCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_billing")]
             "billing_portal.configuration.updated" => {
-                EventObject::BillingPortalConfigurationUpdated(serde_json::from_value(data)?)
+                Self::BillingPortalConfigurationUpdated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_billing")]
             "billing_portal.session.created" => {
-                EventObject::BillingPortalSessionCreated(serde_json::from_value(data)?)
+                Self::BillingPortalSessionCreated(FromValueOpt::from_value(data)?)
             }
-            "capability.updated" => EventObject::CapabilityUpdated(serde_json::from_value(data)?),
+            "capability.updated" => Self::CapabilityUpdated(FromValueOpt::from_value(data)?),
             "cash_balance.funds_available" => {
-                EventObject::CashBalanceFundsAvailable(serde_json::from_value(data)?)
+                Self::CashBalanceFundsAvailable(FromValueOpt::from_value(data)?)
             }
-            "charge.captured" => EventObject::ChargeCaptured(serde_json::from_value(data)?),
-            "charge.dispute.closed" => {
-                EventObject::ChargeDisputeClosed(serde_json::from_value(data)?)
-            }
-            "charge.dispute.created" => {
-                EventObject::ChargeDisputeCreated(serde_json::from_value(data)?)
-            }
+            "charge.captured" => Self::ChargeCaptured(FromValueOpt::from_value(data)?),
+            "charge.dispute.closed" => Self::ChargeDisputeClosed(FromValueOpt::from_value(data)?),
+            "charge.dispute.created" => Self::ChargeDisputeCreated(FromValueOpt::from_value(data)?),
             "charge.dispute.funds_reinstated" => {
-                EventObject::ChargeDisputeFundsReinstated(serde_json::from_value(data)?)
+                Self::ChargeDisputeFundsReinstated(FromValueOpt::from_value(data)?)
             }
             "charge.dispute.funds_withdrawn" => {
-                EventObject::ChargeDisputeFundsWithdrawn(serde_json::from_value(data)?)
+                Self::ChargeDisputeFundsWithdrawn(FromValueOpt::from_value(data)?)
             }
-            "charge.dispute.updated" => {
-                EventObject::ChargeDisputeUpdated(serde_json::from_value(data)?)
-            }
-            "charge.expired" => EventObject::ChargeExpired(serde_json::from_value(data)?),
-            "charge.failed" => EventObject::ChargeFailed(serde_json::from_value(data)?),
-            "charge.pending" => EventObject::ChargePending(serde_json::from_value(data)?),
-            "charge.refund.updated" => {
-                EventObject::ChargeRefundUpdated(serde_json::from_value(data)?)
-            }
-            "charge.refunded" => EventObject::ChargeRefunded(serde_json::from_value(data)?),
-            "charge.succeeded" => EventObject::ChargeSucceeded(serde_json::from_value(data)?),
-            "charge.updated" => EventObject::ChargeUpdated(serde_json::from_value(data)?),
+            "charge.dispute.updated" => Self::ChargeDisputeUpdated(FromValueOpt::from_value(data)?),
+            "charge.expired" => Self::ChargeExpired(FromValueOpt::from_value(data)?),
+            "charge.failed" => Self::ChargeFailed(FromValueOpt::from_value(data)?),
+            "charge.pending" => Self::ChargePending(FromValueOpt::from_value(data)?),
+            "charge.refund.updated" => Self::ChargeRefundUpdated(FromValueOpt::from_value(data)?),
+            "charge.refunded" => Self::ChargeRefunded(FromValueOpt::from_value(data)?),
+            "charge.succeeded" => Self::ChargeSucceeded(FromValueOpt::from_value(data)?),
+            "charge.updated" => Self::ChargeUpdated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_checkout")]
             "checkout.session.async_payment_failed" => {
-                EventObject::CheckoutSessionAsyncPaymentFailed(serde_json::from_value(data)?)
+                Self::CheckoutSessionAsyncPaymentFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_checkout")]
             "checkout.session.async_payment_succeeded" => {
-                EventObject::CheckoutSessionAsyncPaymentSucceeded(serde_json::from_value(data)?)
+                Self::CheckoutSessionAsyncPaymentSucceeded(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_checkout")]
             "checkout.session.completed" => {
-                EventObject::CheckoutSessionCompleted(serde_json::from_value(data)?)
+                Self::CheckoutSessionCompleted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_checkout")]
             "checkout.session.expired" => {
-                EventObject::CheckoutSessionExpired(serde_json::from_value(data)?)
+                Self::CheckoutSessionExpired(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
-            "climate.order.canceled" => {
-                EventObject::ClimateOrderCanceled(serde_json::from_value(data)?)
-            }
+            "climate.order.canceled" => Self::ClimateOrderCanceled(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
-            "climate.order.created" => {
-                EventObject::ClimateOrderCreated(serde_json::from_value(data)?)
-            }
+            "climate.order.created" => Self::ClimateOrderCreated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
-            "climate.order.delayed" => {
-                EventObject::ClimateOrderDelayed(serde_json::from_value(data)?)
-            }
+            "climate.order.delayed" => Self::ClimateOrderDelayed(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
             "climate.order.delivered" => {
-                EventObject::ClimateOrderDelivered(serde_json::from_value(data)?)
+                Self::ClimateOrderDelivered(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "climate.order.product_substituted" => {
-                EventObject::ClimateOrderProductSubstituted(serde_json::from_value(data)?)
+                Self::ClimateOrderProductSubstituted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "climate.product.created" => {
-                EventObject::ClimateProductCreated(serde_json::from_value(data)?)
+                Self::ClimateProductCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "climate.product.pricing_updated" => {
-                EventObject::ClimateProductPricingUpdated(serde_json::from_value(data)?)
+                Self::ClimateProductPricingUpdated(FromValueOpt::from_value(data)?)
             }
-            "coupon.created" => EventObject::CouponCreated(serde_json::from_value(data)?),
-            "coupon.deleted" => EventObject::CouponDeleted(serde_json::from_value(data)?),
-            "coupon.updated" => EventObject::CouponUpdated(serde_json::from_value(data)?),
-            "credit_note.created" => EventObject::CreditNoteCreated(serde_json::from_value(data)?),
-            "credit_note.updated" => EventObject::CreditNoteUpdated(serde_json::from_value(data)?),
-            "credit_note.voided" => EventObject::CreditNoteVoided(serde_json::from_value(data)?),
-            "customer.created" => EventObject::CustomerCreated(serde_json::from_value(data)?),
-            "customer.deleted" => EventObject::CustomerDeleted(serde_json::from_value(data)?),
+            "coupon.created" => Self::CouponCreated(FromValueOpt::from_value(data)?),
+            "coupon.deleted" => Self::CouponDeleted(FromValueOpt::from_value(data)?),
+            "coupon.updated" => Self::CouponUpdated(FromValueOpt::from_value(data)?),
+            "credit_note.created" => Self::CreditNoteCreated(FromValueOpt::from_value(data)?),
+            "credit_note.updated" => Self::CreditNoteUpdated(FromValueOpt::from_value(data)?),
+            "credit_note.voided" => Self::CreditNoteVoided(FromValueOpt::from_value(data)?),
+            "customer.created" => Self::CustomerCreated(FromValueOpt::from_value(data)?),
+            "customer.deleted" => Self::CustomerDeleted(FromValueOpt::from_value(data)?),
             "customer.discount.created" => {
-                EventObject::CustomerDiscountCreated(serde_json::from_value(data)?)
+                Self::CustomerDiscountCreated(FromValueOpt::from_value(data)?)
             }
             "customer.discount.deleted" => {
-                EventObject::CustomerDiscountDeleted(serde_json::from_value(data)?)
+                Self::CustomerDiscountDeleted(FromValueOpt::from_value(data)?)
             }
             "customer.discount.updated" => {
-                EventObject::CustomerDiscountUpdated(serde_json::from_value(data)?)
+                Self::CustomerDiscountUpdated(FromValueOpt::from_value(data)?)
             }
             "customer.source.created" => {
-                EventObject::CustomerSourceCreated(serde_json::from_value(data)?)
+                Self::CustomerSourceCreated(FromValueOpt::from_value(data)?)
             }
             "customer.source.deleted" => {
-                EventObject::CustomerSourceDeleted(serde_json::from_value(data)?)
+                Self::CustomerSourceDeleted(FromValueOpt::from_value(data)?)
             }
             "customer.source.expiring" => {
-                EventObject::CustomerSourceExpiring(serde_json::from_value(data)?)
+                Self::CustomerSourceExpiring(FromValueOpt::from_value(data)?)
             }
             "customer.source.updated" => {
-                EventObject::CustomerSourceUpdated(serde_json::from_value(data)?)
+                Self::CustomerSourceUpdated(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.created" => {
-                EventObject::CustomerSubscriptionCreated(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionCreated(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.deleted" => {
-                EventObject::CustomerSubscriptionDeleted(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionDeleted(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.paused" => {
-                EventObject::CustomerSubscriptionPaused(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionPaused(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.pending_update_applied" => {
-                EventObject::CustomerSubscriptionPendingUpdateApplied(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionPendingUpdateApplied(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.pending_update_expired" => {
-                EventObject::CustomerSubscriptionPendingUpdateExpired(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionPendingUpdateExpired(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.resumed" => {
-                EventObject::CustomerSubscriptionResumed(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionResumed(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.trial_will_end" => {
-                EventObject::CustomerSubscriptionTrialWillEnd(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionTrialWillEnd(FromValueOpt::from_value(data)?)
             }
             "customer.subscription.updated" => {
-                EventObject::CustomerSubscriptionUpdated(serde_json::from_value(data)?)
+                Self::CustomerSubscriptionUpdated(FromValueOpt::from_value(data)?)
             }
             "customer.tax_id.created" => {
-                EventObject::CustomerTaxIdCreated(serde_json::from_value(data)?)
+                Self::CustomerTaxIdCreated(FromValueOpt::from_value(data)?)
             }
             "customer.tax_id.deleted" => {
-                EventObject::CustomerTaxIdDeleted(serde_json::from_value(data)?)
+                Self::CustomerTaxIdDeleted(FromValueOpt::from_value(data)?)
             }
             "customer.tax_id.updated" => {
-                EventObject::CustomerTaxIdUpdated(serde_json::from_value(data)?)
+                Self::CustomerTaxIdUpdated(FromValueOpt::from_value(data)?)
             }
-            "customer.updated" => EventObject::CustomerUpdated(serde_json::from_value(data)?),
+            "customer.updated" => Self::CustomerUpdated(FromValueOpt::from_value(data)?),
             "customer_cash_balance_transaction.created" => {
-                EventObject::CustomerCashBalanceTransactionCreated(serde_json::from_value(data)?)
+                Self::CustomerCashBalanceTransactionCreated(FromValueOpt::from_value(data)?)
             }
-            "file.created" => EventObject::FileCreated(serde_json::from_value(data)?),
+            "file.created" => Self::FileCreated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.created" => {
-                EventObject::FinancialConnectionsAccountCreated(serde_json::from_value(data)?)
+                Self::FinancialConnectionsAccountCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.deactivated" => {
-                EventObject::FinancialConnectionsAccountDeactivated(serde_json::from_value(data)?)
+                Self::FinancialConnectionsAccountDeactivated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.disconnected" => {
-                EventObject::FinancialConnectionsAccountDisconnected(serde_json::from_value(data)?)
+                Self::FinancialConnectionsAccountDisconnected(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.reactivated" => {
-                EventObject::FinancialConnectionsAccountReactivated(serde_json::from_value(data)?)
+                Self::FinancialConnectionsAccountReactivated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.refreshed_balance" => {
-                EventObject::FinancialConnectionsAccountRefreshedBalance(serde_json::from_value(
-                    data,
-                )?)
+                Self::FinancialConnectionsAccountRefreshedBalance(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "financial_connections.account.refreshed_transactions" => {
-                EventObject::FinancialConnectionsAccountRefreshedTransactions(
-                    serde_json::from_value(data)?,
-                )
+                Self::FinancialConnectionsAccountRefreshedTransactions(FromValueOpt::from_value(
+                    data,
+                )?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.canceled" => {
-                EventObject::IdentityVerificationSessionCanceled(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionCanceled(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.created" => {
-                EventObject::IdentityVerificationSessionCreated(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.processing" => {
-                EventObject::IdentityVerificationSessionProcessing(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionProcessing(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.redacted" => {
-                EventObject::IdentityVerificationSessionRedacted(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionRedacted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.requires_input" => {
-                EventObject::IdentityVerificationSessionRequiresInput(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionRequiresInput(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "identity.verification_session.verified" => {
-                EventObject::IdentityVerificationSessionVerified(serde_json::from_value(data)?)
+                Self::IdentityVerificationSessionVerified(FromValueOpt::from_value(data)?)
             }
-            "invoice.created" => EventObject::InvoiceCreated(serde_json::from_value(data)?),
-            "invoice.deleted" => EventObject::InvoiceDeleted(serde_json::from_value(data)?),
+            "invoice.created" => Self::InvoiceCreated(FromValueOpt::from_value(data)?),
+            "invoice.deleted" => Self::InvoiceDeleted(FromValueOpt::from_value(data)?),
             "invoice.finalization_failed" => {
-                EventObject::InvoiceFinalizationFailed(serde_json::from_value(data)?)
+                Self::InvoiceFinalizationFailed(FromValueOpt::from_value(data)?)
             }
-            "invoice.finalized" => EventObject::InvoiceFinalized(serde_json::from_value(data)?),
+            "invoice.finalized" => Self::InvoiceFinalized(FromValueOpt::from_value(data)?),
             "invoice.marked_uncollectible" => {
-                EventObject::InvoiceMarkedUncollectible(serde_json::from_value(data)?)
+                Self::InvoiceMarkedUncollectible(FromValueOpt::from_value(data)?)
             }
-            "invoice.paid" => EventObject::InvoicePaid(serde_json::from_value(data)?),
+            "invoice.paid" => Self::InvoicePaid(FromValueOpt::from_value(data)?),
             "invoice.payment_action_required" => {
-                EventObject::InvoicePaymentActionRequired(serde_json::from_value(data)?)
+                Self::InvoicePaymentActionRequired(FromValueOpt::from_value(data)?)
             }
-            "invoice.payment_failed" => {
-                EventObject::InvoicePaymentFailed(serde_json::from_value(data)?)
-            }
+            "invoice.payment_failed" => Self::InvoicePaymentFailed(FromValueOpt::from_value(data)?),
             "invoice.payment_succeeded" => {
-                EventObject::InvoicePaymentSucceeded(serde_json::from_value(data)?)
+                Self::InvoicePaymentSucceeded(FromValueOpt::from_value(data)?)
             }
-            "invoice.sent" => EventObject::InvoiceSent(serde_json::from_value(data)?),
-            "invoice.upcoming" => EventObject::InvoiceUpcoming(serde_json::from_value(data)?),
-            "invoice.updated" => EventObject::InvoiceUpdated(serde_json::from_value(data)?),
-            "invoice.voided" => EventObject::InvoiceVoided(serde_json::from_value(data)?),
-            "invoiceitem.created" => EventObject::InvoiceitemCreated(serde_json::from_value(data)?),
-            "invoiceitem.deleted" => EventObject::InvoiceitemDeleted(serde_json::from_value(data)?),
+            "invoice.sent" => Self::InvoiceSent(FromValueOpt::from_value(data)?),
+            "invoice.upcoming" => Self::InvoiceUpcoming(FromValueOpt::from_value(data)?),
+            "invoice.updated" => Self::InvoiceUpdated(FromValueOpt::from_value(data)?),
+            "invoice.voided" => Self::InvoiceVoided(FromValueOpt::from_value(data)?),
+            "invoiceitem.created" => Self::InvoiceitemCreated(FromValueOpt::from_value(data)?),
+            "invoiceitem.deleted" => Self::InvoiceitemDeleted(FromValueOpt::from_value(data)?),
             "issuing_authorization.created" => {
-                EventObject::IssuingAuthorizationCreated(serde_json::from_value(data)?)
+                Self::IssuingAuthorizationCreated(FromValueOpt::from_value(data)?)
             }
             "issuing_authorization.request" => {
-                EventObject::IssuingAuthorizationRequest(serde_json::from_value(data)?)
+                Self::IssuingAuthorizationRequest(FromValueOpt::from_value(data)?)
             }
             "issuing_authorization.updated" => {
-                EventObject::IssuingAuthorizationUpdated(serde_json::from_value(data)?)
+                Self::IssuingAuthorizationUpdated(FromValueOpt::from_value(data)?)
             }
-            "issuing_card.created" => {
-                EventObject::IssuingCardCreated(serde_json::from_value(data)?)
-            }
-            "issuing_card.updated" => {
-                EventObject::IssuingCardUpdated(serde_json::from_value(data)?)
-            }
+            "issuing_card.created" => Self::IssuingCardCreated(FromValueOpt::from_value(data)?),
+            "issuing_card.updated" => Self::IssuingCardUpdated(FromValueOpt::from_value(data)?),
             "issuing_cardholder.created" => {
-                EventObject::IssuingCardholderCreated(serde_json::from_value(data)?)
+                Self::IssuingCardholderCreated(FromValueOpt::from_value(data)?)
             }
             "issuing_cardholder.updated" => {
-                EventObject::IssuingCardholderUpdated(serde_json::from_value(data)?)
+                Self::IssuingCardholderUpdated(FromValueOpt::from_value(data)?)
             }
-            "issuing_dispute.closed" => {
-                EventObject::IssuingDisputeClosed(serde_json::from_value(data)?)
-            }
+            "issuing_dispute.closed" => Self::IssuingDisputeClosed(FromValueOpt::from_value(data)?),
             "issuing_dispute.created" => {
-                EventObject::IssuingDisputeCreated(serde_json::from_value(data)?)
+                Self::IssuingDisputeCreated(FromValueOpt::from_value(data)?)
             }
             "issuing_dispute.funds_reinstated" => {
-                EventObject::IssuingDisputeFundsReinstated(serde_json::from_value(data)?)
+                Self::IssuingDisputeFundsReinstated(FromValueOpt::from_value(data)?)
             }
             "issuing_dispute.submitted" => {
-                EventObject::IssuingDisputeSubmitted(serde_json::from_value(data)?)
+                Self::IssuingDisputeSubmitted(FromValueOpt::from_value(data)?)
             }
             "issuing_dispute.updated" => {
-                EventObject::IssuingDisputeUpdated(serde_json::from_value(data)?)
+                Self::IssuingDisputeUpdated(FromValueOpt::from_value(data)?)
             }
-            "issuing_token.created" => {
-                EventObject::IssuingTokenCreated(serde_json::from_value(data)?)
-            }
-            "issuing_token.updated" => {
-                EventObject::IssuingTokenUpdated(serde_json::from_value(data)?)
-            }
+            "issuing_token.created" => Self::IssuingTokenCreated(FromValueOpt::from_value(data)?),
+            "issuing_token.updated" => Self::IssuingTokenUpdated(FromValueOpt::from_value(data)?),
             "issuing_transaction.created" => {
-                EventObject::IssuingTransactionCreated(serde_json::from_value(data)?)
+                Self::IssuingTransactionCreated(FromValueOpt::from_value(data)?)
             }
             "issuing_transaction.updated" => {
-                EventObject::IssuingTransactionUpdated(serde_json::from_value(data)?)
+                Self::IssuingTransactionUpdated(FromValueOpt::from_value(data)?)
             }
-            "mandate.updated" => EventObject::MandateUpdated(serde_json::from_value(data)?),
+            "mandate.updated" => Self::MandateUpdated(FromValueOpt::from_value(data)?),
             "payment_intent.amount_capturable_updated" => {
-                EventObject::PaymentIntentAmountCapturableUpdated(serde_json::from_value(data)?)
+                Self::PaymentIntentAmountCapturableUpdated(FromValueOpt::from_value(data)?)
             }
             "payment_intent.canceled" => {
-                EventObject::PaymentIntentCanceled(serde_json::from_value(data)?)
+                Self::PaymentIntentCanceled(FromValueOpt::from_value(data)?)
             }
-            "payment_intent.created" => {
-                EventObject::PaymentIntentCreated(serde_json::from_value(data)?)
-            }
+            "payment_intent.created" => Self::PaymentIntentCreated(FromValueOpt::from_value(data)?),
             "payment_intent.partially_funded" => {
-                EventObject::PaymentIntentPartiallyFunded(serde_json::from_value(data)?)
+                Self::PaymentIntentPartiallyFunded(FromValueOpt::from_value(data)?)
             }
             "payment_intent.payment_failed" => {
-                EventObject::PaymentIntentPaymentFailed(serde_json::from_value(data)?)
+                Self::PaymentIntentPaymentFailed(FromValueOpt::from_value(data)?)
             }
             "payment_intent.processing" => {
-                EventObject::PaymentIntentProcessing(serde_json::from_value(data)?)
+                Self::PaymentIntentProcessing(FromValueOpt::from_value(data)?)
             }
             "payment_intent.requires_action" => {
-                EventObject::PaymentIntentRequiresAction(serde_json::from_value(data)?)
+                Self::PaymentIntentRequiresAction(FromValueOpt::from_value(data)?)
             }
             "payment_intent.succeeded" => {
-                EventObject::PaymentIntentSucceeded(serde_json::from_value(data)?)
+                Self::PaymentIntentSucceeded(FromValueOpt::from_value(data)?)
             }
-            "payment_link.created" => {
-                EventObject::PaymentLinkCreated(serde_json::from_value(data)?)
-            }
-            "payment_link.updated" => {
-                EventObject::PaymentLinkUpdated(serde_json::from_value(data)?)
-            }
+            "payment_link.created" => Self::PaymentLinkCreated(FromValueOpt::from_value(data)?),
+            "payment_link.updated" => Self::PaymentLinkUpdated(FromValueOpt::from_value(data)?),
             "payment_method.attached" => {
-                EventObject::PaymentMethodAttached(serde_json::from_value(data)?)
+                Self::PaymentMethodAttached(FromValueOpt::from_value(data)?)
             }
             "payment_method.automatically_updated" => {
-                EventObject::PaymentMethodAutomaticallyUpdated(serde_json::from_value(data)?)
+                Self::PaymentMethodAutomaticallyUpdated(FromValueOpt::from_value(data)?)
             }
             "payment_method.detached" => {
-                EventObject::PaymentMethodDetached(serde_json::from_value(data)?)
+                Self::PaymentMethodDetached(FromValueOpt::from_value(data)?)
             }
-            "payment_method.updated" => {
-                EventObject::PaymentMethodUpdated(serde_json::from_value(data)?)
-            }
-            "payout.canceled" => EventObject::PayoutCanceled(serde_json::from_value(data)?),
-            "payout.created" => EventObject::PayoutCreated(serde_json::from_value(data)?),
-            "payout.failed" => EventObject::PayoutFailed(serde_json::from_value(data)?),
-            "payout.paid" => EventObject::PayoutPaid(serde_json::from_value(data)?),
+            "payment_method.updated" => Self::PaymentMethodUpdated(FromValueOpt::from_value(data)?),
+            "payout.canceled" => Self::PayoutCanceled(FromValueOpt::from_value(data)?),
+            "payout.created" => Self::PayoutCreated(FromValueOpt::from_value(data)?),
+            "payout.failed" => Self::PayoutFailed(FromValueOpt::from_value(data)?),
+            "payout.paid" => Self::PayoutPaid(FromValueOpt::from_value(data)?),
             "payout.reconciliation_completed" => {
-                EventObject::PayoutReconciliationCompleted(serde_json::from_value(data)?)
+                Self::PayoutReconciliationCompleted(FromValueOpt::from_value(data)?)
             }
-            "payout.updated" => EventObject::PayoutUpdated(serde_json::from_value(data)?),
-            "person.created" => EventObject::PersonCreated(serde_json::from_value(data)?),
-            "person.deleted" => EventObject::PersonDeleted(serde_json::from_value(data)?),
-            "person.updated" => EventObject::PersonUpdated(serde_json::from_value(data)?),
-            "plan.created" => EventObject::PlanCreated(serde_json::from_value(data)?),
-            "plan.deleted" => EventObject::PlanDeleted(serde_json::from_value(data)?),
-            "plan.updated" => EventObject::PlanUpdated(serde_json::from_value(data)?),
-            "price.created" => EventObject::PriceCreated(serde_json::from_value(data)?),
-            "price.deleted" => EventObject::PriceDeleted(serde_json::from_value(data)?),
-            "price.updated" => EventObject::PriceUpdated(serde_json::from_value(data)?),
-            "product.created" => EventObject::ProductCreated(serde_json::from_value(data)?),
-            "product.deleted" => EventObject::ProductDeleted(serde_json::from_value(data)?),
-            "product.updated" => EventObject::ProductUpdated(serde_json::from_value(data)?),
-            "promotion_code.created" => {
-                EventObject::PromotionCodeCreated(serde_json::from_value(data)?)
-            }
-            "promotion_code.updated" => {
-                EventObject::PromotionCodeUpdated(serde_json::from_value(data)?)
-            }
-            "quote.accepted" => EventObject::QuoteAccepted(serde_json::from_value(data)?),
-            "quote.canceled" => EventObject::QuoteCanceled(serde_json::from_value(data)?),
-            "quote.created" => EventObject::QuoteCreated(serde_json::from_value(data)?),
-            "quote.finalized" => EventObject::QuoteFinalized(serde_json::from_value(data)?),
+            "payout.updated" => Self::PayoutUpdated(FromValueOpt::from_value(data)?),
+            "person.created" => Self::PersonCreated(FromValueOpt::from_value(data)?),
+            "person.deleted" => Self::PersonDeleted(FromValueOpt::from_value(data)?),
+            "person.updated" => Self::PersonUpdated(FromValueOpt::from_value(data)?),
+            "plan.created" => Self::PlanCreated(FromValueOpt::from_value(data)?),
+            "plan.deleted" => Self::PlanDeleted(FromValueOpt::from_value(data)?),
+            "plan.updated" => Self::PlanUpdated(FromValueOpt::from_value(data)?),
+            "price.created" => Self::PriceCreated(FromValueOpt::from_value(data)?),
+            "price.deleted" => Self::PriceDeleted(FromValueOpt::from_value(data)?),
+            "price.updated" => Self::PriceUpdated(FromValueOpt::from_value(data)?),
+            "product.created" => Self::ProductCreated(FromValueOpt::from_value(data)?),
+            "product.deleted" => Self::ProductDeleted(FromValueOpt::from_value(data)?),
+            "product.updated" => Self::ProductUpdated(FromValueOpt::from_value(data)?),
+            "promotion_code.created" => Self::PromotionCodeCreated(FromValueOpt::from_value(data)?),
+            "promotion_code.updated" => Self::PromotionCodeUpdated(FromValueOpt::from_value(data)?),
+            "quote.accepted" => Self::QuoteAccepted(FromValueOpt::from_value(data)?),
+            "quote.canceled" => Self::QuoteCanceled(FromValueOpt::from_value(data)?),
+            "quote.created" => Self::QuoteCreated(FromValueOpt::from_value(data)?),
+            "quote.finalized" => Self::QuoteFinalized(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_fraud")]
             "radar.early_fraud_warning.created" => {
-                EventObject::RadarEarlyFraudWarningCreated(serde_json::from_value(data)?)
+                Self::RadarEarlyFraudWarningCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_fraud")]
             "radar.early_fraud_warning.updated" => {
-                EventObject::RadarEarlyFraudWarningUpdated(serde_json::from_value(data)?)
+                Self::RadarEarlyFraudWarningUpdated(FromValueOpt::from_value(data)?)
             }
-            "refund.created" => EventObject::RefundCreated(serde_json::from_value(data)?),
-            "refund.updated" => EventObject::RefundUpdated(serde_json::from_value(data)?),
+            "refund.created" => Self::RefundCreated(FromValueOpt::from_value(data)?),
+            "refund.updated" => Self::RefundUpdated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
             "reporting.report_run.failed" => {
-                EventObject::ReportingReportRunFailed(serde_json::from_value(data)?)
+                Self::ReportingReportRunFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "reporting.report_run.succeeded" => {
-                EventObject::ReportingReportRunSucceeded(serde_json::from_value(data)?)
+                Self::ReportingReportRunSucceeded(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
             "reporting.report_type.updated" => {
-                EventObject::ReportingReportTypeUpdated(serde_json::from_value(data)?)
+                Self::ReportingReportTypeUpdated(FromValueOpt::from_value(data)?)
             }
-            "review.closed" => EventObject::ReviewClosed(serde_json::from_value(data)?),
-            "review.opened" => EventObject::ReviewOpened(serde_json::from_value(data)?),
-            "setup_intent.canceled" => {
-                EventObject::SetupIntentCanceled(serde_json::from_value(data)?)
-            }
-            "setup_intent.created" => {
-                EventObject::SetupIntentCreated(serde_json::from_value(data)?)
-            }
+            "review.closed" => Self::ReviewClosed(FromValueOpt::from_value(data)?),
+            "review.opened" => Self::ReviewOpened(FromValueOpt::from_value(data)?),
+            "setup_intent.canceled" => Self::SetupIntentCanceled(FromValueOpt::from_value(data)?),
+            "setup_intent.created" => Self::SetupIntentCreated(FromValueOpt::from_value(data)?),
             "setup_intent.requires_action" => {
-                EventObject::SetupIntentRequiresAction(serde_json::from_value(data)?)
+                Self::SetupIntentRequiresAction(FromValueOpt::from_value(data)?)
             }
             "setup_intent.setup_failed" => {
-                EventObject::SetupIntentSetupFailed(serde_json::from_value(data)?)
+                Self::SetupIntentSetupFailed(FromValueOpt::from_value(data)?)
             }
-            "setup_intent.succeeded" => {
-                EventObject::SetupIntentSucceeded(serde_json::from_value(data)?)
-            }
+            "setup_intent.succeeded" => Self::SetupIntentSucceeded(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_misc")]
             "sigma.scheduled_query_run.created" => {
-                EventObject::SigmaScheduledQueryRunCreated(serde_json::from_value(data)?)
+                Self::SigmaScheduledQueryRunCreated(FromValueOpt::from_value(data)?)
             }
-            "source.canceled" => EventObject::SourceCanceled(serde_json::from_value(data)?),
-            "source.chargeable" => EventObject::SourceChargeable(serde_json::from_value(data)?),
-            "source.failed" => EventObject::SourceFailed(serde_json::from_value(data)?),
+            "source.canceled" => Self::SourceCanceled(FromValueOpt::from_value(data)?),
+            "source.chargeable" => Self::SourceChargeable(FromValueOpt::from_value(data)?),
+            "source.failed" => Self::SourceFailed(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_payment")]
             "source.mandate_notification" => {
-                EventObject::SourceMandateNotification(serde_json::from_value(data)?)
+                Self::SourceMandateNotification(FromValueOpt::from_value(data)?)
             }
             "source.refund_attributes_required" => {
-                EventObject::SourceRefundAttributesRequired(serde_json::from_value(data)?)
+                Self::SourceRefundAttributesRequired(FromValueOpt::from_value(data)?)
             }
             "source.transaction.created" => {
-                EventObject::SourceTransactionCreated(serde_json::from_value(data)?)
+                Self::SourceTransactionCreated(FromValueOpt::from_value(data)?)
             }
             "source.transaction.updated" => {
-                EventObject::SourceTransactionUpdated(serde_json::from_value(data)?)
+                Self::SourceTransactionUpdated(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.aborted" => {
-                EventObject::SubscriptionScheduleAborted(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleAborted(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.canceled" => {
-                EventObject::SubscriptionScheduleCanceled(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleCanceled(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.completed" => {
-                EventObject::SubscriptionScheduleCompleted(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleCompleted(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.created" => {
-                EventObject::SubscriptionScheduleCreated(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleCreated(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.expiring" => {
-                EventObject::SubscriptionScheduleExpiring(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleExpiring(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.released" => {
-                EventObject::SubscriptionScheduleReleased(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleReleased(FromValueOpt::from_value(data)?)
             }
             "subscription_schedule.updated" => {
-                EventObject::SubscriptionScheduleUpdated(serde_json::from_value(data)?)
+                Self::SubscriptionScheduleUpdated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_misc")]
-            "tax.settings.updated" => {
-                EventObject::TaxSettingsUpdated(serde_json::from_value(data)?)
-            }
-            "tax_rate.created" => EventObject::TaxRateCreated(serde_json::from_value(data)?),
-            "tax_rate.updated" => EventObject::TaxRateUpdated(serde_json::from_value(data)?),
+            "tax.settings.updated" => Self::TaxSettingsUpdated(FromValueOpt::from_value(data)?),
+            "tax_rate.created" => Self::TaxRateCreated(FromValueOpt::from_value(data)?),
+            "tax_rate.updated" => Self::TaxRateUpdated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_terminal")]
             "terminal.reader.action_failed" => {
-                EventObject::TerminalReaderActionFailed(serde_json::from_value(data)?)
+                Self::TerminalReaderActionFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_terminal")]
             "terminal.reader.action_succeeded" => {
-                EventObject::TerminalReaderActionSucceeded(serde_json::from_value(data)?)
+                Self::TerminalReaderActionSucceeded(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.advancing" => {
-                EventObject::TestHelpersTestClockAdvancing(serde_json::from_value(data)?)
+                Self::TestHelpersTestClockAdvancing(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.created" => {
-                EventObject::TestHelpersTestClockCreated(serde_json::from_value(data)?)
+                Self::TestHelpersTestClockCreated(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.deleted" => {
-                EventObject::TestHelpersTestClockDeleted(serde_json::from_value(data)?)
+                Self::TestHelpersTestClockDeleted(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.internal_failure" => {
-                EventObject::TestHelpersTestClockInternalFailure(serde_json::from_value(data)?)
+                Self::TestHelpersTestClockInternalFailure(FromValueOpt::from_value(data)?)
             }
             "test_helpers.test_clock.ready" => {
-                EventObject::TestHelpersTestClockReady(serde_json::from_value(data)?)
+                Self::TestHelpersTestClockReady(FromValueOpt::from_value(data)?)
             }
-            "topup.canceled" => EventObject::TopupCanceled(serde_json::from_value(data)?),
-            "topup.created" => EventObject::TopupCreated(serde_json::from_value(data)?),
-            "topup.failed" => EventObject::TopupFailed(serde_json::from_value(data)?),
-            "topup.reversed" => EventObject::TopupReversed(serde_json::from_value(data)?),
-            "topup.succeeded" => EventObject::TopupSucceeded(serde_json::from_value(data)?),
-            "transfer.created" => EventObject::TransferCreated(serde_json::from_value(data)?),
-            "transfer.reversed" => EventObject::TransferReversed(serde_json::from_value(data)?),
-            "transfer.updated" => EventObject::TransferUpdated(serde_json::from_value(data)?),
+            "topup.canceled" => Self::TopupCanceled(FromValueOpt::from_value(data)?),
+            "topup.created" => Self::TopupCreated(FromValueOpt::from_value(data)?),
+            "topup.failed" => Self::TopupFailed(FromValueOpt::from_value(data)?),
+            "topup.reversed" => Self::TopupReversed(FromValueOpt::from_value(data)?),
+            "topup.succeeded" => Self::TopupSucceeded(FromValueOpt::from_value(data)?),
+            "transfer.created" => Self::TransferCreated(FromValueOpt::from_value(data)?),
+            "transfer.reversed" => Self::TransferReversed(FromValueOpt::from_value(data)?),
+            "transfer.updated" => Self::TransferUpdated(FromValueOpt::from_value(data)?),
             #[cfg(feature = "stripe_treasury")]
             "treasury.credit_reversal.created" => {
-                EventObject::TreasuryCreditReversalCreated(serde_json::from_value(data)?)
+                Self::TreasuryCreditReversalCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.credit_reversal.posted" => {
-                EventObject::TreasuryCreditReversalPosted(serde_json::from_value(data)?)
+                Self::TreasuryCreditReversalPosted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.debit_reversal.completed" => {
-                EventObject::TreasuryDebitReversalCompleted(serde_json::from_value(data)?)
+                Self::TreasuryDebitReversalCompleted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.debit_reversal.created" => {
-                EventObject::TreasuryDebitReversalCreated(serde_json::from_value(data)?)
+                Self::TreasuryDebitReversalCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.debit_reversal.initial_credit_granted" => {
-                EventObject::TreasuryDebitReversalInitialCreditGranted(serde_json::from_value(
-                    data,
-                )?)
+                Self::TreasuryDebitReversalInitialCreditGranted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.financial_account.closed" => {
-                EventObject::TreasuryFinancialAccountClosed(serde_json::from_value(data)?)
+                Self::TreasuryFinancialAccountClosed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.financial_account.created" => {
-                EventObject::TreasuryFinancialAccountCreated(serde_json::from_value(data)?)
+                Self::TreasuryFinancialAccountCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.financial_account.features_status_updated" => {
-                EventObject::TreasuryFinancialAccountFeaturesStatusUpdated(serde_json::from_value(
+                Self::TreasuryFinancialAccountFeaturesStatusUpdated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.inbound_transfer.canceled" => {
+                Self::TreasuryInboundTransferCanceled(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.inbound_transfer.created" => {
+                Self::TreasuryInboundTransferCreated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.inbound_transfer.failed" => {
+                Self::TreasuryInboundTransferFailed(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.inbound_transfer.succeeded" => {
+                Self::TreasuryInboundTransferSucceeded(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.outbound_payment.canceled" => {
+                Self::TreasuryOutboundPaymentCanceled(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.outbound_payment.created" => {
+                Self::TreasuryOutboundPaymentCreated(FromValueOpt::from_value(data)?)
+            }
+            #[cfg(feature = "stripe_treasury")]
+            "treasury.outbound_payment.expected_arrival_date_updated" => {
+                Self::TreasuryOutboundPaymentExpectedArrivalDateUpdated(FromValueOpt::from_value(
                     data,
                 )?)
             }
             #[cfg(feature = "stripe_treasury")]
-            "treasury.inbound_transfer.canceled" => {
-                EventObject::TreasuryInboundTransferCanceled(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.inbound_transfer.created" => {
-                EventObject::TreasuryInboundTransferCreated(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.inbound_transfer.failed" => {
-                EventObject::TreasuryInboundTransferFailed(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.inbound_transfer.succeeded" => {
-                EventObject::TreasuryInboundTransferSucceeded(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.outbound_payment.canceled" => {
-                EventObject::TreasuryOutboundPaymentCanceled(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.outbound_payment.created" => {
-                EventObject::TreasuryOutboundPaymentCreated(serde_json::from_value(data)?)
-            }
-            #[cfg(feature = "stripe_treasury")]
-            "treasury.outbound_payment.expected_arrival_date_updated" => {
-                EventObject::TreasuryOutboundPaymentExpectedArrivalDateUpdated(
-                    serde_json::from_value(data)?,
-                )
-            }
-            #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_payment.failed" => {
-                EventObject::TreasuryOutboundPaymentFailed(serde_json::from_value(data)?)
+                Self::TreasuryOutboundPaymentFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_payment.posted" => {
-                EventObject::TreasuryOutboundPaymentPosted(serde_json::from_value(data)?)
+                Self::TreasuryOutboundPaymentPosted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_payment.returned" => {
-                EventObject::TreasuryOutboundPaymentReturned(serde_json::from_value(data)?)
+                Self::TreasuryOutboundPaymentReturned(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.canceled" => {
-                EventObject::TreasuryOutboundTransferCanceled(serde_json::from_value(data)?)
+                Self::TreasuryOutboundTransferCanceled(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.created" => {
-                EventObject::TreasuryOutboundTransferCreated(serde_json::from_value(data)?)
+                Self::TreasuryOutboundTransferCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.expected_arrival_date_updated" => {
-                EventObject::TreasuryOutboundTransferExpectedArrivalDateUpdated(
-                    serde_json::from_value(data)?,
-                )
+                Self::TreasuryOutboundTransferExpectedArrivalDateUpdated(FromValueOpt::from_value(
+                    data,
+                )?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.failed" => {
-                EventObject::TreasuryOutboundTransferFailed(serde_json::from_value(data)?)
+                Self::TreasuryOutboundTransferFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.posted" => {
-                EventObject::TreasuryOutboundTransferPosted(serde_json::from_value(data)?)
+                Self::TreasuryOutboundTransferPosted(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.outbound_transfer.returned" => {
-                EventObject::TreasuryOutboundTransferReturned(serde_json::from_value(data)?)
+                Self::TreasuryOutboundTransferReturned(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.received_credit.created" => {
-                EventObject::TreasuryReceivedCreditCreated(serde_json::from_value(data)?)
+                Self::TreasuryReceivedCreditCreated(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.received_credit.failed" => {
-                EventObject::TreasuryReceivedCreditFailed(serde_json::from_value(data)?)
+                Self::TreasuryReceivedCreditFailed(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.received_credit.succeeded" => {
-                EventObject::TreasuryReceivedCreditSucceeded(serde_json::from_value(data)?)
+                Self::TreasuryReceivedCreditSucceeded(FromValueOpt::from_value(data)?)
             }
             #[cfg(feature = "stripe_treasury")]
             "treasury.received_debit.created" => {
-                EventObject::TreasuryReceivedDebitCreated(serde_json::from_value(data)?)
+                Self::TreasuryReceivedDebitCreated(FromValueOpt::from_value(data)?)
             }
 
-            _ => EventObject::Unknown(data),
+            _ => Self::Unknown(data),
         })
     }
 }

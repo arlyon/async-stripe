@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Terminal` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_terminal;
+
+miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod deleted_terminal_configuration;
 #[doc(inline)]

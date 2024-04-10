@@ -5,7 +5,8 @@
 /// Related guide: [Issued card transactions](https://stripe.com/docs/issuing/purchases/transactions)
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/transactions/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransaction {
     /// The transaction amount, which will be reflected in your balance.
     /// This amount is in your currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -47,16 +48,238 @@ pub struct IssuingTransaction {
     pub purchase_details: Option<stripe_shared::IssuingTransactionPurchaseDetails>,
     /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this transaction.
     /// If a network token was not used for this transaction, this field will be null.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub token: Option<stripe_types::Expandable<stripe_shared::IssuingToken>>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<stripe_shared::IssuingTransactionTreasury>,
     /// The nature of the transaction.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingTransactionType,
     /// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
     pub wallet: Option<IssuingTransactionWallet>,
+}
+#[doc(hidden)]
+pub struct IssuingTransactionBuilder {
+    amount: Option<i64>,
+    amount_details: Option<Option<stripe_shared::IssuingTransactionAmountDetails>>,
+    authorization: Option<Option<stripe_types::Expandable<stripe_shared::IssuingAuthorization>>>,
+    balance_transaction:
+        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    card: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
+    cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    dispute: Option<Option<stripe_types::Expandable<stripe_shared::IssuingDispute>>>,
+    id: Option<stripe_shared::IssuingTransactionId>,
+    livemode: Option<bool>,
+    merchant_amount: Option<i64>,
+    merchant_currency: Option<stripe_types::Currency>,
+    merchant_data: Option<stripe_shared::IssuingAuthorizationMerchantData>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    network_data: Option<Option<stripe_shared::IssuingTransactionNetworkData>>,
+    purchase_details: Option<Option<stripe_shared::IssuingTransactionPurchaseDetails>>,
+    token: Option<Option<stripe_types::Expandable<stripe_shared::IssuingToken>>>,
+    treasury: Option<Option<stripe_shared::IssuingTransactionTreasury>>,
+    type_: Option<stripe_shared::IssuingTransactionType>,
+    wallet: Option<Option<IssuingTransactionWallet>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingTransaction {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingTransaction>,
+        builder: IssuingTransactionBuilder,
+    }
+
+    impl Visitor for Place<IssuingTransaction> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IssuingTransactionBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IssuingTransactionBuilder {
+        type Out = IssuingTransaction;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_details" => Deserialize::begin(&mut self.amount_details),
+                "authorization" => Deserialize::begin(&mut self.authorization),
+                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "card" => Deserialize::begin(&mut self.card),
+                "cardholder" => Deserialize::begin(&mut self.cardholder),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "dispute" => Deserialize::begin(&mut self.dispute),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
+                "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
+                "merchant_data" => Deserialize::begin(&mut self.merchant_data),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "network_data" => Deserialize::begin(&mut self.network_data),
+                "purchase_details" => Deserialize::begin(&mut self.purchase_details),
+                "token" => Deserialize::begin(&mut self.token),
+                "treasury" => Deserialize::begin(&mut self.treasury),
+                "type" => Deserialize::begin(&mut self.type_),
+                "wallet" => Deserialize::begin(&mut self.wallet),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_details: Deserialize::default(),
+                authorization: Deserialize::default(),
+                balance_transaction: Deserialize::default(),
+                card: Deserialize::default(),
+                cardholder: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                dispute: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                merchant_amount: Deserialize::default(),
+                merchant_currency: Deserialize::default(),
+                merchant_data: Deserialize::default(),
+                metadata: Deserialize::default(),
+                network_data: Deserialize::default(),
+                purchase_details: Deserialize::default(),
+                token: Deserialize::default(),
+                treasury: Deserialize::default(),
+                type_: Deserialize::default(),
+                wallet: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                amount_details: self.amount_details?,
+                authorization: self.authorization.take()?,
+                balance_transaction: self.balance_transaction.take()?,
+                card: self.card.take()?,
+                cardholder: self.cardholder.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                dispute: self.dispute.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                merchant_amount: self.merchant_amount?,
+                merchant_currency: self.merchant_currency?,
+                merchant_data: self.merchant_data.take()?,
+                metadata: self.metadata.take()?,
+                network_data: self.network_data.take()?,
+                purchase_details: self.purchase_details.take()?,
+                token: self.token.take()?,
+                treasury: self.treasury.take()?,
+                type_: self.type_?,
+                wallet: self.wallet?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingTransaction {
+        type Builder = IssuingTransactionBuilder;
+    }
+
+    impl FromValueOpt for IssuingTransaction {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingTransactionBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
+                    "authorization" => b.authorization = Some(FromValueOpt::from_value(v)?),
+                    "balance_transaction" => {
+                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
+                    "cardholder" => b.cardholder = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "dispute" => b.dispute = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "merchant_amount" => b.merchant_amount = Some(FromValueOpt::from_value(v)?),
+                    "merchant_currency" => b.merchant_currency = Some(FromValueOpt::from_value(v)?),
+                    "merchant_data" => b.merchant_data = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "network_data" => b.network_data = Some(FromValueOpt::from_value(v)?),
+                    "purchase_details" => b.purchase_details = Some(FromValueOpt::from_value(v)?),
+                    "token" => b.token = Some(FromValueOpt::from_value(v)?),
+                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "wallet" => b.wallet = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IssuingTransaction {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("IssuingTransaction", 22)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("amount_details", &self.amount_details)?;
+        s.serialize_field("authorization", &self.authorization)?;
+        s.serialize_field("balance_transaction", &self.balance_transaction)?;
+        s.serialize_field("card", &self.card)?;
+        s.serialize_field("cardholder", &self.cardholder)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("dispute", &self.dispute)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("merchant_amount", &self.merchant_amount)?;
+        s.serialize_field("merchant_currency", &self.merchant_currency)?;
+        s.serialize_field("merchant_data", &self.merchant_data)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("network_data", &self.network_data)?;
+        s.serialize_field("purchase_details", &self.purchase_details)?;
+        s.serialize_field("token", &self.token)?;
+        s.serialize_field("treasury", &self.treasury)?;
+        s.serialize_field("type", &self.type_)?;
+        s.serialize_field("wallet", &self.wallet)?;
+
+        s.serialize_field("object", "issuing.transaction")?;
+        s.end()
+    }
 }
 /// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -99,6 +322,7 @@ impl std::fmt::Debug for IssuingTransactionWallet {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingTransactionWallet {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -107,6 +331,22 @@ impl serde::Serialize for IssuingTransactionWallet {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingTransactionWallet {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingTransactionWallet> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingTransactionWallet::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingTransactionWallet);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTransactionWallet {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -167,6 +407,22 @@ impl serde::Serialize for IssuingTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingTransactionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingTransactionType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

@@ -3,9 +3,9 @@ use std::fmt::Write;
 use indexmap::IndexMap;
 use indoc::writedoc;
 
-use crate::components::Components;
 use crate::printable::PrintableType;
-use crate::types::{ComponentPath, RustIdent};
+use crate::rust_object::ObjectRef;
+use crate::types::RustIdent;
 use crate::STRIPE_TYPES;
 
 pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &PrintableType) {
@@ -23,15 +23,13 @@ pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &Printab
 }
 
 pub fn write_object_trait_for_enum(
-    components: &Components,
     out: &mut String,
     ident: &RustIdent,
-    variants: &IndexMap<&str, ComponentPath>,
+    variants: &IndexMap<String, ObjectRef>,
 ) {
     let mut match_inner = String::with_capacity(32);
-    for path in variants.values() {
-        let comp = components.get(path);
-        let ident = comp.ident();
+    for variant in variants.values() {
+        let ident = &variant.ident;
         let _ = writeln!(match_inner, "Self::{ident}(v) => v.id.inner(),");
     }
     let _ = writedoc!(

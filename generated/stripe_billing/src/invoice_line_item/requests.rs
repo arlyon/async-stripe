@@ -253,6 +253,16 @@ impl serde::Serialize for UpdateInvoiceLineItemPriceDataTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateInvoiceLineItemPriceDataTaxBehavior")
+        })
+    }
+}
 /// A list of up to 10 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
 /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
@@ -410,6 +420,14 @@ impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 impl<'a> UpdateInvoiceLineItem<'a> {

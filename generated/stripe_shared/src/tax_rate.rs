@@ -3,7 +3,8 @@
 /// Related guide: [Tax rates](https://stripe.com/docs/billing/taxes/tax-rates)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_rates/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRate {
     /// Defaults to `true`.
     /// When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
@@ -46,6 +47,192 @@ pub struct TaxRate {
     pub state: Option<String>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
     pub tax_type: Option<stripe_shared::TaxRateTaxType>,
+}
+#[doc(hidden)]
+pub struct TaxRateBuilder {
+    active: Option<bool>,
+    country: Option<Option<String>>,
+    created: Option<stripe_types::Timestamp>,
+    description: Option<Option<String>>,
+    display_name: Option<String>,
+    effective_percentage: Option<Option<f64>>,
+    id: Option<stripe_shared::TaxRateId>,
+    inclusive: Option<bool>,
+    jurisdiction: Option<Option<String>>,
+    jurisdiction_level: Option<Option<TaxRateJurisdictionLevel>>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    percentage: Option<f64>,
+    state: Option<Option<String>>,
+    tax_type: Option<Option<stripe_shared::TaxRateTaxType>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxRate {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxRate>,
+        builder: TaxRateBuilder,
+    }
+
+    impl Visitor for Place<TaxRate> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TaxRateBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TaxRateBuilder {
+        type Out = TaxRate;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active" => Deserialize::begin(&mut self.active),
+                "country" => Deserialize::begin(&mut self.country),
+                "created" => Deserialize::begin(&mut self.created),
+                "description" => Deserialize::begin(&mut self.description),
+                "display_name" => Deserialize::begin(&mut self.display_name),
+                "effective_percentage" => Deserialize::begin(&mut self.effective_percentage),
+                "id" => Deserialize::begin(&mut self.id),
+                "inclusive" => Deserialize::begin(&mut self.inclusive),
+                "jurisdiction" => Deserialize::begin(&mut self.jurisdiction),
+                "jurisdiction_level" => Deserialize::begin(&mut self.jurisdiction_level),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "percentage" => Deserialize::begin(&mut self.percentage),
+                "state" => Deserialize::begin(&mut self.state),
+                "tax_type" => Deserialize::begin(&mut self.tax_type),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active: Deserialize::default(),
+                country: Deserialize::default(),
+                created: Deserialize::default(),
+                description: Deserialize::default(),
+                display_name: Deserialize::default(),
+                effective_percentage: Deserialize::default(),
+                id: Deserialize::default(),
+                inclusive: Deserialize::default(),
+                jurisdiction: Deserialize::default(),
+                jurisdiction_level: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                percentage: Deserialize::default(),
+                state: Deserialize::default(),
+                tax_type: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                active: self.active?,
+                country: self.country.take()?,
+                created: self.created?,
+                description: self.description.take()?,
+                display_name: self.display_name.take()?,
+                effective_percentage: self.effective_percentage?,
+                id: self.id.take()?,
+                inclusive: self.inclusive?,
+                jurisdiction: self.jurisdiction.take()?,
+                jurisdiction_level: self.jurisdiction_level?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                percentage: self.percentage?,
+                state: self.state.take()?,
+                tax_type: self.tax_type?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxRate {
+        type Builder = TaxRateBuilder;
+    }
+
+    impl FromValueOpt for TaxRate {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxRateBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
+                    "effective_percentage" => {
+                        b.effective_percentage = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "inclusive" => b.inclusive = Some(FromValueOpt::from_value(v)?),
+                    "jurisdiction" => b.jurisdiction = Some(FromValueOpt::from_value(v)?),
+                    "jurisdiction_level" => {
+                        b.jurisdiction_level = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "percentage" => b.percentage = Some(FromValueOpt::from_value(v)?),
+                    "state" => b.state = Some(FromValueOpt::from_value(v)?),
+                    "tax_type" => b.tax_type = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TaxRate {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("TaxRate", 16)?;
+        s.serialize_field("active", &self.active)?;
+        s.serialize_field("country", &self.country)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("display_name", &self.display_name)?;
+        s.serialize_field("effective_percentage", &self.effective_percentage)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("inclusive", &self.inclusive)?;
+        s.serialize_field("jurisdiction", &self.jurisdiction)?;
+        s.serialize_field("jurisdiction_level", &self.jurisdiction_level)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("percentage", &self.percentage)?;
+        s.serialize_field("state", &self.state)?;
+        s.serialize_field("tax_type", &self.tax_type)?;
+
+        s.serialize_field("object", "tax_rate")?;
+        s.end()
+    }
 }
 /// The level of the jurisdiction that imposes this tax rate.
 /// Will be `null` for manually defined tax rates.
@@ -98,6 +285,7 @@ impl std::fmt::Debug for TaxRateJurisdictionLevel {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TaxRateJurisdictionLevel {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -106,6 +294,22 @@ impl serde::Serialize for TaxRateJurisdictionLevel {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TaxRateJurisdictionLevel {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxRateJurisdictionLevel> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxRateJurisdictionLevel::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxRateJurisdictionLevel);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRateJurisdictionLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -203,10 +407,26 @@ impl serde::Serialize for TaxRateTaxType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TaxRateTaxType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxRateTaxType::from_str(s).unwrap_or(TaxRateTaxType::Unknown));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxRateTaxType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(TaxRateTaxType::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }

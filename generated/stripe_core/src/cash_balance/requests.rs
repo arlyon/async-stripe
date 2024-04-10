@@ -98,6 +98,18 @@ impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateCashBalanceSettingsReconciliationMode",
+            )
+        })
+    }
+}
 impl<'a> UpdateCashBalance<'a> {
     /// Changes the settings on a customer’s cash balance.
     pub fn send(

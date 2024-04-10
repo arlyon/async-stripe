@@ -218,6 +218,18 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceCanceledProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingDisputeEvidenceCanceledProductType",
+            )
+        })
+    }
+}
 /// Result of cardholder's attempt to return the product.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingDisputeEvidenceCanceledReturnStatus {
@@ -262,6 +274,18 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceCanceledReturnStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturnStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingDisputeEvidenceCanceledReturnStatus",
+            )
+        })
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
@@ -337,6 +361,16 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedR
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+    }
+}
 /// Evidence provided when `reason` is 'not_received'.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceNotReceived<'a> {
@@ -407,6 +441,18 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceNotReceivedProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingDisputeEvidenceNotReceivedProductType",
+            )
+        })
+    }
+}
 /// Evidence provided when `reason` is 'other'.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceOther<'a> {
@@ -474,6 +520,18 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceOtherProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceOtherProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingDisputeEvidenceOtherProductType",
+            )
+        })
+    }
+}
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingDisputeEvidenceReason {
@@ -533,6 +591,16 @@ impl serde::Serialize for CreateIssuingDisputeEvidenceReason {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingDisputeEvidenceReason")
+        })
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
@@ -697,6 +765,18 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceCanceledProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingDisputeEvidenceCanceledProductType",
+            )
+        })
+    }
+}
 /// Result of cardholder's attempt to return the product.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateIssuingDisputeEvidenceCanceledReturnStatus {
@@ -741,6 +821,18 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingDisputeEvidenceCanceledReturnStatus",
+            )
+        })
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
@@ -816,6 +908,16 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedR
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+    }
+}
 /// Evidence provided when `reason` is 'not_received'.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceNotReceived<'a> {
@@ -886,6 +988,18 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceNotReceivedProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingDisputeEvidenceNotReceivedProductType",
+            )
+        })
+    }
+}
 /// Evidence provided when `reason` is 'other'.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceOther<'a> {
@@ -953,6 +1067,18 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceOtherProductType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceOtherProductType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingDisputeEvidenceOtherProductType",
+            )
+        })
+    }
+}
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateIssuingDisputeEvidenceReason {
@@ -1012,6 +1138,16 @@ impl serde::Serialize for UpdateIssuingDisputeEvidenceReason {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateIssuingDisputeEvidenceReason")
+        })
     }
 }
 impl<'a> UpdateIssuingDispute<'a> {

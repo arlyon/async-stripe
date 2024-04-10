@@ -5,11 +5,11 @@
 /// Coupons do not work with conventional one-off [charges](https://stripe.com/docs/api#create_charge) or [payment intents](https://stripe.com/docs/api/payment_intents).
 ///
 /// For more details see <<https://stripe.com/docs/api/coupons/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Coupon {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub applies_to: Option<stripe_shared::CouponAppliesTo>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -17,7 +17,6 @@ pub struct Coupon {
     pub currency: Option<stripe_types::Currency>,
     /// Coupons defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<
         std::collections::HashMap<stripe_types::Currency, stripe_shared::CouponCurrencyOption>,
     >,
@@ -47,6 +46,200 @@ pub struct Coupon {
     pub times_redeemed: i64,
     /// Taking account of the above properties, whether this coupon can still be applied to a customer.
     pub valid: bool,
+}
+#[doc(hidden)]
+pub struct CouponBuilder {
+    amount_off: Option<Option<i64>>,
+    applies_to: Option<Option<stripe_shared::CouponAppliesTo>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<Option<stripe_types::Currency>>,
+    currency_options: Option<
+        Option<
+            std::collections::HashMap<stripe_types::Currency, stripe_shared::CouponCurrencyOption>,
+        >,
+    >,
+    duration: Option<stripe_shared::CouponDuration>,
+    duration_in_months: Option<Option<i64>>,
+    id: Option<stripe_shared::CouponId>,
+    livemode: Option<bool>,
+    max_redemptions: Option<Option<i64>>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    name: Option<Option<String>>,
+    percent_off: Option<Option<f64>>,
+    redeem_by: Option<Option<stripe_types::Timestamp>>,
+    times_redeemed: Option<i64>,
+    valid: Option<bool>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Coupon {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Coupon>,
+        builder: CouponBuilder,
+    }
+
+    impl Visitor for Place<Coupon> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CouponBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CouponBuilder {
+        type Out = Coupon;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount_off" => Deserialize::begin(&mut self.amount_off),
+                "applies_to" => Deserialize::begin(&mut self.applies_to),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "currency_options" => Deserialize::begin(&mut self.currency_options),
+                "duration" => Deserialize::begin(&mut self.duration),
+                "duration_in_months" => Deserialize::begin(&mut self.duration_in_months),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "max_redemptions" => Deserialize::begin(&mut self.max_redemptions),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
+                "percent_off" => Deserialize::begin(&mut self.percent_off),
+                "redeem_by" => Deserialize::begin(&mut self.redeem_by),
+                "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
+                "valid" => Deserialize::begin(&mut self.valid),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount_off: Deserialize::default(),
+                applies_to: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                currency_options: Deserialize::default(),
+                duration: Deserialize::default(),
+                duration_in_months: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                max_redemptions: Deserialize::default(),
+                metadata: Deserialize::default(),
+                name: Deserialize::default(),
+                percent_off: Deserialize::default(),
+                redeem_by: Deserialize::default(),
+                times_redeemed: Deserialize::default(),
+                valid: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount_off: self.amount_off?,
+                applies_to: self.applies_to.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                currency_options: self.currency_options.take()?,
+                duration: self.duration?,
+                duration_in_months: self.duration_in_months?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                max_redemptions: self.max_redemptions?,
+                metadata: self.metadata.take()?,
+                name: self.name.take()?,
+                percent_off: self.percent_off?,
+                redeem_by: self.redeem_by?,
+                times_redeemed: self.times_redeemed?,
+                valid: self.valid?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Coupon {
+        type Builder = CouponBuilder;
+    }
+
+    impl FromValueOpt for Coupon {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CouponBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount_off" => b.amount_off = Some(FromValueOpt::from_value(v)?),
+                    "applies_to" => b.applies_to = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "currency_options" => b.currency_options = Some(FromValueOpt::from_value(v)?),
+                    "duration" => b.duration = Some(FromValueOpt::from_value(v)?),
+                    "duration_in_months" => {
+                        b.duration_in_months = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "max_redemptions" => b.max_redemptions = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "percent_off" => b.percent_off = Some(FromValueOpt::from_value(v)?),
+                    "redeem_by" => b.redeem_by = Some(FromValueOpt::from_value(v)?),
+                    "times_redeemed" => b.times_redeemed = Some(FromValueOpt::from_value(v)?),
+                    "valid" => b.valid = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for Coupon {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("Coupon", 17)?;
+        s.serialize_field("amount_off", &self.amount_off)?;
+        s.serialize_field("applies_to", &self.applies_to)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("currency_options", &self.currency_options)?;
+        s.serialize_field("duration", &self.duration)?;
+        s.serialize_field("duration_in_months", &self.duration_in_months)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("max_redemptions", &self.max_redemptions)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name", &self.name)?;
+        s.serialize_field("percent_off", &self.percent_off)?;
+        s.serialize_field("redeem_by", &self.redeem_by)?;
+        s.serialize_field("times_redeemed", &self.times_redeemed)?;
+        s.serialize_field("valid", &self.valid)?;
+
+        s.serialize_field("object", "coupon")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for Coupon {
     type Id = stripe_shared::CouponId;
@@ -103,6 +296,22 @@ impl serde::Serialize for CouponDuration {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CouponDuration {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CouponDuration> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CouponDuration::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CouponDuration);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CouponDuration {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

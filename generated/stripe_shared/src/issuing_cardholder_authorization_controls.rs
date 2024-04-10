@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -13,6 +15,121 @@ pub struct IssuingCardholderAuthorizationControls {
     /// Currency of the amounts within `spending_limits`.
     pub spending_limits_currency: Option<stripe_types::Currency>,
 }
+#[doc(hidden)]
+pub struct IssuingCardholderAuthorizationControlsBuilder {
+    allowed_categories:
+        Option<Option<Vec<IssuingCardholderAuthorizationControlsAllowedCategories>>>,
+    blocked_categories:
+        Option<Option<Vec<IssuingCardholderAuthorizationControlsBlockedCategories>>>,
+    spending_limits: Option<Option<Vec<stripe_shared::IssuingCardholderSpendingLimit>>>,
+    spending_limits_currency: Option<Option<stripe_types::Currency>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingCardholderAuthorizationControls {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingCardholderAuthorizationControls>,
+        builder: IssuingCardholderAuthorizationControlsBuilder,
+    }
+
+    impl Visitor for Place<IssuingCardholderAuthorizationControls> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IssuingCardholderAuthorizationControlsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IssuingCardholderAuthorizationControlsBuilder {
+        type Out = IssuingCardholderAuthorizationControls;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "allowed_categories" => Deserialize::begin(&mut self.allowed_categories),
+                "blocked_categories" => Deserialize::begin(&mut self.blocked_categories),
+                "spending_limits" => Deserialize::begin(&mut self.spending_limits),
+                "spending_limits_currency" => {
+                    Deserialize::begin(&mut self.spending_limits_currency)
+                }
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                allowed_categories: Deserialize::default(),
+                blocked_categories: Deserialize::default(),
+                spending_limits: Deserialize::default(),
+                spending_limits_currency: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                allowed_categories: self.allowed_categories.take()?,
+                blocked_categories: self.blocked_categories.take()?,
+                spending_limits: self.spending_limits.take()?,
+                spending_limits_currency: self.spending_limits_currency?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingCardholderAuthorizationControls {
+        type Builder = IssuingCardholderAuthorizationControlsBuilder;
+    }
+
+    impl FromValueOpt for IssuingCardholderAuthorizationControls {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingCardholderAuthorizationControlsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "allowed_categories" => {
+                        b.allowed_categories = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "blocked_categories" => {
+                        b.blocked_categories = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "spending_limits" => b.spending_limits = Some(FromValueOpt::from_value(v)?),
+                    "spending_limits_currency" => {
+                        b.spending_limits_currency = Some(FromValueOpt::from_value(v)?)
+                    }
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
@@ -1028,6 +1145,7 @@ impl std::fmt::Debug for IssuingCardholderAuthorizationControlsAllowedCategories
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingCardholderAuthorizationControlsAllowedCategories {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -1036,12 +1154,32 @@ impl serde::Serialize for IssuingCardholderAuthorizationControlsAllowedCategorie
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingCardholderAuthorizationControlsAllowedCategories {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<IssuingCardholderAuthorizationControlsAllowedCategories>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            IssuingCardholderAuthorizationControlsAllowedCategories::from_str(s)
+                .unwrap_or(IssuingCardholderAuthorizationControlsAllowedCategories::Unknown),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingCardholderAuthorizationControlsAllowedCategories);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsAllowedCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s)
-            .unwrap_or(IssuingCardholderAuthorizationControlsAllowedCategories::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -2059,6 +2197,7 @@ impl std::fmt::Debug for IssuingCardholderAuthorizationControlsBlockedCategories
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingCardholderAuthorizationControlsBlockedCategories {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -2067,11 +2206,31 @@ impl serde::Serialize for IssuingCardholderAuthorizationControlsBlockedCategorie
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingCardholderAuthorizationControlsBlockedCategories {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<IssuingCardholderAuthorizationControlsBlockedCategories>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            IssuingCardholderAuthorizationControlsBlockedCategories::from_str(s)
+                .unwrap_or(IssuingCardholderAuthorizationControlsBlockedCategories::Unknown),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingCardholderAuthorizationControlsBlockedCategories);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsBlockedCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s)
-            .unwrap_or(IssuingCardholderAuthorizationControlsBlockedCategories::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }

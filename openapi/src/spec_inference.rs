@@ -9,7 +9,7 @@ use openapiv3::{
 };
 
 use crate::rust_object::{
-    EnumVariant, FieldlessVariant, ObjectKind, ObjectMetadata, RustObject, StructField,
+    EnumVariant, FieldlessVariant, ObjectMetadata, RustObject, Struct, StructField,
 };
 use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
@@ -26,11 +26,10 @@ pub struct Inference<'a> {
     description: Option<&'a str>,
     title: Option<&'a str>,
     required: bool,
-    kind: ObjectKind,
 }
 
 impl<'a> Inference<'a> {
-    pub fn new(ident: &'a RustIdent, kind: ObjectKind) -> Self {
+    pub fn new(ident: &'a RustIdent) -> Self {
         Self {
             can_borrow: false,
             field_name: None,
@@ -39,7 +38,6 @@ impl<'a> Inference<'a> {
             curr_ident: ident,
             id_path: None,
             title: None,
-            kind,
         }
     }
 
@@ -95,7 +93,6 @@ impl<'a> Inference<'a> {
                 doc: self.description.map(|d| d.to_string()),
                 title: self.title.map(|t| t.to_string()),
                 field_name: self.field_name.map(|t| t.to_string()),
-                kind: self.kind,
                 parent: Some(self.curr_ident.clone()),
             },
         )
@@ -224,9 +221,9 @@ impl<'a> Inference<'a> {
         // when there is no specification of object shape.
 
         // FIXME: The unfortunate `field_name.is_some()` is used to avoid substituting
-        // a serde_json::Value for a top level component type (see for example mandate_us_bank_account)
+        // an arbitrary JSON value for a top level component type (see for example mandate_us_bank_account)
         if typ.properties.is_empty() && self.field_name.is_some() {
-            return RustType::serde_json_value(self.can_borrow);
+            return RustType::json_value();
         }
 
         // Generate the struct type
@@ -243,7 +240,7 @@ impl<'a> Inference<'a> {
                     .build_struct_field(prop_field_name, field_spec),
             );
         }
-        self.build_object_type(RustObject::Struct(fields))
+        self.build_object_type(RustObject::Struct(Struct::new(fields)))
     }
 
     fn infer_any_or_one_of(&self, fields: &[ReferenceOr<Schema>], field: &Schema) -> RustType {

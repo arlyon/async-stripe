@@ -2,7 +2,8 @@ use std::fmt::Write;
 
 use crate::components::Components;
 use crate::printable::Lifetime;
-use crate::rust_object::{as_enum_of_objects, ObjectMetadata, RustObject};
+use crate::rust_object::EnumOfObjects::ObjectUnion;
+use crate::rust_object::{as_enum_of_objects, ObjectMetadata, ObjectUsage, RustObject};
 use crate::rust_type::RustType;
 use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::object_trait::{write_object_trait, write_object_trait_for_enum};
@@ -13,14 +14,20 @@ use crate::STRIPE_TYPES;
 const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
 
 impl Components {
-    fn write_rust_type_objs(&self, typ: &RustType, out: &mut String) {
+    fn write_rust_type_objs(&self, typ: &RustType, out: &mut String, usage: ObjectUsage) {
         let Some((obj, meta)) = typ.extract_object() else {
             return;
         };
-        self.write_object(obj, meta, out);
+        self.write_object(obj, meta, usage, out);
     }
 
-    pub fn write_object(&self, obj: &RustObject, metadata: &ObjectMetadata, out: &mut String) {
+    pub fn write_object(
+        &self,
+        obj: &RustObject,
+        metadata: &ObjectMetadata,
+        usage: ObjectUsage,
+        out: &mut String,
+    ) {
         if let Some(doc) = &metadata.doc {
             let comment = write_doc_comment(doc, 0);
             let _ = write!(out, "{comment}");
@@ -31,18 +38,19 @@ impl Components {
         let lifetime = if has_ref { Some(Lifetime) } else { None };
         let ident = &metadata.ident;
 
-        let mut writer = ObjectWriter::new(self, ident, metadata.kind);
+        let mut writer = ObjectWriter::new(self, ident, usage);
         writer.lifetime(lifetime).derive_copy(obj.is_copy(self));
 
         match obj {
-            RustObject::Struct(fields) => {
-                let should_derive_default = fields.iter().all(|field| field.rust_type.is_option());
+            RustObject::Struct(struct_) => {
+                let should_derive_default =
+                    struct_.fields.iter().all(|field| field.rust_type.is_option());
                 writer.derive_default(should_derive_default);
-                writer.write_struct(out, fields);
+                writer.write_struct(out, struct_);
 
-                for field in fields {
+                for field in &struct_.fields {
                     if let Some((obj, meta)) = field.rust_type.extract_object() {
-                        self.write_object(obj, meta, out);
+                        self.write_object(obj, meta, usage, out);
                     }
                 }
             }
@@ -56,12 +64,12 @@ impl Components {
                 if let Some(objects) = as_enum_of_objects(self, variants) {
                     writer.write_enum_of_objects(out, &objects);
                 } else {
-                    writer.write_enum_variants(out, variants);
+                    writer.write_arbitrary_enum_variants(out, variants);
                 }
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
                         if let Some((obj, meta)) = typ.extract_object() {
-                            self.write_object(obj, meta, out);
+                            self.write_object(obj, meta, usage, out);
                         }
                     }
                 }
@@ -78,7 +86,7 @@ pub fn gen_obj(
 ) -> String {
     let mut out = String::with_capacity(128);
 
-    components.write_object(obj, meta, &mut out);
+    components.write_object(obj, meta, ObjectUsage::type_def(), &mut out);
 
     let ident = &meta.ident;
     if let Some(id_typ) = comp.id_type() {
@@ -89,7 +97,10 @@ pub fn gen_obj(
                 let Some(object_names) = as_enum_of_objects(components, variants) else {
                     panic!("Object {} is an enum that is not a union of stripe objects", ident);
                 };
-                write_object_trait_for_enum(components, &mut out, ident, &object_names)
+                let ObjectUnion(objects) = object_names else {
+                    panic!("Object {} is an enum that is not a union of stripe objects", ident);
+                };
+                write_object_trait_for_enum(&mut out, ident, &objects)
             }
             RustObject::FieldlessEnum(_) => {
                 panic!("Did not expect enum to have an id");
@@ -113,12 +124,12 @@ pub fn gen_requests(specs: &[RequestSpec], components: &Components) -> String {
     let mut out = String::with_capacity(128);
 
     for req in specs {
-        components.write_rust_type_objs(&req.params, &mut out);
+        components.write_rust_type_objs(&req.params, &mut out, ObjectUsage::request_param());
 
         let req_body = req.gen(components);
         let _ = write!(out, "{}", req_body);
 
-        components.write_rust_type_objs(&req.returned, &mut out);
+        components.write_rust_type_objs(&req.returned, &mut out, ObjectUsage::return_type());
     }
     out
 }

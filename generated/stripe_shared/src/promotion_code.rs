@@ -3,7 +3,8 @@
 /// create multiple codes for a single coupon.
 ///
 /// For more details see <<https://stripe.com/docs/api/promotion_codes/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PromotionCode {
     /// Whether the promotion code is currently active.
     /// A promotion code is only active if the coupon is also valid.
@@ -30,6 +31,173 @@ pub struct PromotionCode {
     pub restrictions: stripe_shared::PromotionCodesResourceRestrictions,
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
+}
+#[doc(hidden)]
+pub struct PromotionCodeBuilder {
+    active: Option<bool>,
+    code: Option<String>,
+    coupon: Option<stripe_shared::Coupon>,
+    created: Option<stripe_types::Timestamp>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    expires_at: Option<Option<stripe_types::Timestamp>>,
+    id: Option<stripe_shared::PromotionCodeId>,
+    livemode: Option<bool>,
+    max_redemptions: Option<Option<i64>>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    restrictions: Option<stripe_shared::PromotionCodesResourceRestrictions>,
+    times_redeemed: Option<i64>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PromotionCode {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PromotionCode>,
+        builder: PromotionCodeBuilder,
+    }
+
+    impl Visitor for Place<PromotionCode> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PromotionCodeBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PromotionCodeBuilder {
+        type Out = PromotionCode;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active" => Deserialize::begin(&mut self.active),
+                "code" => Deserialize::begin(&mut self.code),
+                "coupon" => Deserialize::begin(&mut self.coupon),
+                "created" => Deserialize::begin(&mut self.created),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "max_redemptions" => Deserialize::begin(&mut self.max_redemptions),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "restrictions" => Deserialize::begin(&mut self.restrictions),
+                "times_redeemed" => Deserialize::begin(&mut self.times_redeemed),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active: Deserialize::default(),
+                code: Deserialize::default(),
+                coupon: Deserialize::default(),
+                created: Deserialize::default(),
+                customer: Deserialize::default(),
+                expires_at: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                max_redemptions: Deserialize::default(),
+                metadata: Deserialize::default(),
+                restrictions: Deserialize::default(),
+                times_redeemed: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                active: self.active?,
+                code: self.code.take()?,
+                coupon: self.coupon.take()?,
+                created: self.created?,
+                customer: self.customer.take()?,
+                expires_at: self.expires_at?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                max_redemptions: self.max_redemptions?,
+                metadata: self.metadata.take()?,
+                restrictions: self.restrictions.take()?,
+                times_redeemed: self.times_redeemed?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PromotionCode {
+        type Builder = PromotionCodeBuilder;
+    }
+
+    impl FromValueOpt for PromotionCode {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PromotionCodeBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
+                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
+                    "coupon" => b.coupon = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "max_redemptions" => b.max_redemptions = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "restrictions" => b.restrictions = Some(FromValueOpt::from_value(v)?),
+                    "times_redeemed" => b.times_redeemed = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PromotionCode {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("PromotionCode", 13)?;
+        s.serialize_field("active", &self.active)?;
+        s.serialize_field("code", &self.code)?;
+        s.serialize_field("coupon", &self.coupon)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("expires_at", &self.expires_at)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("max_redemptions", &self.max_redemptions)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("restrictions", &self.restrictions)?;
+        s.serialize_field("times_redeemed", &self.times_redeemed)?;
+
+        s.serialize_field("object", "promotion_code")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for PromotionCode {
     type Id = stripe_shared::PromotionCodeId;

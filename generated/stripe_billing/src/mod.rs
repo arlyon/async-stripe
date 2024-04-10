@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Billing` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_billing;
+
+miniserde::make_place!(Place);
 pub use billing_portal_configuration::types::*;
 pub use stripe_shared::automatic_tax::*;
 pub mod billing_portal_configuration;

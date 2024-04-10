@@ -89,6 +89,16 @@ impl serde::Serialize for ListTreasuryDebitReversalResolution {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalResolution {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListTreasuryDebitReversalResolution")
+        })
+    }
+}
 /// Only return DebitReversals for a given status.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListTreasuryDebitReversalStatus {
@@ -136,6 +146,16 @@ impl serde::Serialize for ListTreasuryDebitReversalStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListTreasuryDebitReversalStatus")
+        })
     }
 }
 impl<'a> ListTreasuryDebitReversal<'a> {

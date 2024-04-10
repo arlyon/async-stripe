@@ -527,6 +527,14 @@ impl serde::Serialize for CreateAccountCompanyStructure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountCompanyStructure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
 /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
@@ -720,6 +728,16 @@ impl serde::Serialize for CreateAccountIndividualPoliticalExposure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountIndividualPoliticalExposure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateAccountIndividualPoliticalExposure")
+        })
+    }
+}
 /// Options for customizing how the account functions within Stripe.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateAccountSettings<'a> {
@@ -867,6 +885,18 @@ impl serde::Serialize for CreateAccountSettingsPayoutsScheduleInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountSettingsPayoutsScheduleInterval",
+            )
+        })
+    }
+}
 /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
 /// (required and applicable only if `interval` is `weekly`.).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -927,6 +957,18 @@ impl serde::Serialize for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountSettingsPayoutsScheduleWeeklyAnchor",
+            )
+        })
     }
 }
 impl<'a> CreateAccount<'a> {
@@ -1262,6 +1304,14 @@ impl serde::Serialize for UpdateAccountCompanyStructure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
 /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) or [Account Session](https://stripe.com/docs/api/account_sessions), this property can only be updated for Custom accounts.
@@ -1455,6 +1505,16 @@ impl serde::Serialize for UpdateAccountIndividualPoliticalExposure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountIndividualPoliticalExposure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateAccountIndividualPoliticalExposure")
+        })
+    }
+}
 /// Options for customizing how the account functions within Stripe.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateAccountSettings<'a> {
@@ -1618,6 +1678,18 @@ impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateAccountSettingsPayoutsScheduleInterval",
+            )
+        })
+    }
+}
 /// The day of the week when available funds are paid out, specified as `monday`, `tuesday`, etc.
 /// (required and applicable only if `interval` is `weekly`.).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -1678,6 +1750,18 @@ impl serde::Serialize for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor",
+            )
+        })
     }
 }
 impl<'a> UpdateAccount<'a> {

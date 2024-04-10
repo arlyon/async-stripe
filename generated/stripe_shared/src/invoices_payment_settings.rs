@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesPaymentSettings {
     /// ID of the mandate to be used for this invoice.
     /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
@@ -10,6 +12,110 @@ pub struct InvoicesPaymentSettings {
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     pub payment_method_types: Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>,
 }
+#[doc(hidden)]
+pub struct InvoicesPaymentSettingsBuilder {
+    default_mandate: Option<Option<String>>,
+    payment_method_options: Option<Option<stripe_shared::InvoicesPaymentMethodOptions>>,
+    payment_method_types: Option<Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for InvoicesPaymentSettings {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<InvoicesPaymentSettings>,
+        builder: InvoicesPaymentSettingsBuilder,
+    }
+
+    impl Visitor for Place<InvoicesPaymentSettings> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: InvoicesPaymentSettingsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for InvoicesPaymentSettingsBuilder {
+        type Out = InvoicesPaymentSettings;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "default_mandate" => Deserialize::begin(&mut self.default_mandate),
+                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                default_mandate: Deserialize::default(),
+                payment_method_options: Deserialize::default(),
+                payment_method_types: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                default_mandate: self.default_mandate.take()?,
+                payment_method_options: self.payment_method_options.take()?,
+                payment_method_types: self.payment_method_types.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for InvoicesPaymentSettings {
+        type Builder = InvoicesPaymentSettingsBuilder;
+    }
+
+    impl FromValueOpt for InvoicesPaymentSettings {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = InvoicesPaymentSettingsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "default_mandate" => b.default_mandate = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_options" => {
+                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "payment_method_types" => {
+                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
+                    }
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The list of payment method types (e.g.
 /// card) to provide to the invoice’s PaymentIntent.
 /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
@@ -126,6 +232,7 @@ impl std::fmt::Debug for InvoicesPaymentSettingsPaymentMethodTypes {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for InvoicesPaymentSettingsPaymentMethodTypes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -134,10 +241,29 @@ impl serde::Serialize for InvoicesPaymentSettingsPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for InvoicesPaymentSettingsPaymentMethodTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<InvoicesPaymentSettingsPaymentMethodTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            InvoicesPaymentSettingsPaymentMethodTypes::from_str(s)
+                .unwrap_or(InvoicesPaymentSettingsPaymentMethodTypes::Unknown),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(InvoicesPaymentSettingsPaymentMethodTypes);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for InvoicesPaymentSettingsPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(InvoicesPaymentSettingsPaymentMethodTypes::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }

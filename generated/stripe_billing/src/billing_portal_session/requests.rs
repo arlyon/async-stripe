@@ -163,6 +163,18 @@ impl serde::Serialize for CreateBillingPortalSessionFlowDataAfterCompletionType 
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataAfterCompletionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateBillingPortalSessionFlowDataAfterCompletionType",
+            )
+        })
+    }
+}
 /// Configuration when `flow_data.type=subscription_cancel`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel<'a> {
@@ -246,6 +258,16 @@ impl serde::Serialize for CreateBillingPortalSessionFlowDataSubscriptionCancelRe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType"))
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
@@ -366,6 +388,16 @@ impl serde::Serialize for CreateBillingPortalSessionFlowDataType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateBillingPortalSessionFlowDataType")
+        })
     }
 }
 impl<'a> CreateBillingPortalSession<'a> {

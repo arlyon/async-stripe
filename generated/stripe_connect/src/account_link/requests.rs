@@ -83,6 +83,15 @@ impl serde::Serialize for CreateAccountLinkCollect {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountLinkCollect"))
+    }
+}
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountLinkCollectionOptions {
@@ -146,6 +155,16 @@ impl serde::Serialize for CreateAccountLinkCollectionOptionsFields {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFields {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateAccountLinkCollectionOptionsFields")
+        })
+    }
+}
 /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
 /// The default value is `omit`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -193,6 +212,18 @@ impl serde::Serialize for CreateAccountLinkCollectionOptionsFutureRequirements {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFutureRequirements {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateAccountLinkCollectionOptionsFutureRequirements",
+            )
+        })
+    }
+}
 /// The type of account link the user is requesting.
 /// Possible values are `account_onboarding` or `account_update`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -238,6 +269,15 @@ impl serde::Serialize for CreateAccountLinkType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountLinkType"))
     }
 }
 impl<'a> CreateAccountLink<'a> {

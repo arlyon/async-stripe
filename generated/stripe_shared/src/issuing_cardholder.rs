@@ -3,7 +3,8 @@
 /// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards#create-cardholder).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cardholders/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholder {
     pub billing: stripe_shared::IssuingCardholderAddress,
     /// Additional information about a `company` cardholder.
@@ -39,8 +40,193 @@ pub struct IssuingCardholder {
     pub status: stripe_shared::IssuingCardholderStatus,
     /// One of `individual` or `company`.
     /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingCardholderType,
+}
+#[doc(hidden)]
+pub struct IssuingCardholderBuilder {
+    billing: Option<stripe_shared::IssuingCardholderAddress>,
+    company: Option<Option<stripe_shared::IssuingCardholderCompany>>,
+    created: Option<stripe_types::Timestamp>,
+    email: Option<Option<String>>,
+    id: Option<stripe_shared::IssuingCardholderId>,
+    individual: Option<Option<stripe_shared::IssuingCardholderIndividual>>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    name: Option<String>,
+    phone_number: Option<Option<String>>,
+    preferred_locales: Option<Option<Vec<stripe_shared::IssuingCardholderPreferredLocales>>>,
+    requirements: Option<stripe_shared::IssuingCardholderRequirements>,
+    spending_controls: Option<Option<stripe_shared::IssuingCardholderAuthorizationControls>>,
+    status: Option<stripe_shared::IssuingCardholderStatus>,
+    type_: Option<stripe_shared::IssuingCardholderType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingCardholder {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingCardholder>,
+        builder: IssuingCardholderBuilder,
+    }
+
+    impl Visitor for Place<IssuingCardholder> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IssuingCardholderBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IssuingCardholderBuilder {
+        type Out = IssuingCardholder;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "billing" => Deserialize::begin(&mut self.billing),
+                "company" => Deserialize::begin(&mut self.company),
+                "created" => Deserialize::begin(&mut self.created),
+                "email" => Deserialize::begin(&mut self.email),
+                "id" => Deserialize::begin(&mut self.id),
+                "individual" => Deserialize::begin(&mut self.individual),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
+                "phone_number" => Deserialize::begin(&mut self.phone_number),
+                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
+                "requirements" => Deserialize::begin(&mut self.requirements),
+                "spending_controls" => Deserialize::begin(&mut self.spending_controls),
+                "status" => Deserialize::begin(&mut self.status),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                billing: Deserialize::default(),
+                company: Deserialize::default(),
+                created: Deserialize::default(),
+                email: Deserialize::default(),
+                id: Deserialize::default(),
+                individual: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                name: Deserialize::default(),
+                phone_number: Deserialize::default(),
+                preferred_locales: Deserialize::default(),
+                requirements: Deserialize::default(),
+                spending_controls: Deserialize::default(),
+                status: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                billing: self.billing.take()?,
+                company: self.company?,
+                created: self.created?,
+                email: self.email.take()?,
+                id: self.id.take()?,
+                individual: self.individual.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                name: self.name.take()?,
+                phone_number: self.phone_number.take()?,
+                preferred_locales: self.preferred_locales.take()?,
+                requirements: self.requirements.take()?,
+                spending_controls: self.spending_controls.take()?,
+                status: self.status?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingCardholder {
+        type Builder = IssuingCardholderBuilder;
+    }
+
+    impl FromValueOpt for IssuingCardholder {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingCardholderBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "billing" => b.billing = Some(FromValueOpt::from_value(v)?),
+                    "company" => b.company = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "individual" => b.individual = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "phone_number" => b.phone_number = Some(FromValueOpt::from_value(v)?),
+                    "preferred_locales" => b.preferred_locales = Some(FromValueOpt::from_value(v)?),
+                    "requirements" => b.requirements = Some(FromValueOpt::from_value(v)?),
+                    "spending_controls" => b.spending_controls = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IssuingCardholder {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("IssuingCardholder", 16)?;
+        s.serialize_field("billing", &self.billing)?;
+        s.serialize_field("company", &self.company)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("email", &self.email)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("individual", &self.individual)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name", &self.name)?;
+        s.serialize_field("phone_number", &self.phone_number)?;
+        s.serialize_field("preferred_locales", &self.preferred_locales)?;
+        s.serialize_field("requirements", &self.requirements)?;
+        s.serialize_field("spending_controls", &self.spending_controls)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("type", &self.type_)?;
+
+        s.serialize_field("object", "issuing.cardholder")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for IssuingCardholder {
     type Id = stripe_shared::IssuingCardholderId;
@@ -103,6 +289,23 @@ impl serde::Serialize for IssuingCardholderPreferredLocales {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingCardholderPreferredLocales {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingCardholderPreferredLocales> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(IssuingCardholderPreferredLocales::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingCardholderPreferredLocales);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderPreferredLocales {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -160,6 +363,22 @@ impl serde::Serialize for IssuingCardholderStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingCardholderStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingCardholderStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardholderStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingCardholderStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -213,6 +432,22 @@ impl serde::Serialize for IssuingCardholderType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingCardholderType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingCardholderType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingCardholderType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingCardholderType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingCardholderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

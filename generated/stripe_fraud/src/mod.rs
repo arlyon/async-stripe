@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Fraud` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_fraud;
+
+miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod deleted_radar_value_list;
 #[doc(inline)]

@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
     /// The remaining amount that needs to be transferred to complete the payment.
     pub amount_remaining: Option<i64>,
@@ -6,7 +8,6 @@ pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<stripe_types::Currency>,
     /// A list of financial addresses that can be used to fund the customer balance
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_addresses:
         Option<Vec<stripe_shared::FundingInstructionsBankTransferFinancialAddress>>,
     /// A link to a hosted page that guides your customer through completing the transfer.
@@ -15,9 +16,131 @@ pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
     /// Instruct your customer to include this code in the reference or memo field of their bank transfer.
     pub reference: Option<String>,
     /// Type of bank transfer
-    #[serde(rename = "type")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentIntentNextActionDisplayBankTransferInstructionsType,
 }
+#[doc(hidden)]
+pub struct PaymentIntentNextActionDisplayBankTransferInstructionsBuilder {
+    amount_remaining: Option<Option<i64>>,
+    currency: Option<Option<stripe_types::Currency>>,
+    financial_addresses:
+        Option<Option<Vec<stripe_shared::FundingInstructionsBankTransferFinancialAddress>>>,
+    hosted_instructions_url: Option<Option<String>>,
+    reference: Option<Option<String>>,
+    type_: Option<PaymentIntentNextActionDisplayBankTransferInstructionsType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentIntentNextActionDisplayBankTransferInstructions {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentIntentNextActionDisplayBankTransferInstructions>,
+        builder: PaymentIntentNextActionDisplayBankTransferInstructionsBuilder,
+    }
+
+    impl Visitor for Place<PaymentIntentNextActionDisplayBankTransferInstructions> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder:
+                    PaymentIntentNextActionDisplayBankTransferInstructionsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentIntentNextActionDisplayBankTransferInstructionsBuilder {
+        type Out = PaymentIntentNextActionDisplayBankTransferInstructions;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount_remaining" => Deserialize::begin(&mut self.amount_remaining),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
+                "hosted_instructions_url" => Deserialize::begin(&mut self.hosted_instructions_url),
+                "reference" => Deserialize::begin(&mut self.reference),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount_remaining: Deserialize::default(),
+                currency: Deserialize::default(),
+                financial_addresses: Deserialize::default(),
+                hosted_instructions_url: Deserialize::default(),
+                reference: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount_remaining: self.amount_remaining?,
+                currency: self.currency?,
+                financial_addresses: self.financial_addresses.take()?,
+                hosted_instructions_url: self.hosted_instructions_url.take()?,
+                reference: self.reference.take()?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentIntentNextActionDisplayBankTransferInstructions {
+        type Builder = PaymentIntentNextActionDisplayBankTransferInstructionsBuilder;
+    }
+
+    impl FromValueOpt for PaymentIntentNextActionDisplayBankTransferInstructions {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b =
+                PaymentIntentNextActionDisplayBankTransferInstructionsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount_remaining" => b.amount_remaining = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "financial_addresses" => {
+                        b.financial_addresses = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "hosted_instructions_url" => {
+                        b.hosted_instructions_url = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Type of bank transfer
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentIntentNextActionDisplayBankTransferInstructionsType {
@@ -65,6 +188,7 @@ impl std::fmt::Debug for PaymentIntentNextActionDisplayBankTransferInstructionsT
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentIntentNextActionDisplayBankTransferInstructionsType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -73,6 +197,29 @@ impl serde::Serialize for PaymentIntentNextActionDisplayBankTransferInstructions
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentIntentNextActionDisplayBankTransferInstructionsType>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentIntentNextActionDisplayBankTransferInstructionsType
+);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentIntentNextActionDisplayBankTransferInstructionsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

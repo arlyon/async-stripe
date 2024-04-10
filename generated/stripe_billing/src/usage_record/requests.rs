@@ -72,6 +72,16 @@ impl serde::Serialize for CreateSubscriptionItemUsageRecordAction {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemUsageRecordAction {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionItemUsageRecordAction")
+        })
+    }
+}
 /// The timestamp for the usage event.
 /// This timestamp must be within the current billing period of the subscription of the provided `subscription_item`, and must not be in the future.
 /// When passing `"now"`, Stripe records usage for the current time.

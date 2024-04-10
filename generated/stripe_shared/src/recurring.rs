@@ -1,4 +1,6 @@
-#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
     pub aggregate_usage: Option<RecurringAggregateUsage>,
@@ -16,6 +18,113 @@ pub struct Recurring {
     /// Defaults to `licensed`.
     pub usage_type: RecurringUsageType,
 }
+#[doc(hidden)]
+pub struct RecurringBuilder {
+    aggregate_usage: Option<Option<RecurringAggregateUsage>>,
+    interval: Option<RecurringInterval>,
+    interval_count: Option<u64>,
+    trial_period_days: Option<Option<u32>>,
+    usage_type: Option<RecurringUsageType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Recurring {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Recurring>,
+        builder: RecurringBuilder,
+    }
+
+    impl Visitor for Place<Recurring> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: RecurringBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for RecurringBuilder {
+        type Out = Recurring;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "aggregate_usage" => Deserialize::begin(&mut self.aggregate_usage),
+                "interval" => Deserialize::begin(&mut self.interval),
+                "interval_count" => Deserialize::begin(&mut self.interval_count),
+                "trial_period_days" => Deserialize::begin(&mut self.trial_period_days),
+                "usage_type" => Deserialize::begin(&mut self.usage_type),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                aggregate_usage: Deserialize::default(),
+                interval: Deserialize::default(),
+                interval_count: Deserialize::default(),
+                trial_period_days: Deserialize::default(),
+                usage_type: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                aggregate_usage: self.aggregate_usage?,
+                interval: self.interval?,
+                interval_count: self.interval_count?,
+                trial_period_days: self.trial_period_days?,
+                usage_type: self.usage_type?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Recurring {
+        type Builder = RecurringBuilder;
+    }
+
+    impl FromValueOpt for Recurring {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = RecurringBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "aggregate_usage" => b.aggregate_usage = Some(FromValueOpt::from_value(v)?),
+                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
+                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
+                    "trial_period_days" => b.trial_period_days = Some(FromValueOpt::from_value(v)?),
+                    "usage_type" => b.usage_type = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Specifies a usage aggregation strategy for prices of `usage_type=metered`. Defaults to `sum`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum RecurringAggregateUsage {
@@ -60,6 +169,7 @@ impl std::fmt::Debug for RecurringAggregateUsage {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for RecurringAggregateUsage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -68,6 +178,22 @@ impl serde::Serialize for RecurringAggregateUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for RecurringAggregateUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<RecurringAggregateUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(RecurringAggregateUsage::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(RecurringAggregateUsage);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RecurringAggregateUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -120,6 +246,7 @@ impl std::fmt::Debug for RecurringInterval {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for RecurringInterval {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -128,6 +255,22 @@ impl serde::Serialize for RecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for RecurringInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(RecurringInterval::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(RecurringInterval);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -178,6 +321,7 @@ impl std::fmt::Debug for RecurringUsageType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for RecurringUsageType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -186,6 +330,22 @@ impl serde::Serialize for RecurringUsageType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for RecurringUsageType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<RecurringUsageType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(RecurringUsageType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(RecurringUsageType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

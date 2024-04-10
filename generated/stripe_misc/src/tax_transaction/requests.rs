@@ -220,6 +220,16 @@ impl serde::Serialize for CreateReversalTaxTransactionMode {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateReversalTaxTransactionMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateReversalTaxTransactionMode")
+        })
+    }
+}
 /// The shipping cost to reverse.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateReversalTaxTransactionShippingCost {

@@ -1,9 +1,10 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// Currency is the list of supported currencies.
 ///
 /// For more details see <https://support.stripe.com/questions/which-currencies-does-stripe-support>.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, Default)]
+#[derive(Copy, Clone, Debug, Eq, Serialize, PartialEq, Hash, Default, miniserde::Deserialize)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub enum Currency {
     #[serde(rename = "byn")]
     BYN, // Belarusian Ruble
@@ -488,8 +489,8 @@ mod tests {
 
     #[test]
     fn deserialize_currency() {
-        assert_eq!(serde_json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
-        assert_eq!(serde_json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
-        assert_eq!(serde_json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
+        assert_eq!(miniserde::json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
+        assert_eq!(miniserde::json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
+        assert_eq!(miniserde::json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
     }
 }

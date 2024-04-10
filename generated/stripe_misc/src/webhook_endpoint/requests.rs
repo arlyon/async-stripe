@@ -886,6 +886,14 @@ impl serde::Serialize for CreateWebhookEndpointEnabledEvents {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 impl<'a> CreateWebhookEndpoint<'a> {
     /// A webhook endpoint must have a `url` and a list of `enabled_events`.
     /// You may optionally specify the Boolean `connect` parameter.
@@ -1690,6 +1698,14 @@ impl serde::Serialize for UpdateWebhookEndpointEnabledEvents {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 impl<'a> UpdateWebhookEndpoint<'a> {

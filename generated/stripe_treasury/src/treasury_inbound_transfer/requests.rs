@@ -179,6 +179,14 @@ impl serde::Serialize for FailTreasuryInboundTransferFailureDetailsCode {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsCode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 impl<'a> FailTreasuryInboundTransfer<'a> {
     /// Transitions a test mode created InboundTransfer to the `failed` status.
     /// The InboundTransfer must already be in the `processing` state.

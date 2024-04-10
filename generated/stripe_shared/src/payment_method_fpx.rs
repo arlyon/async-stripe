@@ -1,4 +1,6 @@
-#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodFpx {
     /// Account holder type, if provided. Can be one of `individual` or `company`.
     pub account_holder_type: Option<PaymentMethodFpxAccountHolderType>,
@@ -6,6 +8,97 @@ pub struct PaymentMethodFpx {
     /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, `pb_enterprise`, or `bank_of_china`.
     pub bank: PaymentMethodFpxBank,
 }
+#[doc(hidden)]
+pub struct PaymentMethodFpxBuilder {
+    account_holder_type: Option<Option<PaymentMethodFpxAccountHolderType>>,
+    bank: Option<PaymentMethodFpxBank>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodFpx {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodFpx>,
+        builder: PaymentMethodFpxBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodFpx> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentMethodFpxBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodFpxBuilder {
+        type Out = PaymentMethodFpx;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
+                "bank" => Deserialize::begin(&mut self.bank),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { account_holder_type: Deserialize::default(), bank: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out { account_holder_type: self.account_holder_type?, bank: self.bank? })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodFpx {
+        type Builder = PaymentMethodFpxBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodFpx {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodFpxBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "account_holder_type" => {
+                        b.account_holder_type = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "bank" => b.bank = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Account holder type, if provided. Can be one of `individual` or `company`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentMethodFpxAccountHolderType {
@@ -44,6 +137,7 @@ impl std::fmt::Debug for PaymentMethodFpxAccountHolderType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodFpxAccountHolderType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -52,6 +146,23 @@ impl serde::Serialize for PaymentMethodFpxAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodFpxAccountHolderType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodFpxAccountHolderType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentMethodFpxAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodFpxAccountHolderType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodFpxAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -164,6 +275,7 @@ impl std::fmt::Debug for PaymentMethodFpxBank {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodFpxBank {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -172,10 +284,26 @@ impl serde::Serialize for PaymentMethodFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodFpxBank {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodFpxBank> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodFpxBank::from_str(s).unwrap_or(PaymentMethodFpxBank::Unknown));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodFpxBank);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(PaymentMethodFpxBank::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }

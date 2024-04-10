@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceCustomerDetails {
     /// The customer's postal address (for example, home or business location).
     pub address: Option<stripe_misc::TaxProductResourcePostalAddress>,
@@ -11,6 +13,118 @@ pub struct TaxProductResourceCustomerDetails {
     /// The taxability override used for taxation.
     pub taxability_override: TaxProductResourceCustomerDetailsTaxabilityOverride,
 }
+#[doc(hidden)]
+pub struct TaxProductResourceCustomerDetailsBuilder {
+    address: Option<Option<stripe_misc::TaxProductResourcePostalAddress>>,
+    address_source: Option<Option<TaxProductResourceCustomerDetailsAddressSource>>,
+    ip_address: Option<Option<String>>,
+    tax_ids: Option<Vec<stripe_misc::TaxProductResourceCustomerDetailsResourceTaxId>>,
+    taxability_override: Option<TaxProductResourceCustomerDetailsTaxabilityOverride>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxProductResourceCustomerDetails {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxProductResourceCustomerDetails>,
+        builder: TaxProductResourceCustomerDetailsBuilder,
+    }
+
+    impl Visitor for Place<TaxProductResourceCustomerDetails> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TaxProductResourceCustomerDetailsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for TaxProductResourceCustomerDetailsBuilder {
+        type Out = TaxProductResourceCustomerDetails;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "address" => Deserialize::begin(&mut self.address),
+                "address_source" => Deserialize::begin(&mut self.address_source),
+                "ip_address" => Deserialize::begin(&mut self.ip_address),
+                "tax_ids" => Deserialize::begin(&mut self.tax_ids),
+                "taxability_override" => Deserialize::begin(&mut self.taxability_override),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                address: Deserialize::default(),
+                address_source: Deserialize::default(),
+                ip_address: Deserialize::default(),
+                tax_ids: Deserialize::default(),
+                taxability_override: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                address: self.address.take()?,
+                address_source: self.address_source?,
+                ip_address: self.ip_address.take()?,
+                tax_ids: self.tax_ids.take()?,
+                taxability_override: self.taxability_override?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxProductResourceCustomerDetails {
+        type Builder = TaxProductResourceCustomerDetailsBuilder;
+    }
+
+    impl FromValueOpt for TaxProductResourceCustomerDetails {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxProductResourceCustomerDetailsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
+                    "address_source" => b.address_source = Some(FromValueOpt::from_value(v)?),
+                    "ip_address" => b.ip_address = Some(FromValueOpt::from_value(v)?),
+                    "tax_ids" => b.tax_ids = Some(FromValueOpt::from_value(v)?),
+                    "taxability_override" => {
+                        b.taxability_override = Some(FromValueOpt::from_value(v)?)
+                    }
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The type of customer address provided.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TaxProductResourceCustomerDetailsAddressSource {
@@ -49,6 +163,7 @@ impl std::fmt::Debug for TaxProductResourceCustomerDetailsAddressSource {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TaxProductResourceCustomerDetailsAddressSource {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -57,6 +172,25 @@ impl serde::Serialize for TaxProductResourceCustomerDetailsAddressSource {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TaxProductResourceCustomerDetailsAddressSource {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAddressSource> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TaxProductResourceCustomerDetailsAddressSource::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsAddressSource);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsAddressSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -109,6 +243,7 @@ impl std::fmt::Debug for TaxProductResourceCustomerDetailsTaxabilityOverride {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -117,6 +252,25 @@ impl serde::Serialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TaxProductResourceCustomerDetailsTaxabilityOverride {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTaxabilityOverride> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TaxProductResourceCustomerDetailsTaxabilityOverride::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxProductResourceCustomerDetailsTaxabilityOverride);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsTaxabilityOverride {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

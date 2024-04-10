@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use serde::{Deserializer, Serialize, Serializer};
+use serde::{Serialize, Serializer};
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub struct AlwaysTrue;
@@ -14,16 +14,55 @@ impl serde::Serialize for AlwaysTrue {
     }
 }
 
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for AlwaysTrue {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: Deserializer<'de>,
+        D: serde::Deserializer<'de>,
     {
         let bool_: bool = serde::Deserialize::deserialize(deserializer)?;
         if !bool_ {
             Err(serde::de::Error::custom("Expected value to always be `true`"))
         } else {
             Ok(AlwaysTrue)
+        }
+    }
+}
+
+#[doc(hidden)]
+mod miniserde_deser {
+    use miniserde::de::Visitor;
+    use miniserde::json::Value;
+    use miniserde::Deserialize;
+
+    use crate::miniserde_helpers::FromValueOpt;
+    use crate::{AlwaysTrue, Place};
+
+    impl Deserialize for AlwaysTrue {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<AlwaysTrue> {
+        fn boolean(&mut self, b: bool) -> miniserde::Result<()> {
+            if b {
+                self.out = Some(AlwaysTrue);
+                Ok(())
+            } else {
+                Err(miniserde::Error)
+            }
+        }
+    }
+
+    impl FromValueOpt for AlwaysTrue {
+        fn from_value(v: Value) -> Option<Self> {
+            let b = bool::from_value(v)?;
+            if b {
+                Some(AlwaysTrue)
+            } else {
+                None
+            }
         }
     }
 }

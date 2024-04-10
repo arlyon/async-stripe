@@ -185,6 +185,18 @@ impl serde::Serialize for CreateTaxCalculationCustomerDetailsAddressSource {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsAddressSource {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTaxCalculationCustomerDetailsAddressSource",
+            )
+        })
+    }
+}
 /// The customer's tax IDs.
 /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
 /// Stripe Tax doesn't validate tax IDs for correctness.
@@ -443,6 +455,14 @@ impl serde::Serialize for CreateTaxCalculationCustomerDetailsTaxIdsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxIdsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Overrides the tax calculation result to allow you to not collect tax from your customer.
 /// Use this if you've manually checked your customer's tax exemptions.
 /// Prefer providing the customer's `tax_ids` where possible, which automatically determines whether `reverse_charge` applies.
@@ -492,6 +512,18 @@ impl serde::Serialize for CreateTaxCalculationCustomerDetailsTaxabilityOverride 
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTaxCalculationCustomerDetailsTaxabilityOverride",
+            )
+        })
     }
 }
 /// A list of items the customer is purchasing.
@@ -580,6 +612,16 @@ impl serde::Serialize for CreateTaxCalculationLineItemsTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxCalculationLineItemsTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxCalculationLineItemsTaxBehavior")
+        })
+    }
+}
 /// Shipping cost details to be used for the calculation.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTaxCalculationShippingCost<'a> {
@@ -653,6 +695,18 @@ impl serde::Serialize for CreateTaxCalculationShippingCostTaxBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxCalculationShippingCostTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTaxCalculationShippingCostTaxBehavior",
+            )
+        })
     }
 }
 impl<'a> CreateTaxCalculation<'a> {
