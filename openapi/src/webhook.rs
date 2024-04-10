@@ -8,10 +8,9 @@ use openapiv3::Schema;
 use crate::components::Components;
 use crate::crates::Crate;
 use crate::printable::PrintableType;
-use crate::rust_object::{as_enum_of_objects, ObjectKind, RustObject};
+use crate::rust_object::{as_enum_of_objects, ObjectUsage, RustObject};
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
-use crate::templates::derives::Derives;
 use crate::templates::object_writer::write_derives_line;
 use crate::templates::utils::write_doc_comment;
 use crate::templates::ObjectWriter;
@@ -29,14 +28,14 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
     let mut enum_body = String::new();
     let mut match_inner = String::new();
     for webhook_obj in &components.webhook_objs {
-        let ident = RustIdent::create(&webhook_obj.wire_name);
+        let ident = RustIdent::create(&webhook_obj.event_type);
 
         let (printable, feature_gate) = if let Some(enum_objs) =
             webhook_obj.typ.as_rust_object().and_then(|o| match o {
                 RustObject::Enum(variants) => as_enum_of_objects(components, variants),
                 _ => None,
             }) {
-            ObjectWriter::new(components, &ident, ObjectKind::Type)
+            ObjectWriter::new(components, &ident, ObjectUsage::type_def())
                 .write_enum_of_objects(&mut out, &enum_objs);
             (
                 PrintableType::QualifiedPath {
@@ -69,15 +68,15 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         if let Some(gate) = feature_gate {
             let _ = writeln!(match_inner, r#"#[cfg(feature = "{gate}")]"#);
         }
-        let wire_name = &webhook_obj.wire_name;
+        let evt_type = &webhook_obj.event_type;
         let _ = writeln!(
             match_inner,
-            r#""{wire_name}" => EventObject::{ident}(serde_json::from_value(data)?),"#
+            r#""{evt_type}" => Self::{ident}(FromValueOpt::from_value(data)?),"#
         );
     }
-    let _ = writeln!(enum_body, "Unknown(serde_json::Value),");
+    let _ = writeln!(enum_body, "Unknown(miniserde::json::Value),");
 
-    write_derives_line(&mut out, Derives::new());
+    write_derives_line(&mut out, Default::default());
     let _ = writedoc! {out, r#"
     #[non_exhaustive]
     /// The event data for a webhook event.
@@ -88,10 +87,11 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
 
     let _ = writedoc! {out, r#"
     impl EventObject {{
-        pub(crate) fn from_raw_data(typ: &str, data: serde_json::Value) -> serde_json::Result<Self> {{
-            Ok(match typ {{
+        pub(crate) fn from_raw_data(typ: &str, data: miniserde::json::Value) -> Option<Self> {{
+            use stripe_types::miniserde_helpers::FromValueOpt;
+            Some(match typ {{
                 {match_inner}
-                _ => EventObject::Unknown(data),
+                _ => Self::Unknown(data),
             }})
         }}
     }}
@@ -103,7 +103,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct WebhookObject {
-    pub wire_name: String,
+    pub event_type: String,
     pub doc: String,
     pub typ: RustType,
 }
@@ -118,11 +118,11 @@ impl WebhookObject {
         let desc = schema.schema_data.description.as_ref().context("expected description")?;
 
         let ident = RustIdent::create(event_type);
-        let infer_ctx = Inference::new(&ident, ObjectKind::Type);
+        let infer_ctx = Inference::new(&ident);
         let typ = infer_ctx.required(true).infer_schema_type(schema);
 
         Ok(Some(Self {
-            wire_name: event_type.to_string(),
+            event_type: event_type.to_string(),
             doc: desc.to_string(),
             typ: extract_object_type(typ)?,
         }))
@@ -133,12 +133,12 @@ impl WebhookObject {
 fn extract_object_type(typ: RustType) -> anyhow::Result<RustType> {
     let (obj, _) = typ.into_object().context("expected object")?;
 
-    let RustObject::Struct(fields) = obj else {
+    let RustObject::Struct(struct_) = obj else {
         bail!("expected struct");
     };
-    ensure!(fields.len() == 1);
+    ensure!(struct_.fields.len() == 1);
 
     let object_field =
-        fields.into_iter().find(|f| f.field_name == "object").context("no object field")?;
+        struct_.fields.into_iter().find(|f| f.field_name == "object").context("no object field")?;
     Ok(object_field.rust_type)
 }

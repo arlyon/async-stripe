@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Issuing` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_issuing;
+
+miniserde::make_place!(Place);
 pub use stripe_shared::funding_instructions::*;
 pub use stripe_shared::funding_instructions_bank_transfer::*;
 pub use stripe_shared::funding_instructions_bank_transfer_aba_record::*;

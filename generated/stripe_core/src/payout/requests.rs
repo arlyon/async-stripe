@@ -173,6 +173,15 @@ impl serde::Serialize for CreatePayoutMethod {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePayoutMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePayoutMethod"))
+    }
+}
 /// The balance type of your Stripe balance to draw this payout from.
 /// Balances for different payment sources are kept separately.
 /// You can find the amounts with the Balances API.
@@ -223,6 +232,15 @@ impl serde::Serialize for CreatePayoutSourceType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePayoutSourceType"))
     }
 }
 impl<'a> CreatePayout<'a> {

@@ -309,6 +309,16 @@ impl serde::Serialize for CreatePaymentLinkAfterCompletionType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAfterCompletionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkAfterCompletionType")
+        })
+    }
+}
 /// Configuration for automatic tax collection.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkAutomaticTax<'a> {
@@ -386,6 +396,16 @@ impl serde::Serialize for CreatePaymentLinkAutomaticTaxLiabilityType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkAutomaticTaxLiabilityType")
+        })
     }
 }
 /// Configure fields to gather active consent from customers.
@@ -478,6 +498,16 @@ impl serde::Serialize for CreatePaymentLinkConsentCollectionPaymentMethodReuseAg
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition"))
+    }
+}
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
 /// The Checkout.
 /// Session will determine whether to display an option to opt into promotional communication
@@ -527,6 +557,18 @@ impl serde::Serialize for CreatePaymentLinkConsentCollectionPromotions {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionPromotions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkConsentCollectionPromotions",
+            )
+        })
+    }
+}
 /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
 /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -572,6 +614,18 @@ impl serde::Serialize for CreatePaymentLinkConsentCollectionTermsOfService {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkConsentCollectionTermsOfService",
+            )
+        })
     }
 }
 /// Collect additional information from your customer using custom fields.
@@ -666,6 +720,16 @@ impl serde::Serialize for CreatePaymentLinkCustomFieldsLabelType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkCustomFieldsLabelType")
+        })
+    }
+}
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
@@ -745,6 +809,16 @@ impl serde::Serialize for CreatePaymentLinkCustomFieldsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkCustomFieldsType")
+        })
+    }
+}
 /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentLinkCustomerCreation {
@@ -789,6 +863,16 @@ impl serde::Serialize for CreatePaymentLinkCustomerCreation {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomerCreation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkCustomerCreation")
+        })
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
@@ -901,6 +985,18 @@ impl serde::Serialize for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType 
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType",
+            )
+        })
+    }
+}
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
@@ -972,6 +1068,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"))
     }
 }
 /// The line items representing what is being sold.
@@ -1088,6 +1194,18 @@ impl serde::Serialize for CreatePaymentLinkPaymentIntentDataCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkPaymentIntentDataCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
 ///
 /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
@@ -1145,6 +1263,18 @@ impl serde::Serialize for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkPaymentIntentDataSetupFutureUsage",
+            )
+        })
+    }
+}
 /// Specify whether Checkout should collect a payment method.
 /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.
 ///
@@ -1194,6 +1324,16 @@ impl serde::Serialize for CreatePaymentLinkPaymentMethodCollection {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentLinkPaymentMethodCollection")
+        })
     }
 }
 /// Controls phone number collection settings during checkout.
@@ -1981,6 +2121,14 @@ impl serde::Serialize for CreatePaymentLinkShippingAddressCollectionAllowedCount
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentLinkShippingOptions<'a> {
@@ -2097,6 +2245,18 @@ impl serde::Serialize for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType",
+            )
+        })
+    }
+}
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
@@ -2177,6 +2337,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"))
     }
 }
 /// Controls tax ID collection during checkout.
@@ -2357,6 +2527,16 @@ impl serde::Serialize for UpdatePaymentLinkAfterCompletionType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAfterCompletionType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkAfterCompletionType")
+        })
+    }
+}
 /// Configuration for automatic tax collection.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax<'a> {
@@ -2434,6 +2614,16 @@ impl serde::Serialize for UpdatePaymentLinkAutomaticTaxLiabilityType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkAutomaticTaxLiabilityType")
+        })
     }
 }
 /// Collect additional information from your customer using custom fields.
@@ -2528,6 +2718,16 @@ impl serde::Serialize for UpdatePaymentLinkCustomFieldsLabelType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkCustomFieldsLabelType")
+        })
+    }
+}
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
@@ -2607,6 +2807,16 @@ impl serde::Serialize for UpdatePaymentLinkCustomFieldsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkCustomFieldsType")
+        })
+    }
+}
 /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentLinkCustomerCreation {
@@ -2651,6 +2861,16 @@ impl serde::Serialize for UpdatePaymentLinkCustomerCreation {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomerCreation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkCustomerCreation")
+        })
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
@@ -2763,6 +2983,18 @@ impl serde::Serialize for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType 
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType",
+            )
+        })
+    }
+}
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
@@ -2834,6 +3066,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"))
     }
 }
 /// The line items representing what is being sold.
@@ -2934,6 +3176,16 @@ impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdatePaymentLinkPaymentMethodCollection")
+        })
     }
 }
 /// Configuration for collecting the customer's shipping address.
@@ -3708,6 +3960,14 @@ impl serde::Serialize for UpdatePaymentLinkShippingAddressCollectionAllowedCount
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3804,6 +4064,18 @@ impl serde::Serialize for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType",
+            )
+        })
+    }
+}
 /// Settings related to subscription trials.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
@@ -3884,6 +4156,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"))
     }
 }
 impl<'a> UpdatePaymentLink<'a> {

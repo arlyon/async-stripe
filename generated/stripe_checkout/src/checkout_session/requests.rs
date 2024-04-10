@@ -440,6 +440,18 @@ impl serde::Serialize for CreateCheckoutSessionAutomaticTaxLiabilityType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionAutomaticTaxLiabilityType",
+            )
+        })
+    }
+}
 /// Configure fields for the Checkout Session to gather active consent from customers.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
@@ -536,6 +548,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition"))
+    }
+}
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
 /// The Checkout.
 /// Session will determine whether to display an option to opt into promotional communication
@@ -585,6 +607,18 @@ impl serde::Serialize for CreateCheckoutSessionConsentCollectionPromotions {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionPromotions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionConsentCollectionPromotions",
+            )
+        })
+    }
+}
 /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
 /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -630,6 +664,18 @@ impl serde::Serialize for CreateCheckoutSessionConsentCollectionTermsOfService {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionTermsOfService {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionConsentCollectionTermsOfService",
+            )
+        })
     }
 }
 /// Collect additional information from your customer using custom fields.
@@ -749,6 +795,16 @@ impl serde::Serialize for CreateCheckoutSessionCustomFieldsLabelType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsLabelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCheckoutSessionCustomFieldsLabelType")
+        })
+    }
+}
 /// Configuration for `type=numeric` fields.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsNumeric {
@@ -828,6 +884,16 @@ impl serde::Serialize for CreateCheckoutSessionCustomFieldsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCheckoutSessionCustomFieldsType")
+        })
+    }
+}
 /// Display additional text for your customers using custom text.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomText<'a> {
@@ -904,6 +970,16 @@ impl serde::Serialize for CreateCheckoutSessionCustomerCreation {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerCreation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCheckoutSessionCustomerCreation")
+        })
+    }
+}
 /// Controls what fields on Customer can be updated by the Checkout Session.
 /// Can only be provided when `customer` is provided.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -972,6 +1048,16 @@ impl serde::Serialize for CreateCheckoutSessionCustomerUpdateAddress {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateAddress {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCheckoutSessionCustomerUpdateAddress")
+        })
+    }
+}
 /// Describes whether Checkout saves the name onto `customer.name`. Defaults to `never`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionCustomerUpdateName {
@@ -1016,6 +1102,16 @@ impl serde::Serialize for CreateCheckoutSessionCustomerUpdateName {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateName {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCheckoutSessionCustomerUpdateName")
+        })
     }
 }
 /// Describes whether Checkout saves shipping information onto `customer.shipping`.
@@ -1063,6 +1159,18 @@ impl serde::Serialize for CreateCheckoutSessionCustomerUpdateShipping {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateShipping {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionCustomerUpdateShipping",
+            )
+        })
     }
 }
 /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
@@ -1204,6 +1312,18 @@ impl serde::Serialize for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerT
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType",
+            )
+        })
+    }
+}
 /// Default options for invoice PDF rendering for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
@@ -1275,6 +1395,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay"))
     }
 }
 /// A list of items the customer is purchasing.
@@ -1475,6 +1605,18 @@ impl serde::Serialize for CreateCheckoutSessionLineItemsPriceDataRecurringInterv
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionLineItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -1525,6 +1667,18 @@ impl serde::Serialize for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionLineItemsPriceDataTaxBehavior",
+            )
+        })
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
@@ -1653,6 +1807,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentIntentDataCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment.
 /// method collected by this Checkout Session.
 ///
@@ -1716,6 +1882,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage",
+            )
+        })
     }
 }
 /// Shipping information for this payment.
@@ -1838,6 +2016,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodCollection {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodCollection",
+            )
+        })
     }
 }
 /// Payment-method-specific configuration.
@@ -2018,6 +2208,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency",
+            )
+        })
+    }
+}
 /// Additional fields for Mandate creation
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions<'a> {
@@ -2104,6 +2306,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor"))
+    }
+}
 /// Payment schedule for the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
@@ -2161,6 +2373,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"))
+    }
+}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
@@ -2213,6 +2435,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -2269,6 +2501,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage"))
+    }
+}
 /// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -2316,6 +2558,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVeri
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// contains details about the Affirm payment method options.
@@ -2381,6 +2633,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Afterpay Clearpay payment method options.
@@ -2455,6 +2721,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"))
+    }
+}
 /// contains details about the Alipay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
@@ -2518,6 +2794,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the AU Becs Debit payment method options.
@@ -2584,6 +2874,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage"))
     }
 }
 /// contains details about the Bacs Debit payment method options.
@@ -2658,6 +2958,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage"))
+    }
+}
 /// contains details about the Bancontact payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
@@ -2722,6 +3032,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBancontactSet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage"))
     }
 }
 /// contains details about the Boleto payment method options.
@@ -2797,6 +3117,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Card payment method options.
@@ -2895,6 +3229,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the Cashapp Pay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
@@ -2965,6 +3313,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCashappSetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage"))
     }
 }
 /// contains details about the Customer Balance payment method options.
@@ -3101,6 +3459,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"))
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -3160,6 +3528,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalan
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType"))
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -3202,6 +3580,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalan
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3254,6 +3642,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalan
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage"))
     }
 }
 /// contains details about the EPS payment method options.
@@ -3321,6 +3719,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutur
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the FPX payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
@@ -3384,6 +3794,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Giropay payment method options.
@@ -3452,6 +3874,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupF
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage"))
+    }
+}
 /// contains details about the Grabpay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
@@ -3516,6 +3948,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage"))
     }
 }
 /// contains details about the Ideal payment method options.
@@ -3583,6 +4025,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFut
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the Klarna payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
@@ -3646,6 +4102,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Konbini payment method options.
@@ -3719,6 +4189,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupF
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage"))
+    }
+}
 /// contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
@@ -3785,6 +4265,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the OXXO payment method options.
@@ -3856,6 +4350,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the P24 payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
@@ -3924,6 +4432,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutur
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage",
+            )
+        })
+    }
+}
 /// contains details about the PayNow payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
@@ -3987,6 +4507,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the PayPal payment method options.
@@ -4062,6 +4596,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalCapture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod",
+            )
+        })
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -4171,6 +4717,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4222,6 +4778,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Pix payment method options.
@@ -4306,6 +4876,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySet
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage"))
+    }
+}
 /// contains details about the Sepa Debit payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
@@ -4378,6 +4958,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage"))
+    }
+}
 /// contains details about the Sofort payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
@@ -4441,6 +5031,20 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage",
+            )
+        })
     }
 }
 /// contains details about the Swish payment method options.
@@ -4562,6 +5166,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
@@ -4614,6 +5228,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4670,6 +5294,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage"))
+    }
+}
 /// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -4718,6 +5352,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// contains details about the WeChat Pay payment method options.
@@ -4792,6 +5436,18 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsWechatPayClie
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsWechatPayClient {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionPaymentMethodOptionsWechatPayClient",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4838,6 +5494,16 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage"))
     }
 }
 /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
@@ -4991,6 +5657,14 @@ impl serde::Serialize for CreateCheckoutSessionPaymentMethodTypes {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// Controls phone number collection settings for the session.
@@ -5801,6 +6475,16 @@ impl serde::Serialize for CreateCheckoutSessionShippingAddressCollectionAllowedC
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionShippingAddressCollectionAllowedCountries
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// The shipping rate options to apply to this Session. Up to a maximum of 5.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptions<'a> {
@@ -5959,6 +6643,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit"))
+    }
+}
 /// The lower bound of the estimated range. If empty, represents no lower bound.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
@@ -6036,6 +6730,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit"))
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
@@ -6137,6 +6841,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior"))
+    }
+}
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -6187,6 +6901,20 @@ impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataTa
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior",
+            )
+        })
+    }
+}
 /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateCheckoutSessionShippingOptionsShippingRateDataType {
@@ -6228,6 +6956,18 @@ impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataTy
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionShippingOptionsShippingRateDataType",
+            )
+        })
     }
 }
 /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
@@ -6364,6 +7104,20 @@ impl serde::Serialize for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIs
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType",
+            )
+        })
+    }
+}
 /// Determines how to handle prorations resulting from the `billing_cycle_anchor`.
 /// If no value is passed, the default is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -6409,6 +7163,18 @@ impl serde::Serialize for CreateCheckoutSessionSubscriptionDataProrationBehavior
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCheckoutSessionSubscriptionDataProrationBehavior",
+            )
+        })
     }
 }
 /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
@@ -6509,6 +7275,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod"))
     }
 }
 /// Controls tax ID collection settings for the session.

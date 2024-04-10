@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetailsCard {
     /// Card brand.
     /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
@@ -10,7 +12,6 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     pub country: Option<String>,
     /// A high-level description of the type of cards issued in this range.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Two-digit number representing the card's expiration month.
     pub exp_month: Option<i64>,
@@ -21,17 +22,14 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
     ///
     /// *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
     /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
     pub funding: Option<String>,
     /// Issuer identification number of the card.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub iin: Option<String>,
     /// The name of the card's issuing bank.
     /// (For internal use only and not typically available in standard API requests.).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: Option<String>,
@@ -43,3 +41,158 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     pub wallet: Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardWallet>,
 }
+#[doc(hidden)]
+pub struct SetupAttemptPaymentMethodDetailsCardBuilder {
+    brand: Option<Option<String>>,
+    checks: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardChecks>>,
+    country: Option<Option<String>>,
+    description: Option<Option<String>>,
+    exp_month: Option<Option<i64>>,
+    exp_year: Option<Option<i64>>,
+    fingerprint: Option<Option<String>>,
+    funding: Option<Option<String>>,
+    iin: Option<Option<String>>,
+    issuer: Option<Option<String>>,
+    last4: Option<Option<String>>,
+    network: Option<Option<String>>,
+    three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetails>>,
+    wallet: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardWallet>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for SetupAttemptPaymentMethodDetailsCard {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<SetupAttemptPaymentMethodDetailsCard>,
+        builder: SetupAttemptPaymentMethodDetailsCardBuilder,
+    }
+
+    impl Visitor for Place<SetupAttemptPaymentMethodDetailsCard> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: SetupAttemptPaymentMethodDetailsCardBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for SetupAttemptPaymentMethodDetailsCardBuilder {
+        type Out = SetupAttemptPaymentMethodDetailsCard;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "brand" => Deserialize::begin(&mut self.brand),
+                "checks" => Deserialize::begin(&mut self.checks),
+                "country" => Deserialize::begin(&mut self.country),
+                "description" => Deserialize::begin(&mut self.description),
+                "exp_month" => Deserialize::begin(&mut self.exp_month),
+                "exp_year" => Deserialize::begin(&mut self.exp_year),
+                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
+                "funding" => Deserialize::begin(&mut self.funding),
+                "iin" => Deserialize::begin(&mut self.iin),
+                "issuer" => Deserialize::begin(&mut self.issuer),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "network" => Deserialize::begin(&mut self.network),
+                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
+                "wallet" => Deserialize::begin(&mut self.wallet),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                brand: Deserialize::default(),
+                checks: Deserialize::default(),
+                country: Deserialize::default(),
+                description: Deserialize::default(),
+                exp_month: Deserialize::default(),
+                exp_year: Deserialize::default(),
+                fingerprint: Deserialize::default(),
+                funding: Deserialize::default(),
+                iin: Deserialize::default(),
+                issuer: Deserialize::default(),
+                last4: Deserialize::default(),
+                network: Deserialize::default(),
+                three_d_secure: Deserialize::default(),
+                wallet: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                brand: self.brand.take()?,
+                checks: self.checks.take()?,
+                country: self.country.take()?,
+                description: self.description.take()?,
+                exp_month: self.exp_month?,
+                exp_year: self.exp_year?,
+                fingerprint: self.fingerprint.take()?,
+                funding: self.funding.take()?,
+                iin: self.iin.take()?,
+                issuer: self.issuer.take()?,
+                last4: self.last4.take()?,
+                network: self.network.take()?,
+                three_d_secure: self.three_d_secure.take()?,
+                wallet: self.wallet?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for SetupAttemptPaymentMethodDetailsCard {
+        type Builder = SetupAttemptPaymentMethodDetailsCardBuilder;
+    }
+
+    impl FromValueOpt for SetupAttemptPaymentMethodDetailsCard {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = SetupAttemptPaymentMethodDetailsCardBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "brand" => b.brand = Some(FromValueOpt::from_value(v)?),
+                    "checks" => b.checks = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "exp_month" => b.exp_month = Some(FromValueOpt::from_value(v)?),
+                    "exp_year" => b.exp_year = Some(FromValueOpt::from_value(v)?),
+                    "fingerprint" => b.fingerprint = Some(FromValueOpt::from_value(v)?),
+                    "funding" => b.funding = Some(FromValueOpt::from_value(v)?),
+                    "iin" => b.iin = Some(FromValueOpt::from_value(v)?),
+                    "issuer" => b.issuer = Some(FromValueOpt::from_value(v)?),
+                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
+                    "three_d_secure" => b.three_d_secure = Some(FromValueOpt::from_value(v)?),
+                    "wallet" => b.wallet = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};

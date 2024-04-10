@@ -46,12 +46,88 @@ impl<'a> DeleteCustomerBankAccount<'a> {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum DeleteCustomerBankAccountReturned {
     PaymentSource(stripe_shared::PaymentSource),
     DeletedPaymentSource(stripe_shared::DeletedPaymentSource),
 }
+
+#[derive(Default)]
+pub struct DeleteCustomerBankAccountReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<DeleteCustomerBankAccountReturned>,
+        builder: DeleteCustomerBankAccountReturnedBuilder,
+    }
+
+    impl Deserialize for DeleteCustomerBankAccountReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<DeleteCustomerBankAccountReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for DeleteCustomerBankAccountReturnedBuilder {
+        type Out = DeleteCustomerBankAccountReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                DeleteCustomerBankAccountReturned::DeletedPaymentSource(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                DeleteCustomerBankAccountReturned::PaymentSource(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for DeleteCustomerBankAccountReturned {
+        type Builder = DeleteCustomerBankAccountReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateAccountBankAccount<'a> {
     /// The name of the person or business that owns the bank account.
@@ -159,6 +235,16 @@ impl serde::Serialize for UpdateAccountBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountBankAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateAccountBankAccountAccountHolderType")
+        })
+    }
+}
 /// The bank account type.
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
@@ -211,6 +297,16 @@ impl serde::Serialize for UpdateAccountBankAccountAccountType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateAccountBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateAccountBankAccountAccountType")
+        })
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
@@ -356,6 +452,16 @@ impl serde::Serialize for UpdateCustomerBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateCustomerBankAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateCustomerBankAccountAccountHolderType")
+        })
+    }
+}
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCustomerBankAccountOwner<'a> {
     /// Owner's address.
@@ -418,16 +524,105 @@ impl<'a> UpdateCustomerBankAccount<'a> {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(tag = "object")]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
 pub enum UpdateCustomerBankAccountReturned {
-    #[serde(rename = "card")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "card"))]
     Card(stripe_shared::Card),
-    #[serde(rename = "bank_account")]
+    #[cfg_attr(
+        any(feature = "deserialize", feature = "serialize"),
+        serde(rename = "bank_account")
+    )]
     BankAccount(stripe_shared::BankAccount),
-    #[serde(rename = "source")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "source"))]
     Source(stripe_shared::Source),
 }
+
+#[derive(Default)]
+pub struct UpdateCustomerBankAccountReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::ObjectBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateCustomerBankAccountReturned>,
+        builder: UpdateCustomerBankAccountReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateCustomerBankAccountReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateCustomerBankAccountReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateCustomerBankAccountReturnedBuilder {
+        type Out = UpdateCustomerBankAccountReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (k, o) = self.inner.finish_inner()?;
+            UpdateCustomerBankAccountReturned::construct(&k, o)
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateCustomerBankAccountReturned {
+        type Builder = UpdateCustomerBankAccountReturnedBuilder;
+    }
+    impl UpdateCustomerBankAccountReturned {
+        fn construct(key: &str, o: miniserde::json::Object) -> Option<Self> {
+            Some(match key {
+                "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
+                "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
+                "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
+
+                _ => return None,
+            })
+        }
+    }
+
+    impl FromValueOpt for UpdateCustomerBankAccountReturned {
+        fn from_value(v: Value) -> Option<Self> {
+            let (typ, obj) = stripe_types::miniserde_helpers::extract_object_discr(v)?;
+            Self::construct(&typ, obj)
+        }
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct VerifyBankAccount<'a> {
     /// Two positive integers, in *cents*, equal to the values of the microdeposits sent to the bank account.

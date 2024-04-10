@@ -1,3 +1,4 @@
+#[allow(clippy::crate_in_macro_def)]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! def_id {
@@ -99,6 +100,7 @@ macro_rules! def_id {
             }
         }
 
+        #[cfg(feature = "deserialize")]
         impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -108,6 +110,27 @@ macro_rules! def_id {
                 Ok(Self::from(s))
             }
         }
+
+        impl stripe_types::FromCursor for $struct_name {
+            fn from_cursor(val: &str) -> Option<Self> {
+                use std::str::FromStr;
+                Self::from_str(val).ok()
+            }
+        }
+
+        impl miniserde::Deserialize for $struct_name {
+            fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+                crate::Place::new(out)
+            }
+        }
+
+        impl miniserde::de::Visitor for crate::Place<$struct_name> {
+            fn string(&mut self, s: &str) -> miniserde::Result<()> {
+                self.out = Some(s.parse::<$struct_name>().map_err(|_| miniserde::Error)?);
+                Ok(())
+            }
+        }
+        $crate::impl_from_val_with_from_str!($struct_name);
     };
 }
 
@@ -117,26 +140,19 @@ macro_rules! def_id {
 mod tests {
     use std::str::FromStr;
 
-    use serde::de::DeserializeOwned;
     use serde::Serialize;
 
     def_id!(TestId);
 
     fn assert_ser_de_roundtrip<T>(id: &str)
     where
-        T: DeserializeOwned + Serialize + FromStr + std::fmt::Display + std::fmt::Debug,
+        T: miniserde::Deserialize + Serialize + FromStr + std::fmt::Display + std::fmt::Debug,
         <T as FromStr>::Err: std::fmt::Debug,
     {
         let parsed_id = T::from_str(id).expect("Could not parse id");
-        let ser = serde_json::to_string(&parsed_id).expect("Could not serialize id");
-        let deser: T = serde_json::from_str(&ser).expect("Could not deserialize id");
+        let ser = serde_json::to_string(&parsed_id).expect("Could not serialize");
+        let deser: T = miniserde::json::from_str(&ser).expect("Could not deserialize id");
         assert_eq!(deser.to_string(), id.to_string());
-    }
-
-    fn assert_deser_err<T: DeserializeOwned + std::fmt::Debug>(id: &str) {
-        let json_str = format!(r#""{}""#, id);
-        let deser: Result<T, _> = serde_json::from_str(&json_str);
-        assert!(deser.is_err(), "Expected error, got {:?}", deser);
     }
 
     #[test]

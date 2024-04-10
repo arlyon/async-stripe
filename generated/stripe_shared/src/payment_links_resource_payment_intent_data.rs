@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
@@ -19,6 +21,134 @@ pub struct PaymentLinksResourcePaymentIntentData {
     /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     pub transfer_group: Option<String>,
 }
+#[doc(hidden)]
+pub struct PaymentLinksResourcePaymentIntentDataBuilder {
+    capture_method: Option<Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>>,
+    description: Option<Option<String>>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    setup_future_usage: Option<Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>>,
+    statement_descriptor: Option<Option<String>>,
+    statement_descriptor_suffix: Option<Option<String>>,
+    transfer_group: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentLinksResourcePaymentIntentData {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentLinksResourcePaymentIntentData>,
+        builder: PaymentLinksResourcePaymentIntentDataBuilder,
+    }
+
+    impl Visitor for Place<PaymentLinksResourcePaymentIntentData> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentLinksResourcePaymentIntentDataBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentLinksResourcePaymentIntentDataBuilder {
+        type Out = PaymentLinksResourcePaymentIntentData;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "description" => Deserialize::begin(&mut self.description),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
+                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "statement_descriptor_suffix" => {
+                    Deserialize::begin(&mut self.statement_descriptor_suffix)
+                }
+                "transfer_group" => Deserialize::begin(&mut self.transfer_group),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                capture_method: Deserialize::default(),
+                description: Deserialize::default(),
+                metadata: Deserialize::default(),
+                setup_future_usage: Deserialize::default(),
+                statement_descriptor: Deserialize::default(),
+                statement_descriptor_suffix: Deserialize::default(),
+                transfer_group: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                capture_method: self.capture_method?,
+                description: self.description.take()?,
+                metadata: self.metadata.take()?,
+                setup_future_usage: self.setup_future_usage?,
+                statement_descriptor: self.statement_descriptor.take()?,
+                statement_descriptor_suffix: self.statement_descriptor_suffix.take()?,
+                transfer_group: self.transfer_group.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentLinksResourcePaymentIntentData {
+        type Builder = PaymentLinksResourcePaymentIntentDataBuilder;
+    }
+
+    impl FromValueOpt for PaymentLinksResourcePaymentIntentData {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentLinksResourcePaymentIntentDataBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "capture_method" => b.capture_method = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "setup_future_usage" => {
+                        b.setup_future_usage = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "statement_descriptor" => {
+                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "statement_descriptor_suffix" => {
+                        b.statement_descriptor_suffix = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "transfer_group" => b.transfer_group = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Indicates when the funds will be captured from the customer's account.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
@@ -60,6 +190,7 @@ impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataCaptureMethod {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentLinksResourcePaymentIntentDataCaptureMethod {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -68,6 +199,25 @@ impl serde::Serialize for PaymentLinksResourcePaymentIntentDataCaptureMethod {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentLinksResourcePaymentIntentDataCaptureMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentLinksResourcePaymentIntentDataCaptureMethod);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -117,6 +267,7 @@ impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -125,6 +276,27 @@ impl serde::Serialize for PaymentLinksResourcePaymentIntentDataSetupFutureUsage 
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentLinksResourcePaymentIntentDataSetupFutureUsage);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

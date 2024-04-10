@@ -100,6 +100,16 @@ impl serde::Serialize for UpdateTaxSettingsDefaultsTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateTaxSettingsDefaultsTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateTaxSettingsDefaultsTaxBehavior")
+        })
+    }
+}
 /// The place where your business is located.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOffice<'a> {

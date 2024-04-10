@@ -93,6 +93,16 @@ impl serde::Serialize for ListTreasuryTransactionEntryOrderBy {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionEntryOrderBy {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListTreasuryTransactionEntryOrderBy")
+        })
+    }
+}
 impl<'a> ListTreasuryTransactionEntry<'a> {
     /// Retrieves a list of TransactionEntry objects.
     pub fn send(

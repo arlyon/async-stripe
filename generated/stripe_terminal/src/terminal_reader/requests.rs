@@ -87,12 +87,88 @@ impl<'a> RetrieveTerminalReader<'a> {
         client.get_query(&format!("/terminal/readers/{reader}"), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum RetrieveTerminalReaderReturned {
     TerminalReader(stripe_terminal::TerminalReader),
     DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
 }
+
+#[derive(Default)]
+pub struct RetrieveTerminalReaderReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveTerminalReaderReturned>,
+        builder: RetrieveTerminalReaderReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveTerminalReaderReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveTerminalReaderReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveTerminalReaderReturnedBuilder {
+        type Out = RetrieveTerminalReaderReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                RetrieveTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveTerminalReaderReturned {
+        type Builder = RetrieveTerminalReaderReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalReader<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -159,12 +235,88 @@ impl<'a> UpdateTerminalReader<'a> {
         client.send_form(&format!("/terminal/readers/{reader}"), self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum UpdateTerminalReaderReturned {
     TerminalReader(stripe_terminal::TerminalReader),
     DeletedTerminalReader(stripe_terminal::DeletedTerminalReader),
 }
+
+#[derive(Default)]
+pub struct UpdateTerminalReaderReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateTerminalReaderReturned>,
+        builder: UpdateTerminalReaderReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateTerminalReaderReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateTerminalReaderReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateTerminalReaderReturnedBuilder {
+        type Out = UpdateTerminalReaderReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                UpdateTerminalReaderReturned::DeletedTerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                UpdateTerminalReaderReturned::TerminalReader(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateTerminalReaderReturned {
+        type Builder = UpdateTerminalReaderReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CancelActionTerminalReader<'a> {
     /// Specifies which fields in the response should be expanded.
@@ -248,7 +400,7 @@ impl<'a> ProcessPaymentIntentTerminalReader<'a> {
         )
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ProcessSetupIntentTerminalReader<'a> {
     /// Customer Consent Collected
     pub customer_consent_collected: bool,
@@ -257,7 +409,8 @@ pub struct ProcessSetupIntentTerminalReader<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// Configuration overrides
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub process_config: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub process_config: Option<miniserde::json::Value>,
     /// SetupIntent ID
     pub setup_intent: &'a str,
 }
@@ -429,6 +582,16 @@ impl serde::Serialize for SetReaderDisplayTerminalReaderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for SetReaderDisplayTerminalReaderType")
+        })
+    }
+}
 impl<'a> SetReaderDisplayTerminalReader<'a> {
     /// Sets reader display to show cart details.
     pub fn send(
@@ -535,6 +698,16 @@ impl serde::Serialize for PresentPaymentMethodTerminalReaderType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PresentPaymentMethodTerminalReaderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PresentPaymentMethodTerminalReaderType")
+        })
     }
 }
 impl<'a> PresentPaymentMethodTerminalReader<'a> {

@@ -14,11 +14,21 @@ const CORE_FEATURES: &[&str] = &[
     "runtime-async-std-surf",
 ];
 
+fn get_serialization_feature(deps: &[Crate], kind: &str) -> String {
+    let mut features = vec![format!("stripe_types/{kind}")];
+    for dep in deps {
+        features.push(format!("{}/{kind}", dep.name()));
+    }
+    features.into_iter().map(|f| format!(r#""{f}""#)).collect::<Vec<_>>().join(",")
+}
+
 pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<String>) -> String {
     let mut crate_dep_section = String::new();
-    for dep in crate_deps {
-        let dep_path = format!("../../generated/{}", dep.name());
-        let _ = writeln!(crate_dep_section, r#"{} = {{path = "{}"}}"#, dep.name(), dep_path);
+
+    for dep in &crate_deps {
+        let dep_name = dep.name();
+        let dep_path = format!("../../generated/{dep_name}");
+        let _ = writeln!(crate_dep_section, r#"{dep_name} = {{path = "{dep_path}"}}"#);
     }
 
     // Dependencies only needed for libraries which implement Stripe requests
@@ -32,6 +42,9 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
             "#
         }
     };
+
+    let ser_features = get_serialization_feature(&crate_deps, "serialize");
+    let deser_features = get_serialization_feature(&crate_deps, "deserialize");
 
     let features =
         if krate == Crate::SHARED { "".into() } else { gen_feature_section(crate_features) };
@@ -55,14 +68,18 @@ pub fn gen_crate_toml(krate: Crate, crate_deps: Vec<Crate>, crate_features: Vec<
         
         [dependencies]
         serde.workspace = true
-        smol_str.workspace = true
         serde_json.workspace = true
+        smol_str.workspace = true
+        miniserde.workspace = true
         stripe_types = {{path = "../../stripe_types"}}
         
         {request_deps}
         
         {crate_dep_section}
-        
+
+        [features]
+        serialize = [{ser_features}]
+        deserialize = [{deser_features}]
         {features}
         "#
     }
@@ -99,7 +116,6 @@ fn gen_feature_section(mut crate_features: Vec<String>) -> String {
     docs_rs_features.push(']');
     formatdoc! {
         r#"
-        [features]
         {feature_section}
         
         [package.metadata.docs.rs]

@@ -1,10 +1,102 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug, Default)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryReceivedDebitsResourceReversalDetails {
     /// Time before which a ReceivedDebit can be reversed.
     pub deadline: Option<stripe_types::Timestamp>,
     /// Set if a ReceivedDebit can't be reversed.
     pub restricted_reason: Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>,
 }
+#[doc(hidden)]
+pub struct TreasuryReceivedDebitsResourceReversalDetailsBuilder {
+    deadline: Option<Option<stripe_types::Timestamp>>,
+    restricted_reason:
+        Option<Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TreasuryReceivedDebitsResourceReversalDetails {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TreasuryReceivedDebitsResourceReversalDetails>,
+        builder: TreasuryReceivedDebitsResourceReversalDetailsBuilder,
+    }
+
+    impl Visitor for Place<TreasuryReceivedDebitsResourceReversalDetails> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TreasuryReceivedDebitsResourceReversalDetailsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for TreasuryReceivedDebitsResourceReversalDetailsBuilder {
+        type Out = TreasuryReceivedDebitsResourceReversalDetails;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "deadline" => Deserialize::begin(&mut self.deadline),
+                "restricted_reason" => Deserialize::begin(&mut self.restricted_reason),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { deadline: Deserialize::default(), restricted_reason: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out { deadline: self.deadline?, restricted_reason: self.restricted_reason? })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TreasuryReceivedDebitsResourceReversalDetails {
+        type Builder = TreasuryReceivedDebitsResourceReversalDetailsBuilder;
+    }
+
+    impl FromValueOpt for TreasuryReceivedDebitsResourceReversalDetails {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TreasuryReceivedDebitsResourceReversalDetailsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "deadline" => b.deadline = Some(FromValueOpt::from_value(v)?),
+                    "restricted_reason" => b.restricted_reason = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Set if a ReceivedDebit can't be reversed.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
@@ -52,6 +144,7 @@ impl std::fmt::Debug for TreasuryReceivedDebitsResourceReversalDetailsRestricted
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -60,6 +153,29 @@ impl serde::Serialize for TreasuryReceivedDebitsResourceReversalDetailsRestricte
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason
+);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason
 {

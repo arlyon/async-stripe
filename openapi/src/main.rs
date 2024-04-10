@@ -54,7 +54,7 @@ fn main() -> Result<()> {
     }
     fs::create_dir_all(out_path).context("could not create out folder")?;
 
-    info!("generating code for {} to {}", in_path, out_path.display());
+    info!("generating code for {in_path} to {}", out_path.display());
 
     let spec = if let Some(version) = args.fetch {
         let raw = fetch_spec(version, &in_path)?;
@@ -92,6 +92,7 @@ fn main() -> Result<()> {
         fmt_cmd.arg(format!("out/{}/src/mod.rs", krate.generated_out_path()));
     }
     fmt_cmd.arg("out/stripe_webhook/mod.rs");
+    fmt_cmd.arg("out/tests/mod.rs");
 
     if !args.dry_run {
         info!("Formatting generated files");
@@ -103,6 +104,7 @@ fn main() -> Result<()> {
         info!("Copying generated files");
         run_rsync("out/crates/", "../generated/")?;
         run_rsync("out/stripe_webhook/", "../stripe_webhook/src/generated/")?;
+        run_rsync("out/tests/", "../tests/tests/it/generated/")?;
 
         std::process::Command::new("cp")
             .arg("out/crate_info.md")

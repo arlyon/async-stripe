@@ -4,7 +4,8 @@
 /// Related guides: [Customer tax identification numbers](https://stripe.com/docs/billing/taxes/tax-ids), [Account tax IDs](https://stripe.com/docs/invoicing/connect#account-tax-ids).
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_ids/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxId {
     /// Two-letter ISO code representing the country of the tax ID.
     pub country: Option<String>,
@@ -17,16 +18,161 @@ pub struct TaxId {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// The account or customer the tax ID belongs to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<stripe_shared::TaxIDsOwner>,
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
     /// Note that some legacy tax IDs have type `unknown`.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: TaxIdType,
     /// Value of the tax ID.
     pub value: String,
     /// Tax ID verification information.
     pub verification: Option<stripe_shared::TaxIdVerification>,
+}
+#[doc(hidden)]
+pub struct TaxIdBuilder {
+    country: Option<Option<String>>,
+    created: Option<stripe_types::Timestamp>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    id: Option<stripe_shared::TaxIdId>,
+    livemode: Option<bool>,
+    owner: Option<Option<stripe_shared::TaxIDsOwner>>,
+    type_: Option<TaxIdType>,
+    value: Option<String>,
+    verification: Option<Option<stripe_shared::TaxIdVerification>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TaxId {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TaxId>,
+        builder: TaxIdBuilder,
+    }
+
+    impl Visitor for Place<TaxId> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: TaxIdBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for TaxIdBuilder {
+        type Out = TaxId;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "country" => Deserialize::begin(&mut self.country),
+                "created" => Deserialize::begin(&mut self.created),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "owner" => Deserialize::begin(&mut self.owner),
+                "type" => Deserialize::begin(&mut self.type_),
+                "value" => Deserialize::begin(&mut self.value),
+                "verification" => Deserialize::begin(&mut self.verification),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                country: Deserialize::default(),
+                created: Deserialize::default(),
+                customer: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                owner: Deserialize::default(),
+                type_: Deserialize::default(),
+                value: Deserialize::default(),
+                verification: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                country: self.country.take()?,
+                created: self.created?,
+                customer: self.customer.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                owner: self.owner.take()?,
+                type_: self.type_?,
+                value: self.value.take()?,
+                verification: self.verification.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TaxId {
+        type Builder = TaxIdBuilder;
+    }
+
+    impl FromValueOpt for TaxId {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TaxIdBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "owner" => b.owner = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+                    "verification" => b.verification = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TaxId {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("TaxId", 10)?;
+        s.serialize_field("country", &self.country)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("owner", &self.owner)?;
+        s.serialize_field("type", &self.type_)?;
+        s.serialize_field("value", &self.value)?;
+        s.serialize_field("verification", &self.verification)?;
+
+        s.serialize_field("object", "tax_id")?;
+        s.end()
+    }
 }
 /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `ar_cuit`, `au_abn`, `au_arn`, `bg_uic`, `bo_tin`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sv_nit`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, `uy_ruc`, `ve_rif`, `vn_tin`, or `za_vat`.
 /// Note that some legacy tax IDs have type `unknown`.
@@ -262,6 +408,7 @@ impl std::fmt::Debug for TaxIdType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TaxIdType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -270,6 +417,22 @@ impl serde::Serialize for TaxIdType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TaxIdType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TaxIdType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TaxIdType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TaxIdType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

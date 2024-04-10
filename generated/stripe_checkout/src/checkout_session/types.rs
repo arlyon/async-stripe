@@ -14,7 +14,8 @@
 /// Related guide: [Checkout quickstart](https://stripe.com/docs/checkout/quickstart)
 ///
 /// For more details see <<https://stripe.com/docs/api/checkout/sessions/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSession {
     /// When set, provides configuration for actions to take if this Checkout Session expires.
     pub after_expiration: Option<stripe_checkout::PaymentPagesCheckoutSessionAfterExpiration>,
@@ -77,7 +78,6 @@ pub struct CheckoutSession {
     /// Details on the state of invoice creation for the Checkout Session.
     pub invoice_creation: Option<stripe_checkout::PaymentPagesCheckoutSessionInvoiceCreation>,
     /// The line items purchased by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -106,7 +106,6 @@ pub struct CheckoutSession {
     /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
     /// You can use this value to decide when to fulfill your customer's order.
     pub payment_status: CheckoutSessionPaymentStatus,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number_collection:
         Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
@@ -114,11 +113,9 @@ pub struct CheckoutSession {
     /// Applies to Checkout Sessions with `ui_mode: embedded`.
     /// By default, Stripe will always redirect to your return_url after a successful confirmation.
     /// If you set `redirect_on_completion: 'if_required'`, then we will only redirect if your user chooses a redirect-based payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_on_completion: Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>,
     /// Applies to Checkout Sessions with `ui_mode: embedded`.
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     pub setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
@@ -142,7 +139,6 @@ pub struct CheckoutSession {
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
     pub success_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_collection: Option<stripe_checkout::PaymentPagesCheckoutSessionTaxIdCollection>,
     /// Tax and discount details for the computed total amount.
     pub total_details: Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetails>,
@@ -154,6 +150,462 @@ pub struct CheckoutSession {
     /// Otherwise, it’ll use `checkout.stripe.com.`.
     /// This value is only present when the session is active.
     pub url: Option<String>,
+}
+#[doc(hidden)]
+pub struct CheckoutSessionBuilder {
+    after_expiration: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionAfterExpiration>>,
+    allow_promotion_codes: Option<Option<bool>>,
+    amount_subtotal: Option<Option<i64>>,
+    amount_total: Option<Option<i64>>,
+    automatic_tax: Option<stripe_checkout::PaymentPagesCheckoutSessionAutomaticTax>,
+    billing_address_collection:
+        Option<Option<stripe_checkout::CheckoutSessionBillingAddressCollection>>,
+    cancel_url: Option<Option<String>>,
+    client_reference_id: Option<Option<String>>,
+    client_secret: Option<Option<String>>,
+    consent: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionConsent>>,
+    consent_collection:
+        Option<Option<stripe_checkout::PaymentPagesCheckoutSessionConsentCollection>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<Option<stripe_types::Currency>>,
+    currency_conversion:
+        Option<Option<stripe_checkout::PaymentPagesCheckoutSessionCurrencyConversion>>,
+    custom_fields: Option<Vec<stripe_checkout::PaymentPagesCheckoutSessionCustomFields>>,
+    custom_text: Option<stripe_checkout::PaymentPagesCheckoutSessionCustomText>,
+    customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_creation: Option<Option<CheckoutSessionCustomerCreation>>,
+    customer_details: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionCustomerDetails>>,
+    customer_email: Option<Option<String>>,
+    expires_at: Option<stripe_types::Timestamp>,
+    id: Option<stripe_checkout::CheckoutSessionId>,
+    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    invoice_creation: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionInvoiceCreation>>,
+    line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
+    livemode: Option<bool>,
+    locale: Option<Option<stripe_checkout::CheckoutSessionLocale>>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    mode: Option<stripe_checkout::CheckoutSessionMode>,
+    payment_intent: Option<Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>>,
+    payment_link: Option<Option<stripe_types::Expandable<stripe_shared::PaymentLink>>>,
+    payment_method_collection: Option<Option<CheckoutSessionPaymentMethodCollection>>,
+    payment_method_configuration_details:
+        Option<Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>>,
+    payment_method_options: Option<Option<stripe_checkout::CheckoutSessionPaymentMethodOptions>>,
+    payment_method_types: Option<Vec<String>>,
+    payment_status: Option<CheckoutSessionPaymentStatus>,
+    phone_number_collection:
+        Option<Option<stripe_checkout::PaymentPagesCheckoutSessionPhoneNumberCollection>>,
+    recovered_from: Option<Option<String>>,
+    redirect_on_completion: Option<Option<stripe_checkout::CheckoutSessionRedirectOnCompletion>>,
+    return_url: Option<Option<String>>,
+    setup_intent: Option<Option<stripe_types::Expandable<stripe_shared::SetupIntent>>>,
+    shipping_address_collection:
+        Option<Option<stripe_checkout::PaymentPagesCheckoutSessionShippingAddressCollection>>,
+    shipping_cost: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionShippingCost>>,
+    shipping_details: Option<Option<stripe_shared::Shipping>>,
+    shipping_options: Option<Vec<stripe_checkout::PaymentPagesCheckoutSessionShippingOption>>,
+    status: Option<Option<stripe_checkout::CheckoutSessionStatus>>,
+    submit_type: Option<Option<stripe_checkout::CheckoutSessionSubmitType>>,
+    subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
+    success_url: Option<Option<String>>,
+    tax_id_collection: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionTaxIdCollection>>,
+    total_details: Option<Option<stripe_checkout::PaymentPagesCheckoutSessionTotalDetails>>,
+    ui_mode: Option<Option<stripe_checkout::CheckoutSessionUiMode>>,
+    url: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CheckoutSession {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CheckoutSession>,
+        builder: CheckoutSessionBuilder,
+    }
+
+    impl Visitor for Place<CheckoutSession> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: CheckoutSessionBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for CheckoutSessionBuilder {
+        type Out = CheckoutSession;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "after_expiration" => Deserialize::begin(&mut self.after_expiration),
+                "allow_promotion_codes" => Deserialize::begin(&mut self.allow_promotion_codes),
+                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
+                "amount_total" => Deserialize::begin(&mut self.amount_total),
+                "automatic_tax" => Deserialize::begin(&mut self.automatic_tax),
+                "billing_address_collection" => {
+                    Deserialize::begin(&mut self.billing_address_collection)
+                }
+                "cancel_url" => Deserialize::begin(&mut self.cancel_url),
+                "client_reference_id" => Deserialize::begin(&mut self.client_reference_id),
+                "client_secret" => Deserialize::begin(&mut self.client_secret),
+                "consent" => Deserialize::begin(&mut self.consent),
+                "consent_collection" => Deserialize::begin(&mut self.consent_collection),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "currency_conversion" => Deserialize::begin(&mut self.currency_conversion),
+                "custom_fields" => Deserialize::begin(&mut self.custom_fields),
+                "custom_text" => Deserialize::begin(&mut self.custom_text),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "customer_creation" => Deserialize::begin(&mut self.customer_creation),
+                "customer_details" => Deserialize::begin(&mut self.customer_details),
+                "customer_email" => Deserialize::begin(&mut self.customer_email),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice" => Deserialize::begin(&mut self.invoice),
+                "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
+                "line_items" => Deserialize::begin(&mut self.line_items),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "locale" => Deserialize::begin(&mut self.locale),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "mode" => Deserialize::begin(&mut self.mode),
+                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_link" => Deserialize::begin(&mut self.payment_link),
+                "payment_method_collection" => {
+                    Deserialize::begin(&mut self.payment_method_collection)
+                }
+                "payment_method_configuration_details" => {
+                    Deserialize::begin(&mut self.payment_method_configuration_details)
+                }
+                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
+                "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
+                "payment_status" => Deserialize::begin(&mut self.payment_status),
+                "phone_number_collection" => Deserialize::begin(&mut self.phone_number_collection),
+                "recovered_from" => Deserialize::begin(&mut self.recovered_from),
+                "redirect_on_completion" => Deserialize::begin(&mut self.redirect_on_completion),
+                "return_url" => Deserialize::begin(&mut self.return_url),
+                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
+                "shipping_address_collection" => {
+                    Deserialize::begin(&mut self.shipping_address_collection)
+                }
+                "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
+                "shipping_details" => Deserialize::begin(&mut self.shipping_details),
+                "shipping_options" => Deserialize::begin(&mut self.shipping_options),
+                "status" => Deserialize::begin(&mut self.status),
+                "submit_type" => Deserialize::begin(&mut self.submit_type),
+                "subscription" => Deserialize::begin(&mut self.subscription),
+                "success_url" => Deserialize::begin(&mut self.success_url),
+                "tax_id_collection" => Deserialize::begin(&mut self.tax_id_collection),
+                "total_details" => Deserialize::begin(&mut self.total_details),
+                "ui_mode" => Deserialize::begin(&mut self.ui_mode),
+                "url" => Deserialize::begin(&mut self.url),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                after_expiration: Deserialize::default(),
+                allow_promotion_codes: Deserialize::default(),
+                amount_subtotal: Deserialize::default(),
+                amount_total: Deserialize::default(),
+                automatic_tax: Deserialize::default(),
+                billing_address_collection: Deserialize::default(),
+                cancel_url: Deserialize::default(),
+                client_reference_id: Deserialize::default(),
+                client_secret: Deserialize::default(),
+                consent: Deserialize::default(),
+                consent_collection: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                currency_conversion: Deserialize::default(),
+                custom_fields: Deserialize::default(),
+                custom_text: Deserialize::default(),
+                customer: Deserialize::default(),
+                customer_creation: Deserialize::default(),
+                customer_details: Deserialize::default(),
+                customer_email: Deserialize::default(),
+                expires_at: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice: Deserialize::default(),
+                invoice_creation: Deserialize::default(),
+                line_items: Deserialize::default(),
+                livemode: Deserialize::default(),
+                locale: Deserialize::default(),
+                metadata: Deserialize::default(),
+                mode: Deserialize::default(),
+                payment_intent: Deserialize::default(),
+                payment_link: Deserialize::default(),
+                payment_method_collection: Deserialize::default(),
+                payment_method_configuration_details: Deserialize::default(),
+                payment_method_options: Deserialize::default(),
+                payment_method_types: Deserialize::default(),
+                payment_status: Deserialize::default(),
+                phone_number_collection: Deserialize::default(),
+                recovered_from: Deserialize::default(),
+                redirect_on_completion: Deserialize::default(),
+                return_url: Deserialize::default(),
+                setup_intent: Deserialize::default(),
+                shipping_address_collection: Deserialize::default(),
+                shipping_cost: Deserialize::default(),
+                shipping_details: Deserialize::default(),
+                shipping_options: Deserialize::default(),
+                status: Deserialize::default(),
+                submit_type: Deserialize::default(),
+                subscription: Deserialize::default(),
+                success_url: Deserialize::default(),
+                tax_id_collection: Deserialize::default(),
+                total_details: Deserialize::default(),
+                ui_mode: Deserialize::default(),
+                url: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                after_expiration: self.after_expiration.take()?,
+                allow_promotion_codes: self.allow_promotion_codes?,
+                amount_subtotal: self.amount_subtotal?,
+                amount_total: self.amount_total?,
+                automatic_tax: self.automatic_tax.take()?,
+                billing_address_collection: self.billing_address_collection?,
+                cancel_url: self.cancel_url.take()?,
+                client_reference_id: self.client_reference_id.take()?,
+                client_secret: self.client_secret.take()?,
+                consent: self.consent?,
+                consent_collection: self.consent_collection?,
+                created: self.created?,
+                currency: self.currency?,
+                currency_conversion: self.currency_conversion.take()?,
+                custom_fields: self.custom_fields.take()?,
+                custom_text: self.custom_text.take()?,
+                customer: self.customer.take()?,
+                customer_creation: self.customer_creation?,
+                customer_details: self.customer_details.take()?,
+                customer_email: self.customer_email.take()?,
+                expires_at: self.expires_at?,
+                id: self.id.take()?,
+                invoice: self.invoice.take()?,
+                invoice_creation: self.invoice_creation.take()?,
+                line_items: self.line_items.take()?,
+                livemode: self.livemode?,
+                locale: self.locale?,
+                metadata: self.metadata.take()?,
+                mode: self.mode?,
+                payment_intent: self.payment_intent.take()?,
+                payment_link: self.payment_link.take()?,
+                payment_method_collection: self.payment_method_collection?,
+                payment_method_configuration_details: self
+                    .payment_method_configuration_details
+                    .take()?,
+                payment_method_options: self.payment_method_options.take()?,
+                payment_method_types: self.payment_method_types.take()?,
+                payment_status: self.payment_status?,
+                phone_number_collection: self.phone_number_collection?,
+                recovered_from: self.recovered_from.take()?,
+                redirect_on_completion: self.redirect_on_completion?,
+                return_url: self.return_url.take()?,
+                setup_intent: self.setup_intent.take()?,
+                shipping_address_collection: self.shipping_address_collection.take()?,
+                shipping_cost: self.shipping_cost.take()?,
+                shipping_details: self.shipping_details.take()?,
+                shipping_options: self.shipping_options.take()?,
+                status: self.status?,
+                submit_type: self.submit_type?,
+                subscription: self.subscription.take()?,
+                success_url: self.success_url.take()?,
+                tax_id_collection: self.tax_id_collection?,
+                total_details: self.total_details.take()?,
+                ui_mode: self.ui_mode?,
+                url: self.url.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CheckoutSession {
+        type Builder = CheckoutSessionBuilder;
+    }
+
+    impl FromValueOpt for CheckoutSession {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CheckoutSessionBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "after_expiration" => b.after_expiration = Some(FromValueOpt::from_value(v)?),
+                    "allow_promotion_codes" => {
+                        b.allow_promotion_codes = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
+                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
+                    "automatic_tax" => b.automatic_tax = Some(FromValueOpt::from_value(v)?),
+                    "billing_address_collection" => {
+                        b.billing_address_collection = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "cancel_url" => b.cancel_url = Some(FromValueOpt::from_value(v)?),
+                    "client_reference_id" => {
+                        b.client_reference_id = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
+                    "consent" => b.consent = Some(FromValueOpt::from_value(v)?),
+                    "consent_collection" => {
+                        b.consent_collection = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "currency_conversion" => {
+                        b.currency_conversion = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "custom_fields" => b.custom_fields = Some(FromValueOpt::from_value(v)?),
+                    "custom_text" => b.custom_text = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "customer_creation" => b.customer_creation = Some(FromValueOpt::from_value(v)?),
+                    "customer_details" => b.customer_details = Some(FromValueOpt::from_value(v)?),
+                    "customer_email" => b.customer_email = Some(FromValueOpt::from_value(v)?),
+                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
+                    "invoice_creation" => b.invoice_creation = Some(FromValueOpt::from_value(v)?),
+                    "line_items" => b.line_items = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "locale" => b.locale = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "mode" => b.mode = Some(FromValueOpt::from_value(v)?),
+                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "payment_link" => b.payment_link = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_collection" => {
+                        b.payment_method_collection = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "payment_method_configuration_details" => {
+                        b.payment_method_configuration_details = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "payment_method_options" => {
+                        b.payment_method_options = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "payment_method_types" => {
+                        b.payment_method_types = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "payment_status" => b.payment_status = Some(FromValueOpt::from_value(v)?),
+                    "phone_number_collection" => {
+                        b.phone_number_collection = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "recovered_from" => b.recovered_from = Some(FromValueOpt::from_value(v)?),
+                    "redirect_on_completion" => {
+                        b.redirect_on_completion = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "return_url" => b.return_url = Some(FromValueOpt::from_value(v)?),
+                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
+                    "shipping_address_collection" => {
+                        b.shipping_address_collection = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "shipping_cost" => b.shipping_cost = Some(FromValueOpt::from_value(v)?),
+                    "shipping_details" => b.shipping_details = Some(FromValueOpt::from_value(v)?),
+                    "shipping_options" => b.shipping_options = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "submit_type" => b.submit_type = Some(FromValueOpt::from_value(v)?),
+                    "subscription" => b.subscription = Some(FromValueOpt::from_value(v)?),
+                    "success_url" => b.success_url = Some(FromValueOpt::from_value(v)?),
+                    "tax_id_collection" => b.tax_id_collection = Some(FromValueOpt::from_value(v)?),
+                    "total_details" => b.total_details = Some(FromValueOpt::from_value(v)?),
+                    "ui_mode" => b.ui_mode = Some(FromValueOpt::from_value(v)?),
+                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CheckoutSession {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("CheckoutSession", 54)?;
+        s.serialize_field("after_expiration", &self.after_expiration)?;
+        s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
+        s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
+        s.serialize_field("amount_total", &self.amount_total)?;
+        s.serialize_field("automatic_tax", &self.automatic_tax)?;
+        s.serialize_field("billing_address_collection", &self.billing_address_collection)?;
+        s.serialize_field("cancel_url", &self.cancel_url)?;
+        s.serialize_field("client_reference_id", &self.client_reference_id)?;
+        s.serialize_field("client_secret", &self.client_secret)?;
+        s.serialize_field("consent", &self.consent)?;
+        s.serialize_field("consent_collection", &self.consent_collection)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("currency_conversion", &self.currency_conversion)?;
+        s.serialize_field("custom_fields", &self.custom_fields)?;
+        s.serialize_field("custom_text", &self.custom_text)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_creation", &self.customer_creation)?;
+        s.serialize_field("customer_details", &self.customer_details)?;
+        s.serialize_field("customer_email", &self.customer_email)?;
+        s.serialize_field("expires_at", &self.expires_at)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("invoice", &self.invoice)?;
+        s.serialize_field("invoice_creation", &self.invoice_creation)?;
+        s.serialize_field("line_items", &self.line_items)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("locale", &self.locale)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("mode", &self.mode)?;
+        s.serialize_field("payment_intent", &self.payment_intent)?;
+        s.serialize_field("payment_link", &self.payment_link)?;
+        s.serialize_field("payment_method_collection", &self.payment_method_collection)?;
+        s.serialize_field(
+            "payment_method_configuration_details",
+            &self.payment_method_configuration_details,
+        )?;
+        s.serialize_field("payment_method_options", &self.payment_method_options)?;
+        s.serialize_field("payment_method_types", &self.payment_method_types)?;
+        s.serialize_field("payment_status", &self.payment_status)?;
+        s.serialize_field("phone_number_collection", &self.phone_number_collection)?;
+        s.serialize_field("recovered_from", &self.recovered_from)?;
+        s.serialize_field("redirect_on_completion", &self.redirect_on_completion)?;
+        s.serialize_field("return_url", &self.return_url)?;
+        s.serialize_field("setup_intent", &self.setup_intent)?;
+        s.serialize_field("shipping_address_collection", &self.shipping_address_collection)?;
+        s.serialize_field("shipping_cost", &self.shipping_cost)?;
+        s.serialize_field("shipping_details", &self.shipping_details)?;
+        s.serialize_field("shipping_options", &self.shipping_options)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("submit_type", &self.submit_type)?;
+        s.serialize_field("subscription", &self.subscription)?;
+        s.serialize_field("success_url", &self.success_url)?;
+        s.serialize_field("tax_id_collection", &self.tax_id_collection)?;
+        s.serialize_field("total_details", &self.total_details)?;
+        s.serialize_field("ui_mode", &self.ui_mode)?;
+        s.serialize_field("url", &self.url)?;
+
+        s.serialize_field("object", "checkout.session")?;
+        s.end()
+    }
 }
 /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -193,6 +645,7 @@ impl std::fmt::Debug for CheckoutSessionCustomerCreation {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for CheckoutSessionCustomerCreation {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -201,6 +654,23 @@ impl serde::Serialize for CheckoutSessionCustomerCreation {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionCustomerCreation {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(CheckoutSessionCustomerCreation::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionCustomerCreation);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -248,6 +718,7 @@ impl std::fmt::Debug for CheckoutSessionPaymentMethodCollection {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for CheckoutSessionPaymentMethodCollection {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -256,6 +727,24 @@ impl serde::Serialize for CheckoutSessionPaymentMethodCollection {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionPaymentMethodCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            CheckoutSessionPaymentMethodCollection::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentMethodCollection);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -307,6 +796,7 @@ impl std::fmt::Debug for CheckoutSessionPaymentStatus {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for CheckoutSessionPaymentStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -315,6 +805,22 @@ impl serde::Serialize for CheckoutSessionPaymentStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionPaymentStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionPaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionPaymentStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -375,6 +881,24 @@ impl serde::Serialize for CheckoutSessionBillingAddressCollection {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionBillingAddressCollection {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollection> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            CheckoutSessionBillingAddressCollection::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionBillingAddressCollection);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -550,11 +1074,28 @@ impl serde::Serialize for CheckoutSessionLocale {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionLocale {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(CheckoutSessionLocale::from_str(s).unwrap_or(CheckoutSessionLocale::Unknown));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionLocale);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(CheckoutSessionLocale::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -605,6 +1146,22 @@ impl serde::Serialize for CheckoutSessionMode {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionMode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionMode);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -661,6 +1218,23 @@ impl serde::Serialize for CheckoutSessionRedirectOnCompletion {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionRedirectOnCompletion {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(CheckoutSessionRedirectOnCompletion::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionRedirectOnCompletion);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionRedirectOnCompletion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -718,6 +1292,22 @@ impl serde::Serialize for CheckoutSessionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -777,6 +1367,22 @@ impl serde::Serialize for CheckoutSessionSubmitType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionSubmitType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionSubmitType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionSubmitType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -830,6 +1436,22 @@ impl serde::Serialize for CheckoutSessionUiMode {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CheckoutSessionUiMode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CheckoutSessionUiMode::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CheckoutSessionUiMode);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CheckoutSessionUiMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

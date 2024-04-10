@@ -218,6 +218,16 @@ impl serde::Serialize for ReturnOutboundTransferTreasuryOutboundTransferReturned
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode"))
+    }
+}
 impl<'a> ReturnOutboundTransferTreasuryOutboundTransfer<'a> {
     /// Transitions a test mode created OutboundTransfer to the `returned` status.
     /// The OutboundTransfer must already be in the `processing` state.
@@ -360,6 +370,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork"))
     }
 }
 impl<'a> CreateTreasuryOutboundTransfer<'a> {

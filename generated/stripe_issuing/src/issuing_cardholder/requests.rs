@@ -1193,6 +1193,14 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsAllowedCategori
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsAllowedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
@@ -2214,6 +2222,14 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsBlockedCategori
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsBlockedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -3258,6 +3274,16 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsC
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingCardholderSpendingControlsSpendingLimitsCategories
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Interval (or event) to which the amount applies.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
@@ -3316,6 +3342,20 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsI
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval",
+            )
+        })
+    }
+}
 /// Specifies whether to permit authorizations on this cardholder's cards. Defaults to `active`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingCardholderStatus {
@@ -3360,6 +3400,16 @@ impl serde::Serialize for CreateIssuingCardholderStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingCardholderStatus")
+        })
     }
 }
 impl<'a> CreateIssuingCardholder<'a> {
@@ -4466,6 +4516,14 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsAllowedCategori
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsAllowedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
@@ -5487,6 +5545,14 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsBlockedCategori
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsBlockedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -6531,6 +6597,16 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsC
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Interval (or event) to which the amount applies.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
@@ -6589,6 +6665,20 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsI
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval",
+            )
+        })
+    }
+}
 /// Specifies whether to permit authorizations on this cardholder's cards.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateIssuingCardholderStatus {
@@ -6633,6 +6723,16 @@ impl serde::Serialize for UpdateIssuingCardholderStatus {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateIssuingCardholderStatus")
+        })
     }
 }
 impl<'a> UpdateIssuingCardholder<'a> {

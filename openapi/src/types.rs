@@ -64,6 +64,10 @@ impl ComponentPath {
     pub fn as_not_deleted(&self) -> Self {
         Self::new(self.0.trim_start_matches("deleted_").to_string())
     }
+
+    pub fn is_deleted_obj(&self) -> bool {
+        self.0.starts_with("deleted_")
+    }
 }
 
 // This is a bit silly...just done because `petgraph` prints graph labels using `Debug` so this

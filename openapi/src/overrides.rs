@@ -2,7 +2,7 @@ use anyhow::Context;
 use indexmap::IndexMap;
 
 use crate::components::{Components, RequestSource};
-use crate::rust_object::{ObjectKind, ObjectMetadata, RustObject};
+use crate::rust_object::{ObjectMetadata, ObjectUsage, RustObject};
 use crate::rust_type::{PathToType, RustType};
 use crate::stripe_object::OperationType;
 use crate::types::RustIdent;
@@ -60,19 +60,18 @@ fn get_override_object(
         .context("Could not extract field")?
         .extract_object()
         .context("Not an object")?;
-    let metadata = ObjectMetadata::new(RustIdent::unchanged(data.ident), ObjectKind::Type)
-        .doc(data.doc.to_string());
+    let metadata = ObjectMetadata::new(RustIdent::unchanged(data.ident)).doc(data.doc.to_string());
 
     Ok((obj.clone(), OverrideMetadata { metadata, mod_path: data.mod_path.to_string() }))
 }
 
 impl VisitMut for Overrides {
-    fn visit_typ_mut(&mut self, typ: &mut RustType) {
+    fn visit_typ_mut(&mut self, typ: &mut RustType, usage: ObjectUsage) {
         if let Some((obj, _)) = typ.as_object_mut() {
             if let Some(meta) = self.overrides.get(obj) {
                 *typ = RustType::path(PathToType::Shared(meta.metadata.ident.clone()), false);
             }
         }
-        typ.visit_mut(self);
+        typ.visit_mut(self, usage);
     }
 }

@@ -169,6 +169,20 @@ impl serde::Serialize for CreateTreasuryReceivedDebitInitiatingPaymentMethodDeta
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType",
+            )
+        })
+    }
+}
 /// Optional fields for `us_bank_account`.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount<'a> {
@@ -228,6 +242,16 @@ impl serde::Serialize for CreateTreasuryReceivedDebitNetwork {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTreasuryReceivedDebitNetwork")
+        })
     }
 }
 impl<'a> CreateTreasuryReceivedDebit<'a> {

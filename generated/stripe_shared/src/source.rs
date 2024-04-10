@@ -10,31 +10,23 @@
 /// Related guides: [Sources API](https://stripe.com/docs/sources) and [Sources & Customers](https://stripe.com/docs/sources/customers).
 ///
 /// For more details see <<https://stripe.com/docs/api/sources/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Source {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ach_credit_transfer: Option<stripe_shared::SourceTypeAchCreditTransfer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ach_debit: Option<stripe_shared::SourceTypeAchDebit>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<stripe_shared::SourceTypeAcssDebit>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<stripe_shared::SourceTypeAlipay>,
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount associated with the source.
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
     pub amount: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<stripe_shared::SourceTypeAuBecsDebit>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<stripe_shared::SourceTypeBancontact>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<stripe_shared::SourceTypeCard>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<stripe_shared::SourceTypeCardPresent>,
     /// The client secret of the source. Used for client-side retrieval using a publishable key.
     pub client_secret: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub code_verification: Option<stripe_shared::SourceCodeVerificationFlow>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -44,43 +36,30 @@ pub struct Source {
     pub currency: Option<stripe_types::Currency>,
     /// The ID of the customer to which this source is attached.
     /// This will not be present when the source has not been attached to a customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<stripe_shared::SourceTypeEps>,
     /// The authentication `flow` of the source.
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
     pub flow: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<stripe_shared::SourceTypeGiropay>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SourceId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<stripe_shared::SourceTypeIdeal>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<stripe_shared::SourceTypeKlarna>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<stripe_shared::SourceTypeMultibanco>,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     pub owner: Option<stripe_shared::SourceOwner>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<stripe_shared::SourceTypeP24>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub receiver: Option<stripe_shared::SourceReceiverFlow>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<stripe_shared::SourceRedirectFlow>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_credit_transfer: Option<stripe_shared::SourceTypeSepaCreditTransfer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<stripe_shared::SourceTypeSepaDebit>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<stripe_shared::SourceTypeSofort>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_order: Option<stripe_shared::SourceOrder>,
     /// Extra information about a source.
     /// This will appear on your customer's statement every time you charge the source.
@@ -88,21 +67,339 @@ pub struct Source {
     /// The status of the source, one of `canceled`, `chargeable`, `consumed`, `failed`, or `pending`.
     /// Only `chargeable` sources can be used to create a charge.
     pub status: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<stripe_shared::SourceTypeThreeDSecure>,
     /// The `type` of the source.
     /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
     /// An additional hash is included on the source with a name matching this value.
     /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: SourceType,
     /// Either `reusable` or `single_use`.
     /// Whether this source should be reusable or not.
     /// Some source types may or may not be reusable by construction, while others may leave the option at creation.
     /// If an incompatible value is passed, an error will be returned.
     pub usage: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<stripe_shared::SourceTypeWechat>,
+}
+#[doc(hidden)]
+pub struct SourceBuilder {
+    ach_credit_transfer: Option<Option<stripe_shared::SourceTypeAchCreditTransfer>>,
+    ach_debit: Option<Option<stripe_shared::SourceTypeAchDebit>>,
+    acss_debit: Option<Option<stripe_shared::SourceTypeAcssDebit>>,
+    alipay: Option<Option<stripe_shared::SourceTypeAlipay>>,
+    amount: Option<Option<i64>>,
+    au_becs_debit: Option<Option<stripe_shared::SourceTypeAuBecsDebit>>,
+    bancontact: Option<Option<stripe_shared::SourceTypeBancontact>>,
+    card: Option<Option<stripe_shared::SourceTypeCard>>,
+    card_present: Option<Option<stripe_shared::SourceTypeCardPresent>>,
+    client_secret: Option<String>,
+    code_verification: Option<Option<stripe_shared::SourceCodeVerificationFlow>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<Option<stripe_types::Currency>>,
+    customer: Option<Option<String>>,
+    eps: Option<Option<stripe_shared::SourceTypeEps>>,
+    flow: Option<String>,
+    giropay: Option<Option<stripe_shared::SourceTypeGiropay>>,
+    id: Option<stripe_shared::SourceId>,
+    ideal: Option<Option<stripe_shared::SourceTypeIdeal>>,
+    klarna: Option<Option<stripe_shared::SourceTypeKlarna>>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    multibanco: Option<Option<stripe_shared::SourceTypeMultibanco>>,
+    owner: Option<Option<stripe_shared::SourceOwner>>,
+    p24: Option<Option<stripe_shared::SourceTypeP24>>,
+    receiver: Option<Option<stripe_shared::SourceReceiverFlow>>,
+    redirect: Option<Option<stripe_shared::SourceRedirectFlow>>,
+    sepa_credit_transfer: Option<Option<stripe_shared::SourceTypeSepaCreditTransfer>>,
+    sepa_debit: Option<Option<stripe_shared::SourceTypeSepaDebit>>,
+    sofort: Option<Option<stripe_shared::SourceTypeSofort>>,
+    source_order: Option<Option<stripe_shared::SourceOrder>>,
+    statement_descriptor: Option<Option<String>>,
+    status: Option<String>,
+    three_d_secure: Option<Option<stripe_shared::SourceTypeThreeDSecure>>,
+    type_: Option<SourceType>,
+    usage: Option<Option<String>>,
+    wechat: Option<Option<stripe_shared::SourceTypeWechat>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Source {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Source>,
+        builder: SourceBuilder,
+    }
+
+    impl Visitor for Place<Source> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: SourceBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for SourceBuilder {
+        type Out = Source;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "ach_credit_transfer" => Deserialize::begin(&mut self.ach_credit_transfer),
+                "ach_debit" => Deserialize::begin(&mut self.ach_debit),
+                "acss_debit" => Deserialize::begin(&mut self.acss_debit),
+                "alipay" => Deserialize::begin(&mut self.alipay),
+                "amount" => Deserialize::begin(&mut self.amount),
+                "au_becs_debit" => Deserialize::begin(&mut self.au_becs_debit),
+                "bancontact" => Deserialize::begin(&mut self.bancontact),
+                "card" => Deserialize::begin(&mut self.card),
+                "card_present" => Deserialize::begin(&mut self.card_present),
+                "client_secret" => Deserialize::begin(&mut self.client_secret),
+                "code_verification" => Deserialize::begin(&mut self.code_verification),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "eps" => Deserialize::begin(&mut self.eps),
+                "flow" => Deserialize::begin(&mut self.flow),
+                "giropay" => Deserialize::begin(&mut self.giropay),
+                "id" => Deserialize::begin(&mut self.id),
+                "ideal" => Deserialize::begin(&mut self.ideal),
+                "klarna" => Deserialize::begin(&mut self.klarna),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "multibanco" => Deserialize::begin(&mut self.multibanco),
+                "owner" => Deserialize::begin(&mut self.owner),
+                "p24" => Deserialize::begin(&mut self.p24),
+                "receiver" => Deserialize::begin(&mut self.receiver),
+                "redirect" => Deserialize::begin(&mut self.redirect),
+                "sepa_credit_transfer" => Deserialize::begin(&mut self.sepa_credit_transfer),
+                "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "sofort" => Deserialize::begin(&mut self.sofort),
+                "source_order" => Deserialize::begin(&mut self.source_order),
+                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "status" => Deserialize::begin(&mut self.status),
+                "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
+                "type" => Deserialize::begin(&mut self.type_),
+                "usage" => Deserialize::begin(&mut self.usage),
+                "wechat" => Deserialize::begin(&mut self.wechat),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                ach_credit_transfer: Deserialize::default(),
+                ach_debit: Deserialize::default(),
+                acss_debit: Deserialize::default(),
+                alipay: Deserialize::default(),
+                amount: Deserialize::default(),
+                au_becs_debit: Deserialize::default(),
+                bancontact: Deserialize::default(),
+                card: Deserialize::default(),
+                card_present: Deserialize::default(),
+                client_secret: Deserialize::default(),
+                code_verification: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                customer: Deserialize::default(),
+                eps: Deserialize::default(),
+                flow: Deserialize::default(),
+                giropay: Deserialize::default(),
+                id: Deserialize::default(),
+                ideal: Deserialize::default(),
+                klarna: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                multibanco: Deserialize::default(),
+                owner: Deserialize::default(),
+                p24: Deserialize::default(),
+                receiver: Deserialize::default(),
+                redirect: Deserialize::default(),
+                sepa_credit_transfer: Deserialize::default(),
+                sepa_debit: Deserialize::default(),
+                sofort: Deserialize::default(),
+                source_order: Deserialize::default(),
+                statement_descriptor: Deserialize::default(),
+                status: Deserialize::default(),
+                three_d_secure: Deserialize::default(),
+                type_: Deserialize::default(),
+                usage: Deserialize::default(),
+                wechat: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                ach_credit_transfer: self.ach_credit_transfer.take()?,
+                ach_debit: self.ach_debit.take()?,
+                acss_debit: self.acss_debit.take()?,
+                alipay: self.alipay.take()?,
+                amount: self.amount?,
+                au_becs_debit: self.au_becs_debit.take()?,
+                bancontact: self.bancontact.take()?,
+                card: self.card.take()?,
+                card_present: self.card_present.take()?,
+                client_secret: self.client_secret.take()?,
+                code_verification: self.code_verification.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                customer: self.customer.take()?,
+                eps: self.eps.take()?,
+                flow: self.flow.take()?,
+                giropay: self.giropay.take()?,
+                id: self.id.take()?,
+                ideal: self.ideal.take()?,
+                klarna: self.klarna.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                multibanco: self.multibanco.take()?,
+                owner: self.owner.take()?,
+                p24: self.p24.take()?,
+                receiver: self.receiver.take()?,
+                redirect: self.redirect.take()?,
+                sepa_credit_transfer: self.sepa_credit_transfer.take()?,
+                sepa_debit: self.sepa_debit.take()?,
+                sofort: self.sofort.take()?,
+                source_order: self.source_order.take()?,
+                statement_descriptor: self.statement_descriptor.take()?,
+                status: self.status.take()?,
+                three_d_secure: self.three_d_secure.take()?,
+                type_: self.type_?,
+                usage: self.usage.take()?,
+                wechat: self.wechat.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Source {
+        type Builder = SourceBuilder;
+    }
+
+    impl FromValueOpt for Source {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = SourceBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "ach_credit_transfer" => {
+                        b.ach_credit_transfer = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "ach_debit" => b.ach_debit = Some(FromValueOpt::from_value(v)?),
+                    "acss_debit" => b.acss_debit = Some(FromValueOpt::from_value(v)?),
+                    "alipay" => b.alipay = Some(FromValueOpt::from_value(v)?),
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "au_becs_debit" => b.au_becs_debit = Some(FromValueOpt::from_value(v)?),
+                    "bancontact" => b.bancontact = Some(FromValueOpt::from_value(v)?),
+                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
+                    "card_present" => b.card_present = Some(FromValueOpt::from_value(v)?),
+                    "client_secret" => b.client_secret = Some(FromValueOpt::from_value(v)?),
+                    "code_verification" => b.code_verification = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "eps" => b.eps = Some(FromValueOpt::from_value(v)?),
+                    "flow" => b.flow = Some(FromValueOpt::from_value(v)?),
+                    "giropay" => b.giropay = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "ideal" => b.ideal = Some(FromValueOpt::from_value(v)?),
+                    "klarna" => b.klarna = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "multibanco" => b.multibanco = Some(FromValueOpt::from_value(v)?),
+                    "owner" => b.owner = Some(FromValueOpt::from_value(v)?),
+                    "p24" => b.p24 = Some(FromValueOpt::from_value(v)?),
+                    "receiver" => b.receiver = Some(FromValueOpt::from_value(v)?),
+                    "redirect" => b.redirect = Some(FromValueOpt::from_value(v)?),
+                    "sepa_credit_transfer" => {
+                        b.sepa_credit_transfer = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "sepa_debit" => b.sepa_debit = Some(FromValueOpt::from_value(v)?),
+                    "sofort" => b.sofort = Some(FromValueOpt::from_value(v)?),
+                    "source_order" => b.source_order = Some(FromValueOpt::from_value(v)?),
+                    "statement_descriptor" => {
+                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "three_d_secure" => b.three_d_secure = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "usage" => b.usage = Some(FromValueOpt::from_value(v)?),
+                    "wechat" => b.wechat = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for Source {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("Source", 38)?;
+        s.serialize_field("ach_credit_transfer", &self.ach_credit_transfer)?;
+        s.serialize_field("ach_debit", &self.ach_debit)?;
+        s.serialize_field("acss_debit", &self.acss_debit)?;
+        s.serialize_field("alipay", &self.alipay)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("au_becs_debit", &self.au_becs_debit)?;
+        s.serialize_field("bancontact", &self.bancontact)?;
+        s.serialize_field("card", &self.card)?;
+        s.serialize_field("card_present", &self.card_present)?;
+        s.serialize_field("client_secret", &self.client_secret)?;
+        s.serialize_field("code_verification", &self.code_verification)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("eps", &self.eps)?;
+        s.serialize_field("flow", &self.flow)?;
+        s.serialize_field("giropay", &self.giropay)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("ideal", &self.ideal)?;
+        s.serialize_field("klarna", &self.klarna)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("multibanco", &self.multibanco)?;
+        s.serialize_field("owner", &self.owner)?;
+        s.serialize_field("p24", &self.p24)?;
+        s.serialize_field("receiver", &self.receiver)?;
+        s.serialize_field("redirect", &self.redirect)?;
+        s.serialize_field("sepa_credit_transfer", &self.sepa_credit_transfer)?;
+        s.serialize_field("sepa_debit", &self.sepa_debit)?;
+        s.serialize_field("sofort", &self.sofort)?;
+        s.serialize_field("source_order", &self.source_order)?;
+        s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("three_d_secure", &self.three_d_secure)?;
+        s.serialize_field("type", &self.type_)?;
+        s.serialize_field("usage", &self.usage)?;
+        s.serialize_field("wechat", &self.wechat)?;
+
+        s.serialize_field("object", "source")?;
+        s.end()
+    }
 }
 /// The `type` of the source.
 /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
@@ -200,6 +497,7 @@ impl std::fmt::Debug for SourceType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for SourceType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -208,11 +506,27 @@ impl serde::Serialize for SourceType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for SourceType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<SourceType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(SourceType::from_str(s).unwrap_or(SourceType::Unknown));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(SourceType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(SourceType::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 impl stripe_types::Object for Source {

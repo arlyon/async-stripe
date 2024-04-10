@@ -82,12 +82,88 @@ impl<'a> RetrieveTerminalConfiguration<'a> {
         client.get_query(&format!("/terminal/configurations/{configuration}"), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum RetrieveTerminalConfigurationReturned {
     TerminalConfiguration(stripe_terminal::TerminalConfiguration),
     DeletedTerminalConfiguration(stripe_terminal::DeletedTerminalConfiguration),
 }
+
+#[derive(Default)]
+pub struct RetrieveTerminalConfigurationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveTerminalConfigurationReturned>,
+        builder: RetrieveTerminalConfigurationReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveTerminalConfigurationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveTerminalConfigurationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveTerminalConfigurationReturnedBuilder {
+        type Out = RetrieveTerminalConfigurationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveTerminalConfigurationReturned::DeletedTerminalConfiguration(
+                    FromValueOpt::from_value(Value::Object(o))?,
+                )
+            } else {
+                RetrieveTerminalConfigurationReturned::TerminalConfiguration(
+                    FromValueOpt::from_value(Value::Object(o))?,
+                )
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveTerminalConfigurationReturned {
+        type Builder = RetrieveTerminalConfigurationReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTerminalConfiguration<'a> {
     /// An object containing device type specific settings for BBPOS WisePOS E readers
@@ -205,12 +281,88 @@ impl<'a> UpdateTerminalConfiguration<'a> {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum UpdateTerminalConfigurationReturned {
     TerminalConfiguration(stripe_terminal::TerminalConfiguration),
     DeletedTerminalConfiguration(stripe_terminal::DeletedTerminalConfiguration),
 }
+
+#[derive(Default)]
+pub struct UpdateTerminalConfigurationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateTerminalConfigurationReturned>,
+        builder: UpdateTerminalConfigurationReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateTerminalConfigurationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateTerminalConfigurationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateTerminalConfigurationReturnedBuilder {
+        type Out = UpdateTerminalConfigurationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                UpdateTerminalConfigurationReturned::DeletedTerminalConfiguration(
+                    FromValueOpt::from_value(Value::Object(o))?,
+                )
+            } else {
+                UpdateTerminalConfigurationReturned::TerminalConfiguration(
+                    FromValueOpt::from_value(Value::Object(o))?,
+                )
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateTerminalConfigurationReturned {
+        type Builder = UpdateTerminalConfigurationReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct Offline {
     /// Determines whether to allow transactions to be collected while reader is offline.

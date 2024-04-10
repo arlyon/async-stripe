@@ -78,6 +78,15 @@ impl serde::Serialize for ListTaxRegistrationStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListTaxRegistrationStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ListTaxRegistrationStatus"))
+    }
+}
 impl<'a> ListTaxRegistration<'a> {
     /// Returns a list of Tax `Registration` objects.
     pub fn send(
@@ -359,6 +368,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsAeType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAeType")
+        })
+    }
+}
 /// Options for the registration in AT.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAt {
@@ -433,6 +452,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsAtType {
@@ -483,6 +512,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAtType")
+        })
     }
 }
 /// Options for the registration in AU.
@@ -538,6 +577,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsAuType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAuType")
+        })
     }
 }
 /// Options for the registration in BE.
@@ -614,6 +663,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsBeType {
@@ -664,6 +723,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsBeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBeType")
+        })
     }
 }
 /// Options for the registration in BG.
@@ -740,6 +809,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsBgType {
@@ -790,6 +869,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsBgType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBgType")
+        })
     }
 }
 /// Options for the registration in CA.
@@ -867,6 +956,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCaType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCaType")
+        })
+    }
+}
 /// Options for the registration in CH.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCh {
@@ -920,6 +1019,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsChType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsChType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsChType")
+        })
     }
 }
 /// Options for the registration in CL.
@@ -977,6 +1086,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsClType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsClType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsClType")
+        })
+    }
+}
 /// Options for the registration in CO.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCo {
@@ -1030,6 +1149,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCoType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCoType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCoType")
+        })
     }
 }
 /// Options for the registration in CY.
@@ -1106,6 +1235,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsCyType {
@@ -1156,6 +1295,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCyType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCyType")
+        })
     }
 }
 /// Options for the registration in CZ.
@@ -1232,6 +1381,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsCzType {
@@ -1282,6 +1441,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsCzType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCzType")
+        })
     }
 }
 /// Options for the registration in DE.
@@ -1358,6 +1527,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsDeType {
@@ -1408,6 +1587,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsDeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDeType")
+        })
     }
 }
 /// Options for the registration in DK.
@@ -1484,6 +1673,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsDkType {
@@ -1534,6 +1733,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsDkType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDkType")
+        })
     }
 }
 /// Options for the registration in EE.
@@ -1610,6 +1819,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsEeType {
@@ -1660,6 +1879,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsEeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEeType")
+        })
     }
 }
 /// Options for the registration in ES.
@@ -1736,6 +1965,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsEsType {
@@ -1786,6 +2025,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsEsType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEsType")
+        })
     }
 }
 /// Options for the registration in FI.
@@ -1862,6 +2111,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsFiType {
@@ -1912,6 +2171,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsFiType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFiType")
+        })
     }
 }
 /// Options for the registration in FR.
@@ -1988,6 +2257,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsFrType {
@@ -2038,6 +2317,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFrType")
+        })
     }
 }
 /// Options for the registration in GB.
@@ -2093,6 +2382,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsGbType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGbType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGbType")
+        })
     }
 }
 /// Options for the registration in GR.
@@ -2169,6 +2468,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsGrType {
@@ -2219,6 +2528,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsGrType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGrType")
+        })
     }
 }
 /// Options for the registration in HR.
@@ -2295,6 +2614,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsHrType {
@@ -2345,6 +2674,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsHrType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHrType")
+        })
     }
 }
 /// Options for the registration in HU.
@@ -2421,6 +2760,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsHuType {
@@ -2471,6 +2820,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHuType")
+        })
     }
 }
 /// Options for the registration in ID.
@@ -2526,6 +2885,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsIdType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIdType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIdType")
+        })
     }
 }
 /// Options for the registration in IE.
@@ -2602,6 +2971,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsIeType {
@@ -2652,6 +3031,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIeType")
+        })
     }
 }
 /// Options for the registration in IS.
@@ -2707,6 +3096,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsIsType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIsType")
+        })
     }
 }
 /// Options for the registration in IT.
@@ -2783,6 +3182,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsItType {
@@ -2833,6 +3242,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsItType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsItType")
+        })
     }
 }
 /// Options for the registration in JP.
@@ -2890,6 +3309,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsJpType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsJpType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsJpType")
+        })
+    }
+}
 /// Options for the registration in KR.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKr {
@@ -2943,6 +3372,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsKrType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKrType")
+        })
     }
 }
 /// Options for the registration in LT.
@@ -3019,6 +3458,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLtType {
@@ -3069,6 +3518,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLtType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLtType")
+        })
     }
 }
 /// Options for the registration in LU.
@@ -3145,6 +3604,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLuType {
@@ -3195,6 +3664,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLuType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLuType")
+        })
     }
 }
 /// Options for the registration in LV.
@@ -3271,6 +3750,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsLvType {
@@ -3321,6 +3810,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsLvType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLvType")
+        })
     }
 }
 /// Options for the registration in MT.
@@ -3397,6 +3896,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsMtType {
@@ -3447,6 +3956,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMtType")
+        })
     }
 }
 /// Options for the registration in MX.
@@ -3504,6 +4023,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMxType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMxType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMxType")
+        })
+    }
+}
 /// Options for the registration in MY.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMy {
@@ -3557,6 +4086,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsMyType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMyType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMyType")
+        })
     }
 }
 /// Options for the registration in NL.
@@ -3633,6 +4172,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsNlType {
@@ -3683,6 +4232,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNlType")
+        })
     }
 }
 /// Options for the registration in NO.
@@ -3740,6 +4299,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNoType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNoType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNoType")
+        })
+    }
+}
 /// Options for the registration in NZ.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
@@ -3793,6 +4362,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsNzType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNzType")
+        })
     }
 }
 /// Options for the registration in PL.
@@ -3869,6 +4448,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsPlType {
@@ -3919,6 +4508,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsPlType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPlType")
+        })
     }
 }
 /// Options for the registration in PT.
@@ -3995,6 +4594,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsPtType {
@@ -4045,6 +4654,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsPtType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPtType")
+        })
     }
 }
 /// Options for the registration in RO.
@@ -4121,6 +4740,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsRoType {
@@ -4171,6 +4800,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRoType")
+        })
     }
 }
 /// Options for the registration in SA.
@@ -4226,6 +4865,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSaType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSaType")
+        })
     }
 }
 /// Options for the registration in SE.
@@ -4302,6 +4951,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSeType {
@@ -4352,6 +5011,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSeType")
+        })
     }
 }
 /// Options for the registration in SG.
@@ -4407,6 +5076,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSgType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSgType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSgType")
+        })
     }
 }
 /// Options for the registration in SI.
@@ -4483,6 +5162,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSiType {
@@ -4533,6 +5222,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSiType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSiType")
+        })
     }
 }
 /// Options for the registration in SK.
@@ -4609,6 +5308,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme"))
+    }
+}
 /// Type of registration to be created in an EU country.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTaxRegistrationCountryOptionsSkType {
@@ -4659,6 +5368,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSkType")
+        })
     }
 }
 /// Options for the registration in TH.
@@ -4716,6 +5435,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsThType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsThType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsThType")
+        })
+    }
+}
 /// Options for the registration in TR.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTr {
@@ -4769,6 +5498,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsTrType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTrType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTrType")
+        })
     }
 }
 /// Options for the registration in US.
@@ -4867,6 +5606,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsUsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUsType")
+        })
+    }
+}
 /// Options for the registration in VN.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsVn {
@@ -4922,6 +5671,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsVnType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsVnType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsVnType")
+        })
+    }
+}
 /// Options for the registration in ZA.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZa {
@@ -4975,6 +5734,16 @@ impl serde::Serialize for CreateTaxRegistrationCountryOptionsZaType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZaType")
+        })
     }
 }
 impl<'a> CreateTaxRegistration<'a> {

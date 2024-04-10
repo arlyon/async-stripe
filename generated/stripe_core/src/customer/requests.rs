@@ -107,12 +107,86 @@ impl<'a> RetrieveCustomer<'a> {
         client.get_query(&format!("/customers/{customer}"), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum RetrieveCustomerReturned {
     Customer(stripe_shared::Customer),
     DeletedCustomer(stripe_shared::DeletedCustomer),
 }
+
+#[derive(Default)]
+pub struct RetrieveCustomerReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveCustomerReturned>,
+        builder: RetrieveCustomerReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveCustomerReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveCustomerReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveCustomerReturnedBuilder {
+        type Out = RetrieveCustomerReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveCustomerReturned::DeletedCustomer(FromValueOpt::from_value(Value::Object(
+                    o,
+                ))?)
+            } else {
+                RetrieveCustomerReturned::Customer(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveCustomerReturned {
+        type Builder = RetrieveCustomerReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct BalanceTransactionsCustomer<'a> {
     /// A cursor for use in pagination.
@@ -331,6 +405,14 @@ impl serde::Serialize for ListPaymentMethodsCustomerType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 impl<'a> ListPaymentMethodsCustomer<'a> {
@@ -578,6 +660,18 @@ impl serde::Serialize for CreateCustomerCashBalanceSettingsReconciliationMode {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCustomerCashBalanceSettingsReconciliationMode",
+            )
+        })
+    }
+}
 /// Default invoice settings for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCustomerInvoiceSettings<'a> {
@@ -664,6 +758,20 @@ impl serde::Serialize for CreateCustomerInvoiceSettingsRenderingOptionsAmountTax
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
+            )
+        })
+    }
+}
 /// Tax details about the customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateCustomerTax<'a> {
@@ -727,6 +835,16 @@ impl serde::Serialize for CreateCustomerTaxValidateLocation {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateCustomerTaxValidateLocation")
+        })
     }
 }
 /// The customer's tax IDs.
@@ -985,6 +1103,14 @@ impl serde::Serialize for CreateCustomerTaxIdDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 impl<'a> CreateCustomer<'a> {
     /// Creates a new customer object.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::Customer> {
@@ -1152,6 +1278,18 @@ impl serde::Serialize for UpdateCustomerCashBalanceSettingsReconciliationMode {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateCustomerCashBalanceSettingsReconciliationMode",
+            )
+        })
+    }
+}
 /// Default invoice settings for this customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCustomerInvoiceSettings<'a> {
@@ -1238,6 +1376,20 @@ impl serde::Serialize for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTax
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
+            )
+        })
+    }
+}
 /// Tax details about the customer.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateCustomerTax<'a> {
@@ -1301,6 +1453,16 @@ impl serde::Serialize for UpdateCustomerTaxValidateLocation {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateCustomerTaxValidateLocation")
+        })
     }
 }
 impl<'a> UpdateCustomer<'a> {
@@ -1431,6 +1593,16 @@ impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferRequested
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes"))
+    }
+}
 /// The type of the `bank_transfer`
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerBankTransferType {
@@ -1486,6 +1658,18 @@ impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerBankTransferType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateFundingInstructionsCustomerBankTransferType",
+            )
+        })
+    }
+}
 /// The `funding_type` to get the instructions for.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateFundingInstructionsCustomerFundingType {
@@ -1527,6 +1711,18 @@ impl serde::Serialize for CreateFundingInstructionsCustomerFundingType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateFundingInstructionsCustomerFundingType",
+            )
+        })
     }
 }
 impl<'a> CreateFundingInstructionsCustomer<'a> {

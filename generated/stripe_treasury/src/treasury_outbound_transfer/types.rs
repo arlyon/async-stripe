@@ -4,7 +4,8 @@
 ///
 /// Simulate OutboundTransfer state changes with the `/v1/test_helpers/treasury/outbound_transfers` endpoints.
 /// These methods can only be called on test mode objects.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundTransfer {
     /// Amount (in cents) transferred.
     pub amount: i64,
@@ -45,6 +46,234 @@ pub struct TreasuryOutboundTransfer {
     pub status_transitions: stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions,
     /// The Transaction associated with this object.
     pub transaction: stripe_types::Expandable<stripe_treasury::TreasuryTransaction>,
+}
+#[doc(hidden)]
+pub struct TreasuryOutboundTransferBuilder {
+    amount: Option<i64>,
+    cancelable: Option<bool>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<Option<String>>,
+    destination_payment_method: Option<Option<String>>,
+    destination_payment_method_details:
+        Option<stripe_treasury::OutboundTransfersPaymentMethodDetails>,
+    expected_arrival_date: Option<stripe_types::Timestamp>,
+    financial_account: Option<String>,
+    hosted_regulatory_receipt_url: Option<Option<String>>,
+    id: Option<stripe_treasury::TreasuryOutboundTransferId>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    returned_details:
+        Option<Option<stripe_treasury::TreasuryOutboundTransfersResourceReturnedDetails>>,
+    statement_descriptor: Option<String>,
+    status: Option<stripe_treasury::TreasuryOutboundTransferStatus>,
+    status_transitions: Option<stripe_treasury::TreasuryOutboundTransfersResourceStatusTransitions>,
+    transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TreasuryOutboundTransfer {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TreasuryOutboundTransfer>,
+        builder: TreasuryOutboundTransferBuilder,
+    }
+
+    impl Visitor for Place<TreasuryOutboundTransfer> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TreasuryOutboundTransferBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for TreasuryOutboundTransferBuilder {
+        type Out = TreasuryOutboundTransfer;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "cancelable" => Deserialize::begin(&mut self.cancelable),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "destination_payment_method" => {
+                    Deserialize::begin(&mut self.destination_payment_method)
+                }
+                "destination_payment_method_details" => {
+                    Deserialize::begin(&mut self.destination_payment_method_details)
+                }
+                "expected_arrival_date" => Deserialize::begin(&mut self.expected_arrival_date),
+                "financial_account" => Deserialize::begin(&mut self.financial_account),
+                "hosted_regulatory_receipt_url" => {
+                    Deserialize::begin(&mut self.hosted_regulatory_receipt_url)
+                }
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "returned_details" => Deserialize::begin(&mut self.returned_details),
+                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "status" => Deserialize::begin(&mut self.status),
+                "status_transitions" => Deserialize::begin(&mut self.status_transitions),
+                "transaction" => Deserialize::begin(&mut self.transaction),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                cancelable: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                description: Deserialize::default(),
+                destination_payment_method: Deserialize::default(),
+                destination_payment_method_details: Deserialize::default(),
+                expected_arrival_date: Deserialize::default(),
+                financial_account: Deserialize::default(),
+                hosted_regulatory_receipt_url: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                returned_details: Deserialize::default(),
+                statement_descriptor: Deserialize::default(),
+                status: Deserialize::default(),
+                status_transitions: Deserialize::default(),
+                transaction: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                cancelable: self.cancelable?,
+                created: self.created?,
+                currency: self.currency?,
+                description: self.description.take()?,
+                destination_payment_method: self.destination_payment_method.take()?,
+                destination_payment_method_details: self
+                    .destination_payment_method_details
+                    .take()?,
+                expected_arrival_date: self.expected_arrival_date?,
+                financial_account: self.financial_account.take()?,
+                hosted_regulatory_receipt_url: self.hosted_regulatory_receipt_url.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                returned_details: self.returned_details.take()?,
+                statement_descriptor: self.statement_descriptor.take()?,
+                status: self.status?,
+                status_transitions: self.status_transitions?,
+                transaction: self.transaction.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TreasuryOutboundTransfer {
+        type Builder = TreasuryOutboundTransferBuilder;
+    }
+
+    impl FromValueOpt for TreasuryOutboundTransfer {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TreasuryOutboundTransferBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "cancelable" => b.cancelable = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "destination_payment_method" => {
+                        b.destination_payment_method = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "destination_payment_method_details" => {
+                        b.destination_payment_method_details = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "expected_arrival_date" => {
+                        b.expected_arrival_date = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "financial_account" => b.financial_account = Some(FromValueOpt::from_value(v)?),
+                    "hosted_regulatory_receipt_url" => {
+                        b.hosted_regulatory_receipt_url = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "returned_details" => b.returned_details = Some(FromValueOpt::from_value(v)?),
+                    "statement_descriptor" => {
+                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "status_transitions" => {
+                        b.status_transitions = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "transaction" => b.transaction = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TreasuryOutboundTransfer {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("TreasuryOutboundTransfer", 19)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("cancelable", &self.cancelable)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("destination_payment_method", &self.destination_payment_method)?;
+        s.serialize_field(
+            "destination_payment_method_details",
+            &self.destination_payment_method_details,
+        )?;
+        s.serialize_field("expected_arrival_date", &self.expected_arrival_date)?;
+        s.serialize_field("financial_account", &self.financial_account)?;
+        s.serialize_field("hosted_regulatory_receipt_url", &self.hosted_regulatory_receipt_url)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("returned_details", &self.returned_details)?;
+        s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_transitions", &self.status_transitions)?;
+        s.serialize_field("transaction", &self.transaction)?;
+
+        s.serialize_field("object", "treasury.outbound_transfer")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for TreasuryOutboundTransfer {
     type Id = stripe_treasury::TreasuryOutboundTransferId;
@@ -107,6 +336,22 @@ impl serde::Serialize for TreasuryOutboundTransferStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TreasuryOutboundTransferStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TreasuryOutboundTransferStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TreasuryOutboundTransferStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TreasuryOutboundTransferStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

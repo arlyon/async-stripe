@@ -252,6 +252,16 @@ impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxL
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"))
+    }
+}
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -298,6 +308,18 @@ impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsBillingCycleA
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -347,6 +369,18 @@ impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsCollectionMet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionScheduleDefaultSettingsCollectionMethod",
+            )
+        })
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -430,6 +464,16 @@ impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsInvoiceSettin
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"))
     }
 }
 /// List representing phases of the subscription schedule.
@@ -653,6 +697,16 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDa
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"))
+    }
+}
 /// Automatic tax settings for this phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax<'a> {
@@ -732,6 +786,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityT
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType",
+            )
+        })
+    }
+}
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -778,6 +844,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -827,6 +905,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesCollectionMethod {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesCollectionMethod",
+            )
+        })
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -910,6 +1000,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerT
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType",
+            )
+        })
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
@@ -1057,6 +1159,20 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataRecurrin
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -1109,6 +1225,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehav
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior",
+            )
+        })
+    }
+}
 /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
 /// The default value is `create_prorations`.
 /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
@@ -1159,6 +1287,18 @@ impl serde::Serialize for CreateSubscriptionSchedulePhasesProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionSchedulePhasesProrationBehavior",
+            )
+        })
     }
 }
 /// When the subscription schedule starts.
@@ -1346,6 +1486,16 @@ impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxL
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType"))
+    }
+}
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -1392,6 +1542,18 @@ impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsBillingCycleA
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -1441,6 +1603,18 @@ impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsCollectionMet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod",
+            )
+        })
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -1524,6 +1698,16 @@ impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettin
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType"))
     }
 }
 /// List representing phases of the subscription schedule.
@@ -1753,6 +1937,16 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDa
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior"))
+    }
+}
 /// Automatic tax settings for this phase.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax<'a> {
@@ -1832,6 +2026,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityT
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType",
+            )
+        })
+    }
+}
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -1878,6 +2084,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesBillingCycleAnchor",
+            )
+        })
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
@@ -1927,6 +2145,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesCollectionMethod {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollectionMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesCollectionMethod",
+            )
+        })
     }
 }
 /// The date at which this phase of the subscription schedule ends.
@@ -2018,6 +2248,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerT
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType",
+            )
+        })
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
@@ -2165,6 +2407,20 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurrin
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -2217,6 +2473,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehav
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior",
+            )
+        })
+    }
+}
 /// Whether the subscription schedule will create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase.
 /// The default value is `create_prorations`.
 /// This setting controls prorations when a phase is started asynchronously and it is persisted as a field on the phase.
@@ -2267,6 +2535,18 @@ impl serde::Serialize for UpdateSubscriptionSchedulePhasesProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionSchedulePhasesProrationBehavior",
+            )
+        })
     }
 }
 /// The date at which this phase of the subscription schedule starts or `now`.
@@ -2333,6 +2613,18 @@ impl serde::Serialize for UpdateSubscriptionScheduleProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionScheduleProrationBehavior",
+            )
+        })
     }
 }
 impl<'a> UpdateSubscriptionSchedule<'a> {

@@ -8,7 +8,8 @@
 /// Related guide: [Receiving payouts](https://stripe.com/docs/payouts)
 ///
 /// For more details see <<https://stripe.com/docs/api/payouts/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Payout {
     /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
@@ -63,8 +64,244 @@ pub struct Payout {
     /// Some payouts that fail might initially show as `paid`, then change to `failed`.
     pub status: String,
     /// Can be `bank_account` or `card`.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: PayoutType,
+}
+#[doc(hidden)]
+pub struct PayoutBuilder {
+    amount: Option<i64>,
+    arrival_date: Option<stripe_types::Timestamp>,
+    automatic: Option<bool>,
+    balance_transaction:
+        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<Option<String>>,
+    destination: Option<Option<stripe_types::Expandable<stripe_shared::ExternalAccount>>>,
+    failure_balance_transaction:
+        Option<Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>>,
+    failure_code: Option<Option<String>>,
+    failure_message: Option<Option<String>>,
+    id: Option<stripe_shared::PayoutId>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    method: Option<String>,
+    original_payout: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
+    reconciliation_status: Option<PayoutReconciliationStatus>,
+    reversed_by: Option<Option<stripe_types::Expandable<stripe_shared::Payout>>>,
+    source_type: Option<String>,
+    statement_descriptor: Option<Option<String>>,
+    status: Option<String>,
+    type_: Option<PayoutType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Payout {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Payout>,
+        builder: PayoutBuilder,
+    }
+
+    impl Visitor for Place<Payout> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: PayoutBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for PayoutBuilder {
+        type Out = Payout;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "arrival_date" => Deserialize::begin(&mut self.arrival_date),
+                "automatic" => Deserialize::begin(&mut self.automatic),
+                "balance_transaction" => Deserialize::begin(&mut self.balance_transaction),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "destination" => Deserialize::begin(&mut self.destination),
+                "failure_balance_transaction" => {
+                    Deserialize::begin(&mut self.failure_balance_transaction)
+                }
+                "failure_code" => Deserialize::begin(&mut self.failure_code),
+                "failure_message" => Deserialize::begin(&mut self.failure_message),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "method" => Deserialize::begin(&mut self.method),
+                "original_payout" => Deserialize::begin(&mut self.original_payout),
+                "reconciliation_status" => Deserialize::begin(&mut self.reconciliation_status),
+                "reversed_by" => Deserialize::begin(&mut self.reversed_by),
+                "source_type" => Deserialize::begin(&mut self.source_type),
+                "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
+                "status" => Deserialize::begin(&mut self.status),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                arrival_date: Deserialize::default(),
+                automatic: Deserialize::default(),
+                balance_transaction: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                description: Deserialize::default(),
+                destination: Deserialize::default(),
+                failure_balance_transaction: Deserialize::default(),
+                failure_code: Deserialize::default(),
+                failure_message: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                method: Deserialize::default(),
+                original_payout: Deserialize::default(),
+                reconciliation_status: Deserialize::default(),
+                reversed_by: Deserialize::default(),
+                source_type: Deserialize::default(),
+                statement_descriptor: Deserialize::default(),
+                status: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                arrival_date: self.arrival_date?,
+                automatic: self.automatic?,
+                balance_transaction: self.balance_transaction.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                description: self.description.take()?,
+                destination: self.destination.take()?,
+                failure_balance_transaction: self.failure_balance_transaction.take()?,
+                failure_code: self.failure_code.take()?,
+                failure_message: self.failure_message.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                method: self.method.take()?,
+                original_payout: self.original_payout.take()?,
+                reconciliation_status: self.reconciliation_status?,
+                reversed_by: self.reversed_by.take()?,
+                source_type: self.source_type.take()?,
+                statement_descriptor: self.statement_descriptor.take()?,
+                status: self.status.take()?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Payout {
+        type Builder = PayoutBuilder;
+    }
+
+    impl FromValueOpt for Payout {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PayoutBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "arrival_date" => b.arrival_date = Some(FromValueOpt::from_value(v)?),
+                    "automatic" => b.automatic = Some(FromValueOpt::from_value(v)?),
+                    "balance_transaction" => {
+                        b.balance_transaction = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "destination" => b.destination = Some(FromValueOpt::from_value(v)?),
+                    "failure_balance_transaction" => {
+                        b.failure_balance_transaction = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "failure_code" => b.failure_code = Some(FromValueOpt::from_value(v)?),
+                    "failure_message" => b.failure_message = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "method" => b.method = Some(FromValueOpt::from_value(v)?),
+                    "original_payout" => b.original_payout = Some(FromValueOpt::from_value(v)?),
+                    "reconciliation_status" => {
+                        b.reconciliation_status = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "reversed_by" => b.reversed_by = Some(FromValueOpt::from_value(v)?),
+                    "source_type" => b.source_type = Some(FromValueOpt::from_value(v)?),
+                    "statement_descriptor" => {
+                        b.statement_descriptor = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for Payout {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("Payout", 23)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("arrival_date", &self.arrival_date)?;
+        s.serialize_field("automatic", &self.automatic)?;
+        s.serialize_field("balance_transaction", &self.balance_transaction)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("destination", &self.destination)?;
+        s.serialize_field("failure_balance_transaction", &self.failure_balance_transaction)?;
+        s.serialize_field("failure_code", &self.failure_code)?;
+        s.serialize_field("failure_message", &self.failure_message)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("method", &self.method)?;
+        s.serialize_field("original_payout", &self.original_payout)?;
+        s.serialize_field("reconciliation_status", &self.reconciliation_status)?;
+        s.serialize_field("reversed_by", &self.reversed_by)?;
+        s.serialize_field("source_type", &self.source_type)?;
+        s.serialize_field("statement_descriptor", &self.statement_descriptor)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("type", &self.type_)?;
+
+        s.serialize_field("object", "payout")?;
+        s.end()
+    }
 }
 /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -107,6 +344,7 @@ impl std::fmt::Debug for PayoutReconciliationStatus {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PayoutReconciliationStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -115,6 +353,22 @@ impl serde::Serialize for PayoutReconciliationStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PayoutReconciliationStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PayoutReconciliationStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PayoutReconciliationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PayoutReconciliationStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PayoutReconciliationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -161,6 +415,7 @@ impl std::fmt::Debug for PayoutType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PayoutType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -169,6 +424,22 @@ impl serde::Serialize for PayoutType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PayoutType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PayoutType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PayoutType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PayoutType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PayoutType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

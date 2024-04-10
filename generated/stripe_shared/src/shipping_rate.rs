@@ -3,7 +3,8 @@
 /// For more information, see [Charge for shipping](https://stripe.com/docs/payments/during-payment/charge-shipping).
 ///
 /// For more details see <<https://stripe.com/docs/api/shipping_rates/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRate {
     /// Whether the shipping rate can be used for new purchases. Defaults to `true`.
     pub active: bool,
@@ -15,7 +16,6 @@ pub struct ShippingRate {
     /// The name of the shipping rate, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
     pub display_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<stripe_shared::ShippingRateFixedAmount>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ShippingRateId,
@@ -31,8 +31,169 @@ pub struct ShippingRate {
     /// The Shipping tax code is `txcd_92010001`.
     pub tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
     /// The type of calculation to use on the shipping rate. Can only be `fixed_amount` for now.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::ShippingRateType,
+}
+#[doc(hidden)]
+pub struct ShippingRateBuilder {
+    active: Option<bool>,
+    created: Option<stripe_types::Timestamp>,
+    delivery_estimate: Option<Option<stripe_shared::ShippingRateDeliveryEstimate>>,
+    display_name: Option<Option<String>>,
+    fixed_amount: Option<Option<stripe_shared::ShippingRateFixedAmount>>,
+    id: Option<stripe_shared::ShippingRateId>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    tax_behavior: Option<Option<stripe_shared::ShippingRateTaxBehavior>>,
+    tax_code: Option<Option<stripe_types::Expandable<stripe_shared::TaxCode>>>,
+    type_: Option<stripe_shared::ShippingRateType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for ShippingRate {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<ShippingRate>,
+        builder: ShippingRateBuilder,
+    }
+
+    impl Visitor for Place<ShippingRate> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: ShippingRateBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for ShippingRateBuilder {
+        type Out = ShippingRate;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active" => Deserialize::begin(&mut self.active),
+                "created" => Deserialize::begin(&mut self.created),
+                "delivery_estimate" => Deserialize::begin(&mut self.delivery_estimate),
+                "display_name" => Deserialize::begin(&mut self.display_name),
+                "fixed_amount" => Deserialize::begin(&mut self.fixed_amount),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "tax_behavior" => Deserialize::begin(&mut self.tax_behavior),
+                "tax_code" => Deserialize::begin(&mut self.tax_code),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active: Deserialize::default(),
+                created: Deserialize::default(),
+                delivery_estimate: Deserialize::default(),
+                display_name: Deserialize::default(),
+                fixed_amount: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                tax_behavior: Deserialize::default(),
+                tax_code: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                active: self.active?,
+                created: self.created?,
+                delivery_estimate: self.delivery_estimate?,
+                display_name: self.display_name.take()?,
+                fixed_amount: self.fixed_amount.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                tax_behavior: self.tax_behavior?,
+                tax_code: self.tax_code.take()?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for ShippingRate {
+        type Builder = ShippingRateBuilder;
+    }
+
+    impl FromValueOpt for ShippingRate {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = ShippingRateBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active" => b.active = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "delivery_estimate" => b.delivery_estimate = Some(FromValueOpt::from_value(v)?),
+                    "display_name" => b.display_name = Some(FromValueOpt::from_value(v)?),
+                    "fixed_amount" => b.fixed_amount = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "tax_behavior" => b.tax_behavior = Some(FromValueOpt::from_value(v)?),
+                    "tax_code" => b.tax_code = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for ShippingRate {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("ShippingRate", 12)?;
+        s.serialize_field("active", &self.active)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("delivery_estimate", &self.delivery_estimate)?;
+        s.serialize_field("display_name", &self.display_name)?;
+        s.serialize_field("fixed_amount", &self.fixed_amount)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("tax_behavior", &self.tax_behavior)?;
+        s.serialize_field("tax_code", &self.tax_code)?;
+        s.serialize_field("type", &self.type_)?;
+
+        s.serialize_field("object", "shipping_rate")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for ShippingRate {
     type Id = stripe_shared::ShippingRateId;
@@ -89,6 +250,22 @@ impl serde::Serialize for ShippingRateTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for ShippingRateTaxBehavior {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingRateTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ShippingRateTaxBehavior);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -139,6 +316,22 @@ impl serde::Serialize for ShippingRateType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for ShippingRateType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ShippingRateType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ShippingRateType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ShippingRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

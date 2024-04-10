@@ -8,6 +8,8 @@
 //! of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_payment;
+
+miniserde::make_place!(Place);
 pub mod bank_account;
 pub use stripe_shared::bank_account::*;
 pub mod card;

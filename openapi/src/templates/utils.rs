@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use std::fmt::{Display, Formatter, Write};
 
 use lazy_static::lazy_static;
 use regex_lite::Regex;
@@ -8,8 +8,139 @@ lazy_static! {
     static ref PERIOD_THEN_WHITESPACE: Regex = Regex::new(r"\.\s[\s]?").unwrap();
 }
 
-pub fn write_serde_rename(out: &mut String, rename: &str) {
-    let _ = writeln!(out, r#"#[serde(rename = "{rename}")]"#);
+#[derive(Debug, Copy, Clone, Default)]
+pub struct SerdeDeriveState {
+    serialize: Option<ShouldDerive>,
+    deserialize: Option<ShouldDerive>,
+}
+
+impl SerdeDeriveState {
+    pub fn serialize(&mut self, kind: ShouldDerive) -> &mut Self {
+        self.serialize = Some(kind);
+        self
+    }
+
+    pub fn deserialize(&mut self, kind: ShouldDerive) -> &mut Self {
+        self.deserialize = Some(kind);
+        self
+    }
+
+    pub fn write_derives(&self, out: &mut String) {
+        if let Some(derive) = self.serialize {
+            write_derive(derive, SerOrDeser::Ser, out);
+        }
+        if let Some(derive) = self.deserialize {
+            write_derive(derive, SerOrDeser::Deser, out);
+        }
+    }
+
+    pub fn maybe_write_tag(&self, out: &mut String, tag: impl Display) {
+        let feature_gate = match self.usage() {
+            SerdeUsage::Never => {
+                return;
+            }
+            SerdeUsage::Always => {
+                let _ = writeln!(out, r#"#[serde({tag})]"#);
+                return;
+            }
+            SerdeUsage::SerGated => SerFeatureGate::Ser,
+            SerdeUsage::DeserGated => SerFeatureGate::Deser,
+            SerdeUsage::EitherGated => SerFeatureGate::Either,
+        };
+        let _ = writeln!(out, r#"#[cfg_attr({feature_gate}, serde({tag}))]"#);
+    }
+
+    pub fn maybe_write_rename(&self, out: &mut String, rename: &str) {
+        self.maybe_write_tag(out, format!(r#"rename = "{rename}""#));
+    }
+
+    fn usage(&self) -> SerdeUsage {
+        match (self.serialize, self.deserialize) {
+            (None, None) => SerdeUsage::Never,
+            (Some(state), None) => match state {
+                ShouldDerive::Always => SerdeUsage::Always,
+                ShouldDerive::Gated => SerdeUsage::SerGated,
+            },
+            (None, Some(state)) => match state {
+                ShouldDerive::Always => SerdeUsage::Always,
+                ShouldDerive::Gated => SerdeUsage::DeserGated,
+            },
+            (Some(state_ser), Some(state_deser)) => match (state_ser, state_deser) {
+                (ShouldDerive::Always, _) => SerdeUsage::Always,
+                (_, ShouldDerive::Always) => SerdeUsage::Always,
+                (ShouldDerive::Gated, ShouldDerive::Gated) => SerdeUsage::EitherGated,
+            },
+        }
+    }
+}
+
+fn write_derive(derive: ShouldDerive, ser: SerOrDeser, out: &mut String) {
+    match derive {
+        ShouldDerive::Always => {
+            let _ = writeln!(out, "#[derive(serde::{ser})]");
+        }
+        ShouldDerive::Gated => {
+            let _ = writeln!(
+                out,
+                r#"#[cfg_attr(feature = "{}", derive(serde::{ser}))]"#,
+                ser.feature_gate()
+            );
+        }
+    }
+}
+
+enum SerdeUsage {
+    SerGated,
+    DeserGated,
+    EitherGated,
+    Always,
+    Never,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum ShouldDerive {
+    Always,
+    Gated,
+}
+
+#[derive(Debug, Copy, Clone)]
+enum SerFeatureGate {
+    Ser,
+    Deser,
+    Either,
+}
+
+impl Display for SerFeatureGate {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            SerFeatureGate::Ser => r#"feature = "serialize""#,
+            SerFeatureGate::Deser => r#"feature = "deserialize""#,
+            SerFeatureGate::Either => r#"any(feature = "deserialize", feature = "serialize")"#,
+        })
+    }
+}
+
+enum SerOrDeser {
+    Ser,
+    Deser,
+}
+
+impl SerOrDeser {
+    fn feature_gate(&self) -> &'static str {
+        match self {
+            Self::Ser => "serialize",
+            Self::Deser => "deserialize",
+        }
+    }
+}
+
+impl Display for SerOrDeser {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            Self::Ser => "Serialize",
+            Self::Deser => "Deserialize",
+        })
+    }
 }
 
 /// Write a formatted doc comment.

@@ -2,30 +2,29 @@ use std::fmt::Write;
 
 use crate::components::Components;
 use crate::printable::{Lifetime, PrintableType};
-use crate::rust_object::ObjectKind;
+use crate::rust_object::ObjectUsage;
 use crate::rust_type::RustType;
-use crate::templates::derives::Derives;
 use crate::types::RustIdent;
 
 #[derive(Copy, Clone)]
 pub struct ObjectWriter<'a> {
     pub components: &'a Components,
-    pub derives: Derives,
     pub lifetime: Option<Lifetime>,
+    pub derives: Derives,
     pub ident: &'a RustIdent,
     pub provide_unknown_variant: bool,
-    pub obj_kind: ObjectKind,
+    pub usage: ObjectUsage,
 }
 
 impl<'a> ObjectWriter<'a> {
-    pub fn new(components: &'a Components, ident: &'a RustIdent, obj_kind: ObjectKind) -> Self {
+    pub fn new(components: &'a Components, ident: &'a RustIdent, usage: ObjectUsage) -> Self {
         Self {
             components,
-            derives: Derives::new(),
             lifetime: None,
+            derives: Derives::new(),
             ident,
             provide_unknown_variant: false,
-            obj_kind,
+            usage,
         }
     }
 
@@ -45,7 +44,7 @@ impl<'a> ObjectWriter<'a> {
     }
 
     pub fn derive_default(&mut self, derive_default: bool) -> &mut Self {
-        self.derives = self.derives.default(derive_default);
+        self.derives = self.derives.derive_default(derive_default);
         self
     }
 
@@ -61,13 +60,6 @@ impl<'a> ObjectWriter<'a> {
         if self.provide_unknown_variant {
             let _ = out.write_str("#[non_exhaustive]");
         }
-    }
-
-    pub fn write_automatic_derives(&self, out: &mut String) {
-        let mut derives = self.derives;
-        derives.serialize = self.obj_kind.should_impl_serialize();
-        derives.deserialize = self.obj_kind.should_impl_deserialize();
-        write_derives_line(out, derives)
     }
 }
 
@@ -86,11 +78,45 @@ pub fn write_derives_line(out: &mut String, derives: Derives) {
     if derives.eq {
         let _ = write!(out, "Eq, PartialEq,");
     }
-    if derives.serialize {
-        let _ = write!(out, "serde::Serialize,");
-    }
-    if derives.deserialize {
-        let _ = write!(out, "serde::Deserialize,");
-    }
     let _ = out.write_str(")]");
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+pub struct Derives {
+    pub copy: bool,
+    pub debug: bool,
+    pub default: bool,
+    pub eq: bool,
+}
+
+impl Derives {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn debug(mut self, debug: bool) -> Self {
+        self.debug = debug;
+        self
+    }
+
+    pub fn copy(mut self, copy: bool) -> Self {
+        self.copy = copy;
+        self
+    }
+
+    pub fn derive_default(mut self, default: bool) -> Self {
+        self.default = default;
+        self
+    }
+
+    pub fn eq(mut self, eq: bool) -> Self {
+        self.eq = eq;
+        self
+    }
+}
+
+impl Default for Derives {
+    fn default() -> Self {
+        Self { debug: true, copy: false, default: false, eq: false }
+    }
 }

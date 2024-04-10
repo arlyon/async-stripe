@@ -117,7 +117,7 @@ impl<'a> SearchPaymentIntent<'a> {
         stripe::ListPaginator::from_search_params("/payment_intents/search", self)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntent<'a> {
     /// Amount intended to be collected by this PaymentIntent.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -358,9 +358,21 @@ impl serde::Serialize for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirec
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects",
+            )
+        })
+    }
+}
 /// This hash contains details about the Mandate to create.
 /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-confirm).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentMandateData<'a> {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: CreatePaymentIntentMandateDataCustomerAcceptance<'a>,
@@ -371,14 +383,15 @@ impl<'a> CreatePaymentIntentMandateData<'a> {
     }
 }
 /// This hash contains details about the customer acceptance of the Mandate.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptance<'a> {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub accepted_at: Option<stripe_types::Timestamp>,
     /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub offline: Option<miniserde::json::Value>,
     /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub online: Option<OnlineParam<'a>>,
@@ -439,6 +452,18 @@ impl serde::Serialize for CreatePaymentIntentMandateDataCustomerAcceptanceType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentMandateDataCustomerAcceptanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentMandateDataCustomerAcceptanceType",
+            )
+        })
+    }
+}
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
 /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-confirm).
@@ -452,20 +477,23 @@ pub enum CreatePaymentIntentOffSession {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodData<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<PaymentMethodParam<'a>>,
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub affirm: Option<miniserde::json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub afterpay_clearpay: Option<miniserde::json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alipay: Option<miniserde::json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreatePaymentIntentPaymentMethodDataAuBecsDebit<'a>>,
@@ -474,22 +502,26 @@ pub struct CreatePaymentIntentPaymentMethodData<'a> {
     pub bacs_debit: Option<CreatePaymentIntentPaymentMethodDataBacsDebit<'a>>,
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bancontact: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreatePaymentIntentPaymentMethodDataBillingDetails<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub blik: Option<miniserde::json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreatePaymentIntentPaymentMethodDataBoleto<'a>>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub cashapp: Option<miniserde::json::Value>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub customer_balance: Option<miniserde::json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentIntentPaymentMethodDataEps>,
@@ -498,25 +530,30 @@ pub struct CreatePaymentIntentPaymentMethodData<'a> {
     pub fpx: Option<CreatePaymentIntentPaymentMethodDataFpx>,
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub giropay: Option<miniserde::json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub grabpay: Option<miniserde::json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreatePaymentIntentPaymentMethodDataIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreatePaymentIntentPaymentMethodDataKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub link: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -525,29 +562,35 @@ pub struct CreatePaymentIntentPaymentMethodData<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub oxxo: Option<miniserde::json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreatePaymentIntentPaymentMethodDataP24>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paynow: Option<miniserde::json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paypal: Option<miniserde::json::Value>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pix: Option<miniserde::json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub promptpay: Option<miniserde::json::Value>,
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreatePaymentIntentPaymentMethodDataRadarOptions<'a>>,
     /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub revolut_pay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentIntentPaymentMethodDataSepaDebit<'a>>,
@@ -556,7 +599,8 @@ pub struct CreatePaymentIntentPaymentMethodData<'a> {
     pub sofort: Option<CreatePaymentIntentPaymentMethodDataSofort>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub swish: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -567,10 +611,12 @@ pub struct CreatePaymentIntentPaymentMethodData<'a> {
     pub us_bank_account: Option<CreatePaymentIntentPaymentMethodDataUsBankAccount<'a>>,
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub wechat_pay: Option<miniserde::json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub zip: Option<miniserde::json::Value>,
 }
 impl<'a> CreatePaymentIntentPaymentMethodData<'a> {
     pub fn new(type_: CreatePaymentIntentPaymentMethodDataType) -> Self {
@@ -842,6 +888,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataEpsBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataEpsBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataFpx {
@@ -900,6 +954,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxAccountHolderTy
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType",
+            )
+        })
     }
 }
 /// The customer's bank.
@@ -1012,6 +1078,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataIdeal {
@@ -1114,6 +1188,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataIdealBank {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataIdealBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1262,6 +1344,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataP24Bank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataP24Bank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1353,6 +1443,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataSofortCountry {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataSofortCountry {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodDataSofortCountry",
+            )
+        })
     }
 }
 /// The type of the PaymentMethod.
@@ -1497,6 +1599,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataUsBankAccount<'a> {
@@ -1568,6 +1678,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccou
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"))
+    }
+}
 /// Account type: checkings or savings. Defaults to checking if omitted.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -1614,8 +1734,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccou
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType",
+            )
+        })
+    }
+}
 /// Payment method-specific configuration for this PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptions<'a> {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1673,7 +1805,8 @@ pub struct CreatePaymentIntentPaymentMethodOptions<'a> {
     pub ideal: Option<CreatePaymentIntentPaymentMethodOptionsIdeal>,
     /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreatePaymentIntentPaymentMethodOptionsKlarna>,
@@ -1706,7 +1839,7 @@ pub struct CreatePaymentIntentPaymentMethodOptions<'a> {
     pub revolut_pay: Option<CreatePaymentIntentPaymentMethodOptionsRevolutPay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<CreatePaymentIntentPaymentMethodOptionsSepaDebit<'a>>,
+    pub sepa_debit: Option<CreatePaymentIntentPaymentMethodOptionsSepaDebit>,
     /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreatePaymentIntentPaymentMethodOptionsSofort>,
@@ -1838,6 +1971,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"))
+    }
+}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
@@ -1890,6 +2033,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -1948,6 +2101,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupF
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -1995,6 +2158,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerifi
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -2073,6 +2246,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -2121,6 +2306,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -2203,6 +2402,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpa
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -2251,6 +2460,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpa
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"))
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -2323,6 +2542,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -2401,6 +2634,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"))
+    }
+}
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBacsDebit {
@@ -2475,6 +2718,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"))
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -2553,6 +2806,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactPrefe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -2604,6 +2867,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactSetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"))
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -2677,6 +2950,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBlikSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -2756,6 +3041,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
+            )
+        })
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -2896,6 +3195,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardCaptureMeth
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod",
+            )
+        })
+    }
+}
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
 ///
 /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
@@ -2982,6 +3293,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallment
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"))
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -3023,6 +3344,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallment
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType",
+            )
+        })
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -3128,6 +3463,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOpti
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"))
+    }
+}
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -3183,6 +3528,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOpti
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"))
+    }
+}
 /// Specifies the type of mandates supported. Possible values are `india`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -3224,6 +3579,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOpti
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"))
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -3301,6 +3666,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardNetwork",
+            )
+        })
+    }
+}
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -3345,6 +3722,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestExte
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"))
     }
 }
 /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
@@ -3401,6 +3788,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"))
+    }
+}
 /// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -3447,6 +3844,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestMult
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture",
+            )
+        })
+    }
+}
 /// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -3491,6 +3902,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestOver
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture",
+            )
+        })
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -3543,6 +3968,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestThre
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -3599,6 +4038,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
+            )
+        })
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -3718,6 +4169,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecur
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"))
+    }
+}
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
 /// provider and indicates what degree of authentication was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -3782,6 +4243,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"))
+    }
+}
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
@@ -3832,6 +4303,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"))
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -3945,6 +4426,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"))
+    }
+}
 /// The version of 3D Secure that was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -3992,6 +4483,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
+            )
+        })
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -4067,6 +4572,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappCaptureM
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -4121,6 +4638,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -4247,6 +4778,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"))
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -4302,6 +4843,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalance
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"))
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -4344,6 +4895,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalance
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -4394,6 +4955,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalance
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"))
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -4465,6 +5036,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsFpx {
@@ -4532,6 +5115,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureU
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -4603,6 +5198,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFut
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGrabpay {
@@ -4670,6 +5279,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -4742,6 +5365,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -4818,6 +5453,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
+            )
+        })
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -4996,6 +5643,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5044,6 +5699,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -5132,6 +5801,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFut
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsLink<'a> {
@@ -5208,6 +5891,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMeth
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5259,6 +5954,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -5334,6 +6041,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFuture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
@@ -5406,6 +6125,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPaynow {
@@ -5473,6 +6204,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -5548,6 +6293,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
+            )
+        })
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -5657,6 +6414,14 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5708,6 +6473,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -5787,6 +6566,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
@@ -5855,6 +6646,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"))
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -5926,12 +6727,23 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetup
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mandate_options: Option<miniserde::json::Value>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -5944,7 +6756,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage>,
 }
-impl<'a> CreatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+impl CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self::default()
     }
@@ -6003,6 +6815,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"))
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -6088,6 +6910,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -6139,6 +6975,20 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -6211,6 +7061,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -6338,6 +7200,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
@@ -6390,6 +7262,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Additional fields for Mandate creation
@@ -6456,6 +7338,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"))
+    }
+}
 /// Additional fields for network related functions
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -6515,6 +7407,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"))
+    }
+}
 /// Preferred transaction settlement speed
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
@@ -6567,6 +7469,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -6625,6 +7537,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -6672,6 +7594,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -6748,6 +7680,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPayClient
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsWechatPayClient",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -6796,6 +7740,16 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"))
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -6865,6 +7819,18 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureU
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
+            )
+        })
     }
 }
 /// Options to configure Radar.
@@ -6969,7 +7935,7 @@ impl<'a> CreatePaymentIntent<'a> {
         client.send_form("/payment_intents", self, http_types::Method::Post)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntent<'a> {
     /// Amount intended to be collected by this PaymentIntent.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -7071,20 +8037,23 @@ impl<'a> UpdatePaymentIntent<'a> {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<PaymentMethodParam<'a>>,
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub affirm: Option<miniserde::json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub afterpay_clearpay: Option<miniserde::json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alipay: Option<miniserde::json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<UpdatePaymentIntentPaymentMethodDataAuBecsDebit<'a>>,
@@ -7093,22 +8062,26 @@ pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     pub bacs_debit: Option<UpdatePaymentIntentPaymentMethodDataBacsDebit<'a>>,
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bancontact: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdatePaymentIntentPaymentMethodDataBillingDetails<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub blik: Option<miniserde::json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<UpdatePaymentIntentPaymentMethodDataBoleto<'a>>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub cashapp: Option<miniserde::json::Value>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub customer_balance: Option<miniserde::json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<UpdatePaymentIntentPaymentMethodDataEps>,
@@ -7117,25 +8090,30 @@ pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     pub fpx: Option<UpdatePaymentIntentPaymentMethodDataFpx>,
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub giropay: Option<miniserde::json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub grabpay: Option<miniserde::json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<UpdatePaymentIntentPaymentMethodDataIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdatePaymentIntentPaymentMethodDataKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub link: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -7144,29 +8122,35 @@ pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub oxxo: Option<miniserde::json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<UpdatePaymentIntentPaymentMethodDataP24>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paynow: Option<miniserde::json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paypal: Option<miniserde::json::Value>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pix: Option<miniserde::json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub promptpay: Option<miniserde::json::Value>,
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<UpdatePaymentIntentPaymentMethodDataRadarOptions<'a>>,
     /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub revolut_pay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodDataSepaDebit<'a>>,
@@ -7175,7 +8159,8 @@ pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     pub sofort: Option<UpdatePaymentIntentPaymentMethodDataSofort>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub swish: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -7186,10 +8171,12 @@ pub struct UpdatePaymentIntentPaymentMethodData<'a> {
     pub us_bank_account: Option<UpdatePaymentIntentPaymentMethodDataUsBankAccount<'a>>,
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub wechat_pay: Option<miniserde::json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub zip: Option<miniserde::json::Value>,
 }
 impl<'a> UpdatePaymentIntentPaymentMethodData<'a> {
     pub fn new(type_: UpdatePaymentIntentPaymentMethodDataType) -> Self {
@@ -7461,6 +8448,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataEpsBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataEpsBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataFpx {
@@ -7519,6 +8514,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderTy
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType",
+            )
+        })
     }
 }
 /// The customer's bank.
@@ -7631,6 +8638,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataIdeal {
@@ -7733,6 +8748,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataIdealBank {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataIdealBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -7881,6 +8904,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataP24Bank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataP24Bank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -7972,6 +9003,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataSofortCountry {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataSofortCountry {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodDataSofortCountry",
+            )
+        })
     }
 }
 /// The type of the PaymentMethod.
@@ -8116,6 +9159,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataUsBankAccount<'a> {
@@ -8187,6 +9238,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccou
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"))
+    }
+}
 /// Account type: checkings or savings. Defaults to checking if omitted.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -8233,8 +9294,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccou
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType",
+            )
+        })
+    }
+}
 /// Payment-method-specific configuration for this PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptions<'a> {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8292,7 +9365,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptions<'a> {
     pub ideal: Option<UpdatePaymentIntentPaymentMethodOptionsIdeal>,
     /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdatePaymentIntentPaymentMethodOptionsKlarna>,
@@ -8325,7 +9399,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptions<'a> {
     pub revolut_pay: Option<UpdatePaymentIntentPaymentMethodOptionsRevolutPay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebit<'a>>,
+    pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebit>,
     /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdatePaymentIntentPaymentMethodOptionsSofort>,
@@ -8457,6 +9531,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"))
+    }
+}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
@@ -8509,6 +9593,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -8567,6 +9661,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupF
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -8614,6 +9718,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerifi
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -8692,6 +9806,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -8740,6 +9866,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -8822,6 +9962,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpa
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -8870,6 +10020,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpa
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"))
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -8942,6 +10102,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -9020,6 +10194,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"))
+    }
+}
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
@@ -9094,6 +10278,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"))
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -9172,6 +10366,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactPrefe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -9223,6 +10427,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactSetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"))
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -9296,6 +10510,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -9375,6 +10601,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
+            )
+        })
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -9515,6 +10755,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMeth
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod",
+            )
+        })
+    }
+}
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
 ///
 /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
@@ -9601,6 +10853,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallment
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"))
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -9642,6 +10904,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallment
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType",
+            )
+        })
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -9747,6 +11023,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpti
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"))
+    }
+}
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -9802,6 +11088,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpti
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"))
+    }
+}
 /// Specifies the type of mandates supported. Possible values are `india`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -9843,6 +11139,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpti
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"))
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -9920,6 +11226,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardNetwork",
+            )
+        })
+    }
+}
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -9964,6 +11282,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestExte
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"))
     }
 }
 /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
@@ -10020,6 +11348,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"))
+    }
+}
 /// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -10066,6 +11404,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestMult
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture",
+            )
+        })
+    }
+}
 /// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -10110,6 +11462,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestOver
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture",
+            )
+        })
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -10162,6 +11528,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestThre
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -10218,6 +11598,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
+            )
+        })
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -10337,6 +11729,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecur
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"))
+    }
+}
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
 /// provider and indicates what degree of authentication was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -10401,6 +11803,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"))
+    }
+}
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
@@ -10451,6 +11863,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"))
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -10564,6 +11986,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"))
+    }
+}
 /// The version of 3D Secure that was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -10611,6 +12043,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
+            )
+        })
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -10686,6 +12132,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureM
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -10740,6 +12198,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -10866,6 +12338,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"))
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -10921,6 +12403,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"))
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -10963,6 +12455,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -11013,6 +12515,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"))
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -11084,6 +12596,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsFpx {
@@ -11151,6 +12675,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureU
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -11222,6 +12758,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFut
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGrabpay {
@@ -11289,6 +12839,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -11361,6 +12925,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -11437,6 +13013,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
+            )
+        })
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -11615,6 +13203,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -11663,6 +13259,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -11751,6 +13361,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFut
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsLink<'a> {
@@ -11827,6 +13451,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMeth
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -11878,6 +13514,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -11953,6 +13601,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFuture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
@@ -12025,6 +13685,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPaynow {
@@ -12092,6 +13764,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -12167,6 +13853,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
+            )
+        })
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -12276,6 +13974,14 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -12327,6 +14033,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -12406,6 +14126,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPromptpay {
@@ -12474,6 +14206,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"))
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -12545,12 +14287,23 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetup
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mandate_options: Option<miniserde::json::Value>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -12563,7 +14316,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage>,
 }
-impl<'a> UpdatePaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+impl UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self::default()
     }
@@ -12622,6 +14375,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"))
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -12707,6 +14470,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortPreferred
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -12758,6 +14535,20 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -12830,6 +14621,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -12957,6 +14760,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
@@ -13009,6 +14822,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Additional fields for Mandate creation
@@ -13075,6 +14898,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"))
+    }
+}
 /// Additional fields for network related functions
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -13134,6 +14967,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"))
+    }
+}
 /// Preferred transaction settlement speed
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
@@ -13186,6 +15029,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -13244,6 +15097,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -13291,6 +15154,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -13367,6 +15240,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -13415,6 +15300,16 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"))
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -13484,6 +15379,18 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureU
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
+            )
+        })
     }
 }
 /// Shipping information for this PaymentIntent.
@@ -13658,6 +15565,16 @@ impl serde::Serialize for CancelPaymentIntentCancellationReason {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CancelPaymentIntentCancellationReason {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CancelPaymentIntentCancellationReason")
+        })
+    }
+}
 impl<'a> CancelPaymentIntent<'a> {
     /// You can cancel a PaymentIntent object when it’s in one of these statuses: `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` or, [in rare cases](https://stripe.com/docs/payments/intents), `processing`.
     ///
@@ -13745,7 +15662,7 @@ impl<'a> CapturePaymentIntent<'a> {
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntent<'a> {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13812,13 +15729,13 @@ impl<'a> ConfirmPaymentIntent<'a> {
         Self::default()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 #[serde(untagged)]
 pub enum ConfirmPaymentIntentMandateData<'a> {
     SecretKeyParam(ConfirmPaymentIntentSecretKeyParam<'a>),
     ClientKeyParam(ConfirmPaymentIntentClientKeyParam<'a>),
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentSecretKeyParam<'a> {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a>,
@@ -13831,14 +15748,15 @@ impl<'a> ConfirmPaymentIntentSecretKeyParam<'a> {
     }
 }
 /// This hash contains details about the customer acceptance of the Mandate.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentSecretKeyParamCustomerAcceptance<'a> {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub accepted_at: Option<stripe_types::Timestamp>,
     /// If this is a Mandate accepted offline, this hash contains details about the offline acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub offline: Option<miniserde::json::Value>,
     /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub online: Option<OnlineParam<'a>>,
@@ -13897,6 +15815,18 @@ impl serde::Serialize for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceTy
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType",
+            )
+        })
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -13986,6 +15916,18 @@ impl serde::Serialize for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceTy
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType",
+            )
+        })
+    }
+}
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://stripe.com/docs/payments/cards/charging-saved-cards).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -13998,20 +15940,23 @@ pub enum ConfirmPaymentIntentOffSession {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<PaymentMethodParam<'a>>,
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub affirm: Option<miniserde::json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub afterpay_clearpay: Option<miniserde::json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alipay: Option<miniserde::json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<ConfirmPaymentIntentPaymentMethodDataAuBecsDebit<'a>>,
@@ -14020,22 +15965,26 @@ pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     pub bacs_debit: Option<ConfirmPaymentIntentPaymentMethodDataBacsDebit<'a>>,
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bancontact: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<ConfirmPaymentIntentPaymentMethodDataBillingDetails<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub blik: Option<miniserde::json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<ConfirmPaymentIntentPaymentMethodDataBoleto<'a>>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub cashapp: Option<miniserde::json::Value>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub customer_balance: Option<miniserde::json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<ConfirmPaymentIntentPaymentMethodDataEps>,
@@ -14044,25 +15993,30 @@ pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     pub fpx: Option<ConfirmPaymentIntentPaymentMethodDataFpx>,
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub giropay: Option<miniserde::json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub grabpay: Option<miniserde::json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<ConfirmPaymentIntentPaymentMethodDataIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<ConfirmPaymentIntentPaymentMethodDataKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub link: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -14071,29 +16025,35 @@ pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub oxxo: Option<miniserde::json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<ConfirmPaymentIntentPaymentMethodDataP24>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paynow: Option<miniserde::json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paypal: Option<miniserde::json::Value>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pix: Option<miniserde::json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub promptpay: Option<miniserde::json::Value>,
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<ConfirmPaymentIntentPaymentMethodDataRadarOptions<'a>>,
     /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub revolut_pay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodDataSepaDebit<'a>>,
@@ -14102,7 +16062,8 @@ pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     pub sofort: Option<ConfirmPaymentIntentPaymentMethodDataSofort>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub swish: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -14113,10 +16074,12 @@ pub struct ConfirmPaymentIntentPaymentMethodData<'a> {
     pub us_bank_account: Option<ConfirmPaymentIntentPaymentMethodDataUsBankAccount<'a>>,
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub wechat_pay: Option<miniserde::json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub zip: Option<miniserde::json::Value>,
 }
 impl<'a> ConfirmPaymentIntentPaymentMethodData<'a> {
     pub fn new(type_: ConfirmPaymentIntentPaymentMethodDataType) -> Self {
@@ -14388,6 +16351,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataEpsBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataEpsBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataFpx {
@@ -14446,6 +16417,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderT
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType",
+            )
+        })
     }
 }
 /// The customer's bank.
@@ -14558,6 +16541,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataIdeal {
@@ -14660,6 +16651,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataIdealBank {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataIdealBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -14808,6 +16807,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataP24Bank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataP24Bank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -14899,6 +16906,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodDataSofortCountry",
+            )
+        })
     }
 }
 /// The type of the PaymentMethod.
@@ -15043,6 +17062,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataUsBankAccount<'a> {
@@ -15114,6 +17141,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcco
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType"))
+    }
+}
 /// Account type: checkings or savings. Defaults to checking if omitted.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -15160,8 +17197,22 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcco
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType",
+            )
+        })
+    }
+}
 /// Payment method-specific configuration for this PaymentIntent.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptions<'a> {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15219,7 +17270,8 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions<'a> {
     pub ideal: Option<ConfirmPaymentIntentPaymentMethodOptionsIdeal>,
     /// If this is a `interac_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<ConfirmPaymentIntentPaymentMethodOptionsKlarna>,
@@ -15252,7 +17304,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions<'a> {
     pub revolut_pay: Option<ConfirmPaymentIntentPaymentMethodOptionsRevolutPay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodOptionsSepaDebit<'a>>,
+    pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodOptionsSepaDebit>,
     /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<ConfirmPaymentIntentPaymentMethodOptionsSofort>,
@@ -15385,6 +17437,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule"))
+    }
+}
 /// Transaction type of the mandate.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
@@ -15437,6 +17499,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -15495,6 +17567,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetup
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -15542,6 +17624,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerif
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
@@ -15620,6 +17712,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureM
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -15668,6 +17772,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
@@ -15750,6 +17868,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearp
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -15802,6 +17930,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearp
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage"))
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
@@ -15874,6 +18012,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
@@ -15952,6 +18104,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSet
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage"))
+    }
+}
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
@@ -16026,6 +18188,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage"))
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
@@ -16104,6 +18276,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactPref
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -16155,6 +18337,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage"))
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
@@ -16228,6 +18420,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
@@ -16307,6 +18511,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage",
+            )
+        })
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
@@ -16447,6 +18665,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMet
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod",
+            )
+        })
+    }
+}
 /// Installment configuration for payments attempted on this PaymentIntent (Mexico Only).
 ///
 /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
@@ -16533,6 +18763,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval"))
+    }
+}
 /// Type of installment plan, one of `fixed_count`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -16574,6 +18814,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmen
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType"))
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
@@ -16679,6 +18929,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOpt
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType"))
+    }
+}
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -16734,6 +18994,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOpt
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval"))
+    }
+}
 /// Specifies the type of mandates supported. Possible values are `india`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -16779,6 +19049,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOpt
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes"))
     }
 }
 /// Selected network to process this PaymentIntent on.
@@ -16856,6 +19136,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork",
+            )
+        })
+    }
+}
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -16904,6 +19196,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExt
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"))
     }
 }
 /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
@@ -16960,6 +19262,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"))
+    }
+}
 /// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -17006,6 +19318,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMul
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture",
+            )
+        })
+    }
+}
 /// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -17050,6 +19376,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOve
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture",
+            )
+        })
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -17102,6 +19442,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
+            )
+        })
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -17158,6 +19512,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
+            )
+        })
     }
 }
 /// If 3D Secure authentication was performed with a third-party provider,
@@ -17277,6 +19643,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus"))
+    }
+}
 /// The Electronic Commerce Indicator (ECI) is returned by your 3D Secure
 /// provider and indicates what degree of authentication was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -17341,6 +19717,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator"))
+    }
+}
 /// The exemption requested via 3DS and accepted by the issuer at authentication time.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
@@ -17393,6 +19779,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator"))
     }
 }
 /// Network specific 3DS fields. Network specific arguments require an
@@ -17496,6 +19892,14 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo"))
+    }
+}
 /// The version of 3D Secure that was performed.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -17543,6 +19947,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion",
+            )
+        })
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
@@ -17618,6 +20036,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappCapture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -17672,6 +20102,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
@@ -17798,6 +20242,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes"))
+    }
+}
 /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -17853,6 +20307,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType"))
+    }
+}
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -17895,6 +20359,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -17945,6 +20419,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage"))
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
@@ -18016,6 +20500,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFuture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsFpx {
@@ -18083,6 +20579,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
@@ -18154,6 +20662,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
@@ -18221,6 +20743,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
@@ -18293,6 +20829,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
@@ -18369,6 +20919,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureM
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod",
+            )
+        })
     }
 }
 /// Preferred language of the Klarna authorization page that the customer is redirected to
@@ -18547,6 +21109,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferre
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -18595,6 +21167,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
@@ -18683,6 +21269,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsLink<'a> {
@@ -18759,6 +21359,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMet
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -18810,6 +21422,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutur
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
@@ -18885,6 +21509,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutur
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsP24 {
@@ -18957,6 +21593,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFuture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPaynow {
@@ -19024,6 +21672,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -19099,6 +21761,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureM
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod",
+            )
+        })
     }
 }
 /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
@@ -19208,6 +21882,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferre
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -19259,6 +21943,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
@@ -19338,6 +22036,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFuture
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage",
+            )
+        })
+    }
+}
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
@@ -19406,6 +22116,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage"))
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
@@ -19477,12 +22197,23 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetu
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub mandate_options: Option<miniserde::json::Value>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -19495,7 +22226,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit<'a> {
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage>,
 }
-impl<'a> ConfirmPaymentIntentPaymentMethodOptionsSepaDebit<'a> {
+impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self::default()
     }
@@ -19554,6 +22285,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage"))
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
@@ -19639,6 +22380,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferre
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -19690,6 +22445,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFut
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
@@ -19762,6 +22531,20 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutu
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage",
+            )
+        })
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
@@ -19887,6 +22670,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
@@ -19939,6 +22732,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Additional fields for Mandate creation
@@ -20005,6 +22808,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod"))
+    }
+}
 /// Additional fields for network related functions
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks<'a> {
@@ -20064,6 +22877,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountN
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested"))
+    }
+}
 /// Preferred transaction settlement speed
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
@@ -20116,6 +22939,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -20174,6 +23007,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountS
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage"))
+    }
+}
 /// Bank account verification method.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -20221,6 +23064,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountV
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
@@ -20297,6 +23150,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClien
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient",
+            )
+        })
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -20345,6 +23210,16 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetup
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage"))
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
@@ -20414,6 +23289,18 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFuture
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage",
+            )
+        })
     }
 }
 /// Options to configure Radar.

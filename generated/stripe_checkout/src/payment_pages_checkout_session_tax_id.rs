@@ -1,11 +1,102 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionTaxId {
     /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
-    #[serde(rename = "type")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
     /// The value of the tax ID.
     pub value: Option<String>,
 }
+#[doc(hidden)]
+pub struct PaymentPagesCheckoutSessionTaxIdBuilder {
+    type_: Option<PaymentPagesCheckoutSessionTaxIdType>,
+    value: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentPagesCheckoutSessionTaxId {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentPagesCheckoutSessionTaxId>,
+        builder: PaymentPagesCheckoutSessionTaxIdBuilder,
+    }
+
+    impl Visitor for Place<PaymentPagesCheckoutSessionTaxId> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentPagesCheckoutSessionTaxIdBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentPagesCheckoutSessionTaxIdBuilder {
+        type Out = PaymentPagesCheckoutSessionTaxId;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "type" => Deserialize::begin(&mut self.type_),
+                "value" => Deserialize::begin(&mut self.value),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self { type_: Deserialize::default(), value: Deserialize::default() }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out { type_: self.type_?, value: self.value.take()? })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentPagesCheckoutSessionTaxId {
+        type Builder = PaymentPagesCheckoutSessionTaxIdBuilder;
+    }
+
+    impl FromValueOpt for PaymentPagesCheckoutSessionTaxId {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentPagesCheckoutSessionTaxIdBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "value" => b.value = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentPagesCheckoutSessionTaxIdType {
@@ -239,6 +330,7 @@ impl std::fmt::Debug for PaymentPagesCheckoutSessionTaxIdType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentPagesCheckoutSessionTaxIdType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -247,6 +339,23 @@ impl serde::Serialize for PaymentPagesCheckoutSessionTaxIdType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentPagesCheckoutSessionTaxIdType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionTaxIdType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentPagesCheckoutSessionTaxIdType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentPagesCheckoutSessionTaxIdType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionTaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

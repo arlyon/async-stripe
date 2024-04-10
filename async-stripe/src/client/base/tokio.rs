@@ -4,7 +4,7 @@ use std::pin::Pin;
 use http_types::{Request, StatusCode};
 use hyper::http;
 use hyper::{client::HttpConnector, Body};
-use serde::de::DeserializeOwned;
+use miniserde::json::from_str;
 use tokio::time::sleep;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
@@ -77,7 +77,7 @@ impl TokioClient {
         }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+    pub fn execute<T: miniserde::Deserialize + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
@@ -89,8 +89,11 @@ impl TokioClient {
 
         Box::pin(async move {
             let bytes = send_inner(&client, request, &strategy).await?;
-            let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+            let str = std::str::from_utf8(bytes.as_ref())
+                .map_err(|_| StripeError::JSONDeserialize("Response was not valid UTF-8".into()))?;
+            from_str(str).map_err(|_| {
+                StripeError::JSONDeserialize("error deserializing request data".into())
+            })
         })
     }
 }
@@ -153,12 +156,18 @@ async fn send_inner(
 
                 if !status.is_success() {
                     tries += 1;
-                    let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-                    last_error = serde_path_to_error::deserialize(json_deserializer)
+                    let str = std::str::from_utf8(bytes.as_ref()).map_err(|_| {
+                        StripeError::JSONDeserialize("Response was not valid UTF-8".into())
+                    })?;
+                    last_error = from_str(str)
                         .map(|e: stripe_shared::Error| {
                             StripeError::Stripe(*e.error, status.as_u16())
                         })
-                        .unwrap_or_else(StripeError::from);
+                        .unwrap_or_else(|_| {
+                            StripeError::JSONDeserialize(
+                                "Could not deserialize Stripe error".into(),
+                            )
+                        });
                     last_status = Some(
                         // NOTE: StatusCode::from can panic here, so fall back to InternalServerError
                         //       see https://github.com/http-rs/http-types/blob/ac5d645ce5294554b86ebd49233d3ec01665d1d7/src/hyperium_http.rs#L20-L24
@@ -302,7 +311,7 @@ mod tests {
     async fn nice_serde_error() {
         use serde::Deserialize;
 
-        #[derive(Debug, Deserialize)]
+        #[derive(Debug, Deserialize, miniserde::Deserialize)]
         struct DataType {
             // Allowing dead code since used for deserialization
             #[allow(dead_code)]
@@ -333,9 +342,7 @@ mod tests {
         mock.assert_hits_async(1).await;
 
         match res {
-            Err(StripeError::JSONSerialize(err)) => {
-                println!("Error: {:?} Path: {:?}", err.inner(), err.path().to_string())
-            }
+            Err(StripeError::JSONDeserialize(_)) => {}
             _ => panic!("Expected stripe error {:?}", res),
         }
     }

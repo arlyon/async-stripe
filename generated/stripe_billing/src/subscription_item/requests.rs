@@ -68,6 +68,16 @@ impl serde::Serialize for DeleteSubscriptionItemProrationBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for DeleteSubscriptionItemProrationBehavior")
+        })
+    }
+}
 impl DeleteSubscriptionItem {
     /// Deletes an item from the subscription.
     /// Removing a subscription item from a subscription will not cancel the subscription.
@@ -341,6 +351,16 @@ impl serde::Serialize for CreateSubscriptionItemPaymentBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPaymentBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionItemPaymentBehavior")
+        })
+    }
+}
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionItemPriceData<'a> {
@@ -449,6 +469,18 @@ impl serde::Serialize for CreateSubscriptionItemPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionItemPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -501,6 +533,16 @@ impl serde::Serialize for CreateSubscriptionItemPriceDataTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionItemPriceDataTaxBehavior")
+        })
+    }
+}
 /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -549,6 +591,16 @@ impl serde::Serialize for CreateSubscriptionItemProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionItemProrationBehavior")
+        })
     }
 }
 impl<'a> CreateSubscriptionItem<'a> {
@@ -697,6 +749,16 @@ impl serde::Serialize for UpdateSubscriptionItemPaymentBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionItemPaymentBehavior")
+        })
+    }
+}
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItemPriceData<'a> {
@@ -805,6 +867,18 @@ impl serde::Serialize for UpdateSubscriptionItemPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionItemPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -857,6 +931,16 @@ impl serde::Serialize for UpdateSubscriptionItemPriceDataTaxBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionItemPriceDataTaxBehavior")
+        })
+    }
+}
 /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -905,6 +989,16 @@ impl serde::Serialize for UpdateSubscriptionItemProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionItemProrationBehavior")
+        })
     }
 }
 impl<'a> UpdateSubscriptionItem<'a> {

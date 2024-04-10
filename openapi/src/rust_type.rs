@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Display, Formatter};
 
 use crate::components::Components;
-use crate::rust_object::{ObjectMetadata, RustObject};
+use crate::rust_object::{ObjectMetadata, ObjectUsage, RustObject};
 use crate::types::{ComponentPath, RustIdent};
 use crate::visitor::{Visit, VisitMut};
 
@@ -176,6 +176,13 @@ impl RustType {
         }
     }
 
+    pub fn with_option_stripped(&self) -> &Self {
+        match self {
+            RustType::Container(Container::Option(inner)) => inner,
+            _ => self,
+        }
+    }
+
     /// Does this contain a reference? Primarily used for detecting types that may
     /// require lifetimes.
     pub fn has_reference(&self, components: &Components) -> bool {
@@ -195,8 +202,8 @@ impl RustType {
         Self::path(PathToType::Component(path), false)
     }
 
-    pub fn serde_json_value(is_ref: bool) -> Self {
-        Self::Simple(SimpleType::Ext(ExtType::Value { is_ref }))
+    pub fn json_value() -> Self {
+        Self::Simple(SimpleType::Ext(ExtType::Value))
     }
 
     pub fn object_id(id_path: ComponentPath, is_ref: bool) -> Self {
@@ -207,13 +214,6 @@ impl RustType {
         match self {
             Self::Container(Container::Option(_)) => self,
             _ => Self::option(self),
-        }
-    }
-
-    pub fn skip_serializing(&self) -> Option<&'static str> {
-        match self {
-            Self::Container(Container::Option(_)) => Some("Option::is_none"),
-            _ => None,
         }
     }
 
@@ -251,25 +251,25 @@ impl RustType {
         self.as_object().map(|r| r.0)
     }
 
-    pub fn visit<'a, T: Visit<'a>>(&'a self, visitor: &mut T) {
+    pub fn visit<'a, T: Visit<'a>>(&'a self, visitor: &mut T, usage: ObjectUsage) {
         use RustType::*;
         match self {
             Object(obj, meta) => {
-                visitor.visit_obj(obj, Some(meta));
+                visitor.visit_obj(obj, Some(meta), usage);
             }
             Simple(_) | Path { .. } => {}
-            Container(inner) => visitor.visit_typ(inner.value_typ()),
+            Container(inner) => visitor.visit_typ(inner.value_typ(), usage),
         }
     }
 
-    pub fn visit_mut<T: VisitMut>(&mut self, visitor: &mut T) {
+    pub fn visit_mut<T: VisitMut>(&mut self, visitor: &mut T, usage: ObjectUsage) {
         use RustType::*;
         match self {
             Object(obj, meta) => {
-                visitor.visit_obj_mut(obj, Some(meta));
+                visitor.visit_obj_mut(obj, Some(meta), usage);
             }
             Simple(_) | Path { .. } => {}
-            Container(inner) => visitor.visit_typ_mut(inner.value_typ_mut()),
+            Container(inner) => visitor.visit_typ_mut(inner.value_typ_mut(), usage),
         }
     }
 }
@@ -369,12 +369,12 @@ pub enum SimpleType {
 impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
-        !matches!(self, Self::String | Self::Ext(ExtType::Value { is_ref: false }))
+        !matches!(self, Self::String | Self::Ext(ExtType::Value))
     }
 
     /// Is this type a reference?
     pub const fn is_reference(self) -> bool {
-        matches!(self, Self::Str | Self::Ext(ExtType::Value { is_ref: true }))
+        matches!(self, Self::Str)
     }
 
     pub const fn ident(self) -> &'static str {
@@ -392,9 +392,8 @@ impl SimpleType {
     /// Identifier we'll use when this type is part of an enum, e.g.
     /// `Timestamp(stripe_types::Timestamp)`
     pub const fn display_name(self) -> &'static str {
-        use SimpleType::*;
         match self {
-            Ext(ext) => ext.display_name(),
+            SimpleType::Ext(ext) => ext.display_name(),
             typ => typ.ident(),
         }
     }
@@ -438,10 +437,8 @@ pub enum ExtType {
     RangeQueryTs,
     Timestamp,
     AlwaysTrue,
-    /// serde_json::Value
-    Value {
-        is_ref: bool,
-    },
+    /// Arbitrary JSON value
+    Value,
 }
 
 impl ExtType {
@@ -451,7 +448,7 @@ impl ExtType {
             Self::RangeQueryTs => "stripe_types::RangeQueryTs",
             Self::Timestamp => "stripe_types::Timestamp",
             Self::AlwaysTrue => "stripe_types::AlwaysTrue",
-            Self::Value { .. } => "serde_json::Value",
+            Self::Value => "miniserde::json::Value",
         }
     }
 
@@ -461,7 +458,7 @@ impl ExtType {
             Self::RangeQueryTs => "RangeQueryTs",
             Self::Timestamp => "Timestamp",
             Self::AlwaysTrue => "AlwaysTrue",
-            Self::Value { .. } => "Value",
+            Self::Value => "Value",
         }
     }
 }

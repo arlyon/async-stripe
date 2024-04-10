@@ -122,6 +122,18 @@ impl serde::Serialize for CreateFinancialConnectionsSessionAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateFinancialConnectionsSessionAccountHolderType",
+            )
+        })
+    }
+}
 /// Filters to restrict the kinds of accounts to collect.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters<'a> {

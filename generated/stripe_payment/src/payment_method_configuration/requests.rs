@@ -298,6 +298,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationAcssDebitDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"))
+    }
+}
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
@@ -371,6 +381,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationAffirmDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference"))
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
@@ -457,6 +477,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"))
+    }
+}
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
@@ -533,6 +563,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationAlipayDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
+    }
+}
 /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
@@ -606,6 +646,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationApplePayDisplayPrefere
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference"))
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
@@ -686,6 +736,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationApplePayLaterDisplayPr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -760,6 +820,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationAuBecsDebitDisplayPref
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebit {
@@ -831,6 +901,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationBacsDebitDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"))
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
@@ -908,6 +988,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationBancontactDisplayPrefe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference"))
+    }
+}
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
@@ -981,6 +1071,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationBlikDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
@@ -1057,6 +1161,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationBoletoDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference"))
+    }
+}
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1129,6 +1243,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationCardDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationCardDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationCardDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Cartes Bancaires is France's local card network.
@@ -1216,6 +1344,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"))
+    }
+}
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1288,6 +1426,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationCashappDisplayPreferen
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
     }
 }
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
@@ -1375,6 +1523,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"))
+    }
+}
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
@@ -1448,6 +1606,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationEpsDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -1524,6 +1696,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationFpxDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -1603,6 +1789,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationGiropayDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference"))
+    }
+}
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
@@ -1676,6 +1872,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationGooglePayDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"))
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
@@ -1753,6 +1959,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationGrabpayDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"))
+    }
+}
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
@@ -1828,6 +2044,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationIdealDisplayPreference
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference"))
+    }
+}
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
@@ -1901,6 +2127,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationJcbDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
@@ -1979,6 +2219,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationKlarnaDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"))
+    }
+}
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2053,6 +2303,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationKonbiniDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+    }
+}
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2125,6 +2385,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationLinkDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
@@ -2202,6 +2476,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationOxxoDisplayPreferenceP
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
+            )
+        })
+    }
+}
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
@@ -2275,6 +2563,20 @@ impl serde::Serialize for CreatePaymentMethodConfigurationP24DisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationP24DisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodConfigurationP24DisplayPreferencePreference",
+            )
+        })
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -2351,6 +2653,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationPaynowDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference"))
+    }
+}
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2423,6 +2735,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationPaypalDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference"))
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
@@ -2499,6 +2821,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationPromptpayDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"))
+    }
+}
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2571,6 +2903,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationRevolutPayDisplayPrefe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
@@ -2647,6 +2989,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationSepaDebitDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -2719,6 +3071,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationSofortDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
@@ -2800,6 +3162,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationUsBankAccountDisplayPr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"))
+    }
+}
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
@@ -2874,6 +3246,16 @@ impl serde::Serialize for CreatePaymentMethodConfigurationWechatPayDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
     }
 }
 impl<'a> CreatePaymentMethodConfiguration<'a> {
@@ -3136,6 +3518,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationAcssDebitDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"))
+    }
+}
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
@@ -3209,6 +3601,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationAffirmDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference"))
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
@@ -3295,6 +3697,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"))
+    }
+}
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
@@ -3371,6 +3783,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationAlipayDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
+    }
+}
 /// Stripe users can accept [Apple Pay](/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
@@ -3444,6 +3866,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationApplePayDisplayPrefere
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference"))
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
@@ -3524,6 +3956,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationApplePayLaterDisplayPr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3598,6 +4040,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPref
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebit {
@@ -3669,6 +4121,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationBacsDebitDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"))
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
@@ -3746,6 +4208,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationBancontactDisplayPrefe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference"))
+    }
+}
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
@@ -3819,6 +4291,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationBlikDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
@@ -3895,6 +4381,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationBoletoDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference"))
+    }
+}
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -3967,6 +4463,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationCardDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Cartes Bancaires is France's local card network.
@@ -4054,6 +4564,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"))
+    }
+}
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4126,6 +4646,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationCashappDisplayPreferen
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
     }
 }
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
@@ -4213,6 +4743,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"))
+    }
+}
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
@@ -4286,6 +4826,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationEpsDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
@@ -4362,6 +4916,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationFpxDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -4441,6 +5009,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationGiropayDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference"))
+    }
+}
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
@@ -4514,6 +5092,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationGooglePayDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"))
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
@@ -4591,6 +5179,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationGrabpayDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"))
+    }
+}
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
@@ -4666,6 +5264,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationIdealDisplayPreference
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference"))
+    }
+}
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
@@ -4739,6 +5347,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationJcbDisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
@@ -4817,6 +5439,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationKlarnaDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"))
+    }
+}
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4891,6 +5523,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationKonbiniDisplayPreferen
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+    }
+}
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -4963,6 +5605,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationLinkDisplayPreferenceP
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference",
+            )
+        })
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
@@ -5040,6 +5696,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationOxxoDisplayPreferenceP
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
+            )
+        })
+    }
+}
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
@@ -5113,6 +5783,20 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationP24DisplayPreferencePr
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference",
+            )
+        })
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
@@ -5189,6 +5873,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationPaynowDisplayPreferenc
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference"))
+    }
+}
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5261,6 +5955,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationPaypalDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference"))
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
@@ -5337,6 +6041,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationPromptpayDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"))
+    }
+}
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5409,6 +6123,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationRevolutPayDisplayPrefe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
@@ -5485,6 +6209,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationSepaDebitDisplayPrefer
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"))
+    }
+}
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -5557,6 +6291,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationSofortDisplayPreferenc
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
@@ -5638,6 +6382,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationUsBankAccountDisplayPr
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"))
+    }
+}
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
@@ -5712,6 +6466,16 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationWechatPayDisplayPrefer
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
     }
 }
 impl<'a> UpdatePaymentMethodConfiguration<'a> {

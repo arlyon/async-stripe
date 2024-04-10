@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Core Resources` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_core;
+
+miniserde::make_place!(Place);
 pub use balance::types::*;
 pub mod balance;
 #[doc(hidden)]

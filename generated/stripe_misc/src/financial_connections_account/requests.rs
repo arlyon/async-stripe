@@ -217,6 +217,16 @@ impl serde::Serialize for RefreshFinancialConnectionsAccountFeatures {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for RefreshFinancialConnectionsAccountFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for RefreshFinancialConnectionsAccountFeatures")
+        })
+    }
+}
 impl<'a> RefreshFinancialConnectionsAccount<'a> {
     /// Refreshes the data associated with a Financial Connections `Account`.
     pub fn send(
@@ -287,6 +297,18 @@ impl serde::Serialize for SubscribeFinancialConnectionsAccountFeatures {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for SubscribeFinancialConnectionsAccountFeatures",
+            )
+        })
+    }
+}
 impl<'a> SubscribeFinancialConnectionsAccount<'a> {
     /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
     pub fn send(
@@ -355,6 +377,18 @@ impl serde::Serialize for UnsubscribeFinancialConnectionsAccountFeatures {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UnsubscribeFinancialConnectionsAccountFeatures {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UnsubscribeFinancialConnectionsAccountFeatures",
+            )
+        })
     }
 }
 impl<'a> UnsubscribeFinancialConnectionsAccount<'a> {

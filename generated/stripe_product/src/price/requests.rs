@@ -113,6 +113,15 @@ impl serde::Serialize for ListPriceRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListPriceRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ListPriceRecurringInterval"))
+    }
+}
 /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListPriceRecurringUsageType {
@@ -157,6 +166,15 @@ impl serde::Serialize for ListPriceRecurringUsageType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ListPriceRecurringUsageType"))
     }
 }
 impl<'a> ListPrice<'a> {
@@ -546,6 +564,16 @@ impl serde::Serialize for CreatePriceRecurringAggregateUsage {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePriceRecurringAggregateUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePriceRecurringAggregateUsage")
+        })
+    }
+}
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePriceRecurringInterval {
@@ -598,6 +626,15 @@ impl serde::Serialize for CreatePriceRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePriceRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePriceRecurringInterval"))
+    }
+}
 /// Configures how the quantity per period should be determined.
 /// Can be either `metered` or `licensed`.
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
@@ -646,6 +683,16 @@ impl serde::Serialize for CreatePriceRecurringUsageType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePriceRecurringUsageType")
+        })
     }
 }
 /// Each element represents a pricing tier.
@@ -750,6 +797,16 @@ impl serde::Serialize for CreatePriceTransformQuantityRound {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePriceTransformQuantityRound")
+        })
     }
 }
 impl<'a> CreatePrice<'a> {

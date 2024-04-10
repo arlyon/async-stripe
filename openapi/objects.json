@@ -1,0 +1,570 @@
+[
+  {
+    "path": "account",
+    "import_type": "stripe_shared::Account"
+  },
+  {
+    "path": "account_link",
+    "import_type": "stripe_connect::AccountLink"
+  },
+  {
+    "path": "account_session",
+    "import_type": "stripe_connect::AccountSession"
+  },
+  {
+    "path": "apple_pay_domain",
+    "import_type": "stripe_misc::ApplePayDomain"
+  },
+  {
+    "path": "application",
+    "import_type": "stripe_shared::Application"
+  },
+  {
+    "path": "application_fee",
+    "import_type": "stripe_shared::ApplicationFee"
+  },
+  {
+    "path": "apps.secret",
+    "import_type": "stripe_connect::AppsSecret"
+  },
+  {
+    "path": "balance",
+    "import_type": "stripe_core::Balance"
+  },
+  {
+    "path": "balance_transaction",
+    "import_type": "stripe_shared::BalanceTransaction"
+  },
+  {
+    "path": "bank_account",
+    "import_type": "stripe_shared::BankAccount"
+  },
+  {
+    "path": "billing_portal.configuration",
+    "import_type": "stripe_billing::BillingPortalConfiguration"
+  },
+  {
+    "path": "billing_portal.session",
+    "import_type": "stripe_billing::BillingPortalSession"
+  },
+  {
+    "path": "capability",
+    "import_type": "stripe_shared::Capability"
+  },
+  {
+    "path": "card",
+    "import_type": "stripe_shared::Card"
+  },
+  {
+    "path": "cash_balance",
+    "import_type": "stripe_shared::CashBalance"
+  },
+  {
+    "path": "charge",
+    "import_type": "stripe_shared::Charge"
+  },
+  {
+    "path": "checkout.session",
+    "import_type": "stripe_checkout::CheckoutSession"
+  },
+  {
+    "path": "climate.order",
+    "import_type": "stripe_misc::ClimateOrder"
+  },
+  {
+    "path": "climate.product",
+    "import_type": "stripe_misc::ClimateProduct"
+  },
+  {
+    "path": "climate.supplier",
+    "import_type": "stripe_misc::ClimateSupplier"
+  },
+  {
+    "path": "connect_collection_transfer",
+    "import_type": "stripe_shared::ConnectCollectionTransfer"
+  },
+  {
+    "path": "country_spec",
+    "import_type": "stripe_connect::CountrySpec"
+  },
+  {
+    "path": "coupon",
+    "import_type": "stripe_shared::Coupon"
+  },
+  {
+    "path": "credit_note",
+    "import_type": "stripe_shared::CreditNote"
+  },
+  {
+    "path": "credit_note_line_item",
+    "import_type": "stripe_shared::CreditNoteLineItem"
+  },
+  {
+    "path": "customer",
+    "import_type": "stripe_shared::Customer"
+  },
+  {
+    "path": "customer_balance_transaction",
+    "import_type": "stripe_shared::CustomerBalanceTransaction"
+  },
+  {
+    "path": "customer_cash_balance_transaction",
+    "import_type": "stripe_shared::CustomerCashBalanceTransaction"
+  },
+  {
+    "path": "customer_session",
+    "import_type": "stripe_core::CustomerSession"
+  },
+  {
+    "path": "deleted_account",
+    "import_type": "stripe_shared::DeletedAccount"
+  },
+  {
+    "path": "deleted_apple_pay_domain",
+    "import_type": "stripe_misc::DeletedApplePayDomain"
+  },
+  {
+    "path": "deleted_bank_account",
+    "import_type": "stripe_shared::DeletedBankAccount"
+  },
+  {
+    "path": "deleted_card",
+    "import_type": "stripe_shared::DeletedCard"
+  },
+  {
+    "path": "deleted_coupon",
+    "import_type": "stripe_shared::DeletedCoupon"
+  },
+  {
+    "path": "deleted_customer",
+    "import_type": "stripe_shared::DeletedCustomer"
+  },
+  {
+    "path": "deleted_discount",
+    "import_type": "stripe_shared::DeletedDiscount"
+  },
+  {
+    "path": "deleted_invoice",
+    "import_type": "stripe_shared::DeletedInvoice"
+  },
+  {
+    "path": "deleted_invoiceitem",
+    "import_type": "stripe_shared::DeletedInvoiceitem"
+  },
+  {
+    "path": "deleted_person",
+    "import_type": "stripe_shared::DeletedPerson"
+  },
+  {
+    "path": "deleted_plan",
+    "import_type": "stripe_shared::DeletedPlan"
+  },
+  {
+    "path": "deleted_product",
+    "import_type": "stripe_shared::DeletedProduct"
+  },
+  {
+    "path": "deleted_radar.value_list",
+    "import_type": "stripe_fraud::DeletedRadarValueList"
+  },
+  {
+    "path": "deleted_radar.value_list_item",
+    "import_type": "stripe_fraud::DeletedRadarValueListItem"
+  },
+  {
+    "path": "deleted_subscription_item",
+    "import_type": "stripe_shared::DeletedSubscriptionItem"
+  },
+  {
+    "path": "deleted_tax_id",
+    "import_type": "stripe_shared::DeletedTaxId"
+  },
+  {
+    "path": "deleted_terminal.configuration",
+    "import_type": "stripe_terminal::DeletedTerminalConfiguration"
+  },
+  {
+    "path": "deleted_terminal.location",
+    "import_type": "stripe_terminal::DeletedTerminalLocation"
+  },
+  {
+    "path": "deleted_terminal.reader",
+    "import_type": "stripe_terminal::DeletedTerminalReader"
+  },
+  {
+    "path": "deleted_test_helpers.test_clock",
+    "import_type": "stripe_shared::DeletedTestHelpersTestClock"
+  },
+  {
+    "path": "deleted_webhook_endpoint",
+    "import_type": "stripe_misc::DeletedWebhookEndpoint"
+  },
+  {
+    "path": "discount",
+    "import_type": "stripe_shared::Discount"
+  },
+  {
+    "path": "dispute",
+    "import_type": "stripe_shared::Dispute"
+  },
+  {
+    "path": "ephemeral_key",
+    "import_type": "stripe_misc::EphemeralKey"
+  },
+  {
+    "path": "event",
+    "import_type": "stripe_shared::Event"
+  },
+  {
+    "path": "exchange_rate",
+    "import_type": "stripe_misc::ExchangeRate"
+  },
+  {
+    "path": "fee_refund",
+    "import_type": "stripe_shared::ApplicationFeeRefund"
+  },
+  {
+    "path": "file",
+    "import_type": "stripe_shared::File"
+  },
+  {
+    "path": "file_link",
+    "import_type": "stripe_shared::FileLink"
+  },
+  {
+    "path": "financial_connections.account",
+    "import_type": "stripe_misc::FinancialConnectionsAccount"
+  },
+  {
+    "path": "financial_connections.account_owner",
+    "import_type": "stripe_misc::FinancialConnectionsAccountOwner"
+  },
+  {
+    "path": "financial_connections.account_ownership",
+    "import_type": "stripe_misc::FinancialConnectionsAccountOwnership"
+  },
+  {
+    "path": "financial_connections.session",
+    "import_type": "stripe_misc::FinancialConnectionsSession"
+  },
+  {
+    "path": "financial_connections.transaction",
+    "import_type": "stripe_misc::FinancialConnectionsTransaction"
+  },
+  {
+    "path": "funding_instructions",
+    "import_type": "stripe_shared::FundingInstructions"
+  },
+  {
+    "path": "identity.verification_report",
+    "import_type": "stripe_misc::IdentityVerificationReport"
+  },
+  {
+    "path": "identity.verification_session",
+    "import_type": "stripe_misc::IdentityVerificationSession"
+  },
+  {
+    "path": "invoice",
+    "import_type": "stripe_shared::Invoice"
+  },
+  {
+    "path": "invoiceitem",
+    "import_type": "stripe_shared::InvoiceItem"
+  },
+  {
+    "path": "issuing.authorization",
+    "import_type": "stripe_shared::IssuingAuthorization"
+  },
+  {
+    "path": "issuing.card",
+    "import_type": "stripe_shared::IssuingCard"
+  },
+  {
+    "path": "issuing.cardholder",
+    "import_type": "stripe_shared::IssuingCardholder"
+  },
+  {
+    "path": "issuing.dispute",
+    "import_type": "stripe_shared::IssuingDispute"
+  },
+  {
+    "path": "issuing.token",
+    "import_type": "stripe_shared::IssuingToken"
+  },
+  {
+    "path": "issuing.transaction",
+    "import_type": "stripe_shared::IssuingTransaction"
+  },
+  {
+    "path": "item",
+    "import_type": "stripe_shared::CheckoutSessionItem"
+  },
+  {
+    "path": "line_item",
+    "import_type": "stripe_shared::InvoiceLineItem"
+  },
+  {
+    "path": "login_link",
+    "import_type": "stripe_connect::LoginLink"
+  },
+  {
+    "path": "mandate",
+    "import_type": "stripe_shared::Mandate"
+  },
+  {
+    "path": "payment_intent",
+    "import_type": "stripe_shared::PaymentIntent"
+  },
+  {
+    "path": "payment_link",
+    "import_type": "stripe_shared::PaymentLink"
+  },
+  {
+    "path": "payment_method",
+    "import_type": "stripe_shared::PaymentMethod"
+  },
+  {
+    "path": "payment_method_configuration",
+    "import_type": "stripe_payment::PaymentMethodConfiguration"
+  },
+  {
+    "path": "payment_method_domain",
+    "import_type": "stripe_payment::PaymentMethodDomain"
+  },
+  {
+    "path": "payout",
+    "import_type": "stripe_shared::Payout"
+  },
+  {
+    "path": "person",
+    "import_type": "stripe_shared::Person"
+  },
+  {
+    "path": "plan",
+    "import_type": "stripe_shared::Plan"
+  },
+  {
+    "path": "platform_tax_fee",
+    "import_type": "stripe_shared::PlatformTaxFee"
+  },
+  {
+    "path": "price",
+    "import_type": "stripe_shared::Price"
+  },
+  {
+    "path": "product",
+    "import_type": "stripe_shared::Product"
+  },
+  {
+    "path": "promotion_code",
+    "import_type": "stripe_shared::PromotionCode"
+  },
+  {
+    "path": "quote",
+    "import_type": "stripe_shared::Quote"
+  },
+  {
+    "path": "radar.early_fraud_warning",
+    "import_type": "stripe_fraud::RadarEarlyFraudWarning"
+  },
+  {
+    "path": "radar.value_list",
+    "import_type": "stripe_fraud::RadarValueList"
+  },
+  {
+    "path": "radar.value_list_item",
+    "import_type": "stripe_fraud::RadarValueListItem"
+  },
+  {
+    "path": "refund",
+    "import_type": "stripe_shared::Refund"
+  },
+  {
+    "path": "reporting.report_run",
+    "import_type": "stripe_misc::ReportingReportRun"
+  },
+  {
+    "path": "reporting.report_type",
+    "import_type": "stripe_misc::ReportingReportType"
+  },
+  {
+    "path": "reserve_transaction",
+    "import_type": "stripe_shared::ReserveTransaction"
+  },
+  {
+    "path": "review",
+    "import_type": "stripe_shared::Review"
+  },
+  {
+    "path": "scheduled_query_run",
+    "import_type": "stripe_misc::ScheduledQueryRun"
+  },
+  {
+    "path": "setup_attempt",
+    "import_type": "stripe_shared::SetupAttempt"
+  },
+  {
+    "path": "setup_intent",
+    "import_type": "stripe_shared::SetupIntent"
+  },
+  {
+    "path": "shipping_rate",
+    "import_type": "stripe_shared::ShippingRate"
+  },
+  {
+    "path": "source",
+    "import_type": "stripe_shared::Source"
+  },
+  {
+    "path": "source_mandate_notification",
+    "import_type": "stripe_payment::SourceMandateNotification"
+  },
+  {
+    "path": "source_transaction",
+    "import_type": "stripe_shared::SourceTransaction"
+  },
+  {
+    "path": "subscription",
+    "import_type": "stripe_shared::Subscription"
+  },
+  {
+    "path": "subscription_item",
+    "import_type": "stripe_shared::SubscriptionItem"
+  },
+  {
+    "path": "subscription_schedule",
+    "import_type": "stripe_shared::SubscriptionSchedule"
+  },
+  {
+    "path": "tax.calculation",
+    "import_type": "stripe_misc::TaxCalculation"
+  },
+  {
+    "path": "tax.calculation_line_item",
+    "import_type": "stripe_misc::TaxCalculationLineItem"
+  },
+  {
+    "path": "tax.registration",
+    "import_type": "stripe_misc::TaxRegistration"
+  },
+  {
+    "path": "tax.settings",
+    "import_type": "stripe_misc::TaxSettings"
+  },
+  {
+    "path": "tax.transaction",
+    "import_type": "stripe_misc::TaxTransaction"
+  },
+  {
+    "path": "tax.transaction_line_item",
+    "import_type": "stripe_misc::TaxTransactionLineItem"
+  },
+  {
+    "path": "tax_code",
+    "import_type": "stripe_shared::TaxCode"
+  },
+  {
+    "path": "tax_deducted_at_source",
+    "import_type": "stripe_shared::TaxDeductedAtSource"
+  },
+  {
+    "path": "tax_id",
+    "import_type": "stripe_shared::TaxId"
+  },
+  {
+    "path": "tax_rate",
+    "import_type": "stripe_shared::TaxRate"
+  },
+  {
+    "path": "terminal.configuration",
+    "import_type": "stripe_terminal::TerminalConfiguration"
+  },
+  {
+    "path": "terminal.connection_token",
+    "import_type": "stripe_terminal::TerminalConnectionToken"
+  },
+  {
+    "path": "terminal.location",
+    "import_type": "stripe_terminal::TerminalLocation"
+  },
+  {
+    "path": "terminal.reader",
+    "import_type": "stripe_terminal::TerminalReader"
+  },
+  {
+    "path": "test_helpers.test_clock",
+    "import_type": "stripe_shared::TestHelpersTestClock"
+  },
+  {
+    "path": "token",
+    "import_type": "stripe_core::Token"
+  },
+  {
+    "path": "topup",
+    "import_type": "stripe_shared::Topup"
+  },
+  {
+    "path": "transfer",
+    "import_type": "stripe_shared::Transfer"
+  },
+  {
+    "path": "transfer_reversal",
+    "import_type": "stripe_shared::TransferReversal"
+  },
+  {
+    "path": "treasury.credit_reversal",
+    "import_type": "stripe_treasury::TreasuryCreditReversal"
+  },
+  {
+    "path": "treasury.debit_reversal",
+    "import_type": "stripe_treasury::TreasuryDebitReversal"
+  },
+  {
+    "path": "treasury.financial_account",
+    "import_type": "stripe_treasury::TreasuryFinancialAccount"
+  },
+  {
+    "path": "treasury.financial_account_features",
+    "import_type": "stripe_treasury::TreasuryFinancialAccountFeatures"
+  },
+  {
+    "path": "treasury.inbound_transfer",
+    "import_type": "stripe_treasury::TreasuryInboundTransfer"
+  },
+  {
+    "path": "treasury.outbound_payment",
+    "import_type": "stripe_treasury::TreasuryOutboundPayment"
+  },
+  {
+    "path": "treasury.outbound_transfer",
+    "import_type": "stripe_treasury::TreasuryOutboundTransfer"
+  },
+  {
+    "path": "treasury.received_credit",
+    "import_type": "stripe_treasury::TreasuryReceivedCredit"
+  },
+  {
+    "path": "treasury.received_debit",
+    "import_type": "stripe_treasury::TreasuryReceivedDebit"
+  },
+  {
+    "path": "treasury.transaction",
+    "import_type": "stripe_treasury::TreasuryTransaction"
+  },
+  {
+    "path": "treasury.transaction_entry",
+    "import_type": "stripe_treasury::TreasuryTransactionEntry"
+  },
+  {
+    "path": "usage_record",
+    "import_type": "stripe_billing::UsageRecord"
+  },
+  {
+    "path": "usage_record_summary",
+    "import_type": "stripe_shared::UsageRecordSummary"
+  },
+  {
+    "path": "webhook_endpoint",
+    "import_type": "stripe_misc::WebhookEndpoint"
+  }
+]
