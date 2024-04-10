@@ -6,7 +6,8 @@
 /// Related guide: [Issued card authorizations](https://stripe.com/docs/issuing/purchases/authorizations).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/authorizations/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorization {
     /// The total amount that was authorized or rejected.
     /// This amount is in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -62,18 +63,259 @@ pub struct IssuingAuthorization {
     pub status: stripe_shared::IssuingAuthorizationStatus,
     /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this authorization.
     /// If a network token was not used for this authorization, this field will be null.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub token: Option<stripe_types::Expandable<stripe_shared::IssuingToken>>,
     /// List of [transactions](https://stripe.com/docs/api/issuing/transactions) associated with this authorization.
     pub transactions: Vec<stripe_shared::IssuingTransaction>,
     /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub treasury: Option<stripe_shared::IssuingAuthorizationTreasury>,
     pub verification_data: stripe_shared::IssuingAuthorizationVerificationData,
     /// The digital wallet used for this transaction.
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     /// Will populate as `null` when no digital wallet was utilized.
     pub wallet: Option<String>,
+}
+#[doc(hidden)]
+pub struct IssuingAuthorizationBuilder {
+    amount: Option<i64>,
+    amount_details: Option<Option<stripe_shared::IssuingAuthorizationAmountDetails>>,
+    approved: Option<bool>,
+    authorization_method: Option<stripe_shared::IssuingAuthorizationAuthorizationMethod>,
+    balance_transactions: Option<Vec<stripe_shared::BalanceTransaction>>,
+    card: Option<stripe_shared::IssuingCard>,
+    cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<stripe_types::Currency>,
+    id: Option<stripe_shared::IssuingAuthorizationId>,
+    livemode: Option<bool>,
+    merchant_amount: Option<i64>,
+    merchant_currency: Option<stripe_types::Currency>,
+    merchant_data: Option<stripe_shared::IssuingAuthorizationMerchantData>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    network_data: Option<Option<stripe_shared::IssuingAuthorizationNetworkData>>,
+    pending_request: Option<Option<stripe_shared::IssuingAuthorizationPendingRequest>>,
+    request_history: Option<Vec<stripe_shared::IssuingAuthorizationRequest>>,
+    status: Option<stripe_shared::IssuingAuthorizationStatus>,
+    token: Option<Option<stripe_types::Expandable<stripe_shared::IssuingToken>>>,
+    transactions: Option<Vec<stripe_shared::IssuingTransaction>>,
+    treasury: Option<Option<stripe_shared::IssuingAuthorizationTreasury>>,
+    verification_data: Option<stripe_shared::IssuingAuthorizationVerificationData>,
+    wallet: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingAuthorization {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingAuthorization>,
+        builder: IssuingAuthorizationBuilder,
+    }
+
+    impl Visitor for Place<IssuingAuthorization> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IssuingAuthorizationBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IssuingAuthorizationBuilder {
+        type Out = IssuingAuthorization;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_details" => Deserialize::begin(&mut self.amount_details),
+                "approved" => Deserialize::begin(&mut self.approved),
+                "authorization_method" => Deserialize::begin(&mut self.authorization_method),
+                "balance_transactions" => Deserialize::begin(&mut self.balance_transactions),
+                "card" => Deserialize::begin(&mut self.card),
+                "cardholder" => Deserialize::begin(&mut self.cardholder),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
+                "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
+                "merchant_data" => Deserialize::begin(&mut self.merchant_data),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "network_data" => Deserialize::begin(&mut self.network_data),
+                "pending_request" => Deserialize::begin(&mut self.pending_request),
+                "request_history" => Deserialize::begin(&mut self.request_history),
+                "status" => Deserialize::begin(&mut self.status),
+                "token" => Deserialize::begin(&mut self.token),
+                "transactions" => Deserialize::begin(&mut self.transactions),
+                "treasury" => Deserialize::begin(&mut self.treasury),
+                "verification_data" => Deserialize::begin(&mut self.verification_data),
+                "wallet" => Deserialize::begin(&mut self.wallet),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_details: Deserialize::default(),
+                approved: Deserialize::default(),
+                authorization_method: Deserialize::default(),
+                balance_transactions: Deserialize::default(),
+                card: Deserialize::default(),
+                cardholder: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                merchant_amount: Deserialize::default(),
+                merchant_currency: Deserialize::default(),
+                merchant_data: Deserialize::default(),
+                metadata: Deserialize::default(),
+                network_data: Deserialize::default(),
+                pending_request: Deserialize::default(),
+                request_history: Deserialize::default(),
+                status: Deserialize::default(),
+                token: Deserialize::default(),
+                transactions: Deserialize::default(),
+                treasury: Deserialize::default(),
+                verification_data: Deserialize::default(),
+                wallet: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                amount_details: self.amount_details?,
+                approved: self.approved?,
+                authorization_method: self.authorization_method?,
+                balance_transactions: self.balance_transactions.take()?,
+                card: self.card.take()?,
+                cardholder: self.cardholder.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                merchant_amount: self.merchant_amount?,
+                merchant_currency: self.merchant_currency?,
+                merchant_data: self.merchant_data.take()?,
+                metadata: self.metadata.take()?,
+                network_data: self.network_data.take()?,
+                pending_request: self.pending_request?,
+                request_history: self.request_history.take()?,
+                status: self.status?,
+                token: self.token.take()?,
+                transactions: self.transactions.take()?,
+                treasury: self.treasury.take()?,
+                verification_data: self.verification_data.take()?,
+                wallet: self.wallet.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingAuthorization {
+        type Builder = IssuingAuthorizationBuilder;
+    }
+
+    impl FromValueOpt for IssuingAuthorization {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingAuthorizationBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_details" => b.amount_details = Some(FromValueOpt::from_value(v)?),
+                    "approved" => b.approved = Some(FromValueOpt::from_value(v)?),
+                    "authorization_method" => {
+                        b.authorization_method = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "balance_transactions" => {
+                        b.balance_transactions = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
+                    "cardholder" => b.cardholder = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "merchant_amount" => b.merchant_amount = Some(FromValueOpt::from_value(v)?),
+                    "merchant_currency" => b.merchant_currency = Some(FromValueOpt::from_value(v)?),
+                    "merchant_data" => b.merchant_data = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "network_data" => b.network_data = Some(FromValueOpt::from_value(v)?),
+                    "pending_request" => b.pending_request = Some(FromValueOpt::from_value(v)?),
+                    "request_history" => b.request_history = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "token" => b.token = Some(FromValueOpt::from_value(v)?),
+                    "transactions" => b.transactions = Some(FromValueOpt::from_value(v)?),
+                    "treasury" => b.treasury = Some(FromValueOpt::from_value(v)?),
+                    "verification_data" => b.verification_data = Some(FromValueOpt::from_value(v)?),
+                    "wallet" => b.wallet = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IssuingAuthorization {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("IssuingAuthorization", 25)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("amount_details", &self.amount_details)?;
+        s.serialize_field("approved", &self.approved)?;
+        s.serialize_field("authorization_method", &self.authorization_method)?;
+        s.serialize_field("balance_transactions", &self.balance_transactions)?;
+        s.serialize_field("card", &self.card)?;
+        s.serialize_field("cardholder", &self.cardholder)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("merchant_amount", &self.merchant_amount)?;
+        s.serialize_field("merchant_currency", &self.merchant_currency)?;
+        s.serialize_field("merchant_data", &self.merchant_data)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("network_data", &self.network_data)?;
+        s.serialize_field("pending_request", &self.pending_request)?;
+        s.serialize_field("request_history", &self.request_history)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("token", &self.token)?;
+        s.serialize_field("transactions", &self.transactions)?;
+        s.serialize_field("treasury", &self.treasury)?;
+        s.serialize_field("verification_data", &self.verification_data)?;
+        s.serialize_field("wallet", &self.wallet)?;
+
+        s.serialize_field("object", "issuing.authorization")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for IssuingAuthorization {
     type Id = stripe_shared::IssuingAuthorizationId;
@@ -136,6 +378,24 @@ impl serde::Serialize for IssuingAuthorizationAuthorizationMethod {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingAuthorizationAuthorizationMethod {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthorizationMethod> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            IssuingAuthorizationAuthorizationMethod::from_str(s).map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationAuthorizationMethod);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthorizationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -193,6 +453,22 @@ impl serde::Serialize for IssuingAuthorizationStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingAuthorizationStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingAuthorizationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingAuthorizationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

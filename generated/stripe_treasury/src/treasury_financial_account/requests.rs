@@ -358,6 +358,20 @@ impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsInbo
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows",
+            )
+        })
+    }
+}
 /// Restricts all outbound money movement.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
@@ -402,6 +416,20 @@ impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsOutb
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows",
+            )
+        })
     }
 }
 impl<'a> CreateTreasuryFinancialAccount<'a> {
@@ -686,6 +714,20 @@ impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsInbo
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows",
+            )
+        })
+    }
+}
 /// Restricts all outbound money movement.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
@@ -730,6 +772,20 @@ impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsOutb
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows",
+            )
+        })
     }
 }
 impl<'a> UpdateTreasuryFinancialAccount<'a> {

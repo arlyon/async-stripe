@@ -12,9 +12,14 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-serde = {workspace = true }
+serde.workspace = true
 smol_str.workspace = true
 serde_json.workspace = true
+miniserde.workspace = true
 
 [dev-dependencies]
 serde_qs = "0.12.0"
+
+[features]
+serialize = []
+deserialize = []

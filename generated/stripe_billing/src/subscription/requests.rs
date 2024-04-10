@@ -97,6 +97,18 @@ impl serde::Serialize for CancelSubscriptionCancellationDetailsFeedback {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedback {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CancelSubscriptionCancellationDetailsFeedback",
+            )
+        })
+    }
+}
 impl<'a> CancelSubscription<'a> {
     /// Cancels a customer’s subscription immediately.
     /// The customer will not be charged again for the subscription.
@@ -285,6 +297,15 @@ impl serde::Serialize for ListSubscriptionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListSubscriptionStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for ListSubscriptionStatus"))
+    }
+}
 impl<'a> ListSubscription<'a> {
     /// By default, returns a list of subscriptions that have not been canceled.
     /// In order to list canceled subscriptions, specify `status=canceled`.
@@ -363,7 +384,7 @@ impl<'a> SearchSubscription<'a> {
         stripe::ListPaginator::from_search_params("/subscriptions/search", self)
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscription<'a> {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.
     /// You may pass up to 20 items.
@@ -671,6 +692,18 @@ impl serde::Serialize for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior 
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
+            )
+        })
+    }
+}
 /// Automatic tax settings for this subscription.
 /// We recommend you only include this parameter when the existing value is being changed.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -749,6 +782,18 @@ impl serde::Serialize for CreateSubscriptionAutomaticTaxLiabilityType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionAutomaticTaxLiabilityType",
+            )
+        })
     }
 }
 /// Mutually exclusive with billing_cycle_anchor and only valid with monthly and yearly price intervals.
@@ -852,6 +897,18 @@ impl serde::Serialize for CreateSubscriptionInvoiceSettingsIssuerType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionInvoiceSettingsIssuerType",
+            )
+        })
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -998,6 +1055,18 @@ impl serde::Serialize for CreateSubscriptionItemsPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -1048,6 +1117,18 @@ impl serde::Serialize for CreateSubscriptionItemsPriceDataTaxBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionItemsPriceDataTaxBehavior",
+            )
+        })
     }
 }
 /// Only applies to subscriptions with `collection_method=charge_automatically`.
@@ -1123,8 +1204,18 @@ impl serde::Serialize for CreateSubscriptionPaymentBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentBehavior")
+        })
+    }
+}
 /// Payment settings to pass to invoices created by the subscription.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettings<'a> {
     /// Payment-method-specific configuration to provide to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1146,7 +1237,7 @@ impl<'a> CreateSubscriptionPaymentSettings<'a> {
     }
 }
 /// Payment-method-specific configuration to provide to invoices created by the subscription.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1162,7 +1253,8 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub customer_balance: Option<InvoicePaymentMethodOptionsParam<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
@@ -1259,6 +1351,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
+    }
+}
 /// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -1314,6 +1416,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
@@ -1387,6 +1499,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"))
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -1490,6 +1612,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"))
+    }
+}
 /// Selected network to process this Subscription on.
 /// Depends on the available networks of the card attached to the Subscription.
 /// Can be only set confirm-time.
@@ -1565,6 +1697,16 @@ impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsC
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork"))
+    }
+}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
@@ -1622,6 +1764,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"))
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -1717,6 +1869,14 @@ impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
@@ -1762,6 +1922,14 @@ impl std::fmt::Debug for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUs
 impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Verification method for the intent
@@ -1819,6 +1987,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// The list of payment method types (e.g.
@@ -1945,6 +2123,14 @@ impl serde::Serialize for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Either `off`, or `on_subscription`.
 /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -1990,6 +2176,18 @@ impl serde::Serialize for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
+            )
+        })
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
@@ -2061,6 +2259,18 @@ impl serde::Serialize for CreateSubscriptionPendingInvoiceItemIntervalInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionPendingInvoiceItemIntervalInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionPendingInvoiceItemIntervalInterval",
+            )
+        })
+    }
+}
 /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) resulting from the `billing_cycle_anchor`.
 /// If no value is passed, the default is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2109,6 +2319,16 @@ impl serde::Serialize for CreateSubscriptionProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSubscriptionProrationBehavior")
+        })
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -2193,6 +2413,20 @@ impl serde::Serialize for CreateSubscriptionTrialSettingsEndBehaviorMissingPayme
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
+            )
+        })
     }
 }
 impl<'a> CreateSubscription<'a> {
@@ -2282,6 +2516,16 @@ impl serde::Serialize for ResumeSubscriptionBillingCycleAnchor {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ResumeSubscriptionBillingCycleAnchor")
+        })
+    }
+}
 /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -2332,6 +2576,16 @@ impl serde::Serialize for ResumeSubscriptionProrationBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ResumeSubscriptionProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ResumeSubscriptionProrationBehavior")
+        })
+    }
+}
 impl<'a> ResumeSubscription<'a> {
     /// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
     /// If a resumption invoice is generated, it must be paid or marked uncollectible before the subscription will be unpaused.
@@ -2349,7 +2603,7 @@ impl<'a> ResumeSubscription<'a> {
         )
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscription<'a> {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.
     /// You may pass up to 20 items.
@@ -2610,6 +2864,18 @@ impl serde::Serialize for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior 
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
+            )
+        })
+    }
+}
 /// Automatic tax settings for this subscription.
 /// We recommend you only include this parameter when the existing value is being changed.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -2690,6 +2956,18 @@ impl serde::Serialize for UpdateSubscriptionAutomaticTaxLiabilityType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAutomaticTaxLiabilityType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionAutomaticTaxLiabilityType",
+            )
+        })
+    }
+}
 /// Either `now` or `unchanged`.
 /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
@@ -2736,6 +3014,16 @@ impl serde::Serialize for UpdateSubscriptionBillingCycleAnchor {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionBillingCycleAnchor")
+        })
     }
 }
 /// Details about why this subscription was cancelled
@@ -2817,6 +3105,18 @@ impl serde::Serialize for UpdateSubscriptionCancellationDetailsFeedback {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionCancellationDetailsFeedback {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionCancellationDetailsFeedback",
+            )
+        })
+    }
+}
 /// All invoices will be billed using the specified settings.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionInvoiceSettings<'a> {
@@ -2894,6 +3194,18 @@ impl serde::Serialize for UpdateSubscriptionInvoiceSettingsIssuerType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionInvoiceSettingsIssuerType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionInvoiceSettingsIssuerType",
+            )
+        })
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -3051,6 +3363,18 @@ impl serde::Serialize for UpdateSubscriptionItemsPriceDataRecurringInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataRecurringInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionItemsPriceDataRecurringInterval",
+            )
+        })
+    }
+}
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -3101,6 +3425,18 @@ impl serde::Serialize for UpdateSubscriptionItemsPriceDataTaxBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionItemsPriceDataTaxBehavior",
+            )
+        })
     }
 }
 /// If specified, payment collection for this subscription will be paused.
@@ -3166,6 +3502,16 @@ impl serde::Serialize for UpdateSubscriptionPauseCollectionBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionPauseCollectionBehavior")
+        })
     }
 }
 /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
@@ -3236,8 +3582,18 @@ impl serde::Serialize for UpdateSubscriptionPaymentBehavior {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentBehavior")
+        })
+    }
+}
 /// Payment settings to pass to invoices created by the subscription.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettings<'a> {
     /// Payment-method-specific configuration to provide to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3259,7 +3615,7 @@ impl<'a> UpdateSubscriptionPaymentSettings<'a> {
     }
 }
 /// Payment-method-specific configuration to provide to invoices created by the subscription.
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3275,7 +3631,8 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions<'a> {
     pub customer_balance: Option<InvoicePaymentMethodOptionsParam<'a>>,
     /// This sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
@@ -3372,6 +3729,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
+    }
+}
 /// Verification method for the intent
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -3427,6 +3794,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"))
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
@@ -3500,6 +3877,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"))
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -3603,6 +3990,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"))
+    }
+}
 /// Selected network to process this Subscription on.
 /// Depends on the available networks of the card attached to the Subscription.
 /// Can be only set confirm-time.
@@ -3678,6 +4075,16 @@ impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsC
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork"))
+    }
+}
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
@@ -3735,6 +4142,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"))
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -3830,6 +4247,14 @@ impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsU
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+    }
+}
 /// List of data features that you would like to retrieve upon account creation.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
@@ -3875,6 +4300,14 @@ impl std::fmt::Debug for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUs
 impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
     }
 }
 /// Verification method for the intent
@@ -3932,6 +4365,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"))
     }
 }
 /// The list of payment method types (e.g.
@@ -4058,6 +4501,14 @@ impl serde::Serialize for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Either `off`, or `on_subscription`.
 /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -4103,6 +4554,18 @@ impl serde::Serialize for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMet
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
+            )
+        })
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
@@ -4174,6 +4637,18 @@ impl serde::Serialize for UpdateSubscriptionPendingInvoiceItemIntervalInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPendingInvoiceItemIntervalInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionPendingInvoiceItemIntervalInterval",
+            )
+        })
+    }
+}
 /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -4222,6 +4697,16 @@ impl serde::Serialize for UpdateSubscriptionProrationBehavior {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSubscriptionProrationBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSubscriptionProrationBehavior")
+        })
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -4306,6 +4791,20 @@ impl serde::Serialize for UpdateSubscriptionTrialSettingsEndBehaviorMissingPayme
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
+            )
+        })
     }
 }
 impl<'a> UpdateSubscription<'a> {

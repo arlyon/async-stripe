@@ -1307,6 +1307,14 @@ impl serde::Serialize for CreateIssuingAuthorizationMerchantDataCategory {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Details about the authorization, such as identifiers, set by the card network.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateIssuingAuthorizationNetworkData<'a> {
@@ -1397,6 +1405,18 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAddressLine1
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationDataAddressLine1Check {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationVerificationDataAddressLine1Check",
+            )
+        })
+    }
+}
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
@@ -1444,6 +1464,16 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAddressPosta
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck"))
     }
 }
 /// The exemption applied to this authorization.
@@ -1517,6 +1547,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy"))
+    }
+}
 /// The specific exemption claimed for this authorization.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
@@ -1564,6 +1604,16 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAuthenticati
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType"))
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
@@ -1615,6 +1665,18 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataCvcCheck {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationDataCvcCheck {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationVerificationDataCvcCheck",
+            )
+        })
+    }
+}
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateIssuingAuthorizationVerificationDataExpiryCheck {
@@ -1662,6 +1724,18 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataExpiryCheck 
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationDataExpiryCheck {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationVerificationDataExpiryCheck",
+            )
+        })
     }
 }
 /// 3D Secure details.
@@ -1727,6 +1801,18 @@ impl serde::Serialize for CreateIssuingAuthorizationVerificationDataThreeDSecure
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIssuingAuthorizationVerificationDataThreeDSecureResult",
+            )
+        })
+    }
+}
 /// The digital wallet used for this transaction.
 /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
 /// Will populate as `null` when no digital wallet was utilized.
@@ -1776,6 +1862,16 @@ impl serde::Serialize for CreateIssuingAuthorizationWallet {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationWallet {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationWallet")
+        })
     }
 }
 impl<'a> CreateIssuingAuthorization<'a> {
@@ -1965,6 +2061,18 @@ impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CaptureIssuingAuthorizationPurchaseDetailsFuelType",
+            )
+        })
+    }
+}
 /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
@@ -2009,6 +2117,18 @@ impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit",
+            )
+        })
     }
 }
 /// Information about lodging that was purchased with this transaction.

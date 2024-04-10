@@ -1225,6 +1225,14 @@ impl serde::Serialize for CreateForceCaptureIssuingTransactionMerchantDataCatego
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMerchantDataCategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Additional purchase information that is optionally provided by the merchant.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetails<'a> {
@@ -1328,6 +1336,18 @@ impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFue
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType",
+            )
+        })
+    }
+}
 /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
@@ -1372,6 +1392,18 @@ impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFue
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit",
+            )
+        })
     }
 }
 impl<'a> CreateForceCaptureIssuingTransaction<'a> {
@@ -2479,6 +2511,14 @@ impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionMerchantDataCate
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Additional purchase information that is optionally provided by the merchant.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails<'a> {
@@ -2582,6 +2622,20 @@ impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsF
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType",
+            )
+        })
+    }
+}
 /// The units for `volume_decimal`. One of `us_gallon` or `liter`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
@@ -2626,6 +2680,20 @@ impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsF
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit",
+            )
+        })
     }
 }
 impl<'a> CreateUnlinkedRefundIssuingTransaction<'a> {

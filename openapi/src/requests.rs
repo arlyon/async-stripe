@@ -5,7 +5,7 @@ use heck::ToSnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 use tracing::debug;
 
-use crate::rust_object::{ObjectKind, ObjectMetadata, RustObject};
+use crate::rust_object::{ObjectMetadata, RustObject, Struct};
 use crate::rust_type::{RustType, SimpleType};
 use crate::spec::{get_ok_response_schema, get_request_form_parameters, Spec};
 use crate::spec_inference::Inference;
@@ -192,12 +192,10 @@ fn build_request(
 ) -> anyhow::Result<RequestSpec> {
     let params_ident = RustIdent::joined(method_name, parent_ident);
     let return_ident = RustIdent::joined(&params_ident, "returned");
-    let return_type = Inference::new(&return_ident, ObjectKind::RequestReturned)
-        .required(true)
-        .infer_schema_or_ref_type(req.returned);
+    let return_type =
+        Inference::new(&return_ident).required(true).infer_schema_or_ref_type(req.returned);
 
-    let param_inference =
-        Inference::new(&params_ident, ObjectKind::RequestParam).can_borrow(true).required(true);
+    let param_inference = Inference::new(&params_ident).can_borrow(true).required(true);
 
     let param_typ = match &req.params {
         RequestParams::Form(schema) => schema.map(|s| param_inference.infer_schema_or_ref_type(s)),
@@ -218,16 +216,16 @@ fn build_request(
                     struct_fields.push(struct_field);
                 }
                 Some(RustType::Object(
-                    RustObject::Struct(struct_fields),
-                    ObjectMetadata::new(params_ident.clone(), ObjectKind::RequestParam),
+                    RustObject::Struct(Struct::new(struct_fields)),
+                    ObjectMetadata::new(params_ident.clone()),
                 ))
             }
         },
     }
     .unwrap_or_else(|| {
         RustType::Object(
-            RustObject::Struct(vec![]),
-            ObjectMetadata::new(params_ident.clone(), ObjectKind::RequestParam),
+            RustObject::Struct(Struct::new(vec![])),
+            ObjectMetadata::new(params_ident.clone()),
         )
     });
 
@@ -238,7 +236,7 @@ fn build_request(
         let ParameterSchemaOrContent::Schema(schema) = &param.format else {
             bail!("Expected path parameter to follow schema format");
         };
-        let base_param_typ = Inference::new(&params_ident, ObjectKind::RequestParam)
+        let base_param_typ = Inference::new(&params_ident)
             .can_borrow(true)
             .required(param.required)
             .maybe_description(param.description.as_deref())

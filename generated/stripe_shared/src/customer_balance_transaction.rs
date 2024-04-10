@@ -6,7 +6,8 @@
 /// Related guide: [Customer balance](https://stripe.com/docs/billing/customer/balance)
 ///
 /// For more details see <<https://stripe.com/docs/api/customer_balance_transactions/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceTransaction {
     /// The amount of the transaction.
     /// A negative value is a credit for the customer's balance, and a positive value is a debit to the customer's `balance`.
@@ -37,8 +38,175 @@ pub struct CustomerBalanceTransaction {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
     /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
-    #[serde(rename = "type")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: CustomerBalanceTransactionType,
+}
+#[doc(hidden)]
+pub struct CustomerBalanceTransactionBuilder {
+    amount: Option<i64>,
+    created: Option<stripe_types::Timestamp>,
+    credit_note: Option<Option<stripe_types::Expandable<stripe_shared::CreditNote>>>,
+    currency: Option<stripe_types::Currency>,
+    customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    description: Option<Option<String>>,
+    ending_balance: Option<i64>,
+    id: Option<stripe_shared::CustomerBalanceTransactionId>,
+    invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    type_: Option<CustomerBalanceTransactionType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CustomerBalanceTransaction {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CustomerBalanceTransaction>,
+        builder: CustomerBalanceTransactionBuilder,
+    }
+
+    impl Visitor for Place<CustomerBalanceTransaction> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: CustomerBalanceTransactionBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for CustomerBalanceTransactionBuilder {
+        type Out = CustomerBalanceTransaction;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "created" => Deserialize::begin(&mut self.created),
+                "credit_note" => Deserialize::begin(&mut self.credit_note),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "customer" => Deserialize::begin(&mut self.customer),
+                "description" => Deserialize::begin(&mut self.description),
+                "ending_balance" => Deserialize::begin(&mut self.ending_balance),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice" => Deserialize::begin(&mut self.invoice),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                created: Deserialize::default(),
+                credit_note: Deserialize::default(),
+                currency: Deserialize::default(),
+                customer: Deserialize::default(),
+                description: Deserialize::default(),
+                ending_balance: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                created: self.created?,
+                credit_note: self.credit_note.take()?,
+                currency: self.currency?,
+                customer: self.customer.take()?,
+                description: self.description.take()?,
+                ending_balance: self.ending_balance?,
+                id: self.id.take()?,
+                invoice: self.invoice.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CustomerBalanceTransaction {
+        type Builder = CustomerBalanceTransactionBuilder;
+    }
+
+    impl FromValueOpt for CustomerBalanceTransaction {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CustomerBalanceTransactionBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "credit_note" => b.credit_note = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "customer" => b.customer = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "ending_balance" => b.ending_balance = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice" => b.invoice = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CustomerBalanceTransaction {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("CustomerBalanceTransaction", 13)?;
+        s.serialize_field("amount", &self.amount)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("credit_note", &self.credit_note)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("ending_balance", &self.ending_balance)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("invoice", &self.invoice)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("type", &self.type_)?;
+
+        s.serialize_field("object", "customer_balance_transaction")?;
+        s.end()
+    }
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
 /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
@@ -103,6 +271,7 @@ impl std::fmt::Debug for CustomerBalanceTransactionType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for CustomerBalanceTransactionType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -111,6 +280,22 @@ impl serde::Serialize for CustomerBalanceTransactionType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CustomerBalanceTransactionType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CustomerBalanceTransactionType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

@@ -341,6 +341,16 @@ impl serde::Serialize for CreatePlanTransformUsageRound {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePlanTransformUsageRound {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePlanTransformUsageRound")
+        })
+    }
+}
 impl<'a> CreatePlan<'a> {
     /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
     /// It replaces the Plans API and is backwards compatible to simplify your migration.

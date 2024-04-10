@@ -1,5 +1,6 @@
 /// A line item.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSessionItem {
     /// Total discount amount applied. If no discounts were applied, defaults to 0.
     pub amount_discount: i64,
@@ -17,7 +18,6 @@ pub struct CheckoutSessionItem {
     /// Defaults to product name.
     pub description: String,
     /// The discounts applied to the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<stripe_shared::LineItemsDiscountAmount>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::CheckoutSessionItemId,
@@ -26,8 +26,168 @@ pub struct CheckoutSessionItem {
     /// The quantity of products being purchased.
     pub quantity: Option<u64>,
     /// The taxes applied to the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub taxes: Option<Vec<stripe_shared::LineItemsTaxAmount>>,
+}
+#[doc(hidden)]
+pub struct CheckoutSessionItemBuilder {
+    amount_discount: Option<i64>,
+    amount_subtotal: Option<i64>,
+    amount_tax: Option<i64>,
+    amount_total: Option<i64>,
+    currency: Option<stripe_types::Currency>,
+    description: Option<String>,
+    discounts: Option<Option<Vec<stripe_shared::LineItemsDiscountAmount>>>,
+    id: Option<stripe_shared::CheckoutSessionItemId>,
+    price: Option<Option<stripe_shared::Price>>,
+    quantity: Option<Option<u64>>,
+    taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for CheckoutSessionItem {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<CheckoutSessionItem>,
+        builder: CheckoutSessionItemBuilder,
+    }
+
+    impl Visitor for Place<CheckoutSessionItem> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: CheckoutSessionItemBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for CheckoutSessionItemBuilder {
+        type Out = CheckoutSessionItem;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount_discount" => Deserialize::begin(&mut self.amount_discount),
+                "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
+                "amount_tax" => Deserialize::begin(&mut self.amount_tax),
+                "amount_total" => Deserialize::begin(&mut self.amount_total),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "description" => Deserialize::begin(&mut self.description),
+                "discounts" => Deserialize::begin(&mut self.discounts),
+                "id" => Deserialize::begin(&mut self.id),
+                "price" => Deserialize::begin(&mut self.price),
+                "quantity" => Deserialize::begin(&mut self.quantity),
+                "taxes" => Deserialize::begin(&mut self.taxes),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount_discount: Deserialize::default(),
+                amount_subtotal: Deserialize::default(),
+                amount_tax: Deserialize::default(),
+                amount_total: Deserialize::default(),
+                currency: Deserialize::default(),
+                description: Deserialize::default(),
+                discounts: Deserialize::default(),
+                id: Deserialize::default(),
+                price: Deserialize::default(),
+                quantity: Deserialize::default(),
+                taxes: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount_discount: self.amount_discount?,
+                amount_subtotal: self.amount_subtotal?,
+                amount_tax: self.amount_tax?,
+                amount_total: self.amount_total?,
+                currency: self.currency?,
+                description: self.description.take()?,
+                discounts: self.discounts.take()?,
+                id: self.id.take()?,
+                price: self.price.take()?,
+                quantity: self.quantity?,
+                taxes: self.taxes.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for CheckoutSessionItem {
+        type Builder = CheckoutSessionItemBuilder;
+    }
+
+    impl FromValueOpt for CheckoutSessionItem {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CheckoutSessionItemBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount_discount" => b.amount_discount = Some(FromValueOpt::from_value(v)?),
+                    "amount_subtotal" => b.amount_subtotal = Some(FromValueOpt::from_value(v)?),
+                    "amount_tax" => b.amount_tax = Some(FromValueOpt::from_value(v)?),
+                    "amount_total" => b.amount_total = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "discounts" => b.discounts = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "price" => b.price = Some(FromValueOpt::from_value(v)?),
+                    "quantity" => b.quantity = Some(FromValueOpt::from_value(v)?),
+                    "taxes" => b.taxes = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for CheckoutSessionItem {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("CheckoutSessionItem", 12)?;
+        s.serialize_field("amount_discount", &self.amount_discount)?;
+        s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
+        s.serialize_field("amount_tax", &self.amount_tax)?;
+        s.serialize_field("amount_total", &self.amount_total)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("discounts", &self.discounts)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("price", &self.price)?;
+        s.serialize_field("quantity", &self.quantity)?;
+        s.serialize_field("taxes", &self.taxes)?;
+
+        s.serialize_field("object", "item")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for CheckoutSessionItem {
     type Id = stripe_shared::CheckoutSessionItemId;

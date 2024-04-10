@@ -7,6 +7,8 @@
 //! centered around [Checkout Sessions](https://stripe.com/docs/api/checkout/sessions).
 
 extern crate self as stripe_checkout;
+
+miniserde::make_place!(Place);
 pub use checkout_session::types::*;
 #[doc(hidden)]
 pub mod checkout_acss_debit_mandate_options;

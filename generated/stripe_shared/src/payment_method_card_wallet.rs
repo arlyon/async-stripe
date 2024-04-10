@@ -1,27 +1,155 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardWallet {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amex_express_checkout: Option<stripe_shared::PaymentMethodCardWalletAmexExpressCheckout>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_pay: Option<stripe_shared::PaymentMethodCardWalletApplePay>,
     /// (For tokenized numbers only.) The last four digits of the device account number.
     pub dynamic_last4: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub google_pay: Option<stripe_shared::PaymentMethodCardWalletGooglePay>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<stripe_shared::PaymentMethodCardWalletLink>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub masterpass: Option<stripe_shared::PaymentMethodCardWalletMasterpass>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<stripe_shared::PaymentMethodCardWalletSamsungPay>,
     /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
-    #[serde(rename = "type")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentMethodCardWalletType,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub visa_checkout: Option<stripe_shared::PaymentMethodCardWalletVisaCheckout>,
 }
+#[doc(hidden)]
+pub struct PaymentMethodCardWalletBuilder {
+    amex_express_checkout:
+        Option<Option<stripe_shared::PaymentMethodCardWalletAmexExpressCheckout>>,
+    apple_pay: Option<Option<stripe_shared::PaymentMethodCardWalletApplePay>>,
+    dynamic_last4: Option<Option<String>>,
+    google_pay: Option<Option<stripe_shared::PaymentMethodCardWalletGooglePay>>,
+    link: Option<Option<stripe_shared::PaymentMethodCardWalletLink>>,
+    masterpass: Option<Option<stripe_shared::PaymentMethodCardWalletMasterpass>>,
+    samsung_pay: Option<Option<stripe_shared::PaymentMethodCardWalletSamsungPay>>,
+    type_: Option<PaymentMethodCardWalletType>,
+    visa_checkout: Option<Option<stripe_shared::PaymentMethodCardWalletVisaCheckout>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodCardWallet {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodCardWallet>,
+        builder: PaymentMethodCardWalletBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodCardWallet> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentMethodCardWalletBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodCardWalletBuilder {
+        type Out = PaymentMethodCardWallet;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amex_express_checkout" => Deserialize::begin(&mut self.amex_express_checkout),
+                "apple_pay" => Deserialize::begin(&mut self.apple_pay),
+                "dynamic_last4" => Deserialize::begin(&mut self.dynamic_last4),
+                "google_pay" => Deserialize::begin(&mut self.google_pay),
+                "link" => Deserialize::begin(&mut self.link),
+                "masterpass" => Deserialize::begin(&mut self.masterpass),
+                "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
+                "type" => Deserialize::begin(&mut self.type_),
+                "visa_checkout" => Deserialize::begin(&mut self.visa_checkout),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amex_express_checkout: Deserialize::default(),
+                apple_pay: Deserialize::default(),
+                dynamic_last4: Deserialize::default(),
+                google_pay: Deserialize::default(),
+                link: Deserialize::default(),
+                masterpass: Deserialize::default(),
+                samsung_pay: Deserialize::default(),
+                type_: Deserialize::default(),
+                visa_checkout: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amex_express_checkout: self.amex_express_checkout?,
+                apple_pay: self.apple_pay?,
+                dynamic_last4: self.dynamic_last4.take()?,
+                google_pay: self.google_pay?,
+                link: self.link?,
+                masterpass: self.masterpass.take()?,
+                samsung_pay: self.samsung_pay?,
+                type_: self.type_?,
+                visa_checkout: self.visa_checkout.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodCardWallet {
+        type Builder = PaymentMethodCardWalletBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodCardWallet {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodCardWalletBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amex_express_checkout" => {
+                        b.amex_express_checkout = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "apple_pay" => b.apple_pay = Some(FromValueOpt::from_value(v)?),
+                    "dynamic_last4" => b.dynamic_last4 = Some(FromValueOpt::from_value(v)?),
+                    "google_pay" => b.google_pay = Some(FromValueOpt::from_value(v)?),
+                    "link" => b.link = Some(FromValueOpt::from_value(v)?),
+                    "masterpass" => b.masterpass = Some(FromValueOpt::from_value(v)?),
+                    "samsung_pay" => b.samsung_pay = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "visa_checkout" => b.visa_checkout = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
 /// An additional hash is included on the Wallet subhash with a name matching this value.
 /// It contains additional information specific to the card wallet type.
@@ -77,6 +205,7 @@ impl std::fmt::Debug for PaymentMethodCardWalletType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodCardWalletType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -85,6 +214,22 @@ impl serde::Serialize for PaymentMethodCardWalletType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodCardWalletType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodCardWalletType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentMethodCardWalletType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodCardWalletType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

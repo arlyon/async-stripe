@@ -200,6 +200,18 @@ impl serde::Serialize for CreateShippingRateDeliveryEstimateMaximumUnit {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateShippingRateDeliveryEstimateMaximumUnit",
+            )
+        })
+    }
+}
 /// The lower bound of the estimated range. If empty, represents no lower bound.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
@@ -266,6 +278,18 @@ impl serde::Serialize for CreateShippingRateDeliveryEstimateMinimumUnit {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateShippingRateDeliveryEstimateMinimumUnit",
+            )
+        })
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.

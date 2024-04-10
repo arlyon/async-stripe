@@ -129,6 +129,16 @@ impl serde::Serialize for CreateTokenAccountBusinessType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTokenAccountBusinessType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTokenAccountBusinessType")
+        })
+    }
+}
 /// Information about the company or business.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenAccountCompany<'a> {
@@ -399,6 +409,14 @@ impl serde::Serialize for CreateTokenAccountCompanyStructure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyStructure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Information on the verification state of the company.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenAccountCompanyVerification<'a> {
@@ -619,6 +637,18 @@ impl serde::Serialize for CreateTokenAccountIndividualPoliticalExposure {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTokenAccountIndividualPoliticalExposure {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTokenAccountIndividualPoliticalExposure",
+            )
+        })
+    }
+}
 /// Describes the person’s relationship to the account.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTokenAccountIndividualRelationship<'a> {
@@ -735,6 +765,16 @@ impl serde::Serialize for CreateTokenBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTokenBankAccountAccountHolderType")
+        })
+    }
+}
 /// The bank account type.
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
@@ -787,6 +827,16 @@ impl serde::Serialize for CreateTokenBankAccountAccountType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateTokenBankAccountAccountType")
+        })
     }
 }
 /// The card this token will represent.

@@ -1,16 +1,15 @@
 /// Stripe Treasury provides users with a container for money called a FinancialAccount that is separate from their Payments balance.
 /// FinancialAccounts serve as the source and destination of Treasury’s money movement APIs.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccount {
     /// The array of paths to active Features in the Features hash.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub active_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
     pub balance: stripe_treasury::TreasuryFinancialAccountsResourceBalance,
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<stripe_treasury::TreasuryFinancialAccountFeatures>,
     /// The set of credentials that resolve to a FinancialAccount.
     pub financial_addresses:
@@ -23,14 +22,11 @@ pub struct TreasuryFinancialAccount {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The array of paths to pending Features in the Features hash.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub platform_restrictions:
         Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>,
     /// The array of paths to restricted Features in the Features hash.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub restricted_features: Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>,
     /// The enum specifying what state the account is in.
     pub status: TreasuryFinancialAccountStatus,
@@ -38,6 +34,201 @@ pub struct TreasuryFinancialAccount {
     /// The currencies the FinancialAccount can hold a balance in.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     pub supported_currencies: Vec<String>,
+}
+#[doc(hidden)]
+pub struct TreasuryFinancialAccountBuilder {
+    active_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
+    balance: Option<stripe_treasury::TreasuryFinancialAccountsResourceBalance>,
+    country: Option<String>,
+    created: Option<stripe_types::Timestamp>,
+    features: Option<Option<stripe_treasury::TreasuryFinancialAccountFeatures>>,
+    financial_addresses:
+        Option<Vec<stripe_treasury::TreasuryFinancialAccountsResourceFinancialAddress>>,
+    id: Option<stripe_treasury::TreasuryFinancialAccountId>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    pending_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
+    platform_restrictions:
+        Option<Option<stripe_treasury::TreasuryFinancialAccountsResourcePlatformRestrictions>>,
+    restricted_features: Option<Option<Vec<stripe_treasury::TreasuryFinancialAccountArray>>>,
+    status: Option<TreasuryFinancialAccountStatus>,
+    status_details: Option<stripe_treasury::TreasuryFinancialAccountsResourceStatusDetails>,
+    supported_currencies: Option<Vec<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TreasuryFinancialAccount {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TreasuryFinancialAccount>,
+        builder: TreasuryFinancialAccountBuilder,
+    }
+
+    impl Visitor for Place<TreasuryFinancialAccount> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: TreasuryFinancialAccountBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for TreasuryFinancialAccountBuilder {
+        type Out = TreasuryFinancialAccount;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "active_features" => Deserialize::begin(&mut self.active_features),
+                "balance" => Deserialize::begin(&mut self.balance),
+                "country" => Deserialize::begin(&mut self.country),
+                "created" => Deserialize::begin(&mut self.created),
+                "features" => Deserialize::begin(&mut self.features),
+                "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "pending_features" => Deserialize::begin(&mut self.pending_features),
+                "platform_restrictions" => Deserialize::begin(&mut self.platform_restrictions),
+                "restricted_features" => Deserialize::begin(&mut self.restricted_features),
+                "status" => Deserialize::begin(&mut self.status),
+                "status_details" => Deserialize::begin(&mut self.status_details),
+                "supported_currencies" => Deserialize::begin(&mut self.supported_currencies),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                active_features: Deserialize::default(),
+                balance: Deserialize::default(),
+                country: Deserialize::default(),
+                created: Deserialize::default(),
+                features: Deserialize::default(),
+                financial_addresses: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                pending_features: Deserialize::default(),
+                platform_restrictions: Deserialize::default(),
+                restricted_features: Deserialize::default(),
+                status: Deserialize::default(),
+                status_details: Deserialize::default(),
+                supported_currencies: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                active_features: self.active_features.take()?,
+                balance: self.balance.take()?,
+                country: self.country.take()?,
+                created: self.created?,
+                features: self.features.take()?,
+                financial_addresses: self.financial_addresses.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                pending_features: self.pending_features.take()?,
+                platform_restrictions: self.platform_restrictions?,
+                restricted_features: self.restricted_features.take()?,
+                status: self.status?,
+                status_details: self.status_details.take()?,
+                supported_currencies: self.supported_currencies.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TreasuryFinancialAccount {
+        type Builder = TreasuryFinancialAccountBuilder;
+    }
+
+    impl FromValueOpt for TreasuryFinancialAccount {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = TreasuryFinancialAccountBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "active_features" => b.active_features = Some(FromValueOpt::from_value(v)?),
+                    "balance" => b.balance = Some(FromValueOpt::from_value(v)?),
+                    "country" => b.country = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "features" => b.features = Some(FromValueOpt::from_value(v)?),
+                    "financial_addresses" => {
+                        b.financial_addresses = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "pending_features" => b.pending_features = Some(FromValueOpt::from_value(v)?),
+                    "platform_restrictions" => {
+                        b.platform_restrictions = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "restricted_features" => {
+                        b.restricted_features = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "status_details" => b.status_details = Some(FromValueOpt::from_value(v)?),
+                    "supported_currencies" => {
+                        b.supported_currencies = Some(FromValueOpt::from_value(v)?)
+                    }
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for TreasuryFinancialAccount {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("TreasuryFinancialAccount", 16)?;
+        s.serialize_field("active_features", &self.active_features)?;
+        s.serialize_field("balance", &self.balance)?;
+        s.serialize_field("country", &self.country)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("features", &self.features)?;
+        s.serialize_field("financial_addresses", &self.financial_addresses)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("pending_features", &self.pending_features)?;
+        s.serialize_field("platform_restrictions", &self.platform_restrictions)?;
+        s.serialize_field("restricted_features", &self.restricted_features)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_details", &self.status_details)?;
+        s.serialize_field("supported_currencies", &self.supported_currencies)?;
+
+        s.serialize_field("object", "treasury.financial_account")?;
+        s.end()
+    }
 }
 /// The enum specifying what state the account is in.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -77,6 +268,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountStatus {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryFinancialAccountStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -85,6 +277,22 @@ impl serde::Serialize for TreasuryFinancialAccountStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TreasuryFinancialAccountStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TreasuryFinancialAccountStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -162,6 +370,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountArray {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryFinancialAccountArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -170,6 +379,22 @@ impl serde::Serialize for TreasuryFinancialAccountArray {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TreasuryFinancialAccountArray {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<TreasuryFinancialAccountArray> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(TreasuryFinancialAccountArray::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(TreasuryFinancialAccountArray);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for TreasuryFinancialAccountArray {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

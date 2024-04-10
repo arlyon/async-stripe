@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::crates::Crate;
 use crate::deduplication::DeduppedObject;
-use crate::rust_object::{ObjectKind, RustObject};
+use crate::rust_object::{ObjectUsage, RustObject};
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::types::{ComponentPath, RustIdent};
@@ -83,6 +83,10 @@ impl StripeObject {
         self.resource.mod_path()
     }
 
+    pub fn object_name(&self) -> Option<&str> {
+        self.data.object_name.as_deref()
+    }
+
     pub fn types_split_from_requests(&self) -> bool {
         self.types_are_shared() && self.krate_unwrapped().base() != Crate::SHARED
     }
@@ -141,6 +145,10 @@ impl StripeObject {
         RustIdent::create(format!("{}Id", self.ident()))
     }
 
+    pub fn object_name_ident(&self) -> RustIdent {
+        RustIdent::create(format!("{}ObjectName", self.ident()))
+    }
+
     pub fn id_type(&self) -> Option<&RustType> {
         self.data.id_type.as_ref()
     }
@@ -160,14 +168,14 @@ impl StripeObject {
     }
 
     pub fn visit<'a, V: Visit<'a>>(&'a self, visitor: &mut V) {
-        visitor.visit_obj(&self.data.obj, None);
+        visitor.visit_obj(&self.data.obj, None, ObjectUsage::type_def());
         for req in &self.requests {
             visitor.visit_req(req);
         }
     }
 
     pub fn visit_mut<V: VisitMut>(&mut self, visitor: &mut V) {
-        visitor.visit_obj_mut(&mut self.data.obj, None);
+        visitor.visit_obj_mut(&mut self.data.obj, None, ObjectUsage::type_def());
         for req in &mut self.requests {
             visitor.visit_req_mut(req);
         }
@@ -187,17 +195,16 @@ pub fn parse_stripe_schema_as_rust_object(
     ident: &RustIdent,
 ) -> StripeObjectData {
     let not_deleted_path = path.as_not_deleted();
-    let infer_ctx =
-        Inference::new(ident, ObjectKind::Type).id_path(&not_deleted_path).required(true);
+    let infer_ctx = Inference::new(ident).id_path(&not_deleted_path).required(true);
     let typ = infer_ctx.infer_schema_type(schema);
     let Some((mut rust_obj, _)) = typ.into_object() else {
         panic!("Unexpected top level schema type for {}", path);
     };
     match &mut rust_obj {
-        RustObject::Struct(fields) => {
+        RustObject::Struct(struct_) => {
             let mut id_type = None;
             let mut object_name = None;
-            fields.retain(|field| {
+            struct_.fields.retain(|field| {
                 if field.field_name == "id" && field.rust_type.as_id_or_opt_id_path().is_some() {
                     id_type = Some(field.rust_type.clone());
                 }
@@ -208,14 +215,19 @@ pub fn parse_stripe_schema_as_rust_object(
                         if variants.len() == 1 {
                             let first = variants.first().unwrap();
                             object_name = Some(first.wire_name.clone());
-                            // The object name is used purely as a discriminant, so is
-                            // unnecessary to generate 1-enum type for.
+
+                            // This constant field just helps serialize the constant "object"
+                            // key - we don't want it as part of the public API needed to
+                            // construct these types
                             return false;
                         }
                     }
                 }
                 true
             });
+            if let Some(obj_name) = &object_name {
+                struct_.object_field = Some(obj_name.clone());
+            }
             StripeObjectData { obj: rust_obj, object_name, id_type }
         }
         RustObject::Enum(_) => {
@@ -334,13 +346,13 @@ pub struct RequestSpec {
 
 impl RequestSpec {
     pub fn visit<'a, V: Visit<'a>>(&'a self, visitor: &mut V) {
-        visitor.visit_typ(&self.returned);
-        visitor.visit_typ(&self.params);
+        visitor.visit_typ(&self.returned, ObjectUsage::return_type());
+        visitor.visit_typ(&self.params, ObjectUsage::request_param());
     }
 
     pub fn visit_mut<V: VisitMut>(&mut self, visitor: &mut V) {
-        visitor.visit_typ_mut(&mut self.returned);
-        visitor.visit_typ_mut(&mut self.params);
+        visitor.visit_typ_mut(&mut self.returned, ObjectUsage::return_type());
+        visitor.visit_typ_mut(&mut self.params, ObjectUsage::request_param());
     }
 }
 

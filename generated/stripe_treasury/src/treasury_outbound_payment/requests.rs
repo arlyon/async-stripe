@@ -222,6 +222,20 @@ impl serde::Serialize for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode",
+            )
+        })
+    }
+}
 impl<'a> ReturnOutboundPaymentTreasuryOutboundPayment<'a> {
     /// Transitions a test mode created OutboundPayment to the `returned` status.
     /// The OutboundPayment must already be in the `processing` state.
@@ -437,6 +451,20 @@ impl serde::Serialize for CreateTreasuryOutboundPaymentDestinationPaymentMethodD
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType",
+            )
+        })
+    }
+}
 /// Required hash if type is set to `us_bank_account`.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount<'a> {
@@ -518,6 +546,16 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType"))
+    }
+}
 /// Account type: checkings or savings. Defaults to checking if omitted.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType {
@@ -570,6 +608,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType"))
     }
 }
 /// Payment method-specific configuration for this OutboundPayment.
@@ -652,6 +700,16 @@ impl serde::Serialize
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork"))
     }
 }
 /// End user details.

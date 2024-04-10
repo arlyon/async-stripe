@@ -1,45 +1,184 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApiErrors {
     /// For card errors, the ID of the failed charge.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<String>,
     /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<ApiErrorsCode>,
     /// For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines) if they provide one.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub decline_code: Option<String>,
     /// A URL to more information about the [error code](https://stripe.com/docs/error-codes) reported.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub doc_url: Option<String>,
     /// A human-readable message providing more details about the error.
     /// For card errors, these messages can be shown to your users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// If the error is parameter-specific, the parameter related to the error.
     /// For example, you can use this to display a message near the correct form field.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub param: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<stripe_shared::PaymentIntent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<stripe_shared::PaymentMethod>,
     /// If the error is specific to the type of payment method, the payment method type that had a problem.
     /// This field is only populated for invoice-related errors.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_type: Option<String>,
     /// A URL to the request log entry in your dashboard.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_log_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent: Option<stripe_shared::SetupIntent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<stripe_shared::PaymentSource>,
     /// The type of error returned.
     /// One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`.
-    #[serde(rename = "type")]
+    #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: ApiErrorsType,
 }
+#[doc(hidden)]
+pub struct ApiErrorsBuilder {
+    charge: Option<Option<String>>,
+    code: Option<Option<ApiErrorsCode>>,
+    decline_code: Option<Option<String>>,
+    doc_url: Option<Option<String>>,
+    message: Option<Option<String>>,
+    param: Option<Option<String>>,
+    payment_intent: Option<Option<stripe_shared::PaymentIntent>>,
+    payment_method: Option<Option<stripe_shared::PaymentMethod>>,
+    payment_method_type: Option<Option<String>>,
+    request_log_url: Option<Option<String>>,
+    setup_intent: Option<Option<stripe_shared::SetupIntent>>,
+    source: Option<Option<stripe_shared::PaymentSource>>,
+    type_: Option<ApiErrorsType>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for ApiErrors {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<ApiErrors>,
+        builder: ApiErrorsBuilder,
+    }
+
+    impl Visitor for Place<ApiErrors> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: ApiErrorsBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for ApiErrorsBuilder {
+        type Out = ApiErrors;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "charge" => Deserialize::begin(&mut self.charge),
+                "code" => Deserialize::begin(&mut self.code),
+                "decline_code" => Deserialize::begin(&mut self.decline_code),
+                "doc_url" => Deserialize::begin(&mut self.doc_url),
+                "message" => Deserialize::begin(&mut self.message),
+                "param" => Deserialize::begin(&mut self.param),
+                "payment_intent" => Deserialize::begin(&mut self.payment_intent),
+                "payment_method" => Deserialize::begin(&mut self.payment_method),
+                "payment_method_type" => Deserialize::begin(&mut self.payment_method_type),
+                "request_log_url" => Deserialize::begin(&mut self.request_log_url),
+                "setup_intent" => Deserialize::begin(&mut self.setup_intent),
+                "source" => Deserialize::begin(&mut self.source),
+                "type" => Deserialize::begin(&mut self.type_),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                charge: Deserialize::default(),
+                code: Deserialize::default(),
+                decline_code: Deserialize::default(),
+                doc_url: Deserialize::default(),
+                message: Deserialize::default(),
+                param: Deserialize::default(),
+                payment_intent: Deserialize::default(),
+                payment_method: Deserialize::default(),
+                payment_method_type: Deserialize::default(),
+                request_log_url: Deserialize::default(),
+                setup_intent: Deserialize::default(),
+                source: Deserialize::default(),
+                type_: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                charge: self.charge.take()?,
+                code: self.code?,
+                decline_code: self.decline_code.take()?,
+                doc_url: self.doc_url.take()?,
+                message: self.message.take()?,
+                param: self.param.take()?,
+                payment_intent: self.payment_intent.take()?,
+                payment_method: self.payment_method.take()?,
+                payment_method_type: self.payment_method_type.take()?,
+                request_log_url: self.request_log_url.take()?,
+                setup_intent: self.setup_intent.take()?,
+                source: self.source.take()?,
+                type_: self.type_?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for ApiErrors {
+        type Builder = ApiErrorsBuilder;
+    }
+
+    impl FromValueOpt for ApiErrors {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = ApiErrorsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "charge" => b.charge = Some(FromValueOpt::from_value(v)?),
+                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
+                    "decline_code" => b.decline_code = Some(FromValueOpt::from_value(v)?),
+                    "doc_url" => b.doc_url = Some(FromValueOpt::from_value(v)?),
+                    "message" => b.message = Some(FromValueOpt::from_value(v)?),
+                    "param" => b.param = Some(FromValueOpt::from_value(v)?),
+                    "payment_intent" => b.payment_intent = Some(FromValueOpt::from_value(v)?),
+                    "payment_method" => b.payment_method = Some(FromValueOpt::from_value(v)?),
+                    "payment_method_type" => {
+                        b.payment_method_type = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "request_log_url" => b.request_log_url = Some(FromValueOpt::from_value(v)?),
+                    "setup_intent" => b.setup_intent = Some(FromValueOpt::from_value(v)?),
+                    "source" => b.source = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -613,6 +752,7 @@ impl std::fmt::Debug for ApiErrorsCode {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for ApiErrorsCode {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -621,11 +761,27 @@ impl serde::Serialize for ApiErrorsCode {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for ApiErrorsCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ApiErrorsCode::from_str(s).unwrap_or(ApiErrorsCode::Unknown));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ApiErrorsCode);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(ApiErrorsCode::Unknown))
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// The type of error returned.
@@ -673,6 +829,7 @@ impl std::fmt::Debug for ApiErrorsType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for ApiErrorsType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -681,6 +838,22 @@ impl serde::Serialize for ApiErrorsType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for ApiErrorsType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<ApiErrorsType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(ApiErrorsType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(ApiErrorsType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ApiErrorsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

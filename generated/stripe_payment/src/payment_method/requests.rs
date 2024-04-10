@@ -177,6 +177,14 @@ impl serde::Serialize for ListPaymentMethodType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListPaymentMethodType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 impl<'a> ListPaymentMethod<'a> {
     /// Returns a list of PaymentMethods for Treasury flows.
     /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
@@ -214,20 +222,23 @@ impl<'a> RetrievePaymentMethod<'a> {
         client.get_query(&format!("/payment_methods/{payment_method}"), self)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethod<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreatePaymentMethodAcssDebit<'a>>,
     /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub affirm: Option<miniserde::json::Value>,
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub afterpay_clearpay: Option<miniserde::json::Value>,
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub alipay: Option<miniserde::json::Value>,
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreatePaymentMethodAuBecsDebit<'a>>,
@@ -236,13 +247,15 @@ pub struct CreatePaymentMethod<'a> {
     pub bacs_debit: Option<CreatePaymentMethodBacsDebit<'a>>,
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bancontact: Option<miniserde::json::Value>,
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams<'a>>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub blik: Option<miniserde::json::Value>,
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreatePaymentMethodBoleto<'a>>,
@@ -254,13 +267,15 @@ pub struct CreatePaymentMethod<'a> {
     pub card: Option<CreatePaymentMethodCard<'a>>,
     /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub cashapp: Option<miniserde::json::Value>,
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_balance: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub customer_balance: Option<miniserde::json::Value>,
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentMethodEps>,
@@ -272,25 +287,30 @@ pub struct CreatePaymentMethod<'a> {
     pub fpx: Option<CreatePaymentMethodFpx>,
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub giropay: Option<miniserde::json::Value>,
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub grabpay: Option<miniserde::json::Value>,
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreatePaymentMethodIdeal>,
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub interac_present: Option<miniserde::json::Value>,
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreatePaymentMethodKlarna>,
     /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub konbini: Option<miniserde::json::Value>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub link: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -299,7 +319,8 @@ pub struct CreatePaymentMethod<'a> {
     pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub oxxo: Option<miniserde::json::Value>,
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreatePaymentMethodP24>,
@@ -308,23 +329,28 @@ pub struct CreatePaymentMethod<'a> {
     pub payment_method: Option<&'a str>,
     /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paynow: Option<miniserde::json::Value>,
     /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paypal: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub paypal: Option<miniserde::json::Value>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub pix: Option<miniserde::json::Value>,
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub promptpay: Option<miniserde::json::Value>,
     /// Options to configure Radar.
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreatePaymentMethodRadarOptions<'a>>,
     /// If this is a `Revolut Pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub revolut_pay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentMethodSepaDebit<'a>>,
@@ -333,7 +359,8 @@ pub struct CreatePaymentMethod<'a> {
     pub sofort: Option<CreatePaymentMethodSofort>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub swish: Option<miniserde::json::Value>,
     /// The type of the PaymentMethod.
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
@@ -345,10 +372,12 @@ pub struct CreatePaymentMethod<'a> {
     pub us_bank_account: Option<CreatePaymentMethodUsBankAccount<'a>>,
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub wechat_pay: Option<miniserde::json::Value>,
     /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub zip: Option<miniserde::json::Value>,
 }
 impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
@@ -598,6 +627,14 @@ impl serde::Serialize for CreatePaymentMethodEpsBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodEpsBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodFpx {
@@ -656,6 +693,16 @@ impl serde::Serialize for CreatePaymentMethodFpxAccountHolderType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentMethodFpxAccountHolderType")
+        })
     }
 }
 /// The customer's bank.
@@ -768,6 +815,14 @@ impl serde::Serialize for CreatePaymentMethodFpxBank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodIdeal {
@@ -870,6 +925,14 @@ impl serde::Serialize for CreatePaymentMethodIdealBank {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodIdealBank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1033,6 +1096,14 @@ impl serde::Serialize for CreatePaymentMethodP24Bank {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodP24Bank {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Options to configure Radar.
 /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
@@ -1124,6 +1195,16 @@ impl serde::Serialize for CreatePaymentMethodSofortCountry {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodSofortCountry {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreatePaymentMethodSofortCountry")
+        })
     }
 }
 /// The type of the PaymentMethod.
@@ -1271,6 +1352,14 @@ impl serde::Serialize for CreatePaymentMethodType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreatePaymentMethodUsBankAccount<'a> {
@@ -1341,6 +1430,18 @@ impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodUsBankAccountAccountHolderType",
+            )
+        })
+    }
+}
 /// Account type: checkings or savings. Defaults to checking if omitted.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreatePaymentMethodUsBankAccountAccountType {
@@ -1387,6 +1488,18 @@ impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUsBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentMethodUsBankAccountAccountType",
+            )
+        })
+    }
+}
 impl<'a> CreatePaymentMethod<'a> {
     /// Creates a PaymentMethod object.
     /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.
@@ -1396,7 +1509,7 @@ impl<'a> CreatePaymentMethod<'a> {
         client.send_form("/payment_methods", self, http_types::Method::Post)
     }
 }
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 pub struct UpdatePaymentMethod<'a> {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1409,7 +1522,8 @@ pub struct UpdatePaymentMethod<'a> {
     pub expand: Option<&'a [&'a str]>,
     /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub link: Option<&'a serde_json::Value>,
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub link: Option<miniserde::json::Value>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -1501,6 +1615,18 @@ impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodUsBankAccountAccountHolderType",
+            )
+        })
+    }
+}
 /// Bank account type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdatePaymentMethodUsBankAccountAccountType {
@@ -1545,6 +1671,18 @@ impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentMethodUsBankAccountAccountType",
+            )
+        })
     }
 }
 impl<'a> UpdatePaymentMethod<'a> {

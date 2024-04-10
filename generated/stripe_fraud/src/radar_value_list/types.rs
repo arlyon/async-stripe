@@ -3,7 +3,8 @@
 /// Related guide: [Default Stripe lists](https://stripe.com/docs/radar/lists#managing-list-items)
 ///
 /// For more details see <<https://stripe.com/docs/api/radar/value_lists/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarValueList {
     /// The name of the value list for use in rules.
     pub alias: String,
@@ -25,6 +26,155 @@ pub struct RadarValueList {
     pub metadata: std::collections::HashMap<String, String>,
     /// The name of the value list.
     pub name: String,
+}
+#[doc(hidden)]
+pub struct RadarValueListBuilder {
+    alias: Option<String>,
+    created: Option<stripe_types::Timestamp>,
+    created_by: Option<String>,
+    id: Option<stripe_fraud::RadarValueListId>,
+    item_type: Option<stripe_fraud::RadarValueListItemType>,
+    list_items: Option<stripe_types::List<stripe_fraud::RadarValueListItem>>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    name: Option<String>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for RadarValueList {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<RadarValueList>,
+        builder: RadarValueListBuilder,
+    }
+
+    impl Visitor for Place<RadarValueList> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: RadarValueListBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for RadarValueListBuilder {
+        type Out = RadarValueList;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "alias" => Deserialize::begin(&mut self.alias),
+                "created" => Deserialize::begin(&mut self.created),
+                "created_by" => Deserialize::begin(&mut self.created_by),
+                "id" => Deserialize::begin(&mut self.id),
+                "item_type" => Deserialize::begin(&mut self.item_type),
+                "list_items" => Deserialize::begin(&mut self.list_items),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                alias: Deserialize::default(),
+                created: Deserialize::default(),
+                created_by: Deserialize::default(),
+                id: Deserialize::default(),
+                item_type: Deserialize::default(),
+                list_items: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                name: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                alias: self.alias.take()?,
+                created: self.created?,
+                created_by: self.created_by.take()?,
+                id: self.id.take()?,
+                item_type: self.item_type?,
+                list_items: self.list_items.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                name: self.name.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for RadarValueList {
+        type Builder = RadarValueListBuilder;
+    }
+
+    impl FromValueOpt for RadarValueList {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = RadarValueListBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "alias" => b.alias = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "created_by" => b.created_by = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "item_type" => b.item_type = Some(FromValueOpt::from_value(v)?),
+                    "list_items" => b.list_items = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for RadarValueList {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("RadarValueList", 10)?;
+        s.serialize_field("alias", &self.alias)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("created_by", &self.created_by)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("item_type", &self.item_type)?;
+        s.serialize_field("list_items", &self.list_items)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name", &self.name)?;
+
+        s.serialize_field("object", "radar.value_list")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for RadarValueList {
     type Id = stripe_fraud::RadarValueListId;
@@ -102,6 +252,22 @@ impl serde::Serialize for RadarValueListItemType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for RadarValueListItemType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<RadarValueListItemType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(RadarValueListItemType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(RadarValueListItemType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for RadarValueListItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

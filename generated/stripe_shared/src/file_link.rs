@@ -3,7 +3,8 @@
 /// retrieve the contents of the file without authentication.
 ///
 /// For more details see <<https://stripe.com/docs/api/file_links/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FileLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -22,6 +23,146 @@ pub struct FileLink {
     pub metadata: std::collections::HashMap<String, String>,
     /// The publicly accessible URL to download the file.
     pub url: Option<String>,
+}
+#[doc(hidden)]
+pub struct FileLinkBuilder {
+    created: Option<stripe_types::Timestamp>,
+    expired: Option<bool>,
+    expires_at: Option<Option<stripe_types::Timestamp>>,
+    file: Option<stripe_types::Expandable<stripe_shared::File>>,
+    id: Option<stripe_shared::FileLinkId>,
+    livemode: Option<bool>,
+    metadata: Option<std::collections::HashMap<String, String>>,
+    url: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for FileLink {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<FileLink>,
+        builder: FileLinkBuilder,
+    }
+
+    impl Visitor for Place<FileLink> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: FileLinkBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for FileLinkBuilder {
+        type Out = FileLink;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.created),
+                "expired" => Deserialize::begin(&mut self.expired),
+                "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "file" => Deserialize::begin(&mut self.file),
+                "id" => Deserialize::begin(&mut self.id),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "url" => Deserialize::begin(&mut self.url),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                created: Deserialize::default(),
+                expired: Deserialize::default(),
+                expires_at: Deserialize::default(),
+                file: Deserialize::default(),
+                id: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                url: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                created: self.created?,
+                expired: self.expired?,
+                expires_at: self.expires_at?,
+                file: self.file.take()?,
+                id: self.id.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                url: self.url.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for FileLink {
+        type Builder = FileLinkBuilder;
+    }
+
+    impl FromValueOpt for FileLink {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = FileLinkBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "expired" => b.expired = Some(FromValueOpt::from_value(v)?),
+                    "expires_at" => b.expires_at = Some(FromValueOpt::from_value(v)?),
+                    "file" => b.file = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "url" => b.url = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for FileLink {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("FileLink", 9)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("expired", &self.expired)?;
+        s.serialize_field("expires_at", &self.expires_at)?;
+        s.serialize_field("file", &self.file)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("url", &self.url)?;
+
+        s.serialize_field("object", "file_link")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for FileLink {
     type Id = stripe_shared::FileLinkId;

@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Treasury` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_treasury;
+
+miniserde::make_place!(Place);
 #[doc(hidden)]
 pub mod inbound_transfers;
 #[doc(inline)]

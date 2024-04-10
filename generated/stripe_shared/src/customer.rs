@@ -4,10 +4,10 @@
 /// Related guide: [Save a card during payment](https://stripe.com/docs/payments/save-during-payment)
 ///
 /// For more details see <<https://stripe.com/docs/api/customers/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Customer {
     /// The customer's address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<stripe_shared::Address>,
     /// The current balance, if any, that's stored on the customer.
     /// If negative, the customer has credit to apply to their next invoice.
@@ -15,17 +15,14 @@ pub struct Customer {
     /// The balance only considers amounts that Stripe hasn't successfully applied to any invoice.
     /// It doesn't reflect unpaid invoices.
     /// This balance is only taken into account after invoices finalize.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
     /// The current funds being held by Stripe on behalf of the customer.
     /// You can apply these funds towards payment intents when the source is "cash_balance".
     /// The `settings[reconciliation_mode]` field describes if these funds apply to these payment intents manually or automatically.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cash_balance: Option<stripe_shared::CashBalance>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) the customer can be charged in for recurring billing purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<stripe_types::Currency>,
     /// ID of the default payment source for the customer.
     ///
@@ -39,12 +36,10 @@ pub struct Customer {
     ///
     /// If you care whether the customer has paid their most recent subscription invoice, use `subscription.status` instead.
     /// Paying or marking uncollectible any customer invoice regardless of whether it is the latest invoice for a subscription will always set this field to `false`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub delinquent: Option<bool>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
     /// Describes the current discount active on the customer, if there is one.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<stripe_shared::Discount>,
     /// The customer's email address.
     pub email: Option<String>,
@@ -56,51 +51,295 @@ pub struct Customer {
     /// These balances don't apply to unpaid invoices.
     /// They solely track amounts that Stripe hasn't successfully applied to any invoice.
     /// Stripe only applies a balance in a specific currency to an invoice after that invoice (which is in the same currency) finalizes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_credit_balance: Option<std::collections::HashMap<String, i64>>,
     /// The prefix for the customer used to generate unique invoice numbers.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<stripe_shared::InvoiceSettingCustomerSetting>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The customer's full name or business name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The suffix of the customer's next invoice number (for example, 0001).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub next_invoice_sequence: Option<i64>,
     /// The customer's phone number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
     /// The customer's preferred locales (languages), ordered by preference.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
     /// Mailing and shipping address for the customer. Appears on invoices emailed to this customer.
     pub shipping: Option<stripe_shared::Shipping>,
     /// The customer's payment sources, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sources: Option<stripe_types::List<stripe_shared::PaymentSource>>,
     /// The customer's current subscriptions, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<stripe_types::List<stripe_shared::Subscription>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<stripe_shared::CustomerTax>,
     /// Describes the customer's tax exemption status, which is `none`, `exempt`, or `reverse`.
     /// When set to `reverse`, invoice and receipt PDFs include the following text: **"Reverse charge"**.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<stripe_shared::CustomerTaxExempt>,
     /// The customer's tax IDs.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<stripe_types::List<stripe_shared::TaxId>>,
     /// ID of the test clock that this customer belongs to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
+}
+#[doc(hidden)]
+pub struct CustomerBuilder {
+    address: Option<Option<stripe_shared::Address>>,
+    balance: Option<Option<i64>>,
+    cash_balance: Option<Option<stripe_shared::CashBalance>>,
+    created: Option<stripe_types::Timestamp>,
+    currency: Option<Option<stripe_types::Currency>>,
+    default_source: Option<Option<stripe_types::Expandable<stripe_shared::PaymentSource>>>,
+    delinquent: Option<Option<bool>>,
+    description: Option<Option<String>>,
+    discount: Option<Option<stripe_shared::Discount>>,
+    email: Option<Option<String>>,
+    id: Option<stripe_shared::CustomerId>,
+    invoice_credit_balance: Option<Option<std::collections::HashMap<String, i64>>>,
+    invoice_prefix: Option<Option<String>>,
+    invoice_settings: Option<Option<stripe_shared::InvoiceSettingCustomerSetting>>,
+    livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
+    name: Option<Option<String>>,
+    next_invoice_sequence: Option<Option<i64>>,
+    phone: Option<Option<String>>,
+    preferred_locales: Option<Option<Vec<String>>>,
+    shipping: Option<Option<stripe_shared::Shipping>>,
+    sources: Option<Option<stripe_types::List<stripe_shared::PaymentSource>>>,
+    subscriptions: Option<Option<stripe_types::List<stripe_shared::Subscription>>>,
+    tax: Option<Option<stripe_shared::CustomerTax>>,
+    tax_exempt: Option<Option<stripe_shared::CustomerTaxExempt>>,
+    tax_ids: Option<Option<stripe_types::List<stripe_shared::TaxId>>>,
+    test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for Customer {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<Customer>,
+        builder: CustomerBuilder,
+    }
+
+    impl Visitor for Place<Customer> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: CustomerBuilder::deser_default() }))
+        }
+    }
+
+    impl MapBuilder for CustomerBuilder {
+        type Out = Customer;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "address" => Deserialize::begin(&mut self.address),
+                "balance" => Deserialize::begin(&mut self.balance),
+                "cash_balance" => Deserialize::begin(&mut self.cash_balance),
+                "created" => Deserialize::begin(&mut self.created),
+                "currency" => Deserialize::begin(&mut self.currency),
+                "default_source" => Deserialize::begin(&mut self.default_source),
+                "delinquent" => Deserialize::begin(&mut self.delinquent),
+                "description" => Deserialize::begin(&mut self.description),
+                "discount" => Deserialize::begin(&mut self.discount),
+                "email" => Deserialize::begin(&mut self.email),
+                "id" => Deserialize::begin(&mut self.id),
+                "invoice_credit_balance" => Deserialize::begin(&mut self.invoice_credit_balance),
+                "invoice_prefix" => Deserialize::begin(&mut self.invoice_prefix),
+                "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
+                "name" => Deserialize::begin(&mut self.name),
+                "next_invoice_sequence" => Deserialize::begin(&mut self.next_invoice_sequence),
+                "phone" => Deserialize::begin(&mut self.phone),
+                "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
+                "shipping" => Deserialize::begin(&mut self.shipping),
+                "sources" => Deserialize::begin(&mut self.sources),
+                "subscriptions" => Deserialize::begin(&mut self.subscriptions),
+                "tax" => Deserialize::begin(&mut self.tax),
+                "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
+                "tax_ids" => Deserialize::begin(&mut self.tax_ids),
+                "test_clock" => Deserialize::begin(&mut self.test_clock),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                address: Deserialize::default(),
+                balance: Deserialize::default(),
+                cash_balance: Deserialize::default(),
+                created: Deserialize::default(),
+                currency: Deserialize::default(),
+                default_source: Deserialize::default(),
+                delinquent: Deserialize::default(),
+                description: Deserialize::default(),
+                discount: Deserialize::default(),
+                email: Deserialize::default(),
+                id: Deserialize::default(),
+                invoice_credit_balance: Deserialize::default(),
+                invoice_prefix: Deserialize::default(),
+                invoice_settings: Deserialize::default(),
+                livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
+                name: Deserialize::default(),
+                next_invoice_sequence: Deserialize::default(),
+                phone: Deserialize::default(),
+                preferred_locales: Deserialize::default(),
+                shipping: Deserialize::default(),
+                sources: Deserialize::default(),
+                subscriptions: Deserialize::default(),
+                tax: Deserialize::default(),
+                tax_exempt: Deserialize::default(),
+                tax_ids: Deserialize::default(),
+                test_clock: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                address: self.address.take()?,
+                balance: self.balance?,
+                cash_balance: self.cash_balance.take()?,
+                created: self.created?,
+                currency: self.currency?,
+                default_source: self.default_source.take()?,
+                delinquent: self.delinquent?,
+                description: self.description.take()?,
+                discount: self.discount.take()?,
+                email: self.email.take()?,
+                id: self.id.take()?,
+                invoice_credit_balance: self.invoice_credit_balance.take()?,
+                invoice_prefix: self.invoice_prefix.take()?,
+                invoice_settings: self.invoice_settings.take()?,
+                livemode: self.livemode?,
+                metadata: self.metadata.take()?,
+                name: self.name.take()?,
+                next_invoice_sequence: self.next_invoice_sequence?,
+                phone: self.phone.take()?,
+                preferred_locales: self.preferred_locales.take()?,
+                shipping: self.shipping.take()?,
+                sources: self.sources.take()?,
+                subscriptions: self.subscriptions.take()?,
+                tax: self.tax.take()?,
+                tax_exempt: self.tax_exempt?,
+                tax_ids: self.tax_ids.take()?,
+                test_clock: self.test_clock.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for Customer {
+        type Builder = CustomerBuilder;
+    }
+
+    impl FromValueOpt for Customer {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = CustomerBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "address" => b.address = Some(FromValueOpt::from_value(v)?),
+                    "balance" => b.balance = Some(FromValueOpt::from_value(v)?),
+                    "cash_balance" => b.cash_balance = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "currency" => b.currency = Some(FromValueOpt::from_value(v)?),
+                    "default_source" => b.default_source = Some(FromValueOpt::from_value(v)?),
+                    "delinquent" => b.delinquent = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "discount" => b.discount = Some(FromValueOpt::from_value(v)?),
+                    "email" => b.email = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "invoice_credit_balance" => {
+                        b.invoice_credit_balance = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "invoice_prefix" => b.invoice_prefix = Some(FromValueOpt::from_value(v)?),
+                    "invoice_settings" => b.invoice_settings = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "metadata" => b.metadata = Some(FromValueOpt::from_value(v)?),
+                    "name" => b.name = Some(FromValueOpt::from_value(v)?),
+                    "next_invoice_sequence" => {
+                        b.next_invoice_sequence = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "phone" => b.phone = Some(FromValueOpt::from_value(v)?),
+                    "preferred_locales" => b.preferred_locales = Some(FromValueOpt::from_value(v)?),
+                    "shipping" => b.shipping = Some(FromValueOpt::from_value(v)?),
+                    "sources" => b.sources = Some(FromValueOpt::from_value(v)?),
+                    "subscriptions" => b.subscriptions = Some(FromValueOpt::from_value(v)?),
+                    "tax" => b.tax = Some(FromValueOpt::from_value(v)?),
+                    "tax_exempt" => b.tax_exempt = Some(FromValueOpt::from_value(v)?),
+                    "tax_ids" => b.tax_ids = Some(FromValueOpt::from_value(v)?),
+                    "test_clock" => b.test_clock = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for Customer {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("Customer", 28)?;
+        s.serialize_field("address", &self.address)?;
+        s.serialize_field("balance", &self.balance)?;
+        s.serialize_field("cash_balance", &self.cash_balance)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("default_source", &self.default_source)?;
+        s.serialize_field("delinquent", &self.delinquent)?;
+        s.serialize_field("description", &self.description)?;
+        s.serialize_field("discount", &self.discount)?;
+        s.serialize_field("email", &self.email)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("invoice_credit_balance", &self.invoice_credit_balance)?;
+        s.serialize_field("invoice_prefix", &self.invoice_prefix)?;
+        s.serialize_field("invoice_settings", &self.invoice_settings)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
+        s.serialize_field("name", &self.name)?;
+        s.serialize_field("next_invoice_sequence", &self.next_invoice_sequence)?;
+        s.serialize_field("phone", &self.phone)?;
+        s.serialize_field("preferred_locales", &self.preferred_locales)?;
+        s.serialize_field("shipping", &self.shipping)?;
+        s.serialize_field("sources", &self.sources)?;
+        s.serialize_field("subscriptions", &self.subscriptions)?;
+        s.serialize_field("tax", &self.tax)?;
+        s.serialize_field("tax_exempt", &self.tax_exempt)?;
+        s.serialize_field("tax_ids", &self.tax_ids)?;
+        s.serialize_field("test_clock", &self.test_clock)?;
+
+        s.serialize_field("object", "customer")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for Customer {
     type Id = stripe_shared::CustomerId;
@@ -157,6 +396,22 @@ impl serde::Serialize for CustomerTaxExempt {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for CustomerTaxExempt {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<CustomerTaxExempt> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(CustomerTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(CustomerTaxExempt);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

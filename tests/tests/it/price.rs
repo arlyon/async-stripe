@@ -1,3 +1,4 @@
+use miniserde::json::from_str;
 use stripe_product::{CurrencyOptionTaxBehavior, Price};
 use stripe_types::Currency;
 
@@ -49,10 +50,7 @@ fn deserialize_currency_options() {
     }
     "#;
 
-    let result: Result<Price, serde_json::Error> = serde_json::from_str(fixture);
-    assert!(result.is_ok());
-
-    let price = result.unwrap();
+    let price: Price = from_str(fixture).unwrap();
     assert!(&price.currency_options.is_some());
 
     let currency_options = price.currency_options.unwrap();

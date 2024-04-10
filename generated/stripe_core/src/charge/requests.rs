@@ -360,6 +360,16 @@ impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateChargeFraudDetailsUserReport {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateChargeFraudDetailsUserReport")
+        })
+    }
+}
 impl<'a> UpdateCharge<'a> {
     /// Updates the specified charge by setting the values of the parameters passed.
     /// Any parameters not provided will be left unchanged.

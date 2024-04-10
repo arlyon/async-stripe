@@ -94,6 +94,16 @@ impl serde::Serialize for ListAccountExternalAccountObject {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListAccountExternalAccountObject")
+        })
+    }
+}
 impl<'a> ListAccountExternalAccount<'a> {
     /// List external accounts for an account.
     pub fn send(
@@ -278,6 +288,16 @@ impl serde::Serialize for UpdateExternalAccountAccountHolderType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountHolderType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateExternalAccountAccountHolderType")
+        })
+    }
+}
 /// The bank account type.
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
@@ -330,6 +350,16 @@ impl serde::Serialize for UpdateExternalAccountAccountType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateExternalAccountAccountType")
+        })
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.

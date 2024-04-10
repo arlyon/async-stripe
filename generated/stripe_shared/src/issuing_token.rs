@@ -2,7 +2,8 @@
 /// As a [card issuer](https://stripe.com/docs/issuing), you can [view and manage these tokens](https://stripe.com/docs/issuing/controls/token-management) through Stripe.
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/tokens/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingToken {
     /// Card associated with this token.
     pub card: stripe_types::Expandable<stripe_shared::IssuingCard>,
@@ -13,13 +14,11 @@ pub struct IssuingToken {
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingTokenId,
     /// The last four digits of the token.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// The token service provider / card network associated with the token.
     pub network: IssuingTokenNetwork,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub network_data: Option<stripe_shared::IssuingNetworkTokenNetworkData>,
     /// Time at which the token was last updated by the card network.
     /// Measured in seconds since the Unix epoch.
@@ -27,8 +26,172 @@ pub struct IssuingToken {
     /// The usage state of the token.
     pub status: stripe_shared::IssuingTokenStatus,
     /// The digital wallet for this token, if one was used.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub wallet_provider: Option<IssuingTokenWalletProvider>,
+}
+#[doc(hidden)]
+pub struct IssuingTokenBuilder {
+    card: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
+    created: Option<stripe_types::Timestamp>,
+    device_fingerprint: Option<Option<String>>,
+    id: Option<stripe_shared::IssuingTokenId>,
+    last4: Option<Option<String>>,
+    livemode: Option<bool>,
+    network: Option<IssuingTokenNetwork>,
+    network_data: Option<Option<stripe_shared::IssuingNetworkTokenNetworkData>>,
+    network_updated_at: Option<stripe_types::Timestamp>,
+    status: Option<stripe_shared::IssuingTokenStatus>,
+    wallet_provider: Option<Option<IssuingTokenWalletProvider>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IssuingToken {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IssuingToken>,
+        builder: IssuingTokenBuilder,
+    }
+
+    impl Visitor for Place<IssuingToken> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IssuingTokenBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IssuingTokenBuilder {
+        type Out = IssuingToken;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "card" => Deserialize::begin(&mut self.card),
+                "created" => Deserialize::begin(&mut self.created),
+                "device_fingerprint" => Deserialize::begin(&mut self.device_fingerprint),
+                "id" => Deserialize::begin(&mut self.id),
+                "last4" => Deserialize::begin(&mut self.last4),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "network" => Deserialize::begin(&mut self.network),
+                "network_data" => Deserialize::begin(&mut self.network_data),
+                "network_updated_at" => Deserialize::begin(&mut self.network_updated_at),
+                "status" => Deserialize::begin(&mut self.status),
+                "wallet_provider" => Deserialize::begin(&mut self.wallet_provider),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                card: Deserialize::default(),
+                created: Deserialize::default(),
+                device_fingerprint: Deserialize::default(),
+                id: Deserialize::default(),
+                last4: Deserialize::default(),
+                livemode: Deserialize::default(),
+                network: Deserialize::default(),
+                network_data: Deserialize::default(),
+                network_updated_at: Deserialize::default(),
+                status: Deserialize::default(),
+                wallet_provider: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                card: self.card.take()?,
+                created: self.created?,
+                device_fingerprint: self.device_fingerprint.take()?,
+                id: self.id.take()?,
+                last4: self.last4.take()?,
+                livemode: self.livemode?,
+                network: self.network?,
+                network_data: self.network_data.take()?,
+                network_updated_at: self.network_updated_at?,
+                status: self.status?,
+                wallet_provider: self.wallet_provider?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IssuingToken {
+        type Builder = IssuingTokenBuilder;
+    }
+
+    impl FromValueOpt for IssuingToken {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IssuingTokenBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "card" => b.card = Some(FromValueOpt::from_value(v)?),
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "device_fingerprint" => {
+                        b.device_fingerprint = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "last4" => b.last4 = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "network" => b.network = Some(FromValueOpt::from_value(v)?),
+                    "network_data" => b.network_data = Some(FromValueOpt::from_value(v)?),
+                    "network_updated_at" => {
+                        b.network_updated_at = Some(FromValueOpt::from_value(v)?)
+                    }
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+                    "wallet_provider" => b.wallet_provider = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IssuingToken {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("IssuingToken", 12)?;
+        s.serialize_field("card", &self.card)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("device_fingerprint", &self.device_fingerprint)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("last4", &self.last4)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("network", &self.network)?;
+        s.serialize_field("network_data", &self.network_data)?;
+        s.serialize_field("network_updated_at", &self.network_updated_at)?;
+        s.serialize_field("status", &self.status)?;
+        s.serialize_field("wallet_provider", &self.wallet_provider)?;
+
+        s.serialize_field("object", "issuing.token")?;
+        s.end()
+    }
 }
 /// The token service provider / card network associated with the token.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -68,6 +231,7 @@ impl std::fmt::Debug for IssuingTokenNetwork {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingTokenNetwork {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -76,6 +240,22 @@ impl serde::Serialize for IssuingTokenNetwork {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingTokenNetwork {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingTokenNetwork> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingTokenNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingTokenNetwork);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -125,6 +305,7 @@ impl std::fmt::Debug for IssuingTokenWalletProvider {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingTokenWalletProvider {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -133,6 +314,22 @@ impl serde::Serialize for IssuingTokenWalletProvider {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingTokenWalletProvider {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingTokenWalletProvider> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingTokenWalletProvider::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingTokenWalletProvider);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenWalletProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -199,6 +396,22 @@ impl serde::Serialize for IssuingTokenStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IssuingTokenStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingTokenStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingTokenStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingTokenStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IssuingTokenStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

@@ -79,12 +79,88 @@ impl<'a> RetrieveTerminalLocation<'a> {
         client.get_query(&format!("/terminal/locations/{location}"), self)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum RetrieveTerminalLocationReturned {
     TerminalLocation(stripe_terminal::TerminalLocation),
     DeletedTerminalLocation(stripe_terminal::DeletedTerminalLocation),
 }
+
+#[derive(Default)]
+pub struct RetrieveTerminalLocationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<RetrieveTerminalLocationReturned>,
+        builder: RetrieveTerminalLocationReturnedBuilder,
+    }
+
+    impl Deserialize for RetrieveTerminalLocationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<RetrieveTerminalLocationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for RetrieveTerminalLocationReturnedBuilder {
+        type Out = RetrieveTerminalLocationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                RetrieveTerminalLocationReturned::DeletedTerminalLocation(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                RetrieveTerminalLocationReturned::TerminalLocation(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for RetrieveTerminalLocationReturned {
+        type Builder = RetrieveTerminalLocationReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalLocation<'a> {
     /// The full address of the location.
@@ -209,9 +285,84 @@ impl<'a> UpdateTerminalLocation<'a> {
         client.send_form(&format!("/terminal/locations/{location}"), self, http_types::Method::Post)
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum UpdateTerminalLocationReturned {
     TerminalLocation(stripe_terminal::TerminalLocation),
     DeletedTerminalLocation(stripe_terminal::DeletedTerminalLocation),
 }
+
+#[derive(Default)]
+pub struct UpdateTerminalLocationReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<UpdateTerminalLocationReturned>,
+        builder: UpdateTerminalLocationReturnedBuilder,
+    }
+
+    impl Deserialize for UpdateTerminalLocationReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<UpdateTerminalLocationReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for UpdateTerminalLocationReturnedBuilder {
+        type Out = UpdateTerminalLocationReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                UpdateTerminalLocationReturned::DeletedTerminalLocation(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                UpdateTerminalLocationReturned::TerminalLocation(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for UpdateTerminalLocationReturned {
+        type Builder = UpdateTerminalLocationReturnedBuilder;
+    }
+};

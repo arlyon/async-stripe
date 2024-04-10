@@ -11,28 +11,175 @@
 /// Related guides: [Accessing verification results](https://stripe.com/docs/identity/verification-sessions#results).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_reports/object>>.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IdentityVerificationReport {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<stripe_misc::GelatoDocumentReport>,
     /// Unique identifier for the object.
     pub id: stripe_misc::IdentityVerificationReportId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<stripe_misc::GelatoIdNumberReport>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<stripe_misc::GelatoVerificationReportOptions>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub selfie: Option<stripe_misc::GelatoSelfieReport>,
     /// Type of report.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: Option<stripe_misc::IdentityVerificationReportType>,
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,
+}
+#[doc(hidden)]
+pub struct IdentityVerificationReportBuilder {
+    created: Option<stripe_types::Timestamp>,
+    document: Option<Option<stripe_misc::GelatoDocumentReport>>,
+    id: Option<stripe_misc::IdentityVerificationReportId>,
+    id_number: Option<Option<stripe_misc::GelatoIdNumberReport>>,
+    livemode: Option<bool>,
+    options: Option<Option<stripe_misc::GelatoVerificationReportOptions>>,
+    selfie: Option<Option<stripe_misc::GelatoSelfieReport>>,
+    type_: Option<Option<stripe_misc::IdentityVerificationReportType>>,
+    verification_session: Option<Option<String>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for IdentityVerificationReport {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<IdentityVerificationReport>,
+        builder: IdentityVerificationReportBuilder,
+    }
+
+    impl Visitor for Place<IdentityVerificationReport> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: IdentityVerificationReportBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for IdentityVerificationReportBuilder {
+        type Out = IdentityVerificationReport;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "created" => Deserialize::begin(&mut self.created),
+                "document" => Deserialize::begin(&mut self.document),
+                "id" => Deserialize::begin(&mut self.id),
+                "id_number" => Deserialize::begin(&mut self.id_number),
+                "livemode" => Deserialize::begin(&mut self.livemode),
+                "options" => Deserialize::begin(&mut self.options),
+                "selfie" => Deserialize::begin(&mut self.selfie),
+                "type" => Deserialize::begin(&mut self.type_),
+                "verification_session" => Deserialize::begin(&mut self.verification_session),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                created: Deserialize::default(),
+                document: Deserialize::default(),
+                id: Deserialize::default(),
+                id_number: Deserialize::default(),
+                livemode: Deserialize::default(),
+                options: Deserialize::default(),
+                selfie: Deserialize::default(),
+                type_: Deserialize::default(),
+                verification_session: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                created: self.created?,
+                document: self.document.take()?,
+                id: self.id.take()?,
+                id_number: self.id_number.take()?,
+                livemode: self.livemode?,
+                options: self.options.take()?,
+                selfie: self.selfie.take()?,
+                type_: self.type_?,
+                verification_session: self.verification_session.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for IdentityVerificationReport {
+        type Builder = IdentityVerificationReportBuilder;
+    }
+
+    impl FromValueOpt for IdentityVerificationReport {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = IdentityVerificationReportBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "created" => b.created = Some(FromValueOpt::from_value(v)?),
+                    "document" => b.document = Some(FromValueOpt::from_value(v)?),
+                    "id" => b.id = Some(FromValueOpt::from_value(v)?),
+                    "id_number" => b.id_number = Some(FromValueOpt::from_value(v)?),
+                    "livemode" => b.livemode = Some(FromValueOpt::from_value(v)?),
+                    "options" => b.options = Some(FromValueOpt::from_value(v)?),
+                    "selfie" => b.selfie = Some(FromValueOpt::from_value(v)?),
+                    "type" => b.type_ = Some(FromValueOpt::from_value(v)?),
+                    "verification_session" => {
+                        b.verification_session = Some(FromValueOpt::from_value(v)?)
+                    }
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IdentityVerificationReport {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut s = s.serialize_struct("IdentityVerificationReport", 10)?;
+        s.serialize_field("created", &self.created)?;
+        s.serialize_field("document", &self.document)?;
+        s.serialize_field("id", &self.id)?;
+        s.serialize_field("id_number", &self.id_number)?;
+        s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("options", &self.options)?;
+        s.serialize_field("selfie", &self.selfie)?;
+        s.serialize_field("type", &self.type_)?;
+        s.serialize_field("verification_session", &self.verification_session)?;
+
+        s.serialize_field("object", "identity.verification_report")?;
+        s.end()
+    }
 }
 impl stripe_types::Object for IdentityVerificationReport {
     type Id = stripe_misc::IdentityVerificationReportId;
@@ -86,6 +233,22 @@ impl serde::Serialize for IdentityVerificationReportType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for IdentityVerificationReportType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IdentityVerificationReportType::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IdentityVerificationReportType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for IdentityVerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

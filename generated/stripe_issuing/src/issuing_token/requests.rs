@@ -136,6 +136,15 @@ impl serde::Serialize for UpdateIssuingTokenStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingTokenStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for UpdateIssuingTokenStatus"))
+    }
+}
 impl<'a> UpdateIssuingToken<'a> {
     /// Attempts to update the specified Issuing `Token` object to the status specified.
     pub fn send(

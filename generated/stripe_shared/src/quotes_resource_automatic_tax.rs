@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceAutomaticTax {
     /// Automatically calculate taxes
     pub enabled: bool,
@@ -9,6 +11,106 @@ pub struct QuotesResourceAutomaticTax {
     /// The status of the most recent automated tax calculation for this quote.
     pub status: Option<QuotesResourceAutomaticTaxStatus>,
 }
+#[doc(hidden)]
+pub struct QuotesResourceAutomaticTaxBuilder {
+    enabled: Option<bool>,
+    liability: Option<Option<stripe_shared::ConnectAccountReference>>,
+    status: Option<Option<QuotesResourceAutomaticTaxStatus>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for QuotesResourceAutomaticTax {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<QuotesResourceAutomaticTax>,
+        builder: QuotesResourceAutomaticTaxBuilder,
+    }
+
+    impl Visitor for Place<QuotesResourceAutomaticTax> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: QuotesResourceAutomaticTaxBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for QuotesResourceAutomaticTaxBuilder {
+        type Out = QuotesResourceAutomaticTax;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "enabled" => Deserialize::begin(&mut self.enabled),
+                "liability" => Deserialize::begin(&mut self.liability),
+                "status" => Deserialize::begin(&mut self.status),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                enabled: Deserialize::default(),
+                liability: Deserialize::default(),
+                status: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                enabled: self.enabled?,
+                liability: self.liability.take()?,
+                status: self.status?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for QuotesResourceAutomaticTax {
+        type Builder = QuotesResourceAutomaticTaxBuilder;
+    }
+
+    impl FromValueOpt for QuotesResourceAutomaticTax {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = QuotesResourceAutomaticTaxBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "enabled" => b.enabled = Some(FromValueOpt::from_value(v)?),
+                    "liability" => b.liability = Some(FromValueOpt::from_value(v)?),
+                    "status" => b.status = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// The status of the most recent automated tax calculation for this quote.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum QuotesResourceAutomaticTaxStatus {
@@ -50,6 +152,7 @@ impl std::fmt::Debug for QuotesResourceAutomaticTaxStatus {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for QuotesResourceAutomaticTaxStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -58,6 +161,23 @@ impl serde::Serialize for QuotesResourceAutomaticTaxStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for QuotesResourceAutomaticTaxStatus {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<QuotesResourceAutomaticTaxStatus> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(QuotesResourceAutomaticTaxStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(QuotesResourceAutomaticTaxStatus);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for QuotesResourceAutomaticTaxStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

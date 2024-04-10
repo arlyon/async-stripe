@@ -43,7 +43,7 @@ pub struct EventData {
     ///
     /// If an array attribute has any updated elements, this object contains the entire array.
     /// In Stripe API versions 2017-04-06 or earlier, an updated array attribute in this object includes only the updated array elements.
-    pub previous_attributes: Option<serde_json::Value>,
+    pub previous_attributes: Option<miniserde::json::Value>,
 }
 
 pub struct Webhook {
@@ -108,7 +108,12 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
-        let base_evt: stripe_shared::Event = serde_json::from_str(payload)?;
+        let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
+            .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
+
+        let event_obj =
+            EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)
+                .ok_or_else(|| WebhookError::BadParse("could not parse event object".into()))?;
 
         Ok(Event {
             account: base_evt.account,
@@ -117,7 +122,7 @@ impl Webhook {
                 .map(|s| ApiVersion::from_str(&s).unwrap_or(ApiVersion::Unknown)),
             created: base_evt.created,
             data: EventData {
-                object: EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)?,
+                object: event_obj,
                 previous_attributes: base_evt.data.previous_attributes,
             },
             id: base_evt.id,
@@ -214,7 +219,7 @@ mod tests {
             "data": {
                 "object": data,
             },
-            "type": Value::String(event_type.to_string())
+            "type": event_type.to_string()
         })
     }
 

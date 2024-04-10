@@ -8,6 +8,8 @@
 //! and `Webhooks` sections of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_misc;
+
+miniserde::make_place!(Place);
 pub use apple_pay_domain::types::*;
 pub mod apple_pay_domain;
 #[doc(hidden)]

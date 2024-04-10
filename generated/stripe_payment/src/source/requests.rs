@@ -24,12 +24,86 @@ impl<'a> DetachSource<'a> {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
 pub enum DetachSourceReturned {
     PaymentSource(stripe_shared::PaymentSource),
     DeletedPaymentSource(stripe_shared::DeletedPaymentSource),
 }
+
+#[derive(Default)]
+pub struct DetachSourceReturnedBuilder {
+    inner: stripe_types::miniserde_helpers::MaybeDeletedBuilderInner,
+}
+
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::MapBuilder;
+
+    use super::*;
+
+    make_place!(Place);
+
+    struct Builder<'a> {
+        out: &'a mut Option<DetachSourceReturned>,
+        builder: DetachSourceReturnedBuilder,
+    }
+
+    impl Deserialize for DetachSourceReturned {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    impl Visitor for Place<DetachSourceReturned> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder { out: &mut self.out, builder: Default::default() }))
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl MapBuilder for DetachSourceReturnedBuilder {
+        type Out = DetachSourceReturned;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.inner.key_inner(k)
+        }
+
+        fn deser_default() -> Self {
+            Self::default()
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            let (deleted, o) = self.inner.finish_inner()?;
+            Some(if deleted {
+                DetachSourceReturned::DeletedPaymentSource(FromValueOpt::from_value(
+                    Value::Object(o),
+                )?)
+            } else {
+                DetachSourceReturned::PaymentSource(FromValueOpt::from_value(Value::Object(o))?)
+            })
+        }
+    }
+
+    impl stripe_types::ObjectDeser for DetachSourceReturned {
+        type Builder = DetachSourceReturnedBuilder;
+    }
+};
+
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct RetrieveSource<'a> {
     /// The client secret of the source. Required if a publishable key is used to retrieve the source.
@@ -221,6 +295,15 @@ impl serde::Serialize for CreateSourceFlow {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceFlow"))
+    }
+}
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
 pub struct CreateSourceMandate<'a> {
@@ -341,6 +424,16 @@ impl serde::Serialize for CreateSourceMandateAcceptanceStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSourceMandateAcceptanceStatus")
+        })
+    }
+}
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceMandateAcceptanceType {
@@ -385,6 +478,16 @@ impl serde::Serialize for CreateSourceMandateAcceptanceType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSourceMandateAcceptanceType")
+        })
     }
 }
 /// The interval of debits permitted by the mandate.
@@ -435,6 +538,15 @@ impl serde::Serialize for CreateSourceMandateInterval {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceMandateInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceMandateInterval"))
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
@@ -491,6 +603,16 @@ impl serde::Serialize for CreateSourceMandateNotificationMethod {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSourceMandateNotificationMethod")
+        })
     }
 }
 /// Optional parameters for the receiver flow.
@@ -557,6 +679,16 @@ impl serde::Serialize for CreateSourceReceiverRefundAttributesMethod {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceReceiverRefundAttributesMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSourceReceiverRefundAttributesMethod")
+        })
     }
 }
 /// Parameters required for the redirect flow.
@@ -665,6 +797,16 @@ impl serde::Serialize for CreateSourceSourceOrderItemsType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceSourceOrderItemsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for CreateSourceSourceOrderItemsType")
+        })
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateSourceUsage {
     Reusable,
@@ -708,6 +850,15 @@ impl serde::Serialize for CreateSourceUsage {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateSourceUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceUsage"))
     }
 }
 impl<'a> CreateSource<'a> {
@@ -866,6 +1017,16 @@ impl serde::Serialize for UpdateSourceMandateAcceptanceStatus {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceStatus {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSourceMandateAcceptanceStatus")
+        })
+    }
+}
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateSourceMandateAcceptanceType {
@@ -910,6 +1071,16 @@ impl serde::Serialize for UpdateSourceMandateAcceptanceType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSourceMandateAcceptanceType")
+        })
     }
 }
 /// The interval of debits permitted by the mandate.
@@ -960,6 +1131,15 @@ impl serde::Serialize for UpdateSourceMandateInterval {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSourceMandateInterval {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for UpdateSourceMandateInterval"))
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
@@ -1016,6 +1196,16 @@ impl serde::Serialize for UpdateSourceMandateNotificationMethod {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSourceMandateNotificationMethod")
+        })
     }
 }
 /// Information about the items and shipping associated with the source.
@@ -1109,6 +1299,16 @@ impl serde::Serialize for UpdateSourceSourceOrderItemsType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for UpdateSourceSourceOrderItemsType")
+        })
     }
 }
 impl<'a> UpdateSource<'a> {

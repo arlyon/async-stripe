@@ -7,6 +7,8 @@
 //! for requests mentioned in the `Connect` section of the [Stripe API docs](https://stripe.com/docs/api)
 
 extern crate self as stripe_connect;
+
+miniserde::make_place!(Place);
 pub mod account;
 pub use account_link::types::*;
 pub use stripe_shared::account::*;

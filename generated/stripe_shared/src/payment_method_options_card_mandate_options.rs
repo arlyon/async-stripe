@@ -1,4 +1,6 @@
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments.
     pub amount: i64,
@@ -26,6 +28,136 @@ pub struct PaymentMethodOptionsCardMandateOptions {
     /// Specifies the type of mandates supported. Possible values are `india`.
     pub supported_types: Option<Vec<PaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
 }
+#[doc(hidden)]
+pub struct PaymentMethodOptionsCardMandateOptionsBuilder {
+    amount: Option<i64>,
+    amount_type: Option<PaymentMethodOptionsCardMandateOptionsAmountType>,
+    description: Option<Option<String>>,
+    end_date: Option<Option<stripe_types::Timestamp>>,
+    interval: Option<PaymentMethodOptionsCardMandateOptionsInterval>,
+    interval_count: Option<Option<u64>>,
+    reference: Option<String>,
+    start_date: Option<stripe_types::Timestamp>,
+    supported_types: Option<Option<Vec<PaymentMethodOptionsCardMandateOptionsSupportedTypes>>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for PaymentMethodOptionsCardMandateOptions {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<PaymentMethodOptionsCardMandateOptions>,
+        builder: PaymentMethodOptionsCardMandateOptionsBuilder,
+    }
+
+    impl Visitor for Place<PaymentMethodOptionsCardMandateOptions> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+                out: &mut self.out,
+                builder: PaymentMethodOptionsCardMandateOptionsBuilder::deser_default(),
+            }))
+        }
+    }
+
+    impl MapBuilder for PaymentMethodOptionsCardMandateOptionsBuilder {
+        type Out = PaymentMethodOptionsCardMandateOptions;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "amount_type" => Deserialize::begin(&mut self.amount_type),
+                "description" => Deserialize::begin(&mut self.description),
+                "end_date" => Deserialize::begin(&mut self.end_date),
+                "interval" => Deserialize::begin(&mut self.interval),
+                "interval_count" => Deserialize::begin(&mut self.interval_count),
+                "reference" => Deserialize::begin(&mut self.reference),
+                "start_date" => Deserialize::begin(&mut self.start_date),
+                "supported_types" => Deserialize::begin(&mut self.supported_types),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                amount: Deserialize::default(),
+                amount_type: Deserialize::default(),
+                description: Deserialize::default(),
+                end_date: Deserialize::default(),
+                interval: Deserialize::default(),
+                interval_count: Deserialize::default(),
+                reference: Deserialize::default(),
+                start_date: Deserialize::default(),
+                supported_types: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                amount: self.amount?,
+                amount_type: self.amount_type?,
+                description: self.description.take()?,
+                end_date: self.end_date?,
+                interval: self.interval?,
+                interval_count: self.interval_count?,
+                reference: self.reference.take()?,
+                start_date: self.start_date?,
+                supported_types: self.supported_types.take()?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for PaymentMethodOptionsCardMandateOptions {
+        type Builder = PaymentMethodOptionsCardMandateOptionsBuilder;
+    }
+
+    impl FromValueOpt for PaymentMethodOptionsCardMandateOptions {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b = PaymentMethodOptionsCardMandateOptionsBuilder::deser_default();
+            for (k, v) in obj {
+                match k.as_str() {
+                    "amount" => b.amount = Some(FromValueOpt::from_value(v)?),
+                    "amount_type" => b.amount_type = Some(FromValueOpt::from_value(v)?),
+                    "description" => b.description = Some(FromValueOpt::from_value(v)?),
+                    "end_date" => b.end_date = Some(FromValueOpt::from_value(v)?),
+                    "interval" => b.interval = Some(FromValueOpt::from_value(v)?),
+                    "interval_count" => b.interval_count = Some(FromValueOpt::from_value(v)?),
+                    "reference" => b.reference = Some(FromValueOpt::from_value(v)?),
+                    "start_date" => b.start_date = Some(FromValueOpt::from_value(v)?),
+                    "supported_types" => b.supported_types = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
@@ -66,6 +198,7 @@ impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsAmountType {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -74,6 +207,25 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsAmountType {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsAmountType> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodOptionsCardMandateOptionsAmountType::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsAmountType);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -132,6 +284,7 @@ impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsInterval {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsInterval {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -140,6 +293,25 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsInterval {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsInterval> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodOptionsCardMandateOptionsInterval::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsInterval);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -186,6 +358,7 @@ impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -194,6 +367,25 @@ impl serde::Serialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsSupportedTypes> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentMethodOptionsCardMandateOptionsSupportedTypes::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsCardMandateOptionsSupportedTypes);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

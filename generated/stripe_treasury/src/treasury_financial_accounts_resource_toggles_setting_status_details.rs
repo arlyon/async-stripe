@@ -1,15 +1,120 @@
 /// Additional details on the FinancialAccount Features information.
-#[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
     /// Represents the reason why the status is `pending` or `restricted`.
     pub code: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode,
     /// Represents what the user should do, if anything, to activate the Feature.
     pub resolution: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>,
     /// The `platform_restrictions` that are restricting this Feature.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub restriction:
         Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
 }
+#[doc(hidden)]
+pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
+    code: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode>,
+    resolution:
+        Option<Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>>,
+    restriction:
+        Option<Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>>,
+}
+
+#[allow(unused_variables, clippy::match_single_binding, clippy::single_match)]
+const _: () = {
+    use miniserde::de::{Map, Visitor};
+    use miniserde::json::Value;
+    use miniserde::{make_place, Deserialize, Result};
+    use stripe_types::miniserde_helpers::FromValueOpt;
+    use stripe_types::{MapBuilder, ObjectDeser};
+
+    make_place!(Place);
+
+    impl Deserialize for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
+        fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
+            Place::new(out)
+        }
+    }
+
+    struct Builder<'a> {
+        out: &'a mut Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
+        builder: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder,
+    }
+
+    impl Visitor for Place<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails> {
+        fn map(&mut self) -> Result<Box<dyn Map + '_>> {
+            Ok(Box::new(Builder {
+            out: &mut self.out,
+            builder: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder::deser_default(),
+        }))
+        }
+    }
+
+    impl MapBuilder for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
+        type Out = TreasuryFinancialAccountsResourceTogglesSettingStatusDetails;
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            Ok(match k {
+                "code" => Deserialize::begin(&mut self.code),
+                "resolution" => Deserialize::begin(&mut self.resolution),
+                "restriction" => Deserialize::begin(&mut self.restriction),
+
+                _ => <dyn Visitor>::ignore(),
+            })
+        }
+
+        fn deser_default() -> Self {
+            Self {
+                code: Deserialize::default(),
+                resolution: Deserialize::default(),
+                restriction: Deserialize::default(),
+            }
+        }
+
+        fn take_out(&mut self) -> Option<Self::Out> {
+            Some(Self::Out {
+                code: self.code?,
+                resolution: self.resolution?,
+                restriction: self.restriction?,
+            })
+        }
+    }
+
+    impl<'a> Map for Builder<'a> {
+        fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
+            self.builder.key(k)
+        }
+
+        fn finish(&mut self) -> Result<()> {
+            *self.out = self.builder.take_out();
+            Ok(())
+        }
+    }
+
+    impl ObjectDeser for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
+        type Builder = TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder;
+    }
+
+    impl FromValueOpt for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
+        fn from_value(v: Value) -> Option<Self> {
+            let Value::Object(obj) = v else {
+                return None;
+            };
+            let mut b =
+                TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder::deser_default(
+                );
+            for (k, v) in obj {
+                match k.as_str() {
+                    "code" => b.code = Some(FromValueOpt::from_value(v)?),
+                    "resolution" => b.resolution = Some(FromValueOpt::from_value(v)?),
+                    "restriction" => b.restriction = Some(FromValueOpt::from_value(v)?),
+
+                    _ => {}
+                }
+            }
+            b.take_out()
+        }
+    }
+};
 /// Represents the reason why the status is `pending` or `restricted`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
@@ -69,6 +174,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDe
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -77,6 +183,29 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode
+);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode
 {
@@ -127,6 +256,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDe
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -135,6 +265,31 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize
+    for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
+{
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
+);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
 {
@@ -182,6 +337,7 @@ impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDe
         f.write_str(self.as_str())
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -190,6 +346,31 @@ impl serde::Serialize for TreasuryFinancialAccountsResourceTogglesSettingStatusD
         serializer.serialize_str(self.as_str())
     }
 }
+impl miniserde::Deserialize
+    for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
+{
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::from_str(s)
+                .map_err(|_| miniserde::Error)?,
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
+);
+#[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
 {

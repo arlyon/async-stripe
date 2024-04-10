@@ -95,6 +95,16 @@ impl serde::Serialize for ListTreasuryTransactionOrderBy {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for ListTreasuryTransactionOrderBy")
+        })
+    }
+}
 /// A filter for the `status_transitions.posted_at` timestamp.
 /// When using this filter, `status=posted` and `order_by=posted_at` must also be specified.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]

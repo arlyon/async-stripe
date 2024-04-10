@@ -178,6 +178,18 @@ impl serde::Serialize for CreateIdentityVerificationSessionOptionsDocumentAllowe
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes",
+            )
+        })
+    }
+}
 impl<'a> CreateIdentityVerificationSession<'a> {
     /// Creates a VerificationSession object.
     ///
@@ -300,6 +312,18 @@ impl serde::Serialize for UpdateIdentityVerificationSessionOptionsDocumentAllowe
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes",
+            )
+        })
     }
 }
 impl<'a> UpdateIdentityVerificationSession<'a> {

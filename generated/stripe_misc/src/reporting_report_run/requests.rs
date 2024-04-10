@@ -270,6 +270,14 @@ impl serde::Serialize for CreateReportingReportRunParametersReportingCategory {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersReportingCategory {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+    }
+}
 /// Defaults to `Etc/UTC`.
 /// The output timezone for all timestamps in the report.
 /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
@@ -2109,6 +2117,14 @@ impl serde::Serialize for CreateReportingReportRunParametersTimezone {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
     }
 }
 impl<'a> CreateReportingReportRun<'a> {

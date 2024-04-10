@@ -224,6 +224,15 @@ impl serde::Serialize for PreviewCreditNoteLinesType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteLinesType"))
+    }
+}
 impl<'a> PreviewCreditNote<'a> {
     /// Get a preview of a credit note without creating it.
     pub fn send(&self, client: &stripe::Client) -> stripe::Response<stripe_shared::CreditNote> {
@@ -409,6 +418,16 @@ impl serde::Serialize for PreviewLinesCreditNoteLinesType {
         serializer.serialize_str(self.as_str())
     }
 }
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom("Unknown value for PreviewLinesCreditNoteLinesType")
+        })
+    }
+}
 impl<'a> PreviewLinesCreditNote<'a> {
     /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
     /// This URL you can retrieve the full (paginated) list of line items.
@@ -584,6 +603,15 @@ impl serde::Serialize for CreateCreditNoteLinesType {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s)
+            .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteLinesType"))
     }
 }
 impl<'a> CreateCreditNote<'a> {
