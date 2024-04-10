@@ -130,4 +130,4 @@ impl stripe_types::Object for BankAccount {
         &self.id
     }
 }
-stripe_types::def_id!(BankAccountId, "ba_" | "card_");
+stripe_types::def_id!(BankAccountId);

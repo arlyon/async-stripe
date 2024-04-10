@@ -18,4 +18,4 @@ impl stripe_types::Object for EphemeralKey {
         &self.id
     }
 }
-stripe_types::def_id!(EphemeralKeyId, "ephkey_");
+stripe_types::def_id!(EphemeralKeyId);

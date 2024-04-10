@@ -18,4 +18,4 @@ impl stripe_types::Object for ConnectCollectionTransfer {
         &self.id
     }
 }
-stripe_types::def_id!(ConnectCollectionTransferId, "connct_");
+stripe_types::def_id!(ConnectCollectionTransferId);

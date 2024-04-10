@@ -33,4 +33,4 @@ impl stripe_types::Object for ScheduledQueryRun {
         &self.id
     }
 }
-stripe_types::def_id!(ScheduledQueryRunId, "sqr_");
+stripe_types::def_id!(ScheduledQueryRunId);

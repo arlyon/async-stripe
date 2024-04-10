@@ -122,7 +122,7 @@ impl stripe_types::Object for IssuingCard {
         &self.id
     }
 }
-stripe_types::def_id!(IssuingCardId, "ic_");
+stripe_types::def_id!(IssuingCardId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingCardReplacementReason {
     Damaged,

@@ -1,7 +1,6 @@
 use std::fmt::Write;
 
 use crate::components::Components;
-use crate::ids::write_object_id;
 use crate::printable::Lifetime;
 use crate::rust_object::{as_enum_of_objects, ObjectMetadata, RustObject};
 use crate::rust_type::RustType;
@@ -9,6 +8,7 @@ use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::object_trait::{write_object_trait, write_object_trait_for_enum};
 use crate::templates::utils::write_doc_comment;
 use crate::templates::ObjectWriter;
+use crate::STRIPE_TYPES;
 
 const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
 
@@ -101,7 +101,8 @@ pub fn gen_obj(
             // `DeletedAccount`, we don't want to duplicate `AccountId` since `DeletedAccount`
             // uses that same id
             if path == comp.path() {
-                write_object_id(&mut out, path, &comp.id_type_ident())
+                let id_ident = comp.id_type_ident();
+                let _ = writeln!(out, "{STRIPE_TYPES}::def_id!({id_ident});");
             }
         }
     }

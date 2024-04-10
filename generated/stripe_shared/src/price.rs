@@ -78,7 +78,7 @@ impl stripe_types::Object for Price {
         &self.id
     }
 }
-stripe_types::def_id!(PriceId, "price_" | "plan_");
+stripe_types::def_id!(PriceId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PriceBillingScheme {
     PerUnit,

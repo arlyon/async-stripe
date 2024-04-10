@@ -234,7 +234,7 @@ impl stripe_types::Object for Subscription {
         &self.id
     }
 }
-stripe_types::def_id!(SubscriptionId, "sub_");
+stripe_types::def_id!(SubscriptionId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionCollectionMethod {
     ChargeAutomatically,

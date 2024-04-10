@@ -16,4 +16,4 @@ impl stripe_types::Object for PlatformTaxFee {
         &self.id
     }
 }
-stripe_types::def_id!(PlatformTaxFeeId, "ptf_");
+stripe_types::def_id!(PlatformTaxFeeId);

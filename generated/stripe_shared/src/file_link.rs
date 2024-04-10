@@ -29,4 +29,4 @@ impl stripe_types::Object for FileLink {
         &self.id
     }
 }
-stripe_types::def_id!(FileLinkId, "link_");
+stripe_types::def_id!(FileLinkId);

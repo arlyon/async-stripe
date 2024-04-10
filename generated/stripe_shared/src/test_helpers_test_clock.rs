@@ -83,4 +83,4 @@ impl stripe_types::Object for TestHelpersTestClock {
         &self.id
     }
 }
-stripe_types::def_id!(TestHelpersTestClockId, "clock_");
+stripe_types::def_id!(TestHelpersTestClockId);

@@ -35,7 +35,7 @@ impl stripe_types::Object for TerminalReader {
         &self.id
     }
 }
-stripe_types::def_id!(TerminalReaderId, "tmr_");
+stripe_types::def_id!(TerminalReaderId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum TerminalReaderDeviceType {
     BbposChipper2x,

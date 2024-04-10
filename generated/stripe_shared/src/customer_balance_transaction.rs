@@ -126,4 +126,4 @@ impl stripe_types::Object for CustomerBalanceTransaction {
         &self.id
     }
 }
-stripe_types::def_id!(CustomerBalanceTransactionId, "cbtxn_");
+stripe_types::def_id!(CustomerBalanceTransactionId);

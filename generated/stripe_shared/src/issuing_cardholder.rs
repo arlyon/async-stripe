@@ -48,7 +48,7 @@ impl stripe_types::Object for IssuingCardholder {
         &self.id
     }
 }
-stripe_types::def_id!(IssuingCardholderId, "ich_");
+stripe_types::def_id!(IssuingCardholderId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum IssuingCardholderPreferredLocales {
     De,

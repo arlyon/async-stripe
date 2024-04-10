@@ -166,7 +166,7 @@ impl stripe_types::Object for SetupIntent {
         &self.id
     }
 }
-stripe_types::def_id!(SetupIntentId, "seti_");
+stripe_types::def_id!(SetupIntentId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SetupIntentCancellationReason {
     Abandoned,

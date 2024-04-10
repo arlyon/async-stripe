@@ -116,7 +116,7 @@ impl stripe_types::Object for SubscriptionSchedule {
         &self.id
     }
 }
-stripe_types::def_id!(SubscriptionScheduleId, "sub_sched_");
+stripe_types::def_id!(SubscriptionScheduleId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SubscriptionScheduleEndBehavior {
     Cancel,

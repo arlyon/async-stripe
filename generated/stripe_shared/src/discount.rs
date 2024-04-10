@@ -36,4 +36,4 @@ impl stripe_types::Object for Discount {
         &self.id
     }
 }
-stripe_types::def_id!(DiscountId, "di_");
+stripe_types::def_id!(DiscountId);

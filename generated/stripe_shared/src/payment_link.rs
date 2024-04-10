@@ -193,7 +193,7 @@ impl stripe_types::Object for PaymentLink {
         &self.id
     }
 }
-stripe_types::def_id!(PaymentLinkId, "plink_");
+stripe_types::def_id!(PaymentLinkId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentLinkBillingAddressCollection {
     Auto,

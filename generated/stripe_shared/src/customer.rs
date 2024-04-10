@@ -108,7 +108,7 @@ impl stripe_types::Object for Customer {
         &self.id
     }
 }
-stripe_types::def_id!(CustomerId, "cus_");
+stripe_types::def_id!(CustomerId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CustomerTaxExempt {
     Exempt,

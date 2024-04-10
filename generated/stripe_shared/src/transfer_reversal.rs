@@ -42,4 +42,4 @@ impl stripe_types::Object for TransferReversal {
         &self.id
     }
 }
-stripe_types::def_id!(TransferReversalId, "trr_");
+stripe_types::def_id!(TransferReversalId);

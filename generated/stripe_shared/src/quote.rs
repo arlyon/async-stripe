@@ -90,7 +90,7 @@ impl stripe_types::Object for Quote {
         &self.id
     }
 }
-stripe_types::def_id!(QuoteId, "qt_");
+stripe_types::def_id!(QuoteId);
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum QuoteCollectionMethod {
     ChargeAutomatically,
