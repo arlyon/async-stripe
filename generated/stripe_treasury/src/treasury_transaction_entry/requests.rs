@@ -64,13 +64,13 @@ impl ListTreasuryTransactionEntryOrderBy {
 }
 
 impl std::str::FromStr for ListTreasuryTransactionEntryOrderBy {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryTransactionEntryOrderBy::*;
         match s {
             "created" => Ok(Created),
             "effective_at" => Ok(EffectiveAt),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

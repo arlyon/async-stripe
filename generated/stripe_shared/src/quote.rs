@@ -411,13 +411,13 @@ impl QuoteCollectionMethod {
 }
 
 impl std::str::FromStr for QuoteCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuoteCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -484,7 +484,7 @@ impl QuoteStatus {
 }
 
 impl std::str::FromStr for QuoteStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuoteStatus::*;
         match s {
@@ -492,7 +492,7 @@ impl std::str::FromStr for QuoteStatus {
             "canceled" => Ok(Canceled),
             "draft" => Ok(Draft),
             "open" => Ok(Open),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

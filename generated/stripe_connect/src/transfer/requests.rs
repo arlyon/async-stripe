@@ -139,14 +139,14 @@ impl CreateTransferSourceType {
 }
 
 impl std::str::FromStr for CreateTransferSourceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTransferSourceType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

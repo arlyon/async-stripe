@@ -287,7 +287,7 @@ impl FinancialConnectionsAccountCategory {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountCategory {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountCategory::*;
         match s {
@@ -295,7 +295,7 @@ impl std::str::FromStr for FinancialConnectionsAccountCategory {
             "credit" => Ok(Credit),
             "investment" => Ok(Investment),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -366,7 +366,7 @@ impl FinancialConnectionsAccountPermissions {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountPermissions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountPermissions::*;
         match s {
@@ -374,7 +374,7 @@ impl std::str::FromStr for FinancialConnectionsAccountPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -444,14 +444,14 @@ impl FinancialConnectionsAccountStatus {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountStatus::*;
         match s {
             "active" => Ok(Active),
             "disconnected" => Ok(Disconnected),
             "inactive" => Ok(Inactive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -539,7 +539,7 @@ impl FinancialConnectionsAccountSubcategory {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountSubcategory {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountSubcategory::*;
         match s {
@@ -549,7 +549,7 @@ impl std::str::FromStr for FinancialConnectionsAccountSubcategory {
             "mortgage" => Ok(Mortgage),
             "other" => Ok(Other),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -615,12 +615,12 @@ impl FinancialConnectionsAccountSubscriptions {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountSubscriptions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountSubscriptions::*;
         match s {
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -688,13 +688,13 @@ impl FinancialConnectionsAccountSupportedPaymentMethodTypes {
 }
 
 impl std::str::FromStr for FinancialConnectionsAccountSupportedPaymentMethodTypes {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsAccountSupportedPaymentMethodTypes::*;
         match s {
             "link" => Ok(Link),
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

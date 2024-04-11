@@ -136,14 +136,14 @@ impl RefundDestinationDetailsCardType {
 }
 
 impl std::str::FromStr for RefundDestinationDetailsCardType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RefundDestinationDetailsCardType::*;
         match s {
             "pending" => Ok(Pending),
             "refund" => Ok(Refund),
             "reversal" => Ok(Reversal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

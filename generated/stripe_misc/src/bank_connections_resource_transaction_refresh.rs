@@ -141,14 +141,14 @@ impl BankConnectionsResourceTransactionRefreshStatus {
 }
 
 impl std::str::FromStr for BankConnectionsResourceTransactionRefreshStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceTransactionRefreshStatus::*;
         match s {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

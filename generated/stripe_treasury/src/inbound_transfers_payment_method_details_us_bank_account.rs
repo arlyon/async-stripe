@@ -159,13 +159,13 @@ impl InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -238,13 +238,13 @@ impl InboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InboundTransfersPaymentMethodDetailsUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -317,12 +317,12 @@ impl InboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
 }
 
 impl std::str::FromStr for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InboundTransfersPaymentMethodDetailsUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

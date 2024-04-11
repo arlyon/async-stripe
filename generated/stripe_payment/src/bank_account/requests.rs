@@ -206,13 +206,13 @@ impl UpdateAccountBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for UpdateAccountBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -268,7 +268,7 @@ impl UpdateAccountBankAccountAccountType {
 }
 
 impl std::str::FromStr for UpdateAccountBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountBankAccountAccountType::*;
         match s {
@@ -276,7 +276,7 @@ impl std::str::FromStr for UpdateAccountBankAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -423,13 +423,13 @@ impl UpdateCustomerBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for UpdateCustomerBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCustomerBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

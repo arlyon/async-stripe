@@ -243,7 +243,7 @@ impl PaymentMethodDetailsInteracPresentReadMethod {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsInteracPresentReadMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsInteracPresentReadMethod::*;
         match s {
@@ -252,7 +252,7 @@ impl std::str::FromStr for PaymentMethodDetailsInteracPresentReadMethod {
             "contactless_magstripe_mode" => Ok(ContactlessMagstripeMode),
             "magnetic_stripe_fallback" => Ok(MagneticStripeFallback),
             "magnetic_stripe_track2" => Ok(MagneticStripeTrack2),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

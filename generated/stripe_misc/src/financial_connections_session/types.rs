@@ -199,7 +199,7 @@ impl FinancialConnectionsSessionPermissions {
 }
 
 impl std::str::FromStr for FinancialConnectionsSessionPermissions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsSessionPermissions::*;
         match s {
@@ -207,7 +207,7 @@ impl std::str::FromStr for FinancialConnectionsSessionPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -275,14 +275,14 @@ impl FinancialConnectionsSessionPrefetch {
 }
 
 impl std::str::FromStr for FinancialConnectionsSessionPrefetch {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsSessionPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

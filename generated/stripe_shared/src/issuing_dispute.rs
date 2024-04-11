@@ -222,7 +222,7 @@ impl IssuingDisputeStatus {
 }
 
 impl std::str::FromStr for IssuingDisputeStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeStatus::*;
         match s {
@@ -231,7 +231,7 @@ impl std::str::FromStr for IssuingDisputeStatus {
             "submitted" => Ok(Submitted),
             "unsubmitted" => Ok(Unsubmitted),
             "won" => Ok(Won),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

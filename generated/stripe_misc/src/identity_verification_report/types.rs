@@ -204,13 +204,13 @@ impl IdentityVerificationReportType {
 }
 
 impl std::str::FromStr for IdentityVerificationReportType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationReportType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

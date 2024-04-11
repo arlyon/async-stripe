@@ -823,7 +823,7 @@ impl CreateIssuingCardholderSpendingControlsAllowedCategories {
 }
 
 impl std::str::FromStr for CreateIssuingCardholderSpendingControlsAllowedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingCardholderSpendingControlsAllowedCategories::*;
         match s {
@@ -1170,7 +1170,7 @@ impl std::str::FromStr for CreateIssuingCardholderSpendingControlsAllowedCategor
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1198,7 +1198,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsAll
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -1854,7 +1854,7 @@ impl CreateIssuingCardholderSpendingControlsBlockedCategories {
 }
 
 impl std::str::FromStr for CreateIssuingCardholderSpendingControlsBlockedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingCardholderSpendingControlsBlockedCategories::*;
         match s {
@@ -2201,7 +2201,7 @@ impl std::str::FromStr for CreateIssuingCardholderSpendingControlsBlockedCategor
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -2229,7 +2229,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsBlo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -2904,7 +2904,7 @@ impl CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
 }
 
 impl std::str::FromStr for CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingCardholderSpendingControlsSpendingLimitsCategories::*;
         match s {
@@ -3251,7 +3251,7 @@ impl std::str::FromStr for CreateIssuingCardholderSpendingControlsSpendingLimits
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -3281,7 +3281,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -3309,7 +3309,7 @@ impl CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
 }
 
 impl std::str::FromStr for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
         match s {
@@ -3319,7 +3319,7 @@ impl std::str::FromStr for CreateIssuingCardholderSpendingControlsSpendingLimits
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3373,13 +3373,13 @@ impl CreateIssuingCardholderStatus {
 }
 
 impl std::str::FromStr for CreateIssuingCardholderStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingCardholderStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4146,7 +4146,7 @@ impl UpdateIssuingCardholderSpendingControlsAllowedCategories {
 }
 
 impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsAllowedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingCardholderSpendingControlsAllowedCategories::*;
         match s {
@@ -4493,7 +4493,7 @@ impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsAllowedCategor
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -4521,7 +4521,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsAll
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -5177,7 +5177,7 @@ impl UpdateIssuingCardholderSpendingControlsBlockedCategories {
 }
 
 impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsBlockedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingCardholderSpendingControlsBlockedCategories::*;
         match s {
@@ -5524,7 +5524,7 @@ impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsBlockedCategor
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -5552,7 +5552,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsBlo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
@@ -6227,7 +6227,7 @@ impl UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
 }
 
 impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories::*;
         match s {
@@ -6574,7 +6574,7 @@ impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsSpendingLimits
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -6604,7 +6604,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Interval (or event) to which the amount applies.
@@ -6632,7 +6632,7 @@ impl UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
 }
 
 impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval::*;
         match s {
@@ -6642,7 +6642,7 @@ impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsSpendingLimits
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6696,13 +6696,13 @@ impl UpdateIssuingCardholderStatus {
 }
 
 impl std::str::FromStr for UpdateIssuingCardholderStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingCardholderStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

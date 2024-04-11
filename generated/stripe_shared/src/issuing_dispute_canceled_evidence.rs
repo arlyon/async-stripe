@@ -187,13 +187,13 @@ impl IssuingDisputeCanceledEvidenceProductType {
 }
 
 impl std::str::FromStr for IssuingDisputeCanceledEvidenceProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeCanceledEvidenceProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -261,13 +261,13 @@ impl IssuingDisputeCanceledEvidenceReturnStatus {
 }
 
 impl std::str::FromStr for IssuingDisputeCanceledEvidenceReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeCanceledEvidenceReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

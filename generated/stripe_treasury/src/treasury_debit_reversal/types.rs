@@ -237,13 +237,13 @@ impl TreasuryDebitReversalNetwork {
 }
 
 impl std::str::FromStr for TreasuryDebitReversalNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryDebitReversalNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "card" => Ok(Card),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -310,14 +310,14 @@ impl TreasuryDebitReversalStatus {
 }
 
 impl std::str::FromStr for TreasuryDebitReversalStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryDebitReversalStatus::*;
         match s {
             "failed" => Ok(Failed),
             "processing" => Ok(Processing),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

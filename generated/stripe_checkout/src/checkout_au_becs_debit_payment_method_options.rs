@@ -118,12 +118,12 @@ impl CheckoutAuBecsDebitPaymentMethodOptionsSetupFutureUsage {
 }
 
 impl std::str::FromStr for CheckoutAuBecsDebitPaymentMethodOptionsSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAuBecsDebitPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -130,7 +130,7 @@ impl CustomerTaxAutomaticTax {
 }
 
 impl std::str::FromStr for CustomerTaxAutomaticTax {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxAutomaticTax::*;
         match s {
@@ -138,7 +138,7 @@ impl std::str::FromStr for CustomerTaxAutomaticTax {
             "not_collecting" => Ok(NotCollecting),
             "supported" => Ok(Supported),
             "unrecognized_location" => Ok(UnrecognizedLocation),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

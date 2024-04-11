@@ -146,7 +146,7 @@ impl TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
 }
 
 impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedStatesType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsUnitedStatesType::*;
         match s {
@@ -154,7 +154,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsUnitedSt
             "local_lease_tax" => Ok(LocalLeaseTax),
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_sales_tax" => Ok(StateSalesTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

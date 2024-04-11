@@ -150,13 +150,13 @@ impl PaymentMethodDetailsUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -227,13 +227,13 @@ impl PaymentMethodDetailsUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

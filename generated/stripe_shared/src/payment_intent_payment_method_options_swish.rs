@@ -126,12 +126,12 @@ impl PaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsSwishSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

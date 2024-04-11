@@ -295,13 +295,13 @@ impl UpcomingInvoiceAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpcomingInvoiceAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -378,14 +378,14 @@ impl UpcomingInvoiceCustomerDetailsTaxExempt {
 }
 
 impl std::str::FromStr for UpcomingInvoiceCustomerDetailsTaxExempt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceCustomerDetailsTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -581,7 +581,7 @@ impl UpcomingInvoiceCustomerDetailsTaxIdsType {
 }
 
 impl std::str::FromStr for UpcomingInvoiceCustomerDetailsTaxIdsType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceCustomerDetailsTaxIdsType::*;
         match s {
@@ -651,7 +651,7 @@ impl std::str::FromStr for UpcomingInvoiceCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -679,7 +679,7 @@ impl<'de> serde::Deserialize<'de> for UpcomingInvoiceCustomerDetailsTaxIdsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// List of invoice items to add or update in the upcoming invoice preview.
@@ -805,14 +805,14 @@ impl UpcomingInvoiceInvoiceItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingInvoiceInvoiceItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -869,14 +869,14 @@ impl UpcomingInvoiceInvoiceItemsTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingInvoiceInvoiceItemsTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceInvoiceItemsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -942,13 +942,13 @@ impl UpcomingInvoiceIssuerType {
 }
 
 impl std::str::FromStr for UpcomingInvoiceIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1114,7 +1114,7 @@ impl UpcomingInvoiceSubscriptionItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for UpcomingInvoiceSubscriptionItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceSubscriptionItemsPriceDataRecurringInterval::*;
         match s {
@@ -1122,7 +1122,7 @@ impl std::str::FromStr for UpcomingInvoiceSubscriptionItemsPriceDataRecurringInt
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1179,14 +1179,14 @@ impl UpcomingInvoiceSubscriptionItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingInvoiceSubscriptionItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceSubscriptionItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1241,14 +1241,14 @@ impl UpcomingInvoiceSubscriptionProrationBehavior {
 }
 
 impl std::str::FromStr for UpcomingInvoiceSubscriptionProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceSubscriptionProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1298,12 +1298,12 @@ impl UpcomingInvoiceSubscriptionResumeAt {
 }
 
 impl std::str::FromStr for UpcomingInvoiceSubscriptionResumeAt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingInvoiceSubscriptionResumeAt::*;
         match s {
             "now" => Ok(Now),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1536,13 +1536,13 @@ impl UpcomingLinesInvoiceAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1621,14 +1621,14 @@ impl UpcomingLinesInvoiceCustomerDetailsTaxExempt {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceCustomerDetailsTaxExempt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceCustomerDetailsTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1826,7 +1826,7 @@ impl UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceCustomerDetailsTaxIdsType::*;
         match s {
@@ -1896,7 +1896,7 @@ impl std::str::FromStr for UpcomingLinesInvoiceCustomerDetailsTaxIdsType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1924,7 +1924,7 @@ impl<'de> serde::Deserialize<'de> for UpcomingLinesInvoiceCustomerDetailsTaxIdsT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// List of invoice items to add or update in the upcoming invoice preview.
@@ -2050,14 +2050,14 @@ impl UpcomingLinesInvoiceInvoiceItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceInvoiceItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2114,14 +2114,14 @@ impl UpcomingLinesInvoiceInvoiceItemsTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceInvoiceItemsTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceInvoiceItemsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2189,13 +2189,13 @@ impl UpcomingLinesInvoiceIssuerType {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2362,7 +2362,7 @@ impl UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurringInterval::*;
         match s {
@@ -2370,7 +2370,7 @@ impl std::str::FromStr for UpcomingLinesInvoiceSubscriptionItemsPriceDataRecurri
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2429,14 +2429,14 @@ impl UpcomingLinesInvoiceSubscriptionItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceSubscriptionItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceSubscriptionItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2491,14 +2491,14 @@ impl UpcomingLinesInvoiceSubscriptionProrationBehavior {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceSubscriptionProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceSubscriptionProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2548,12 +2548,12 @@ impl UpcomingLinesInvoiceSubscriptionResumeAt {
 }
 
 impl std::str::FromStr for UpcomingLinesInvoiceSubscriptionResumeAt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpcomingLinesInvoiceSubscriptionResumeAt::*;
         match s {
             "now" => Ok(Now),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2798,13 +2798,13 @@ impl CreateInvoiceAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for CreateInvoiceAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2886,12 +2886,12 @@ impl CreateInvoiceFromInvoiceAction {
 }
 
 impl std::str::FromStr for CreateInvoiceFromInvoiceAction {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceFromInvoiceAction::*;
         match s {
             "revision" => Ok(Revision),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -2957,13 +2957,13 @@ impl CreateInvoiceIssuerType {
 }
 
 impl std::str::FromStr for CreateInvoiceIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3094,13 +3094,13 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTran
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3160,14 +3160,14 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3242,7 +3242,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -3250,7 +3250,7 @@ impl std::str::FromStr
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3366,12 +3366,12 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterva
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3427,12 +3427,12 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3488,14 +3488,14 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3590,7 +3590,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConne
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -3598,7 +3598,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3656,13 +3656,13 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConne
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3722,14 +3722,14 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMe
 impl std::str::FromStr
     for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -3839,7 +3839,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
 }
 
 impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePaymentSettingsPaymentMethodTypes::*;
         match s {
@@ -3869,7 +3869,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -3897,7 +3897,7 @@ impl<'de> serde::Deserialize<'de> for CreateInvoicePaymentSettingsPaymentMethodT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// How to handle pending invoice items on invoice creation.
@@ -3923,14 +3923,14 @@ impl CreateInvoicePendingInvoiceItemsBehavior {
 }
 
 impl std::str::FromStr for CreateInvoicePendingInvoiceItemsBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoicePendingInvoiceItemsBehavior::*;
         match s {
             "exclude" => Ok(Exclude),
             "include" => Ok(Include),
             "include_and_require" => Ok(IncludeAndRequire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4001,13 +4001,13 @@ impl CreateInvoiceRenderingAmountTaxDisplay {
 }
 
 impl std::str::FromStr for CreateInvoiceRenderingAmountTaxDisplay {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceRenderingAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4075,14 +4075,14 @@ impl CreateInvoiceRenderingPdfPageSize {
 }
 
 impl std::str::FromStr for CreateInvoiceRenderingPdfPageSize {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceRenderingPdfPageSize::*;
         match s {
             "a4" => Ok(A4),
             "auto" => Ok(Auto),
             "letter" => Ok(Letter),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4152,13 +4152,13 @@ impl CreateInvoiceRenderingOptionsAmountTaxDisplay {
 }
 
 impl std::str::FromStr for CreateInvoiceRenderingOptionsAmountTaxDisplay {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4308,7 +4308,7 @@ impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
 }
 
 impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::*;
         match s {
@@ -4317,7 +4317,7 @@ impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataDeliveryEsti
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4389,7 +4389,7 @@ impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
 }
 
 impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::*;
         match s {
@@ -4398,7 +4398,7 @@ impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataDeliveryEsti
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4493,14 +4493,14 @@ impl CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehav
 impl std::str::FromStr
     for CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4559,14 +4559,14 @@ impl CreateInvoiceShippingCostShippingRateDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceShippingCostShippingRateDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4616,12 +4616,12 @@ impl CreateInvoiceShippingCostShippingRateDataType {
 }
 
 impl std::str::FromStr for CreateInvoiceShippingCostShippingRateDataType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateInvoiceShippingCostShippingRateDataType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4831,13 +4831,13 @@ impl UpdateInvoiceAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpdateInvoiceAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -4919,13 +4919,13 @@ impl UpdateInvoiceIssuerType {
 }
 
 impl std::str::FromStr for UpdateInvoiceIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5056,13 +5056,13 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTran
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5122,14 +5122,14 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5204,7 +5204,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -5212,7 +5212,7 @@ impl std::str::FromStr
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5328,12 +5328,12 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterva
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5389,12 +5389,12 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5450,14 +5450,14 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5552,7 +5552,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConne
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -5560,7 +5560,7 @@ impl std::str::FromStr
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5618,13 +5618,13 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConne
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5684,14 +5684,14 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMe
 impl std::str::FromStr
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5801,7 +5801,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
 }
 
 impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoicePaymentSettingsPaymentMethodTypes::*;
         match s {
@@ -5831,7 +5831,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -5859,7 +5859,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoicePaymentSettingsPaymentMethodT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// The rendering-related settings that control how the invoice is displayed on customer-facing surfaces such as PDF and Hosted Invoice Page.
@@ -5900,13 +5900,13 @@ impl UpdateInvoiceRenderingAmountTaxDisplay {
 }
 
 impl std::str::FromStr for UpdateInvoiceRenderingAmountTaxDisplay {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceRenderingAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -5974,14 +5974,14 @@ impl UpdateInvoiceRenderingPdfPageSize {
 }
 
 impl std::str::FromStr for UpdateInvoiceRenderingPdfPageSize {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceRenderingPdfPageSize::*;
         match s {
             "a4" => Ok(A4),
             "auto" => Ok(Auto),
             "letter" => Ok(Letter),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6051,13 +6051,13 @@ impl UpdateInvoiceRenderingOptionsAmountTaxDisplay {
 }
 
 impl std::str::FromStr for UpdateInvoiceRenderingOptionsAmountTaxDisplay {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6207,7 +6207,7 @@ impl UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
 }
 
 impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::*;
         match s {
@@ -6216,7 +6216,7 @@ impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataDeliveryEsti
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6288,7 +6288,7 @@ impl UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
 }
 
 impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::*;
         match s {
@@ -6297,7 +6297,7 @@ impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataDeliveryEsti
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6392,14 +6392,14 @@ impl UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehav
 impl std::str::FromStr
     for UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6458,14 +6458,14 @@ impl UpdateInvoiceShippingCostShippingRateDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceShippingCostShippingRateDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -6515,12 +6515,12 @@ impl UpdateInvoiceShippingCostShippingRateDataType {
 }
 
 impl std::str::FromStr for UpdateInvoiceShippingCostShippingRateDataType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateInvoiceShippingCostShippingRateDataType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

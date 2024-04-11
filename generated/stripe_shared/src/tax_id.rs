@@ -322,7 +322,7 @@ impl TaxIdType {
 }
 
 impl std::str::FromStr for TaxIdType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxIdType::*;
         match s {
@@ -393,7 +393,7 @@ impl std::str::FromStr for TaxIdType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

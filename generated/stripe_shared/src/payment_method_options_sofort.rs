@@ -138,7 +138,7 @@ impl PaymentMethodOptionsSofortPreferredLanguage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsSofortPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsSofortPreferredLanguage::*;
         match s {
@@ -149,7 +149,7 @@ impl std::str::FromStr for PaymentMethodOptionsSofortPreferredLanguage {
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -225,13 +225,13 @@ impl PaymentMethodOptionsSofortSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsSofortSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsSofortSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

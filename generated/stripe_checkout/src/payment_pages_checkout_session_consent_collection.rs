@@ -138,13 +138,13 @@ impl PaymentPagesCheckoutSessionConsentCollectionPromotions {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentCollectionPromotions {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentCollectionPromotions::*;
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -217,13 +217,13 @@ impl PaymentPagesCheckoutSessionConsentCollectionTermsOfService {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentCollectionTermsOfService {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentCollectionTermsOfService::*;
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

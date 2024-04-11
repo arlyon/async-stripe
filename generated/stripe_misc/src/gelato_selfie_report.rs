@@ -134,13 +134,13 @@ impl GelatoSelfieReportStatus {
 }
 
 impl std::str::FromStr for GelatoSelfieReportStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoSelfieReportStatus::*;
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

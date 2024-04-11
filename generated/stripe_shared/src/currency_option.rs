@@ -156,14 +156,14 @@ impl CurrencyOptionTaxBehavior {
 }
 
 impl std::str::FromStr for CurrencyOptionTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CurrencyOptionTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

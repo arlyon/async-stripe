@@ -152,13 +152,13 @@ impl TaxProductResourceTaxTransactionShippingCostTaxBehavior {
 }
 
 impl std::str::FromStr for TaxProductResourceTaxTransactionShippingCostTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceTaxTransactionShippingCostTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

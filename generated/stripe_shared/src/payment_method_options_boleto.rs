@@ -136,14 +136,14 @@ impl PaymentMethodOptionsBoletoSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsBoletoSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsBoletoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

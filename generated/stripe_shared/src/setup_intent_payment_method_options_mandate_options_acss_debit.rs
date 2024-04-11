@@ -152,13 +152,13 @@ impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::*;
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -233,14 +233,14 @@ impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -315,13 +315,13 @@ impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

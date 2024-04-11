@@ -112,14 +112,14 @@ impl TreasuryFinancialAccountsResourceClosedStatusDetailsReasons {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceClosedStatusDetailsReasons {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::*;
         match s {
             "account_rejected" => Ok(AccountRejected),
             "closed_by_platform" => Ok(ClosedByPlatform),
             "other" => Ok(Other),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

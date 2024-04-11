@@ -374,13 +374,13 @@ impl PersonPoliticalExposure {
 }
 
 impl std::str::FromStr for PersonPoliticalExposure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PersonPoliticalExposure::*;
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

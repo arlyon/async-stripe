@@ -269,7 +269,7 @@ impl DisputeStatus {
 }
 
 impl std::str::FromStr for DisputeStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeStatus::*;
         match s {
@@ -280,7 +280,7 @@ impl std::str::FromStr for DisputeStatus {
             "warning_needs_response" => Ok(WarningNeedsResponse),
             "warning_under_review" => Ok(WarningUnderReview),
             "won" => Ok(Won),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

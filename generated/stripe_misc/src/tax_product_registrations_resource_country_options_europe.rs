@@ -118,7 +118,7 @@ impl TaxProductRegistrationsResourceCountryOptionsEuropeType {
 }
 
 impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsEuropeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsEuropeType::*;
         match s {
@@ -126,7 +126,7 @@ impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsEuropeTy
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

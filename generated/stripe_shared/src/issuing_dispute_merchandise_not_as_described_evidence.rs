@@ -153,13 +153,13 @@ impl IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
 }
 
 impl std::str::FromStr for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

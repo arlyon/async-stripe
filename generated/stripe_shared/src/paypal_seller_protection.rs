@@ -118,13 +118,13 @@ impl PaypalSellerProtectionDisputeCategories {
 }
 
 impl std::str::FromStr for PaypalSellerProtectionDisputeCategories {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaypalSellerProtectionDisputeCategories::*;
         match s {
             "fraudulent" => Ok(Fraudulent),
             "product_not_received" => Ok(ProductNotReceived),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -194,14 +194,14 @@ impl PaypalSellerProtectionStatus {
 }
 
 impl std::str::FromStr for PaypalSellerProtectionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaypalSellerProtectionStatus::*;
         match s {
             "eligible" => Ok(Eligible),
             "not_eligible" => Ok(NotEligible),
             "partially_eligible" => Ok(PartiallyEligible),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -130,7 +130,7 @@ impl TaxIdVerificationStatus {
 }
 
 impl std::str::FromStr for TaxIdVerificationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxIdVerificationStatus::*;
         match s {
@@ -138,7 +138,7 @@ impl std::str::FromStr for TaxIdVerificationStatus {
             "unavailable" => Ok(Unavailable),
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

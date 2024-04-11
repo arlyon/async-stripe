@@ -282,13 +282,13 @@ impl ProductType {
 }
 
 impl std::str::FromStr for ProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ProductType::*;
         match s {
             "good" => Ok(Good),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

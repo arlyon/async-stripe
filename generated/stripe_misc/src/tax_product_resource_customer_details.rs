@@ -142,13 +142,13 @@ impl TaxProductResourceCustomerDetailsAddressSource {
 }
 
 impl std::str::FromStr for TaxProductResourceCustomerDetailsAddressSource {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceCustomerDetailsAddressSource::*;
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -221,14 +221,14 @@ impl TaxProductResourceCustomerDetailsTaxabilityOverride {
 }
 
 impl std::str::FromStr for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceCustomerDetailsTaxabilityOverride::*;
         match s {
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

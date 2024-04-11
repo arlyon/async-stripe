@@ -113,12 +113,12 @@ impl TerminalReaderReaderResourceSetReaderDisplayActionType {
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceSetReaderDisplayActionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceSetReaderDisplayActionType::*;
         match s {
             "cart" => Ok(Cart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

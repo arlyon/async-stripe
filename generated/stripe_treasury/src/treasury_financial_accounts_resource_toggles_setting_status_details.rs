@@ -146,7 +146,7 @@ impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::*;
         match s {
@@ -159,7 +159,7 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatus
             "requirements_pending_verification" => Ok(RequirementsPendingVerification),
             "restricted_by_platform" => Ok(RestrictedByPlatform),
             "restricted_other" => Ok(RestrictedOther),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -234,14 +234,14 @@ impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::*;
         match s {
             "contact_stripe" => Ok(ContactStripe),
             "provide_information" => Ok(ProvideInformation),
             "remove_restriction" => Ok(RemoveRestriction),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -316,13 +316,13 @@ impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::*;
         match s {
             "inbound_flows" => Ok(InboundFlows),
             "outbound_flows" => Ok(OutboundFlows),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

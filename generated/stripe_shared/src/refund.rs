@@ -298,7 +298,7 @@ impl RefundReason {
 }
 
 impl std::str::FromStr for RefundReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RefundReason::*;
         match s {
@@ -306,7 +306,7 @@ impl std::str::FromStr for RefundReason {
             "expired_uncaptured_charge" => Ok(ExpiredUncapturedCharge),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

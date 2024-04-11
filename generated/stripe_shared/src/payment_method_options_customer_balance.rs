@@ -132,12 +132,12 @@ impl PaymentMethodOptionsCustomerBalanceFundingType {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -211,12 +211,12 @@ impl PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

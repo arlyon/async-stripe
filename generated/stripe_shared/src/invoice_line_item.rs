@@ -310,13 +310,13 @@ impl InvoiceLineItemType {
 }
 
 impl std::str::FromStr for InvoiceLineItemType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceLineItemType::*;
         match s {
             "invoiceitem" => Ok(Invoiceitem),
             "subscription" => Ok(Subscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -477,7 +477,7 @@ impl CreateAccountCompanyStructure {
 }
 
 impl std::str::FromStr for CreateAccountCompanyStructure {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountCompanyStructure::*;
         match s {
@@ -504,7 +504,7 @@ impl std::str::FromStr for CreateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -532,7 +532,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Information about the person represented by the account.
@@ -699,13 +699,13 @@ impl CreateAccountIndividualPoliticalExposure {
 }
 
 impl std::str::FromStr for CreateAccountIndividualPoliticalExposure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountIndividualPoliticalExposure::*;
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -854,7 +854,7 @@ impl CreateAccountSettingsPayoutsScheduleInterval {
 }
 
 impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountSettingsPayoutsScheduleInterval::*;
         match s {
@@ -862,7 +862,7 @@ impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleInterval {
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -925,7 +925,7 @@ impl CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
 }
 
 impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
         match s {
@@ -936,7 +936,7 @@ impl std::str::FromStr for CreateAccountSettingsPayoutsScheduleWeeklyAnchor {
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1254,7 +1254,7 @@ impl UpdateAccountCompanyStructure {
 }
 
 impl std::str::FromStr for UpdateAccountCompanyStructure {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountCompanyStructure::*;
         match s {
@@ -1281,7 +1281,7 @@ impl std::str::FromStr for UpdateAccountCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1309,7 +1309,7 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Information about the person represented by the account.
@@ -1476,13 +1476,13 @@ impl UpdateAccountIndividualPoliticalExposure {
 }
 
 impl std::str::FromStr for UpdateAccountIndividualPoliticalExposure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountIndividualPoliticalExposure::*;
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1647,7 +1647,7 @@ impl UpdateAccountSettingsPayoutsScheduleInterval {
 }
 
 impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountSettingsPayoutsScheduleInterval::*;
         match s {
@@ -1655,7 +1655,7 @@ impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleInterval {
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1718,7 +1718,7 @@ impl UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
 }
 
 impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateAccountSettingsPayoutsScheduleWeeklyAnchor::*;
         match s {
@@ -1729,7 +1729,7 @@ impl std::str::FromStr for UpdateAccountSettingsPayoutsScheduleWeeklyAnchor {
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

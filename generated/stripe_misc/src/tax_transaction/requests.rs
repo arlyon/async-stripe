@@ -191,13 +191,13 @@ impl CreateReversalTaxTransactionMode {
 }
 
 impl std::str::FromStr for CreateReversalTaxTransactionMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateReversalTaxTransactionMode::*;
         match s {
             "full" => Ok(Full),
             "partial" => Ok(Partial),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

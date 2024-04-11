@@ -264,7 +264,7 @@ impl CreateSourceFlow {
 }
 
 impl std::str::FromStr for CreateSourceFlow {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceFlow::*;
         match s {
@@ -272,7 +272,7 @@ impl std::str::FromStr for CreateSourceFlow {
             "none" => Ok(None),
             "receiver" => Ok(Receiver),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -393,7 +393,7 @@ impl CreateSourceMandateAcceptanceStatus {
 }
 
 impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateAcceptanceStatus::*;
         match s {
@@ -401,7 +401,7 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -451,13 +451,13 @@ impl CreateSourceMandateAcceptanceType {
 }
 
 impl std::str::FromStr for CreateSourceMandateAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -510,14 +510,14 @@ impl CreateSourceMandateInterval {
 }
 
 impl std::str::FromStr for CreateSourceMandateInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateInterval::*;
         match s {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -573,7 +573,7 @@ impl CreateSourceMandateNotificationMethod {
 }
 
 impl std::str::FromStr for CreateSourceMandateNotificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateNotificationMethod::*;
         match s {
@@ -582,7 +582,7 @@ impl std::str::FromStr for CreateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -651,14 +651,14 @@ impl CreateSourceReceiverRefundAttributesMethod {
 }
 
 impl std::str::FromStr for CreateSourceReceiverRefundAttributesMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceReceiverRefundAttributesMethod::*;
         match s {
             "email" => Ok(Email),
             "manual" => Ok(Manual),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -766,7 +766,7 @@ impl CreateSourceSourceOrderItemsType {
 }
 
 impl std::str::FromStr for CreateSourceSourceOrderItemsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceSourceOrderItemsType::*;
         match s {
@@ -774,7 +774,7 @@ impl std::str::FromStr for CreateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -823,13 +823,13 @@ impl CreateSourceUsage {
 }
 
 impl std::str::FromStr for CreateSourceUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceUsage::*;
         match s {
             "reusable" => Ok(Reusable),
             "single_use" => Ok(SingleUse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -986,7 +986,7 @@ impl UpdateSourceMandateAcceptanceStatus {
 }
 
 impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateAcceptanceStatus::*;
         match s {
@@ -994,7 +994,7 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1044,13 +1044,13 @@ impl UpdateSourceMandateAcceptanceType {
 }
 
 impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1103,14 +1103,14 @@ impl UpdateSourceMandateInterval {
 }
 
 impl std::str::FromStr for UpdateSourceMandateInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateInterval::*;
         match s {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1166,7 +1166,7 @@ impl UpdateSourceMandateNotificationMethod {
 }
 
 impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateNotificationMethod::*;
         match s {
@@ -1175,7 +1175,7 @@ impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1270,7 +1270,7 @@ impl UpdateSourceSourceOrderItemsType {
 }
 
 impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceSourceOrderItemsType::*;
         match s {
@@ -1278,7 +1278,7 @@ impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

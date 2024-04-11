@@ -195,13 +195,13 @@ impl PreviewCreditNoteLinesType {
 }
 
 impl std::str::FromStr for PreviewCreditNoteLinesType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -389,13 +389,13 @@ impl PreviewLinesCreditNoteLinesType {
 }
 
 impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewLinesCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -576,13 +576,13 @@ impl CreateCreditNoteLinesType {
 }
 
 impl std::str::FromStr for CreateCreditNoteLinesType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

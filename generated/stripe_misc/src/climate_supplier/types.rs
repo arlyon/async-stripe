@@ -165,14 +165,14 @@ impl ClimateSupplierRemovalPathway {
 }
 
 impl std::str::FromStr for ClimateSupplierRemovalPathway {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateSupplierRemovalPathway::*;
         match s {
             "biomass_carbon_removal_and_storage" => Ok(BiomassCarbonRemovalAndStorage),
             "direct_air_capture" => Ok(DirectAirCapture),
             "enhanced_weathering" => Ok(EnhancedWeathering),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

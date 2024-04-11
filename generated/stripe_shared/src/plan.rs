@@ -305,7 +305,7 @@ impl PlanAggregateUsage {
 }
 
 impl std::str::FromStr for PlanAggregateUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanAggregateUsage::*;
         match s {
@@ -313,7 +313,7 @@ impl std::str::FromStr for PlanAggregateUsage {
             "last_ever" => Ok(LastEver),
             "max" => Ok(Max),
             "sum" => Ok(Sum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -376,13 +376,13 @@ impl PlanBillingScheme {
 }
 
 impl std::str::FromStr for PlanBillingScheme {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanBillingScheme::*;
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -449,7 +449,7 @@ impl PlanInterval {
 }
 
 impl std::str::FromStr for PlanInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanInterval::*;
         match s {
@@ -457,7 +457,7 @@ impl std::str::FromStr for PlanInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -519,13 +519,13 @@ impl PlanTiersMode {
 }
 
 impl std::str::FromStr for PlanTiersMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanTiersMode::*;
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -587,13 +587,13 @@ impl PlanUsageType {
 }
 
 impl std::str::FromStr for PlanUsageType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

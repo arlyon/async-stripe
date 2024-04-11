@@ -300,14 +300,14 @@ impl IssuingTransactionWallet {
 }
 
 impl std::str::FromStr for IssuingTransactionWallet {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTransactionWallet::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -378,13 +378,13 @@ impl IssuingTransactionType {
 }
 
 impl std::str::FromStr for IssuingTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTransactionType::*;
         match s {
             "capture" => Ok(Capture),
             "refund" => Ok(Refund),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

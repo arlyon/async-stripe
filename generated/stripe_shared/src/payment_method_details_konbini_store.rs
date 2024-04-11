@@ -112,7 +112,7 @@ impl PaymentMethodDetailsKonbiniStoreChain {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsKonbiniStoreChain {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsKonbiniStoreChain::*;
         match s {
@@ -120,7 +120,7 @@ impl std::str::FromStr for PaymentMethodDetailsKonbiniStoreChain {
             "lawson" => Ok(Lawson),
             "ministop" => Ok(Ministop),
             "seicomart" => Ok(Seicomart),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -172,7 +172,7 @@ impl CreditNoteTaxAmountTaxabilityReason {
 }
 
 impl std::str::FromStr for CreditNoteTaxAmountTaxabilityReason {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteTaxAmountTaxabilityReason::*;
         match s {
@@ -191,7 +191,7 @@ impl std::str::FromStr for CreditNoteTaxAmountTaxabilityReason {
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -224,10 +224,7 @@ impl miniserde::Deserialize for CreditNoteTaxAmountTaxabilityReason {
 impl miniserde::de::Visitor for crate::Place<CreditNoteTaxAmountTaxabilityReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CreditNoteTaxAmountTaxabilityReason::from_str(s)
-                .unwrap_or(CreditNoteTaxAmountTaxabilityReason::Unknown),
-        );
+        self.out = Some(CreditNoteTaxAmountTaxabilityReason::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -238,6 +235,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteTaxAmountTaxabilityReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

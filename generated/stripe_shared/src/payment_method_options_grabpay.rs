@@ -118,12 +118,12 @@ impl PaymentMethodOptionsGrabpaySetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsGrabpaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsGrabpaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

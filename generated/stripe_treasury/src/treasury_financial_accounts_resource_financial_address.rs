@@ -131,13 +131,13 @@ impl TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -208,12 +208,12 @@ impl TreasuryFinancialAccountsResourceFinancialAddressType {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceFinancialAddressType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceFinancialAddressType::*;
         match s {
             "aba" => Ok(Aba),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

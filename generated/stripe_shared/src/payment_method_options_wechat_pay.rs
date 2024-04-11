@@ -135,14 +135,14 @@ impl PaymentMethodOptionsWechatPayClient {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsWechatPayClient {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsWechatPayClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -212,12 +212,12 @@ impl PaymentMethodOptionsWechatPaySetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsWechatPaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

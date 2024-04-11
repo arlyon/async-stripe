@@ -117,7 +117,7 @@ impl ListPaymentMethodType {
 }
 
 impl std::str::FromStr for ListPaymentMethodType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPaymentMethodType::*;
         match s {
@@ -154,7 +154,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -182,7 +182,7 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl<'a> ListPaymentMethod<'a> {
@@ -572,7 +572,7 @@ impl CreatePaymentMethodEpsBank {
 }
 
 impl std::str::FromStr for CreatePaymentMethodEpsBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodEpsBank::*;
         match s {
@@ -604,7 +604,7 @@ impl std::str::FromStr for CreatePaymentMethodEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -632,7 +632,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodEpsBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -666,13 +666,13 @@ impl CreatePaymentMethodFpxAccountHolderType {
 }
 
 impl std::str::FromStr for CreatePaymentMethodFpxAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -766,7 +766,7 @@ impl CreatePaymentMethodFpxBank {
 }
 
 impl std::str::FromStr for CreatePaymentMethodFpxBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodFpxBank::*;
         match s {
@@ -792,7 +792,7 @@ impl std::str::FromStr for CreatePaymentMethodFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -820,7 +820,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -884,7 +884,7 @@ impl CreatePaymentMethodIdealBank {
 }
 
 impl std::str::FromStr for CreatePaymentMethodIdealBank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodIdealBank::*;
         match s {
@@ -904,7 +904,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -932,7 +932,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1043,7 +1043,7 @@ impl CreatePaymentMethodP24Bank {
 }
 
 impl std::str::FromStr for CreatePaymentMethodP24Bank {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodP24Bank::*;
         match s {
@@ -1073,7 +1073,7 @@ impl std::str::FromStr for CreatePaymentMethodP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1101,7 +1101,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodP24Bank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Options to configure Radar.
@@ -1164,7 +1164,7 @@ impl CreatePaymentMethodSofortCountry {
 }
 
 impl std::str::FromStr for CreatePaymentMethodSofortCountry {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodSofortCountry::*;
         match s {
@@ -1174,7 +1174,7 @@ impl std::str::FromStr for CreatePaymentMethodSofortCountry {
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1292,7 +1292,7 @@ impl CreatePaymentMethodType {
 }
 
 impl std::str::FromStr for CreatePaymentMethodType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodType::*;
         match s {
@@ -1329,7 +1329,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1357,7 +1357,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -1401,13 +1401,13 @@ impl CreatePaymentMethodUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1459,13 +1459,13 @@ impl CreatePaymentMethodUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for CreatePaymentMethodUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1586,13 +1586,13 @@ impl UpdatePaymentMethodUsBankAccountAccountHolderType {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1644,13 +1644,13 @@ impl UpdatePaymentMethodUsBankAccountAccountType {
 }
 
 impl std::str::FromStr for UpdatePaymentMethodUsBankAccountAccountType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

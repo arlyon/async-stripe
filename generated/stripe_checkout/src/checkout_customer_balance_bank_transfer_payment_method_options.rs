@@ -152,7 +152,7 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressType
 impl std::str::FromStr
     for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
 {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
         match s {
@@ -163,7 +163,7 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -252,7 +252,7 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
 }
 
 impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::*;
         match s {
@@ -261,7 +261,7 @@ impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptio
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

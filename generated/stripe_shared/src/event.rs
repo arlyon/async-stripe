@@ -684,7 +684,7 @@ impl EventType {
 }
 
 impl std::str::FromStr for EventType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use EventType::*;
         match s {
@@ -939,7 +939,7 @@ impl std::str::FromStr for EventType {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -972,7 +972,7 @@ impl miniserde::Deserialize for EventType {
 impl miniserde::de::Visitor for crate::Place<EventType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(EventType::from_str(s).unwrap_or(EventType::Unknown));
+        self.out = Some(EventType::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -983,7 +983,7 @@ impl<'de> serde::Deserialize<'de> for EventType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 impl stripe_types::Object for Event {

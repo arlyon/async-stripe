@@ -216,13 +216,13 @@ impl TaxTransactionLineItemTaxBehavior {
 }
 
 impl std::str::FromStr for TaxTransactionLineItemTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionLineItemTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -289,13 +289,13 @@ impl TaxTransactionLineItemType {
 }
 
 impl std::str::FromStr for TaxTransactionLineItemType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionLineItemType::*;
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

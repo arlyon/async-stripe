@@ -117,13 +117,13 @@ impl AccountUnificationAccountControllerType {
 }
 
 impl std::str::FromStr for AccountUnificationAccountControllerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountUnificationAccountControllerType::*;
         match s {
             "account" => Ok(Account),
             "application" => Ok(Application),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

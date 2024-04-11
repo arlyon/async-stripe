@@ -260,7 +260,7 @@ impl TaxRateJurisdictionLevel {
 }
 
 impl std::str::FromStr for TaxRateJurisdictionLevel {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRateJurisdictionLevel::*;
         match s {
@@ -270,7 +270,7 @@ impl std::str::FromStr for TaxRateJurisdictionLevel {
             "district" => Ok(District),
             "multiple" => Ok(Multiple),
             "state" => Ok(State),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -367,7 +367,7 @@ impl TaxRateTaxType {
 }
 
 impl std::str::FromStr for TaxRateTaxType {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRateTaxType::*;
         match s {
@@ -384,7 +384,7 @@ impl std::str::FromStr for TaxRateTaxType {
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -416,7 +416,7 @@ impl miniserde::Deserialize for TaxRateTaxType {
 impl miniserde::de::Visitor for crate::Place<TaxRateTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxRateTaxType::from_str(s).unwrap_or(TaxRateTaxType::Unknown));
+        self.out = Some(TaxRateTaxType::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -427,6 +427,6 @@ impl<'de> serde::Deserialize<'de> for TaxRateTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

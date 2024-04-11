@@ -115,14 +115,14 @@ impl IssuingCardGooglePayIneligibleReason {
 }
 
 impl std::str::FromStr for IssuingCardGooglePayIneligibleReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardGooglePayIneligibleReason::*;
         match s {
             "missing_agreement" => Ok(MissingAgreement),
             "missing_cardholder_contact" => Ok(MissingCardholderContact),
             "unsupported_region" => Ok(UnsupportedRegion),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

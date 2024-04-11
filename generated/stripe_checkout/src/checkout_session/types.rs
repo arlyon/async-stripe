@@ -624,13 +624,13 @@ impl CheckoutSessionCustomerCreation {
 }
 
 impl std::str::FromStr for CheckoutSessionCustomerCreation {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -697,13 +697,13 @@ impl CheckoutSessionPaymentMethodCollection {
 }
 
 impl std::str::FromStr for CheckoutSessionPaymentMethodCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -774,14 +774,14 @@ impl CheckoutSessionPaymentStatus {
 }
 
 impl std::str::FromStr for CheckoutSessionPaymentStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionPaymentStatus::*;
         match s {
             "no_payment_required" => Ok(NoPaymentRequired),
             "paid" => Ok(Paid),
             "unpaid" => Ok(Unpaid),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -852,13 +852,13 @@ impl CheckoutSessionBillingAddressCollection {
 }
 
 impl std::str::FromStr for CheckoutSessionBillingAddressCollection {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionBillingAddressCollection::*;
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1006,7 +1006,7 @@ impl CheckoutSessionLocale {
 }
 
 impl std::str::FromStr for CheckoutSessionLocale {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionLocale::*;
         match s {
@@ -1051,7 +1051,7 @@ impl std::str::FromStr for CheckoutSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1083,8 +1083,7 @@ impl miniserde::Deserialize for CheckoutSessionLocale {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(CheckoutSessionLocale::from_str(s).unwrap_or(CheckoutSessionLocale::Unknown));
+        self.out = Some(CheckoutSessionLocale::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -1095,7 +1094,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -1116,14 +1115,14 @@ impl CheckoutSessionMode {
 }
 
 impl std::str::FromStr for CheckoutSessionMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionMode::*;
         match s {
             "payment" => Ok(Payment),
             "setup" => Ok(Setup),
             "subscription" => Ok(Subscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1188,14 +1187,14 @@ impl CheckoutSessionRedirectOnCompletion {
 }
 
 impl std::str::FromStr for CheckoutSessionRedirectOnCompletion {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionRedirectOnCompletion::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
             "never" => Ok(Never),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1262,14 +1261,14 @@ impl CheckoutSessionStatus {
 }
 
 impl std::str::FromStr for CheckoutSessionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionStatus::*;
         match s {
             "complete" => Ok(Complete),
             "expired" => Ok(Expired),
             "open" => Ok(Open),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1336,7 +1335,7 @@ impl CheckoutSessionSubmitType {
 }
 
 impl std::str::FromStr for CheckoutSessionSubmitType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionSubmitType::*;
         match s {
@@ -1344,7 +1343,7 @@ impl std::str::FromStr for CheckoutSessionSubmitType {
             "book" => Ok(Book),
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1407,13 +1406,13 @@ impl CheckoutSessionUiMode {
 }
 
 impl std::str::FromStr for CheckoutSessionUiMode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionUiMode::*;
         match s {
             "embedded" => Ok(Embedded),
             "hosted" => Ok(Hosted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

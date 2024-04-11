@@ -198,13 +198,13 @@ impl TaxCalculationLineItemTaxBehavior {
 }
 
 impl std::str::FromStr for TaxCalculationLineItemTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxCalculationLineItemTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

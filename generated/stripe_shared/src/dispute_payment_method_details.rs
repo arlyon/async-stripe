@@ -112,12 +112,12 @@ impl DisputePaymentMethodDetailsType {
 }
 
 impl std::str::FromStr for DisputePaymentMethodDetailsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputePaymentMethodDetailsType::*;
         match s {
             "card" => Ok(Card),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

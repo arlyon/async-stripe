@@ -176,7 +176,7 @@ impl PaymentMethodDetailsBancontactPreferredLanguage {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsBancontactPreferredLanguage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsBancontactPreferredLanguage::*;
         match s {
@@ -184,7 +184,7 @@ impl std::str::FromStr for PaymentMethodDetailsBancontactPreferredLanguage {
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

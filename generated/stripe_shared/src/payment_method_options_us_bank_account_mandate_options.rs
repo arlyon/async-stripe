@@ -107,12 +107,12 @@ impl PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -151,7 +151,7 @@ impl SubscriptionPaymentMethodOptionsCardNetwork {
 }
 
 impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -166,7 +166,7 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -241,14 +241,14 @@ impl SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

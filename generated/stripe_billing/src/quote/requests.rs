@@ -292,13 +292,13 @@ impl CreateQuoteAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for CreateQuoteAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateQuoteAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -397,13 +397,13 @@ impl CreateQuoteInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for CreateQuoteInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateQuoteInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -535,7 +535,7 @@ impl CreateQuoteLineItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for CreateQuoteLineItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateQuoteLineItemsPriceDataRecurringInterval::*;
         match s {
@@ -543,7 +543,7 @@ impl std::str::FromStr for CreateQuoteLineItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -600,14 +600,14 @@ impl CreateQuoteLineItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for CreateQuoteLineItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateQuoteLineItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -815,13 +815,13 @@ impl UpdateQuoteAutomaticTaxLiabilityType {
 }
 
 impl std::str::FromStr for UpdateQuoteAutomaticTaxLiabilityType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateQuoteAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -904,13 +904,13 @@ impl UpdateQuoteInvoiceSettingsIssuerType {
 }
 
 impl std::str::FromStr for UpdateQuoteInvoiceSettingsIssuerType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateQuoteInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1045,7 +1045,7 @@ impl UpdateQuoteLineItemsPriceDataRecurringInterval {
 }
 
 impl std::str::FromStr for UpdateQuoteLineItemsPriceDataRecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateQuoteLineItemsPriceDataRecurringInterval::*;
         match s {
@@ -1053,7 +1053,7 @@ impl std::str::FromStr for UpdateQuoteLineItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1110,14 +1110,14 @@ impl UpdateQuoteLineItemsPriceDataTaxBehavior {
 }
 
 impl std::str::FromStr for UpdateQuoteLineItemsPriceDataTaxBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateQuoteLineItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

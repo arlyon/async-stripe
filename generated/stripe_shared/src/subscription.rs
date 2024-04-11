@@ -573,7 +573,7 @@ impl SubscriptionStatus {
 }
 
 impl std::str::FromStr for SubscriptionStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionStatus::*;
         match s {
@@ -585,7 +585,7 @@ impl std::str::FromStr for SubscriptionStatus {
             "paused" => Ok(Paused),
             "trialing" => Ok(Trialing),
             "unpaid" => Ok(Unpaid),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -656,13 +656,13 @@ impl SubscriptionCollectionMethod {
 }
 
 impl std::str::FromStr for SubscriptionCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

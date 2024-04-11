@@ -114,13 +114,13 @@ impl IssuingAuthorizationAuthenticationExemptionClaimedBy {
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionClaimedBy {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthenticationExemptionClaimedBy::*;
         match s {
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -193,14 +193,14 @@ impl IssuingAuthorizationAuthenticationExemptionType {
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthenticationExemptionType::*;
         match s {
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

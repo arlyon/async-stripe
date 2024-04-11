@@ -935,7 +935,7 @@ impl InvoiceBillingReason {
 }
 
 impl std::str::FromStr for InvoiceBillingReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceBillingReason::*;
         match s {
@@ -948,7 +948,7 @@ impl std::str::FromStr for InvoiceBillingReason {
             "subscription_threshold" => Ok(SubscriptionThreshold),
             "subscription_update" => Ok(SubscriptionUpdate),
             "upcoming" => Ok(Upcoming),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1017,14 +1017,14 @@ impl InvoiceCustomerTaxExempt {
 }
 
 impl std::str::FromStr for InvoiceCustomerTaxExempt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceCustomerTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1095,13 +1095,13 @@ impl InvoiceCollectionMethod {
 }
 
 impl std::str::FromStr for InvoiceCollectionMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -1170,7 +1170,7 @@ impl InvoiceStatus {
 }
 
 impl std::str::FromStr for InvoiceStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceStatus::*;
         match s {
@@ -1179,7 +1179,7 @@ impl std::str::FromStr for InvoiceStatus {
             "paid" => Ok(Paid),
             "uncollectible" => Ok(Uncollectible),
             "void" => Ok(Void),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

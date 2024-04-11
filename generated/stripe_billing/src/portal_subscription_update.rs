@@ -142,14 +142,14 @@ impl PortalSubscriptionUpdateDefaultAllowedUpdates {
 }
 
 impl std::str::FromStr for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionUpdateDefaultAllowedUpdates::*;
         match s {
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -223,14 +223,14 @@ impl PortalSubscriptionUpdateProrationBehavior {
 }
 
 impl std::str::FromStr for PortalSubscriptionUpdateProrationBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionUpdateProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -153,14 +153,14 @@ impl IssuingNetworkTokenDeviceType {
 }
 
 impl std::str::FromStr for IssuingNetworkTokenDeviceType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenDeviceType::*;
         match s {
             "other" => Ok(Other),
             "phone" => Ok(Phone),
             "watch" => Ok(Watch),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

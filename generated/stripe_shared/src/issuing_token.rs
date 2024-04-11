@@ -210,13 +210,13 @@ impl IssuingTokenNetwork {
 }
 
 impl std::str::FromStr for IssuingTokenNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenNetwork::*;
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -283,14 +283,14 @@ impl IssuingTokenWalletProvider {
 }
 
 impl std::str::FromStr for IssuingTokenWalletProvider {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenWalletProvider::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -365,7 +365,7 @@ impl IssuingTokenStatus {
 }
 
 impl std::str::FromStr for IssuingTokenStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenStatus::*;
         match s {
@@ -373,7 +373,7 @@ impl std::str::FromStr for IssuingTokenStatus {
             "deleted" => Ok(Deleted),
             "requested" => Ok(Requested),
             "suspended" => Ok(Suspended),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

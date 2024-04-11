@@ -155,14 +155,14 @@ impl PaymentLinksResourceCustomFieldsType {
 }
 
 impl std::str::FromStr for PaymentLinksResourceCustomFieldsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceCustomFieldsType::*;
         match s {
             "dropdown" => Ok(Dropdown),
             "numeric" => Ok(Numeric),
             "text" => Ok(Text),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

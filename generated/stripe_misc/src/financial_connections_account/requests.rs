@@ -187,14 +187,14 @@ impl RefreshFinancialConnectionsAccountFeatures {
 }
 
 impl std::str::FromStr for RefreshFinancialConnectionsAccountFeatures {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RefreshFinancialConnectionsAccountFeatures::*;
         match s {
             "balance" => Ok(Balance),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -269,12 +269,12 @@ impl SubscribeFinancialConnectionsAccountFeatures {
 }
 
 impl std::str::FromStr for SubscribeFinancialConnectionsAccountFeatures {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -351,12 +351,12 @@ impl UnsubscribeFinancialConnectionsAccountFeatures {
 }
 
 impl std::str::FromStr for UnsubscribeFinancialConnectionsAccountFeatures {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UnsubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

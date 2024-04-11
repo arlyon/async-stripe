@@ -131,12 +131,12 @@ impl PaymentMethodOptionsAffirmCaptureMethod {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsAffirmCaptureMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsAffirmCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -207,12 +207,12 @@ impl PaymentMethodOptionsAffirmSetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsAffirmSetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsAffirmSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -244,7 +244,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionTaxIdType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionTaxIdType::*;
         match s {
@@ -315,7 +315,7 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionTaxIdType {
             "ve_rif" => Ok(VeRif),
             "vn_tin" => Ok(VnTin),
             "za_vat" => Ok(ZaVat),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

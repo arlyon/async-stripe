@@ -366,14 +366,14 @@ impl CustomerTaxExempt {
 }
 
 impl std::str::FromStr for CustomerTaxExempt {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -133,14 +133,14 @@ impl CreateBillingPortalSessionFlowDataAfterCompletionType {
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "portal_homepage" => Ok(PortalHomepage),
             "redirect" => Ok(Redirect),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -232,12 +232,12 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
         match s {
             "coupon_offer" => Ok(CouponOffer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -359,7 +359,7 @@ impl CreateBillingPortalSessionFlowDataType {
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataType::*;
         match s {
@@ -367,7 +367,7 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

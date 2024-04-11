@@ -43,13 +43,13 @@ impl CreateSubscriptionItemUsageRecordAction {
 }
 
 impl std::str::FromStr for CreateSubscriptionItemUsageRecordAction {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemUsageRecordAction::*;
         match s {
             "increment" => Ok(Increment),
             "set" => Ok(Set),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

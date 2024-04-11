@@ -120,7 +120,7 @@ impl TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
 }
 
 impl std::str::FromStr for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::*;
         match s {
@@ -129,7 +129,7 @@ impl std::str::FromStr for TreasuryReceivedCreditsResourceReversalDetailsRestric
             "network_restricted" => Ok(NetworkRestricted),
             "other" => Ok(Other),
             "source_flow_restricted" => Ok(SourceFlowRestricted),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

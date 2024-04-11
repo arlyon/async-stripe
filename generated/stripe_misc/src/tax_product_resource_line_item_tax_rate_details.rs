@@ -149,7 +149,7 @@ impl TaxProductResourceLineItemTaxRateDetailsTaxType {
 }
 
 impl std::str::FromStr for TaxProductResourceLineItemTaxRateDetailsTaxType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceLineItemTaxRateDetailsTaxType::*;
         match s {
@@ -165,7 +165,7 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxRateDetailsTaxType {
             "rst" => Ok(Rst),
             "sales_tax" => Ok(SalesTax),
             "vat" => Ok(Vat),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

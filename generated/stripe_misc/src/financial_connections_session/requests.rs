@@ -93,13 +93,13 @@ impl CreateFinancialConnectionsSessionAccountHolderType {
 }
 
 impl std::str::FromStr for CreateFinancialConnectionsSessionAccountHolderType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFinancialConnectionsSessionAccountHolderType::*;
         match s {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

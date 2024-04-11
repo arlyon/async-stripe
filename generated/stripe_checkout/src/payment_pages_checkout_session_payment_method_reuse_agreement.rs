@@ -116,13 +116,13 @@ impl PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionPaymentMethodReuseAgreementPosition::*;
         match s {
             "auto" => Ok(Auto),
             "hidden" => Ok(Hidden),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -783,7 +783,7 @@ impl IssuingCardholderAuthorizationControlsAllowedCategories {
 }
 
 impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderAuthorizationControlsAllowedCategories::*;
         match s {
@@ -1130,7 +1130,7 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsAllowedCategori
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -1165,10 +1165,8 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardholderAuthorizationControlsAllowedCategories::from_str(s)
-                .unwrap_or(IssuingCardholderAuthorizationControlsAllowedCategories::Unknown),
-        );
+        self.out =
+            Some(IssuingCardholderAuthorizationControlsAllowedCategories::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -1179,7 +1177,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsAllo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
 /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
@@ -1835,7 +1833,7 @@ impl IssuingCardholderAuthorizationControlsBlockedCategories {
 }
 
 impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategories {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderAuthorizationControlsBlockedCategories::*;
         match s {
@@ -2182,7 +2180,7 @@ impl std::str::FromStr for IssuingCardholderAuthorizationControlsBlockedCategori
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -2217,10 +2215,8 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardholderAuthorizationControlsBlockedCategories::from_str(s)
-                .unwrap_or(IssuingCardholderAuthorizationControlsBlockedCategories::Unknown),
-        );
+        self.out =
+            Some(IssuingCardholderAuthorizationControlsBlockedCategories::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -2231,6 +2227,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsBloc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

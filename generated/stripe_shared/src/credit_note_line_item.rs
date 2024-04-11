@@ -248,13 +248,13 @@ impl CreditNoteLineItemType {
 }
 
 impl std::str::FromStr for CreditNoteLineItemType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteLineItemType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

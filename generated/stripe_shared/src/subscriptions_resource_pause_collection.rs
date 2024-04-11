@@ -119,14 +119,14 @@ impl SubscriptionsResourcePauseCollectionBehavior {
 }
 
 impl std::str::FromStr for SubscriptionsResourcePauseCollectionBehavior {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourcePauseCollectionBehavior::*;
         match s {
             "keep_as_draft" => Ok(KeepAsDraft),
             "mark_uncollectible" => Ok(MarkUncollectible),
             "void" => Ok(Void),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

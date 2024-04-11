@@ -123,12 +123,12 @@ impl PaymentMethodDetailsCardInstallmentsPlanInterval {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardInstallmentsPlanInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -197,12 +197,12 @@ impl PaymentMethodDetailsCardInstallmentsPlanType {
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardInstallmentsPlanType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardInstallmentsPlanType::*;
         match s {
             "fixed_count" => Ok(FixedCount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -112,12 +112,12 @@ impl PortalFlowsRetentionType {
 }
 
 impl std::str::FromStr for PortalFlowsRetentionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalFlowsRetentionType::*;
         match s {
             "coupon_offer" => Ok(CouponOffer),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -130,14 +130,14 @@ impl PaymentPagesCheckoutSessionAutomaticTaxStatus {
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionAutomaticTaxStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionAutomaticTaxStatus::*;
         match s {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

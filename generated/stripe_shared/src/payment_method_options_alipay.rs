@@ -120,13 +120,13 @@ impl PaymentMethodOptionsAlipaySetupFutureUsage {
 }
 
 impl std::str::FromStr for PaymentMethodOptionsAlipaySetupFutureUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsAlipaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

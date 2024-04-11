@@ -237,7 +237,7 @@ impl FilePurpose {
 }
 
 impl std::str::FromStr for FilePurpose {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FilePurpose::*;
         match s {
@@ -256,7 +256,7 @@ impl std::str::FromStr for FilePurpose {
             "sigma_scheduled_query" => Ok(SigmaScheduledQuery),
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -288,7 +288,7 @@ impl miniserde::Deserialize for FilePurpose {
 impl miniserde::de::Visitor for crate::Place<FilePurpose> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FilePurpose::from_str(s).unwrap_or(FilePurpose::Unknown));
+        self.out = Some(FilePurpose::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -299,6 +299,6 @@ impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }

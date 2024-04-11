@@ -71,7 +71,7 @@ impl ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
 }
 
 impl std::str::FromStr for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryReceivedCreditLinkedFlowsSourceFlowType::*;
         match s {
@@ -79,7 +79,7 @@ impl std::str::FromStr for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
             "other" => Ok(Other),
             "outbound_payment" => Ok(OutboundPayment),
             "payout" => Ok(Payout),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -220,12 +220,12 @@ impl CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType {
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -297,13 +297,13 @@ impl CreateTreasuryReceivedCreditNetwork {
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedCreditNetwork {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedCreditNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

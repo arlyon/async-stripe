@@ -146,7 +146,7 @@ impl RecurringAggregateUsage {
 }
 
 impl std::str::FromStr for RecurringAggregateUsage {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RecurringAggregateUsage::*;
         match s {
@@ -154,7 +154,7 @@ impl std::str::FromStr for RecurringAggregateUsage {
             "last_ever" => Ok(LastEver),
             "max" => Ok(Max),
             "sum" => Ok(Sum),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -223,7 +223,7 @@ impl RecurringInterval {
 }
 
 impl std::str::FromStr for RecurringInterval {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RecurringInterval::*;
         match s {
@@ -231,7 +231,7 @@ impl std::str::FromStr for RecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -300,13 +300,13 @@ impl RecurringUsageType {
 }
 
 impl std::str::FromStr for RecurringUsageType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -138,7 +138,7 @@ impl CancellationDetailsFeedback {
 }
 
 impl std::str::FromStr for CancellationDetailsFeedback {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancellationDetailsFeedback::*;
         match s {
@@ -150,7 +150,7 @@ impl std::str::FromStr for CancellationDetailsFeedback {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -217,14 +217,14 @@ impl CancellationDetailsReason {
 }
 
 impl std::str::FromStr for CancellationDetailsReason {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancellationDetailsReason::*;
         match s {
             "cancellation_requested" => Ok(CancellationRequested),
             "payment_disputed" => Ok(PaymentDisputed),
             "payment_failed" => Ok(PaymentFailed),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

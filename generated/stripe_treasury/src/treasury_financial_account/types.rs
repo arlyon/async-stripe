@@ -247,13 +247,13 @@ impl TreasuryFinancialAccountStatus {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountStatus::*;
         match s {
             "closed" => Ok(Closed),
             "open" => Ok(Open),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -341,7 +341,7 @@ impl TreasuryFinancialAccountArray {
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountArray {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountArray::*;
         match s {
@@ -355,7 +355,7 @@ impl std::str::FromStr for TreasuryFinancialAccountArray {
             "outbound_transfers.ach" => Ok(OutboundTransfersAch),
             "outbound_transfers.us_domestic_wire" => Ok(OutboundTransfersUsDomesticWire),
             "remote_deposit_capture" => Ok(RemoteDepositCapture),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

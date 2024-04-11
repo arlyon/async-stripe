@@ -146,13 +146,13 @@ impl IssuingDisputeNotReceivedEvidenceProductType {
 }
 
 impl std::str::FromStr for IssuingDisputeNotReceivedEvidenceProductType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeNotReceivedEvidenceProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -302,7 +302,7 @@ impl TreasuryInboundTransferStatus {
 }
 
 impl std::str::FromStr for TreasuryInboundTransferStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryInboundTransferStatus::*;
         match s {
@@ -310,7 +310,7 @@ impl std::str::FromStr for TreasuryInboundTransferStatus {
             "failed" => Ok(Failed),
             "processing" => Ok(Processing),
             "succeeded" => Ok(Succeeded),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

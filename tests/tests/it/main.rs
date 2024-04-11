@@ -1,6 +1,7 @@
 // Needed for `json!` usage in tests
 #![recursion_limit = "256"]
 mod deser;
+mod enums;
 pub mod generated;
 mod mock;
 mod price;

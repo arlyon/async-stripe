@@ -189,14 +189,14 @@ impl TaxRegistrationStatus {
 }
 
 impl std::str::FromStr for TaxRegistrationStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRegistrationStatus::*;
         match s {
             "active" => Ok(Active),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -139,13 +139,13 @@ impl IssuingNetworkTokenNetworkDataType {
 }
 
 impl std::str::FromStr for IssuingNetworkTokenNetworkDataType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenNetworkDataType::*;
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

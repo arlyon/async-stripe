@@ -114,13 +114,13 @@ impl SecretServiceResourceScopeType {
 }
 
 impl std::str::FromStr for SecretServiceResourceScopeType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SecretServiceResourceScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

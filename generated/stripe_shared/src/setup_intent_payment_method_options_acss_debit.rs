@@ -129,13 +129,13 @@ impl SetupIntentPaymentMethodOptionsAcssDebitCurrency {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitCurrency {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsAcssDebitCurrency::*;
         match s {
             "cad" => Ok(Cad),
             "usd" => Ok(Usd),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -208,14 +208,14 @@ impl SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

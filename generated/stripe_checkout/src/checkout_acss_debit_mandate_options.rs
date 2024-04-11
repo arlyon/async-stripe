@@ -147,13 +147,13 @@ impl CheckoutAcssDebitMandateOptionsDefaultFor {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitMandateOptionsDefaultFor {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitMandateOptionsDefaultFor::*;
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -223,14 +223,14 @@ impl CheckoutAcssDebitMandateOptionsPaymentSchedule {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitMandateOptionsPaymentSchedule {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitMandateOptionsPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -301,13 +301,13 @@ impl CheckoutAcssDebitMandateOptionsTransactionType {
 }
 
 impl std::str::FromStr for CheckoutAcssDebitMandateOptionsTransactionType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

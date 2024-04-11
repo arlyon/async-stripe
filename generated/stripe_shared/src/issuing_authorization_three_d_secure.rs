@@ -112,7 +112,7 @@ impl IssuingAuthorizationThreeDSecureResult {
 }
 
 impl std::str::FromStr for IssuingAuthorizationThreeDSecureResult {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationThreeDSecureResult::*;
         match s {
@@ -120,7 +120,7 @@ impl std::str::FromStr for IssuingAuthorizationThreeDSecureResult {
             "authenticated" => Ok(Authenticated),
             "failed" => Ok(Failed),
             "required" => Ok(Required),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

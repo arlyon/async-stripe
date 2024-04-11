@@ -106,14 +106,14 @@ impl UpdateIssuingTokenStatus {
 }
 
 impl std::str::FromStr for UpdateIssuingTokenStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingTokenStatus::*;
         match s {
             "active" => Ok(Active),
             "deleted" => Ok(Deleted),
             "suspended" => Ok(Suspended),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

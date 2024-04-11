@@ -60,13 +60,13 @@ impl ListTreasuryDebitReversalResolution {
 }
 
 impl std::str::FromStr for ListTreasuryDebitReversalResolution {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryDebitReversalResolution::*;
         match s {
             "lost" => Ok(Lost),
             "won" => Ok(Won),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }
@@ -118,14 +118,14 @@ impl ListTreasuryDebitReversalStatus {
 }
 
 impl std::str::FromStr for ListTreasuryDebitReversalStatus {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryDebitReversalStatus::*;
         match s {
             "canceled" => Ok(Canceled),
             "completed" => Ok(Completed),
             "processing" => Ok(Processing),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

@@ -118,7 +118,7 @@ impl GelatoSelfieReportErrorCode {
 }
 
 impl std::str::FromStr for GelatoSelfieReportErrorCode {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoSelfieReportErrorCode::*;
         match s {
@@ -126,7 +126,7 @@ impl std::str::FromStr for GelatoSelfieReportErrorCode {
             "selfie_face_mismatch" => Ok(SelfieFaceMismatch),
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

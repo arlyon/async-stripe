@@ -179,7 +179,7 @@ impl PaymentMethodCardWalletType {
 }
 
 impl std::str::FromStr for PaymentMethodCardWalletType {
-    type Err = ();
+    type Err = stripe_types::StripeParseError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodCardWalletType::*;
         match s {
@@ -190,7 +190,7 @@ impl std::str::FromStr for PaymentMethodCardWalletType {
             "masterpass" => Ok(Masterpass),
             "samsung_pay" => Ok(SamsungPay),
             "visa_checkout" => Ok(VisaCheckout),
-            _ => Err(()),
+            _ => Err(stripe_types::StripeParseError),
         }
     }
 }

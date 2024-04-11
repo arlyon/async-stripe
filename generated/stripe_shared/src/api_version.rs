@@ -214,7 +214,7 @@ impl ApiVersion {
 }
 
 impl std::str::FromStr for ApiVersion {
-    type Err = ();
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ApiVersion::*;
         match s {
@@ -318,7 +318,7 @@ impl std::str::FromStr for ApiVersion {
             "2022-11-15" => Ok(V2022_11_15),
             "2023-08-16" => Ok(V2023_08_16),
             "2023-10-16" => Ok(V2023_10_16),
-            _ => Err(()),
+            _ => Ok(Self::Unknown),
         }
     }
 }
@@ -350,7 +350,7 @@ impl miniserde::Deserialize for ApiVersion {
 impl miniserde::de::Visitor for crate::Place<ApiVersion> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiVersion::from_str(s).unwrap_or(ApiVersion::Unknown));
+        self.out = Some(ApiVersion::from_str(s).unwrap());
         Ok(())
     }
 }
@@ -361,6 +361,6 @@ impl<'de> serde::Deserialize<'de> for ApiVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap_or(Self::Unknown))
+        Ok(Self::from_str(&s).unwrap())
     }
 }
